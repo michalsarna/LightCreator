@@ -1,4 +1,7 @@
 //! Document model: shapes, layers (LightBurn "cuts"), and machine settings.
+use crate::bezier::Contour;
+use crate::image::ImageData;
+use crate::text::TextData;
 use crate::geom::*;
 use serde::{Deserialize, Serialize};
 
@@ -26,6 +29,8 @@ pub fn nearest_palette(rgb: [u8; 3]) -> usize {
 pub enum LayerMode {
     /// Follow the outlines.
     Line,
+    /// Concentric inward rings (offset fill) of closed shapes.
+    Offset,
     /// Raster-scan the inside of closed shapes.
     Fill,
     /// Fill the interior, then cut the outline.
@@ -33,14 +38,50 @@ pub enum LayerMode {
 }
 
 impl LayerMode {
-    pub const ALL: [LayerMode; 3] = [LayerMode::Line, LayerMode::Fill, LayerMode::FillAndLine];
+    pub const ALL: [LayerMode; 4] = [LayerMode::Line, LayerMode::Fill, LayerMode::FillAndLine, LayerMode::Offset];
     pub fn label(self) -> &'static str {
         match self {
             LayerMode::Line => "Line",
             LayerMode::Fill => "Fill",
+            LayerMode::Offset => "Offset fill",
             LayerMode::FillAndLine => "Fill + Line",
         }
     }
+}
+
+/// How a grayscale image is turned into laser dots.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Dither {
+    /// Black or white at 50 %.
+    Threshold,
+    #[default]
+    FloydSteinberg,
+    Jarvis,
+    Stucki,
+    Atkinson,
+    /// 8x8 Bayer matrix.
+    Ordered,
+    /// Continuous power between `min_power` and `power`.
+    Grayscale,
+}
+
+impl Dither {
+    pub const ALL: [Dither; 7] = [Dither::Threshold, Dither::FloydSteinberg, Dither::Jarvis, Dither::Stucki, Dither::Atkinson, Dither::Ordered, Dither::Grayscale];
+    pub fn label(self) -> &'static str {
+        match self {
+            Dither::Threshold => "Threshold",
+            Dither::FloydSteinberg => "Floyd-Steinberg",
+            Dither::Jarvis => "Jarvis",
+            Dither::Stucki => "Stucki",
+            Dither::Atkinson => "Atkinson",
+            Dither::Ordered => "Ordered",
+            Dither::Grayscale => "Grayscale",
+        }
+    }
+}
+
+fn d_min_power() -> f64 {
+    0.0
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -62,6 +103,12 @@ pub struct Layer {
     pub bidirectional: bool,
     pub output: bool,
     pub visible: bool,
+    /// Image engraving: how grays become dots.
+    #[serde(default)]
+    pub dither: Dither,
+    /// Image engraving: power (percent) for the lightest burnt dot in grayscale mode.
+    #[serde(default = "d_min_power")]
+    pub min_power: f64,
 }
 
 impl Layer {
@@ -79,6 +126,8 @@ impl Layer {
             bidirectional: true,
             output: true,
             visible: true,
+            dither: Dither::default(),
+            min_power: 0.0,
         }
     }
 }
@@ -89,6 +138,12 @@ pub enum Kind {
     Ellipse { w: f64, h: f64 },
     /// Pre-flattened polylines in local coordinates.
     Path(Vec<Polyline>),
+    /// Editable Bézier contours in local coordinates.
+    Bezier(Vec<Contour>),
+    /// A bitmap engraved line by line. Local size is `w` x `h` millimetres.
+    Image(ImageData),
+    /// Live text, rendered to outlines on demand.
+    Text(TextData),
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -117,6 +172,9 @@ impl Shape {
                 vec![Polyline::new(pts, true)]
             }
             Kind::Path(p) => p.clone(),
+            Kind::Bezier(cs) => cs.iter().map(|c| c.flatten(0.05)).collect(),
+            Kind::Image(im) => vec![Polyline::new(vec![Pt::new(0.0, 0.0), Pt::new(im.w, 0.0), Pt::new(im.w, im.h), Pt::new(0.0, im.h)], true)],
+            Kind::Text(t) => crate::text::contours(t).iter().map(|c| c.flatten(0.05)).collect(),
         }
     }
     pub fn polys(&self) -> Vec<Polyline> {
@@ -134,8 +192,32 @@ impl Shape {
         }
         polys.iter().map(|q| q.dist_to(p)).fold(f64::INFINITY, f64::min)
     }
+    /// Contours of this shape in local coordinates, as editable Bézier data.
+    pub fn local_contours(&self) -> Vec<Contour> {
+        match &self.kind {
+            Kind::Rect { w, h } => vec![Contour::rect(*w, *h)],
+            Kind::Ellipse { w, h } => vec![Contour::ellipse(*w, *h)],
+            Kind::Path(p) => p.iter().map(Contour::from_polyline).collect(),
+            Kind::Bezier(c) => c.clone(),
+            Kind::Image(im) => vec![Contour::rect(im.w, im.h)],
+            Kind::Text(t) => crate::text::contours(t).as_ref().clone(),
+        }
+    }
+    pub fn is_image(&self) -> bool {
+        matches!(self.kind, Kind::Image(_))
+    }
+    /// Convert into editable Bézier contours, baking the transform into the nodes.
+    pub fn to_bezier(&mut self) {
+        let xf = self.xf;
+        let cs: Vec<Contour> = self.local_contours().iter().map(|c| c.transformed(&xf)).collect();
+        self.kind = Kind::Bezier(cs);
+        self.xf = Xf::IDENTITY;
+    }
     /// Convert any shape into a generic path (baking the transform in).
     pub fn bake(&mut self) {
+        if self.is_image() {
+            return;
+        }
         let polys = self.polys();
         self.kind = Kind::Path(polys);
         self.xf = Xf::IDENTITY;

@@ -1,13 +1,17 @@
 use crate::app::{App, Tool};
 use crate::theme;
 use eframe::egui::{self, Color32, CursorIcon, PointerButton, Pos2, Sense, Stroke};
-use lc_core::{Kind, Polyline, Pt, Rect, Xf, PALETTE};
+use crate::nodes::NodeRef;
+use lc_core::{Kind, Node, Polyline, Pt, Rect, Xf, PALETTE};
 
 pub enum Drag {
     Move { start: Pt, orig: Vec<(u64, Xf)> },
     Scale { anchor: Pt, grab: Pt, handle: usize, orig: Vec<(u64, Xf)> },
     Marquee { start: Pt },
     Create { start: Pt },
+    NodeMove { start: Pt, orig: Vec<(NodeRef, Node)> },
+    HandleMove { node: NodeRef, out: bool },
+    NodeMarquee { start: Pt },
 }
 
 fn col(i: usize) -> Color32 {
@@ -68,6 +72,80 @@ impl App {
     fn hit_handle(&self, o: Pos2, mouse: Pos2) -> Option<usize> {
         let b = self.sel_bounds()?;
         handle_pts(&b).iter().position(|h| self.w2s(o, *h).distance(mouse) <= 8.0)
+    }
+
+    /// Selected Bézier shapes with their id.
+    fn bezier_shapes(&self) -> Vec<(u64, &Vec<lc_core::Contour>)> {
+        self.sel
+            .iter()
+            .filter_map(|id| match &self.doc.shape(*id)?.kind {
+                Kind::Bezier(cs) => Some((*id, cs)),
+                _ => None,
+            })
+            .collect()
+    }
+
+    fn hit_node(&self, o: Pos2, mouse: Pos2) -> Option<NodeRef> {
+        let mut best: Option<(f32, NodeRef)> = None;
+        for (id, cs) in self.bezier_shapes() {
+            for (ci, c) in cs.iter().enumerate() {
+                for (ni, n) in c.nodes.iter().enumerate() {
+                    let d = self.w2s(o, n.p).distance(mouse);
+                    if d <= 8.0 && best.map_or(true, |b| d < b.0) {
+                        best = Some((d, (id, ci, ni)));
+                    }
+                }
+            }
+        }
+        best.map(|b| b.1)
+    }
+
+    /// A handle of a selected node under the mouse: (node, is_outgoing).
+    fn hit_node_handle(&self, o: Pos2, mouse: Pos2) -> Option<(NodeRef, bool)> {
+        for r in &self.node_sel {
+            let Some(n) = self.node_at(*r) else { continue };
+            if n.has_out() && self.w2s(o, n.hout).distance(mouse) <= 7.0 {
+                return Some((*r, true));
+            }
+            if n.has_in() && self.w2s(o, n.hin).distance(mouse) <= 7.0 {
+                return Some((*r, false));
+            }
+        }
+        None
+    }
+
+    /// The segment of a selected Bézier shape close to `w`: ((shape, contour, segment), t).
+    fn hit_segment(&self, w: Pt) -> Option<(NodeRef, f64)> {
+        let tol = 6.0 / self.view.zoom as f64;
+        let mut best: Option<(f64, NodeRef, f64)> = None;
+        for (id, cs) in self.bezier_shapes() {
+            for (ci, c) in cs.iter().enumerate() {
+                if let Some((seg, t, d)) = c.nearest(w) {
+                    if d <= tol && best.map_or(true, |b| d < b.0) {
+                        best = Some((d, (id, ci, seg), t));
+                    }
+                }
+            }
+        }
+        best.map(|b| (b.1, b.2))
+    }
+
+    /// Upload image textures that are missing and drop those of deleted images.
+    fn ensure_textures(&mut self, ctx: &egui::Context) {
+        let mut keep = vec![];
+        for s in &self.doc.shapes {
+            if let Kind::Image(im) = &s.kind {
+                let key = (s.id, im.invert);
+                keep.push(key);
+                if !self.image_tex.contains_key(&key) {
+                    let px: Vec<u8> = if im.invert { im.gray.iter().map(|g| 255 - g).collect() } else { im.gray.clone() };
+                    let img = egui::ColorImage::from_gray([im.px_w as usize, im.px_h as usize], &px);
+                    let tex = ctx.load_texture(format!("img-{}-{}", s.id, im.invert), img, egui::TextureOptions::LINEAR);
+                    self.image_tex.insert(key, tex);
+                }
+            }
+        }
+        self.image_tex.retain(|k, _| keep.contains(k));
     }
 
     fn finish_pen(&mut self, closed: bool) {
@@ -147,6 +225,25 @@ impl App {
 
         // ---- shapes ----
         let preview = self.preview_on;
+        let ctx2 = ui.ctx().clone();
+        self.ensure_textures(&ctx2);
+        for s in &self.doc.shapes {
+            let Kind::Image(im) = &s.kind else { continue };
+            if !self.doc.layers[s.layer].visible {
+                continue;
+            }
+            if let Some(tex) = self.image_tex.get(&(s.id, im.invert)) {
+                let corners = [Pt::new(0.0, 0.0), Pt::new(im.w, 0.0), Pt::new(im.w, im.h), Pt::new(0.0, im.h)];
+                let uv = [egui::pos2(0.0, 0.0), egui::pos2(1.0, 0.0), egui::pos2(1.0, 1.0), egui::pos2(0.0, 1.0)];
+                let tint = Color32::from_white_alpha(if preview { 70 } else { 255 });
+                let mut mesh = egui::Mesh::with_texture(tex.id());
+                for (c, t) in corners.iter().zip(uv) {
+                    mesh.vertices.push(egui::epaint::Vertex { pos: self.w2s(o, s.xf.apply(*c)), uv: t, color: tint });
+                }
+                mesh.indices.extend_from_slice(&[0, 1, 2, 0, 2, 3]);
+                painter.add(egui::Shape::mesh(mesh));
+            }
+        }
         for s in &self.doc.shapes {
             let layer = &self.doc.layers[s.layer];
             if !layer.visible {
@@ -193,6 +290,45 @@ impl App {
                     let r = egui::Rect::from_center_size(self.w2s(o, h), egui::vec2(8.0, 8.0));
                     painter.rect_filled(r, 1.0, Color32::WHITE);
                     painter.rect_stroke(r, 1.0, Stroke::new(1.2, theme::accent()), egui::StrokeKind::Middle);
+                }
+            }
+        }
+
+        // ---- node overlay ----
+        if self.tool == Tool::Node {
+            let acc = theme::accent();
+            let sel_nodes = self.node_sel.clone();
+            for (id, cs) in self.bezier_shapes() {
+                for (ci, c) in cs.iter().enumerate() {
+                    for (ni, n) in c.nodes.iter().enumerate() {
+                        let selected = sel_nodes.contains(&(id, ci, ni));
+                        let p = self.w2s(o, n.p);
+                        if selected {
+                            for (has, h) in [(n.has_in(), n.hin), (n.has_out(), n.hout)] {
+                                if has {
+                                    let hp = self.w2s(o, h);
+                                    painter.line_segment([p, hp], Stroke::new(1.0, acc));
+                                    painter.circle_filled(hp, 3.5, Color32::WHITE);
+                                    painter.circle_stroke(hp, 3.5, Stroke::new(1.2, acc));
+                                }
+                            }
+                        }
+                        let fill = if selected { acc } else { Color32::WHITE };
+                        if n.smooth {
+                            painter.circle_filled(p, 4.5, fill);
+                            painter.circle_stroke(p, 4.5, Stroke::new(1.3, acc));
+                        } else {
+                            let r = egui::Rect::from_center_size(p, egui::vec2(8.0, 8.0));
+                            painter.rect_filled(r, 1.0, fill);
+                            painter.rect_stroke(r, 1.0, Stroke::new(1.3, acc), egui::StrokeKind::Middle);
+                        }
+                    }
+                    if let Some((aid, aci, asi)) = self.active_seg {
+                        if aid == id && aci == ci && asi < c.seg_count() {
+                            let poly: Vec<Pos2> = (0..=16).map(|k| self.w2s(o, c.point_at(asi, k as f64 / 16.0))).collect();
+                            painter.add(egui::Shape::line(poly, Stroke::new(3.0, acc.gamma_multiply(0.6))));
+                        }
+                    }
                 }
             }
         }
@@ -256,6 +392,82 @@ impl App {
                             Some(id) => self.sel = vec![id],
                             None => self.sel.clear(),
                         }
+                    }
+                }
+            }
+            Tool::Node => {
+                self.nodes_prepare();
+                if let Some(m) = mouse {
+                    if self.hit_node_handle(o, m).is_some() || self.hit_node(o, m).is_some() {
+                        ui.ctx().set_cursor_icon(CursorIcon::PointingHand);
+                    }
+                }
+                if resp.drag_started_by(PointerButton::Primary) {
+                    if let Some(m) = press {
+                        let w = self.s2w(o, m);
+                        if let Some((nr, out)) = self.hit_node_handle(o, m) {
+                            self.checkpoint();
+                            self.drag = Some(Drag::HandleMove { node: nr, out });
+                        } else if let Some(nr) = self.hit_node(o, m) {
+                            if !self.node_sel.contains(&nr) {
+                                if !shift {
+                                    self.node_sel.clear();
+                                }
+                                self.node_sel.push(nr);
+                            }
+                            self.active_seg = None;
+                            self.checkpoint();
+                            let orig: Vec<(NodeRef, Node)> = self.node_sel.iter().filter_map(|r| self.node_at(*r).map(|n| (*r, n))).collect();
+                            self.drag = Some(Drag::NodeMove { start: w, orig });
+                        } else {
+                            if !shift {
+                                self.node_sel.clear();
+                            }
+                            self.active_seg = None;
+                            self.drag = Some(Drag::NodeMarquee { start: w });
+                        }
+                    }
+                } else if resp.double_clicked() {
+                    if let Some(m) = hpos {
+                        if let Some((seg, t)) = self.hit_segment(self.s2w(o, m)) {
+                            self.nodes_insert(Some((seg, t)));
+                        }
+                    }
+                } else if resp.clicked() {
+                    if let Some(m) = hpos {
+                        let w = self.s2w(o, m);
+                        if let Some(nr) = self.hit_node(o, m) {
+                            if shift {
+                                if let Some(i) = self.node_sel.iter().position(|x| *x == nr) {
+                                    self.node_sel.remove(i);
+                                } else {
+                                    self.node_sel.push(nr);
+                                }
+                            } else {
+                                self.node_sel = vec![nr];
+                            }
+                            self.active_seg = None;
+                        } else if let Some((seg, _)) = self.hit_segment(w) {
+                            self.active_seg = Some(seg);
+                            self.node_sel.clear();
+                        } else if let Some(id) = self.hit_shape(w) {
+                            self.sel = vec![id];
+                            self.node_sel.clear();
+                            self.active_seg = None;
+                        } else {
+                            self.sel.clear();
+                            self.node_sel.clear();
+                            self.active_seg = None;
+                        }
+                    }
+                }
+            }
+            Tool::Text => {
+                ui.ctx().set_cursor_icon(CursorIcon::Text);
+                if resp.clicked_by(PointerButton::Primary) {
+                    if let Some(m) = hpos {
+                        let p = self.snapped(self.s2w(o, m));
+                        self.add_text_at(p);
                     }
                 }
             }
@@ -346,6 +558,39 @@ impl App {
                         }
                         self.touch();
                     }
+                    Drag::NodeMove { start, orig } => {
+                        let (mut dx, mut dy) = (w.x - start.x, w.y - start.y);
+                        if self.snap {
+                            dx = (dx / self.grid).round() * self.grid;
+                            dy = (dy / self.grid).round() * self.grid;
+                        }
+                        let orig = orig.clone();
+                        for ((id, ci, ni), n0) in orig {
+                            if let Some(c) = self.contour_mut(id, ci) {
+                                if ni < c.nodes.len() {
+                                    let mut n = n0;
+                                    n.translate(dx, dy);
+                                    c.nodes[ni] = n;
+                                }
+                            }
+                        }
+                        self.touch();
+                    }
+                    Drag::HandleMove { node, out } => {
+                        let (node, out) = (*node, *out);
+                        let w = self.snapped(w);
+                        if let Some(c) = self.contour_mut(node.0, node.1) {
+                            if node.2 < c.nodes.len() {
+                                c.drag_handle(node.2, out, w);
+                            }
+                        }
+                        self.touch();
+                    }
+                    Drag::NodeMarquee { start } => {
+                        let r = egui::Rect::from_two_pos(self.w2s(o, *start), m);
+                        painter.rect_filled(r, 0.0, theme::accent().gamma_multiply(0.1));
+                        painter.rect_stroke(r, 0.0, Stroke::new(1.0, theme::accent()), egui::StrokeKind::Middle);
+                    }
                     Drag::Marquee { start } => {
                         let r = egui::Rect::from_two_pos(self.w2s(o, *start), m);
                         painter.rect_filled(r, 0.0, theme::accent().gamma_multiply(0.1));
@@ -397,6 +642,24 @@ impl App {
                             }
                         }
                     }
+                    Drag::NodeMarquee { start } => {
+                        let r = Rect::from_pts([start, w]).unwrap();
+                        let mut hits = vec![];
+                        for (id, cs) in self.bezier_shapes() {
+                            for (ci, c) in cs.iter().enumerate() {
+                                for (ni, n) in c.nodes.iter().enumerate() {
+                                    if r.contains(n.p) {
+                                        hits.push((id, ci, ni));
+                                    }
+                                }
+                            }
+                        }
+                        for h in hits {
+                            if !self.node_sel.contains(&h) {
+                                self.node_sel.push(h);
+                            }
+                        }
+                    }
                     Drag::Create { start } => {
                         let mut end = self.snapped(w);
                         if shift && matches!(self.tool, Tool::Rect | Tool::Ellipse) {
@@ -434,6 +697,16 @@ impl App {
         }
 
         self.rulers(&painter, rect);
+
+        // Floating node-editing toolbar.
+        if self.tool == Tool::Node {
+            let ctx = ui.ctx().clone();
+            egui::Area::new(egui::Id::new("node_bar")).order(egui::Order::Foreground).fixed_pos(rect.min + egui::vec2(28.0, 26.0)).show(&ctx, |ui| {
+                egui::Frame::popup(ui.style()).show(ui, |ui| {
+                    ui.horizontal(|ui| self.node_bar(ui));
+                });
+            });
+        }
     }
 
     fn rulers(&self, painter: &egui::Painter, rect: egui::Rect) {

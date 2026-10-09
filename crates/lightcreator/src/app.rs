@@ -10,21 +10,25 @@ use std::path::PathBuf;
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum Tool {
     Select,
+    Node,
     Rect,
     Ellipse,
     Line,
     Pen,
+    Text,
     Pan,
     Zoom,
 }
 
 impl Tool {
-    pub const ALL: [(Tool, &'static str, Key); 7] = [
+    pub const ALL: [(Tool, &'static str, Key); 9] = [
         (Tool::Select, "Select (V)", Key::V),
+        (Tool::Node, "Node edit (N)", Key::N),
         (Tool::Rect, "Rectangle (R)", Key::R),
         (Tool::Ellipse, "Ellipse (E)", Key::E),
         (Tool::Line, "Line (L)", Key::L),
         (Tool::Pen, "Polyline / pen (P)", Key::P),
+        (Tool::Text, "Text (T)", Key::T),
         (Tool::Pan, "Pan (H)", Key::H),
         (Tool::Zoom, "Zoom (Z)", Key::Z),
     ];
@@ -98,6 +102,15 @@ pub struct App {
     pub show_array: bool,
     pub array: (u32, u32, f64, f64),
     pub show_about: bool,
+    pub node_sel: Vec<crate::nodes::NodeRef>,
+    pub active_seg: Option<crate::nodes::NodeRef>,
+    pub text_default: lc_core::TextData,
+    pub font_filter: String,
+    pub focus_text: bool,
+    pub image_tex: std::collections::HashMap<(u64, bool), egui::TextureHandle>,
+    pub show_offset: bool,
+    pub offset_dist: f64,
+    pub offset_keep: bool,
     pub lang: Lang,
     pub scheme: Scheme,
     pub logo: Option<egui::TextureHandle>,
@@ -132,6 +145,7 @@ impl App {
         i18n::set_lang(lang);
         theme::apply(ctx, scheme);
         crate::fonts::install(ctx);
+        lc_core::text::preload();
         App {
             doc: Document::default(),
             undo: vec![],
@@ -166,6 +180,15 @@ impl App {
             show_array: false,
             array: (3, 3, 5.0, 5.0),
             show_about: false,
+            node_sel: vec![],
+            active_seg: None,
+            text_default: lc_core::TextData::default(),
+            font_filter: String::new(),
+            focus_text: false,
+            image_tex: Default::default(),
+            show_offset: false,
+            offset_dist: -1.0,
+            offset_keep: true,
             lang,
             scheme,
             logo: crate::load_logo(ctx),
@@ -538,7 +561,11 @@ impl App {
         }
         let plain = |k: Key| ctx.input_mut(|i| i.consume_key(Modifiers::NONE, k));
         if plain(Key::Delete) || plain(Key::Backspace) {
-            self.delete_selection();
+            if self.tool == Tool::Node && !self.node_sel.is_empty() {
+                self.delete_nodes();
+            } else {
+                self.delete_selection();
+            }
         }
         for (t, _, k) in Tool::ALL {
             if plain(k) {
@@ -548,7 +575,11 @@ impl App {
         }
         if plain(Key::Escape) {
             self.pen_pts.clear();
-            self.sel.clear();
+            if self.tool == Tool::Node && !self.node_sel.is_empty() {
+                self.node_sel.clear();
+            } else {
+                self.sel.clear();
+            }
         }
         let step = if ctx.input(|i| i.modifiers.shift) { 10.0 } else { 1.0 };
         for (k, dx, dy) in [(Key::ArrowLeft, -step, 0.0), (Key::ArrowRight, step, 0.0), (Key::ArrowUp, 0.0, -step), (Key::ArrowDown, 0.0, step)] {
@@ -611,6 +642,13 @@ impl App {
             Act::ToFront => self.reorder(true),
             Act::ToBack => self.reorder(false),
             Act::ToPath => self.to_path(),
+            Act::ToCurves => self.to_curves(),
+            Act::BoolUnion => self.bool_op(lc_core::ops::BoolOp::Union),
+            Act::BoolIntersect => self.bool_op(lc_core::ops::BoolOp::Intersect),
+            Act::BoolSubtract => self.bool_op(lc_core::ops::BoolOp::Difference),
+            Act::BoolXor => self.bool_op(lc_core::ops::BoolOp::Xor),
+            Act::OffsetShape => self.show_offset = true,
+            Act::ImportImage => self.import_image(),
             Act::GridArray => self.show_array = true,
             Act::ToggleGrid => self.show_grid = !self.show_grid,
             Act::ToggleSnap => self.snap = !self.snap,
@@ -708,6 +746,7 @@ impl App {
             if ui.selectable_label(self.preview_on, tr("Preview")).clicked() {
                 self.preview_on = !self.preview_on;
             }
+
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                 let go = egui::Button::new(RichText::new(format!("   {}   ", tr("Start"))).color(Color32::WHITE).strong()).fill(theme::accent());
                 if ui.add(go).on_hover_text(tr("Stream the job to the connected laser")).clicked() {
@@ -790,6 +829,24 @@ impl App {
     }
 
     fn dialogs(&mut self, ctx: &egui::Context) {
+        let mut open = self.show_offset;
+        let mut apply = false;
+        egui::Window::new(tr("Offset shape")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+            egui::Grid::new("offs").num_columns(2).show(ui, |ui| {
+                ui.label(tr("Distance"));
+                drag_len(ui, self.doc.device.units, &mut self.offset_dist, 0.1, Some((-500.0, 500.0)));
+                ui.end_row();
+            });
+            ui.label(RichText::new(tr("Positive grows the outline, negative shrinks it.")).color(theme::text_dim()));
+            ui.checkbox(&mut self.offset_keep, tr("Keep the original"));
+            apply = ui.button(tr("Create offset")).clicked();
+        });
+        if apply {
+            self.offset_selected(self.offset_dist, self.offset_keep);
+            open = false;
+        }
+        self.show_offset = open;
+
         let mut open = self.show_array;
         let mut apply = false;
         egui::Window::new(tr("Grid array")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
@@ -874,6 +931,7 @@ impl App {
             self.dialogs(&ctx);
             return;
         }
+        self.handle_drops(&ctx);
         self.shortcuts(&ctx);
 
         let chrome = egui::Frame::new().fill(theme::panel()).stroke(egui::Stroke::new(1.0, theme::border())).inner_margin(egui::Margin::symmetric(8, 4));

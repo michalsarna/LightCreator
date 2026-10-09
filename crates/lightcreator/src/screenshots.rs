@@ -2,12 +2,12 @@
 //!
 //! `cargo test -p lightcreator --release render_screenshots -- --ignored --nocapture`
 //! writes PNG files into `docs/screenshots/`.
-use crate::app::{App, Screen, SideTab};
+use crate::app::{App, Screen, SideTab, Tool};
 use crate::i18n::{self, Lang};
 use crate::laser::{ConsoleLine, Dir};
 use crate::theme::{self, Scheme};
 use egui_kittest::Harness;
-use lc_core::{Device, Origin, Units};
+use lc_core::{Device, ImageData, Kind, Origin, TextData, Units, Xf};
 use std::path::PathBuf;
 
 type Shot = Harness<'static, Option<App>>;
@@ -131,4 +131,55 @@ fn render_screenshots() {
     theme::apply(&ctx, Scheme::Light);
     save(&mut h, "06-light-polish.png");
     i18n::set_lang(Lang::En);
+    theme::apply(&ctx, Scheme::LightDark);
+    {
+        let a = app(&mut h);
+        a.scheme = Scheme::LightDark;
+        a.lang = Lang::En;
+        // A fresh page: one curved shape for node editing.
+        a.doc.shapes.clear();
+        a.preview_on = false;
+        let id = a.doc.add(2, Kind::Ellipse { w: 120.0, h: 70.0 }, Xf::translate(40.0, 60.0));
+        a.sel = vec![id];
+        a.tool = Tool::Node;
+        a.nodes_prepare();
+        a.node_sel = vec![(id, 0, 0), (id, 0, 1)];
+        a.side_tab = SideTab::Properties;
+        a.status = "Ready".into();
+    }
+    save(&mut h, "07-nodes.png");
+
+    {
+        let a = app(&mut h);
+        a.tool = Tool::Select;
+        a.doc.shapes.clear();
+        a.node_sel.clear();
+        let t = TextData { text: "LightCreator\nlaser studio".into(), size: 22.0, bold: false, ..TextData::default() };
+        let id = a.doc.add(0, Kind::Text(t), Xf::translate(30.0, 40.0));
+        let ring = a.doc.add(5, Kind::Rect { w: 190.0, h: 80.0 }, Xf::translate(20.0, 30.0));
+        let _ = ring;
+        a.sel = vec![id];
+    }
+    save(&mut h, "08-text.png");
+
+    {
+        let a = app(&mut h);
+        a.doc.shapes.clear();
+        let (w, hh) = (240u32, 160u32);
+        let gray: Vec<u8> = (0..w * hh)
+            .map(|i| {
+                let (x, y) = ((i % w) as f32 - 120.0, (i / w) as f32 - 80.0);
+                let r = (x * x + y * y).sqrt();
+                (255.0 - (255.0 * (1.0 - r / 110.0)).clamp(0.0, 255.0)) as u8
+            })
+            .collect();
+        let im = ImageData { name: "photo.png".into(), px_w: w, px_h: hh, gray, w: 96.0, h: 64.0, invert: false };
+        a.doc.layers[0].interval = 0.4;
+        let id = a.doc.add(0, Kind::Image(im), Xf::translate(60.0, 60.0));
+        a.sel = vec![id];
+        a.preview_on = true;
+        a.side_tab = SideTab::Layers;
+        a.active_layer = 0;
+    }
+    save(&mut h, "09-image.png");
 }

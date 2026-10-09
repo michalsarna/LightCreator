@@ -6,9 +6,11 @@ mod i18n;
 mod icons;
 mod laser;
 mod menu;
+mod nodes;
 #[cfg(target_os = "macos")]
 mod native_menu;
 mod panels;
+mod shape_ops;
 #[cfg(test)]
 mod screenshots;
 mod theme;

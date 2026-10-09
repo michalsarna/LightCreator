@@ -102,3 +102,120 @@ fn old_device_json_gets_new_fields() {
     assert_eq!(d.jog_step, 5.0);
     assert!(d.port.is_empty());
 }
+
+#[test]
+fn bezier_ellipse_area_and_node_insert() {
+    let c = Contour::ellipse(20.0, 10.0);
+    let area = c.flatten(0.01).area().abs();
+    assert!((area - std::f64::consts::PI * 10.0 * 5.0).abs() < 0.5, "area {area}");
+    // Inserting a node must not change the outline.
+    let mut c2 = c.clone();
+    let before = c2.point_at(1, 0.37);
+    let at = c2.insert_node(1, 0.37);
+    assert!(c2.nodes[at].p.dist(before) < 1e-9);
+    let area2 = c2.flatten(0.01).area().abs();
+    assert!((area - area2).abs() < 0.1);
+    // Straight segment insert lands on the line.
+    let mut r = Contour::rect(10.0, 10.0);
+    let at = r.insert_node(0, 0.5);
+    assert_eq!(r.nodes[at].p, Pt::new(5.0, 0.0));
+}
+
+#[test]
+fn shape_to_bezier_keeps_geometry() {
+    let mut s = Shape { id: 1, layer: 0, kind: Kind::Rect { w: 10.0, h: 4.0 }, xf: Xf::translate(3.0, 2.0) };
+    let before = s.bounds().unwrap();
+    s.to_bezier();
+    let after = s.bounds().unwrap();
+    assert!((before.min.x - after.min.x).abs() < 1e-9 && (before.max.y - after.max.y).abs() < 1e-9);
+    assert!(matches!(s.kind, Kind::Bezier(_)));
+}
+
+fn sq(x: f64, y: f64, s: f64) -> Polyline {
+    Polyline::new(vec![Pt::new(x, y), Pt::new(x + s, y), Pt::new(x + s, y + s), Pt::new(x, y + s)], true)
+}
+
+fn total_area(p: &[Polyline]) -> f64 {
+    // Outer rings positive, holes negative (opposite orientation).
+    p.iter().map(|q| q.area()).sum::<f64>().abs()
+}
+
+#[test]
+fn boolean_ops_on_squares() {
+    let (a, b) = (vec![sq(0.0, 0.0, 4.0)], vec![sq(2.0, 2.0, 4.0)]);
+    assert!((total_area(&ops::boolean(&a, &b, ops::BoolOp::Union)) - 28.0).abs() < 1e-6);
+    assert!((total_area(&ops::boolean(&a, &b, ops::BoolOp::Intersect)) - 4.0).abs() < 1e-6);
+    assert!((total_area(&ops::boolean(&a, &b, ops::BoolOp::Difference)) - 12.0).abs() < 1e-6);
+    assert!((total_area(&ops::boolean(&a, &b, ops::BoolOp::Xor)) - 24.0).abs() < 1e-6);
+}
+
+#[test]
+fn offset_shrinks_and_grows() {
+    let a = vec![sq(0.0, 0.0, 10.0)];
+    let inner = ops::offset(&a, -1.0);
+    assert!((total_area(&inner) - 64.0).abs() < 0.5, "{}", total_area(&inner));
+    let outer = ops::offset(&a, 1.0);
+    assert!(total_area(&outer) > 120.0);
+    let rings = ops::inset_rings(&a, 1.0, 100);
+    assert!(rings.len() >= 4 && rings.len() <= 6, "{}", rings.len());
+}
+
+fn gradient_image(w: u32, h: u32) -> ImageData {
+    // Left half black, right half white.
+    let gray = (0..w * h).map(|i| if (i % w) < w / 2 { 0u8 } else { 255u8 }).collect();
+    ImageData { name: "t".into(), px_w: w, px_h: h, gray, w: 20.0, h: 10.0, invert: false }
+}
+
+#[test]
+fn image_raster_burns_only_the_dark_half() {
+    let mut d = Document::default();
+    d.layers[0].interval = 0.5;
+    d.layers[0].dither = Dither::Threshold;
+    d.layers[0].overscan = 0.0;
+    d.add(0, Kind::Image(gradient_image(20, 10)), Xf::translate(10.0, 10.0));
+    let job = gcode::generate(&d);
+    let burnt: f64 = job.moves.iter().filter(|m| m.laser).map(|m| m.a.dist(m.b)).sum();
+    // 20 rows of 10 mm each.
+    assert!((burnt - 200.0).abs() < 1.0, "burnt {burnt}");
+    assert!(job.moves.iter().filter(|m| m.laser).all(|m| m.a.x >= 10.0 - 1e-6 && m.b.x <= 20.0 + 1e-6));
+}
+
+#[test]
+fn grayscale_scales_power_and_dithering_keeps_density() {
+    let mut d = Document::default();
+    // Uniform 50 % grey.
+    let im = ImageData { name: "g".into(), px_w: 10, px_h: 10, gray: vec![128; 100], w: 10.0, h: 10.0, invert: false };
+    d.layers[0].interval = 0.25;
+    d.layers[0].dither = Dither::FloydSteinberg;
+    d.add(0, Kind::Image(im.clone()), Xf::IDENTITY);
+    let job = gcode::generate(&d);
+    let burnt: f64 = job.moves.iter().filter(|m| m.laser).map(|m| m.a.dist(m.b)).sum();
+    // About half of 40 rows x 10 mm.
+    assert!((burnt - 200.0).abs() < 25.0, "burnt {burnt}");
+    d.layers[0].dither = Dither::Grayscale;
+    d.layers[0].power = 80.0;
+    let job = gcode::generate(&d);
+    assert!(job.gcode.contains("S399") || job.gcode.contains("S400"), "{}", &job.gcode[..200.min(job.gcode.len())]);
+}
+
+#[test]
+fn offset_layer_makes_concentric_rings() {
+    let mut d = Document::default();
+    d.layers[0].mode = LayerMode::Offset;
+    d.layers[0].interval = 1.0;
+    d.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(5.0, 5.0));
+    let job = gcode::generate(&d);
+    let cut: f64 = job.cut_length;
+    // Rings 10, 8, 6, 4, 2 mm squares: perimeters 40+32+24+16+8 = 120 (a few more or less at the centre).
+    assert!(cut > 100.0 && cut < 140.0, "cut {cut}");
+}
+
+#[test]
+fn text_produces_outlines() {
+    let t = TextData { text: "Hi".into(), size: 10.0, ..TextData::default() };
+    let c = text::contours(&t);
+    assert!(c.len() >= 3, "{}", c.len());
+    let s = Shape { id: 1, layer: 0, kind: Kind::Text(t), xf: Xf::IDENTITY };
+    let b = s.bounds().unwrap();
+    assert!(b.width() > 5.0 && b.height() > 4.0 && b.height() < 12.0, "{:?}", b);
+}

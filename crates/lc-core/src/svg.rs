@@ -1,5 +1,6 @@
 //! SVG import (via usvg) and export.
 use crate::doc::*;
+use crate::bezier::{Contour, Node};
 use crate::geom::*;
 use std::fmt::Write;
 use usvg::tiny_skia_path::PathSegment;
@@ -24,7 +25,7 @@ fn walk(g: &usvg::Group, doc: &mut Document, layer: Option<usize>, ids: &mut Vec
                 let t = p.abs_transform();
                 let xf = Xf { a: t.sx as f64, b: t.ky as f64, c: t.kx as f64, d: t.sy as f64, e: t.tx as f64, f: t.ty as f64 }
                     .then(Xf::scale(PX_TO_MM, PX_TO_MM));
-                let polys = flatten(p.data(), &xf);
+                let polys = contours(p.data(), &xf);
                 if polys.is_empty() {
                     continue;
                 }
@@ -37,61 +38,77 @@ fn walk(g: &usvg::Group, doc: &mut Document, layer: Option<usize>, ids: &mut Vec
                     })
                     .unwrap_or([0, 0, 0]);
                 let l = layer.unwrap_or_else(|| nearest_palette(color));
-                ids.push(doc.add(l, Kind::Path(polys), Xf::IDENTITY));
+                ids.push(doc.add(l, Kind::Bezier(polys), Xf::IDENTITY));
             }
             _ => {}
         }
     }
 }
 
-fn flatten(path: &usvg::tiny_skia_path::Path, xf: &Xf) -> Vec<Polyline> {
+/// Convert an SVG path into editable Bézier contours (curves are kept, not flattened).
+fn contours(path: &usvg::tiny_skia_path::Path, xf: &Xf) -> Vec<Contour> {
     let tp = |p: usvg::tiny_skia_path::Point| xf.apply(Pt::new(p.x as f64, p.y as f64));
-    let mut out = vec![];
-    let mut cur: Vec<Pt> = vec![];
-    let mut last = Pt::default();
-    let flush = |cur: &mut Vec<Pt>, closed: bool, out: &mut Vec<Polyline>| {
-        if cur.len() >= 2 {
-            let mut pts = std::mem::take(cur);
-            if closed && pts.len() > 2 && pts[0].dist(*pts.last().unwrap()) < 1e-6 {
-                pts.pop();
+    let mut out: Vec<Contour> = vec![];
+    let mut cur: Vec<Node> = vec![];
+    let finish = |cur: &mut Vec<Node>, closed: bool, out: &mut Vec<Contour>| {
+        let mut nodes = std::mem::take(cur);
+        if closed && nodes.len() > 2 && nodes[0].p.dist(nodes[nodes.len() - 1].p) < 1e-6 {
+            let last = nodes.pop().unwrap_or(nodes[0]);
+            nodes[0].hin = last.hin;
+        }
+        if nodes.len() >= 2 {
+            for n in &mut nodes {
+                n.smooth = n.has_in() && n.has_out() && {
+                    let (a, b) = (Pt::new(n.p.x - n.hin.x, n.p.y - n.hin.y), Pt::new(n.hout.x - n.p.x, n.hout.y - n.p.y));
+                    let cross = a.x * b.y - a.y * b.x;
+                    let dot = a.x * b.x + a.y * b.y;
+                    dot > 0.0 && cross.abs() <= 0.02 * (dot.abs() + 1e-12)
+                };
             }
-            out.push(Polyline::new(pts, closed));
-        } else {
-            cur.clear();
+            out.push(Contour { nodes, closed });
         }
     };
+    let mut last = Pt::default();
     for seg in path.segments() {
         match seg {
             PathSegment::MoveTo(p) => {
-                flush(&mut cur, false, &mut out);
+                finish(&mut cur, false, &mut out);
                 last = tp(p);
-                cur.push(last);
+                cur.push(Node::corner(last));
             }
             PathSegment::LineTo(p) => {
                 last = tp(p);
-                cur.push(last);
+                cur.push(Node::corner(last));
             }
             PathSegment::QuadTo(c, p) => {
                 let (c, p) = (tp(c), tp(p));
-                flatten_quad(last, c, p, 0.05, &mut cur);
+                let c1 = Pt::new(last.x + 2.0 / 3.0 * (c.x - last.x), last.y + 2.0 / 3.0 * (c.y - last.y));
+                let c2 = Pt::new(p.x + 2.0 / 3.0 * (c.x - p.x), p.y + 2.0 / 3.0 * (c.y - p.y));
+                if let Some(n) = cur.last_mut() {
+                    n.hout = c1;
+                }
+                cur.push(Node { p, hin: c2, hout: p, smooth: false });
                 last = p;
             }
             PathSegment::CubicTo(c1, c2, p) => {
                 let (c1, c2, p) = (tp(c1), tp(c2), tp(p));
-                flatten_cubic(last, c1, c2, p, 0.05, &mut cur);
+                if let Some(n) = cur.last_mut() {
+                    n.hout = c1;
+                }
+                cur.push(Node { p, hin: c2, hout: p, smooth: false });
                 last = p;
             }
             PathSegment::Close => {
-                let start = cur.first().copied();
-                flush(&mut cur, true, &mut out);
+                let start = cur.first().map(|n| n.p);
+                finish(&mut cur, true, &mut out);
                 if let Some(s) = start {
                     last = s;
-                    cur.push(s);
+                    cur.push(Node::corner(s));
                 }
             }
         }
     }
-    flush(&mut cur, false, &mut out);
+    finish(&mut cur, false, &mut out);
     out
 }
 

@@ -63,6 +63,38 @@ impl<'a> Writer<'a> {
         self.pos = p;
     }
 
+    /// Engrave scan rows (image raster): each run at its own power, leaving gaps with the laser off.
+    fn raster(&mut self, rows: &[crate::raster::Row], layer: &Layer) {
+        let os = layer.overscan.max(0.0);
+        let mut emitted = 0usize;
+        for row in rows {
+            if row.runs.is_empty() {
+                continue;
+            }
+            let rev = layer.bidirectional && emitted % 2 == 1;
+            emitted += 1;
+            let dir = if rev { -1.0 } else { 1.0 };
+            let ordered: Vec<&crate::raster::Run> = if rev { row.runs.iter().rev().collect() } else { row.runs.iter().collect() };
+            let first = if rev { ordered[0].x1 } else { ordered[0].x0 };
+            self.travel(Pt::new(first - dir * os, row.y));
+            if os > 0.0 {
+                self.line(Pt::new(first, row.y), 0.0, layer.speed);
+            }
+            let mut x = first;
+            for run in ordered {
+                let (s, e) = if rev { (run.x1, run.x0) } else { (run.x0, run.x1) };
+                if (s - x).abs() > 1e-6 {
+                    self.line(Pt::new(s, row.y), 0.0, layer.speed);
+                }
+                self.line(Pt::new(e, row.y), run.power, layer.speed);
+                x = e;
+            }
+            if os > 0.0 {
+                self.line(Pt::new(x + dir * os, row.y), 0.0, layer.speed);
+            }
+        }
+    }
+
     /// Linear move with the laser at `power` percent and `speed` mm/s.
     fn line(&mut self, p: Pt, power: f64, speed: f64) {
         let p = self.clamp(p);
@@ -197,8 +229,9 @@ pub fn generate(doc: &Document) -> Job {
         if !layer.output {
             continue;
         }
-        let polys: Vec<Polyline> = doc.shapes.iter().filter(|s| s.layer == li).flat_map(|s| s.polys()).collect();
-        if polys.is_empty() {
+        let polys: Vec<Polyline> = doc.shapes.iter().filter(|s| s.layer == li && !s.is_image()).flat_map(|s| s.polys()).collect();
+        let images: Vec<&Shape> = doc.shapes.iter().filter(|s| s.layer == li && s.is_image()).collect();
+        if polys.is_empty() && images.is_empty() {
             continue;
         }
         w.layer = li;
@@ -206,6 +239,24 @@ pub fn generate(doc: &Document) -> Job {
         for pass in 0..layer.passes.max(1) {
             if layer.passes > 1 {
                 let _ = writeln!(w.out, "; pass {}/{}", pass + 1, layer.passes);
+            }
+            for sh in &images {
+                if let Kind::Image(im) = &sh.kind {
+                    let rows = crate::raster::rows_for(sh, im, layer);
+                    w.raster(&rows, layer);
+                }
+            }
+            if layer.mode == LayerMode::Offset {
+                let rings = crate::ops::inset_rings(&polys, layer.interval, 10_000);
+                for p in order_paths(rings, w.pos) {
+                    w.travel(p.pts[0]);
+                    for q in &p.pts[1..] {
+                        w.line(*q, layer.power, layer.speed);
+                    }
+                    if p.closed {
+                        w.line(p.pts[0], layer.power, layer.speed);
+                    }
+                }
             }
             if matches!(layer.mode, LayerMode::Fill | LayerMode::FillAndLine) {
                 let os = layer.overscan.max(0.0);
@@ -224,7 +275,7 @@ pub fn generate(doc: &Document) -> Job {
                     }
                 }
             }
-            if matches!(layer.mode, LayerMode::Line | LayerMode::FillAndLine) {
+            if matches!(layer.mode, LayerMode::Line | LayerMode::FillAndLine) && !polys.is_empty() {
                 for p in order_paths(polys.clone(), w.pos) {
                     w.travel(p.pts[0]);
                     for q in &p.pts[1..] {
