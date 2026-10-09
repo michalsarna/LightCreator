@@ -1,4 +1,8 @@
+<p align="center"><img src="assets/icons/icon-256.png" alt="LightCreator icon" width="128"></p>
+
 # LightCreator
+
+**Current version: v0.02** — see [VERSIONS.md](VERSIONS.md) for the change log, [FEATURES.md](FEATURES.md) for what the app can do and [INSTALL.md](INSTALL.md) for how to run it from source.
 
 An open-source alternative to [LightBurn](https://lightburnsoftware.com/) for CNC laser engravers and cutters,
 written in Rust. The interface follows the look of [VectorCraft](https://github.com/storytold/vectorcraft)
@@ -6,17 +10,12 @@ written in Rust. The interface follows the look of [VectorCraft](https://github.
 
 ## Features
 
-* **Design** – rectangle, ellipse, line and polyline tools; select / move / resize with handles; numeric
-  X/Y/W/H, rotate, flip, align, centre on bed, grid array, copy/paste/duplicate, undo/redo, snap to grid, rulers.
-* **Import / export** – SVG import (paths, shapes, text-to-path, colours mapped to layers), SVG export,
-  native `.lcr` project files (JSON), G-code export.
-* **Cuts / Layers** – the LightBurn model: 30 colour layers (C00–C29), each with mode (*Line*, *Fill*,
-  *Fill + Line*), speed, power, passes, fill interval, scan angle, overscan, bidirectional scanning,
-  output and visibility toggles.
-* **Toolpaths** – inner shapes are cut before outer ones, nearest-neighbour path ordering, even-odd
-  scan-line fill, overscan, live toolpath preview with time estimate.
-* **Laser control (GRBL)** – serial connect, jog, home, unlock, pause/resume, stop, framing, console,
-  character-counting streaming of jobs with progress.
+A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
+
+* Design, import / export (SVG, G-code, native `.lcr`), LightBurn-style cut layers, toolpath preview.
+* GRBL laser control over a serial port.
+* Native menu bar on macOS, in-window menu on Windows and Linux.
+* Seven languages (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी) and four colour schemes.
 
 Not yet implemented (contributions welcome): image/raster engraving, offset fill, boolean operations,
 Bézier node editing, text tool, Ruida / Trocen / Marlin controllers, material library, camera overlay.
@@ -31,6 +30,12 @@ cargo test --workspace
 
 Requires a recent stable Rust toolchain. On Linux the GUI needs the usual X11/Wayland + OpenGL libraries
 (`libxkbcommon-x11`, `libgl1`).
+
+## Icon
+
+The application icon lives in `assets/` (`lightcreator.icns` for macOS, `lightcreator.ico` for Windows and
+PNG sizes 16–1024 px in `assets/icons/`). It is used for the window, the Dock, the Windows executable, the
+About window and the Linux desktop entry.
 
 ## Layout
 

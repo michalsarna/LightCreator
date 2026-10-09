@@ -98,10 +98,10 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                             port = Some(p);
                             queue.clear();
                             pending.clear();
-                            emit(Evt::Log(format!("Connected to {name} @ {baud}")));
+                            emit(Evt::Log(crate::i18n::trf("Connected to {} @ {}", &[&name, &baud])));
                             emit(Evt::Connected(true));
                         }
-                        Err(e) => emit(Evt::Log(format!("Cannot open {name}: {e}"))),
+                        Err(e) => emit(Evt::Log(crate::i18n::trf("Cannot open {}: {}", &[&name, &e]))),
                     }
                 }
                 Ok(Cmd::Disconnect) => {
@@ -109,7 +109,7 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                     queue.clear();
                     pending.clear();
                     emit(Evt::Connected(false));
-                    emit(Evt::Log("Disconnected".into()));
+                    emit(Evt::Log(crate::i18n::tr("Disconnected").into()));
                 }
                 Ok(Cmd::Line(l)) => {
                     // Immediate lines go ahead of job lines.
@@ -135,7 +135,7 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                     pending.clear();
                     total = 0;
                     emit(Evt::Progress { done: 0, total: 0 });
-                    emit(Evt::Log("Aborted (soft reset)".into()));
+                    emit(Evt::Log(crate::i18n::tr("Aborted (soft reset)").into()));
                 }
                 Err(TryRecvError::Empty) => break,
                 Err(TryRecvError::Disconnected) => return,
@@ -198,7 +198,7 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
             queue.clear();
             pending.clear();
             emit(Evt::Connected(false));
-            emit(Evt::Log("Connection lost".into()));
+            emit(Evt::Log(crate::i18n::tr("Connection lost").into()));
         }
         std::thread::sleep(Duration::from_millis(if port.is_some() { 2 } else { 30 }));
     }

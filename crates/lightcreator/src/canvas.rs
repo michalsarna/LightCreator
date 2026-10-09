@@ -113,7 +113,7 @@ impl App {
         self.cursor_mm = resp.hover_pos().map(|m| self.s2w(o, m));
 
         // ---- background, bed, grid ----
-        painter.rect_filled(rect, 0.0, theme::WORKSPACE);
+        painter.rect_filled(rect, 0.0, theme::workspace());
         let bed = egui::Rect::from_min_max(self.w2s(o, Pt::new(0.0, 0.0)), self.w2s(o, Pt::new(bw, bh)));
         painter.rect_filled(bed.translate(egui::vec2(3.0, 3.0)), 0.0, Color32::from_black_alpha(25));
         painter.rect_filled(bed, 0.0, Color32::WHITE);
@@ -143,7 +143,7 @@ impl App {
             lc_core::Origin::FrontLeft => Pt::new(0.0, bh),
             lc_core::Origin::BackLeft => Pt::new(0.0, 0.0),
         };
-        painter.circle_filled(self.w2s(o, zero), 4.0, theme::ACCENT);
+        painter.circle_filled(self.w2s(o, zero), 4.0, theme::accent());
 
         // ---- shapes ----
         let preview = self.preview_on;
@@ -179,7 +179,7 @@ impl App {
                     shapes.push(egui::Shape::line_segment([self.w2s(o, m.a), self.w2s(o, m.b)], st));
                 }
                 painter.extend(shapes);
-                let r = painter.text(rect.left_bottom() + egui::vec2(30.0, -12.0), egui::Align2::LEFT_BOTTOM, format!("Estimated time {}   cut length {:.0} mm", crate::app::fmt_time(job.est_seconds), job.cut_length), egui::FontId::proportional(13.0), theme::TEXT);
+                let r = painter.text(rect.left_bottom() + egui::vec2(30.0, -12.0), egui::Align2::LEFT_BOTTOM, format!("{} {}   {} {:.0} mm", crate::i18n::tr("Estimated time"), crate::app::fmt_time(job.est_seconds), crate::i18n::tr("cut length"), job.cut_length), egui::FontId::proportional(13.0), theme::text());
                 let _ = r;
             }
         }
@@ -187,12 +187,12 @@ impl App {
         // ---- selection ----
         if let Some(b) = self.sel_bounds() {
             let sr = egui::Rect::from_min_max(self.w2s(o, b.min), self.w2s(o, b.max));
-            painter.rect_stroke(sr, 0.0, Stroke::new(1.0, theme::ACCENT), egui::StrokeKind::Outside);
+            painter.rect_stroke(sr, 0.0, Stroke::new(1.0, theme::accent()), egui::StrokeKind::Outside);
             if self.tool == Tool::Select {
                 for h in handle_pts(&b) {
                     let r = egui::Rect::from_center_size(self.w2s(o, h), egui::vec2(8.0, 8.0));
                     painter.rect_filled(r, 1.0, Color32::WHITE);
-                    painter.rect_stroke(r, 1.0, Stroke::new(1.2, theme::ACCENT), egui::StrokeKind::Middle);
+                    painter.rect_stroke(r, 1.0, Stroke::new(1.2, theme::accent()), egui::StrokeKind::Middle);
                 }
             }
         }
@@ -348,8 +348,8 @@ impl App {
                     }
                     Drag::Marquee { start } => {
                         let r = egui::Rect::from_two_pos(self.w2s(o, *start), m);
-                        painter.rect_filled(r, 0.0, theme::ACCENT.gamma_multiply(0.1));
-                        painter.rect_stroke(r, 0.0, Stroke::new(1.0, theme::ACCENT), egui::StrokeKind::Middle);
+                        painter.rect_filled(r, 0.0, theme::accent().gamma_multiply(0.1));
+                        painter.rect_stroke(r, 0.0, Stroke::new(1.0, theme::accent()), egui::StrokeKind::Middle);
                     }
                     Drag::Create { start } => {
                         let end = self.snapped(w);
@@ -428,7 +428,7 @@ impl App {
                 pts.push(m);
             }
             for p in &pts {
-                painter.circle_filled(*p, 3.0, theme::ACCENT);
+                painter.circle_filled(*p, 3.0, theme::accent());
             }
             painter.add(egui::Shape::line(pts, st));
         }
@@ -438,14 +438,14 @@ impl App {
 
     fn rulers(&self, painter: &egui::Painter, rect: egui::Rect) {
         let t = 18.0;
-        let bg = theme::PANEL;
+        let bg = theme::panel();
         painter.rect_filled(egui::Rect::from_min_size(rect.min, egui::vec2(rect.width(), t)), 0.0, bg);
         painter.rect_filled(egui::Rect::from_min_size(rect.min, egui::vec2(t, rect.height())), 0.0, bg);
         let z = self.view.zoom as f64;
         let major = nice_step(60.0 / z);
         let minor = major / 5.0;
         let font = egui::FontId::proportional(9.5);
-        let tick = Stroke::new(1.0, theme::TEXT_DIM);
+        let tick = Stroke::new(1.0, theme::text_dim());
         // horizontal
         let (x0, x1) = (((rect.min.x - rect.min.x - self.view.pan.x) as f64 / z), ((rect.width() - self.view.pan.x) as f64 / z));
         let mut v = (x0 / minor).floor() * minor;
@@ -455,7 +455,7 @@ impl App {
             if sx > rect.min.x + t {
                 painter.line_segment([Pos2::new(sx, rect.min.y + if is_major { 2.0 } else { 12.0 }), Pos2::new(sx, rect.min.y + t)], tick);
                 if is_major {
-                    painter.text(Pos2::new(sx + 2.0, rect.min.y + 1.0), egui::Align2::LEFT_TOP, format!("{}", v.round()), font.clone(), theme::TEXT_DIM);
+                    painter.text(Pos2::new(sx + 2.0, rect.min.y + 1.0), egui::Align2::LEFT_TOP, format!("{}", v.round()), font.clone(), theme::text_dim());
                 }
             }
             v += minor;
@@ -468,11 +468,11 @@ impl App {
             if sy > rect.min.y + t {
                 painter.line_segment([Pos2::new(rect.min.x + if is_major { 2.0 } else { 12.0 }, sy), Pos2::new(rect.min.x + t, sy)], tick);
                 if is_major {
-                    painter.text(Pos2::new(rect.min.x + 1.0, sy + 2.0), egui::Align2::LEFT_TOP, format!("{}", v.round()), font.clone(), theme::TEXT_DIM);
+                    painter.text(Pos2::new(rect.min.x + 1.0, sy + 2.0), egui::Align2::LEFT_TOP, format!("{}", v.round()), font.clone(), theme::text_dim());
                 }
             }
             v += minor;
         }
-        painter.rect_filled(egui::Rect::from_min_size(rect.min, egui::vec2(t, t)), 0.0, theme::PANEL_DARK);
+        painter.rect_filled(egui::Rect::from_min_size(rect.min, egui::vec2(t, t)), 0.0, theme::panel_dark());
     }
 }

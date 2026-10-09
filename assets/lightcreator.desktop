@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=LightCreator
+Comment=Open-source laser engraver / cutter design and control software
+Exec=lightcreator %f
+Icon=lightcreator
+Terminal=false
+Categories=Graphics;2DGraphics;VectorGraphics;
+MimeType=image/svg+xml;
+StartupWMClass=lightcreator

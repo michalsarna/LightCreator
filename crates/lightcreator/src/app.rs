@@ -1,5 +1,9 @@
 use crate::laser::{self, Cmd, Evt, LaserLink};
-use crate::theme;
+use crate::i18n::{self, tr, trf, Lang};
+use crate::menu::Act;
+#[cfg(not(target_os = "macos"))]
+use crate::menu::{menus, Entry};
+use crate::theme::{self, Scheme};
 use eframe::egui::{self, Color32, Key, Modifiers, RichText};
 use lc_core::{gcode, svg, Document, Pt, Rect, Shape, Xf};
 use std::path::PathBuf;
@@ -28,7 +32,7 @@ impl Tool {
 }
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.01";
+pub const APP_VERSION: &str = "v0.02";
 
 pub struct View {
     pub zoom: f32, // screen px per mm
@@ -65,6 +69,11 @@ pub struct App {
     pub show_array: bool,
     pub array: (u32, u32, f64, f64),
     pub show_about: bool,
+    pub lang: Lang,
+    pub scheme: Scheme,
+    pub logo: Option<egui::TextureHandle>,
+    #[cfg(target_os = "macos")]
+    pub native_menu: Option<crate::native_menu::NativeMenu>,
     // laser
     pub link: LaserLink,
     pub ports: Vec<String>,
@@ -82,6 +91,12 @@ pub struct App {
 impl App {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         let ports = laser::list_ports();
+        let saved = |k: &str| cc.storage.and_then(|st| st.get_string(k));
+        let lang = saved("lang").and_then(|c| Lang::from_code(&c)).unwrap_or(Lang::En);
+        let scheme = saved("scheme").and_then(|c| Scheme::from_id(&c)).unwrap_or(Scheme::Light);
+        i18n::set_lang(lang);
+        theme::apply(&cc.egui_ctx, scheme);
+        crate::fonts::install(&cc.egui_ctx);
         App {
             doc: Document::default(),
             undo: vec![],
@@ -94,7 +109,7 @@ impl App {
             pen_pts: vec![],
             clipboard: vec![],
             path: None,
-            status: "Ready".into(),
+            status: tr("Ready").into(),
             revision: 0,
             show_grid: true,
             snap: false,
@@ -110,11 +125,16 @@ impl App {
             show_array: false,
             array: (3, 3, 5.0, 5.0),
             show_about: false,
+            lang,
+            scheme,
+            logo: crate::load_logo(&cc.egui_ctx),
+            #[cfg(target_os = "macos")]
+            native_menu: Some(crate::native_menu::NativeMenu::install(&cc.egui_ctx)),
             link: LaserLink::spawn(cc.egui_ctx.clone()),
             port: ports.first().cloned().unwrap_or_default(),
             ports,
             connected: false,
-            machine: ("Disconnected".into(), 0.0, 0.0),
+            machine: (tr("Disconnected").into(), 0.0, 0.0),
             progress: (0, 0),
             console: vec![],
             console_input: String::new(),
@@ -318,12 +338,12 @@ impl App {
                 self.undo.clear();
                 self.redo.clear();
                 self.sel.clear();
-                self.status = format!("Opened {}", p.display());
+                self.status = trf("Opened {}", &[&p.display()]);
                 self.path = Some(p);
                 self.touch();
                 self.view.need_fit = true;
             }
-            Err(e) => self.status = format!("Open failed: {e}"),
+            Err(e) => self.status = trf("Open failed: {}", &[&e]),
         }
     }
     pub fn save(&mut self, as_new: bool) {
@@ -335,10 +355,10 @@ impl App {
         if let Some(p) = path {
             match std::fs::write(&p, self.doc.to_json()) {
                 Ok(_) => {
-                    self.status = format!("Saved {}", p.display());
+                    self.status = trf("Saved {}", &[&p.display()]);
                     self.path = Some(p);
                 }
-                Err(e) => self.status = format!("Save failed: {e}"),
+                Err(e) => self.status = trf("Save failed: {}", &[&e]),
             }
         }
     }
@@ -353,17 +373,17 @@ impl App {
             svg::import(&d, &mut self.doc, None)
         }) {
             Ok(ids) => {
-                self.status = format!("Imported {} paths from {}", ids.len(), p.display());
+                self.status = trf("Imported {} paths from {}", &[&ids.len(), &p.display()]);
                 self.sel = ids;
             }
-            Err(e) => self.status = format!("Import failed: {e}"),
+            Err(e) => self.status = trf("Import failed: {}", &[&e]),
         }
     }
     pub fn export_svg(&mut self) {
         if let Some(p) = rfd::FileDialog::new().add_filter("SVG", &["svg"]).set_file_name("design.svg").save_file() {
             self.status = match std::fs::write(&p, svg::export(&self.doc)) {
-                Ok(_) => format!("Exported {}", p.display()),
-                Err(e) => format!("Export failed: {e}"),
+                Ok(_) => trf("Exported {}", &[&p.display()]),
+                Err(e) => trf("Export failed: {}", &[&e]),
             };
         }
     }
@@ -371,8 +391,8 @@ impl App {
         if let Some(p) = rfd::FileDialog::new().add_filter("G-code", &["gcode", "nc"]).set_file_name("job.gcode").save_file() {
             let job = gcode::generate(&self.doc);
             self.status = match std::fs::write(&p, job.gcode) {
-                Ok(_) => format!("Saved G-code {}", p.display()),
-                Err(e) => format!("Export failed: {e}"),
+                Ok(_) => trf("Saved G-code {}", &[&p.display()]),
+                Err(e) => trf("Export failed: {}", &[&e]),
             };
         }
     }
@@ -380,23 +400,23 @@ impl App {
     // ---------- laser ----------
     pub fn send_job(&mut self) {
         if !self.connected {
-            self.status = "Connect to a laser first (Laser panel)".into();
+            self.status = tr("Connect to a laser first (Laser panel)").into();
             return;
         }
         let job = gcode::generate(&self.doc);
         if job.moves.is_empty() {
-            self.status = "Nothing to burn: no shapes on output layers".into();
+            self.status = tr("Nothing to burn: no shapes on output layers").into();
             return;
         }
         let lines = laser::clean_gcode(&job.gcode);
-        self.console.push(format!("Starting job: {} lines, ~{}", lines.len(), fmt_time(job.est_seconds)));
+        self.console.push(trf("Starting job: {} lines, ~{}", &[&lines.len(), &fmt_time(job.est_seconds)]));
         self.link.send(Cmd::Job(lines));
     }
     pub fn frame(&mut self) {
         let b = self.sel_bounds().or_else(|| self.doc.bounds_of(&self.doc.shapes.iter().map(|s| s.id).collect::<Vec<_>>()));
         let Some(b) = b else { return };
         if !self.connected {
-            self.status = "Connect to a laser first (Laser panel)".into();
+            self.status = tr("Connect to a laser first (Laser panel)").into();
             return;
         }
         let g = gcode::frame_gcode(b, &self.doc.device, self.frame_power, 40.0);
@@ -416,7 +436,7 @@ impl App {
                 Evt::Connected(c) => {
                     self.connected = c;
                     if !c {
-                        self.machine.0 = "Disconnected".into();
+                        self.machine.0 = tr("Disconnected").into();
                     }
                 }
                 Evt::Status { state, x, y } => self.machine = (state, x, y),
@@ -449,14 +469,26 @@ impl App {
         if cmd(Key::A) {
             self.select_all();
         }
-        if cmd(Key::S) {
-            self.save(false);
-        }
-        if cmd(Key::O) {
-            self.open();
-        }
-        if cmd(Key::I) {
-            self.import_svg();
+        // On macOS the native menu bar owns New / Open / Save / Save as / Import accelerators.
+        #[cfg(not(target_os = "macos"))]
+        {
+            if cmd_shift(Key::S) {
+                self.save(true);
+            } else if cmd(Key::S) {
+                self.save(false);
+            }
+            if cmd(Key::O) {
+                self.open();
+            }
+            if cmd(Key::I) {
+                self.import_svg();
+            }
+            if cmd(Key::N) {
+                self.new_doc();
+            }
+            if cmd(Key::Q) {
+                ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+            }
         }
         let plain = |k: Key| ctx.input_mut(|i| i.consume_key(Modifiers::NONE, k));
         if plain(Key::Delete) || plain(Key::Backspace) {
@@ -483,179 +515,160 @@ impl App {
         }
     }
 
-    fn menu_bar(&mut self, ui: &mut egui::Ui) {
-        egui::MenuBar::new().ui(ui, |ui| {
-            ui.menu_button("File", |ui| {
-                if ui.button("New").clicked() {
-                    self.new_doc();
-                    ui.close();
+    /// Is this action's check mark set? (None = not a check item.)
+    pub fn act_checked(&self, a: Act) -> Option<bool> {
+        match a {
+            Act::ToggleGrid => Some(self.show_grid),
+            Act::ToggleSnap => Some(self.snap),
+            Act::TogglePreview => Some(self.preview_on),
+            Act::SetLang(l) => Some(self.lang == l),
+            Act::SetScheme(s) => Some(self.scheme == s),
+            _ => None,
+        }
+    }
+
+    pub fn act_enabled(&self, a: Act) -> bool {
+        match a {
+            Act::Undo => !self.undo.is_empty(),
+            Act::Redo => !self.redo.is_empty(),
+            _ => true,
+        }
+    }
+
+    pub fn do_act(&mut self, ctx: &egui::Context, a: Act) {
+        match a {
+            Act::New => self.new_doc(),
+            Act::Open => self.open(),
+            Act::Save => self.save(false),
+            Act::SaveAs => self.save(true),
+            Act::ImportSvg => self.import_svg(),
+            Act::ExportSvg => self.export_svg(),
+            Act::ExportGcode => self.export_gcode(),
+            Act::Quit => ctx.send_viewport_cmd(egui::ViewportCommand::Close),
+            Act::Undo => self.do_undo(),
+            Act::Redo => self.do_redo(),
+            Act::Copy => self.copy(),
+            Act::Paste => self.paste(),
+            Act::Duplicate => self.duplicate(),
+            Act::Delete => self.delete_selection(),
+            Act::SelectAll => self.select_all(),
+            Act::Align(m) => self.align(m),
+            Act::CenterOnBed => self.center_on_bed(),
+            Act::FlipH => self.flip(true),
+            Act::FlipV => self.flip(false),
+            Act::RotCw => self.rotate_sel(90.0),
+            Act::RotCcw => self.rotate_sel(-90.0),
+            Act::ToFront => self.reorder(true),
+            Act::ToBack => self.reorder(false),
+            Act::ToPath => self.to_path(),
+            Act::GridArray => self.show_array = true,
+            Act::ToggleGrid => self.show_grid = !self.show_grid,
+            Act::ToggleSnap => self.snap = !self.snap,
+            Act::TogglePreview => self.preview_on = !self.preview_on,
+            Act::FitBed => self.view.need_fit = true,
+            Act::DeviceSettings => self.show_device = true,
+            Act::Frame => self.frame(),
+            Act::StartJob => self.send_job(),
+            Act::About => self.show_about = true,
+            Act::SetLang(l) => {
+                self.lang = l;
+                i18n::set_lang(l);
+            }
+            Act::SetScheme(sc) => {
+                self.scheme = sc;
+                theme::apply(ctx, sc);
+            }
+        }
+    }
+
+    #[cfg(not(target_os = "macos"))]
+    fn menu_entries(&mut self, ui: &mut egui::Ui, entries: &[Entry], pending: &mut Option<Act>) {
+        for e in entries {
+            match e {
+                Entry::Sep => {
+                    ui.separator();
                 }
-                if ui.button("Open…        Ctrl+O").clicked() {
-                    self.open();
-                    ui.close();
+                Entry::Sub(title, children) => {
+                    ui.menu_button(tr(title), |ui| self.menu_entries(ui, children, pending));
                 }
-                if ui.button("Save          Ctrl+S").clicked() {
-                    self.save(false);
-                    ui.close();
-                }
-                if ui.button("Save as…").clicked() {
-                    self.save(true);
-                    ui.close();
-                }
-                ui.separator();
-                if ui.button("Import SVG…   Ctrl+I").clicked() {
-                    self.import_svg();
-                    ui.close();
-                }
-                if ui.button("Export SVG…").clicked() {
-                    self.export_svg();
-                    ui.close();
-                }
-                if ui.button("Export G-code…").clicked() {
-                    self.export_gcode();
-                    ui.close();
-                }
-            });
-            ui.menu_button("Edit", |ui| {
-                if ui.add_enabled(!self.undo.is_empty(), egui::Button::new("Undo   Ctrl+Z")).clicked() {
-                    self.do_undo();
-                    ui.close();
-                }
-                if ui.add_enabled(!self.redo.is_empty(), egui::Button::new("Redo   Ctrl+Y")).clicked() {
-                    self.do_redo();
-                    ui.close();
-                }
-                ui.separator();
-                if ui.button("Copy        Ctrl+C").clicked() {
-                    self.copy();
-                    ui.close();
-                }
-                if ui.button("Paste       Ctrl+V").clicked() {
-                    self.paste();
-                    ui.close();
-                }
-                if ui.button("Duplicate   Ctrl+D").clicked() {
-                    self.duplicate();
-                    ui.close();
-                }
-                if ui.button("Delete      Del").clicked() {
-                    self.delete_selection();
-                    ui.close();
-                }
-                if ui.button("Select all  Ctrl+A").clicked() {
-                    self.select_all();
-                    ui.close();
-                }
-            });
-            ui.menu_button("Arrange", |ui| {
-                for (i, n) in ["Align left", "Align centre (H)", "Align right", "Align top", "Align centre (V)", "Align bottom"].iter().enumerate() {
-                    if ui.button(*n).clicked() {
-                        self.align(i as u8);
+                Entry::Item(act, label, accel) => {
+                    let mut text = tr(label).to_string();
+                    let enabled = self.act_enabled(*act);
+                    let mut btn = match self.act_checked(*act) {
+                        Some(on) => {
+                            text = format!("{} {}", if on { "✔" } else { "   " }, text);
+                            egui::Button::new(text)
+                        }
+                        None => egui::Button::new(text),
+                    };
+                    if let Some((_, shown)) = accel {
+                        btn = btn.shortcut_text(*shown);
+                    }
+                    if ui.add_enabled(enabled, btn).clicked() {
+                        *pending = Some(*act);
                         ui.close();
                     }
                 }
-                ui.separator();
-                if ui.button("Centre on bed").clicked() {
-                    self.center_on_bed();
-                    ui.close();
-                }
-                if ui.button("Flip horizontal").clicked() {
-                    self.flip(true);
-                    ui.close();
-                }
-                if ui.button("Flip vertical").clicked() {
-                    self.flip(false);
-                    ui.close();
-                }
-                if ui.button("Rotate 90° CW").clicked() {
-                    self.rotate_sel(90.0);
-                    ui.close();
-                }
-                if ui.button("Rotate 90° CCW").clicked() {
-                    self.rotate_sel(-90.0);
-                    ui.close();
-                }
-                ui.separator();
-                if ui.button("Bring to front").clicked() {
-                    self.reorder(true);
-                    ui.close();
-                }
-                if ui.button("Send to back").clicked() {
-                    self.reorder(false);
-                    ui.close();
-                }
-                if ui.button("Convert to path").clicked() {
-                    self.to_path();
-                    ui.close();
-                }
-                if ui.button("Grid array…").clicked() {
-                    self.show_array = true;
-                    ui.close();
-                }
-            });
-            ui.menu_button("View", |ui| {
-                ui.checkbox(&mut self.show_grid, "Grid");
-                ui.checkbox(&mut self.snap, "Snap to grid");
-                ui.checkbox(&mut self.preview_on, "Toolpath preview");
-                if ui.button("Fit bed to window").clicked() {
-                    self.view.need_fit = true;
-                    ui.close();
-                }
-            });
-            ui.menu_button("Laser", |ui| {
-                if ui.button("Device settings…").clicked() {
-                    self.show_device = true;
-                    ui.close();
-                }
-                if ui.button("Frame").clicked() {
-                    self.frame();
-                    ui.close();
-                }
-                if ui.button("Start job").clicked() {
-                    self.send_job();
-                    ui.close();
-                }
-            });
-            ui.menu_button("Help", |ui| {
-                if ui.button("About").clicked() {
-                    self.show_about = true;
-                    ui.close();
-                }
-            });
+            }
+        }
+    }
+
+    #[cfg(target_os = "macos")]
+    fn native_menu_frame(&mut self, ctx: &egui::Context) {
+        let Some(mut nm) = self.native_menu.take() else { return };
+        for a in nm.take_actions() {
+            self.do_act(ctx, a);
+        }
+        nm.sync(|a| self.act_checked(a), |a| self.act_enabled(a));
+        self.native_menu = Some(nm);
+    }
+
+    /// In-window menu bar (Windows / Linux). macOS uses the native menu bar instead.
+    #[cfg(not(target_os = "macos"))]
+    fn menu_bar(&mut self, ui: &mut egui::Ui) {
+        let mut pending = None;
+        egui::MenuBar::new().ui(ui, |ui| {
+            for (title, entries) in menus() {
+                ui.menu_button(tr(title), |ui| self.menu_entries(ui, &entries, &mut pending));
+            }
         });
+        if let Some(a) = pending {
+            let ctx = ui.ctx().clone();
+            self.do_act(&ctx, a);
+        }
     }
 
     fn control_bar(&mut self, ui: &mut egui::Ui) {
         ui.horizontal_centered(|ui| {
-            let (name, _, _) = Tool::ALL.iter().find(|t| t.0 == self.tool).map(|t| (t.1, 0, 0)).unwrap();
-            ui.label(RichText::new(name).strong());
+            let name = Tool::ALL.iter().find(|t| t.0 == self.tool).map(|t| t.1).unwrap_or("");
+            ui.label(RichText::new(tr(name).split(" (").next().unwrap_or("")).strong());
             ui.separator();
             let c = lc_core::PALETTE[self.active_layer];
             let (r, _) = ui.allocate_exact_size(egui::vec2(16.0, 16.0), egui::Sense::hover());
             ui.painter().rect_filled(r, 3.0, Color32::from_rgb(c[0], c[1], c[2]));
-            ui.label(format!("Layer {}", self.doc.layers[self.active_layer].name));
+            ui.label(trf("Layer {}", &[&self.doc.layers[self.active_layer].name]));
             ui.separator();
-            ui.checkbox(&mut self.show_grid, "Grid");
-            ui.checkbox(&mut self.snap, "Snap");
+            ui.checkbox(&mut self.show_grid, tr("Grid"));
+            ui.checkbox(&mut self.snap, tr("Snap"));
             ui.add(egui::DragValue::new(&mut self.grid).range(0.5..=100.0).suffix(" mm"));
             ui.separator();
-            if ui.selectable_label(self.preview_on, "Preview").clicked() {
+            if ui.selectable_label(self.preview_on, tr("Preview")).clicked() {
                 self.preview_on = !self.preview_on;
             }
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                let go = egui::Button::new(RichText::new("   Start   ").color(Color32::WHITE).strong()).fill(theme::ACCENT);
-                if ui.add(go).on_hover_text("Stream the job to the connected laser").clicked() {
+                let go = egui::Button::new(RichText::new(format!("   {}   ", tr("Start"))).color(Color32::WHITE).strong()).fill(theme::accent());
+                if ui.add(go).on_hover_text(tr("Stream the job to the connected laser")).clicked() {
                     self.send_job();
                 }
-                if ui.button("Frame").on_hover_text("Trace the bounding box").clicked() {
+                if ui.button(tr("Frame")).on_hover_text(tr("Trace the bounding box")).clicked() {
                     self.frame();
                 }
-                if ui.button("Save G-code").clicked() {
+                if ui.button(tr("Save G-code")).clicked() {
                     self.export_gcode();
                 }
                 let (w, h) = self.sel_bounds().map(|b| (b.width(), b.height())).unwrap_or((0.0, 0.0));
                 if !self.sel.is_empty() {
-                    ui.label(RichText::new(format!("{:.1} × {:.1} mm", w, h)).color(theme::TEXT_DIM));
+                    ui.label(RichText::new(format!("{:.1} × {:.1} mm", w, h)).color(theme::text_dim()));
                 }
             });
         });
@@ -668,12 +681,12 @@ impl App {
                 let (rect, resp) = ui.allocate_exact_size(egui::vec2(36.0, 36.0), egui::Sense::click());
                 let on = self.tool == t;
                 if on {
-                    ui.painter().rect_filled(rect, 6.0, theme::ACCENT);
+                    ui.painter().rect_filled(rect, 6.0, theme::accent());
                 } else if resp.hovered() {
-                    ui.painter().rect_filled(rect, 6.0, theme::PANEL_DARK);
+                    ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
                 }
-                crate::icons::paint(ui.painter(), rect.shrink(4.0), t, if on { Color32::WHITE } else { theme::TEXT });
-                if resp.on_hover_text(tip).clicked() {
+                crate::icons::paint(ui.painter(), rect.shrink(4.0), t, if on { Color32::WHITE } else { theme::text() });
+                if resp.on_hover_text(tr(tip)).clicked() {
                     self.tool = t;
                     self.pen_pts.clear();
                 }
@@ -684,16 +697,16 @@ impl App {
 
     fn swatches(&mut self, ui: &mut egui::Ui) {
         ui.horizontal_centered(|ui| {
-            ui.label(RichText::new("Layers").color(theme::TEXT_DIM));
+            ui.label(RichText::new(tr("Layers")).color(theme::text_dim()));
             ui.spacing_mut().item_spacing.x = 3.0;
             for i in 0..30 {
                 let c = lc_core::PALETTE[i];
                 let (r, resp) = ui.allocate_exact_size(egui::vec2(22.0, 22.0), egui::Sense::click());
                 ui.painter().rect_filled(r, 3.0, Color32::from_rgb(c[0], c[1], c[2]));
                 if self.active_layer == i {
-                    ui.painter().rect_stroke(r.expand(1.5), 4.0, egui::Stroke::new(2.0, theme::ACCENT), egui::StrokeKind::Outside);
+                    ui.painter().rect_stroke(r.expand(1.5), 4.0, egui::Stroke::new(2.0, theme::accent()), egui::StrokeKind::Outside);
                 }
-                if resp.on_hover_text(format!("{} — click to assign selection / set active", self.doc.layers[i].name)).clicked() {
+                if resp.on_hover_text(trf("{} — click to assign selection / set active", &[&self.doc.layers[i].name])).clicked() {
                     self.assign_layer(i);
                 }
             }
@@ -708,7 +721,7 @@ impl App {
                 if let Some(p) = self.cursor_mm {
                     ui.label(format!("X {:.2}  Y {:.2} mm", p.x, p.y));
                 }
-                let color = if self.connected { Color32::from_rgb(0x2e, 0xa0, 0x4f) } else { theme::TEXT_DIM };
+                let color = if self.connected { Color32::from_rgb(0x2e, 0xa0, 0x4f) } else { theme::text_dim() };
                 ui.label(RichText::new(self.machine.0.clone()).color(color));
                 let (r, _) = ui.allocate_exact_size(egui::vec2(10.0, 10.0), egui::Sense::hover());
                 ui.painter().circle_filled(r.center(), 4.0, color);
@@ -721,39 +734,39 @@ impl App {
 
     fn dialogs(&mut self, ctx: &egui::Context) {
         let mut open = self.show_device;
-        egui::Window::new("Device settings").open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+        egui::Window::new(tr("Device settings")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
             let d = &mut self.doc.device;
             egui::Grid::new("dev").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
-                ui.label("Name");
+                ui.label(tr("Name"));
                 ui.text_edit_singleline(&mut d.name);
                 ui.end_row();
-                ui.label("Work area X (mm)");
+                ui.label(tr("Work area X (mm)"));
                 ui.add(egui::DragValue::new(&mut d.bed_w).range(10.0..=5000.0));
                 ui.end_row();
-                ui.label("Work area Y (mm)");
+                ui.label(tr("Work area Y (mm)"));
                 ui.add(egui::DragValue::new(&mut d.bed_h).range(10.0..=5000.0));
                 ui.end_row();
-                ui.label("Machine zero (0,0)");
+                ui.label(tr("Machine zero (0,0)"));
                 egui::ComboBox::from_id_salt("origin")
-                    .selected_text(if d.origin == lc_core::Origin::FrontLeft { "Front-left (GRBL default)" } else { "Back-left" })
+                    .selected_text(if d.origin == lc_core::Origin::FrontLeft { tr("Front-left (GRBL default)") } else { tr("Back-left") })
                     .show_ui(ui, |ui| {
-                        ui.selectable_value(&mut d.origin, lc_core::Origin::FrontLeft, "Front-left (GRBL default)");
-                        ui.selectable_value(&mut d.origin, lc_core::Origin::BackLeft, "Back-left");
+                        ui.selectable_value(&mut d.origin, lc_core::Origin::FrontLeft, tr("Front-left (GRBL default)"));
+                        ui.selectable_value(&mut d.origin, lc_core::Origin::BackLeft, tr("Back-left"));
                     });
                 ui.end_row();
-                ui.label("S-value max ($30)");
+                ui.label(tr("S-value max ($30)"));
                 ui.add(egui::DragValue::new(&mut d.s_max).range(1.0..=100000.0));
                 ui.end_row();
-                ui.label("Dynamic power (M4)");
+                ui.label(tr("Dynamic power (M4)"));
                 ui.checkbox(&mut d.dynamic_power, "");
                 ui.end_row();
-                ui.label("Travel speed (mm/min)");
+                ui.label(tr("Travel speed (mm/min)"));
                 ui.add(egui::DragValue::new(&mut d.travel_speed).range(100.0..=60000.0));
                 ui.end_row();
-                ui.label("Return to origin");
+                ui.label(tr("Return to origin"));
                 ui.checkbox(&mut d.return_home, "");
                 ui.end_row();
-                ui.label("Baud rate");
+                ui.label(tr("Baud rate"));
                 ui.add(egui::DragValue::new(&mut d.baud).range(1200..=1_000_000));
                 ui.end_row();
             });
@@ -765,22 +778,22 @@ impl App {
 
         let mut open = self.show_array;
         let mut apply = false;
-        egui::Window::new("Grid array").open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+        egui::Window::new(tr("Grid array")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
             egui::Grid::new("arr").num_columns(2).show(ui, |ui| {
-                ui.label("Columns");
+                ui.label(tr("Columns"));
                 ui.add(egui::DragValue::new(&mut self.array.0).range(1..=100));
                 ui.end_row();
-                ui.label("Rows");
+                ui.label(tr("Rows"));
                 ui.add(egui::DragValue::new(&mut self.array.1).range(1..=100));
                 ui.end_row();
-                ui.label("Gap X (mm)");
+                ui.label(tr("Gap X (mm)"));
                 ui.add(egui::DragValue::new(&mut self.array.2));
                 ui.end_row();
-                ui.label("Gap Y (mm)");
+                ui.label(tr("Gap Y (mm)"));
                 ui.add(egui::DragValue::new(&mut self.array.3));
                 ui.end_row();
             });
-            apply = ui.button("Create array").clicked();
+            apply = ui.button(tr("Create array")).clicked();
         });
         if apply {
             self.make_array();
@@ -789,16 +802,23 @@ impl App {
         self.show_array = open;
 
         let mut open = self.show_about;
-        egui::Window::new("About LightCreator").open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
-            ui.heading("LightCreator");
-            ui.label(format!("Version {APP_VERSION}"));
-            ui.label("Open-source design & control software for laser engravers and cutters.");
+        egui::Window::new(tr("About LightCreator")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+            ui.horizontal(|ui| {
+                if let Some(logo) = &self.logo {
+                    ui.image((logo.id(), egui::vec2(72.0, 72.0)));
+                }
+                ui.vertical(|ui| {
+                    ui.heading("LightCreator");
+                    ui.label(trf("Version {}", &[&APP_VERSION]));
+                });
+            });
+            ui.label(tr("Open-source design & control software for laser engravers and cutters."));
             ui.separator();
-            ui.label("Origin: written in Rust with egui/eframe.");
-            ui.label("Inspired by LightBurn; interface inspired by VectorCraft.");
-            ui.label("Author: Michał Sarna");
+            ui.label(tr("Origin: written in Rust with egui/eframe."));
+            ui.label(tr("Inspired by LightBurn; interface inspired by VectorCraft."));
+            ui.label(tr("Author: Michał Sarna"));
             ui.hyperlink("https://github.com/michalsarna/LightCreator");
-            ui.label("MIT licensed.");
+            ui.label(tr("MIT licensed."));
         });
         self.show_about = open;
     }
@@ -810,6 +830,11 @@ pub fn fmt_time(s: f64) -> String {
 }
 
 impl eframe::App for App {
+    fn save(&mut self, storage: &mut dyn eframe::Storage) {
+        storage.set_string("lang", self.lang.code().to_owned());
+        storage.set_string("scheme", self.scheme.id().to_owned());
+    }
+
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         let ctx = ui.ctx().clone();
         self.poll_laser();
@@ -818,7 +843,10 @@ impl eframe::App for App {
         }
         self.shortcuts(&ctx);
 
-        let chrome = egui::Frame::new().fill(theme::PANEL).stroke(egui::Stroke::new(1.0, theme::BORDER)).inner_margin(egui::Margin::symmetric(8, 4));
+        let chrome = egui::Frame::new().fill(theme::panel()).stroke(egui::Stroke::new(1.0, theme::border())).inner_margin(egui::Margin::symmetric(8, 4));
+        #[cfg(target_os = "macos")]
+        self.native_menu_frame(&ctx);
+        #[cfg(not(target_os = "macos"))]
         egui::Panel::top("menu").frame(chrome).show(ui, |ui| self.menu_bar(ui));
         egui::Panel::top("controls").frame(chrome).exact_size(36.0).show(ui, |ui| self.control_bar(ui));
         egui::Panel::bottom("status").frame(chrome).exact_size(26.0).show(ui, |ui| self.status_bar(ui));
