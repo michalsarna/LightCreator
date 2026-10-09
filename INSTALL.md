@@ -6,6 +6,19 @@ toolchain, Git and (on Linux) a few system libraries. Jump to your system:
 
 Each section gives the same result: a working `lightcreator` program built from the repository.
 
+## Pre-built packages
+
+Every tagged release on the [Releases page](https://github.com/michalsarna/LightCreator/releases) contains:
+
+| Platform | File | Install |
+|---|---|---|
+| Windows | `lightcreator-vX.Y.Z-windows-x86_64-setup.exe` | run the installer (Start-menu entry + uninstaller); the `.zip` is a portable copy |
+| macOS (Apple silicon) | `lightcreator-vX.Y.Z-macos-arm64.dmg` | drag *LightCreator* to *Applications*; the app is unsigned, so right-click → *Open* the first time |
+| Debian / Ubuntu | `lightcreator-vX.Y.Z-linux-amd64.deb` | `sudo apt install ./lightcreator-*.deb`; the `.tar.gz` is a plain binary for other distributions |
+
+Verify downloads with `SHA256SUMS.txt`. On Linux, add yourself to the serial-port group to reach the laser
+(`sudo usermod -aG dialout $USER`, then log in again). The sections below build from source instead.
+
 ## macOS
 
 1. **Command line tools and Git** (skip if `git --version` works):
