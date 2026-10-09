@@ -48,3 +48,8 @@ machines whose zero is at the front-left (configurable under *Laser → Device s
 ## License
 
 MIT
+
+## Versioning
+
+Work is committed directly to `main`. Each release gets the next version number and a branch named
+after it (`v0.01`, `v0.02`, …). Current version: **v0.01**.

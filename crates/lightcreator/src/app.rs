@@ -27,6 +27,9 @@ impl Tool {
     ];
 }
 
+/// Human-facing release label (branch name matches it).
+pub const APP_VERSION: &str = "v0.01";
+
 pub struct View {
     pub zoom: f32, // screen px per mm
     pub pan: egui::Vec2,
@@ -788,8 +791,13 @@ impl App {
         let mut open = self.show_about;
         egui::Window::new("About LightCreator").open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
             ui.heading("LightCreator");
+            ui.label(format!("Version {APP_VERSION}"));
             ui.label("Open-source design & control software for laser engravers and cutters.");
+            ui.separator();
+            ui.label("Origin: written in Rust with egui/eframe.");
             ui.label("Inspired by LightBurn; interface inspired by VectorCraft.");
+            ui.label("Author: Michał Sarna");
+            ui.hyperlink("https://github.com/michalsarna/LightCreator");
             ui.label("MIT licensed.");
         });
         self.show_about = open;

@@ -8,7 +8,7 @@ mod theme;
 fn main() -> eframe::Result {
     let opts = eframe::NativeOptions {
         viewport: eframe::egui::ViewportBuilder::default()
-            .with_title("LightCreator")
+            .with_title("LightCreator v0.01")
             .with_inner_size([1360.0, 860.0])
             .with_min_inner_size([900.0, 560.0]),
         ..Default::default()
