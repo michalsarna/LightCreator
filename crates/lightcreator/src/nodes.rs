@@ -16,7 +16,7 @@ impl App {
             .copied()
             .filter(|id| {
                 self.doc.shape(*id).is_some_and(|s| {
-                    let editable = !matches!(s.kind, Kind::Image { .. });
+                    let editable = !s.locked && !matches!(s.kind, Kind::Image { .. });
                     editable && (!matches!(s.kind, Kind::Bezier(_)) || s.xf != Xf::IDENTITY)
                 })
             })
@@ -26,7 +26,7 @@ impl App {
         }
         self.checkpoint();
         for id in todo {
-            if let Some(s) = self.doc.shape_mut(id) {
+            if let Some(s) = self.doc.unlocked_mut(id) {
                 s.to_bezier();
             }
         }
@@ -34,7 +34,7 @@ impl App {
     }
 
     pub fn contour_mut(&mut self, id: u64, ci: usize) -> Option<&mut Contour> {
-        match &mut self.doc.shape_mut(id)?.kind {
+        match &mut self.doc.unlocked_mut(id)?.kind {
             Kind::Bezier(cs) => cs.get_mut(ci),
             _ => None,
         }
@@ -192,6 +192,10 @@ impl App {
         }
         if ui.add_enabled(has_nodes, egui::Button::new(tr("Delete node"))).clicked() {
             self.delete_nodes();
+        }
+        ui.add(egui::DragValue::new(&mut self.fillet_radius).range(0.05..=500.0).speed(0.1).suffix(" mm")).on_hover_text(tr("Radius for rounding"));
+        if ui.add_enabled(has_nodes, egui::Button::new(tr("Round"))).on_hover_text(tr("Round the selected corners with this radius")).clicked() {
+            self.round_selected_nodes(self.fillet_radius);
         }
         if ui.add_enabled(has_nodes, egui::Button::new(tr("Open / close"))).on_hover_text(tr("Close an open path, or open a closed one at the selected node")).clicked() {
             self.nodes_toggle_closed();

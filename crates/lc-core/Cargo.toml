@@ -6,7 +6,6 @@ license.workspace = true
 
 [dependencies]
 base64 = "0.23.1"
-epaint_default_fonts = { version = "0.36", default-features = false }
 i_overlay = "9.0.1"
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "bmp", "gif", "webp"] }
 lopdf = { version = "0.45", default-features = false }

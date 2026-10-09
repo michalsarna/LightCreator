@@ -3,13 +3,14 @@
 use crate::i18n::{lang, tr};
 use crate::menu::{menus, Act, Entry};
 use eframe::egui;
-use muda::{accelerator::Accelerator, CheckMenuItem, Menu, MenuEvent, MenuItem, PredefinedMenuItem, Submenu};
+use muda::{accelerator::Accelerator, CheckMenuItem, IconMenuItem, Menu, MenuEvent, MenuItem, PredefinedMenuItem, Submenu};
 use std::sync::Mutex;
 
 static QUEUE: Mutex<Vec<String>> = Mutex::new(Vec::new());
 
 enum Handle {
     Plain(MenuItem),
+    Icon(IconMenuItem),
     Check(CheckMenuItem),
 }
 
@@ -33,6 +34,31 @@ pub fn owns_shortcut(a: Act) -> bool {
     matches!(a, Act::New | Act::Open | Act::Save | Act::SaveAs | Act::ImportSvg)
 }
 
+/// Is the macOS menu bar dark right now? Icons are drawn light on dark and dark on light.
+fn menu_is_dark() -> bool {
+    std::process::Command::new("defaults").args(["read", "-g", "AppleInterfaceStyle"]).output().map(|o| String::from_utf8_lossy(&o.stdout).contains("Dark")).unwrap_or(false)
+}
+
+/// An SVG icon from the assets as a menu icon (36 px, shown at 18 points on Retina screens).
+fn rasterize(name: &str) -> Option<muda::Icon> {
+    use std::sync::OnceLock;
+    static DARK: OnceLock<bool> = OnceLock::new();
+    let ink = if *DARK.get_or_init(menu_is_dark) { "#f0f0f0" } else { "#303030" };
+    let text = crate::icons::svg_text(name)?.replace("currentColor", ink);
+    let tree = resvg::usvg::Tree::from_str(&text, &resvg::usvg::Options::default()).ok()?;
+    let px = 36u32;
+    let mut pm = resvg::tiny_skia::Pixmap::new(px, px)?;
+    let k = px as f32 / tree.size().width();
+    resvg::render(&tree, resvg::tiny_skia::Transform::from_scale(k, k), &mut pm.as_mut());
+    // tiny-skia stores premultiplied colours; the menu wants straight alpha.
+    let mut rgba = Vec::with_capacity((px * px * 4) as usize);
+    for p in pm.pixels() {
+        let c = p.demultiply();
+        rgba.extend_from_slice(&[c.red(), c.green(), c.blue(), c.alpha()]);
+    }
+    muda::Icon::from_rgba(rgba, px, px).ok()
+}
+
 fn append(sub: &Submenu, entries: &[Entry], items: &mut Vec<(Act, Handle)>) {
     for e in entries {
         match e {
@@ -50,6 +76,10 @@ fn append(sub: &Submenu, entries: &[Entry], items: &mut Vec<(Act, Handle)>) {
                     let it = CheckMenuItem::with_id(id(*act), tr(label), true, false, accel);
                     let _ = sub.append(&it);
                     items.push((*act, Handle::Check(it)));
+                } else if let Some(icon) = crate::icons::act_icon(*act).and_then(rasterize) {
+                    let it = IconMenuItem::with_id(id(*act), tr(label), true, Some(icon), accel);
+                    let _ = sub.append(&it);
+                    items.push((*act, Handle::Icon(it)));
                 } else {
                     let it = MenuItem::with_id(id(*act), tr(label), true, accel);
                     let _ = sub.append(&it);
@@ -124,6 +154,12 @@ impl NativeMenu {
                     }
                 }
                 Handle::Plain(p) => {
+                    let en = enabled(*act);
+                    if p.is_enabled() != en {
+                        p.set_enabled(en);
+                    }
+                }
+                Handle::Icon(p) => {
                     let en = enabled(*act);
                     if p.is_enabled() != en {
                         p.set_enabled(en);

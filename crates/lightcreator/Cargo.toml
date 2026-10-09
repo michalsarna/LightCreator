@@ -11,9 +11,11 @@ eframe = { version = "0.36", default-features = false, features = ["default_font
 rfd = "0.17"
 serialport = { version = "4", default-features = false }
 serde_json = "1"
-image = { version = "0.25", default-features = false, features = ["png"] }
+image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }
 nokhwa = { version = "0.10", default-features = false, features = ["input-native"], optional = true }
 serde = { version = "1.0.229", features = ["derive"] }
+ureq = "2"
+egui_extras = { version = "0.36", default-features = false, features = ["svg"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 # Native macOS menu bar (same approach as VectorCraft): Tauri's menu crate, AppKit menus behind a safe API.
@@ -21,6 +23,7 @@ muda = { version = "=0.21.1", default-features = false }
 objc2 = "0.6"
 objc2-app-kit = { version = "0.3", default-features = false, features = ["std", "NSApplication", "NSResponder", "NSImage"] }
 objc2-foundation = { version = "0.3", default-features = false, features = ["std", "NSData"] }
+resvg = { version = "0.48.1", default-features = false }
 
 [target.'cfg(windows)'.build-dependencies]
 winresource = "0.1"

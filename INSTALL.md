@@ -142,6 +142,26 @@ The menu bar is inside the window on both X11 and Wayland.
 * Settings are stored in `app.ron`, see the "Settings and configuration files" section of the
   [README](README.md) for its location on each system. Delete the file to reset the app.
 
+## Optional: laser behind a Raspberry Pi (ser2net)
+
+If LightCreator itself runs on the Linux computer or Pi that the laser is plugged into, open
+*Laser > Share over network (ser2net)…*: it writes the ser2net configuration for you and can install it and
+restart the service (administrator rights are requested). Install ser2net first (`sudo apt install ser2net`).
+By hand, on the computer with the laser:
+
+Install `ser2net` on the Pi and expose the laser's serial port as a TCP port, for example in
+`/etc/ser2net.yaml`:
+
+```yaml
+connection: &laser
+  accepter: tcp,3333
+  connector: serialdev,/dev/ttyUSB0,115200n81,local
+```
+
+In LightCreator open the device configuration, set *Connection type* to *Network (TCP, e.g. ser2net)* and enter
+the Pi's host name or address and port 3333. The baud rate is the one in the ser2net line. A camera on the same
+Pi (for example `mjpg-streamer`) can be added as the device's *Camera URL*.
+
 ## Optional: live camera
 
 The camera overlay can load a photo on every build. Live capture is an optional feature:

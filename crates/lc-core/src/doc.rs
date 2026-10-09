@@ -117,8 +117,8 @@ impl Layer {
             name: format!("C{:02}", color),
             color,
             mode: LayerMode::Line,
-            speed: 20.0,
-            power: 20.0,
+            speed: 1000.0,
+            power: 100.0,
             passes: 1,
             interval: 0.1,
             angle: 0.0,
@@ -155,6 +155,9 @@ pub struct Shape {
     /// Shapes with the same group id move and select together. Grouping never changes the layer.
     #[serde(default)]
     pub group: Option<u64>,
+    /// A locked shape cannot be moved, edited or deleted; it can still be selected and copied.
+    #[serde(default)]
+    pub locked: bool,
 }
 
 impl Shape {
@@ -185,6 +188,10 @@ impl Shape {
     }
     pub fn bounds(&self) -> Option<Rect> {
         self.polys().iter().filter_map(|p| p.bounds()).reduce(Rect::union)
+    }
+    /// Does the shape touch the rectangle (crossing selection)?
+    pub fn intersects_rect(&self, r: &Rect) -> bool {
+        self.polys().iter().any(|p| p.intersects_rect(r))
     }
     /// Distance from a point to this shape (0 if inside a closed shape).
     pub fn hit_dist(&self, p: Pt) -> f64 {
@@ -351,6 +358,30 @@ pub struct CameraCfg {
     pub index: u32,
 }
 
+/// How LightCreator reaches the controller.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum LinkKind {
+    /// A serial (USB) port.
+    #[default]
+    Serial,
+    /// A TCP socket, for example a Raspberry Pi running `ser2net`.
+    Tcp,
+}
+
+impl LinkKind {
+    pub const ALL: [LinkKind; 2] = [LinkKind::Serial, LinkKind::Tcp];
+    pub fn label(self) -> &'static str {
+        match self {
+            LinkKind::Serial => "Serial port",
+            LinkKind::Tcp => "Network (TCP, e.g. ser2net)",
+        }
+    }
+}
+
+fn d_tcp_port() -> u16 {
+    3333
+}
+
 fn d_jog_step() -> f64 {
     5.0
 }
@@ -394,6 +425,46 @@ pub struct Device {
     /// Camera overlay alignment for this machine.
     #[serde(default)]
     pub camera: Option<CameraCfg>,
+    /// Serial port or TCP socket.
+    #[serde(default)]
+    pub link: LinkKind,
+    /// TCP host (name or address) when `link` is `Tcp`.
+    #[serde(default)]
+    pub host: String,
+    #[serde(default = "d_tcp_port")]
+    pub tcp_port: u16,
+    /// URL of a live picture of the machine (MJPEG stream or JPEG snapshot). Empty = none.
+    #[serde(default)]
+    pub camera_url: String,
+    /// Quarter turns clockwise applied to the camera picture (0..=3).
+    #[serde(default)]
+    pub camera_rotation: u8,
+}
+
+impl Device {
+    /// Where the machine's zero is, in design coordinates (millimetres, y down). Jobs start and end here.
+    pub fn home_point(&self) -> Pt {
+        match self.origin {
+            Origin::FrontLeft => Pt::new(0.0, self.bed_h),
+            Origin::BackLeft => Pt::new(0.0, 0.0),
+        }
+    }
+
+    /// Short description of the connection target.
+    pub fn target_label(&self) -> String {
+        match self.link {
+            LinkKind::Serial => self.port.clone(),
+            LinkKind::Tcp => format!("{}:{}", self.host, self.tcp_port),
+        }
+    }
+
+    /// Is a connection target configured?
+    pub fn has_target(&self) -> bool {
+        match self.link {
+            LinkKind::Serial => !self.port.is_empty(),
+            LinkKind::Tcp => !self.host.trim().is_empty(),
+        }
+    }
 }
 
 impl Default for Device {
@@ -416,6 +487,11 @@ impl Default for Device {
             jog_feed: 3000.0,
             frame_power: 0.0,
             camera: None,
+            link: LinkKind::Serial,
+            host: String::new(),
+            tcp_port: 3333,
+            camera_url: String::new(),
+            camera_rotation: 0,
         }
     }
 }
@@ -454,7 +530,7 @@ impl Document {
     pub fn add(&mut self, layer: usize, kind: Kind, xf: Xf) -> u64 {
         let id = self.next_id;
         self.next_id += 1;
-        self.shapes.push(Shape { id, layer, kind, xf, group: None });
+        self.shapes.push(Shape { id, layer, kind, xf, group: None, locked: false });
         id
     }
     pub fn add_shape(&mut self, mut s: Shape) -> u64 {
@@ -498,6 +574,14 @@ impl Document {
     }
     pub fn shape(&self, id: u64) -> Option<&Shape> {
         self.shapes.iter().find(|s| s.id == id)
+    }
+    /// Mutable access for editing: `None` when the shape does not exist or is locked.
+    pub fn unlocked_mut(&mut self, id: u64) -> Option<&mut Shape> {
+        self.shape_mut(id).filter(|s| !s.locked)
+    }
+    /// The ids in `ids` that may be edited.
+    pub fn unlocked_ids(&self, ids: &[u64]) -> Vec<u64> {
+        ids.iter().copied().filter(|id| self.shape(*id).is_some_and(|s| !s.locked)).collect()
     }
     pub fn shape_mut(&mut self, id: u64) -> Option<&mut Shape> {
         self.shapes.iter_mut().find(|s| s.id == id)

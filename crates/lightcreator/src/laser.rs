@@ -6,8 +6,62 @@ use lc_core::controller::StatusPoll;
 use lc_core::Controller;
 use std::time::{Duration, Instant};
 
+/// Where to connect.
+#[derive(Clone, Debug)]
+pub enum Target {
+    Serial { port: String, baud: u32 },
+    /// A raw TCP socket, e.g. `ser2net` on a Raspberry Pi.
+    Tcp { host: String, port: u16 },
+}
+
+impl Target {
+    /// The connection settings of a device profile, if a target is configured.
+    pub fn of(dev: &lc_core::Device) -> Option<Target> {
+        if !dev.has_target() {
+            return None;
+        }
+        Some(match dev.link {
+            lc_core::LinkKind::Serial => Target::Serial { port: dev.port.clone(), baud: dev.baud },
+            lc_core::LinkKind::Tcp => Target::Tcp { host: dev.host.trim().to_string(), port: dev.tcp_port },
+        })
+    }
+    fn label(&self) -> String {
+        match self {
+            Target::Serial { port, baud } => format!("{port} @ {baud}"),
+            Target::Tcp { host, port } => format!("{host}:{port}"),
+        }
+    }
+}
+
+/// A byte stream to the controller: a serial port or a TCP socket.
+trait Link: Read + Write + Send {}
+impl<T: Read + Write + Send> Link for T {}
+
+fn open_link(t: &Target) -> Result<(Box<dyn Link>, bool), String> {
+    match t {
+        Target::Serial { port, baud } => serialport::new(port, *baud).timeout(Duration::from_millis(5)).open().map(|p| (Box::new(p) as Box<dyn Link>, false)).map_err(|e| e.to_string()),
+        Target::Tcp { host, port } => {
+            use std::net::{TcpStream, ToSocketAddrs};
+            let addrs = (host.as_str(), *port).to_socket_addrs().map_err(|e| e.to_string())?;
+            let mut last = "no address".to_string();
+            for a in addrs {
+                match TcpStream::connect_timeout(&a, Duration::from_secs(4)) {
+                    Ok(s) => {
+                        let _ = s.set_nodelay(true);
+                        let _ = s.set_read_timeout(Some(Duration::from_millis(5)));
+                        let _ = s.set_write_timeout(Some(Duration::from_secs(3)));
+                        return Ok((Box::new(s), true));
+                    }
+                    Err(e) => last = e.to_string(),
+                }
+            }
+            Err(last)
+        }
+    }
+}
+
 pub enum Cmd {
-    Connect { port: String, baud: u32, controller: Controller },
+    Connect { target: Target, controller: Controller },
     Disconnect,
     /// A single immediate line (jog, $H, ...), queued ahead of any running job.
     Line(String),
@@ -116,7 +170,8 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
         ctx.request_repaint();
     };
     let traffic = |dir: Dir, text: String, poll: bool| Evt::Traffic(ConsoleLine { dir, text, poll });
-    let mut port: Option<Box<dyn serialport::SerialPort>> = None;
+    let mut port: Option<Box<dyn Link>> = None;
+    let mut is_tcp = false;
     let mut controller = Controller::Grbl;
     let mut queue: VecDeque<(String, Kind)> = VecDeque::new();
     let mut pending: VecDeque<(usize, Kind)> = VecDeque::new();
@@ -126,9 +181,11 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
     loop {
         loop {
             match rx.try_recv() {
-                Ok(Cmd::Connect { port: name, baud, controller: c }) => {
-                    match serialport::new(&name, baud).timeout(Duration::from_millis(5)).open() {
-                        Ok(mut p) => {
+                Ok(Cmd::Connect { target, controller: c }) => {
+                    let label = target.label();
+                    match open_link(&target) {
+                        Ok((mut p, tcp)) => {
+                            is_tcp = tcp;
                             controller = c;
                             if let Some(b) = c.on_connect() {
                                 let _ = p.write_all(&[b]);
@@ -136,10 +193,10 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                             port = Some(p);
                             queue.clear();
                             pending.clear();
-                            emit(Evt::Log(crate::i18n::trf("Connected to {} @ {}", &[&name, &baud])));
+                            emit(Evt::Log(crate::i18n::trf("Connected to {}", &[&label])));
                             emit(Evt::Connected(true));
                         }
-                        Err(e) => emit(Evt::Log(crate::i18n::trf("Cannot open {}: {}", &[&name, &e]))),
+                        Err(e) => emit(Evt::Log(crate::i18n::trf("Cannot open {}: {}", &[&label, &e]))),
                     }
                 }
                 Ok(Cmd::Disconnect) => {
@@ -192,7 +249,9 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
             let mut buf = [0u8; 256];
             match p.read(&mut buf) {
                 Ok(n) if n > 0 => inbuf.extend_from_slice(&buf[..n]),
-                Err(e) if e.kind() != std::io::ErrorKind::TimedOut => lost = true,
+                // A TCP peer that closed the socket reads as zero bytes.
+                Ok(_) if is_tcp => lost = true,
+                Err(e) if !matches!(e.kind(), std::io::ErrorKind::TimedOut | std::io::ErrorKind::WouldBlock | std::io::ErrorKind::Interrupted) => lost = true,
                 _ => {}
             }
             while let Some(i) = inbuf.iter().position(|&b| b == b'\n') {
@@ -250,5 +309,83 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
             emit(Evt::Log(crate::i18n::tr("Connection lost").into()));
         }
         std::thread::sleep(Duration::from_millis(if port.is_some() { 2 } else { 30 }));
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::net::TcpListener;
+
+    /// A stand-in for `ser2net` + GRBL: answers every line with `ok` and every `?` with a status report.
+    fn fake_grbl(listener: TcpListener, close_after_ms: u64) {
+        std::thread::spawn(move || {
+            let (mut s, _) = listener.accept().unwrap();
+            let _ = s.set_read_timeout(Some(Duration::from_millis(20)));
+            let start = Instant::now();
+            let mut buf = Vec::new();
+            let mut chunk = [0u8; 64];
+            while start.elapsed() < Duration::from_millis(close_after_ms) {
+                if let Ok(n) = s.read(&mut chunk) {
+                    for &b in &chunk[..n] {
+                        match b {
+                            b'?' => {
+                                let _ = s.write_all(b"<Idle|MPos:1.000,2.000,0.000|FS:0,0>\n");
+                            }
+                            b'\n' => {
+                                buf.clear();
+                                let _ = s.write_all(b"ok\n");
+                            }
+                            0x18 => {}
+                            _ => buf.push(b),
+                        }
+                    }
+                }
+            }
+            // Dropping the socket closes the connection.
+        });
+    }
+
+    fn wait_for(link: &LaserLink, secs: f32, mut pred: impl FnMut(&Evt) -> bool) -> bool {
+        let t = Instant::now();
+        while t.elapsed().as_secs_f32() < secs {
+            for e in link.poll() {
+                if pred(&e) {
+                    return true;
+                }
+            }
+            std::thread::sleep(Duration::from_millis(10));
+        }
+        false
+    }
+
+    #[test]
+    fn streams_gcode_over_tcp_like_ser2net() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        fake_grbl(listener, 1500);
+        let link = LaserLink::spawn(eframe::egui::Context::default());
+        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port }, controller: Controller::Grbl });
+        assert!(wait_for(&link, 3.0, |e| matches!(e, Evt::Connected(true))), "connected");
+        link.send(Cmd::Job(vec!["G21".into(), "G0 X5 Y5".into(), "M5".into()]));
+        let mut done = false;
+        assert!(wait_for(&link, 3.0, |e| {
+            if let Evt::Progress { done: d, total } = e {
+                done = *d == 3 && *total == 3;
+            }
+            done
+        }), "three lines acknowledged");
+        // A status report from the poll arrives too.
+        assert!(wait_for(&link, 3.0, |e| matches!(e, Evt::Status { x, y, .. } if (*x - 1.0).abs() < 1e-9 && (*y - 2.0).abs() < 1e-9)), "status");
+        // The server closes the socket: the link reports the loss.
+        assert!(wait_for(&link, 4.0, |e| matches!(e, Evt::Connected(false))), "connection lost detected");
+    }
+
+    #[test]
+    fn unreachable_host_reports_an_error() {
+        let link = LaserLink::spawn(eframe::egui::Context::default());
+        // Port 1 on localhost is closed.
+        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port: 1 }, controller: Controller::Grbl });
+        assert!(wait_for(&link, 5.0, |e| matches!(e, Evt::Log(s) if s.contains("127.0.0.1:1"))));
     }
 }

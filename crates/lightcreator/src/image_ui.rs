@@ -121,10 +121,10 @@ impl App {
                     ui.add_space(4.0);
                     ui.label(RichText::new(tr("Rotate and flip")).strong());
                     ui.horizontal(|ui| {
-                        if ui.button("⟲ 90°").clicked() {
+                        if ui.add(egui::Button::image_and_text(crate::icons::slot(Some("rotate-ccw"), theme::text()), "90°")).clicked() {
                             d.adj.quarter_turns = (d.adj.quarter_turns + 3) % 4;
                         }
-                        if ui.button("⟳ 90°").clicked() {
+                        if ui.add(egui::Button::image_and_text(crate::icons::slot(Some("rotate-cw"), theme::text()), "90°")).clicked() {
                             d.adj.quarter_turns = (d.adj.quarter_turns + 1) % 4;
                         }
                         ui.checkbox(&mut d.adj.flip_h, tr("Flip H"));
@@ -174,7 +174,7 @@ impl App {
             match d.target {
                 Some(id) => {
                     self.checkpoint();
-                    if let Some(s) = self.doc.shape_mut(id) {
+                    if let Some(s) = self.doc.unlocked_mut(id) {
                         s.kind = Kind::Image(im);
                     }
                 }
@@ -276,7 +276,7 @@ impl App {
         }
         self.checkpoint();
         if d.delete_original {
-            self.doc.shapes.retain(|s| s.id != d.shape);
+            self.doc.shapes.retain(|s| s.id != d.shape || s.locked);
         }
         let n = contours.len();
         let id = self.doc.add(shape.layer, Kind::Bezier(contours), Xf::IDENTITY);

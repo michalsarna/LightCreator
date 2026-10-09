@@ -41,7 +41,7 @@ impl Tool {
 }
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.03";
+pub const APP_VERSION: &str = "v0.04";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -50,6 +50,8 @@ pub enum SideTab {
     Layers,
     Device,
     Console,
+    /// The camera picture; only listed while the stream is shown as a tab.
+    Camera,
 }
 
 impl SideTab {
@@ -71,6 +73,8 @@ pub struct View {
     pub zoom: f32, // screen px per mm
     pub pan: egui::Vec2,
     pub need_fit: bool,
+    /// Keep the work area fitted to the window as it is resized. Zooming or panning by hand turns this off.
+    pub auto_fit: bool,
 }
 
 pub struct App {
@@ -117,6 +121,22 @@ pub struct App {
     pub show_offset: bool,
     pub show_materials: bool,
     pub show_prefs: bool,
+    pub show_guide: bool,
+    pub guide_filter: String,
+    pub show_round: bool,
+    pub fillet_radius: f64,
+    pub esc_time: f64,
+    pub layer_dlg: Option<usize>,
+    pub show_stream: bool,
+    pub ser2net: Option<crate::ser2net_ui::Ser2NetDlg>,
+    pub stream_mode: crate::stream_ui::StreamMode,
+    pub tab_seen: bool,
+    /// Rotation the current stream texture was made with.
+    pub stream_rot: u8,
+    pub stream: Option<(String, crate::camera_stream::StreamWorker)>,
+    pub stream_tex: Option<egui::TextureHandle>,
+    pub stream_err: String,
+    pub stream_overlay: bool,
     pub polygon_sides: u32,
     pub show_polygon: bool,
     pub read_cfg: Option<crate::device_ui::ReadCfg>,
@@ -179,6 +199,7 @@ impl App {
         let grid = saved("grid_main_mm").and_then(|v| v.parse::<f64>().ok()).filter(|g| *g >= 0.1).unwrap_or(10.0);
         i18n::set_lang(lang);
         theme::apply(ctx, scheme);
+        egui_extras::install_image_loaders(ctx);
         crate::fonts::install(ctx);
         lc_core::text::preload();
         App {
@@ -188,7 +209,7 @@ impl App {
             sel: vec![],
             tool: Tool::Select,
             active_layer: 0,
-            view: View { zoom: 2.0, pan: egui::vec2(40.0, 40.0), need_fit: true },
+            view: View { zoom: 2.0, pan: egui::vec2(40.0, 40.0), need_fit: true, auto_fit: true },
             drag: None,
             pen_pts: vec![],
             clipboard: vec![],
@@ -224,6 +245,21 @@ impl App {
             show_offset: false,
             show_materials: false,
             show_prefs: false,
+            show_guide: false,
+            guide_filter: String::new(),
+            show_round: false,
+            fillet_radius: 2.0,
+            esc_time: -10.0,
+            layer_dlg: None,
+            show_stream: false,
+            ser2net: None,
+            stream_mode: crate::stream_ui::StreamMode::Floating,
+            tab_seen: false,
+            stream_rot: 0,
+            stream: None,
+            stream_tex: None,
+            stream_err: String::new(),
+            stream_overlay: false,
             polygon_sides: 6,
             show_polygon: false,
             read_cfg: None,
@@ -298,7 +334,7 @@ impl App {
     }
     pub fn transform_selection(&mut self, xf: Xf) {
         for id in self.sel.clone() {
-            if let Some(s) = self.doc.shape_mut(id) {
+            if let Some(s) = self.doc.unlocked_mut(id) {
                 s.xf = s.xf.then(xf);
             }
         }
@@ -310,10 +346,13 @@ impl App {
         }
         self.checkpoint();
         let sel = std::mem::take(&mut self.sel);
-        self.doc.shapes.retain(|s| !sel.contains(&s.id));
+        // Locked shapes survive and stay selected.
+        self.doc.shapes.retain(|s| !sel.contains(&s.id) || s.locked);
+        self.sel = sel.into_iter().filter(|id| self.doc.shape(*id).is_some()).collect();
     }
     pub fn copy(&mut self) {
-        self.clipboard = self.sel.iter().filter_map(|i| self.doc.shape(*i).cloned()).collect();
+        // A copy of a locked object is a normal, editable object.
+        self.clipboard = self.sel.iter().filter_map(|i| self.doc.shape(*i).cloned()).map(|mut s| { s.locked = false; s }).collect();
     }
     pub fn paste(&mut self) {
         if self.clipboard.is_empty() {
@@ -348,7 +387,7 @@ impl App {
         if !self.sel.is_empty() {
             self.checkpoint();
             for id in self.sel.clone() {
-                if let Some(s) = self.doc.shape_mut(id) {
+                if let Some(s) = self.doc.unlocked_mut(id) {
                     s.layer = layer;
                 }
             }
@@ -373,7 +412,7 @@ impl App {
                 4 => (0.0, target.center().y - sb.center().y),
                 _ => (0.0, target.max.y - sb.max.y),
             };
-            if let Some(s) = self.doc.shape_mut(id) {
+            if let Some(s) = self.doc.unlocked_mut(id) {
                 s.xf = s.xf.then(Xf::translate(dx, dy));
             }
         }
@@ -405,14 +444,14 @@ impl App {
         }
         self.checkpoint();
         for id in self.sel.clone() {
-            if let Some(s) = self.doc.shape_mut(id) {
+            if let Some(s) = self.doc.unlocked_mut(id) {
                 s.bake();
             }
         }
     }
     pub fn reorder(&mut self, front: bool) {
         self.checkpoint();
-        let sel = self.sel.clone();
+        let sel = self.doc.unlocked_ids(&self.sel);
         let (a, b): (Vec<Shape>, Vec<Shape>) = std::mem::take(&mut self.doc.shapes).into_iter().partition(|s| sel.contains(&s.id));
         self.doc.shapes = if front { [b, a].concat() } else { [a, b].concat() };
     }
@@ -604,6 +643,16 @@ impl App {
     }
 
     // ---------- UI ----------
+    /// A second Escape within half a second goes back to the select tool.
+    pub fn note_escape(&mut self, now: f64) {
+        if now - self.esc_time < 0.5 {
+            self.tool = Tool::Select;
+            self.esc_time = -10.0;
+        } else {
+            self.esc_time = now;
+        }
+    }
+
     fn shortcuts(&mut self, ctx: &egui::Context) {
         if ctx.egui_wants_keyboard_input() {
             return;
@@ -628,6 +677,14 @@ impl App {
             self.ungroup_selection();
         } else if cmd(Key::G) {
             self.group_selection();
+        }
+        if ctx.input_mut(|i| i.consume_key(Modifiers::NONE, Key::F1)) {
+            self.show_guide = true;
+        }
+        if cmd_shift(Key::L) {
+            self.lock_selection(false);
+        } else if cmd(Key::L) {
+            self.lock_selection(true);
         }
         if cmd(Key::A) {
             self.select_all();
@@ -671,6 +728,8 @@ impl App {
             }
         }
         if plain(Key::Escape) {
+            let now = ctx.input(|i| i.time);
+            self.note_escape(now);
             self.pen_pts.clear();
             if self.tool == Tool::Node && !self.node_sel.is_empty() {
                 self.node_sel.clear();
@@ -695,6 +754,8 @@ impl App {
             Act::ToggleGrid => Some(self.show_grid),
             Act::ToggleSnap => Some(self.snap),
             Act::TogglePreview => Some(self.preview_on),
+            Act::ToggleOverlay => Some(self.overlay.is_some() && self.overlay_visible),
+            Act::ToggleAutoFit => Some(self.view.auto_fit),
             Act::SetLang(l) => Some(self.lang == l),
             Act::SetScheme(s) => Some(self.scheme == s),
             _ => None,
@@ -705,6 +766,7 @@ impl App {
         match a {
             Act::Undo => !self.undo.is_empty(),
             Act::Redo => !self.redo.is_empty(),
+            Act::ToggleOverlay => self.overlay.is_some(),
             _ => true,
         }
     }
@@ -742,6 +804,8 @@ impl App {
             Act::ToPath => self.to_path(),
             Act::ToCurves => self.to_curves(),
             Act::Group => self.group_selection(),
+            Act::Lock => self.lock_selection(true),
+            Act::Unlock => self.lock_selection(false),
             Act::Ungroup => self.ungroup_selection(),
             Act::ImportAi => self.import_ai(),
             Act::TraceImage => self.open_trace(),
@@ -751,10 +815,28 @@ impl App {
             Act::BoolSubtract => self.bool_op(lc_core::ops::BoolOp::Difference),
             Act::BoolXor => self.bool_op(lc_core::ops::BoolOp::Xor),
             Act::OffsetShape => self.show_offset = true,
+            Act::RoundCorners => self.show_round = true,
+            Act::QuickGuide => self.show_guide = true,
+            Act::OpenGithub => ctx.open_url(egui::OpenUrl::new_tab(crate::help_ui::GITHUB_URL)),
             Act::ImportImage => self.import_image(),
             Act::CameraOverlay => self.show_overlay = true,
             Act::GridOptions => self.show_prefs = true,
             Act::PreviewWindow => self.show_preview = true,
+            Act::ShareSer2net => self.open_ser2net(),
+            Act::ToggleOverlay => {
+                if self.overlay.is_some() {
+                    self.overlay_visible = !self.overlay_visible;
+                } else {
+                    self.status = tr("There is no camera overlay yet. Load a picture or start the camera view.").to_string();
+                }
+            }
+            Act::CameraView => {
+                if self.doc.device.camera_url.trim().is_empty() {
+                    self.status = tr("Set a camera URL in the device settings first.").to_string();
+                } else {
+                    self.show_stream = true;
+                }
+            }
             Act::MaterialLibrary => {
                 self.mat_laser = Some(self.doc.device.laser);
                 self.show_materials = true;
@@ -763,7 +845,16 @@ impl App {
             Act::ToggleGrid => self.show_grid = !self.show_grid,
             Act::ToggleSnap => self.snap = !self.snap,
             Act::TogglePreview => self.preview_on = !self.preview_on,
-            Act::FitBed => self.view.need_fit = true,
+            Act::FitBed => {
+                self.view.need_fit = true;
+                self.view.auto_fit = true;
+            }
+            Act::ToggleAutoFit => {
+                self.view.auto_fit = !self.view.auto_fit;
+                if self.view.auto_fit {
+                    self.view.need_fit = true;
+                }
+            }
             Act::DeviceSettings => self.show_device = true,
             Act::SwitchDevice => {
                 self.start_sel = self.active;
@@ -791,18 +882,27 @@ impl App {
                     ui.separator();
                 }
                 Entry::Sub(title, children) => {
-                    ui.menu_button(tr(title), |ui| self.menu_entries(ui, children, pending));
+                    let ink = theme::text();
+                    ui.menu_button((crate::icons::slot(crate::icons::submenu_icon(title), ink), tr(title)), |ui| self.menu_entries(ui, children, pending));
                 }
                 Entry::Item(act, label, accel) => {
-                    let mut text = tr(label).to_string();
                     let enabled = self.act_enabled(*act);
-                    let mut btn = match self.act_checked(*act) {
-                        Some(on) => {
-                            text = format!("{} {}", if on { "✔" } else { "   " }, text);
-                            egui::Button::new(text)
+                    let ink = if enabled { theme::text() } else { theme::text().gamma_multiply(0.4) };
+                    // A tick marks switched-on options; other entries show their own icon.
+                    let (icon, ink) = match self.act_checked(*act) {
+                        Some(true) => (Some("check"), ink),
+                        // Switched off: the entry's own icon, faded, so every entry has one.
+                        Some(false) => {
+                            let own = match act {
+                                Act::SetLang(_) => Some("languages"),
+                                Act::SetScheme(_) => Some("palette"),
+                                _ => crate::icons::act_icon(*act),
+                            };
+                            (own, ink.gamma_multiply(0.45))
                         }
-                        None => egui::Button::new(text),
+                        None => (crate::icons::act_icon(*act), ink),
                     };
+                    let mut btn = egui::Button::image_and_text(crate::icons::slot(icon, ink), tr(label));
                     if let Some((_, shown)) = accel {
                         btn = btn.shortcut_text(*shown);
                     }
@@ -830,7 +930,11 @@ impl App {
         let mut pending = None;
         egui::MenuBar::new().ui(ui, |ui| {
             for (title, entries) in menus() {
-                ui.menu_button(tr(title), |ui| self.menu_entries(ui, &entries, &mut pending));
+                let icon = crate::icons::menu_title_icon(title).and_then(|n| crate::icons::image(n, 15.0, theme::text()));
+                match icon {
+                    Some(img) => ui.menu_button((img, tr(title)), |ui| self.menu_entries(ui, &entries, &mut pending)),
+                    None => ui.menu_button(tr(title), |ui| self.menu_entries(ui, &entries, &mut pending)),
+                };
             }
         });
         if let Some(a) = pending {
@@ -858,6 +962,12 @@ impl App {
             }
             if ui.button(tr("Preview…")).on_hover_text(tr("Open the preview window")).clicked() {
                 self.show_preview = true;
+            }
+            if self.overlay.is_some() && ui.selectable_label(self.overlay_visible, tr("Overlay")).on_hover_text(tr("Show or hide the camera overlay on the work area")).clicked() {
+                self.overlay_visible = !self.overlay_visible;
+            }
+            if !self.doc.device.camera_url.trim().is_empty() && ui.button(tr("Camera view")).on_hover_text(tr("Show the live camera picture of this machine")).clicked() {
+                self.show_stream = !self.show_stream;
             }
 
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
@@ -891,7 +1001,7 @@ impl App {
                 } else if resp.hovered() {
                     ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
                 }
-                crate::icons::paint(ui.painter(), rect.shrink(4.0), t, if on { Color32::WHITE } else { theme::text() });
+                crate::icons::paint(ui, rect.shrink(7.0), crate::icons::tool_icon(t), if on { Color32::WHITE } else { theme::text() });
                 if resp.on_hover_text(tr(tip)).clicked() {
                     self.tool = t;
                     self.pen_pts.clear();
@@ -905,20 +1015,35 @@ impl App {
     }
 
     fn swatches(&mut self, ui: &mut egui::Ui) {
-        ui.horizontal_centered(|ui| {
-            ui.label(RichText::new(tr("Layers")).color(theme::text_dim()));
-            ui.spacing_mut().item_spacing.x = 3.0;
-            for i in 0..30 {
-                let c = lc_core::PALETTE[i];
-                let (r, resp) = ui.allocate_exact_size(egui::vec2(22.0, 22.0), egui::Sense::click());
-                ui.painter().rect_filled(r, 3.0, Color32::from_rgb(c[0], c[1], c[2]));
-                if self.active_layer == i {
-                    ui.painter().rect_stroke(r.expand(1.5), 4.0, egui::Stroke::new(2.0, theme::accent()), egui::StrokeKind::Outside);
+        egui::ScrollArea::horizontal().auto_shrink([false, true]).show(ui, |ui| {
+            ui.horizontal_centered(|ui| {
+                ui.label(RichText::new(tr("Layers")).color(theme::text_dim()));
+                ui.spacing_mut().item_spacing.x = 3.0;
+                let font = egui::FontId::proportional(10.5);
+                for i in 0..30 {
+                    let c = lc_core::PALETTE[i];
+                    let fill = Color32::from_rgb(c[0], c[1], c[2]);
+                    // Black or white text, whichever reads better on the layer colour.
+                    let lum = 0.299 * c[0] as f32 + 0.587 * c[1] as f32 + 0.114 * c[2] as f32;
+                    let ink = if lum > 140.0 { Color32::BLACK } else { Color32::WHITE };
+                    let name = self.doc.layers[i].name.clone();
+                    let galley = ui.painter().layout_no_wrap(name.clone(), font.clone(), ink);
+                    let w = (galley.size().x + 12.0).max(30.0);
+                    let (r, resp) = ui.allocate_exact_size(egui::vec2(w, 22.0), egui::Sense::click());
+                    ui.painter().rect_filled(r, 3.0, fill);
+                    ui.painter().galley(r.center() - galley.size() / 2.0, galley, ink);
+                    if self.active_layer == i {
+                        ui.painter().rect_stroke(r.expand(1.5), 4.0, egui::Stroke::new(2.0, theme::accent()), egui::StrokeKind::Outside);
+                    }
+                    let resp = resp.on_hover_text(trf("{} — click to assign selection / set active; double-click for options", &[&name]));
+                    if resp.double_clicked() {
+                        self.active_layer = i;
+                        self.layer_dlg = Some(i);
+                    } else if resp.clicked() {
+                        self.assign_layer(i);
+                    }
                 }
-                if resp.on_hover_text(trf("{} — click to assign selection / set active", &[&self.doc.layers[i].name])).clicked() {
-                    self.assign_layer(i);
-                }
-            }
+            });
         });
     }
 
@@ -1024,16 +1149,21 @@ impl App {
             ui.label(tr("Origin: written in Rust with egui/eframe."));
             ui.label(tr("Inspired by LightBurn; interface inspired by VectorCraft."));
             ui.label(tr("Author: Michał Sarna"));
-            ui.hyperlink("https://github.com/michalsarna/LightCreator");
+            ui.hyperlink(crate::help_ui::GITHUB_URL);
             ui.label(tr("MIT licensed."));
         });
         self.show_about = open;
         self.config_window(ctx);
+        self.layer_dialog(ctx);
+        self.guide_window(ctx);
+        self.round_window(ctx);
         self.materials_window(ctx);
         self.overlay_window(ctx);
         self.prefs_window(ctx);
         self.preview_window(ctx);
         self.image_dialogs(ctx);
+        self.stream_window(ctx);
+        self.ser2net_window(ctx);
     }
 }
 
@@ -1111,10 +1241,45 @@ mod tests {
     use super::*;
 
     #[test]
+    fn two_quick_escapes_select_the_select_tool() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.tool = Tool::Rect;
+        a.note_escape(10.0);
+        assert_eq!(a.tool, Tool::Rect, "one Escape alone keeps the tool");
+        a.note_escape(10.3);
+        assert_eq!(a.tool, Tool::Select, "the second one, quickly after, selects");
+        // Slow presses never count as a pair.
+        a.tool = Tool::Star;
+        a.note_escape(20.0);
+        a.note_escape(21.0);
+        assert_eq!(a.tool, Tool::Star);
+        a.note_escape(21.2);
+        assert_eq!(a.tool, Tool::Select);
+    }
+
+    #[test]
     fn tool_shortcuts_are_unique() {
         let mut keys: Vec<_> = Tool::ALL.iter().map(|t| t.2).collect();
         keys.sort_by_key(|k| format!("{k:?}"));
         keys.dedup();
         assert_eq!(keys.len(), Tool::ALL.len());
+    }
+
+    #[test]
+    fn view_fits_the_window_and_manual_zoom_turns_auto_fit_off() {
+        let (z, pan) = crate::canvas::fit_view((900.0, 700.0), (400.0, 400.0), 50.0);
+        assert!((z - 1.5).abs() < 1e-6);
+        assert!((pan.x - 150.0).abs() < 1e-4 && (pan.y - 50.0).abs() < 1e-4);
+        // A tiny window never gives a zero or negative zoom.
+        assert!(crate::canvas::fit_view((60.0, 60.0), (400.0, 400.0), 50.0).0 >= 0.05);
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.screen = Screen::Editor;
+        assert!(a.view.auto_fit);
+        a.do_act(&ctx, crate::menu::Act::ToggleAutoFit);
+        assert!(!a.view.auto_fit);
+        a.do_act(&ctx, crate::menu::Act::FitBed);
+        assert!(a.view.auto_fit && a.view.need_fit);
     }
 }

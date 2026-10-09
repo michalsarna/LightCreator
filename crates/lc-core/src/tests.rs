@@ -123,7 +123,7 @@ fn bezier_ellipse_area_and_node_insert() {
 
 #[test]
 fn shape_to_bezier_keeps_geometry() {
-    let mut s = Shape { id: 1, layer: 0, kind: Kind::Rect { w: 10.0, h: 4.0 }, xf: Xf::translate(3.0, 2.0), group: None };
+    let mut s = Shape { id: 1, layer: 0, kind: Kind::Rect { w: 10.0, h: 4.0 }, xf: Xf::translate(3.0, 2.0), group: None, locked: false };
     let before = s.bounds().unwrap();
     s.to_bezier();
     let after = s.bounds().unwrap();
@@ -215,7 +215,7 @@ fn text_produces_outlines() {
     let t = TextData { text: "Hi".into(), size: 10.0, ..TextData::default() };
     let c = text::contours(&t);
     assert!(c.len() >= 3, "{}", c.len());
-    let s = Shape { id: 1, layer: 0, kind: Kind::Text(t), xf: Xf::IDENTITY, group: None };
+    let s = Shape { id: 1, layer: 0, kind: Kind::Text(t), xf: Xf::IDENTITY, group: None, locked: false };
     let b = s.bounds().unwrap();
     assert!(b.width() > 5.0 && b.height() > 4.0 && b.height() < 12.0, "{:?}", b);
 }
@@ -405,4 +405,145 @@ fn automatic_shapes() {
     assert_eq!(star.nodes.len(), 10);
     // Top tip touches the top edge of the box.
     assert!((star.nodes[0].p.y - 0.0).abs() < 1e-9);
+}
+
+#[test]
+fn jobs_start_and_end_at_the_machine_origin() {
+    for (origin, home) in [(Origin::FrontLeft, Pt::new(0.0, 400.0)), (Origin::BackLeft, Pt::new(0.0, 0.0))] {
+        let mut d = Document::default();
+        d.device.origin = origin;
+        d.device.return_home = true;
+        d.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(50.0, 50.0));
+        assert_eq!(d.device.home_point(), home);
+        let job = gcode::generate(&d);
+        assert_eq!(job.moves[0].a, home, "starts at the machine zero");
+        assert_eq!(job.moves.last().unwrap().b, home, "returns to the machine zero");
+        // Machine coordinates of the home move are X0 Y0.
+        assert!(job.gcode.contains("G0 X0.000 Y0.000"), "{}", job.gcode);
+        assert!(job.moves.iter().all(|m| m.dur >= 0.0));
+        let total: f64 = job.moves.iter().map(|m| m.dur).sum();
+        assert!((total - job.est_seconds).abs() < 1e-6);
+    }
+}
+
+#[test]
+fn old_devices_get_link_defaults() {
+    let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
+    let d: Device = serde_json::from_str(old).unwrap();
+    assert_eq!((d.link, d.tcp_port, d.camera_url.is_empty()), (LinkKind::Serial, 3333, true));
+    assert!(!d.has_target());
+}
+
+#[test]
+fn ser2net_configs() {
+    use ser2net::{config, shell_safe, version_from_output, Settings, Version};
+    let s = Settings { serial_port: "/dev/ttyUSB0".into(), baud: 115200, tcp_port: 3333, bind: None, kick_old_user: true };
+    let y = config(Version::V4, &s);
+    assert!(y.contains("accepter: tcp,3333\n") && y.contains("connector: serialdev,/dev/ttyUSB0,115200n81,local") && y.contains("kickolduser: true"));
+    let local = Settings { bind: Some("127.0.0.1".into()), kick_old_user: false, ..s.clone() };
+    assert!(config(Version::V4, &local).contains("accepter: tcp,127.0.0.1,3333"));
+    let old = config(Version::V3, &s);
+    assert!(old.contains("3333:raw:0:/dev/ttyUSB0:115200 8DATABITS NONE 1STOPBIT kickolduser"));
+    assert!(config(Version::V3, &local).contains("127.0.0.1,3333:raw:0:"));
+    assert!(shell_safe("/dev/ttyUSB0") && !shell_safe("a'b"));
+    assert_eq!(version_from_output("ser2net version 4.6.1"), Some(Version::V4));
+    assert_eq!(version_from_output("ser2net version 3.5.1"), Some(Version::V3));
+    assert_eq!(version_from_output("nothing"), None);
+    assert_eq!(Version::V4.file(), "/etc/ser2net.yaml");
+}
+
+#[test]
+fn camera_rotation_is_stored_with_the_device() {
+    let mut d = Device::default();
+    d.camera_rotation = 3;
+    let back: Device = serde_json::from_str(&serde_json::to_string(&d).unwrap()).unwrap();
+    assert_eq!(back.camera_rotation, 3);
+    assert_eq!(back, d);
+    let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
+    assert_eq!(serde_json::from_str::<Device>(old).unwrap().camera_rotation, 0);
+}
+
+#[test]
+fn crossing_selection_touches_partially_overlapped_shapes() {
+    let area = Rect { min: Pt::new(0.0, 0.0), max: Pt::new(10.0, 10.0) };
+    let rect_at = |x: f64, y: f64, s: f64| Shape { id: 1, layer: 0, kind: Kind::Rect { w: s, h: s }, xf: Xf::translate(x, y), group: None, locked: false };
+    assert!(rect_at(5.0, 5.0, 20.0).intersects_rect(&area), "partial overlap");
+    assert!(rect_at(2.0, 2.0, 3.0).intersects_rect(&area), "fully inside");
+    assert!(rect_at(-50.0, -50.0, 200.0).intersects_rect(&area), "area fully inside a big shape");
+    assert!(!rect_at(11.0, 11.0, 5.0).intersects_rect(&area), "outside");
+    // A diagonal line whose bounding box overlaps the area but which misses it.
+    let line = Shape { id: 2, layer: 0, kind: Kind::Path(vec![Polyline::new(vec![Pt::new(-1.0, 8.0), Pt::new(8.0, 20.0)], false)]), xf: Xf::IDENTITY, group: None, locked: false };
+    assert!(!line.intersects_rect(&Rect { min: Pt::new(0.0, 0.0), max: Pt::new(3.0, 3.0) }));
+    assert!(line.intersects_rect(&area));
+    // A line crossing straight through the area with no vertex inside it.
+    let through = Shape { id: 3, layer: 0, kind: Kind::Path(vec![Polyline::new(vec![Pt::new(-5.0, 5.0), Pt::new(15.0, 5.0)], false)]), xf: Xf::IDENTITY, group: None, locked: false };
+    assert!(through.intersects_rect(&area));
+}
+
+#[test]
+fn locked_shapes_refuse_editing_access() {
+    let mut d = Document::default();
+    let a = d.add(0, Kind::Rect { w: 1.0, h: 1.0 }, Xf::IDENTITY);
+    let b = d.add(0, Kind::Rect { w: 1.0, h: 1.0 }, Xf::IDENTITY);
+    d.shape_mut(a).unwrap().locked = true;
+    assert!(d.unlocked_mut(a).is_none() && d.unlocked_mut(b).is_some());
+    assert_eq!(d.unlocked_ids(&[a, b, 999]), vec![b]);
+    // Old files without the flag load as unlocked.
+    let mut v: serde_json::Value = serde_json::from_str(&d.to_json()).unwrap();
+    for s in v["shapes"].as_array_mut().unwrap() {
+        s.as_object_mut().unwrap().remove("locked");
+    }
+    assert!(Document::from_json(&v.to_string()).unwrap().shapes.iter().all(|s| !s.locked));
+}
+
+#[test]
+fn new_layers_default_to_full_power_and_1000_mm_per_second() {
+    let l = Layer::new(4);
+    assert_eq!((l.power, l.speed), (100.0, 1000.0));
+    assert!(Document::default().layers.iter().all(|l| l.power == 100.0 && l.speed == 1000.0));
+}
+
+#[test]
+fn rounding_corners_of_a_rectangle() {
+    let c = Contour::rect(10.0, 10.0);
+    let (r, n) = fillet::round_contour(&c, 2.0, None);
+    assert_eq!(n, 4);
+    // Each corner loses (4 - pi) r^2 / 1 of area: area = 100 - 4 * (1 - pi/4) * r^2.
+    let expect = 100.0 - 4.0 * (1.0 - std::f64::consts::FRAC_PI_4) * 4.0;
+    let area = r.flatten(0.005).area().abs();
+    assert!((area - expect).abs() < 0.02, "{area} vs {expect}");
+    // A radius that is too large is limited to half a side: the result is a stadium-like shape, not garbage.
+    let (big, n) = fillet::round_contour(&c, 50.0, None);
+    assert_eq!(n, 4);
+    let b = Polyline::bounds(&big.flatten(0.01)).unwrap();
+    assert!((b.width() - 10.0).abs() < 1e-6 && (b.height() - 10.0).abs() < 1e-6);
+    assert!(big.flatten(0.01).area().abs() < 100.0 && big.flatten(0.01).area().abs() > 70.0);
+    // Only the chosen corner.
+    let one: std::collections::HashSet<usize> = [0usize].into_iter().collect();
+    let (_, n) = fillet::round_contour(&c, 2.0, Some(&one));
+    assert_eq!(n, 1);
+    // Nothing to do for a smooth ellipse.
+    assert_eq!(fillet::round_contour(&Contour::ellipse(10.0, 6.0), 1.0, None).1, 0);
+}
+
+#[test]
+fn filleting_two_lines() {
+    // A horizontal and a vertical line that cross at (10, 10).
+    let h = (Pt::new(0.0, 10.0), Pt::new(14.0, 10.0));
+    let v = (Pt::new(10.0, 0.0), Pt::new(10.0, 25.0));
+    let c = fillet::fillet_lines(h, v, 3.0).expect("fillet");
+    // Kept: the longer parts (0,10) .. and (10,25) .. so the corner is at (10,10) turning towards +y.
+    assert_eq!(c.nodes.first().unwrap().p, Pt::new(0.0, 10.0));
+    assert_eq!(c.nodes.last().unwrap().p, Pt::new(10.0, 25.0));
+    let tangents: Vec<Pt> = c.nodes.iter().map(|n| n.p).collect();
+    assert!(tangents.contains(&Pt::new(7.0, 10.0)), "{tangents:?}");
+    assert!(tangents.iter().any(|p| (p.x - 10.0).abs() < 1e-9 && (p.y - 13.0).abs() < 1e-9));
+    // The arc's middle lies at distance r from its centre (7, 13) and bulges towards the corner.
+    let mid = c.point_at(1, 0.5);
+    assert!((mid.dist(Pt::new(7.0, 13.0)) - 3.0).abs() < 0.01, "{mid:?}");
+    assert!(mid.x > 7.0 && mid.y < 13.0);
+    // Parallel lines cannot be joined.
+    assert!(fillet::fillet_lines((Pt::new(0.0, 0.0), Pt::new(5.0, 0.0)), (Pt::new(0.0, 3.0), Pt::new(5.0, 3.0)), 1.0).is_none());
+    assert!(fillet::as_segment(&[Contour { nodes: vec![Node::corner(Pt::new(0.0, 0.0)), Node::corner(Pt::new(1.0, 1.0))], closed: false }]).is_some());
+    assert!(fillet::as_segment(&[Contour::rect(1.0, 1.0)]).is_none());
 }

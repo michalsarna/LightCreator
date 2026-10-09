@@ -53,10 +53,17 @@ impl App {
                     }
                     ui.end_row();
                     for (i, p) in rows {
-                        let name = if p.user { format!("★ {}", p.material) } else { p.material.clone() };
-                        if ui.selectable_label(self.mat_sel == Some(i), name).clicked() {
-                            self.mat_sel = Some(i);
-                        }
+                        ui.horizontal(|ui| {
+                            // Your own presets carry a star.
+                            if p.user {
+                                if let Some(img) = crate::icons::image("star", 13.0, theme::accent()) {
+                                    ui.add(img);
+                                }
+                            }
+                            if ui.selectable_label(self.mat_sel == Some(i), &p.material).clicked() {
+                                self.mat_sel = Some(i);
+                            }
+                        });
                         ui.label(tr_op(&p.operation));
                         ui.label(p.laser.label());
                         ui.label(tr(p.mode.label()));

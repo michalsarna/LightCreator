@@ -28,6 +28,14 @@ written in Rust. The interface follows the look of [VectorCraft](https://github.
 | Image import with rotate, flip, brightness, contrast and gamma | Trace an image into curves |
 | ![Grid options](docs/screenshots/15-grid-layers.png) | ![Automatic shapes](docs/screenshots/16-shapes.png) |
 | Main and secondary grid options, layers in burn order | Triangle, star and polygon tools with the sides popup |
+| ![Camera view as a tab](docs/screenshots/17-camera-tab.png) | ![Share over network](docs/screenshots/18-ser2net.png) |
+| Camera view docked as a side tab, rotated 90° | Sharing the laser's serial port with ser2net (Linux) |
+| ![Layer options and locking](docs/screenshots/19-layers-lock.png) | ![Chinese interface](docs/screenshots/20-chinese.png) |
+| Layer names in the strip, layer options window, locked object, light work area in a dark scheme | Chinese interface, fonts and icons from the assets folder |
+| ![Hindi interface](docs/screenshots/21-hindi.png) | ![Quick guide and round corners](docs/screenshots/22-round-help.png) |
+| Hindi interface | Built-in quick guide (F1) and the round corners window |
+| ![Rounded shapes](docs/screenshots/23-rounded-shapes.png) | |
+| Rounded rectangle and triangle | |
 
 The pictures are rendered headlessly from the real UI; regenerate them with
 `cargo test -p lightcreator --release render_screenshots -- --ignored`.
@@ -56,8 +64,8 @@ A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
   bitmap import with adjustments, image tracing.
 * **Engraving:** line, fill, offset fill and raster image engraving with six dithering methods and
   grayscale power; LightBurn-style cut layers; toolpath preview with time estimate.
-* **Devices:** profile per machine (controller, laser type, work area, units, port, jog settings), start
-  window, live serial console.
+* **Devices:** profile per machine (controller, laser type, work area, units, serial port or TCP / ser2net,
+  jog settings, camera URL), start window, live console, camera view.
 * **Controllers:** GRBL and Marlin over a serial port. Ruida and Trocen jobs are exported as PLT / DXF for the
   controller's own software.
 * **Helpers:** material library with starting settings and your own presets, camera / photo overlay with

@@ -117,6 +117,12 @@ fn render_screenshots() {
         let a = app(&mut h);
         a.side_tab = SideTab::Device;
         a.open_cfg_edit(0);
+        if let Some(c) = a.cfg.as_mut() {
+            c.draft.link = lc_core::LinkKind::Tcp;
+            c.draft.host = "raspberrypi.local".into();
+            c.draft.tcp_port = 3333;
+            c.draft.camera_url = "http://raspberrypi.local:8080/stream.mjpg".into();
+        }
     }
     save(&mut h, "05-device-config.png");
 
@@ -241,6 +247,7 @@ fn render_screenshots() {
         a.touch();
         a.show_preview = true;
         a.pv.show_travel = true;
+        a.pv.progress = 0.6;
         a.status = "Ready".into();
     }
     save(&mut h, "12-preview.png");
@@ -309,7 +316,7 @@ fn render_screenshots() {
         a.grid_prefs.minor_on = false;
         a.grid = 10.0;
         a.side_tab = SideTab::Properties;
-        let mut add = |a: &mut App, ct: lc_core::Contour, x: f64, layer: usize| {
+        let add = |a: &mut App, ct: lc_core::Contour, x: f64, layer: usize| {
             a.doc.add(layer, Kind::Bezier(vec![ct]), Xf::translate(x, 60.0))
         };
         add(a, lc_core::Contour::triangle(60.0, 52.0), 30.0, 2);
@@ -321,4 +328,197 @@ fn render_screenshots() {
         a.show_polygon = true;
     }
     save(&mut h, "16-shapes.png");
+
+    // Camera view as a side tab, rotated.
+    {
+        let a = app(&mut h);
+        a.show_prefs = false;
+        a.show_polygon = false;
+        a.grid_prefs = crate::prefs::GridPrefs::default();
+        a.grid = 10.0;
+        a.tool = Tool::Select;
+        a.doc.shapes.clear();
+        a.doc.device.camera_url = "http://127.0.0.1:9/stream.mjpg".into();
+        a.doc.device.camera_rotation = 1;
+        a.stream_mode = crate::stream_ui::StreamMode::Tab;
+        a.show_stream = true;
+        a.side_tab = SideTab::Camera;
+        let (w, hh) = (160usize, 90usize);
+        let rgb: Vec<u8> = (0..w * hh).flat_map(|i| { let (x, y) = (i % w, i / w); [(x * 255 / w) as u8, (y * 255 / hh) as u8, 140] }).collect();
+        let (nw, nh, rot) = crate::camera::rotate_rgb(&rgb, w as u32, hh as u32, 1);
+        let img = eframe::egui::ColorImage::from_rgb([nw as usize, nh as usize], &rot);
+        a.stream_tex = Some(ctx.load_texture("t", img, eframe::egui::TextureOptions::LINEAR));
+        a.status = "Ready".into();
+    }
+    save(&mut h, "17-camera-tab.png");
+
+    // ser2net sharing dialog (what a Linux user sees).
+    {
+        let a = app(&mut h);
+        a.show_stream = false;
+        a.stream_mode = crate::stream_ui::StreamMode::Floating;
+        a.side_tab = SideTab::Properties;
+        a.open_ser2net();
+        if let Some(d) = a.ser2net.as_mut() {
+            d.serial_port = "/dev/ttyUSB0".into();
+            d.installed = Some("ser2net version 4.6.1".into());
+            d.addresses = vec!["192.168.1.50".into()];
+            d.version = lc_core::ser2net::Version::V4;
+        }
+    }
+    save(&mut h, "18-ser2net.png");
+
+    // Layer names in the colour strip, layer dialog, locked object, light work area in a dark scheme.
+    {
+        let a = app(&mut h);
+        a.show_ser2net_off();
+        a.doc.shapes.clear();
+        a.grid_prefs = crate::prefs::GridPrefs::default();
+        a.grid = 20.0;
+        a.show_prefs = false;
+        a.show_stream = false;
+        a.side_tab = SideTab::Layers;
+        a.doc.layers[2].mode = lc_core::LayerMode::Offset;
+        a.doc.layers[2].name = "Cut".into();
+        a.doc.layers[5].name = "Engrave".into();
+        let r = a.doc.add(2, Kind::Rect { w: 70.0, h: 45.0 }, Xf::translate(40.0, 40.0));
+        a.doc.add(5, Kind::Ellipse { w: 60.0, h: 45.0 }, Xf::translate(150.0, 40.0));
+        a.sel = vec![r];
+        a.lock_selection(true);
+        a.active_layer = 2;
+        a.layer_dlg = Some(2);
+        a.status = "Locked 1 object(s).".into();
+    }
+    save(&mut h, "19-layers-lock.png");
+
+    // Chinese and Hindi interface (fonts from the assets).
+    {
+        let a = app(&mut h);
+        a.show_ser2net_off();
+        a.layer_dlg = None;
+        a.doc.shapes.clear();
+        a.side_tab = SideTab::Properties;
+        a.lang = Lang::Zh;
+        i18n::set_lang(Lang::Zh);
+        a.status = "就绪".into();
+    }
+    save(&mut h, "20-chinese.png");
+    {
+        let a = app(&mut h);
+        a.lang = Lang::Hi;
+        i18n::set_lang(Lang::Hi);
+        a.status = "तैयार".into();
+    }
+    save(&mut h, "21-hindi.png");
+    i18n::set_lang(Lang::En);
+
+    // Help window and rounded corners.
+    {
+        let a = app(&mut h);
+        a.lang = Lang::En;
+        i18n::set_lang(Lang::En);
+        a.doc.shapes.clear();
+        a.doc.layers[2].name = "C02".into();
+        let r = a.doc.add(2, Kind::Rect { w: 80.0, h: 50.0 }, Xf::translate(40.0, 50.0));
+        a.sel = vec![r];
+        a.fillet_radius = 8.0;
+        a.round_corners(8.0);
+        let tri = a.doc.add(5, Kind::Bezier(vec![lc_core::Contour::triangle(60.0, 50.0)]), Xf::translate(150.0, 50.0));
+        a.sel = vec![tri];
+        a.round_corners(6.0);
+        a.sel.clear();
+        a.show_round = true;
+        a.show_guide = true;
+        a.status = "Rounded 3 corner(s).".into();
+    }
+    save(&mut h, "22-round-help.png");
+    {
+        let a = app(&mut h);
+        a.show_guide = false;
+        a.show_round = false;
+    }
+    save(&mut h, "23-rounded-shapes.png");
+}
+
+/// Renders every embedded icon (`target/menu-icons.png`) so the whole set can be checked by eye.
+#[test]
+#[ignore = "visual check only"]
+fn render_menu_icon_sheet() {
+    let names = crate::icons::all_names();
+    let mut h = Harness::builder().with_size([720.0, 330.0]).build_ui(move |ui| {
+        egui_extras::install_image_loaders(ui.ctx());
+        eframe::egui::Frame::new().fill(eframe::egui::Color32::from_gray(0x3c)).show(ui, |ui| {
+            ui.set_min_size(ui.available_size());
+            ui.horizontal_wrapped(|ui| {
+                for n in &names {
+                    let (r, _) = ui.allocate_exact_size(eframe::egui::vec2(36.0, 36.0), eframe::egui::Sense::hover());
+                    crate::icons::paint(ui, r.shrink(4.0), n, eframe::egui::Color32::WHITE);
+                }
+            });
+        });
+    });
+    h.run_steps(8);
+    let img = h.render().expect("render");
+    let p = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../target/menu-icons.png");
+    img.save(&p).expect("write png");
+}
+
+/// The work area follows the window size while auto-fit is on, and stays put after a manual zoom.
+#[test]
+fn work_area_follows_window_resizes() {
+    let mut h: Shot = Harness::builder().with_size([1200.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.enter_editor(0);
+    }
+    h.run_steps(3);
+    let big = app(&mut h).view.zoom;
+    h.set_size(eframe::egui::vec2(700.0, 520.0));
+    h.run_steps(3);
+    let small = app(&mut h).view.zoom;
+    assert!(small < big * 0.8, "zoom shrinks with the window: {big} -> {small}");
+    h.set_size(eframe::egui::vec2(1400.0, 900.0));
+    h.run_steps(3);
+    let bigger = app(&mut h).view.zoom;
+    assert!(bigger > big, "zoom grows with the window: {big} -> {bigger}");
+    // After a manual zoom the view is left alone.
+    {
+        let a = app(&mut h);
+        a.view.auto_fit = false;
+        a.view.zoom = 3.0;
+    }
+    h.set_size(eframe::egui::vec2(900.0, 600.0));
+    h.run_steps(3);
+    assert_eq!(app(&mut h).view.zoom, 3.0);
+}
+
+/// The Escape key reaches the editor (the double-press logic itself is tested in `app`).
+#[test]
+fn escape_key_reaches_the_editor() {
+    let mut h: Shot = Harness::builder().with_size([1000.0, 700.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.enter_editor(0);
+        a.tool = Tool::Rect;
+    }
+    h.run_steps(2);
+    h.key_press(eframe::egui::Key::Escape);
+    h.run_steps(1);
+    assert!(app(&mut h).esc_time > -1.0, "the key press was seen");
 }

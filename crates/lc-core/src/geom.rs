@@ -176,6 +176,28 @@ impl Polyline {
         }
         inside
     }
+    /// Does any part of this outline (or, for a closed one, its inside) touch the rectangle?
+    pub fn intersects_rect(&self, r: &Rect) -> bool {
+        if self.pts.iter().any(|p| r.contains(*p)) {
+            return true;
+        }
+        let n = self.pts.len();
+        if n < 2 {
+            return false;
+        }
+        let corners = [r.min, Pt::new(r.max.x, r.min.y), r.max, Pt::new(r.min.x, r.max.y)];
+        let segs = if self.closed { n } else { n - 1 };
+        for i in 0..segs {
+            let (a, b) = (self.pts[i], self.pts[(i + 1) % n]);
+            for k in 0..4 {
+                if segments_cross(a, b, corners[k], corners[(k + 1) % 4]) {
+                    return true;
+                }
+            }
+        }
+        // The rectangle may lie entirely inside a closed outline.
+        self.closed && n >= 3 && self.contains(r.min)
+    }
     /// Minimum distance from `p` to the outline.
     pub fn dist_to(&self, p: Pt) -> f64 {
         let n = self.pts.len();
@@ -222,4 +244,16 @@ pub fn flatten_cubic(p0: Pt, p1: Pt, p2: Pt, p3: Pt, tol: f64, out: &mut Vec<Pt>
             a * p0.y + b * p1.y + c * p2.y + d * p3.y,
         ));
     }
+}
+
+
+/// Do the closed segments a-b and c-d share a point?
+pub fn segments_cross(a: Pt, b: Pt, c: Pt, d: Pt) -> bool {
+    let o = |p: Pt, q: Pt, r: Pt| (q.x - p.x) * (r.y - p.y) - (q.y - p.y) * (r.x - p.x);
+    let on = |p: Pt, q: Pt, r: Pt| r.x >= p.x.min(q.x) - 1e-12 && r.x <= p.x.max(q.x) + 1e-12 && r.y >= p.y.min(q.y) - 1e-12 && r.y <= p.y.max(q.y) + 1e-12;
+    let (d1, d2, d3, d4) = (o(c, d, a), o(c, d, b), o(a, b, c), o(a, b, d));
+    if ((d1 > 0.0 && d2 < 0.0) || (d1 < 0.0 && d2 > 0.0)) && ((d3 > 0.0 && d4 < 0.0) || (d3 < 0.0 && d4 > 0.0)) {
+        return true;
+    }
+    (d1 == 0.0 && on(c, d, a)) || (d2 == 0.0 && on(c, d, b)) || (d3 == 0.0 && on(a, b, c)) || (d4 == 0.0 && on(a, b, d))
 }

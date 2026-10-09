@@ -13,7 +13,43 @@ pub enum ColorBy {
     Layer,
 }
 
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum PlaySpeed {
+    /// The whole job takes 15 seconds.
+    Fit,
+    X1,
+    X10,
+    X50,
+    X200,
+}
+
+impl PlaySpeed {
+    pub const ALL: [PlaySpeed; 5] = [PlaySpeed::Fit, PlaySpeed::X1, PlaySpeed::X10, PlaySpeed::X50, PlaySpeed::X200];
+    pub fn label(self) -> &'static str {
+        match self {
+            PlaySpeed::Fit => "Fit 15 s",
+            PlaySpeed::X1 => "Real time",
+            PlaySpeed::X10 => "×10",
+            PlaySpeed::X50 => "×50",
+            PlaySpeed::X200 => "×200",
+        }
+    }
+    /// Simulated seconds per real second for a job lasting `total` seconds.
+    pub fn rate(self, total: f64) -> f64 {
+        match self {
+            PlaySpeed::Fit => (total / 15.0).max(1e-6),
+            PlaySpeed::X1 => 1.0,
+            PlaySpeed::X10 => 10.0,
+            PlaySpeed::X50 => 50.0,
+            PlaySpeed::X200 => 200.0,
+        }
+    }
+}
+
 pub struct PreviewState {
+    pub speed: PlaySpeed,
+    /// End time of each move, seconds from the start of the job.
+    pub cum: Vec<f64>,
     pub view: View,
     pub color_by: ColorBy,
     pub show_travel: bool,
@@ -27,7 +63,9 @@ pub struct PreviewState {
 impl Default for PreviewState {
     fn default() -> Self {
         PreviewState {
-            view: View { zoom: 1.0, pan: egui::vec2(0.0, 0.0), need_fit: true },
+            speed: PlaySpeed::Fit,
+            cum: vec![],
+            view: View { zoom: 1.0, pan: egui::vec2(0.0, 0.0), need_fit: true, auto_fit: true },
             color_by: ColorBy::Operation,
             show_travel: false,
             progress: 1.0,
@@ -66,11 +104,18 @@ impl App {
         }
         // Rebuild the job when the design changed.
         if self.pv.job.as_ref().map(|j| j.0) != Some(self.revision) {
-            self.pv.job = Some((self.revision, gcode::generate(&self.doc)));
+            let job = gcode::generate(&self.doc);
+            let mut t = 0.0;
+            self.pv.cum = job.moves.iter().map(|m| { t += m.dur; t }).collect();
+            self.pv.job = Some((self.revision, job));
         }
+        let total = self.pv.cum.last().copied().unwrap_or(0.0);
         if self.pv.playing {
-            let dt = ctx.input(|i| i.stable_dt).min(0.1);
-            self.pv.progress += dt / 12.0;
+            // Real frame time keeps the motion smooth whatever the frame rate; speed is in job seconds.
+            let dt = ctx.input(|i| i.unstable_dt).clamp(0.0, 0.25) as f64;
+            if total > 0.0 {
+                self.pv.progress += (dt * self.pv.speed.rate(total) / total) as f32;
+            }
             if self.pv.progress >= 1.0 {
                 self.pv.progress = 1.0;
                 self.pv.playing = false;
@@ -79,6 +124,8 @@ impl App {
         }
         let mut open = true;
         let units = self.doc.device.units;
+        let bed_fill = self.bed_fill();
+        let line_w = self.grid_prefs.line_width;
         let (bw, bh) = (self.doc.device.bed_w, self.doc.device.bed_h);
         let Some((_, job)) = self.pv.job.take() else { return };
         egui::Window::new(tr("Preview")).open(&mut open).default_size([980.0, 640.0]).resizable(true).show(ctx, |ui| {
@@ -97,19 +144,38 @@ impl App {
                 }
                 ui.spacing_mut().slider_width = 220.0;
                 ui.add(egui::Slider::new(&mut self.pv.progress, 0.0..=1.0).show_value(false));
+                egui::ComboBox::from_id_salt("pv_speed").width(90.0).selected_text(tr(self.pv.speed.label())).show_ui(ui, |ui| {
+                    for s in PlaySpeed::ALL {
+                        ui.selectable_value(&mut self.pv.speed, s, tr(s.label()));
+                    }
+                });
                 if ui.button(tr("Fit")).clicked() {
                     self.pv.view.need_fit = true;
+                    self.pv.view.auto_fit = true;
                 }
-                ui.label(RichText::new(format!("{} {}   {} {}", tr("Estimated time"), crate::app::fmt_time(job.est_seconds), tr("cut length"), crate::units_ui::fmt_len(units, job.cut_length, 0))).color(theme::text_dim()));
             });
             ui.separator();
             let n_ops = job.ops.len();
+            // Totals under the picture: time, length, number of passes (operations) and moves.
+            egui::Panel::bottom("pv_totals").frame(egui::Frame::NONE).show(ui, |ui| {
+                ui.separator();
+                ui.horizontal_wrapped(|ui| {
+                    ui.label(RichText::new(format!("{} {}", tr("Estimated time"), crate::app::fmt_time(job.est_seconds))).strong());
+                    ui.separator();
+                    ui.label(format!("{} {}", tr("cut length"), crate::units_ui::fmt_len(units, job.cut_length, 0)));
+                    ui.separator();
+                    ui.label(trf("{} passes", &[&n_ops]));
+                    ui.separator();
+                    ui.label(trf("{} moves", &[&job.moves.len()]));
+                });
+            });
+            egui::CentralPanel::default().frame(egui::Frame::NONE).show(ui, |ui| {
             ui.horizontal_top(|ui| {
                 // Legend with a switch per operation.
                 ui.vertical(|ui| {
                     ui.set_width(210.0);
                     ui.label(RichText::new(tr("Operations")).strong());
-                    egui::ScrollArea::vertical().id_salt("pv_ops").max_height(ui.available_height().max(200.0)).show(ui, |ui| {
+                    egui::ScrollArea::vertical().id_salt("pv_ops").max_height(ui.available_height().max(120.0)).show(ui, |ui| {
                         if n_ops == 0 {
                             ui.label(RichText::new(tr("Nothing to burn: no shapes on output layers")).color(theme::text_dim()));
                         }
@@ -138,14 +204,15 @@ impl App {
                     });
                 });
                 ui.separator();
+                // Leave room under the picture for the totals row.
                 let avail = ui.available_size();
                 let (resp, painter) = ui.allocate_painter(avail, Sense::click_and_drag());
                 let rect = resp.rect;
                 painter.rect_filled(rect, 0.0, theme::workspace());
-                if self.pv.view.need_fit && rect.width() > 50.0 {
-                    let z = ((rect.width() - 40.0) / bw as f32).min((rect.height() - 40.0) / bh as f32).max(0.05);
+                if (self.pv.view.need_fit || self.pv.view.auto_fit) && rect.width() > 50.0 {
+                    let (z, pan) = crate::canvas::fit_view((rect.width(), rect.height()), (bw, bh), 20.0);
                     self.pv.view.zoom = z;
-                    self.pv.view.pan = egui::vec2((rect.width() - bw as f32 * z) / 2.0, (rect.height() - bh as f32 * z) / 2.0);
+                    self.pv.view.pan = pan;
                     self.pv.view.need_fit = false;
                 }
                 let o = rect.min;
@@ -156,23 +223,31 @@ impl App {
                         let before = (m - o - self.pv.view.pan) / self.pv.view.zoom;
                         self.pv.view.zoom = (self.pv.view.zoom * f).clamp(0.05, 200.0);
                         self.pv.view.pan = m - o - before * self.pv.view.zoom;
+                        self.pv.view.auto_fit = false;
                     }
                 }
                 if resp.dragged() {
                     self.pv.view.pan += resp.drag_delta();
+                    self.pv.view.auto_fit = false;
                 }
                 let (zoom, pan) = (self.pv.view.zoom, self.pv.view.pan);
                 let w2s = |p: lc_core::Pt| -> Pos2 { o + pan + egui::vec2(p.x as f32 * zoom, p.y as f32 * zoom) };
                 let bed = egui::Rect::from_min_max(w2s(lc_core::Pt::new(0.0, 0.0)), w2s(lc_core::Pt::new(bw, bh)));
                 let painter = painter.with_clip_rect(rect);
-                painter.rect_filled(bed, 0.0, Color32::WHITE);
+                painter.rect_filled(bed, 0.0, bed_fill);
                 painter.rect_stroke(bed, 0.0, Stroke::new(1.0, Color32::from_gray(0x99)), egui::StrokeKind::Outside);
-                let upto = ((job.moves.len() as f32) * self.pv.progress).round() as usize;
-                let mut shapes = Vec::with_capacity(upto.min(job.moves.len()));
+                // Machine zero.
+                let home = w2s(self.doc.device.home_point());
+                painter.circle_filled(home, 5.0, theme::accent());
+                painter.circle_stroke(home, 8.0, Stroke::new(1.2, theme::accent()));
+                // Everything before the current time is drawn whole; the current move only up to the head.
+                let t_now = self.pv.progress as f64 * total;
+                let cur = self.pv.cum.partition_point(|c| *c <= t_now).min(job.moves.len());
+                let mut shapes = Vec::with_capacity(cur);
                 let skip_travel = job.moves.len() > 200_000;
-                for m in job.moves.iter().take(upto) {
+                let style_of = |m: &gcode::Move| -> Option<Stroke> {
                     if self.pv.hidden.contains(&m.op) {
-                        continue;
+                        return None;
                     }
                     if m.laser {
                         let c = match self.pv.color_by {
@@ -182,19 +257,37 @@ impl App {
                                 Color32::from_rgb(p[0], p[1], p[2])
                             }
                         };
-                        shapes.push(egui::Shape::line_segment([w2s(m.a), w2s(m.b)], Stroke::new(1.4, c)));
+                        Some(Stroke::new(line_w * 0.8, c))
                     } else if self.pv.show_travel && !skip_travel {
-                        shapes.push(egui::Shape::line_segment([w2s(m.a), w2s(m.b)], Stroke::new(0.8, Color32::from_rgb(0x90, 0x90, 0xa0).gamma_multiply(0.8))));
+                        Some(Stroke::new(0.5, Color32::from_rgb(0x90, 0x90, 0xa0).gamma_multiply(0.8)))
+                    } else {
+                        None
+                    }
+                };
+                for m in job.moves.iter().take(cur) {
+                    if let Some(st) = style_of(m) {
+                        shapes.push(egui::Shape::line_segment([w2s(m.a), w2s(m.b)], st));
                     }
                 }
-                painter.extend(shapes);
-                if let Some(m) = job.moves.get(upto.saturating_sub(1)) {
-                    painter.circle_filled(w2s(m.b), 4.0, Color32::from_rgb(0xe0, 0x20, 0x20));
+                let mut head = home;
+                if let Some(m) = job.moves.get(cur) {
+                    let before = if cur == 0 { 0.0 } else { self.pv.cum[cur - 1] };
+                    let f = if m.dur > 1e-12 { ((t_now - before) / m.dur).clamp(0.0, 1.0) } else { 1.0 };
+                    let p = lc_core::Pt::new(m.a.x + (m.b.x - m.a.x) * f, m.a.y + (m.b.y - m.a.y) * f);
+                    if let Some(st) = style_of(m) {
+                        shapes.push(egui::Shape::line_segment([w2s(m.a), w2s(p)], st));
+                    }
+                    head = w2s(p);
+                } else if let Some(m) = job.moves.last() {
+                    head = w2s(m.b);
                 }
+                painter.extend(shapes);
+                painter.circle_filled(head, 4.5, Color32::from_rgb(0xe0, 0x20, 0x20));
+                painter.circle_stroke(head, 4.5, Stroke::new(1.0, Color32::WHITE));
                 if skip_travel && self.pv.show_travel {
                     painter.text(rect.left_bottom() + egui::vec2(8.0, -8.0), egui::Align2::LEFT_BOTTOM, tr("Too many moves: travel lines are hidden."), egui::FontId::proportional(12.0), theme::text_dim());
                 }
-                painter.text(rect.right_bottom() + egui::vec2(-8.0, -8.0), egui::Align2::RIGHT_BOTTOM, trf("{} moves", &[&job.moves.len()]), egui::FontId::proportional(11.0), theme::text_dim());
+            });
             });
         });
         self.pv.job = Some((self.revision, job));

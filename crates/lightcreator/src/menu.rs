@@ -33,6 +33,8 @@ pub enum Act {
     ToCurves,
     Group,
     Ungroup,
+    Lock,
+    Unlock,
     ImportAi,
     TraceImage,
     AdjustImage,
@@ -41,18 +43,25 @@ pub enum Act {
     BoolSubtract,
     BoolXor,
     OffsetShape,
+    RoundCorners,
+    QuickGuide,
+    OpenGithub,
     ImportImage,
     GridArray,
     ToggleGrid,
     ToggleSnap,
     TogglePreview,
     FitBed,
+    ToggleAutoFit,
     DeviceSettings,
     SwitchDevice,
     MaterialLibrary,
     CameraOverlay,
     GridOptions,
     PreviewWindow,
+    CameraView,
+    ShareSer2net,
+    ToggleOverlay,
     Frame,
     StartJob,
     About,
@@ -107,9 +116,22 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
         file.push(Sep);
         file.push(Item(Act::Quit, "Quit", key("CmdOrCtrl+Q", "Ctrl+Q")));
     }
-    let mut help = vec![];
+    let mut help = vec![Item(Act::QuickGuide, "Quick guide", key("F1", "F1")), Item(Act::OpenGithub, "Project page on GitHub", None)];
     if !cfg!(target_os = "macos") {
+        help.push(Sep);
         help.push(Item(Act::About, "About", None));
+    }
+    let mut laser = vec![
+        Item(Act::SwitchDevice, "Switch device…", None),
+        Item(Act::MaterialLibrary, "Material library…", None),
+        Item(Act::DeviceSettings, "Device settings…", None),
+        Item(Act::Frame, "Frame", None),
+        Item(Act::StartJob, "Start job", None),
+    ];
+    // Sharing a local serial port with ser2net is a Linux feature.
+    if cfg!(target_os = "linux") {
+        laser.push(Sep);
+        laser.push(Item(Act::ShareSer2net, "Share over network (ser2net)…", None));
     }
     vec![
         ("File", file),
@@ -140,6 +162,8 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
                     Sep,
                     Item(Act::Group, "Group", key("CmdOrCtrl+G", "Ctrl+G")),
                     Item(Act::Ungroup, "Ungroup", key("CmdOrCtrl+Shift+G", "Ctrl+Shift+G")),
+                    Item(Act::Lock, "Lock", key("CmdOrCtrl+L", "Ctrl+L")),
+                    Item(Act::Unlock, "Unlock", key("CmdOrCtrl+Shift+L", "Ctrl+Shift+L")),
                     Sep,
                     Item(Act::ToFront, "Bring to front", None),
                     Item(Act::ToBack, "Send to back", None),
@@ -151,6 +175,7 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
                     Item(Act::BoolSubtract, "Subtract", None),
                     Item(Act::BoolXor, "Exclusive or", None),
                     Item(Act::OffsetShape, "Offset shape…", None),
+                    Item(Act::RoundCorners, "Round corners…", None),
                     Item(Act::AdjustImage, "Adjust image…", None),
                     Item(Act::TraceImage, "Trace image…", None),
                     Sep,
@@ -167,18 +192,17 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
                 Item(Act::TogglePreview, "Toolpath preview", None),
                 Item(Act::PreviewWindow, "Preview window…", None),
                 Item(Act::FitBed, "Fit bed to window", None),
+                Item(Act::ToggleAutoFit, "Auto-fit work area to window", None),
+                Item(Act::CameraView, "Camera view", None),
+                Item(Act::ToggleOverlay, "Show camera overlay", None),
                 Item(Act::CameraOverlay, "Camera overlay…", None),
             ],
         ),
-        (
-            "Laser",
-            vec![Item(Act::SwitchDevice, "Switch device…", None),
-                Item(Act::MaterialLibrary, "Material library…", None), Item(Act::DeviceSettings, "Device settings…", None), Item(Act::Frame, "Frame", None), Item(Act::StartJob, "Start job", None)],
-        ),
+        ("Laser", laser),
         (
             "Settings",
             vec![
-                Item(Act::GridOptions, "Grid options…", None),
+                Item(Act::GridOptions, "View options…", None),
                 Sep,
                 Sub("Language", Lang::ALL.iter().map(|l| Item(Act::SetLang(*l), l.name(), None)).collect()),
                 Sub("Colour scheme", Scheme::ALL.iter().map(|s| Item(Act::SetScheme(*s), s.label(), None)).collect()),
