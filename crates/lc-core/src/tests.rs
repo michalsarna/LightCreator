@@ -378,3 +378,14 @@ fn image_adjustments() {
     let free = im.adjusted(&Adjust { angle_deg: 45.0, ..Default::default() });
     assert!(free.px_w > 40 && free.px_w < 60);
 }
+
+#[test]
+fn settings_reports_are_parsed() {
+    let grbl: Vec<String> = ["$0=10", "$30=255", "$32=1", "$110=6000.000", "$111=6000.000", "$130=410.000", "$131=300.000", "ok"].iter().map(|s| s.to_string()).collect();
+    let r = Controller::Grbl.parse_settings(&grbl);
+    assert_eq!((r.s_max, r.bed_w, r.bed_h, r.travel_speed, r.dynamic_power), (Some(255.0), Some(410.0), Some(300.0), Some(6000.0), Some(true)));
+    assert_eq!(r.count(), 5);
+    let marlin: Vec<String> = ["echo:  M203 X500.00 Y400.00 Z5.00", "ok"].iter().map(|s| s.to_string()).collect();
+    assert_eq!(Controller::Marlin.parse_settings(&marlin).travel_speed, Some(30000.0));
+    assert_eq!(Controller::Ruida.settings_request(), None);
+}

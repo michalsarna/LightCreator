@@ -1,4 +1,5 @@
 use crate::app::{App, Tool};
+use crate::menu::Act;
 use crate::theme;
 use eframe::egui::{self, Color32, CursorIcon, PointerButton, Pos2, Sense, Stroke};
 use crate::nodes::NodeRef;
@@ -230,7 +231,7 @@ impl App {
             let z = self.view.zoom as f64;
             let lines = |step: f64, color: [u8; 4], width: f32| {
                 // Skip grids so dense that the lines would merge into a tint.
-                if step * z < 4.0 || step <= 0.0 {
+                if step * z < 2.5 || step <= 0.0 {
                     return;
                 }
                 let st = Stroke::new(width, Color32::from_rgba_unmultiplied(color[0], color[1], color[2], color[3]));
@@ -409,6 +410,24 @@ impl App {
         let hpos = resp.interact_pointer_pos().or(mouse);
         let press = if resp.drag_started() { ui.input(|i| i.pointer.press_origin()).or(hpos) } else { hpos };
         let shift = ui.input(|i| i.modifiers.shift);
+        // Right click selects what is under the pointer, then the context menu offers the usual commands.
+        if resp.secondary_clicked() && self.tool == Tool::Select {
+            if let Some(m) = hpos {
+                match self.hit_shape(self.s2w(o, m)) {
+                    Some(id) if !self.sel.contains(&id) => self.sel = self.doc.group_of(id),
+                    None => self.sel.clear(),
+                    _ => {}
+                }
+            }
+        }
+        if !matches!(self.tool, Tool::Pen | Tool::Pan | Tool::Zoom) && !self.overlay_edit {
+            let mut act: Option<Act> = None;
+            resp.context_menu(|ui| act = self.context_menu(ui));
+            if let Some(a) = act {
+                let ctx = ui.ctx().clone();
+                self.do_act(&ctx, a);
+            }
+        }
         let overlay_busy = self.overlay_interact(&resp, o, press, hpos);
         if !overlay_busy {
         match self.tool {
@@ -439,7 +458,11 @@ impl App {
                                 if !shift {
                                     self.sel.clear();
                                 }
-                                self.sel.push(id);
+                                for m in self.doc.group_of(id) {
+                                    if !self.sel.contains(&m) {
+                                        self.sel.push(m);
+                                    }
+                                }
                             }
                             self.checkpoint();
                             let orig = self.sel.iter().filter_map(|i| self.doc.shape(*i).map(|s| (*i, s.xf))).collect();
@@ -456,13 +479,14 @@ impl App {
                         let hit = self.hit_shape(self.s2w(o, m));
                         match hit {
                             Some(id) if shift => {
-                                if let Some(i) = self.sel.iter().position(|x| *x == id) {
-                                    self.sel.remove(i);
+                                let members = self.doc.group_of(id);
+                                if self.sel.contains(&id) {
+                                    self.sel.retain(|x| !members.contains(x));
                                 } else {
-                                    self.sel.push(id);
+                                    self.sel.extend(members);
                                 }
                             }
-                            Some(id) => self.sel = vec![id],
+                            Some(id) => self.sel = self.doc.group_of(id),
                             None => self.sel.clear(),
                         }
                     }
@@ -711,8 +735,10 @@ impl App {
                             .map(|s| s.id)
                             .collect();
                         for id in hits {
-                            if !self.sel.contains(&id) {
-                                self.sel.push(id);
+                            for m in self.doc.group_of(id) {
+                                if !self.sel.contains(&m) {
+                                    self.sel.push(m);
+                                }
                             }
                         }
                     }

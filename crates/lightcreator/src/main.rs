@@ -5,6 +5,7 @@ mod device_ui;
 mod fonts;
 mod i18n;
 mod icons;
+mod image_ui;
 mod laser;
 mod materials_ui;
 mod menu;

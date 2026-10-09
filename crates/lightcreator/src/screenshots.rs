@@ -223,4 +223,81 @@ fn render_screenshots() {
         a.mat_sel = Some(1);
     }
     save(&mut h, "11-materials.png");
+
+    // Preview window: several operations, each in its own colour, with travel moves.
+    {
+        let a = app(&mut h);
+        a.show_materials = false;
+        a.doc.shapes.clear();
+        a.doc.layers[2].mode = lc_core::LayerMode::FillAndLine;
+        a.doc.layers[2].interval = 0.5;
+        a.doc.layers[5].mode = lc_core::LayerMode::Offset;
+        a.doc.layers[5].interval = 1.5;
+        a.doc.add(2, Kind::Ellipse { w: 80.0, h: 50.0 }, Xf::translate(30.0, 30.0));
+        a.doc.add(5, Kind::Rect { w: 70.0, h: 50.0 }, Xf::translate(140.0, 30.0));
+        a.doc.add(1, Kind::Rect { w: 190.0, h: 120.0 }, Xf::translate(25.0, 20.0));
+        a.doc.add(0, Kind::Text(TextData { text: "LightCreator".into(), size: 18.0, ..TextData::default() }), Xf::translate(40.0, 110.0));
+        a.sel.clear();
+        a.touch();
+        a.show_preview = true;
+        a.pv.show_travel = true;
+        a.status = "Ready".into();
+    }
+    save(&mut h, "12-preview.png");
+
+    // Image import dialog and trace dialog.
+    {
+        let a = app(&mut h);
+        a.show_preview = false;
+        a.doc.shapes.clear();
+        let (w, hh) = (200u32, 140u32);
+        let gray: Vec<u8> = (0..w * hh)
+            .map(|i| {
+                let (x, y) = ((i % w) as f32 - 100.0, (i / w) as f32 - 70.0);
+                let ring = ((x * x + y * y).sqrt() - 45.0).abs() < 14.0;
+                let bar = (x + 70.0).abs() < 8.0 && y.abs() < 50.0;
+                if ring || bar { 40 } else { 220 }
+            })
+            .collect();
+        let im = ImageData { name: "logo.png".into(), px_w: w, px_h: hh, gray, w: 100.0, h: 70.0, invert: false };
+        a.open_import_dialog_with(im);
+    }
+    save(&mut h, "13-image-import.png");
+    {
+        let a = app(&mut h);
+        a.img_dlg = None;
+        let im = ImageData {
+            name: "logo.png".into(),
+            px_w: 200,
+            px_h: 140,
+            gray: (0..200u32 * 140).map(|i| { let (x, y) = ((i % 200) as f32 - 100.0, (i / 200) as f32 - 70.0); if (((x * x + y * y).sqrt() - 45.0).abs() < 14.0) || ((x + 70.0).abs() < 8.0 && y.abs() < 50.0) { 40 } else { 220 } }).collect(),
+            w: 100.0,
+            h: 70.0,
+            invert: false,
+        };
+        let id = a.doc.add(0, Kind::Image(im), Xf::translate(60.0, 60.0));
+        a.sel = vec![id];
+        a.open_trace();
+    }
+    save(&mut h, "14-trace.png");
+    {
+        let a = app(&mut h);
+        a.trace_dlg = None;
+        a.doc.shapes.clear();
+        a.grid_prefs.minor_on = true;
+        a.grid_prefs.minor_mm = 5.0;
+        a.grid_prefs.minor_color = [0xc8, 0xd8, 0xf0, 0xff];
+        a.grid_prefs.main_color = [0x90, 0xa8, 0xd0, 0xff];
+        a.grid = 20.0;
+        a.show_prefs = true;
+        a.side_tab = SideTab::Layers;
+        a.active_layer = 2;
+        a.show_all_layers = false;
+        let l = a.doc.add(2, Kind::Rect { w: 40.0, h: 30.0 }, Xf::translate(40.0, 40.0));
+        let _ = l;
+        a.doc.add(0, Kind::Ellipse { w: 40.0, h: 30.0 }, Xf::translate(100.0, 40.0));
+        a.doc.move_layer(2, true);
+        a.doc.move_layer(2, true);
+    }
+    save(&mut h, "15-grid-layers.png");
 }

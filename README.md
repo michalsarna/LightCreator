@@ -22,8 +22,12 @@ written in Rust. The interface follows the look of [VectorCraft](https://github.
 | Bézier node editing with its floating toolbar | Text tool and text properties |
 | ![Image engraving](docs/screenshots/09-image.png) | ![Camera overlay](docs/screenshots/10-camera-overlay.png) |
 | Raster image engraving, dithered toolpath preview | Camera overlay aligned with four corners |
-| ![Material library](docs/screenshots/11-materials.png) | |
-| Material library | |
+| ![Material library](docs/screenshots/11-materials.png) | ![Preview window](docs/screenshots/12-preview.png) |
+| Material library | Preview window: every burn operation in its own colour, with travel moves |
+| ![Import image](docs/screenshots/13-image-import.png) | ![Trace image](docs/screenshots/14-trace.png) |
+| Image import with rotate, flip, brightness, contrast and gamma | Trace an image into curves |
+| ![Grid options](docs/screenshots/15-grid-layers.png) | |
+| Main and secondary grid options, layers in burn order | |
 
 The pictures are rendered headlessly from the real UI; regenerate them with
 `cargo test -p lightcreator --release render_screenshots -- --ignored`.
@@ -48,7 +52,8 @@ choose in the file dialog.
 A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
 
 * **Design:** shapes, Bézier node editing, text tool, boolean operations (union, intersection, subtract,
-  exclusive or), shape offset, SVG import, bitmap import.
+  exclusive or), shape offset, grouping, right-click context menu, SVG / Adobe Illustrator / PDF import,
+  bitmap import with adjustments, image tracing.
 * **Engraving:** line, fill, offset fill and raster image engraving with six dithering methods and
   grayscale power; LightBurn-style cut layers; toolpath preview with time estimate.
 * **Devices:** profile per machine (controller, laser type, work area, units, port, jog settings), start
@@ -57,6 +62,8 @@ A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
   controller's own software.
 * **Helpers:** material library with starting settings and your own presets, camera / photo overlay with
   four-corner alignment.
+* **Preview:** separate preview window with every burn operation in its own colour, optional travel moves and a
+  simulation slider; layers can be reordered to change the burn order.
 * **Interface:** native menu bar on macOS, in-window menu on Windows and Linux, seven languages
   (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी) and four colour schemes.
 
@@ -65,7 +72,8 @@ A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
 All geometry, boolean, offset, raster, G-code, export and translation logic is covered by unit tests, and the
 screenshots below are rendered from the real UI. Nothing has been run against real hardware yet: GRBL and
 Marlin streaming, the Ruida / Trocen import path and the live camera still need testing on actual machines.
-Material library values are generic starting points, always test on scrap. Complex scripts (Devanagari,
+Reading settings from a device, material values and the Illustrator import (PDF-compatible files only) are
+untested on real machines and files from Adobe. Material library values are generic starting points, always test on scrap. Complex scripts (Devanagari,
 Arabic) are not shaped by the text tool.
 
 ## Building

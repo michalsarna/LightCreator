@@ -31,6 +31,11 @@ pub enum Act {
     ToBack,
     ToPath,
     ToCurves,
+    Group,
+    Ungroup,
+    ImportAi,
+    TraceImage,
+    AdjustImage,
     BoolUnion,
     BoolIntersect,
     BoolSubtract,
@@ -81,11 +86,22 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
         Item(Act::Save, "Save", key("CmdOrCtrl+S", "Ctrl+S")),
         Item(Act::SaveAs, "Save as…", key("CmdOrCtrl+Shift+S", "Ctrl+Shift+S")),
         Sep,
-        Item(Act::ImportSvg, "Import SVG…", key("CmdOrCtrl+I", "Ctrl+I")),
-        Item(Act::ImportImage, "Import image…", None),
-        Item(Act::ExportSvg, "Export SVG…", None),
-        Item(Act::ExportGcode, "Export G-code…", None),
-        Item(Act::ExportCam, "Export PLT / DXF…", None),
+        Sub(
+            "Import",
+            vec![
+                Item(Act::ImportSvg, "Import SVG…", key("CmdOrCtrl+I", "Ctrl+I")),
+                Item(Act::ImportImage, "Import image…", None),
+                Item(Act::ImportAi, "Import Adobe Illustrator / PDF…", None),
+            ],
+        ),
+        Sub(
+            "Export",
+            vec![
+                Item(Act::ExportSvg, "Export SVG…", None),
+                Item(Act::ExportGcode, "Export G-code…", None),
+                Item(Act::ExportCam, "Export PLT / DXF…", None),
+            ],
+        ),
     ];
     if !cfg!(target_os = "macos") {
         file.push(Sep);
@@ -122,6 +138,9 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
                     Item(Act::RotCw, "Rotate 90° CW", None),
                     Item(Act::RotCcw, "Rotate 90° CCW", None),
                     Sep,
+                    Item(Act::Group, "Group", key("CmdOrCtrl+G", "Ctrl+G")),
+                    Item(Act::Ungroup, "Ungroup", key("CmdOrCtrl+Shift+G", "Ctrl+Shift+G")),
+                    Sep,
                     Item(Act::ToFront, "Bring to front", None),
                     Item(Act::ToBack, "Send to back", None),
                     Item(Act::ToPath, "Convert to path", None),
@@ -132,6 +151,8 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
                     Item(Act::BoolSubtract, "Subtract", None),
                     Item(Act::BoolXor, "Exclusive or", None),
                     Item(Act::OffsetShape, "Offset shape…", None),
+                    Item(Act::AdjustImage, "Adjust image…", None),
+                    Item(Act::TraceImage, "Trace image…", None),
                     Sep,
                     Item(Act::GridArray, "Grid array…", None),
                 ],

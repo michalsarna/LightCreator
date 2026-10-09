@@ -10,6 +10,18 @@ use crate::units_ui::{drag_len, drag_speed_min, fmt_len, fmt_speed_min};
 use lc_core::controller::Action;
 use lc_core::{Controller, Device, LaserKind, Origin, Units};
 
+/// An in-progress "read settings from the device" request.
+pub struct ReadCfg {
+    pub controller: Controller,
+    /// Waiting for the connection to come up before asking.
+    pub waiting_connect: bool,
+    /// When to send the request (a short pause after connecting lets the firmware finish resetting).
+    pub request_at: Option<std::time::Instant>,
+    pub sent_at: Option<std::time::Instant>,
+    pub lines: Vec<String>,
+    pub started: std::time::Instant,
+}
+
 /// A device profile being edited in the configuration window.
 pub struct CfgEdit {
     /// `None` while creating a new profile.
@@ -159,6 +171,8 @@ impl App {
         let title = if cfg.idx.is_some() { tr("Device configuration") } else { tr("New device") };
         let mut save = false;
         let mut cancel = false;
+        let mut read_clicked = false;
+        let reading = self.read_cfg.is_some();
         egui::Window::new(title).collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {
             if must_create {
                 ui.label(RichText::new(tr("Create at least one device profile to continue.")).color(theme::text_dim()));
@@ -222,7 +236,7 @@ impl App {
                 ui.end_row();
                 if d.controller.is_serial() {
                     ui.label(tr("Port"));
-                    ui.horizontal(|ui| {
+                    ui.horizontal_wrapped(|ui| {
                         egui::ComboBox::from_id_salt("cfg_port").width(170.0).selected_text(if d.port.is_empty() { tr("No port") } else { d.port.as_str() }).show_ui(ui, |ui| {
                             for p in &self.ports {
                                 ui.selectable_value(&mut d.port, p.clone(), p);
@@ -230,6 +244,10 @@ impl App {
                         });
                         if ui.button(tr("Refresh")).clicked() {
                             self.ports = laser::list_ports();
+                        }
+                        let label = if reading { tr("Reading…") } else { tr("Read from device") };
+                        if ui.add_enabled(!reading && !d.port.is_empty(), egui::Button::new(label)).on_hover_text(tr("Connect and read work area, S-value max and speed from the controller")).clicked() {
+                            read_clicked = true;
                         }
                     });
                     ui.end_row();
@@ -261,6 +279,9 @@ impl App {
                 }
             });
         });
+        if read_clicked {
+            self.start_read(&cfg.draft);
+        }
         if save {
             cfg.draft.name = cfg.draft.name.trim().to_string();
             let idx = match cfg.idx {
@@ -467,5 +488,101 @@ impl App {
             self.run_action(a);
         }
         self.sync_profile();
+    }
+
+    /// Ask the controller for its settings (connecting first if needed).
+    pub fn start_read(&mut self, draft: &Device) {
+        let c = draft.controller;
+        let Some(_) = c.settings_request() else { return };
+        let mut st = ReadCfg { controller: c, waiting_connect: false, request_at: None, sent_at: None, lines: vec![], started: std::time::Instant::now() };
+        if self.connected {
+            st.request_at = Some(std::time::Instant::now());
+        } else {
+            st.waiting_connect = true;
+            self.link.send(Cmd::Connect { port: draft.port.clone(), baud: draft.baud, controller: c });
+        }
+        self.read_cfg = Some(st);
+        self.status = tr("Reading settings from the device…").to_string();
+    }
+
+    /// Called when the connection state changes.
+    pub fn read_on_connected(&mut self, up: bool) {
+        if let Some(r) = &mut self.read_cfg {
+            if r.waiting_connect {
+                if up {
+                    r.waiting_connect = false;
+                    r.request_at = Some(std::time::Instant::now() + std::time::Duration::from_millis(900));
+                } else {
+                    self.read_cfg = None;
+                    self.status = tr("Could not connect to the device.").to_string();
+                }
+            }
+        }
+    }
+
+    /// Collect response lines while a read is running.
+    pub fn read_feed(&mut self, line: &str) {
+        let Some(r) = &mut self.read_cfg else { return };
+        if r.sent_at.is_none() {
+            return;
+        }
+        if line == "ok" || line.starts_with("error") {
+            self.finish_read();
+        } else {
+            r.lines.push(line.to_string());
+        }
+    }
+
+    /// Send the request when due and give up after a timeout.
+    pub fn read_tick(&mut self, ctx: &egui::Context) {
+        let Some(r) = &mut self.read_cfg else { return };
+        let now = std::time::Instant::now();
+        if let Some(at) = r.request_at {
+            if now >= at {
+                r.request_at = None;
+                r.sent_at = Some(now);
+                if let Some(req) = r.controller.settings_request() {
+                    self.link.send(Cmd::Line(req.to_string()));
+                }
+            }
+        }
+        let no_connection = r.waiting_connect && now.duration_since(r.started).as_secs_f32() > 6.0;
+        let timed_out = r.sent_at.is_some_and(|t| now.duration_since(t).as_secs_f32() > 4.0);
+        if no_connection {
+            self.read_cfg = None;
+            self.status = tr("Could not connect to the device.").to_string();
+        } else if timed_out {
+            self.finish_read();
+        }
+        ctx.request_repaint_after(std::time::Duration::from_millis(150));
+    }
+
+    fn finish_read(&mut self) {
+        let Some(r) = self.read_cfg.take() else { return };
+        let reading = r.controller.parse_settings(&r.lines);
+        let n = reading.count();
+        if n == 0 {
+            self.status = tr("The device did not report any settings.").to_string();
+            return;
+        }
+        if let Some(cfg) = &mut self.cfg {
+            let d = &mut cfg.draft;
+            if let Some(v) = reading.bed_w {
+                d.bed_w = v;
+            }
+            if let Some(v) = reading.bed_h {
+                d.bed_h = v;
+            }
+            if let Some(v) = reading.s_max {
+                d.s_max = v;
+            }
+            if let Some(v) = reading.travel_speed {
+                d.travel_speed = v;
+            }
+            if let Some(v) = reading.dynamic_power {
+                d.dynamic_power = v;
+            }
+        }
+        self.status = trf("Read {} values from the device", &[&n]);
     }
 }

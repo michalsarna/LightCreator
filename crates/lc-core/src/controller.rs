@@ -125,3 +125,71 @@ pub fn parse_status(line: &str) -> Option<(String, f64, f64)> {
     }
     None
 }
+
+/// Machine values that could be read from a controller.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct Reading {
+    pub bed_w: Option<f64>,
+    pub bed_h: Option<f64>,
+    pub s_max: Option<f64>,
+    /// mm/min
+    pub travel_speed: Option<f64>,
+    pub dynamic_power: Option<bool>,
+}
+
+impl Reading {
+    pub fn count(&self) -> usize {
+        [self.bed_w.is_some(), self.bed_h.is_some(), self.s_max.is_some(), self.travel_speed.is_some(), self.dynamic_power.is_some()].iter().filter(|b| **b).count()
+    }
+}
+
+impl Controller {
+    /// Command that makes the controller list its settings.
+    pub fn settings_request(self) -> Option<&'static str> {
+        match self {
+            Controller::Grbl => Some("$$"),
+            Controller::Marlin => Some("M503"),
+            _ => None,
+        }
+    }
+
+    /// Pull machine values out of the controller's settings report.
+    pub fn parse_settings(self, lines: &[String]) -> Reading {
+        let mut r = Reading::default();
+        match self {
+            Controller::Grbl => {
+                for l in lines {
+                    let Some((k, v)) = l.trim().strip_prefix('$').and_then(|s| s.split_once('=')) else { continue };
+                    let Ok(v) = v.trim().parse::<f64>() else { continue };
+                    match k.trim() {
+                        "30" => r.s_max = Some(v),
+                        "110" => r.travel_speed = Some(v),
+                        "130" => r.bed_w = Some(v),
+                        "131" => r.bed_h = Some(v),
+                        "32" => r.dynamic_power = Some(v >= 1.0),
+                        _ => {}
+                    }
+                }
+            }
+            Controller::Marlin => {
+                for l in lines {
+                    // "echo:  M203 X500.00 Y500.00 ..." is the maximum feedrate in mm/s.
+                    if let Some(i) = l.find("M203") {
+                        let x = l[i..].split_whitespace().find_map(|t| t.strip_prefix('X')).and_then(|t| t.parse::<f64>().ok());
+                        if let Some(x) = x {
+                            r.travel_speed = Some(x * 60.0);
+                        }
+                    }
+                    // Some builds report the software end stops: "... Max:  X200.00 Y200.00 ...".
+                    if let Some(i) = l.find("Max:") {
+                        let t: Vec<&str> = l[i..].split_whitespace().collect();
+                        r.bed_w = t.iter().find_map(|s| s.strip_prefix('X')).and_then(|s| s.parse().ok());
+                        r.bed_h = t.iter().find_map(|s| s.strip_prefix('Y')).and_then(|s| s.parse().ok());
+                    }
+                }
+            }
+            _ => {}
+        }
+        r
+    }
+}

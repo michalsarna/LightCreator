@@ -111,6 +111,9 @@ pub struct App {
     pub show_offset: bool,
     pub show_materials: bool,
     pub show_prefs: bool,
+    pub read_cfg: Option<crate::device_ui::ReadCfg>,
+    pub img_dlg: Option<crate::image_ui::ImgDlg>,
+    pub trace_dlg: Option<crate::image_ui::TraceDlg>,
     pub show_preview: bool,
     pub pv: crate::preview_ui::PreviewState,
     pub grid_prefs: crate::prefs::GridPrefs,
@@ -213,6 +216,9 @@ impl App {
             show_offset: false,
             show_materials: false,
             show_prefs: false,
+            read_cfg: None,
+            img_dlg: None,
+            trace_dlg: None,
             show_preview: false,
             pv: Default::default(),
             grid_prefs,
@@ -305,8 +311,14 @@ impl App {
         }
         self.checkpoint();
         self.sel.clear();
+        // Pasted groups get their own group ids so they do not merge with the originals.
+        let mut gmap: std::collections::HashMap<u64, u64> = Default::default();
         for mut s in self.clipboard.clone() {
             s.xf = s.xf.then(Xf::translate(5.0, 5.0));
+            if let Some(g) = s.group {
+                let doc = &mut self.doc;
+                s.group = Some(*gmap.entry(g).or_insert_with(|| doc.new_group_id()));
+            }
             let id = self.doc.add_shape(s);
             self.sel.push(id);
         }
@@ -562,9 +574,15 @@ impl App {
         for e in self.link.poll() {
             match e {
                 Evt::Log(s) => self.push_console(ConsoleLine::info(s)),
-                Evt::Traffic(l) => self.push_console(l),
+                Evt::Traffic(l) => {
+                    if l.dir == crate::laser::Dir::Rx && !l.poll {
+                        self.read_feed(&l.text);
+                    }
+                    self.push_console(l)
+                }
                 Evt::Connected(c) => {
                     self.connected = c;
+                    self.read_on_connected(c);
                     if !c {
                         self.machine.0 = tr("Disconnected").into();
                     }
@@ -595,6 +613,11 @@ impl App {
         }
         if cmd(Key::D) {
             self.duplicate();
+        }
+        if cmd_shift(Key::G) {
+            self.ungroup_selection();
+        } else if cmd(Key::G) {
+            self.group_selection();
         }
         if cmd(Key::A) {
             self.select_all();
@@ -705,6 +728,11 @@ impl App {
             Act::ToBack => self.reorder(false),
             Act::ToPath => self.to_path(),
             Act::ToCurves => self.to_curves(),
+            Act::Group => self.group_selection(),
+            Act::Ungroup => self.ungroup_selection(),
+            Act::ImportAi => self.import_ai(),
+            Act::TraceImage => self.open_trace(),
+            Act::AdjustImage => self.open_adjust(),
             Act::BoolUnion => self.bool_op(lc_core::ops::BoolOp::Union),
             Act::BoolIntersect => self.bool_op(lc_core::ops::BoolOp::Intersect),
             Act::BoolSubtract => self.bool_op(lc_core::ops::BoolOp::Difference),
@@ -969,6 +997,7 @@ impl App {
         self.overlay_window(ctx);
         self.prefs_window(ctx);
         self.preview_window(ctx);
+        self.image_dialogs(ctx);
     }
 }
 
@@ -1016,6 +1045,7 @@ impl App {
             return;
         }
         self.handle_drops(&ctx);
+        self.read_tick(&ctx);
         self.overlay_poll_camera(&ctx);
         self.shortcuts(&ctx);
 
