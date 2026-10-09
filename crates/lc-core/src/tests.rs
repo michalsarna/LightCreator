@@ -495,3 +495,10 @@ fn locked_shapes_refuse_editing_access() {
     }
     assert!(Document::from_json(&v.to_string()).unwrap().shapes.iter().all(|s| !s.locked));
 }
+
+#[test]
+fn new_layers_default_to_full_power_and_1000_mm_per_second() {
+    let l = Layer::new(4);
+    assert_eq!((l.power, l.speed), (100.0, 1000.0));
+    assert!(Document::default().layers.iter().all(|l| l.power == 100.0 && l.speed == 1000.0));
+}

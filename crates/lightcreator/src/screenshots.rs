@@ -390,26 +390,47 @@ fn render_screenshots() {
         a.status = "Locked 1 object(s).".into();
     }
     save(&mut h, "19-layers-lock.png");
+
+    // Chinese and Hindi interface (fonts from the assets).
+    {
+        let a = app(&mut h);
+        a.show_ser2net_off();
+        a.layer_dlg = None;
+        a.doc.shapes.clear();
+        a.side_tab = SideTab::Properties;
+        a.lang = Lang::Zh;
+        i18n::set_lang(Lang::Zh);
+        a.status = "就绪".into();
+    }
+    save(&mut h, "20-chinese.png");
+    {
+        let a = app(&mut h);
+        a.lang = Lang::Hi;
+        i18n::set_lang(Lang::Hi);
+        a.status = "तैयार".into();
+    }
+    save(&mut h, "21-hindi.png");
+    i18n::set_lang(Lang::En);
 }
 
-/// Renders every context-menu icon large and small so they can be checked by eye (`target/menu-icons.png`).
+/// Renders every embedded icon (`target/menu-icons.png`) so the whole set can be checked by eye.
 #[test]
 #[ignore = "visual check only"]
 fn render_menu_icon_sheet() {
-    use crate::icons::{paint_menu_icon, MenuIcon};
-    let all = [
-        MenuIcon::FlipH, MenuIcon::FlipV, MenuIcon::RotCw, MenuIcon::RotCcw, MenuIcon::ToFront, MenuIcon::ToBack, MenuIcon::AlignLeft,
-        MenuIcon::AlignCenterH, MenuIcon::AlignRight, MenuIcon::AlignTop, MenuIcon::AlignCenterV, MenuIcon::AlignBottom, MenuIcon::CenterOnBed,
-    ];
-    let mut h = Harness::builder().with_size([560.0, 160.0]).build_ui(move |ui| {
-        ui.painter().rect_filled(ui.max_rect(), 0.0, eframe::egui::Color32::from_gray(0x3c));
-        for (i, ic) in all.iter().enumerate() {
-            let x = 20.0 + i as f32 * 40.0;
-            paint_menu_icon(ui.painter(), eframe::egui::Rect::from_center_size(eframe::egui::pos2(x, 40.0), eframe::egui::vec2(32.0, 32.0)), *ic, eframe::egui::Color32::WHITE);
-            paint_menu_icon(ui.painter(), eframe::egui::Rect::from_center_size(eframe::egui::pos2(x, 110.0), eframe::egui::vec2(16.0, 16.0)), *ic, eframe::egui::Color32::WHITE);
-        }
+    let names = crate::icons::all_names();
+    let mut h = Harness::builder().with_size([720.0, 330.0]).build_ui(move |ui| {
+        egui_extras::install_image_loaders(ui.ctx());
+        eframe::egui::Frame::new().fill(eframe::egui::Color32::from_gray(0x3c)).show(ui, |ui| {
+            ui.set_min_size(ui.available_size());
+            ui.horizontal_wrapped(|ui| {
+                for n in &names {
+                    let (r, _) = ui.allocate_exact_size(eframe::egui::vec2(36.0, 36.0), eframe::egui::Sense::hover());
+                    crate::icons::paint(ui, r.shrink(4.0), n, eframe::egui::Color32::WHITE);
+                }
+            });
+        });
     });
-    h.run_steps(2);
+    h.run_steps(8);
     let img = h.render().expect("render");
     let p = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../target/menu-icons.png");
     img.save(&p).expect("write png");

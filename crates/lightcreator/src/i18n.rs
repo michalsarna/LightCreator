@@ -535,6 +535,7 @@ const TABLE: &[[&str; 7]] = &[
     ["Background colour", "Kolor tła", "Hintergrundfarbe", "Colore di sfondo", "Taustaväri", "背景颜色", "पृष्ठभूमि रंग"],
     ["Automatic", "Automatyczny", "Automatisch", "Automatico", "Automaattinen", "自动", "स्वचालित"],
     ["Line thickness", "Grubość linii", "Linienstärke", "Spessore delle linee", "Viivan paksuus", "线条粗细", "रेखा की मोटाई"],
+    ["{} passes", "Przejść: {}", "{} Durchgänge", "{} passate", "{} kierrosta", "{} 次", "{} पास"],
 ];
 #[cfg(test)]
 mod tests {

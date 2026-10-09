@@ -46,13 +46,12 @@
   Jarvis, Stucki, Atkinson, ordered or grayscale power (minimum and maximum power); negative option per image.
 * Inner shapes are cut first, nearest-neighbour ordering, live toolpath preview with time estimate.
 * The layer colour strip at the bottom shows the layer names. Double-clicking a layer name there or in the
-  Layers tab opens the layer options window (name, mode, speed, power, passes, fill and image settings). Offset
-  fill rows have no separate speed field.
+  Layers tab opens the layer options window (name, mode, speed, power, passes, fill and image settings). New layers start at 100 % power and 1000 mm/s.
 * The **Layers** tab lists layers in burn order; move them up or down to change the order. The Properties tab
   shows the colour of the selected object's layer.
 * **Preview window:** the whole job with each burn operation (layer, fill, line, offset, image, pass) in its own
   colour or in the layer colour, per-operation switches, optional travel moves with the laser off, the machine
-  zero marked at its real corner, and smooth time-based playback (15 s fit, real time, ×10 to ×200) with a scrub slider.
+  zero marked at its real corner, and smooth time-based playback (the totals are shown under the picture) (15 s fit, real time, ×10 to ×200) with a scrub slider.
 
 **Devices and controllers**
 * Start window to choose the device (machine profile) you work with; profiles are remembered.
@@ -100,6 +99,10 @@
 * Languages: English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी.
 * Colour schemes: Dark, Light Dark, Medium Light, Light.
 * Application icon in every place the platform supports.
+* All interface icons (tool bar, menus, context menu, buttons) are SVG files and all text fonts (Noto Sans,
+  Noto Sans Mono, Noto Sans SC, Noto Sans Devanagari) are font files from the `assets` folder, embedded in the
+  program, so the look is the same on every system. The in-window menus show icons; the native macOS menu bar
+  follows the platform convention and stays text only.
 
 **Not yet implemented:** direct Ruida / Trocen binary protocols, scan angles for images, kerning and complex
 script shaping in text, lens-distortion correction for the camera.

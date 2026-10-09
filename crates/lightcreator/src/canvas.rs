@@ -379,14 +379,14 @@ impl App {
         for s in self.doc.shapes.iter().filter(|s| s.locked && self.doc.layers[s.layer].visible) {
             if let Some(b) = s.bounds() {
                 let p = self.w2s(o, Pt::new(b.max.x, b.min.y));
-                crate::icons::paint_lock(&painter, p + egui::vec2(-7.0, 7.0), theme::accent());
+                crate::icons::paint(ui, egui::Rect::from_center_size(p + egui::vec2(-8.0, 8.0), egui::vec2(14.0, 14.0)), "lock", theme::accent());
             }
         }
         // ---- selection ----
         if let Some(b) = self.sel_bounds() {
             let sr = egui::Rect::from_min_max(self.w2s(o, b.min), self.w2s(o, b.max));
             painter.rect_stroke(sr, 0.0, Stroke::new(1.0, theme::accent()), egui::StrokeKind::Outside);
-            let all_locked = self.sel.iter().all(|id| self.doc.shape(*id).map_or(true, |s| s.locked));
+            let all_locked = self.sel.iter().filter_map(|id| self.doc.shape(*id)).all(|s| s.locked);
             if self.tool == Tool::Select && !all_locked {
                 for h in handle_pts(&b) {
                     let r = egui::Rect::from_center_size(self.w2s(o, h), egui::vec2(8.0, 8.0));

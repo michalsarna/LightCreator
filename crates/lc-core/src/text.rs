@@ -8,7 +8,7 @@ use std::sync::{Arc, Mutex, OnceLock};
 use usvg::fontdb;
 
 /// Family name of the font bundled with the program, used when nothing else matches.
-pub const DEFAULT_FAMILY: &str = "Ubuntu";
+pub const DEFAULT_FAMILY: &str = "Noto Sans";
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TextData {
@@ -36,8 +36,11 @@ fn db() -> &'static fontdb::Database {
     static DB: OnceLock<fontdb::Database> = OnceLock::new();
     DB.get_or_init(|| {
         let mut db = fontdb::Database::new();
-        db.load_font_data(epaint_default_fonts::UBUNTU_LIGHT.to_vec());
-        db.load_font_data(epaint_default_fonts::HACK_REGULAR.to_vec());
+        // The fonts of the application itself come first so text always works, even without system fonts.
+        db.load_font_data(include_bytes!("../../../assets/fonts/NotoSans-Regular.ttf").to_vec());
+        db.load_font_data(include_bytes!("../../../assets/fonts/NotoSansMono-Regular.ttf").to_vec());
+        db.load_font_data(include_bytes!("../../../assets/fonts/NotoSansSC-Regular.otf").to_vec());
+        db.load_font_data(include_bytes!("../../../assets/fonts/NotoSansDevanagari-Regular.ttf").to_vec());
         db.load_system_fonts();
         db
     })

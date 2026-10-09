@@ -42,9 +42,15 @@ impl App {
     }
 
     fn properties(&mut self, ui: &mut egui::Ui) {
-        let locked = !self.sel.is_empty() && self.sel.iter().all(|id| self.doc.shape(*id).map_or(true, |s| s.locked));
+        let picked: Vec<_> = self.sel.iter().filter_map(|id| self.doc.shape(*id)).collect();
+        let locked = !picked.is_empty() && picked.iter().all(|s| s.locked);
         if locked {
-            ui.label(RichText::new(format!("🔒 {}", tr("Locked: unlock to edit. Copies are not locked."))).color(theme::accent()));
+            ui.horizontal_wrapped(|ui| {
+                if let Some(img) = crate::icons::image("lock", 15.0, theme::accent()) {
+                    ui.add(img);
+                }
+                ui.label(RichText::new(tr("Locked: unlock to edit. Copies are not locked.")).color(theme::accent()));
+            });
         }
         ui.add_enabled_ui(!locked, |ui| self.properties_inner(ui));
     }
@@ -253,10 +259,10 @@ impl App {
             let c = PALETTE[i];
             ui.horizontal(|ui| {
                 ui.spacing_mut().item_spacing.x = 3.0;
-                if ui.small_button("▲").on_hover_text(tr("Burn earlier")).clicked() {
+                if ui.add(egui::Button::image(crate::icons::slot(Some("chevron-up"), theme::text())).small()).on_hover_text(tr("Burn earlier")).clicked() {
                     move_req = Some((i, true));
                 }
-                if ui.small_button("▼").on_hover_text(tr("Burn later")).clicked() {
+                if ui.add(egui::Button::image(crate::icons::slot(Some("chevron-down"), theme::text())).small()).on_hover_text(tr("Burn later")).clicked() {
                     move_req = Some((i, false));
                 }
                 let (r, resp) = ui.allocate_exact_size(egui::vec2(18.0, 18.0), egui::Sense::click());
@@ -281,10 +287,7 @@ impl App {
                         ui.selectable_value(&mut l.mode, m, tr(m.label()));
                     }
                 });
-                // Offset fill has no separate speed in the row.
-                if l.mode != LayerMode::Offset {
-                    drag_speed_s(ui, units, &mut l.speed, 0.5, Some((0.5, 1000.0)));
-                }
+                drag_speed_s(ui, units, &mut l.speed, 0.5, Some((0.5, 1000.0)));
                 ui.add(egui::DragValue::new(&mut l.power).range(0.0..=100.0).suffix(" %"));
                 ui.checkbox(&mut l.output, "").on_hover_text(tr("Output (burn this layer)"));
                 ui.checkbox(&mut l.visible, "").on_hover_text(tr("Visible"));

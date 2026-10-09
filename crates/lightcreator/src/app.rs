@@ -195,6 +195,7 @@ impl App {
         let grid = saved("grid_main_mm").and_then(|v| v.parse::<f64>().ok()).filter(|g| *g >= 0.1).unwrap_or(10.0);
         i18n::set_lang(lang);
         theme::apply(ctx, scheme);
+        egui_extras::install_image_loaders(ctx);
         crate::fonts::install(ctx);
         lc_core::text::preload();
         App {
@@ -867,18 +868,19 @@ impl App {
                     ui.separator();
                 }
                 Entry::Sub(title, children) => {
-                    ui.menu_button(tr(title), |ui| self.menu_entries(ui, children, pending));
+                    let ink = theme::text();
+                    ui.menu_button((crate::icons::slot(crate::icons::submenu_icon(title), ink), tr(title)), |ui| self.menu_entries(ui, children, pending));
                 }
                 Entry::Item(act, label, accel) => {
-                    let mut text = tr(label).to_string();
                     let enabled = self.act_enabled(*act);
-                    let mut btn = match self.act_checked(*act) {
-                        Some(on) => {
-                            text = format!("{} {}", if on { "✔" } else { "   " }, text);
-                            egui::Button::new(text)
-                        }
-                        None => egui::Button::new(text),
+                    let ink = if enabled { theme::text() } else { theme::text().gamma_multiply(0.4) };
+                    // A tick marks switched-on options; other entries show their own icon.
+                    let icon = match self.act_checked(*act) {
+                        Some(true) => Some("check"),
+                        Some(false) => None,
+                        None => crate::icons::act_icon(*act),
                     };
+                    let mut btn = egui::Button::image_and_text(crate::icons::slot(icon, ink), tr(label));
                     if let Some((_, shown)) = accel {
                         btn = btn.shortcut_text(*shown);
                     }
@@ -906,7 +908,11 @@ impl App {
         let mut pending = None;
         egui::MenuBar::new().ui(ui, |ui| {
             for (title, entries) in menus() {
-                ui.menu_button(tr(title), |ui| self.menu_entries(ui, &entries, &mut pending));
+                let icon = crate::icons::menu_title_icon(title).and_then(|n| crate::icons::image(n, 15.0, theme::text()));
+                match icon {
+                    Some(img) => ui.menu_button((img, tr(title)), |ui| self.menu_entries(ui, &entries, &mut pending)),
+                    None => ui.menu_button(tr(title), |ui| self.menu_entries(ui, &entries, &mut pending)),
+                };
             }
         });
         if let Some(a) = pending {
@@ -973,7 +979,7 @@ impl App {
                 } else if resp.hovered() {
                     ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
                 }
-                crate::icons::paint(ui.painter(), rect.shrink(4.0), t, if on { Color32::WHITE } else { theme::text() });
+                crate::icons::paint(ui, rect.shrink(7.0), crate::icons::tool_icon(t), if on { Color32::WHITE } else { theme::text() });
                 if resp.on_hover_text(tr(tip)).clicked() {
                     self.tool = t;
                     self.pen_pts.clear();

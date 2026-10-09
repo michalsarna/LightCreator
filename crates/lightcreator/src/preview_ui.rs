@@ -153,16 +153,29 @@ impl App {
                     self.pv.view.need_fit = true;
                     self.pv.view.auto_fit = true;
                 }
-                ui.label(RichText::new(format!("{} {}   {} {}", tr("Estimated time"), crate::app::fmt_time(job.est_seconds), tr("cut length"), crate::units_ui::fmt_len(units, job.cut_length, 0))).color(theme::text_dim()));
             });
             ui.separator();
             let n_ops = job.ops.len();
+            // Totals under the picture: time, length, number of passes (operations) and moves.
+            egui::Panel::bottom("pv_totals").frame(egui::Frame::NONE).show(ui, |ui| {
+                ui.separator();
+                ui.horizontal_wrapped(|ui| {
+                    ui.label(RichText::new(format!("{} {}", tr("Estimated time"), crate::app::fmt_time(job.est_seconds))).strong());
+                    ui.separator();
+                    ui.label(format!("{} {}", tr("cut length"), crate::units_ui::fmt_len(units, job.cut_length, 0)));
+                    ui.separator();
+                    ui.label(trf("{} passes", &[&n_ops]));
+                    ui.separator();
+                    ui.label(trf("{} moves", &[&job.moves.len()]));
+                });
+            });
+            egui::CentralPanel::default().frame(egui::Frame::NONE).show(ui, |ui| {
             ui.horizontal_top(|ui| {
                 // Legend with a switch per operation.
                 ui.vertical(|ui| {
                     ui.set_width(210.0);
                     ui.label(RichText::new(tr("Operations")).strong());
-                    egui::ScrollArea::vertical().id_salt("pv_ops").max_height(ui.available_height().max(200.0)).show(ui, |ui| {
+                    egui::ScrollArea::vertical().id_salt("pv_ops").max_height(ui.available_height().max(120.0)).show(ui, |ui| {
                         if n_ops == 0 {
                             ui.label(RichText::new(tr("Nothing to burn: no shapes on output layers")).color(theme::text_dim()));
                         }
@@ -191,6 +204,7 @@ impl App {
                     });
                 });
                 ui.separator();
+                // Leave room under the picture for the totals row.
                 let avail = ui.available_size();
                 let (resp, painter) = ui.allocate_painter(avail, Sense::click_and_drag());
                 let rect = resp.rect;
@@ -273,7 +287,7 @@ impl App {
                 if skip_travel && self.pv.show_travel {
                     painter.text(rect.left_bottom() + egui::vec2(8.0, -8.0), egui::Align2::LEFT_BOTTOM, tr("Too many moves: travel lines are hidden."), egui::FontId::proportional(12.0), theme::text_dim());
                 }
-                painter.text(rect.right_bottom() + egui::vec2(-8.0, -8.0), egui::Align2::RIGHT_BOTTOM, trf("{} moves", &[&job.moves.len()]), egui::FontId::proportional(11.0), theme::text_dim());
+            });
             });
         });
         self.pv.job = Some((self.revision, job));
