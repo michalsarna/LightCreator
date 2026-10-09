@@ -389,3 +389,20 @@ fn settings_reports_are_parsed() {
     assert_eq!(Controller::Marlin.parse_settings(&marlin).travel_speed, Some(30000.0));
     assert_eq!(Controller::Ruida.settings_request(), None);
 }
+
+#[test]
+fn automatic_shapes() {
+    let tri = Contour::triangle(10.0, 8.0);
+    assert_eq!(tri.nodes.len(), 3);
+    assert!((tri.flatten(0.1).area().abs() - 40.0).abs() < 1e-9);
+    let hex = Contour::polygon(6, 20.0, 20.0);
+    assert_eq!(hex.nodes.len(), 6);
+    // Regular hexagon with circumradius 10: area = 3*sqrt(3)/2 * r^2.
+    assert!((hex.flatten(0.1).area().abs() - 3.0 * 3f64.sqrt() / 2.0 * 100.0).abs() < 1e-6);
+    assert_eq!(Contour::polygon(1000, 10.0, 10.0).nodes.len(), 360);
+    assert_eq!(Contour::polygon(1, 10.0, 10.0).nodes.len(), 3);
+    let star = Contour::star(5, 0.382, 20.0, 20.0);
+    assert_eq!(star.nodes.len(), 10);
+    // Top tip touches the top edge of the box.
+    assert!((star.nodes[0].p.y - 0.0).abs() < 1e-9);
+}

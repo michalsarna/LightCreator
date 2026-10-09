@@ -75,6 +75,40 @@ impl Contour {
         }
     }
 
+    /// Isosceles triangle filling a `w` x `h` box, apex at the top centre.
+    pub fn triangle(w: f64, h: f64) -> Contour {
+        let pts = [Pt::new(w / 2.0, 0.0), Pt::new(w, h), Pt::new(0.0, h)];
+        Contour { nodes: pts.iter().map(|p| Node::corner(*p)).collect(), closed: true }
+    }
+
+    /// Regular polygon with `sides` corners inscribed in the ellipse of a `w` x `h` box; first corner at the top.
+    pub fn polygon(sides: u32, w: f64, h: f64) -> Contour {
+        let n = sides.clamp(3, 360) as usize;
+        let (cx, cy, rx, ry) = (w / 2.0, h / 2.0, w / 2.0, h / 2.0);
+        let nodes = (0..n)
+            .map(|i| {
+                let a = -std::f64::consts::FRAC_PI_2 + i as f64 / n as f64 * std::f64::consts::TAU;
+                Node::corner(Pt::new(cx + rx * a.cos(), cy + ry * a.sin()))
+            })
+            .collect();
+        Contour { nodes, closed: true }
+    }
+
+    /// Star with `points` tips; the inner corners sit at `inner` (0..1) of the outer radius.
+    pub fn star(points: u32, inner: f64, w: f64, h: f64) -> Contour {
+        let n = points.clamp(3, 360) as usize;
+        let (cx, cy, rx, ry) = (w / 2.0, h / 2.0, w / 2.0, h / 2.0);
+        let inner = inner.clamp(0.05, 0.95);
+        let nodes = (0..n * 2)
+            .map(|i| {
+                let a = -std::f64::consts::FRAC_PI_2 + i as f64 / (2 * n) as f64 * std::f64::consts::TAU;
+                let k = if i % 2 == 0 { 1.0 } else { inner };
+                Node::corner(Pt::new(cx + rx * k * a.cos(), cy + ry * k * a.sin()))
+            })
+            .collect();
+        Contour { nodes, closed: true }
+    }
+
     pub fn transformed(&self, xf: &Xf) -> Contour {
         Contour { nodes: self.nodes.iter().map(|n| n.transformed(xf)).collect(), closed: self.closed }
     }

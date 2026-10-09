@@ -178,6 +178,16 @@ impl App {
         false
     }
 
+    /// Outline of the automatic shape for the active tool in a `w` x `h` mm box.
+    fn auto_contour(&self, w: f64, h: f64) -> Option<lc_core::Contour> {
+        match self.tool {
+            Tool::Triangle => Some(lc_core::Contour::triangle(w, h)),
+            Tool::Star => Some(lc_core::Contour::star(5, 0.382, w, h)),
+            Tool::Polygon => Some(lc_core::Contour::polygon(self.polygon_sides, w, h)),
+            _ => None,
+        }
+    }
+
     fn finish_pen(&mut self, closed: bool) {
         if self.pen_pts.len() >= 2 {
             self.checkpoint();
@@ -568,7 +578,7 @@ impl App {
                     }
                 }
             }
-            Tool::Rect | Tool::Ellipse | Tool::Line => {
+            Tool::Rect | Tool::Ellipse | Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Line => {
                 ui.ctx().set_cursor_icon(CursorIcon::Crosshair);
                 if resp.drag_started_by(PointerButton::Primary) {
                     if let Some(m) = press {
@@ -712,6 +722,14 @@ impl App {
                                     .collect();
                                 painter.add(egui::Shape::closed_line(pts, st));
                             }
+                            Tool::Triangle | Tool::Star | Tool::Polygon => {
+                                let r = egui::Rect::from_two_pos(a, b);
+                                let (wm, hm) = ((r.width() / self.view.zoom) as f64, (r.height() / self.view.zoom) as f64);
+                                if let Some(ct) = self.auto_contour(wm, hm) {
+                                    let pts: Vec<Pos2> = ct.flatten(0.1).pts.iter().map(|p| r.min + egui::vec2(p.x as f32 * self.view.zoom, p.y as f32 * self.view.zoom)).collect();
+                                    painter.add(egui::Shape::closed_line(pts, st));
+                                }
+                            }
                             _ => {
                                 painter.line_segment([a, b], st);
                             }
@@ -762,7 +780,7 @@ impl App {
                     }
                     Drag::Create { start } => {
                         let mut end = self.snapped(w);
-                        if shift && matches!(self.tool, Tool::Rect | Tool::Ellipse) {
+                        if shift && matches!(self.tool, Tool::Rect | Tool::Ellipse | Tool::Triangle | Tool::Star | Tool::Polygon) {
                             let s = (end.x - start.x).abs().max((end.y - start.y).abs());
                             end = Pt::new(start.x + s * (end.x - start.x).signum(), start.y + s * (end.y - start.y).signum());
                         }
@@ -773,6 +791,10 @@ impl App {
                             let id = match self.tool {
                                 Tool::Rect => self.doc.add(layer, Kind::Rect { w: r.width(), h: r.height() }, Xf::translate(r.min.x, r.min.y)),
                                 Tool::Ellipse => self.doc.add(layer, Kind::Ellipse { w: r.width(), h: r.height() }, Xf::translate(r.min.x, r.min.y)),
+                                Tool::Triangle | Tool::Star | Tool::Polygon => match self.auto_contour(r.width(), r.height()) {
+                                    Some(ct) => self.doc.add(layer, Kind::Bezier(vec![ct]), Xf::translate(r.min.x, r.min.y)),
+                                    None => 0,
+                                },
                                 _ => self.doc.add(layer, Kind::Path(vec![Polyline::new(vec![start, end], false)]), Xf::IDENTITY),
                             };
                             self.sel = vec![id];

@@ -26,8 +26,8 @@ written in Rust. The interface follows the look of [VectorCraft](https://github.
 | Material library | Preview window: every burn operation in its own colour, with travel moves |
 | ![Import image](docs/screenshots/13-image-import.png) | ![Trace image](docs/screenshots/14-trace.png) |
 | Image import with rotate, flip, brightness, contrast and gamma | Trace an image into curves |
-| ![Grid options](docs/screenshots/15-grid-layers.png) | |
-| Main and secondary grid options, layers in burn order | |
+| ![Grid options](docs/screenshots/15-grid-layers.png) | ![Automatic shapes](docs/screenshots/16-shapes.png) |
+| Main and secondary grid options, layers in burn order | Triangle, star and polygon tools with the sides popup |
 
 The pictures are rendered headlessly from the real UI; regenerate them with
 `cargo test -p lightcreator --release render_screenshots -- --ignored`.
@@ -51,7 +51,7 @@ choose in the file dialog.
 
 A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
 
-* **Design:** shapes, Bézier node editing, text tool, boolean operations (union, intersection, subtract,
+* **Design:** shapes (including triangle, star and 3 to 360 sided polygons), Bézier node editing, text tool, boolean operations (union, intersection, subtract,
   exclusive or), shape offset, grouping, right-click context menu, SVG / Adobe Illustrator / PDF import,
   bitmap import with adjustments, image tracing.
 * **Engraving:** line, fill, offset fill and raster image engraving with six dithering methods and

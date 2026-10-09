@@ -464,6 +464,16 @@ const TABLE: &[[&str; 7]] = &[
     ["Could not connect to the device.", "Nie można połączyć się z urządzeniem.", "Verbindung zum Gerät nicht möglich.", "Impossibile connettersi al dispositivo.", "Laitteeseen ei saatu yhteyttä.", "无法连接到设备。", "डिवाइस से कनेक्ट नहीं हो सका।"],
     ["The device did not report any settings.", "Urządzenie nie zgłosiło żadnych ustawień.", "Das Gerät hat keine Einstellungen gemeldet.", "Il dispositivo non ha riportato impostazioni.", "Laite ei ilmoittanut asetuksia.", "设备未报告任何设置。", "डिवाइस ने कोई सेटिंग्स नहीं बताईं।"],
     ["Read {} values from the device", "Odczytano wartości z urządzenia: {}", "{} Werte vom Gerät gelesen", "Letti {} valori dal dispositivo", "Luettu {} arvoa laitteelta", "已从设备读取 {} 个值", "डिवाइस से {} मान पढ़े गए"],
+    // ---- automatic shapes ----
+    ["Triangle (Y)", "Trójkąt (Y)", "Dreieck (Y)", "Triangolo (Y)", "Kolmio (Y)", "三角形 (Y)", "त्रिभुज (Y)"],
+    ["Star (S)", "Gwiazda (S)", "Stern (S)", "Stella (S)", "Tähti (S)", "星形 (S)", "तारा (S)"],
+    ["Polygon (G)", "Wielokąt (G)", "Vieleck (G)", "Poligono (G)", "Monikulmio (G)", "多边形 (G)", "बहुभुज (G)"],
+    ["Triangle", "Trójkąt", "Dreieck", "Triangolo", "Kolmio", "三角形", "त्रिभुज"],
+    ["Star", "Gwiazda", "Stern", "Stella", "Tähti", "星形", "तारा"],
+    ["Polygon", "Wielokąt", "Vieleck", "Poligono", "Monikulmio", "多边形", "बहुभुज"],
+    ["Number of sides", "Liczba boków", "Anzahl der Seiten", "Numero di lati", "Sivujen määrä", "边数", "भुजाओं की संख्या"],
+    ["Drag on the work area to draw it. At most 360 sides.", "Przeciągnij na obszarze roboczym, aby narysować. Maksymalnie 360 boków.", "Zum Zeichnen im Arbeitsbereich ziehen. Höchstens 360 Seiten.", "Trascina sull'area di lavoro per disegnare. Al massimo 360 lati.", "Piirrä vetämällä työalueella. Enintään 360 sivua.", "在工作区域拖动绘制。最多 360 条边。", "बनाने के लिए कार्य क्षेत्र पर खींचें। अधिकतम 360 भुजाएँ।"],
+    ["OK", "OK", "OK", "OK", "OK", "确定", "ठीक है"],
 ];
 #[cfg(test)]
 mod tests {

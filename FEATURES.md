@@ -2,6 +2,9 @@
 
 **Design**
 * Rectangle, ellipse, line, polyline and text tools; select, move and resize with handles.
+* **Automatic shapes:** triangle (Y), five-pointed star (S) and regular polygon (G). The polygon tool opens a
+  popup to choose the number of sides, 3 to 360. Shapes are drawn by dragging a box (Shift keeps it square)
+  and are ordinary editable Bézier shapes.
 * **Node editing (N):** drag nodes and Bézier handles, corner / smooth nodes, insert (double-click a segment) and
   delete nodes, turn segments into lines or curves, open and close paths. Any shape converts to curves.
 * **Text tool (T):** live text from system fonts (family search, bold, italic, size, letter and line spacing,

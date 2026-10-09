@@ -300,4 +300,25 @@ fn render_screenshots() {
         a.doc.move_layer(2, true);
     }
     save(&mut h, "15-grid-layers.png");
+
+    // Automatic shapes and the polygon popup.
+    {
+        let a = app(&mut h);
+        a.show_prefs = false;
+        a.doc.shapes.clear();
+        a.grid_prefs.minor_on = false;
+        a.grid = 10.0;
+        a.side_tab = SideTab::Properties;
+        let mut add = |a: &mut App, ct: lc_core::Contour, x: f64, layer: usize| {
+            a.doc.add(layer, Kind::Bezier(vec![ct]), Xf::translate(x, 60.0))
+        };
+        add(a, lc_core::Contour::triangle(60.0, 52.0), 30.0, 2);
+        add(a, lc_core::Contour::star(5, 0.382, 60.0, 57.0), 110.0, 5);
+        let id = add(a, lc_core::Contour::polygon(9, 60.0, 60.0), 190.0, 1);
+        a.sel = vec![id];
+        a.tool = Tool::Polygon;
+        a.polygon_sides = 9;
+        a.show_polygon = true;
+    }
+    save(&mut h, "16-shapes.png");
 }

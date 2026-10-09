@@ -12,6 +12,28 @@ pub fn paint(p: &Painter, r: Rect, tool: Tool, c: Color32) {
             let pts = vec![pt(7.0, 4.0), pt(7.0, 19.0), pt(11.0, 15.5), pt(14.0, 21.0), pt(16.5, 19.8), pt(13.7, 14.5), pt(18.5, 14.0)];
             p.add(Shape::Path(PathShape::convex_polygon(pts, c.gamma_multiply(0.25), s)));
         }
+        Tool::Triangle => {
+            p.add(Shape::closed_line(vec![pt(12.0, 4.5), pt(20.0, 19.0), pt(4.0, 19.0)], s));
+        }
+        Tool::Star => {
+            let pts: Vec<_> = (0..10)
+                .map(|k| {
+                    let a = -std::f32::consts::FRAC_PI_2 + k as f32 / 10.0 * std::f32::consts::TAU;
+                    let r = if k % 2 == 0 { 9.0 } else { 3.8 };
+                    pt(12.0 + r * a.cos(), 12.5 + r * a.sin())
+                })
+                .collect();
+            p.add(Shape::closed_line(pts, s));
+        }
+        Tool::Polygon => {
+            let pts: Vec<_> = (0..6)
+                .map(|k| {
+                    let a = -std::f32::consts::FRAC_PI_2 + k as f32 / 6.0 * std::f32::consts::TAU;
+                    pt(12.0 + 8.0 * a.cos(), 12.0 + 8.0 * a.sin())
+                })
+                .collect();
+            p.add(Shape::closed_line(pts, s));
+        }
         Tool::Node => {
             // A curve with a node, its handle and a corner node.
             let curve: Vec<_> = (0..=20)

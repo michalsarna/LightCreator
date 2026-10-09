@@ -13,6 +13,9 @@ pub enum Tool {
     Node,
     Rect,
     Ellipse,
+    Triangle,
+    Star,
+    Polygon,
     Line,
     Pen,
     Text,
@@ -21,11 +24,14 @@ pub enum Tool {
 }
 
 impl Tool {
-    pub const ALL: [(Tool, &'static str, Key); 9] = [
+    pub const ALL: [(Tool, &'static str, Key); 12] = [
         (Tool::Select, "Select (V)", Key::V),
         (Tool::Node, "Node edit (N)", Key::N),
         (Tool::Rect, "Rectangle (R)", Key::R),
         (Tool::Ellipse, "Ellipse (E)", Key::E),
+        (Tool::Triangle, "Triangle (Y)", Key::Y),
+        (Tool::Star, "Star (S)", Key::S),
+        (Tool::Polygon, "Polygon (G)", Key::G),
         (Tool::Line, "Line (L)", Key::L),
         (Tool::Pen, "Polyline / pen (P)", Key::P),
         (Tool::Text, "Text (T)", Key::T),
@@ -111,6 +117,8 @@ pub struct App {
     pub show_offset: bool,
     pub show_materials: bool,
     pub show_prefs: bool,
+    pub polygon_sides: u32,
+    pub show_polygon: bool,
     pub read_cfg: Option<crate::device_ui::ReadCfg>,
     pub img_dlg: Option<crate::image_ui::ImgDlg>,
     pub trace_dlg: Option<crate::image_ui::TraceDlg>,
@@ -216,6 +224,8 @@ impl App {
             show_offset: false,
             show_materials: false,
             show_prefs: false,
+            polygon_sides: 6,
+            show_polygon: false,
             read_cfg: None,
             img_dlg: None,
             trace_dlg: None,
@@ -655,6 +665,9 @@ impl App {
             if plain(k) {
                 self.tool = t;
                 self.pen_pts.clear();
+                if t == Tool::Polygon {
+                    self.show_polygon = true;
+                }
             }
         }
         if plain(Key::Escape) {
@@ -869,7 +882,7 @@ impl App {
 
     fn tool_bar(&mut self, ui: &mut egui::Ui) {
         ui.add_space(6.0);
-        ui.vertical_centered(|ui| {
+        egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| ui.vertical_centered(|ui| {
             for (t, tip, _) in Tool::ALL {
                 let (rect, resp) = ui.allocate_exact_size(egui::vec2(36.0, 36.0), egui::Sense::click());
                 let on = self.tool == t;
@@ -882,10 +895,13 @@ impl App {
                 if resp.on_hover_text(tr(tip)).clicked() {
                     self.tool = t;
                     self.pen_pts.clear();
+                    if t == Tool::Polygon {
+                        self.show_polygon = true;
+                    }
                 }
                 ui.add_space(2.0);
             }
-        });
+        }));
     }
 
     fn swatches(&mut self, ui: &mut egui::Ui) {
@@ -929,6 +945,26 @@ impl App {
     }
 
     fn dialogs(&mut self, ctx: &egui::Context) {
+        let mut open = self.show_polygon;
+        let mut done = false;
+        egui::Window::new(tr("Polygon")).open(&mut open).collapsible(false).resizable(false).anchor(egui::Align2::LEFT_TOP, [64.0, 120.0]).show(ctx, |ui| {
+            ui.horizontal(|ui| {
+                ui.label(tr("Number of sides"));
+                ui.add(egui::DragValue::new(&mut self.polygon_sides).range(3..=360));
+            });
+            ui.horizontal_wrapped(|ui| {
+                for n in [3u32, 4, 5, 6, 8, 12, 24, 360] {
+                    if ui.selectable_label(self.polygon_sides == n, n.to_string()).clicked() {
+                        self.polygon_sides = n;
+                    }
+                }
+            });
+            ui.label(RichText::new(tr("Drag on the work area to draw it. At most 360 sides.")).color(theme::text_dim()));
+            done = ui.button(tr("OK")).clicked();
+        });
+        self.polygon_sides = self.polygon_sides.clamp(3, 360);
+        self.show_polygon = open && !done;
+
         let mut open = self.show_offset;
         let mut apply = false;
         egui::Window::new(tr("Offset shape")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
@@ -1068,4 +1104,17 @@ impl App {
             ctx.request_repaint_after(std::time::Duration::from_millis(250));
         }
         }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn tool_shortcuts_are_unique() {
+        let mut keys: Vec<_> = Tool::ALL.iter().map(|t| t.2).collect();
+        keys.sort_by_key(|k| format!("{k:?}"));
+        keys.dedup();
+        assert_eq!(keys.len(), Tool::ALL.len());
+    }
 }

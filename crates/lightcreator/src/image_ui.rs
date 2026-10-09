@@ -64,6 +64,7 @@ impl App {
     }
 
     /// Open the import dialog for a picture that is already decoded.
+    #[cfg(test)]
     pub fn open_import_dialog_with(&mut self, im: ImageData) {
         self.img_dlg = Some(ImgDlg::new(None, im));
     }
