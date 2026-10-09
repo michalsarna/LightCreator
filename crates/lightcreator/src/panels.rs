@@ -301,7 +301,8 @@ impl App {
         ui.separator();
         let l = &mut self.doc.layers[self.active_layer];
         ui.label(RichText::new(trf("Cut settings — {}", &[&l.name])).strong());
-        layer_settings_ui(ui, units, l, "panel");
+        let panel_salt = format!("panel-{}", self.active_layer);
+        layer_settings_ui(ui, units, l, panel_salt.as_str());
         let now = ui.input(|i| i.time);
         self.commit_layer_edit(now, before);
     }
