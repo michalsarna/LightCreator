@@ -73,6 +73,8 @@ pub struct View {
     pub zoom: f32, // screen px per mm
     pub pan: egui::Vec2,
     pub need_fit: bool,
+    /// Keep the work area fitted to the window as it is resized. Zooming or panning by hand turns this off.
+    pub auto_fit: bool,
 }
 
 pub struct App {
@@ -200,7 +202,7 @@ impl App {
             sel: vec![],
             tool: Tool::Select,
             active_layer: 0,
-            view: View { zoom: 2.0, pan: egui::vec2(40.0, 40.0), need_fit: true },
+            view: View { zoom: 2.0, pan: egui::vec2(40.0, 40.0), need_fit: true, auto_fit: true },
             drag: None,
             pen_pts: vec![],
             clipboard: vec![],
@@ -717,6 +719,7 @@ impl App {
             Act::ToggleSnap => Some(self.snap),
             Act::TogglePreview => Some(self.preview_on),
             Act::ToggleOverlay => Some(self.overlay.is_some() && self.overlay_visible),
+            Act::ToggleAutoFit => Some(self.view.auto_fit),
             Act::SetLang(l) => Some(self.lang == l),
             Act::SetScheme(s) => Some(self.scheme == s),
             _ => None,
@@ -801,7 +804,16 @@ impl App {
             Act::ToggleGrid => self.show_grid = !self.show_grid,
             Act::ToggleSnap => self.snap = !self.snap,
             Act::TogglePreview => self.preview_on = !self.preview_on,
-            Act::FitBed => self.view.need_fit = true,
+            Act::FitBed => {
+                self.view.need_fit = true;
+                self.view.auto_fit = true;
+            }
+            Act::ToggleAutoFit => {
+                self.view.auto_fit = !self.view.auto_fit;
+                if self.view.auto_fit {
+                    self.view.need_fit = true;
+                }
+            }
             Act::DeviceSettings => self.show_device = true,
             Act::SwitchDevice => {
                 self.start_sel = self.active;
@@ -1162,5 +1174,22 @@ mod tests {
         keys.sort_by_key(|k| format!("{k:?}"));
         keys.dedup();
         assert_eq!(keys.len(), Tool::ALL.len());
+    }
+
+    #[test]
+    fn view_fits_the_window_and_manual_zoom_turns_auto_fit_off() {
+        let (z, pan) = crate::canvas::fit_view((900.0, 700.0), (400.0, 400.0), 50.0);
+        assert!((z - 1.5).abs() < 1e-6);
+        assert!((pan.x - 150.0).abs() < 1e-4 && (pan.y - 50.0).abs() < 1e-4);
+        // A tiny window never gives a zero or negative zoom.
+        assert!(crate::canvas::fit_view((60.0, 60.0), (400.0, 400.0), 50.0).0 >= 0.05);
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.screen = Screen::Editor;
+        assert!(a.view.auto_fit);
+        a.do_act(&ctx, crate::menu::Act::ToggleAutoFit);
+        assert!(!a.view.auto_fit);
+        a.do_act(&ctx, crate::menu::Act::FitBed);
+        assert!(a.view.auto_fit && a.view.need_fit);
     }
 }

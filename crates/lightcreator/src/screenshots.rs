@@ -391,3 +391,40 @@ fn render_menu_icon_sheet() {
     let p = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../target/menu-icons.png");
     img.save(&p).expect("write png");
 }
+
+/// The work area follows the window size while auto-fit is on, and stays put after a manual zoom.
+#[test]
+fn work_area_follows_window_resizes() {
+    let mut h: Shot = Harness::builder().with_size([1200.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.enter_editor(0);
+    }
+    h.run_steps(3);
+    let big = app(&mut h).view.zoom;
+    h.set_size(eframe::egui::vec2(700.0, 520.0));
+    h.run_steps(3);
+    let small = app(&mut h).view.zoom;
+    assert!(small < big * 0.8, "zoom shrinks with the window: {big} -> {small}");
+    h.set_size(eframe::egui::vec2(1400.0, 900.0));
+    h.run_steps(3);
+    let bigger = app(&mut h).view.zoom;
+    assert!(bigger > big, "zoom grows with the window: {big} -> {bigger}");
+    // After a manual zoom the view is left alone.
+    {
+        let a = app(&mut h);
+        a.view.auto_fit = false;
+        a.view.zoom = 3.0;
+    }
+    h.set_size(eframe::egui::vec2(900.0, 600.0));
+    h.run_steps(3);
+    assert_eq!(app(&mut h).view.zoom, 3.0);
+}

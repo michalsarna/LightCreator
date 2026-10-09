@@ -17,6 +17,9 @@
 * **Right-click context menu** (with small icons for flips, rotations, order, alignment) with the common commands (copy, paste, group, arrange, shape operations,
   adjust and trace for images).
 * Undo / redo, snap to grid, rulers, zoom and pan, drag and drop of files.
+* **Auto-fit:** the work area is fitted to the window and refitted whenever the window or the side panels are
+  resized. Zooming or panning by hand switches it off; View > "Fit bed to window" turns it back on (and
+  "Auto-fit work area to window" toggles it). The preview window behaves the same way.
 * **Grid options** (Settings menu): main grid and a finer secondary grid, each with its own line distance and
   colour.
 

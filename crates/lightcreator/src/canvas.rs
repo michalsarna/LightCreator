@@ -27,6 +27,12 @@ fn handle_pts(b: &Rect) -> [Pt; 8] {
     [Pt::new(l, t), Pt::new(cx, t), Pt::new(r, t), Pt::new(r, cy), Pt::new(r, bt), Pt::new(cx, bt), Pt::new(l, bt), Pt::new(l, cy)]
 }
 
+/// Zoom (pixels per mm) and pan that centre a `bed` (mm) in an area of `avail` pixels with `margin` pixels around.
+pub fn fit_view(avail: (f32, f32), bed: (f64, f64), margin: f32) -> (f32, egui::Vec2) {
+    let z = ((avail.0 - 2.0 * margin) / bed.0 as f32).min((avail.1 - 2.0 * margin) / bed.1 as f32).max(0.05);
+    (z, egui::vec2((avail.0 - bed.0 as f32 * z) / 2.0, (avail.1 - bed.1 as f32 * z) / 2.0))
+}
+
 fn nice_step(min_mm: f64) -> f64 {
     for m in [1.0, 2.0, 5.0] .iter().cycle().zip(0..).map(|(m, i)| m * 10f64.powi(i / 3 - 2)) {
         if m >= min_mm {
@@ -205,10 +211,11 @@ impl App {
         let o = rect.min;
         let (bw, bh) = (self.doc.device.bed_w, self.doc.device.bed_h);
 
-        if self.view.need_fit && rect.width() > 50.0 {
-            let z = ((rect.width() - 100.0) / bw as f32).min((rect.height() - 100.0) / bh as f32).max(0.05);
+        // Fit on request, and keep fitting while the window or the panels are resized.
+        if (self.view.need_fit || self.view.auto_fit) && rect.width() > 50.0 {
+            let (z, pan) = fit_view((rect.width(), rect.height()), (bw, bh), 50.0);
             self.view.zoom = z;
-            self.view.pan = egui::vec2((rect.width() - bw as f32 * z) / 2.0, (rect.height() - bh as f32 * z) / 2.0);
+            self.view.pan = pan;
             self.view.need_fit = false;
         }
 
@@ -222,11 +229,13 @@ impl App {
                     self.view.zoom = (self.view.zoom * f).clamp(0.05, 200.0);
                     let after = self.w2s(o, before);
                     self.view.pan += m - after;
+                    self.view.auto_fit = false;
                 }
             }
         }
         if resp.dragged_by(PointerButton::Middle) || (self.tool == Tool::Pan && resp.dragged_by(PointerButton::Primary)) {
             self.view.pan += resp.drag_delta();
+            self.view.auto_fit = false;
         }
         self.cursor_mm = resp.hover_pos().map(|m| self.s2w(o, m));
 
@@ -616,6 +625,7 @@ impl App {
                         self.view.zoom = (self.view.zoom * f).clamp(0.05, 200.0);
                         let after = self.w2s(o, before);
                         self.view.pan += m - after;
+                        self.view.auto_fit = false;
                     }
                 }
             }

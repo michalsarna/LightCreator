@@ -65,7 +65,7 @@ impl Default for PreviewState {
         PreviewState {
             speed: PlaySpeed::Fit,
             cum: vec![],
-            view: View { zoom: 1.0, pan: egui::vec2(0.0, 0.0), need_fit: true },
+            view: View { zoom: 1.0, pan: egui::vec2(0.0, 0.0), need_fit: true, auto_fit: true },
             color_by: ColorBy::Operation,
             show_travel: false,
             progress: 1.0,
@@ -149,6 +149,7 @@ impl App {
                 });
                 if ui.button(tr("Fit")).clicked() {
                     self.pv.view.need_fit = true;
+                    self.pv.view.auto_fit = true;
                 }
                 ui.label(RichText::new(format!("{} {}   {} {}", tr("Estimated time"), crate::app::fmt_time(job.est_seconds), tr("cut length"), crate::units_ui::fmt_len(units, job.cut_length, 0))).color(theme::text_dim()));
             });
@@ -192,10 +193,10 @@ impl App {
                 let (resp, painter) = ui.allocate_painter(avail, Sense::click_and_drag());
                 let rect = resp.rect;
                 painter.rect_filled(rect, 0.0, theme::workspace());
-                if self.pv.view.need_fit && rect.width() > 50.0 {
-                    let z = ((rect.width() - 40.0) / bw as f32).min((rect.height() - 40.0) / bh as f32).max(0.05);
+                if (self.pv.view.need_fit || self.pv.view.auto_fit) && rect.width() > 50.0 {
+                    let (z, pan) = crate::canvas::fit_view((rect.width(), rect.height()), (bw, bh), 20.0);
                     self.pv.view.zoom = z;
-                    self.pv.view.pan = egui::vec2((rect.width() - bw as f32 * z) / 2.0, (rect.height() - bh as f32 * z) / 2.0);
+                    self.pv.view.pan = pan;
                     self.pv.view.need_fit = false;
                 }
                 let o = rect.min;
@@ -206,10 +207,12 @@ impl App {
                         let before = (m - o - self.pv.view.pan) / self.pv.view.zoom;
                         self.pv.view.zoom = (self.pv.view.zoom * f).clamp(0.05, 200.0);
                         self.pv.view.pan = m - o - before * self.pv.view.zoom;
+                        self.pv.view.auto_fit = false;
                     }
                 }
                 if resp.dragged() {
                     self.pv.view.pan += resp.drag_delta();
+                    self.pv.view.auto_fit = false;
                 }
                 let (zoom, pan) = (self.pv.view.zoom, self.pv.view.pan);
                 let w2s = |p: lc_core::Pt| -> Pos2 { o + pan + egui::vec2(p.x as f32 * zoom, p.y as f32 * zoom) };
