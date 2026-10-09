@@ -23,6 +23,7 @@ muda = { version = "=0.21.1", default-features = false }
 objc2 = "0.6"
 objc2-app-kit = { version = "0.3", default-features = false, features = ["std", "NSApplication", "NSResponder", "NSImage"] }
 objc2-foundation = { version = "0.3", default-features = false, features = ["std", "NSData"] }
+resvg = { version = "0.48.1", default-features = false }
 
 [target.'cfg(windows)'.build-dependencies]
 winresource = "0.1"

@@ -5,6 +5,8 @@ mod canvas;
 mod device_ui;
 mod fonts;
 mod i18n;
+mod guide;
+mod help_ui;
 mod icons;
 mod image_ui;
 mod laser;

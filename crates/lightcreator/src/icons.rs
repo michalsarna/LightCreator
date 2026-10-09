@@ -207,6 +207,9 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::BoolSubtract => "squares-subtract",
         Act::BoolXor => "squares-exclude",
         Act::OffsetShape => "maximize",
+        Act::RoundCorners => "square-round-corner",
+        Act::QuickGuide => "book-open",
+        Act::OpenGithub => "globe",
         Act::GridArray => "grid-3x3",
         Act::ToggleGrid => "grid-3x3",
         Act::ToggleSnap => "magnet",
@@ -235,4 +238,10 @@ pub fn slot(name: Option<&str>, color: Color32) -> egui::Image<'static> {
         Some(img) => img,
         None => image("check", 16.0, Color32::TRANSPARENT).unwrap_or_else(|| egui::Image::new(egui::include_image!("../../../assets/icons/icon-16.png"))),
     }
+}
+
+/// The original SVG text of an icon (strokes still `currentColor`), for the native macOS menu bar.
+#[cfg(target_os = "macos")]
+pub fn svg_text(name: &str) -> Option<String> {
+    FILES.iter().find(|(n, _)| *n == name).map(|(_, b)| String::from_utf8_lossy(b).to_string())
 }

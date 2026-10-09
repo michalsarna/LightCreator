@@ -43,6 +43,9 @@ pub enum Act {
     BoolSubtract,
     BoolXor,
     OffsetShape,
+    RoundCorners,
+    QuickGuide,
+    OpenGithub,
     ImportImage,
     GridArray,
     ToggleGrid,
@@ -113,8 +116,9 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
         file.push(Sep);
         file.push(Item(Act::Quit, "Quit", key("CmdOrCtrl+Q", "Ctrl+Q")));
     }
-    let mut help = vec![];
+    let mut help = vec![Item(Act::QuickGuide, "Quick guide", key("F1", "F1")), Item(Act::OpenGithub, "Project page on GitHub", None)];
     if !cfg!(target_os = "macos") {
+        help.push(Sep);
         help.push(Item(Act::About, "About", None));
     }
     let mut laser = vec![
@@ -171,6 +175,7 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
                     Item(Act::BoolSubtract, "Subtract", None),
                     Item(Act::BoolXor, "Exclusive or", None),
                     Item(Act::OffsetShape, "Offset shape…", None),
+                    Item(Act::RoundCorners, "Round corners…", None),
                     Item(Act::AdjustImage, "Adjust image…", None),
                     Item(Act::TraceImage, "Trace image…", None),
                     Sep,

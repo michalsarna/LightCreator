@@ -536,6 +536,23 @@ const TABLE: &[[&str; 7]] = &[
     ["Automatic", "Automatyczny", "Automatisch", "Automatico", "Automaattinen", "自动", "स्वचालित"],
     ["Line thickness", "Grubość linii", "Linienstärke", "Spessore delle linee", "Viivan paksuus", "线条粗细", "रेखा की मोटाई"],
     ["{} passes", "Przejść: {}", "{} Durchgänge", "{} passate", "{} kierrosta", "{} 次", "{} पास"],
+    // ---- help, rounding ----
+    ["Quick guide", "Krótki przewodnik", "Kurzanleitung", "Guida rapida", "Pikaopas", "快速指南", "त्वरित मार्गदर्शिका"],
+    ["Project page on GitHub", "Strona projektu na GitHubie", "Projektseite auf GitHub", "Pagina del progetto su GitHub", "Projektin sivu GitHubissa", "GitHub 上的项目页面", "GitHub पर प्रोजेक्ट पेज"],
+    ["This guide is available in English and Polish; other languages show the English text.", "Przewodnik jest dostępny po angielsku i polsku; w innych językach widać tekst angielski.", "Diese Anleitung gibt es auf Englisch und Polnisch; in anderen Sprachen erscheint der englische Text.", "La guida è disponibile in inglese e polacco; nelle altre lingue compare il testo inglese.", "Opas on englanniksi ja puolaksi; muilla kielillä näkyy englanninkielinen teksti.", "本指南提供英文和波兰文；其他语言显示英文。", "यह मार्गदर्शिका अंग्रेज़ी और पोलिश में है; अन्य भाषाओं में अंग्रेज़ी पाठ दिखता है।"],
+    ["Round corners…", "Zaokrąglij rogi…", "Ecken abrunden…", "Arrotonda angoli…", "Pyöristä kulmat…", "圆角…", "कोने गोल करें…"],
+    ["Round corners", "Zaokrąglij rogi", "Ecken abrunden", "Arrotonda angoli", "Pyöristä kulmat", "圆角", "कोने गोल करें"],
+    ["Radius", "Promień", "Radius", "Raggio", "Säde", "半径", "त्रिज्या"],
+    ["Round", "Zaokrąglij", "Abrunden", "Arrotonda", "Pyöristä", "圆角", "गोल करें"],
+    ["Radius for rounding", "Promień zaokrąglenia", "Radius zum Abrunden", "Raggio di arrotondamento", "Pyöristyksen säde", "圆角半径", "गोल करने की त्रिज्या"],
+    ["Round the selected corners with this radius", "Zaokrąglij zaznaczone rogi tym promieniem", "Ausgewählte Ecken mit diesem Radius abrunden", "Arrotonda gli angoli selezionati con questo raggio", "Pyöristä valitut kulmat tällä säteellä", "用此半径为所选角倒圆", "चयनित कोनों को इस त्रिज्या से गोल करें"],
+    ["Two straight lines are selected: they are joined with a rounded corner.", "Zaznaczono dwie proste: zostaną połączone zaokrąglonym narożnikiem.", "Zwei gerade Linien sind ausgewählt: Sie werden mit einer abgerundeten Ecke verbunden.", "Sono selezionate due linee rette: verranno unite con un angolo arrotondato.", "Valittuna on kaksi suoraa: ne yhdistetään pyöristetyllä kulmalla.", "已选择两条直线：将用圆角连接它们。", "दो सीधी रेखाएँ चुनी गई हैं: उन्हें गोल कोने से जोड़ा जाएगा।"],
+    ["Every straight corner of the selected shapes is rounded.", "Każdy prosty narożnik zaznaczonych kształtów zostanie zaokrąglony.", "Jede gerade Ecke der ausgewählten Formen wird abgerundet.", "Ogni angolo retto delle forme selezionate viene arrotondato.", "Valittujen muotojen jokainen suora kulma pyöristetään.", "所选形状的每个直线角都会被圆角处理。", "चयनित आकृतियों का हर सीधा कोना गोल किया जाएगा।"],
+    ["These lines cannot be joined (parallel, or the radius does not fit).", "Tych prostych nie można połączyć (są równoległe albo promień się nie mieści).", "Diese Linien lassen sich nicht verbinden (parallel oder der Radius passt nicht).", "Queste linee non si possono unire (parallele, o il raggio non ci sta).", "Näitä suoria ei voi yhdistää (yhdensuuntaisia tai säde ei mahdu).", "无法连接这些直线（平行，或半径放不下）。", "इन रेखाओं को नहीं जोड़ा जा सकता (समानांतर, या त्रिज्या समाती नहीं)।"],
+    ["Joined the two lines with a rounded corner.", "Połączono dwie proste zaokrąglonym narożnikiem.", "Die beiden Linien wurden mit einer abgerundeten Ecke verbunden.", "Le due linee sono state unite con un angolo arrotondato.", "Kaksi suoraa yhdistettiin pyöristetyllä kulmalla.", "已用圆角连接两条直线。", "दोनों रेखाओं को गोल कोने से जोड़ा गया।"],
+    ["Select shapes to round first.", "Najpierw zaznacz kształty do zaokrąglenia.", "Zuerst abzurundende Formen auswählen.", "Seleziona prima le forme da arrotondare.", "Valitse ensin pyöristettävät muodot.", "请先选择要圆角的形状。", "पहले गोल करने के लिए आकृतियाँ चुनें।"],
+    ["There are no straight corners to round.", "Brak prostych narożników do zaokrąglenia.", "Es gibt keine geraden Ecken zum Abrunden.", "Non ci sono angoli retti da arrotondare.", "Pyöristettäviä suoria kulmia ei ole.", "没有可倒圆的直线角。", "गोल करने के लिए कोई सीधा कोना नहीं है।"],
+    ["Rounded {} corner(s).", "Zaokrąglono rogów: {}.", "{} Ecke(n) abgerundet.", "Arrotondati {} angoli.", "Pyöristetty {} kulmaa.", "已圆角处理 {} 个角。", "{} कोने गोल किए गए।"],
 ];
 #[cfg(test)]
 mod tests {

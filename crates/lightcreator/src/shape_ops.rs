@@ -210,6 +210,7 @@ impl App {
             item(ui, multi, Act::BoolXor, "Exclusive or");
             ui.separator();
             item(ui, has_sel, Act::OffsetShape, "Offset shape…");
+            item(ui, any_unlocked, Act::RoundCorners, "Round corners…");
             item(ui, any_unlocked, Act::ToCurves, "Convert to curves");
             item(ui, any_unlocked, Act::ToPath, "Convert to path");
         });
@@ -219,6 +220,123 @@ impl App {
             item(ui, true, Act::TraceImage, "Trace image…");
         }
         chosen.get()
+    }
+
+    /// The two selected shapes, if both are single straight lines (end points in design coordinates).
+    pub fn selected_line_pair(&self) -> Option<[(u64, (Pt, Pt)); 2]> {
+        let ids = self.doc.unlocked_ids(&self.sel);
+        if ids.len() != 2 {
+            return None;
+        }
+        let seg = |id: u64| -> Option<(u64, (Pt, Pt))> {
+            let s = self.doc.shape(id)?;
+            if s.is_image() {
+                return None;
+            }
+            let cs: Vec<_> = s.local_contours().iter().map(|c| c.transformed(&s.xf)).collect();
+            lc_core::fillet::as_segment(&cs).map(|l| (id, l))
+        };
+        Some([seg(ids[0])?, seg(ids[1])?])
+    }
+
+    /// Round corners with `radius` mm: two selected straight lines are joined by a rounded corner, otherwise
+    /// every straight corner of the selected shapes is rounded.
+    pub fn round_corners(&mut self, radius: f64) {
+        if radius <= 0.0 {
+            return;
+        }
+        if let Some([(a, la), (b, lb)]) = self.selected_line_pair() {
+            let Some(contour) = lc_core::fillet::fillet_lines(la, lb, radius) else {
+                self.status_is(tr("These lines cannot be joined (parallel, or the radius does not fit)."));
+                return;
+            };
+            let layer = self.doc.shape(a).map(|s| s.layer).unwrap_or(self.active_layer);
+            self.checkpoint();
+            self.doc.shapes.retain(|s| s.id != a && s.id != b);
+            let id = self.doc.add(layer, Kind::Bezier(vec![contour]), Xf::IDENTITY);
+            self.sel = vec![id];
+            self.node_sel.clear();
+            self.status_is(tr("Joined the two lines with a rounded corner."));
+            return;
+        }
+        let ids: Vec<u64> = self.doc.unlocked_ids(&self.sel).into_iter().filter(|id| self.doc.shape(*id).is_some_and(|s| !s.is_image())).collect();
+        if ids.is_empty() {
+            self.status_is(tr("Select shapes to round first."));
+            return;
+        }
+        self.checkpoint();
+        let mut total = 0;
+        for id in ids {
+            if let Some(s) = self.doc.unlocked_mut(id) {
+                s.to_bezier();
+                if let Kind::Bezier(cs) = &mut s.kind {
+                    for c in cs.iter_mut() {
+                        let (rounded, n) = lc_core::fillet::round_contour(c, radius, None);
+                        *c = rounded;
+                        total += n;
+                    }
+                }
+            }
+        }
+        if total == 0 {
+            self.undo.pop();
+            self.status_is(tr("There are no straight corners to round."));
+        } else {
+            self.node_sel.clear();
+            self.status_is(trf("Rounded {} corner(s).", &[&total]));
+        }
+    }
+
+    /// Round the selected nodes (node tool) with `radius` mm.
+    pub fn round_selected_nodes(&mut self, radius: f64) {
+        if self.node_sel.is_empty() || radius <= 0.0 {
+            return;
+        }
+        self.checkpoint();
+        let mut by_contour: std::collections::BTreeMap<(u64, usize), std::collections::HashSet<usize>> = Default::default();
+        for (id, ci, ni) in &self.node_sel {
+            by_contour.entry((*id, *ci)).or_default().insert(*ni);
+        }
+        let mut total = 0;
+        for ((id, ci), only) in by_contour {
+            if let Some(c) = self.contour_mut(id, ci) {
+                let (rounded, n) = lc_core::fillet::round_contour(c, radius, Some(&only));
+                *c = rounded;
+                total += n;
+            }
+        }
+        self.node_sel.clear();
+        self.active_seg = None;
+        if total == 0 {
+            self.undo.pop();
+            self.status_is(tr("There are no straight corners to round."));
+        } else {
+            self.status_is(trf("Rounded {} corner(s).", &[&total]));
+        }
+    }
+
+    pub fn round_window(&mut self, ctx: &egui::Context) {
+        if !self.show_round {
+            return;
+        }
+        let mut open = true;
+        let mut apply = false;
+        let pair = self.selected_line_pair().is_some();
+        let units = self.doc.device.units;
+        egui::Window::new(tr("Round corners")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+            egui::Grid::new("round").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
+                ui.label(tr("Radius"));
+                crate::units_ui::drag_len(ui, units, &mut self.fillet_radius, 0.1, Some((0.05, 500.0)));
+                ui.end_row();
+            });
+            ui.label(egui::RichText::new(if pair { tr("Two straight lines are selected: they are joined with a rounded corner.") } else { tr("Every straight corner of the selected shapes is rounded.") }).color(theme::text_dim()));
+            apply = ui.button(tr("Round")).clicked();
+        });
+        if apply {
+            self.round_corners(self.fillet_radius);
+            open = false;
+        }
+        self.show_round = open;
     }
 
     pub fn to_curves(&mut self) {
@@ -375,5 +493,42 @@ mod tests {
         assert!(g.r() > 0xdd && g.r() < 0xff, "very light grey, not white: {g:?}");
         a.grid_prefs.bed_color = Some([10, 20, 30, 255]);
         assert_eq!(a.bed_fill(), eframe::egui::Color32::from_rgb(10, 20, 30));
+    }
+
+    #[test]
+    fn rounding_corners_of_shapes_and_of_two_lines() {
+        let mut a = app();
+        let r = a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 20.0 }, Xf::translate(5.0, 5.0));
+        a.sel = vec![r];
+        a.round_corners(3.0);
+        let before: f64 = 400.0;
+        let area = a.doc.shape(r).unwrap().polys()[0].area().abs();
+        assert!(area < before && area > before - 4.0 * (1.0 - std::f64::consts::FRAC_PI_4) * 9.0 - 0.5, "{area}");
+        // Undo brings the sharp rectangle back.
+        a.do_undo();
+        assert!(matches!(a.doc.shape(r).unwrap().kind, lc_core::Kind::Rect { .. }));
+        // Two lines.
+        a.doc.shapes.clear();
+        let h = a.doc.add(0, lc_core::Kind::Path(vec![lc_core::Polyline::new(vec![Pt::new(0.0, 10.0), Pt::new(14.0, 10.0)], false)]), Xf::IDENTITY);
+        let v = a.doc.add(1, lc_core::Kind::Path(vec![lc_core::Polyline::new(vec![Pt::new(10.0, 0.0), Pt::new(10.0, 25.0)], false)]), Xf::IDENTITY);
+        a.sel = vec![h, v];
+        assert!(a.selected_line_pair().is_some());
+        a.round_corners(3.0);
+        assert_eq!(a.doc.shapes.len(), 1, "the two lines became one rounded path");
+        let polys = a.doc.shapes[0].polys();
+        assert!(polys[0].pts.len() > 4 && !polys[0].closed);
+        // Nothing to round: a smooth ellipse leaves the document untouched (and no stray undo step).
+        a.doc.shapes.clear();
+        let e = a.doc.add(0, lc_core::Kind::Ellipse { w: 10.0, h: 10.0 }, Xf::IDENTITY);
+        a.sel = vec![e];
+        let undo_len = a.undo.len();
+        a.round_corners(1.0);
+        assert_eq!(a.undo.len(), undo_len);
+        // Locked shapes are skipped.
+        let rr = a.doc.add(0, lc_core::Kind::Rect { w: 10.0, h: 10.0 }, Xf::IDENTITY);
+        a.sel = vec![rr];
+        a.lock_selection(true);
+        a.round_corners(1.0);
+        assert!(matches!(a.doc.shape(rr).unwrap().kind, lc_core::Kind::Rect { .. }));
     }
 }

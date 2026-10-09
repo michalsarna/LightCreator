@@ -121,6 +121,10 @@ pub struct App {
     pub show_offset: bool,
     pub show_materials: bool,
     pub show_prefs: bool,
+    pub show_guide: bool,
+    pub guide_filter: String,
+    pub show_round: bool,
+    pub fillet_radius: f64,
     pub esc_time: f64,
     pub layer_dlg: Option<usize>,
     pub show_stream: bool,
@@ -241,6 +245,10 @@ impl App {
             show_offset: false,
             show_materials: false,
             show_prefs: false,
+            show_guide: false,
+            guide_filter: String::new(),
+            show_round: false,
+            fillet_radius: 2.0,
             esc_time: -10.0,
             layer_dlg: None,
             show_stream: false,
@@ -670,6 +678,9 @@ impl App {
         } else if cmd(Key::G) {
             self.group_selection();
         }
+        if ctx.input_mut(|i| i.consume_key(Modifiers::NONE, Key::F1)) {
+            self.show_guide = true;
+        }
         if cmd_shift(Key::L) {
             self.lock_selection(false);
         } else if cmd(Key::L) {
@@ -804,6 +815,9 @@ impl App {
             Act::BoolSubtract => self.bool_op(lc_core::ops::BoolOp::Difference),
             Act::BoolXor => self.bool_op(lc_core::ops::BoolOp::Xor),
             Act::OffsetShape => self.show_offset = true,
+            Act::RoundCorners => self.show_round = true,
+            Act::QuickGuide => self.show_guide = true,
+            Act::OpenGithub => ctx.open_url(egui::OpenUrl::new_tab(crate::help_ui::GITHUB_URL)),
             Act::ImportImage => self.import_image(),
             Act::CameraOverlay => self.show_overlay = true,
             Act::GridOptions => self.show_prefs = true,
@@ -875,10 +889,18 @@ impl App {
                     let enabled = self.act_enabled(*act);
                     let ink = if enabled { theme::text() } else { theme::text().gamma_multiply(0.4) };
                     // A tick marks switched-on options; other entries show their own icon.
-                    let icon = match self.act_checked(*act) {
-                        Some(true) => Some("check"),
-                        Some(false) => None,
-                        None => crate::icons::act_icon(*act),
+                    let (icon, ink) = match self.act_checked(*act) {
+                        Some(true) => (Some("check"), ink),
+                        // Switched off: the entry's own icon, faded, so every entry has one.
+                        Some(false) => {
+                            let own = match act {
+                                Act::SetLang(_) => Some("languages"),
+                                Act::SetScheme(_) => Some("palette"),
+                                _ => crate::icons::act_icon(*act),
+                            };
+                            (own, ink.gamma_multiply(0.45))
+                        }
+                        None => (crate::icons::act_icon(*act), ink),
                     };
                     let mut btn = egui::Button::image_and_text(crate::icons::slot(icon, ink), tr(label));
                     if let Some((_, shown)) = accel {
@@ -1127,12 +1149,14 @@ impl App {
             ui.label(tr("Origin: written in Rust with egui/eframe."));
             ui.label(tr("Inspired by LightBurn; interface inspired by VectorCraft."));
             ui.label(tr("Author: Michał Sarna"));
-            ui.hyperlink("https://github.com/michalsarna/LightCreator");
+            ui.hyperlink(crate::help_ui::GITHUB_URL);
             ui.label(tr("MIT licensed."));
         });
         self.show_about = open;
         self.config_window(ctx);
         self.layer_dialog(ctx);
+        self.guide_window(ctx);
+        self.round_window(ctx);
         self.materials_window(ctx);
         self.overlay_window(ctx);
         self.prefs_window(ctx);

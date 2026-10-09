@@ -9,6 +9,9 @@
   delete nodes, turn segments into lines or curves, open and close paths. Any shape converts to curves.
 * **Text tool (T):** live text from system fonts (family search, bold, italic, size, letter and line spacing,
   alignment), convertible to curves. Complex scripts such as Devanagari and Arabic are not shaped.
+* **Round corners:** Arrange > "Round corners…" replaces sharp straight corners of the selected shapes with
+  arcs of a radius you give (too large a radius is limited to what fits); with two straight lines selected it joins
+  them with a rounded corner instead. In the node tool the bar rounds just the selected corners.
 * **Boolean operations:** union, intersection, subtract and exclusive or of selected shapes.
 * **Offset shape:** grow or shrink outlines by a distance, keeping or replacing the original.
 * Numeric position and size, rotate, flip, align, centre on bed, grid array, copy / paste / duplicate.
@@ -92,6 +95,10 @@
 * **Camera overlay:** a photo or the live camera (build with `--features camera`) under the design, aligned
   with four draggable corners (perspective corrected), opacity, flip and rotate; saved per device.
 
+**Help**
+* Help > Quick guide (F1): built-in documentation of the program's options with search (English and Polish),
+  and Help > Project page on GitHub opens the repository.
+
 **Interface**
 * Side panel with four tabs: Properties, Cuts / Layers, Device and Console (live view of everything sent to and
   received from the serial port, with status polling hidden by default).
@@ -101,8 +108,8 @@
 * Application icon in every place the platform supports.
 * All interface icons (tool bar, menus, context menu, buttons) are SVG files and all text fonts (Noto Sans,
   Noto Sans Mono, Noto Sans SC, Noto Sans Devanagari) are font files from the `assets` folder, embedded in the
-  program, so the look is the same on every system. The in-window menus show icons; the native macOS menu bar
-  follows the platform convention and stays text only.
+  program, so the look is the same on every system. Every menu entry has an icon, in the in-window menus (Windows,
+  Linux) and in the native macOS menu bar (menu titles on macOS stay text, as the system requires).
 
 **Not yet implemented:** direct Ruida / Trocen binary protocols, scan angles for images, kerning and complex
 script shaping in text, lens-distortion correction for the camera.

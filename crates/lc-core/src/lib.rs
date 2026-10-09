@@ -5,6 +5,7 @@ pub mod doc;
 pub mod export;
 pub mod gcode;
 pub mod image;
+pub mod fillet;
 pub mod geom;
 pub mod materials;
 pub mod ops;

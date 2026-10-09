@@ -502,3 +502,48 @@ fn new_layers_default_to_full_power_and_1000_mm_per_second() {
     assert_eq!((l.power, l.speed), (100.0, 1000.0));
     assert!(Document::default().layers.iter().all(|l| l.power == 100.0 && l.speed == 1000.0));
 }
+
+#[test]
+fn rounding_corners_of_a_rectangle() {
+    let c = Contour::rect(10.0, 10.0);
+    let (r, n) = fillet::round_contour(&c, 2.0, None);
+    assert_eq!(n, 4);
+    // Each corner loses (4 - pi) r^2 / 1 of area: area = 100 - 4 * (1 - pi/4) * r^2.
+    let expect = 100.0 - 4.0 * (1.0 - std::f64::consts::FRAC_PI_4) * 4.0;
+    let area = r.flatten(0.005).area().abs();
+    assert!((area - expect).abs() < 0.02, "{area} vs {expect}");
+    // A radius that is too large is limited to half a side: the result is a stadium-like shape, not garbage.
+    let (big, n) = fillet::round_contour(&c, 50.0, None);
+    assert_eq!(n, 4);
+    let b = Polyline::bounds(&big.flatten(0.01)).unwrap();
+    assert!((b.width() - 10.0).abs() < 1e-6 && (b.height() - 10.0).abs() < 1e-6);
+    assert!(big.flatten(0.01).area().abs() < 100.0 && big.flatten(0.01).area().abs() > 70.0);
+    // Only the chosen corner.
+    let one: std::collections::HashSet<usize> = [0usize].into_iter().collect();
+    let (_, n) = fillet::round_contour(&c, 2.0, Some(&one));
+    assert_eq!(n, 1);
+    // Nothing to do for a smooth ellipse.
+    assert_eq!(fillet::round_contour(&Contour::ellipse(10.0, 6.0), 1.0, None).1, 0);
+}
+
+#[test]
+fn filleting_two_lines() {
+    // A horizontal and a vertical line that cross at (10, 10).
+    let h = (Pt::new(0.0, 10.0), Pt::new(14.0, 10.0));
+    let v = (Pt::new(10.0, 0.0), Pt::new(10.0, 25.0));
+    let c = fillet::fillet_lines(h, v, 3.0).expect("fillet");
+    // Kept: the longer parts (0,10) .. and (10,25) .. so the corner is at (10,10) turning towards +y.
+    assert_eq!(c.nodes.first().unwrap().p, Pt::new(0.0, 10.0));
+    assert_eq!(c.nodes.last().unwrap().p, Pt::new(10.0, 25.0));
+    let tangents: Vec<Pt> = c.nodes.iter().map(|n| n.p).collect();
+    assert!(tangents.contains(&Pt::new(7.0, 10.0)), "{tangents:?}");
+    assert!(tangents.iter().any(|p| (p.x - 10.0).abs() < 1e-9 && (p.y - 13.0).abs() < 1e-9));
+    // The arc's middle lies at distance r from its centre (7, 13) and bulges towards the corner.
+    let mid = c.point_at(1, 0.5);
+    assert!((mid.dist(Pt::new(7.0, 13.0)) - 3.0).abs() < 0.01, "{mid:?}");
+    assert!(mid.x > 7.0 && mid.y < 13.0);
+    // Parallel lines cannot be joined.
+    assert!(fillet::fillet_lines((Pt::new(0.0, 0.0), Pt::new(5.0, 0.0)), (Pt::new(0.0, 3.0), Pt::new(5.0, 3.0)), 1.0).is_none());
+    assert!(fillet::as_segment(&[Contour { nodes: vec![Node::corner(Pt::new(0.0, 0.0)), Node::corner(Pt::new(1.0, 1.0))], closed: false }]).is_some());
+    assert!(fillet::as_segment(&[Contour::rect(1.0, 1.0)]).is_none());
+}

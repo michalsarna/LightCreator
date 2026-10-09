@@ -411,6 +411,33 @@ fn render_screenshots() {
     }
     save(&mut h, "21-hindi.png");
     i18n::set_lang(Lang::En);
+
+    // Help window and rounded corners.
+    {
+        let a = app(&mut h);
+        a.lang = Lang::En;
+        i18n::set_lang(Lang::En);
+        a.doc.shapes.clear();
+        a.doc.layers[2].name = "C02".into();
+        let r = a.doc.add(2, Kind::Rect { w: 80.0, h: 50.0 }, Xf::translate(40.0, 50.0));
+        a.sel = vec![r];
+        a.fillet_radius = 8.0;
+        a.round_corners(8.0);
+        let tri = a.doc.add(5, Kind::Bezier(vec![lc_core::Contour::triangle(60.0, 50.0)]), Xf::translate(150.0, 50.0));
+        a.sel = vec![tri];
+        a.round_corners(6.0);
+        a.sel.clear();
+        a.show_round = true;
+        a.show_guide = true;
+        a.status = "Rounded 3 corner(s).".into();
+    }
+    save(&mut h, "22-round-help.png");
+    {
+        let a = app(&mut h);
+        a.show_guide = false;
+        a.show_round = false;
+    }
+    save(&mut h, "23-rounded-shapes.png");
 }
 
 /// Renders every embedded icon (`target/menu-icons.png`) so the whole set can be checked by eye.
