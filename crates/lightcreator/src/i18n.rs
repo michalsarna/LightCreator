@@ -262,8 +262,22 @@ const TABLE: &[[&str; 7]] = &[
     ["0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers", "0 % utrzymuje laser wyłączony podczas obrysu; 1–2 % pokazuje słaby punkt na laserach diodowych", "0 % hält den Laser beim Abfahren des Rahmens aus; 1–2 % zeigt bei Diodenlasern einen schwachen Punkt", "Con 0 % il laser resta spento durante la cornice; 1–2 % mostra un punto debole sui laser a diodo", "0 % pitää laserin sammuksissa kehystyksen aikana; 1–2 % näyttää himmeän pisteen diodilasereilla", "0 % 表示走边框时不出光；1–2 % 可在二极管激光器上显示微弱光点", "0 % फ़्रेमिंग के दौरान लेज़र बंद रखता है; 1–2 % डायोड लेज़र पर हल्का बिंदु दिखाता है"],
     ["send G-code / $ command", "wyślij G-code / polecenie $", "G-Code / $-Befehl senden", "invia G-code / comando $", "lähetä G-koodi / $-komento", "发送 G-code / $ 命令", "G-code / $ कमांड भेजें"],
     ["Send", "Wyślij", "Senden", "Invia", "Lähetä", "发送", "भेजें"],
+    // ---- start screen / device profiles ----
+    ["Select device", "Wybierz urządzenie", "Gerät auswählen", "Seleziona dispositivo", "Valitse laite", "选择设备", "डिवाइस चुनें"],
+    ["Choose the device you will work with.", "Wybierz urządzenie, na którym będziesz pracować.", "Wähle das Gerät, mit dem du arbeiten möchtest.", "Scegli il dispositivo con cui lavorerai.", "Valitse laite, jolla työskentelet.", "请选择您要使用的设备。", "वह डिवाइस चुनें जिस पर आप काम करेंगे।"],
+    ["Create at least one device profile to continue.", "Aby kontynuować, utwórz co najmniej jeden profil urządzenia.", "Erstelle mindestens ein Geräteprofil, um fortzufahren.", "Crea almeno un profilo dispositivo per continuare.", "Luo vähintään yksi laiteprofiili jatkaaksesi.", "请至少创建一个设备配置文件后继续。", "जारी रखने के लिए कम से कम एक डिवाइस प्रोफ़ाइल बनाएँ।"],
+    ["Continue", "Kontynuuj", "Weiter", "Continua", "Jatka", "继续", "जारी रखें"],
+    ["Add device…", "Dodaj urządzenie…", "Gerät hinzufügen…", "Aggiungi dispositivo…", "Lisää laite…", "添加设备…", "डिवाइस जोड़ें…"],
+    ["Edit…", "Edytuj…", "Bearbeiten…", "Modifica…", "Muokkaa…", "编辑…", "संपादित करें…"],
+    ["Confirm delete", "Potwierdź usunięcie", "Löschen bestätigen", "Conferma eliminazione", "Vahvista poisto", "确认删除", "हटाने की पुष्टि करें"],
+    ["Cancel", "Anuluj", "Abbrechen", "Annulla", "Peruuta", "取消", "रद्द करें"],
+    ["Device configuration", "Konfiguracja urządzenia", "Gerätekonfiguration", "Configurazione dispositivo", "Laitteen määritys", "设备配置", "डिवाइस कॉन्फ़िगरेशन"],
+    ["New device", "Nowe urządzenie", "Neues Gerät", "Nuovo dispositivo", "Uusi laite", "新设备", "नया डिवाइस"],
+    ["e.g. My diode laser", "np. Mój laser diodowy", "z. B. Mein Diodenlaser", "es. Il mio laser a diodo", "esim. Diodilaserini", "例如：我的二极管激光器", "जैसे: मेरा डायोड लेज़र"],
+    ["A profile name is required.", "Nazwa profilu jest wymagana.", "Ein Profilname ist erforderlich.", "Il nome del profilo è obbligatorio.", "Profiilin nimi vaaditaan.", "必须填写配置文件名称。", "प्रोफ़ाइल का नाम आवश्यक है।"],
+    ["Switch device…", "Zmień urządzenie…", "Gerät wechseln…", "Cambia dispositivo…", "Vaihda laitetta…", "切换设备…", "डिवाइस बदलें…"],
+    ["Device: {}", "Urządzenie: {}", "Gerät: {}", "Dispositivo: {}", "Laite: {}", "设备：{}", "डिवाइस: {}"],
 ];
-
 #[cfg(test)]
 mod tests {
     use super::*;

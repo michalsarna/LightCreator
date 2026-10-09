@@ -35,6 +35,7 @@ pub enum Act {
     TogglePreview,
     FitBed,
     DeviceSettings,
+    SwitchDevice,
     Frame,
     StartJob,
     About,
@@ -126,7 +127,7 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
         ),
         (
             "Laser",
-            vec![Item(Act::DeviceSettings, "Device settings…", None), Item(Act::Frame, "Frame", None), Item(Act::StartJob, "Start job", None)],
+            vec![Item(Act::SwitchDevice, "Switch device…", None), Item(Act::DeviceSettings, "Device settings…", None), Item(Act::Frame, "Frame", None), Item(Act::StartJob, "Start job", None)],
         ),
         (
             "Settings",

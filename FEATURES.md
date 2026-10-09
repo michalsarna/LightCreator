@@ -16,6 +16,11 @@
 **Laser control (GRBL)**
 * Serial connect, jog, home, unlock, pause / resume, stop, framing, console, streamed jobs with progress.
 
+**Devices**
+* Start window to choose the device (machine profile) you work with; profiles are remembered.
+* Device configuration window (work area, machine zero, S-value max, speeds, baud rate).
+* The editor cannot be opened until at least one device profile exists. "Laser > Switch device…" returns to the start window.
+
 **Interface**
 * Native macOS menu bar; in-window menu on Windows and Linux.
 * Languages: English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी.

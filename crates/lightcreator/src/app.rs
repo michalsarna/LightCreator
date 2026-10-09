@@ -34,6 +34,12 @@ impl Tool {
 /// Human-facing release label (branch name matches it).
 pub const APP_VERSION: &str = "v0.02";
 
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum Screen {
+    Start,
+    Editor,
+}
+
 pub struct View {
     pub zoom: f32, // screen px per mm
     pub pan: egui::Vec2,
@@ -66,6 +72,12 @@ pub struct App {
     pub last_layer_undo: f64,
     // dialogs
     pub show_device: bool,
+    pub screen: Screen,
+    pub profiles: Vec<lc_core::Device>,
+    pub active: usize,
+    pub start_sel: usize,
+    pub confirm_delete: bool,
+    pub cfg: Option<crate::device_ui::CfgEdit>,
     pub show_array: bool,
     pub array: (u32, u32, f64, f64),
     pub show_about: bool,
@@ -94,6 +106,8 @@ impl App {
         let saved = |k: &str| cc.storage.and_then(|st| st.get_string(k));
         let lang = saved("lang").and_then(|c| Lang::from_code(&c)).unwrap_or(Lang::En);
         let scheme = saved("scheme").and_then(|c| Scheme::from_id(&c)).unwrap_or(Scheme::LightDark);
+        let profiles: Vec<lc_core::Device> = saved("profiles").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
+        let active = saved("active_profile").and_then(|v| v.parse::<usize>().ok()).filter(|i| *i < profiles.len()).unwrap_or(0);
         i18n::set_lang(lang);
         theme::apply(&cc.egui_ctx, scheme);
         crate::fonts::install(&cc.egui_ctx);
@@ -122,6 +136,12 @@ impl App {
             cursor_mm: None,
             last_layer_undo: -10.0,
             show_device: false,
+            screen: Screen::Start,
+            profiles,
+            active,
+            start_sel: active,
+            confirm_delete: false,
+            cfg: None,
             show_array: false,
             array: (3, 3, 5.0, 5.0),
             show_about: false,
@@ -335,6 +355,9 @@ impl App {
         match std::fs::read_to_string(&p).map_err(|e| e.to_string()).and_then(|s| Document::from_json(&s)) {
             Ok(d) => {
                 self.doc = d;
+                if let Some(p) = self.profiles.get(self.active) {
+                    self.doc.device = p.clone();
+                }
                 self.undo.clear();
                 self.redo.clear();
                 self.sel.clear();
@@ -536,6 +559,10 @@ impl App {
     }
 
     pub fn do_act(&mut self, ctx: &egui::Context, a: Act) {
+        // On the start screen only application-level actions are available.
+        if self.screen == Screen::Start && !matches!(a, Act::Quit | Act::About | Act::SetLang(_) | Act::SetScheme(_)) {
+            return;
+        }
         match a {
             Act::New => self.new_doc(),
             Act::Open => self.open(),
@@ -567,6 +594,11 @@ impl App {
             Act::TogglePreview => self.preview_on = !self.preview_on,
             Act::FitBed => self.view.need_fit = true,
             Act::DeviceSettings => self.show_device = true,
+            Act::SwitchDevice => {
+                self.start_sel = self.active;
+                self.confirm_delete = false;
+                self.screen = Screen::Start;
+            }
             Act::Frame => self.frame(),
             Act::StartJob => self.send_job(),
             Act::About => self.show_about = true,
@@ -733,49 +765,6 @@ impl App {
     }
 
     fn dialogs(&mut self, ctx: &egui::Context) {
-        let mut open = self.show_device;
-        egui::Window::new(tr("Device settings")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
-            let d = &mut self.doc.device;
-            egui::Grid::new("dev").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
-                ui.label(tr("Name"));
-                ui.text_edit_singleline(&mut d.name);
-                ui.end_row();
-                ui.label(tr("Work area X (mm)"));
-                ui.add(egui::DragValue::new(&mut d.bed_w).range(10.0..=5000.0));
-                ui.end_row();
-                ui.label(tr("Work area Y (mm)"));
-                ui.add(egui::DragValue::new(&mut d.bed_h).range(10.0..=5000.0));
-                ui.end_row();
-                ui.label(tr("Machine zero (0,0)"));
-                egui::ComboBox::from_id_salt("origin")
-                    .selected_text(if d.origin == lc_core::Origin::FrontLeft { tr("Front-left (GRBL default)") } else { tr("Back-left") })
-                    .show_ui(ui, |ui| {
-                        ui.selectable_value(&mut d.origin, lc_core::Origin::FrontLeft, tr("Front-left (GRBL default)"));
-                        ui.selectable_value(&mut d.origin, lc_core::Origin::BackLeft, tr("Back-left"));
-                    });
-                ui.end_row();
-                ui.label(tr("S-value max ($30)"));
-                ui.add(egui::DragValue::new(&mut d.s_max).range(1.0..=100000.0));
-                ui.end_row();
-                ui.label(tr("Dynamic power (M4)"));
-                ui.checkbox(&mut d.dynamic_power, "");
-                ui.end_row();
-                ui.label(tr("Travel speed (mm/min)"));
-                ui.add(egui::DragValue::new(&mut d.travel_speed).range(100.0..=60000.0));
-                ui.end_row();
-                ui.label(tr("Return to origin"));
-                ui.checkbox(&mut d.return_home, "");
-                ui.end_row();
-                ui.label(tr("Baud rate"));
-                ui.add(egui::DragValue::new(&mut d.baud).range(1200..=1_000_000));
-                ui.end_row();
-            });
-        });
-        self.show_device = open;
-        if open {
-            self.touch();
-        }
-
         let mut open = self.show_array;
         let mut apply = false;
         egui::Window::new(tr("Grid array")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
@@ -821,6 +810,7 @@ impl App {
             ui.label(tr("MIT licensed."));
         });
         self.show_about = open;
+        self.config_window(ctx);
     }
 }
 
@@ -833,6 +823,10 @@ impl eframe::App for App {
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
         storage.set_string("lang", self.lang.code().to_owned());
         storage.set_string("scheme", self.scheme.id().to_owned());
+        if let Ok(j) = serde_json::to_string(&self.profiles) {
+            storage.set_string("profiles", j);
+        }
+        storage.set_string("active_profile", self.active.to_string());
     }
 
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
@@ -841,11 +835,16 @@ impl eframe::App for App {
         if self.preview_on && self.preview.as_ref().map(|p| p.0) != Some(self.revision) {
             self.preview = Some((self.revision, gcode::generate(&self.doc)));
         }
+        #[cfg(target_os = "macos")]
+        self.native_menu_frame(&ctx);
+        if self.screen == Screen::Start {
+            self.start_screen(ui);
+            self.dialogs(&ctx);
+            return;
+        }
         self.shortcuts(&ctx);
 
         let chrome = egui::Frame::new().fill(theme::panel()).stroke(egui::Stroke::new(1.0, theme::border())).inner_margin(egui::Margin::symmetric(8, 4));
-        #[cfg(target_os = "macos")]
-        self.native_menu_frame(&ctx);
         #[cfg(not(target_os = "macos"))]
         egui::Panel::top("menu").frame(chrome).show(ui, |ui| self.menu_bar(ui));
         egui::Panel::top("controls").frame(chrome).exact_size(36.0).show(ui, |ui| self.control_bar(ui));

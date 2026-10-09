@@ -1,5 +1,6 @@
 mod app;
 mod canvas;
+mod device_ui;
 mod fonts;
 mod i18n;
 mod icons;
