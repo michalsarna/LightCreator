@@ -45,6 +45,7 @@ pub enum Act {
     DeviceSettings,
     SwitchDevice,
     MaterialLibrary,
+    CameraOverlay,
     Frame,
     StartJob,
     About,
@@ -142,6 +143,7 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
                 Item(Act::ToggleSnap, "Snap to grid", None),
                 Item(Act::TogglePreview, "Toolpath preview", None),
                 Item(Act::FitBed, "Fit bed to window", None),
+                Item(Act::CameraOverlay, "Camera overlay…", None),
             ],
         ),
         (

@@ -110,6 +110,15 @@ pub struct App {
     pub image_tex: std::collections::HashMap<(u64, bool), egui::TextureHandle>,
     pub show_offset: bool,
     pub show_materials: bool,
+    pub overlay: Option<crate::overlay::Overlay>,
+    pub overlay_visible: bool,
+    pub overlay_edit: bool,
+    pub overlay_drag: Option<usize>,
+    pub show_overlay: bool,
+    pub cam_list: Vec<String>,
+    pub cam_index: u32,
+    pub cam_error: String,
+    pub cam_worker: Option<crate::camera::Worker>,
     pub user_presets: Vec<lc_core::materials::Preset>,
     pub mat_filter: String,
     pub mat_laser: Option<lc_core::LaserKind>,
@@ -196,6 +205,15 @@ impl App {
             image_tex: Default::default(),
             show_offset: false,
             show_materials: false,
+            overlay: None,
+            overlay_visible: true,
+            overlay_edit: false,
+            overlay_drag: None,
+            show_overlay: false,
+            cam_list: vec![],
+            cam_index: 0,
+            cam_error: String::new(),
+            cam_worker: None,
             user_presets,
             mat_filter: String::new(),
             mat_laser: None,
@@ -682,6 +700,7 @@ impl App {
             Act::BoolXor => self.bool_op(lc_core::ops::BoolOp::Xor),
             Act::OffsetShape => self.show_offset = true,
             Act::ImportImage => self.import_image(),
+            Act::CameraOverlay => self.show_overlay = true,
             Act::MaterialLibrary => {
                 self.mat_laser = Some(self.doc.device.laser);
                 self.show_materials = true;
@@ -931,6 +950,7 @@ impl App {
         self.show_about = open;
         self.config_window(ctx);
         self.materials_window(ctx);
+        self.overlay_window(ctx);
     }
 }
 
@@ -973,6 +993,7 @@ impl App {
             return;
         }
         self.handle_drops(&ctx);
+        self.overlay_poll_camera(&ctx);
         self.shortcuts(&ctx);
 
         let chrome = egui::Frame::new().fill(theme::panel()).stroke(egui::Stroke::new(1.0, theme::border())).inner_margin(egui::Margin::symmetric(8, 4));

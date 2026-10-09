@@ -142,6 +142,18 @@ The menu bar is inside the window on both X11 and Wayland.
 * Settings are stored in `app.ron`, see the "Settings and configuration files" section of the
   [README](README.md) for its location on each system. Delete the file to reset the app.
 
+## Optional: live camera
+
+The camera overlay can load a photo on every build. Live capture is an optional feature:
+
+```sh
+cargo run --release -p lightcreator --features camera
+```
+
+macOS asks for camera permission the first time (for the terminal or the app bundle). On Linux the camera
+needs a working `/dev/video*` device and your user in the `video` group; on Windows the camera privacy
+setting must allow desktop apps. This feature has only been compile-checked on macOS so far.
+
 ## Tests and release build (all systems)
 
 ```sh

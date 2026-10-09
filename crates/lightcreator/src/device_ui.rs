@@ -302,7 +302,7 @@ impl App {
     }
 
     /// Keep the stored profile in step with live edits made in the Device tab.
-    fn sync_profile(&mut self) {
+    pub fn sync_profile(&mut self) {
         if let Some(p) = self.profiles.get_mut(self.active) {
             if *p != self.doc.device {
                 *p = self.doc.device.clone();

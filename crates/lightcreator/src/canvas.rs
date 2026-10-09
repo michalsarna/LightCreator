@@ -148,6 +148,35 @@ impl App {
         self.image_tex.retain(|k, _| keep.contains(k));
     }
 
+    /// Corner dragging for the camera overlay. Returns true while it owns the pointer.
+    fn overlay_interact(&mut self, resp: &egui::Response, o: Pos2, press: Option<Pos2>, hpos: Option<Pos2>) -> bool {
+        if !self.overlay_edit || self.overlay.is_none() {
+            self.overlay_drag = None;
+            return false;
+        }
+        if resp.drag_started_by(PointerButton::Primary) {
+            if let (Some(m), Some(ov)) = (press, &self.overlay) {
+                self.overlay_drag = (0..4).find(|i| self.w2s(o, ov.corners[*i]).distance(m) <= 12.0);
+            }
+        }
+        if let Some(i) = self.overlay_drag {
+            if resp.dragged_by(PointerButton::Primary) {
+                if let Some(m) = hpos {
+                    let w = self.s2w(o, m);
+                    if let Some(ov) = &mut self.overlay {
+                        ov.corners[i] = w;
+                    }
+                }
+            }
+            if resp.drag_stopped() {
+                self.overlay_drag = None;
+                self.overlay_save_cfg();
+            }
+            return true;
+        }
+        false
+    }
+
     fn finish_pen(&mut self, closed: bool) {
         if self.pen_pts.len() >= 2 {
             self.checkpoint();
@@ -222,6 +251,38 @@ impl App {
             lc_core::Origin::BackLeft => Pt::new(0.0, 0.0),
         };
         painter.circle_filled(self.w2s(o, zero), 4.0, theme::accent());
+
+        // ---- camera overlay (under the design) ----
+        if self.overlay_visible {
+            if let Some(ov) = &self.overlay {
+                let n = 16usize;
+                let tint = Color32::from_white_alpha((ov.opacity * 255.0) as u8);
+                let mut mesh = egui::Mesh::with_texture(ov.tex.id());
+                for j in 0..=n {
+                    for i in 0..=n {
+                        let (u, v) = (i as f64 / n as f64, j as f64 / n as f64);
+                        let p = crate::overlay::quad_map(&ov.corners, u, v);
+                        mesh.vertices.push(egui::epaint::Vertex { pos: self.w2s(o, p), uv: egui::pos2(u as f32, v as f32), color: tint });
+                    }
+                }
+                for j in 0..n {
+                    for i in 0..n {
+                        let k = (j * (n + 1) + i) as u32;
+                        let w = (n + 1) as u32;
+                        mesh.indices.extend_from_slice(&[k, k + 1, k + w + 1, k, k + w + 1, k + w]);
+                    }
+                }
+                painter.add(egui::Shape::mesh(mesh));
+                if self.overlay_edit {
+                    let quad: Vec<Pos2> = ov.corners.iter().map(|c| self.w2s(o, *c)).collect();
+                    painter.add(egui::Shape::closed_line(quad.clone(), Stroke::new(1.5, theme::accent())));
+                    for q in quad {
+                        painter.circle_filled(q, 7.0, Color32::WHITE);
+                        painter.circle_stroke(q, 7.0, Stroke::new(2.0, theme::accent()));
+                    }
+                }
+            }
+        }
 
         // ---- shapes ----
         let preview = self.preview_on;
@@ -338,6 +399,8 @@ impl App {
         let hpos = resp.interact_pointer_pos().or(mouse);
         let press = if resp.drag_started() { ui.input(|i| i.pointer.press_origin()).or(hpos) } else { hpos };
         let shift = ui.input(|i| i.modifiers.shift);
+        let overlay_busy = self.overlay_interact(&resp, o, press, hpos);
+        if !overlay_busy {
         match self.tool {
             Tool::Select => {
                 if let Some(m) = mouse {
@@ -513,6 +576,7 @@ impl App {
                 }
             }
             Tool::Pan => ui.ctx().set_cursor_icon(if resp.dragged() { CursorIcon::Grabbing } else { CursorIcon::Grab }),
+        }
         }
 
         // drag update

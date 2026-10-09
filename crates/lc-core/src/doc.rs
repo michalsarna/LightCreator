@@ -337,6 +337,17 @@ impl LaserKind {
     }
 }
 
+/// Camera overlay calibration stored with a device profile.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct CameraCfg {
+    /// Work-area positions (mm) of the picture's corners: top-left, top-right, bottom-right, bottom-left.
+    pub corners: [Pt; 4],
+    pub opacity: f64,
+    /// Which camera to use (index in the system's camera list).
+    #[serde(default)]
+    pub index: u32,
+}
+
 fn d_jog_step() -> f64 {
     5.0
 }
@@ -377,6 +388,9 @@ pub struct Device {
     /// Laser power (percent) while framing; 0 keeps the laser off.
     #[serde(default)]
     pub frame_power: f64,
+    /// Camera overlay alignment for this machine.
+    #[serde(default)]
+    pub camera: Option<CameraCfg>,
 }
 
 impl Default for Device {
@@ -398,6 +412,7 @@ impl Default for Device {
             jog_step: 5.0,
             jog_feed: 3000.0,
             frame_power: 0.0,
+            camera: None,
         }
     }
 }

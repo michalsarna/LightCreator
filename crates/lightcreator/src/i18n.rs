@@ -375,6 +375,26 @@ const TABLE: &[[&str; 7]] = &[
     ["Save the active layer as a preset", "Zapisz aktywną warstwę jako ustawienie", "Aktive Ebene als Voreinstellung speichern", "Salva il livello attivo come preset", "Tallenna aktiivinen taso esiasetuksena", "将当前图层保存为预设", "सक्रिय लेयर को प्रीसेट के रूप में सहेजें"],
     ["Material name", "Nazwa materiału", "Materialname", "Nome del materiale", "Materiaalin nimi", "材料名称", "सामग्री का नाम"],
     ["Save preset", "Zapisz ustawienie", "Voreinstellung speichern", "Salva preset", "Tallenna esiasetus", "保存预设", "प्रीसेट सहेजें"],
+    // ---- camera overlay ----
+    ["Camera overlay…", "Nakładka z kamery…", "Kameraüberlagerung…", "Sovrapposizione fotocamera…", "Kameran peitto…", "摄像头叠加…", "कैमरा ओवरले…"],
+    ["Camera overlay", "Nakładka z kamery", "Kameraüberlagerung", "Sovrapposizione fotocamera", "Kameran peitto", "摄像头叠加", "कैमरा ओवरले"],
+    ["Show a photo or the live camera under the design to position work on the material.", "Pokaż zdjęcie lub obraz z kamery pod projektem, aby ustawić pracę na materiale.", "Zeigt ein Foto oder die Live-Kamera unter dem Entwurf, um die Arbeit auf dem Material zu positionieren.", "Mostra una foto o la fotocamera dal vivo sotto il progetto per posizionare il lavoro sul materiale.", "Näyttää valokuvan tai kameran kuvan suunnitelman alla, jotta työ voidaan sijoittaa materiaalille.", "在设计下方显示照片或实时摄像头画面，以便在材料上定位。", "सामग्री पर काम रखने के लिए डिज़ाइन के नीचे फ़ोटो या लाइव कैमरा दिखाएँ।"],
+    ["Load picture…", "Wczytaj obraz…", "Bild laden…", "Carica immagine…", "Lataa kuva…", "加载图片…", "चित्र लोड करें…"],
+    ["Remove", "Usuń", "Entfernen", "Rimuovi", "Poista", "移除", "हटाएँ"],
+    ["Live camera", "Kamera na żywo", "Live-Kamera", "Fotocamera dal vivo", "Suora kamera", "实时摄像头", "लाइव कैमरा"],
+    ["This build has no camera support. Build with: cargo run --release --features camera", "Ta wersja nie obsługuje kamery. Zbuduj poleceniem: cargo run --release --features camera", "Diese Version hat keine Kameraunterstützung. Bauen mit: cargo run --release --features camera", "Questa versione non supporta la fotocamera. Compila con: cargo run --release --features camera", "Tässä versiossa ei ole kameratukea. Käännä komennolla: cargo run --release --features camera", "此版本不支持摄像头。请用以下命令构建：cargo run --release --features camera", "इस बिल्ड में कैमरा समर्थन नहीं है। इससे बनाएँ: cargo run --release --features camera"],
+    ["No camera", "Brak kamery", "Keine Kamera", "Nessuna fotocamera", "Ei kameraa", "无摄像头", "कोई कैमरा नहीं"],
+    ["Find cameras", "Znajdź kamery", "Kameras suchen", "Cerca fotocamere", "Etsi kameroita", "查找摄像头", "कैमरे खोजें"],
+    ["Start camera", "Włącz kamerę", "Kamera starten", "Avvia fotocamera", "Käynnistä kamera", "启动摄像头", "कैमरा शुरू करें"],
+    ["Freeze frame", "Zatrzymaj klatkę", "Bild einfrieren", "Blocca fotogramma", "Pysäytä kuva", "冻结画面", "फ़्रेम फ़्रीज़ करें"],
+    ["Camera", "Kamera", "Kamera", "Fotocamera", "Kamera", "摄像头", "कैमरा"],
+    ["Overlay: {}", "Nakładka: {}", "Überlagerung: {}", "Sovrapposizione: {}", "Peitto: {}", "叠加：{}", "ओवरले: {}"],
+    ["Show overlay", "Pokaż nakładkę", "Überlagerung anzeigen", "Mostra sovrapposizione", "Näytä peitto", "显示叠加", "ओवरले दिखाएँ"],
+    ["Opacity", "Krycie", "Deckkraft", "Opacità", "Peittävyys", "不透明度", "अपारदर्शिता"],
+    ["Align: drag the four corners on the work area", "Dopasuj: przeciągnij cztery narożniki na obszarze roboczym", "Ausrichten: die vier Ecken auf dem Arbeitsbereich ziehen", "Allinea: trascina i quattro angoli sull'area di lavoro", "Kohdista: vedä neljää kulmaa työalueella", "对齐：在工作区域上拖动四个角", "संरेखित करें: कार्य क्षेत्र पर चारों कोने खींचें"],
+    ["Drag each corner to the matching corner of the material or work area; perspective is corrected.", "Przeciągnij każdy narożnik do odpowiedniego narożnika materiału lub obszaru roboczego; perspektywa jest korygowana.", "Jede Ecke auf die passende Ecke des Materials oder Arbeitsbereichs ziehen; die Perspektive wird korrigiert.", "Trascina ogni angolo sull'angolo corrispondente del materiale o dell'area di lavoro; la prospettiva viene corretta.", "Vedä kukin kulma materiaalin tai työalueen vastaavaan kulmaan; perspektiivi korjataan.", "将每个角拖到材料或工作区域的对应角；透视会被校正。", "प्रत्येक कोने को सामग्री या कार्य क्षेत्र के संबंधित कोने तक खींचें; परिप्रेक्ष्य सुधारा जाता है।"],
+    ["Reset to work area", "Przywróć do obszaru roboczego", "Auf Arbeitsbereich zurücksetzen", "Ripristina all'area di lavoro", "Palauta työalueeseen", "重置为工作区域", "कार्य क्षेत्र पर रीसेट करें"],
+    ["Rotate 90°", "Obróć o 90°", "90° drehen", "Ruota di 90°", "Kierrä 90°", "旋转 90°", "90° घुमाएँ"],
 ];
 #[cfg(test)]
 mod tests {

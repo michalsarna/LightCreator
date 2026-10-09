@@ -17,15 +17,21 @@ written in Rust. The interface follows the look of [VectorCraft](https://github.
 | ![Cuts / Layers tab](docs/screenshots/03-layers.png) | ![Console tab](docs/screenshots/04-console.png) |
 | Cuts / Layers tab | Console tab: live view of the serial traffic |
 | ![Device configuration](docs/screenshots/05-device-config.png) | ![Light scheme, Polish](docs/screenshots/06-light-polish.png) |
-| Device configuration (units, work area, GRBL settings) | Light colour scheme with the Polish interface |
+| Device configuration (controller, units, work area, port, jog) | Light colour scheme with the Polish interface |
+| ![Node editing](docs/screenshots/07-nodes.png) | ![Text tool](docs/screenshots/08-text.png) |
+| Bézier node editing with its floating toolbar | Text tool and text properties |
+| ![Image engraving](docs/screenshots/09-image.png) | ![Camera overlay](docs/screenshots/10-camera-overlay.png) |
+| Raster image engraving, dithered toolpath preview | Camera overlay aligned with four corners |
+| ![Material library](docs/screenshots/11-materials.png) | |
+| Material library | |
 
 The pictures are rendered headlessly from the real UI; regenerate them with
 `cargo test -p lightcreator --release render_screenshots -- --ignored`.
 
 ## Settings and configuration files
 
-Language, colour scheme, device profiles (including their units), the last used profile and the window
-size are stored by the application in a single file, `app.ron`:
+Language, colour scheme, device profiles (controller, units, port, camera alignment and so on), your own material
+presets, the last used profile and the window size are stored by the application in a single file, `app.ron`:
 
 | System | Location |
 |--------|----------|
@@ -41,15 +47,26 @@ choose in the file dialog.
 
 A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
 
-* Design, import / export (SVG, G-code, native `.lcr`), LightBurn-style cut layers, toolpath preview.
-* GRBL laser control over a serial port.
-* Native menu bar on macOS, in-window menu on Windows and Linux.
-* Start window with device profiles, millimetre or inch units per device.
-* Side-panel tabs: Properties, Cuts / Layers, Device and a live serial Console.
-* Seven languages (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी) and four colour schemes.
+* **Design:** shapes, Bézier node editing, text tool, boolean operations (union, intersection, subtract,
+  exclusive or), shape offset, SVG import, bitmap import.
+* **Engraving:** line, fill, offset fill and raster image engraving with six dithering methods and
+  grayscale power; LightBurn-style cut layers; toolpath preview with time estimate.
+* **Devices:** profile per machine (controller, laser type, work area, units, port, jog settings), start
+  window, live serial console.
+* **Controllers:** GRBL and Marlin over a serial port. Ruida and Trocen jobs are exported as PLT / DXF for the
+  controller's own software.
+* **Helpers:** material library with starting settings and your own presets, camera / photo overlay with
+  four-corner alignment.
+* **Interface:** native menu bar on macOS, in-window menu on Windows and Linux, seven languages
+  (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी) and four colour schemes.
 
-Not yet implemented (contributions welcome): image/raster engraving, offset fill, boolean operations,
-Bézier node editing, text tool, Ruida / Trocen / Marlin controllers, material library, camera overlay.
+### What has and has not been verified
+
+All geometry, boolean, offset, raster, G-code, export and translation logic is covered by unit tests, and the
+screenshots below are rendered from the real UI. Nothing has been run against real hardware yet: GRBL and
+Marlin streaming, the Ruida / Trocen import path and the live camera still need testing on actual machines.
+Material library values are generic starting points, always test on scrap. Complex scripts (Devanagari,
+Arabic) are not shaped by the text tool.
 
 ## Building
 
@@ -59,7 +76,7 @@ cargo run --release -p lightcreator -- examples/badge.svg  # open a file
 cargo test --workspace
 ```
 
-Requires a recent stable Rust toolchain. On Linux the GUI needs the usual X11/Wayland + OpenGL libraries
+Add `--features camera` to enable live camera capture. Requires a recent stable Rust toolchain. On Linux the GUI needs the usual X11/Wayland + OpenGL libraries
 (`libxkbcommon-x11`, `libgl1`).
 
 ## Icon
@@ -72,8 +89,8 @@ About window and the Linux desktop entry.
 
 | Crate | Purpose |
 |-------|---------|
-| `crates/lc-core` | geometry, document model, SVG I/O, G-code generation (UI independent, unit-tested) |
-| `crates/lightcreator` | egui desktop application, GRBL serial worker |
+| `crates/lc-core` | geometry, Bézier contours, boolean ops and offsets, text outlines, raster engraving, G-code and PLT / DXF export, material presets (UI independent, unit-tested) |
+| `crates/lightcreator` | egui desktop application, serial worker (GRBL / Marlin), camera capture |
 
 Coordinates are millimetres with the origin at the top-left of the work area; on output Y is flipped for
 machines whose zero is at the front-left (configurable under *Laser → Device settings*).

@@ -182,4 +182,45 @@ fn render_screenshots() {
         a.active_layer = 0;
     }
     save(&mut h, "09-image.png");
+
+    // Camera overlay: a procedural "wood board" picture, slightly skewed.
+    {
+        let a = app(&mut h);
+        a.doc.shapes.clear();
+        a.preview_on = false;
+        a.show_overlay = false;
+        let (w, hh) = (320usize, 240usize);
+        let mut px = Vec::with_capacity(w * hh * 4);
+        for y in 0..hh {
+            for x in 0..w {
+                let g = ((x as f32 * 0.09 + (y as f32 * 0.05).sin() * 3.0).sin() * 0.5 + 0.5) * 0.35;
+                let (r, gg, b) = (200.0 - g * 120.0, 150.0 - g * 100.0, 95.0 - g * 70.0);
+                px.extend_from_slice(&[r as u8, gg as u8, b as u8, 255]);
+            }
+        }
+        let img = eframe::egui::ColorImage::from_rgba_unmultiplied([w, hh], &px);
+        let ctx2 = ctx.clone();
+        a.overlay_set_image(&ctx2, img, "Camera");
+        if let Some(ov) = &mut a.overlay {
+            ov.corners = [lc_core::Pt::new(30.0, 40.0), lc_core::Pt::new(380.0, 25.0), lc_core::Pt::new(365.0, 330.0), lc_core::Pt::new(20.0, 350.0)];
+            ov.opacity = 0.9;
+        }
+        a.overlay_edit = true;
+        let id = a.doc.add(0, Kind::Text(TextData { text: "Hello".into(), size: 40.0, ..TextData::default() }), Xf::translate(110.0, 150.0));
+        a.sel = vec![id];
+        a.show_overlay = true;
+        a.status = "Ready".into();
+    }
+    save(&mut h, "10-camera-overlay.png");
+
+    {
+        let a = app(&mut h);
+        a.show_overlay = false;
+        a.overlay_edit = false;
+        a.overlay = None;
+        a.show_materials = true;
+        a.mat_laser = Some(lc_core::LaserKind::Diode);
+        a.mat_sel = Some(1);
+    }
+    save(&mut h, "11-materials.png");
 }

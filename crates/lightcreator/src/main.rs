@@ -1,4 +1,5 @@
 mod app;
+mod camera;
 mod canvas;
 mod device_ui;
 mod fonts;
@@ -10,6 +11,7 @@ mod menu;
 mod nodes;
 #[cfg(target_os = "macos")]
 mod native_menu;
+mod overlay;
 mod panels;
 mod shape_ops;
 #[cfg(test)]
