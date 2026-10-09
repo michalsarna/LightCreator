@@ -46,7 +46,8 @@
 * Start window to choose the device (machine profile) you work with; profiles are remembered.
 * A profile holds the controller (GRBL, Marlin, Ruida, Trocen), laser type (diode or CO2), units, work area,
   machine zero, S-value max, travel speed, baud rate, serial port, jog step and feed, frame power and the
-  camera alignment. The Device tab selects a device and shows all its settings.
+  camera alignment. The device configuration window groups the options into Device, Connection (serial port or TCP) and
+  Camera; the Device tab selects a device and shows all its settings.
 * **Read from device:** the device configuration window can connect and read work area, S-value max, travel
   speed and laser mode from GRBL (and the feed rate from Marlin).
 * **TCP link:** a device can connect through the network instead of a serial port, for example to `ser2net` on
