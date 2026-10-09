@@ -219,3 +219,31 @@ fn text_produces_outlines() {
     let b = s.bounds().unwrap();
     assert!(b.width() > 5.0 && b.height() > 4.0 && b.height() < 12.0, "{:?}", b);
 }
+
+#[test]
+fn hpgl_and_dxf_export() {
+    let mut d = Document::default();
+    d.layers[2].mode = LayerMode::Line;
+    d.add(2, Kind::Rect { w: 10.0, h: 5.0 }, Xf::translate(20.0, 30.0));
+    d.add(0, Kind::Image(ImageData { name: "i".into(), px_w: 1, px_h: 1, gray: vec![0], w: 5.0, h: 5.0, invert: false }), Xf::IDENTITY);
+    assert_eq!(export::skipped_images(&d), 1);
+    let h = export::hpgl(&d);
+    assert!(h.starts_with("IN;") && h.contains("SP3;") && h.contains("PD"));
+    // Front-left origin: y is flipped, so (20, 30) mm becomes (800, 370*40) plotter units.
+    assert!(h.contains(&format!("PU800,{}", (400.0f64 - 30.0) as i64 * 40)), "{h}");
+    let x = export::dxf(&d);
+    assert!(x.contains("POLYLINE") && x.contains("SEQEND") && x.contains("C02") && x.ends_with("EOF\n"));
+}
+
+#[test]
+fn material_presets_apply_to_layers() {
+    let lib = materials::builtin();
+    assert!(lib.iter().any(|p| p.laser == LaserKind::Co2) && lib.iter().any(|p| p.laser == LaserKind::Diode));
+    assert!(lib.iter().all(|p| p.speed > 0.0 && p.power > 0.0 && p.power <= 100.0 && p.passes >= 1));
+    let mut l = Layer::new(0);
+    let cut = lib.iter().find(|p| p.material == "Plywood 3 mm" && p.operation == "Cut" && p.laser == LaserKind::Diode).unwrap();
+    cut.apply(&mut l);
+    assert_eq!((l.mode, l.passes, l.power), (LayerMode::Line, 2, 100.0));
+    let user = materials::Preset::from_layer("Mine", "Cut", LaserKind::Diode, &l);
+    assert!(user.user && user.speed == l.speed);
+}

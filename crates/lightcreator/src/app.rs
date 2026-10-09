@@ -109,6 +109,13 @@ pub struct App {
     pub focus_text: bool,
     pub image_tex: std::collections::HashMap<(u64, bool), egui::TextureHandle>,
     pub show_offset: bool,
+    pub show_materials: bool,
+    pub user_presets: Vec<lc_core::materials::Preset>,
+    pub mat_filter: String,
+    pub mat_laser: Option<lc_core::LaserKind>,
+    pub mat_sel: Option<usize>,
+    pub mat_name: String,
+    pub mat_op: String,
     pub offset_dist: f64,
     pub offset_keep: bool,
     pub lang: Lang,
@@ -142,6 +149,7 @@ impl App {
         let scheme = saved("scheme").and_then(|c| Scheme::from_id(&c)).unwrap_or(Scheme::LightDark);
         let profiles: Vec<lc_core::Device> = saved("profiles").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let active = saved("active_profile").and_then(|v| v.parse::<usize>().ok()).filter(|i| *i < profiles.len()).unwrap_or(0);
+        let user_presets: Vec<lc_core::materials::Preset> = saved("user_materials").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         i18n::set_lang(lang);
         theme::apply(ctx, scheme);
         crate::fonts::install(ctx);
@@ -187,6 +195,13 @@ impl App {
             focus_text: false,
             image_tex: Default::default(),
             show_offset: false,
+            show_materials: false,
+            user_presets,
+            mat_filter: String::new(),
+            mat_laser: None,
+            mat_sel: None,
+            mat_name: String::new(),
+            mat_op: "Cut".into(),
             offset_dist: -1.0,
             offset_keep: true,
             lang,
@@ -464,7 +479,24 @@ impl App {
     }
 
     // ---------- laser ----------
+    /// Export the vector job as HPGL (.plt) or DXF for file-fed controllers (Ruida / Trocen software).
+    pub fn export_cam(&mut self) {
+        let Some(p) = rfd::FileDialog::new().add_filter("HPGL plot", &["plt"]).add_filter("DXF", &["dxf"]).set_file_name("job.plt").save_file() else { return };
+        let is_dxf = p.extension().is_some_and(|e| e.eq_ignore_ascii_case("dxf"));
+        let data = if is_dxf { lc_core::export::dxf(&self.doc) } else { lc_core::export::hpgl(&self.doc) };
+        let skipped = lc_core::export::skipped_images(&self.doc);
+        self.status = match std::fs::write(&p, data) {
+            Ok(_) if skipped > 0 => trf("Exported {}. {} image(s) skipped: this format has no raster.", &[&p.display(), &skipped]),
+            Ok(_) => trf("Exported {}", &[&p.display()]),
+            Err(e) => trf("Export failed: {}", &[&e]),
+        };
+    }
+
     pub fn send_job(&mut self) {
+        if !self.doc.device.controller.is_serial() {
+            self.export_cam();
+            return;
+        }
         if !self.connected {
             self.status = tr("Connect to a laser first (Laser panel)").into();
             return;
@@ -625,6 +657,7 @@ impl App {
             Act::ImportSvg => self.import_svg(),
             Act::ExportSvg => self.export_svg(),
             Act::ExportGcode => self.export_gcode(),
+            Act::ExportCam => self.export_cam(),
             Act::Quit => ctx.send_viewport_cmd(egui::ViewportCommand::Close),
             Act::Undo => self.do_undo(),
             Act::Redo => self.do_redo(),
@@ -649,6 +682,10 @@ impl App {
             Act::BoolXor => self.bool_op(lc_core::ops::BoolOp::Xor),
             Act::OffsetShape => self.show_offset = true,
             Act::ImportImage => self.import_image(),
+            Act::MaterialLibrary => {
+                self.mat_laser = Some(self.doc.device.laser);
+                self.show_materials = true;
+            }
             Act::GridArray => self.show_array = true,
             Act::ToggleGrid => self.show_grid = !self.show_grid,
             Act::ToggleSnap => self.snap = !self.snap,
@@ -893,6 +930,7 @@ impl App {
         });
         self.show_about = open;
         self.config_window(ctx);
+        self.materials_window(ctx);
     }
 }
 
@@ -909,6 +947,9 @@ impl eframe::App for App {
             storage.set_string("profiles", j);
         }
         storage.set_string("active_profile", self.active.to_string());
+        if let Ok(j) = serde_json::to_string(&self.user_presets) {
+            storage.set_string("user_materials", j);
+        }
     }
 
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {

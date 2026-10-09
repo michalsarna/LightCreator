@@ -355,6 +355,26 @@ const TABLE: &[[&str; 7]] = &[
     ["Ordered", "Uporządkowane", "Geordnet", "Ordinato", "Järjestetty", "有序", "क्रमबद्ध"],
     ["Grayscale", "Skala szarości", "Graustufen", "Scala di grigi", "Harmaasävy", "灰度", "ग्रेस्केल"],
     ["Offset fill", "Wypełnienie przesunięciem", "Versatzfüllung", "Riempimento a scostamento", "Siirtotäyttö", "偏移填充", "ऑफ़सेट भरना"],
+    // ---- file-fed controllers ----
+    ["Export PLT / DXF…", "Eksportuj PLT / DXF…", "PLT / DXF exportieren…", "Esporta PLT / DXF…", "Vie PLT / DXF…", "导出 PLT / DXF…", "PLT / DXF निर्यात करें…"],
+    ["Exported {}. {} image(s) skipped: this format has no raster.", "Wyeksportowano {}. Pominięto obrazów: {}. Ten format nie obsługuje rastra.", "{} exportiert. {} Bild(er) übersprungen: Dieses Format hat kein Raster.", "Esportato {}. {} immagine/i saltata/e: questo formato non ha raster.", "Viety {}. {} kuvaa ohitettu: tässä muodossa ei ole rasteria.", "已导出 {}。已跳过 {} 张图像：此格式不支持位图。", "{} निर्यात किया गया। {} छवि छोड़ी गई: इस प्रारूप में रास्टर नहीं है।"],
+    ["Export PLT or DXF and open it in the controller's own software (for example RDWorks for Ruida), which sets speed and power per layer colour.", "Wyeksportuj PLT lub DXF i otwórz w oprogramowaniu sterownika (np. RDWorks dla Ruida), które ustawia prędkość i moc dla koloru warstwy.", "PLT oder DXF exportieren und in der Software der Steuerung öffnen (z. B. RDWorks für Ruida); sie legt Geschwindigkeit und Leistung je Ebenenfarbe fest.", "Esporta PLT o DXF e aprilo nel software del controller (ad es. RDWorks per Ruida), che imposta velocità e potenza per colore di livello.", "Vie PLT tai DXF ja avaa se ohjaimen omalla ohjelmalla (esim. RDWorks Ruidalle), joka asettaa nopeuden ja tehon tasovärin mukaan.", "导出 PLT 或 DXF，并在控制器自带软件（如 Ruida 的 RDWorks）中打开，按图层颜色设置速度和功率。", "PLT या DXF निर्यात करें और कंट्रोलर के अपने सॉफ़्टवेयर (जैसे Ruida के लिए RDWorks) में खोलें, जो लेयर रंग के अनुसार गति और पावर सेट करता है।"],
+    // ---- material library ----
+    ["Material library…", "Biblioteka materiałów…", "Materialbibliothek…", "Libreria materiali…", "Materiaalikirjasto…", "材料库…", "सामग्री लाइब्रेरी…"],
+    ["Material library", "Biblioteka materiałów", "Materialbibliothek", "Libreria materiali", "Materiaalikirjasto", "材料库", "सामग्री लाइब्रेरी"],
+    ["All", "Wszystkie", "Alle", "Tutti", "Kaikki", "全部", "सभी"],
+    ["Material", "Materiał", "Material", "Materiale", "Materiaali", "材料", "सामग्री"],
+    ["Operation", "Operacja", "Vorgang", "Operazione", "Toiminto", "操作", "ऑपरेशन"],
+    ["Power", "Moc", "Leistung", "Potenza", "Teho", "功率", "पावर"],
+    ["Cut", "Cięcie", "Schneiden", "Taglio", "Leikkaus", "切割", "कटिंग"],
+    ["Engrave", "Grawer", "Gravur", "Incisione", "Kaiverrus", "雕刻", "उत्कीर्णन"],
+    ["Score", "Rysowanie", "Ritzen", "Marcatura", "Uurtaminen", "划线", "स्कोर"],
+    ["Starting values for typical 10 W diode and 40 W CO2 lasers. Always test on scrap.", "Wartości startowe dla typowych laserów diodowych 10 W i CO2 40 W. Zawsze testuj na ścinku.", "Startwerte für typische 10-W-Diodenlaser und 40-W-CO2-Laser. Immer an Restmaterial testen.", "Valori iniziali per tipici laser a diodo da 10 W e CO2 da 40 W. Prova sempre su uno scarto.", "Lähtöarvot tyypillisille 10 W diodi- ja 40 W CO2-lasereille. Testaa aina hukkapalalla.", "适用于常见 10 W 二极管和 40 W CO2 激光器的起始参数。请务必先在边角料上测试。", "सामान्य 10 W डायोड और 40 W CO2 लेज़र के लिए प्रारंभिक मान। हमेशा स्क्रैप पर परीक्षण करें।"],
+    ["Apply to layer {}", "Zastosuj do warstwy {}", "Auf Ebene {} anwenden", "Applica al livello {}", "Käytä tasolle {}", "应用到图层 {}", "लेयर {} पर लागू करें"],
+    ["Applied {} ({}) to layer {}", "Zastosowano {} ({}) do warstwy {}", "{} ({}) auf Ebene {} angewendet", "Applicato {} ({}) al livello {}", "{} ({}) käytetty tasolle {}", "已将 {}（{}）应用到图层 {}", "{} ({}) लेयर {} पर लागू किया गया"],
+    ["Save the active layer as a preset", "Zapisz aktywną warstwę jako ustawienie", "Aktive Ebene als Voreinstellung speichern", "Salva il livello attivo come preset", "Tallenna aktiivinen taso esiasetuksena", "将当前图层保存为预设", "सक्रिय लेयर को प्रीसेट के रूप में सहेजें"],
+    ["Material name", "Nazwa materiału", "Materialname", "Nome del materiale", "Materiaalin nimi", "材料名称", "सामग्री का नाम"],
+    ["Save preset", "Zapisz ustawienie", "Voreinstellung speichern", "Salva preset", "Tallenna esiasetus", "保存预设", "प्रीसेट सहेजें"],
 ];
 #[cfg(test)]
 mod tests {

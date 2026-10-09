@@ -379,6 +379,11 @@ impl App {
         ui.label(RichText::new(tr("Connection")).strong());
         if !ctrl.is_serial() {
             ui.label(RichText::new(tr("This controller has no live connection: jobs are exported as files.")).color(theme::text_dim()));
+            ui.label(RichText::new(tr("Export PLT or DXF and open it in the controller's own software (for example RDWorks for Ruida), which sets speed and power per layer colour.")).color(theme::text_dim()));
+            if ui.button(tr("Export PLT / DXF…")).clicked() {
+                self.export_cam();
+            }
+            self.sync_profile();
             return;
         }
         let mut port = self.doc.device.port.clone();

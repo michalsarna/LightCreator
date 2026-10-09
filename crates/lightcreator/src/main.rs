@@ -5,6 +5,7 @@ mod fonts;
 mod i18n;
 mod icons;
 mod laser;
+mod materials_ui;
 mod menu;
 mod nodes;
 #[cfg(target_os = "macos")]

@@ -12,6 +12,7 @@ pub enum Act {
     ImportSvg,
     ExportSvg,
     ExportGcode,
+    ExportCam,
     Quit,
     Undo,
     Redo,
@@ -43,6 +44,7 @@ pub enum Act {
     FitBed,
     DeviceSettings,
     SwitchDevice,
+    MaterialLibrary,
     Frame,
     StartJob,
     About,
@@ -80,6 +82,7 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
         Item(Act::ImportImage, "Import image…", None),
         Item(Act::ExportSvg, "Export SVG…", None),
         Item(Act::ExportGcode, "Export G-code…", None),
+        Item(Act::ExportCam, "Export PLT / DXF…", None),
     ];
     if !cfg!(target_os = "macos") {
         file.push(Sep);
@@ -143,7 +146,8 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
         ),
         (
             "Laser",
-            vec![Item(Act::SwitchDevice, "Switch device…", None), Item(Act::DeviceSettings, "Device settings…", None), Item(Act::Frame, "Frame", None), Item(Act::StartJob, "Start job", None)],
+            vec![Item(Act::SwitchDevice, "Switch device…", None),
+                Item(Act::MaterialLibrary, "Material library…", None), Item(Act::DeviceSettings, "Device settings…", None), Item(Act::Frame, "Frame", None), Item(Act::StartJob, "Start job", None)],
         ),
         (
             "Settings",
