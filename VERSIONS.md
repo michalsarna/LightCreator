@@ -2,6 +2,34 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.04
+
+**Devices and connections**
+* Network (TCP) link, for example to `ser2net` on a Raspberry Pi; on Linux, Laser > Share over network (ser2net)…
+  prepares ser2net for a laser plugged into this computer.
+* Camera URL per device (MJPEG stream or JPEG snapshot) with a Camera view that floats, opens as a separate
+  window or docks as a side tab; picture rotation is a device setting. The camera overlay on the work area can
+  be switched on and off at any time.
+* "Read from device" and the device configuration window grouped into Device, Connection and Camera.
+* New layers start at 100 % power and 1000 mm/s.
+
+**Editing**
+* Round corners of shapes, of selected nodes, and between two straight lines.
+* Object locking (copies are not locked), crossing selection (right to left touches, left to right wholly inside),
+  Escape twice returns to the select tool, flips and rotations in their own section of the context menu.
+* Auto-fit of the work area to the window; View options with the work-area background colour (light grey in dark
+  schemes, white in light ones) and line thickness; thinner lines.
+* Layer names in the colour strip and a layer options window (double-click a layer name).
+
+**Preview**
+* The machine zero is shown at its real corner and jobs start and end there.
+* Smooth playback in job time with selectable speed; totals (time, length, passes, moves) under the picture.
+
+**Interface**
+* All icons and text fonts come from the `assets` folder (SVG icon set, Noto fonts) and are embedded.
+* Icons on every menu entry, including the native macOS menu bar.
+* Help > Quick guide (F1, English and Polish) and a link to the project page on GitHub.
+
 ## v0.03
 
 **Design and editing**
