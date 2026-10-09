@@ -1,6 +1,8 @@
 //! Document-level operations: boolean shape operations, offsetting, curve conversion, images and text.
 use crate::app::App;
 use crate::i18n::{tr, trf};
+use crate::icons::{paint_menu_icon, MenuIcon};
+use crate::theme;
 use eframe::egui;
 use lc_core::ops::{self, BoolOp};
 use lc_core::{Kind, Polyline, Pt, TextData, Xf};
@@ -125,12 +127,28 @@ impl App {
         let multi = self.sel.len() >= 2;
         let grouped = self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.group.is_some()));
         let single_image = self.sel.len() == 1 && self.doc.shape(self.sel[0]).is_some_and(|s| s.is_image());
-        let mut chosen = None;
-        let mut item = |ui: &mut egui::Ui, on: bool, act: Act, label: &'static str| {
+        let chosen: std::cell::Cell<Option<Act>> = std::cell::Cell::new(None);
+        let item = |ui: &mut egui::Ui, on: bool, act: Act, label: &'static str| {
             if ui.add_enabled(on, egui::Button::new(tr(label))).clicked() {
-                chosen = Some(act);
+                chosen.set(Some(act));
                 ui.close();
             }
+        };
+        // Entries with a small picture in front of the text.
+        let icon_item = |ui: &mut egui::Ui, on: bool, act: Act, label: &'static str, icon: MenuIcon| -> Option<Act> {
+            let mut hit = None;
+            ui.scope(|ui| {
+                ui.spacing_mut().button_padding.x = 28.0;
+                let r = ui.add_enabled(on, egui::Button::new(tr(label)));
+                let c = if on { theme::text() } else { theme::text().gamma_multiply(0.4) };
+                let ir = egui::Rect::from_center_size(egui::pos2(r.rect.min.x + 17.0, r.rect.center().y), egui::vec2(16.0, 16.0));
+                paint_menu_icon(ui.painter(), ir, icon, c);
+                if r.clicked() {
+                    hit = Some(act);
+                    ui.close();
+                }
+            });
+            hit
         };
         item(ui, has_sel, Act::Copy, "Copy");
         item(ui, !self.clipboard.is_empty(), Act::Paste, "Paste");
@@ -142,18 +160,31 @@ impl App {
         item(ui, grouped, Act::Ungroup, "Ungroup");
         ui.separator();
         ui.menu_button(tr("Arrange"), |ui| {
-            item(ui, has_sel, Act::ToFront, "Bring to front");
-            item(ui, has_sel, Act::ToBack, "Send to back");
+            let put = |ui: &mut egui::Ui, on: bool, act: Act, label: &'static str, icon: MenuIcon| {
+                if let Some(a) = icon_item(ui, on, act, label, icon) {
+                    chosen.set(Some(a));
+                }
+            };
+            put(ui, has_sel, Act::ToFront, "Bring to front", MenuIcon::ToFront);
+            put(ui, has_sel, Act::ToBack, "Send to back", MenuIcon::ToBack);
             ui.separator();
-            for (i, n) in ["Align left", "Align centre (H)", "Align right", "Align top", "Align centre (V)", "Align bottom"].into_iter().enumerate() {
-                item(ui, has_sel, Act::Align(i as u8), n);
+            let aligns = [
+                ("Align left", MenuIcon::AlignLeft),
+                ("Align centre (H)", MenuIcon::AlignCenterH),
+                ("Align right", MenuIcon::AlignRight),
+                ("Align top", MenuIcon::AlignTop),
+                ("Align centre (V)", MenuIcon::AlignCenterV),
+                ("Align bottom", MenuIcon::AlignBottom),
+            ];
+            for (i, (n, ic)) in aligns.into_iter().enumerate() {
+                put(ui, has_sel, Act::Align(i as u8), n, ic);
             }
             ui.separator();
-            item(ui, has_sel, Act::CenterOnBed, "Centre on bed");
-            item(ui, has_sel, Act::FlipH, "Flip horizontal");
-            item(ui, has_sel, Act::FlipV, "Flip vertical");
-            item(ui, has_sel, Act::RotCw, "Rotate 90° CW");
-            item(ui, has_sel, Act::RotCcw, "Rotate 90° CCW");
+            put(ui, has_sel, Act::CenterOnBed, "Centre on bed", MenuIcon::CenterOnBed);
+            put(ui, has_sel, Act::FlipH, "Flip horizontal", MenuIcon::FlipH);
+            put(ui, has_sel, Act::FlipV, "Flip vertical", MenuIcon::FlipV);
+            put(ui, has_sel, Act::RotCw, "Rotate 90° CW", MenuIcon::RotCw);
+            put(ui, has_sel, Act::RotCcw, "Rotate 90° CCW", MenuIcon::RotCcw);
         });
         ui.menu_button(tr("Shape operations"), |ui| {
             item(ui, multi, Act::BoolUnion, "Union");
@@ -170,7 +201,7 @@ impl App {
             item(ui, true, Act::AdjustImage, "Adjust image…");
             item(ui, true, Act::TraceImage, "Trace image…");
         }
-        chosen
+        chosen.get()
     }
 
     pub fn to_curves(&mut self) {

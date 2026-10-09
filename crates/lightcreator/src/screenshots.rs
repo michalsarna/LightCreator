@@ -328,4 +328,50 @@ fn render_screenshots() {
         a.show_polygon = true;
     }
     save(&mut h, "16-shapes.png");
+
+    // Camera view as a side tab, rotated.
+    {
+        let a = app(&mut h);
+        a.show_prefs = false;
+        a.show_polygon = false;
+        a.grid_prefs = crate::prefs::GridPrefs::default();
+        a.grid = 10.0;
+        a.tool = Tool::Select;
+        a.doc.shapes.clear();
+        a.doc.device.camera_url = "http://127.0.0.1:9/stream.mjpg".into();
+        a.doc.device.camera_rotation = 1;
+        a.stream_mode = crate::stream_ui::StreamMode::Tab;
+        a.show_stream = true;
+        a.side_tab = SideTab::Camera;
+        let (w, hh) = (160usize, 90usize);
+        let rgb: Vec<u8> = (0..w * hh).flat_map(|i| { let (x, y) = (i % w, i / w); [(x * 255 / w) as u8, (y * 255 / hh) as u8, 140] }).collect();
+        let (nw, nh, rot) = crate::camera::rotate_rgb(&rgb, w as u32, hh as u32, 1);
+        let img = eframe::egui::ColorImage::from_rgb([nw as usize, nh as usize], &rot);
+        a.stream_tex = Some(ctx.load_texture("t", img, eframe::egui::TextureOptions::LINEAR));
+        a.status = "Ready".into();
+    }
+    save(&mut h, "17-camera-tab.png");
+}
+
+/// Renders every context-menu icon large and small so they can be checked by eye (`target/menu-icons.png`).
+#[test]
+#[ignore = "visual check only"]
+fn render_menu_icon_sheet() {
+    use crate::icons::{paint_menu_icon, MenuIcon};
+    let all = [
+        MenuIcon::FlipH, MenuIcon::FlipV, MenuIcon::RotCw, MenuIcon::RotCcw, MenuIcon::ToFront, MenuIcon::ToBack, MenuIcon::AlignLeft,
+        MenuIcon::AlignCenterH, MenuIcon::AlignRight, MenuIcon::AlignTop, MenuIcon::AlignCenterV, MenuIcon::AlignBottom, MenuIcon::CenterOnBed,
+    ];
+    let mut h = Harness::builder().with_size([560.0, 160.0]).build_ui(move |ui| {
+        ui.painter().rect_filled(ui.max_rect(), 0.0, eframe::egui::Color32::from_gray(0x3c));
+        for (i, ic) in all.iter().enumerate() {
+            let x = 20.0 + i as f32 * 40.0;
+            paint_menu_icon(ui.painter(), eframe::egui::Rect::from_center_size(eframe::egui::pos2(x, 40.0), eframe::egui::vec2(32.0, 32.0)), *ic, eframe::egui::Color32::WHITE);
+            paint_menu_icon(ui.painter(), eframe::egui::Rect::from_center_size(eframe::egui::pos2(x, 110.0), eframe::egui::vec2(16.0, 16.0)), *ic, eframe::egui::Color32::WHITE);
+        }
+    });
+    h.run_steps(2);
+    let img = h.render().expect("render");
+    let p = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../target/menu-icons.png");
+    img.save(&p).expect("write png");
 }

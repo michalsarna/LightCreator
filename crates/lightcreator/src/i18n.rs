@@ -491,6 +491,15 @@ const TABLE: &[[&str; 7]] = &[
     ["Fit 15 s", "Dopasuj do 15 s", "Auf 15 s anpassen", "Adatta a 15 s", "Sovita 15 s", "适配 15 秒", "15 सेकंड में फ़िट"],
     ["Real time", "Czas rzeczywisty", "Echtzeit", "Tempo reale", "Reaaliaika", "实时", "वास्तविक समय"],
     ["Set a camera URL in the device settings first.", "Najpierw ustaw adres URL kamery w ustawieniach urządzenia.", "Zuerst eine Kamera-URL in den Geräteeinstellungen festlegen.", "Imposta prima un URL della fotocamera nelle impostazioni del dispositivo.", "Aseta ensin kameran URL laitteen asetuksissa.", "请先在设备设置中设置摄像头 URL。", "पहले डिवाइस सेटिंग्स में कैमरा URL सेट करें।"],
+    // ---- camera view modes, overlay toggle ----
+    ["Show in", "Pokaż w", "Anzeigen in", "Mostra in", "Näytä paikassa", "显示位置", "यहाँ दिखाएँ"],
+    ["Floating window", "Okno pływające", "Schwebendes Fenster", "Finestra mobile", "Kelluva ikkuna", "浮动窗口", "फ़्लोटिंग विंडो"],
+    ["Separate window", "Osobne okno", "Eigenes Fenster", "Finestra separata", "Erillinen ikkuna", "独立窗口", "अलग विंडो"],
+    ["Side tab", "Zakładka boczna", "Seitenreiter", "Scheda laterale", "Sivuvälilehti", "侧边标签页", "साइड टैब"],
+    ["Overlay", "Nakładka", "Überlagerung", "Sovrapposizione", "Peitto", "叠加", "ओवरले"],
+    ["Show or hide the camera overlay on the work area", "Pokaż lub ukryj nakładkę z kamery na obszarze roboczym", "Kameraüberlagerung im Arbeitsbereich ein- oder ausblenden", "Mostra o nascondi la sovrapposizione della fotocamera sull'area di lavoro", "Näytä tai piilota kameran peitto työalueella", "显示或隐藏工作区域上的摄像头叠加", "कार्य क्षेत्र पर कैमरा ओवरले दिखाएँ या छिपाएँ"],
+    ["Show camera overlay", "Pokaż nakładkę z kamery", "Kameraüberlagerung anzeigen", "Mostra sovrapposizione fotocamera", "Näytä kameran peitto", "显示摄像头叠加", "कैमरा ओवरले दिखाएँ"],
+    ["There is no camera overlay yet. Load a picture or start the camera view.", "Nie ma jeszcze nakładki z kamery. Wczytaj obraz lub uruchom widok z kamery.", "Es gibt noch keine Kameraüberlagerung. Ein Bild laden oder die Kameraansicht starten.", "Non c'è ancora una sovrapposizione. Carica un'immagine o avvia la vista fotocamera.", "Kameran peittoa ei ole vielä. Lataa kuva tai käynnistä kameran näkymä.", "还没有摄像头叠加。请加载图片或启动摄像头画面。", "अभी कोई कैमरा ओवरले नहीं है। चित्र लोड करें या कैमरा दृश्य शुरू करें।"],
 ];
 #[cfg(test)]
 mod tests {

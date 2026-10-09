@@ -14,7 +14,7 @@
 * Numeric position and size, rotate, flip, align, centre on bed, grid array, copy / paste / duplicate.
 * **Grouping:** group objects so they select and transform together; layers are not changed. Copies get their
   own group.
-* **Right-click context menu** with the common commands (copy, paste, group, arrange, shape operations,
+* **Right-click context menu** (with small icons for flips, rotations, order, alignment) with the common commands (copy, paste, group, arrange, shape operations,
   adjust and trace for images).
 * Undo / redo, snap to grid, rulers, zoom and pan, drag and drop of files.
 * **Grid options** (Settings menu): main grid and a finer secondary grid, each with its own line distance and
@@ -54,7 +54,12 @@
   `ser2net`). Everything else works the same, including the console and reading settings.
 * **Camera view:** give the device a camera URL (an MJPEG stream or a JPEG snapshot address, http or https) and a
   "Camera view" button appears next to the preview button. The picture can also be shown as the overlay on the
-  work area. RTSP streams are not supported; use an MJPEG address (most camera software offers one).
+  work area. RTSP streams are not supported; use an MJPEG address (most camera software offers one). The view
+  can float inside the application, open as a separate operating-system window that can leave the application
+  (and sit on another screen) or be docked as a tab of the side panel, and the picture can be rotated by 90°,
+  180° or 270° (remembered per device).
+* The camera overlay on the work area can be switched on and off at any time: the "Overlay" button in the
+  control bar and View > Show camera overlay work even when no camera window is open.
 * **GRBL** and **Marlin** (laser feature, inline power) stream over a serial port or TCP: connect, jog, home, unlock,
   pause / resume, stop, framing, progress.
 * **Ruida** and **Trocen** jobs are exported as HPGL / DXF with one pen or layer per colour, to be opened in the

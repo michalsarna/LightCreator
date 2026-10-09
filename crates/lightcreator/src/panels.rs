@@ -9,7 +9,15 @@ use lc_core::{Dither, Kind, LayerMode, TextData, Xf, PALETTE};
 impl App {
     pub fn side_panel(&mut self, ui: &mut egui::Ui) {
         ui.horizontal_wrapped(|ui| {
-            for (t, label) in SideTab::ALL {
+            let mut tabs: Vec<(SideTab, &'static str)> = SideTab::ALL.to_vec();
+            let camera_tab = self.show_stream && self.stream_mode == crate::stream_ui::StreamMode::Tab;
+            if camera_tab {
+                tabs.push((SideTab::Camera, "Camera view"));
+            }
+            if self.side_tab == SideTab::Camera && !camera_tab {
+                self.side_tab = SideTab::Properties;
+            }
+            for (t, label) in tabs {
                 if ui.selectable_label(self.side_tab == t, RichText::new(tr(label)).strong()).clicked() {
                     self.side_tab = t;
                 }
@@ -27,6 +35,9 @@ impl App {
                 egui::ScrollArea::vertical().id_salt("tab_device").auto_shrink([false, false]).show(ui, |ui| self.device_tab(ui));
             }
             SideTab::Console => self.console_panel(ui),
+            SideTab::Camera => {
+                egui::ScrollArea::vertical().id_salt("tab_camera").auto_shrink([false, false]).show(ui, |ui| self.stream_view(ui));
+            }
         }
     }
 

@@ -429,6 +429,9 @@ pub struct Device {
     /// URL of a live picture of the machine (MJPEG stream or JPEG snapshot). Empty = none.
     #[serde(default)]
     pub camera_url: String,
+    /// Quarter turns clockwise applied to the camera picture (0..=3).
+    #[serde(default)]
+    pub camera_rotation: u8,
 }
 
 impl Device {
@@ -481,6 +484,7 @@ impl Default for Device {
             host: String::new(),
             tcp_port: 3333,
             camera_url: String::new(),
+            camera_rotation: 0,
         }
     }
 }

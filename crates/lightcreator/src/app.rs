@@ -50,6 +50,8 @@ pub enum SideTab {
     Layers,
     Device,
     Console,
+    /// The camera picture; only listed while the stream is shown as a tab.
+    Camera,
 }
 
 impl SideTab {
@@ -118,6 +120,8 @@ pub struct App {
     pub show_materials: bool,
     pub show_prefs: bool,
     pub show_stream: bool,
+    pub stream_mode: crate::stream_ui::StreamMode,
+    pub tab_seen: bool,
     pub stream: Option<(String, crate::camera_stream::StreamWorker)>,
     pub stream_tex: Option<egui::TextureHandle>,
     pub stream_err: String,
@@ -230,6 +234,8 @@ impl App {
             show_materials: false,
             show_prefs: false,
             show_stream: false,
+            stream_mode: crate::stream_ui::StreamMode::Floating,
+            tab_seen: false,
             stream: None,
             stream_tex: None,
             stream_err: String::new(),
@@ -705,6 +711,7 @@ impl App {
             Act::ToggleGrid => Some(self.show_grid),
             Act::ToggleSnap => Some(self.snap),
             Act::TogglePreview => Some(self.preview_on),
+            Act::ToggleOverlay => Some(self.overlay.is_some() && self.overlay_visible),
             Act::SetLang(l) => Some(self.lang == l),
             Act::SetScheme(s) => Some(self.scheme == s),
             _ => None,
@@ -715,6 +722,7 @@ impl App {
         match a {
             Act::Undo => !self.undo.is_empty(),
             Act::Redo => !self.redo.is_empty(),
+            Act::ToggleOverlay => self.overlay.is_some(),
             _ => true,
         }
     }
@@ -765,6 +773,13 @@ impl App {
             Act::CameraOverlay => self.show_overlay = true,
             Act::GridOptions => self.show_prefs = true,
             Act::PreviewWindow => self.show_preview = true,
+            Act::ToggleOverlay => {
+                if self.overlay.is_some() {
+                    self.overlay_visible = !self.overlay_visible;
+                } else {
+                    self.status = tr("There is no camera overlay yet. Load a picture or start the camera view.").to_string();
+                }
+            }
             Act::CameraView => {
                 if self.doc.device.camera_url.trim().is_empty() {
                     self.status = tr("Set a camera URL in the device settings first.").to_string();
@@ -875,6 +890,9 @@ impl App {
             }
             if ui.button(tr("Preview…")).on_hover_text(tr("Open the preview window")).clicked() {
                 self.show_preview = true;
+            }
+            if self.overlay.is_some() && ui.selectable_label(self.overlay_visible, tr("Overlay")).on_hover_text(tr("Show or hide the camera overlay on the work area")).clicked() {
+                self.overlay_visible = !self.overlay_visible;
             }
             if !self.doc.device.camera_url.trim().is_empty() && ui.button(tr("Camera view")).on_hover_text(tr("Show the live camera picture of this machine")).clicked() {
                 self.show_stream = !self.show_stream;

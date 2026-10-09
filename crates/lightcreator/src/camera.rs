@@ -8,6 +8,62 @@ pub struct Frame {
     pub rgb: Vec<u8>,
 }
 
+/// Rotate an RGB picture by `quarter` quarter turns clockwise. Returns the new size and bytes.
+pub fn rotate_rgb(rgb: &[u8], w: u32, h: u32, quarter: u8) -> (u32, u32, Vec<u8>) {
+    let (w, h) = (w as usize, h as usize);
+    let px = |x: usize, y: usize| -> &[u8] { &rgb[(y * w + x) * 3..(y * w + x) * 3 + 3] };
+    match quarter % 4 {
+        0 => (w as u32, h as u32, rgb.to_vec()),
+        2 => {
+            let mut out = Vec::with_capacity(rgb.len());
+            for y in (0..h).rev() {
+                for x in (0..w).rev() {
+                    out.extend_from_slice(px(x, y));
+                }
+            }
+            (w as u32, h as u32, out)
+        }
+        q => {
+            // New picture is h wide and w tall.
+            let mut out = Vec::with_capacity(rgb.len());
+            for ny in 0..w {
+                for nx in 0..h {
+                    let (x, y) = if q == 1 { (ny, h - 1 - nx) } else { (w - 1 - ny, nx) };
+                    out.extend_from_slice(px(x, y));
+                }
+            }
+            (h as u32, w as u32, out)
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::rotate_rgb;
+
+    #[test]
+    fn rotations_move_pixels_clockwise() {
+        // 3 wide, 2 tall: pixel values encode their position (R = x, G = y).
+        let img: Vec<u8> = (0..2u8).flat_map(|y| (0..3u8).flat_map(move |x| [x, y, 0])).collect();
+        let (w, h, r) = rotate_rgb(&img, 3, 2, 1);
+        assert_eq!((w, h), (2, 3));
+        // Clockwise: the old top-left pixel (0,0) ends up top-right of the new picture.
+        assert_eq!(&r[3..6], &[0, 0, 0]);
+        // The old bottom-left (0,1) becomes top-left.
+        assert_eq!(&r[0..3], &[0, 1, 0]);
+        let (w, h, r2) = rotate_rgb(&img, 3, 2, 2);
+        assert_eq!((w, h), (3, 2));
+        assert_eq!(&r2[0..3], &[2, 1, 0]);
+        let (w, h, r3) = rotate_rgb(&img, 3, 2, 3);
+        assert_eq!((w, h), (2, 3));
+        assert_eq!(&r3[0..3], &[2, 0, 0]);
+        // Four turns are the identity.
+        let (_, _, a) = rotate_rgb(&img, 3, 2, 1);
+        let (_, _, b) = rotate_rgb(&a, 2, 3, 3);
+        assert_eq!(b, img);
+    }
+}
+
 #[cfg(feature = "camera")]
 mod imp {
     use super::*;
