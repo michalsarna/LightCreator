@@ -30,6 +30,8 @@ written in Rust. The interface follows the look of [VectorCraft](https://github.
 | Main and secondary grid options, layers in burn order | Triangle, star and polygon tools with the sides popup |
 | ![Camera view as a tab](docs/screenshots/17-camera-tab.png) | ![Share over network](docs/screenshots/18-ser2net.png) |
 | Camera view docked as a side tab, rotated 90° | Sharing the laser's serial port with ser2net (Linux) |
+| ![Layer options and locking](docs/screenshots/19-layers-lock.png) | |
+| Layer names in the strip, layer options window, locked object, light work area in a dark scheme | |
 
 The pictures are rendered headlessly from the real UI; regenerate them with
 `cargo test -p lightcreator --release render_screenshots -- --ignored`.

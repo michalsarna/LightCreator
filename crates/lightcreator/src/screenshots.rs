@@ -367,6 +367,29 @@ fn render_screenshots() {
         }
     }
     save(&mut h, "18-ser2net.png");
+
+    // Layer names in the colour strip, layer dialog, locked object, light work area in a dark scheme.
+    {
+        let a = app(&mut h);
+        a.show_ser2net_off();
+        a.doc.shapes.clear();
+        a.grid_prefs = crate::prefs::GridPrefs::default();
+        a.grid = 20.0;
+        a.show_prefs = false;
+        a.show_stream = false;
+        a.side_tab = SideTab::Layers;
+        a.doc.layers[2].mode = lc_core::LayerMode::Offset;
+        a.doc.layers[2].name = "Cut".into();
+        a.doc.layers[5].name = "Engrave".into();
+        let r = a.doc.add(2, Kind::Rect { w: 70.0, h: 45.0 }, Xf::translate(40.0, 40.0));
+        a.doc.add(5, Kind::Ellipse { w: 60.0, h: 45.0 }, Xf::translate(150.0, 40.0));
+        a.sel = vec![r];
+        a.lock_selection(true);
+        a.active_layer = 2;
+        a.layer_dlg = Some(2);
+        a.status = "Locked 1 object(s).".into();
+    }
+    save(&mut h, "19-layers-lock.png");
 }
 
 /// Renders every context-menu icon large and small so they can be checked by eye (`target/menu-icons.png`).
@@ -427,4 +450,27 @@ fn work_area_follows_window_resizes() {
     h.set_size(eframe::egui::vec2(900.0, 600.0));
     h.run_steps(3);
     assert_eq!(app(&mut h).view.zoom, 3.0);
+}
+
+/// The Escape key reaches the editor (the double-press logic itself is tested in `app`).
+#[test]
+fn escape_key_reaches_the_editor() {
+    let mut h: Shot = Harness::builder().with_size([1000.0, 700.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.enter_editor(0);
+        a.tool = Tool::Rect;
+    }
+    h.run_steps(2);
+    h.key_press(eframe::egui::Key::Escape);
+    h.run_steps(1);
+    assert!(app(&mut h).esc_time > -1.0, "the key press was seen");
 }

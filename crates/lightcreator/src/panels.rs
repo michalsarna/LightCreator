@@ -42,6 +42,14 @@ impl App {
     }
 
     fn properties(&mut self, ui: &mut egui::Ui) {
+        let locked = !self.sel.is_empty() && self.sel.iter().all(|id| self.doc.shape(*id).map_or(true, |s| s.locked));
+        if locked {
+            ui.label(RichText::new(format!("🔒 {}", tr("Locked: unlock to edit. Copies are not locked."))).color(theme::accent()));
+        }
+        ui.add_enabled_ui(!locked, |ui| self.properties_inner(ui));
+    }
+
+    fn properties_inner(&mut self, ui: &mut egui::Ui) {
         let Some(b) = self.sel_bounds() else {
             ui.label(RichText::new(tr("Nothing selected")).color(theme::text_dim()));
             return;
@@ -205,7 +213,7 @@ impl App {
                 self.last_layer_undo = now;
             }
             self.text_default = TextData { text: self.text_default.text.clone(), ..t.clone() };
-            if let Some(s) = self.doc.shape_mut(id) {
+            if let Some(s) = self.doc.unlocked_mut(id) {
                 s.kind = Kind::Text(t);
             }
             self.touch();
@@ -224,7 +232,7 @@ impl App {
         let mut invert = im.invert;
         if ui.checkbox(&mut invert, tr("Negative image")).on_hover_text(tr("Engrave the light parts instead of the dark parts")).changed() {
             self.checkpoint();
-            if let Some(Kind::Image(m)) = self.doc.shape_mut(id).map(|s| &mut s.kind) {
+            if let Some(Kind::Image(m)) = self.doc.unlocked_mut(id).map(|s| &mut s.kind) {
                 m.invert = invert;
             }
         }
@@ -260,15 +268,23 @@ impl App {
                     self.active_layer = i;
                 }
                 let l = &mut self.doc.layers[i];
-                if ui.selectable_label(self.active_layer == i, &l.name).clicked() {
+                let name = ui.selectable_label(self.active_layer == i, &l.name).on_hover_text(tr("Double-click to edit the layer options"));
+                if name.clicked() {
                     self.active_layer = i;
+                }
+                if name.double_clicked() {
+                    self.active_layer = i;
+                    self.layer_dlg = Some(i);
                 }
                 egui::ComboBox::from_id_salt(("mode", i)).width(78.0).selected_text(tr(l.mode.label())).show_ui(ui, |ui| {
                     for m in LayerMode::ALL {
                         ui.selectable_value(&mut l.mode, m, tr(m.label()));
                     }
                 });
-                drag_speed_s(ui, units, &mut l.speed, 0.5, Some((0.5, 1000.0)));
+                // Offset fill has no separate speed in the row.
+                if l.mode != LayerMode::Offset {
+                    drag_speed_s(ui, units, &mut l.speed, 0.5, Some((0.5, 1000.0)));
+                }
                 ui.add(egui::DragValue::new(&mut l.power).range(0.0..=100.0).suffix(" %"));
                 ui.checkbox(&mut l.output, "").on_hover_text(tr("Output (burn this layer)"));
                 ui.checkbox(&mut l.visible, "").on_hover_text(tr("Visible"));
@@ -282,60 +298,14 @@ impl App {
         ui.separator();
         let l = &mut self.doc.layers[self.active_layer];
         ui.label(RichText::new(trf("Cut settings — {}", &[&l.name])).strong());
-        egui::Grid::new("cut").num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
-            ui.label(tr("Mode"));
-            egui::ComboBox::from_id_salt("cm").selected_text(tr(l.mode.label())).show_ui(ui, |ui| {
-                for m in LayerMode::ALL {
-                    ui.selectable_value(&mut l.mode, m, tr(m.label()));
-                }
-            });
-            ui.end_row();
-            ui.label(tr("Speed"));
-            drag_speed_s(ui, units, &mut l.speed, 0.5, Some((0.5, 1000.0)));
-            ui.end_row();
-            ui.label(tr("Power (%)"));
-            ui.add(egui::Slider::new(&mut l.power, 0.0..=100.0));
-            ui.end_row();
-            ui.label(tr("Passes"));
-            ui.add(egui::DragValue::new(&mut l.passes).range(1..=100));
-            ui.end_row();
-            if l.mode == LayerMode::Offset {
-                ui.label(tr("Interval"));
-                drag_len(ui, units, &mut l.interval, 0.005, Some((0.01, 5.0)));
-                ui.end_row();
-            } else if l.mode != LayerMode::Line {
-                ui.label(tr("Interval"));
-                drag_len(ui, units, &mut l.interval, 0.005, Some((0.01, 5.0)));
-                ui.end_row();
-                ui.label(tr("Scan angle"));
-                ui.add(egui::DragValue::new(&mut l.angle).range(-180.0..=180.0).suffix("°"));
-                ui.end_row();
-                ui.label(tr("Overscan"));
-                drag_len(ui, units, &mut l.overscan, 0.1, Some((0.0, 20.0)));
-                ui.end_row();
-                ui.label(tr("Bidirectional"));
-                ui.checkbox(&mut l.bidirectional, "");
-                ui.end_row();
-            }
-        });
-        egui::CollapsingHeader::new(tr("Image settings")).default_open(false).show(ui, |ui| {
-            ui.label(RichText::new(tr("Images use the interval, speed, power and overscan of their layer.")).color(theme::text_dim()));
-            egui::Grid::new("img_cut").num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
-                ui.label(tr("Dithering"));
-                egui::ComboBox::from_id_salt("dither").selected_text(tr(l.dither.label())).show_ui(ui, |ui| {
-                    for d in Dither::ALL {
-                        ui.selectable_value(&mut l.dither, d, tr(d.label()));
-                    }
-                });
-                ui.end_row();
-                ui.label(tr("Min power (%)"));
-                let max = l.power;
-                ui.add(egui::Slider::new(&mut l.min_power, 0.0..=max));
-                ui.end_row();
-            });
-        });
+        layer_settings_ui(ui, units, l, "panel");
+        let now = ui.input(|i| i.time);
+        self.commit_layer_edit(now, before);
+    }
+
+    /// Record an undo step (one per editing burst) and refresh when the layers changed.
+    fn commit_layer_edit(&mut self, now: f64, before: Vec<lc_core::Layer>) {
         if self.doc.layers != before {
-            let now = ui.input(|i| i.time);
             if now - self.last_layer_undo > 0.8 {
                 let mut snap = self.doc.clone();
                 snap.layers = before;
@@ -344,6 +314,41 @@ impl App {
             }
             self.last_layer_undo = now;
             self.touch();
+        }
+    }
+
+    /// Window with every option of one layer (opened by double-clicking its name).
+    pub fn layer_dialog(&mut self, ctx: &egui::Context) {
+        let Some(i) = self.layer_dlg else { return };
+        let before = self.doc.layers.clone();
+        let units = self.doc.device.units;
+        let mut open = true;
+        let title = trf("Layer options — {}", &[&self.doc.layers[i].name]);
+        egui::Window::new(title).id(egui::Id::new("layer_dialog")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+            let l = &mut self.doc.layers[i];
+            egui::Grid::new("layer_head").num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
+                ui.label(tr("Name"));
+                ui.add(egui::TextEdit::singleline(&mut l.name).desired_width(140.0));
+                ui.end_row();
+                ui.label(tr("Colour"));
+                let c = PALETTE[l.color.min(29)];
+                let (r, _) = ui.allocate_exact_size(egui::vec2(34.0, 18.0), egui::Sense::hover());
+                ui.painter().rect_filled(r, 3.0, Color32::from_rgb(c[0], c[1], c[2]));
+                ui.end_row();
+                ui.label(tr("Output (burn this layer)"));
+                ui.checkbox(&mut l.output, "");
+                ui.end_row();
+                ui.label(tr("Visible"));
+                ui.checkbox(&mut l.visible, "");
+                ui.end_row();
+            });
+            ui.separator();
+            layer_settings_ui(ui, units, l, "dialog");
+        });
+        let now = ctx.input(|i| i.time);
+        self.commit_layer_edit(now, before);
+        if !open {
+            self.layer_dlg = None;
         }
     }
 
@@ -383,4 +388,61 @@ impl App {
             }
         });
     }
+}
+
+/// The cut settings of one layer: mode, speed, power, passes, fill options and image options.
+/// `salt` keeps the widget ids apart when the same settings are shown in the panel and in the dialog.
+pub fn layer_settings_ui(ui: &mut egui::Ui, units: lc_core::Units, l: &mut lc_core::Layer, salt: &str) {
+    egui::Grid::new(("cut", salt)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
+        ui.label(tr("Mode"));
+        egui::ComboBox::from_id_salt(("cm", salt)).selected_text(tr(l.mode.label())).show_ui(ui, |ui| {
+            for m in LayerMode::ALL {
+                ui.selectable_value(&mut l.mode, m, tr(m.label()));
+            }
+        });
+        ui.end_row();
+        ui.label(tr("Speed"));
+        drag_speed_s(ui, units, &mut l.speed, 0.5, Some((0.5, 1000.0)));
+        ui.end_row();
+        ui.label(tr("Power (%)"));
+        ui.add(egui::Slider::new(&mut l.power, 0.0..=100.0));
+        ui.end_row();
+        ui.label(tr("Passes"));
+        ui.add(egui::DragValue::new(&mut l.passes).range(1..=100));
+        ui.end_row();
+        if l.mode == LayerMode::Offset {
+            ui.label(tr("Interval"));
+            drag_len(ui, units, &mut l.interval, 0.005, Some((0.01, 5.0)));
+            ui.end_row();
+        } else if l.mode != LayerMode::Line {
+            ui.label(tr("Interval"));
+            drag_len(ui, units, &mut l.interval, 0.005, Some((0.01, 5.0)));
+            ui.end_row();
+            ui.label(tr("Scan angle"));
+            ui.add(egui::DragValue::new(&mut l.angle).range(-180.0..=180.0).suffix("°"));
+            ui.end_row();
+            ui.label(tr("Overscan"));
+            drag_len(ui, units, &mut l.overscan, 0.1, Some((0.0, 20.0)));
+            ui.end_row();
+            ui.label(tr("Bidirectional"));
+            ui.checkbox(&mut l.bidirectional, "");
+            ui.end_row();
+        }
+    });
+    egui::CollapsingHeader::new(tr("Image settings")).id_salt(("img_hdr", salt)).default_open(false).show(ui, |ui| {
+        ui.label(RichText::new(tr("Images use the interval, speed, power and overscan of their layer.")).color(theme::text_dim()));
+        egui::Grid::new(("img_cut", salt)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
+            ui.label(tr("Dithering"));
+            egui::ComboBox::from_id_salt(("dither", salt)).selected_text(tr(l.dither.label())).show_ui(ui, |ui| {
+                for d in Dither::ALL {
+                    ui.selectable_value(&mut l.dither, d, tr(d.label()));
+                }
+            });
+            ui.end_row();
+            ui.label(tr("Min power (%)"));
+            let max = l.power;
+            ui.add(egui::Slider::new(&mut l.min_power, 0.0..=max));
+            ui.end_row();
+        });
+    });
 }

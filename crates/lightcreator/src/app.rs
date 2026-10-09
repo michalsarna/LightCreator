@@ -121,6 +121,8 @@ pub struct App {
     pub show_offset: bool,
     pub show_materials: bool,
     pub show_prefs: bool,
+    pub esc_time: f64,
+    pub layer_dlg: Option<usize>,
     pub show_stream: bool,
     pub ser2net: Option<crate::ser2net_ui::Ser2NetDlg>,
     pub stream_mode: crate::stream_ui::StreamMode,
@@ -238,6 +240,8 @@ impl App {
             show_offset: false,
             show_materials: false,
             show_prefs: false,
+            esc_time: -10.0,
+            layer_dlg: None,
             show_stream: false,
             ser2net: None,
             stream_mode: crate::stream_ui::StreamMode::Floating,
@@ -321,7 +325,7 @@ impl App {
     }
     pub fn transform_selection(&mut self, xf: Xf) {
         for id in self.sel.clone() {
-            if let Some(s) = self.doc.shape_mut(id) {
+            if let Some(s) = self.doc.unlocked_mut(id) {
                 s.xf = s.xf.then(xf);
             }
         }
@@ -333,10 +337,13 @@ impl App {
         }
         self.checkpoint();
         let sel = std::mem::take(&mut self.sel);
-        self.doc.shapes.retain(|s| !sel.contains(&s.id));
+        // Locked shapes survive and stay selected.
+        self.doc.shapes.retain(|s| !sel.contains(&s.id) || s.locked);
+        self.sel = sel.into_iter().filter(|id| self.doc.shape(*id).is_some()).collect();
     }
     pub fn copy(&mut self) {
-        self.clipboard = self.sel.iter().filter_map(|i| self.doc.shape(*i).cloned()).collect();
+        // A copy of a locked object is a normal, editable object.
+        self.clipboard = self.sel.iter().filter_map(|i| self.doc.shape(*i).cloned()).map(|mut s| { s.locked = false; s }).collect();
     }
     pub fn paste(&mut self) {
         if self.clipboard.is_empty() {
@@ -371,7 +378,7 @@ impl App {
         if !self.sel.is_empty() {
             self.checkpoint();
             for id in self.sel.clone() {
-                if let Some(s) = self.doc.shape_mut(id) {
+                if let Some(s) = self.doc.unlocked_mut(id) {
                     s.layer = layer;
                 }
             }
@@ -396,7 +403,7 @@ impl App {
                 4 => (0.0, target.center().y - sb.center().y),
                 _ => (0.0, target.max.y - sb.max.y),
             };
-            if let Some(s) = self.doc.shape_mut(id) {
+            if let Some(s) = self.doc.unlocked_mut(id) {
                 s.xf = s.xf.then(Xf::translate(dx, dy));
             }
         }
@@ -428,14 +435,14 @@ impl App {
         }
         self.checkpoint();
         for id in self.sel.clone() {
-            if let Some(s) = self.doc.shape_mut(id) {
+            if let Some(s) = self.doc.unlocked_mut(id) {
                 s.bake();
             }
         }
     }
     pub fn reorder(&mut self, front: bool) {
         self.checkpoint();
-        let sel = self.sel.clone();
+        let sel = self.doc.unlocked_ids(&self.sel);
         let (a, b): (Vec<Shape>, Vec<Shape>) = std::mem::take(&mut self.doc.shapes).into_iter().partition(|s| sel.contains(&s.id));
         self.doc.shapes = if front { [b, a].concat() } else { [a, b].concat() };
     }
@@ -627,6 +634,16 @@ impl App {
     }
 
     // ---------- UI ----------
+    /// A second Escape within half a second goes back to the select tool.
+    pub fn note_escape(&mut self, now: f64) {
+        if now - self.esc_time < 0.5 {
+            self.tool = Tool::Select;
+            self.esc_time = -10.0;
+        } else {
+            self.esc_time = now;
+        }
+    }
+
     fn shortcuts(&mut self, ctx: &egui::Context) {
         if ctx.egui_wants_keyboard_input() {
             return;
@@ -651,6 +668,11 @@ impl App {
             self.ungroup_selection();
         } else if cmd(Key::G) {
             self.group_selection();
+        }
+        if cmd_shift(Key::L) {
+            self.lock_selection(false);
+        } else if cmd(Key::L) {
+            self.lock_selection(true);
         }
         if cmd(Key::A) {
             self.select_all();
@@ -694,6 +716,8 @@ impl App {
             }
         }
         if plain(Key::Escape) {
+            let now = ctx.input(|i| i.time);
+            self.note_escape(now);
             self.pen_pts.clear();
             if self.tool == Tool::Node && !self.node_sel.is_empty() {
                 self.node_sel.clear();
@@ -768,6 +792,8 @@ impl App {
             Act::ToPath => self.to_path(),
             Act::ToCurves => self.to_curves(),
             Act::Group => self.group_selection(),
+            Act::Lock => self.lock_selection(true),
+            Act::Unlock => self.lock_selection(false),
             Act::Ungroup => self.ungroup_selection(),
             Act::ImportAi => self.import_ai(),
             Act::TraceImage => self.open_trace(),
@@ -961,20 +987,35 @@ impl App {
     }
 
     fn swatches(&mut self, ui: &mut egui::Ui) {
-        ui.horizontal_centered(|ui| {
-            ui.label(RichText::new(tr("Layers")).color(theme::text_dim()));
-            ui.spacing_mut().item_spacing.x = 3.0;
-            for i in 0..30 {
-                let c = lc_core::PALETTE[i];
-                let (r, resp) = ui.allocate_exact_size(egui::vec2(22.0, 22.0), egui::Sense::click());
-                ui.painter().rect_filled(r, 3.0, Color32::from_rgb(c[0], c[1], c[2]));
-                if self.active_layer == i {
-                    ui.painter().rect_stroke(r.expand(1.5), 4.0, egui::Stroke::new(2.0, theme::accent()), egui::StrokeKind::Outside);
+        egui::ScrollArea::horizontal().auto_shrink([false, true]).show(ui, |ui| {
+            ui.horizontal_centered(|ui| {
+                ui.label(RichText::new(tr("Layers")).color(theme::text_dim()));
+                ui.spacing_mut().item_spacing.x = 3.0;
+                let font = egui::FontId::proportional(10.5);
+                for i in 0..30 {
+                    let c = lc_core::PALETTE[i];
+                    let fill = Color32::from_rgb(c[0], c[1], c[2]);
+                    // Black or white text, whichever reads better on the layer colour.
+                    let lum = 0.299 * c[0] as f32 + 0.587 * c[1] as f32 + 0.114 * c[2] as f32;
+                    let ink = if lum > 140.0 { Color32::BLACK } else { Color32::WHITE };
+                    let name = self.doc.layers[i].name.clone();
+                    let galley = ui.painter().layout_no_wrap(name.clone(), font.clone(), ink);
+                    let w = (galley.size().x + 12.0).max(30.0);
+                    let (r, resp) = ui.allocate_exact_size(egui::vec2(w, 22.0), egui::Sense::click());
+                    ui.painter().rect_filled(r, 3.0, fill);
+                    ui.painter().galley(r.center() - galley.size() / 2.0, galley, ink);
+                    if self.active_layer == i {
+                        ui.painter().rect_stroke(r.expand(1.5), 4.0, egui::Stroke::new(2.0, theme::accent()), egui::StrokeKind::Outside);
+                    }
+                    let resp = resp.on_hover_text(trf("{} — click to assign selection / set active; double-click for options", &[&name]));
+                    if resp.double_clicked() {
+                        self.active_layer = i;
+                        self.layer_dlg = Some(i);
+                    } else if resp.clicked() {
+                        self.assign_layer(i);
+                    }
                 }
-                if resp.on_hover_text(trf("{} — click to assign selection / set active", &[&self.doc.layers[i].name])).clicked() {
-                    self.assign_layer(i);
-                }
-            }
+            });
         });
     }
 
@@ -1085,6 +1126,7 @@ impl App {
         });
         self.show_about = open;
         self.config_window(ctx);
+        self.layer_dialog(ctx);
         self.materials_window(ctx);
         self.overlay_window(ctx);
         self.prefs_window(ctx);
@@ -1167,6 +1209,24 @@ impl App {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn two_quick_escapes_select_the_select_tool() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.tool = Tool::Rect;
+        a.note_escape(10.0);
+        assert_eq!(a.tool, Tool::Rect, "one Escape alone keeps the tool");
+        a.note_escape(10.3);
+        assert_eq!(a.tool, Tool::Select, "the second one, quickly after, selects");
+        // Slow presses never count as a pair.
+        a.tool = Tool::Star;
+        a.note_escape(20.0);
+        a.note_escape(21.0);
+        assert_eq!(a.tool, Tool::Star);
+        a.note_escape(21.2);
+        assert_eq!(a.tool, Tool::Select);
+    }
 
     #[test]
     fn tool_shortcuts_are_unique() {

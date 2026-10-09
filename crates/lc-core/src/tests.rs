@@ -123,7 +123,7 @@ fn bezier_ellipse_area_and_node_insert() {
 
 #[test]
 fn shape_to_bezier_keeps_geometry() {
-    let mut s = Shape { id: 1, layer: 0, kind: Kind::Rect { w: 10.0, h: 4.0 }, xf: Xf::translate(3.0, 2.0), group: None };
+    let mut s = Shape { id: 1, layer: 0, kind: Kind::Rect { w: 10.0, h: 4.0 }, xf: Xf::translate(3.0, 2.0), group: None, locked: false };
     let before = s.bounds().unwrap();
     s.to_bezier();
     let after = s.bounds().unwrap();
@@ -215,7 +215,7 @@ fn text_produces_outlines() {
     let t = TextData { text: "Hi".into(), size: 10.0, ..TextData::default() };
     let c = text::contours(&t);
     assert!(c.len() >= 3, "{}", c.len());
-    let s = Shape { id: 1, layer: 0, kind: Kind::Text(t), xf: Xf::IDENTITY, group: None };
+    let s = Shape { id: 1, layer: 0, kind: Kind::Text(t), xf: Xf::IDENTITY, group: None, locked: false };
     let b = s.bounds().unwrap();
     assert!(b.width() > 5.0 && b.height() > 4.0 && b.height() < 12.0, "{:?}", b);
 }
@@ -461,4 +461,37 @@ fn camera_rotation_is_stored_with_the_device() {
     assert_eq!(back, d);
     let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
     assert_eq!(serde_json::from_str::<Device>(old).unwrap().camera_rotation, 0);
+}
+
+#[test]
+fn crossing_selection_touches_partially_overlapped_shapes() {
+    let area = Rect { min: Pt::new(0.0, 0.0), max: Pt::new(10.0, 10.0) };
+    let rect_at = |x: f64, y: f64, s: f64| Shape { id: 1, layer: 0, kind: Kind::Rect { w: s, h: s }, xf: Xf::translate(x, y), group: None, locked: false };
+    assert!(rect_at(5.0, 5.0, 20.0).intersects_rect(&area), "partial overlap");
+    assert!(rect_at(2.0, 2.0, 3.0).intersects_rect(&area), "fully inside");
+    assert!(rect_at(-50.0, -50.0, 200.0).intersects_rect(&area), "area fully inside a big shape");
+    assert!(!rect_at(11.0, 11.0, 5.0).intersects_rect(&area), "outside");
+    // A diagonal line whose bounding box overlaps the area but which misses it.
+    let line = Shape { id: 2, layer: 0, kind: Kind::Path(vec![Polyline::new(vec![Pt::new(-1.0, 8.0), Pt::new(8.0, 20.0)], false)]), xf: Xf::IDENTITY, group: None, locked: false };
+    assert!(!line.intersects_rect(&Rect { min: Pt::new(0.0, 0.0), max: Pt::new(3.0, 3.0) }));
+    assert!(line.intersects_rect(&area));
+    // A line crossing straight through the area with no vertex inside it.
+    let through = Shape { id: 3, layer: 0, kind: Kind::Path(vec![Polyline::new(vec![Pt::new(-5.0, 5.0), Pt::new(15.0, 5.0)], false)]), xf: Xf::IDENTITY, group: None, locked: false };
+    assert!(through.intersects_rect(&area));
+}
+
+#[test]
+fn locked_shapes_refuse_editing_access() {
+    let mut d = Document::default();
+    let a = d.add(0, Kind::Rect { w: 1.0, h: 1.0 }, Xf::IDENTITY);
+    let b = d.add(0, Kind::Rect { w: 1.0, h: 1.0 }, Xf::IDENTITY);
+    d.shape_mut(a).unwrap().locked = true;
+    assert!(d.unlocked_mut(a).is_none() && d.unlocked_mut(b).is_some());
+    assert_eq!(d.unlocked_ids(&[a, b, 999]), vec![b]);
+    // Old files without the flag load as unlocked.
+    let mut v: serde_json::Value = serde_json::from_str(&d.to_json()).unwrap();
+    for s in v["shapes"].as_array_mut().unwrap() {
+        s.as_object_mut().unwrap().remove("locked");
+    }
+    assert!(Document::from_json(&v.to_string()).unwrap().shapes.iter().all(|s| !s.locked));
 }

@@ -204,3 +204,17 @@ pub fn paint_menu_icon(p: &Painter, r: Rect, icon: MenuIcon, c: Color32) {
         }
     }
 }
+
+/// A small padlock, drawn at the corner of locked objects.
+pub fn paint_lock(p: &Painter, center: eframe::egui::Pos2, c: Color32) {
+    let body = Rect::from_center_size(center + vec2(0.0, 2.0), vec2(9.0, 7.0));
+    let arc: Vec<_> = (0..=10)
+        .map(|k| {
+            let a = std::f32::consts::PI * (1.0 + k as f32 / 10.0);
+            center + vec2(3.0 * a.cos(), -1.5 + 3.4 * a.sin())
+        })
+        .collect();
+    p.add(Shape::line(arc, Stroke::new(1.4, c)));
+    p.rect_filled(body.expand(0.8), 1.5, Color32::from_black_alpha(90));
+    p.rect_filled(body, 1.5, c);
+}

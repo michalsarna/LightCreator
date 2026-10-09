@@ -155,6 +155,9 @@ pub struct Shape {
     /// Shapes with the same group id move and select together. Grouping never changes the layer.
     #[serde(default)]
     pub group: Option<u64>,
+    /// A locked shape cannot be moved, edited or deleted; it can still be selected and copied.
+    #[serde(default)]
+    pub locked: bool,
 }
 
 impl Shape {
@@ -185,6 +188,10 @@ impl Shape {
     }
     pub fn bounds(&self) -> Option<Rect> {
         self.polys().iter().filter_map(|p| p.bounds()).reduce(Rect::union)
+    }
+    /// Does the shape touch the rectangle (crossing selection)?
+    pub fn intersects_rect(&self, r: &Rect) -> bool {
+        self.polys().iter().any(|p| p.intersects_rect(r))
     }
     /// Distance from a point to this shape (0 if inside a closed shape).
     pub fn hit_dist(&self, p: Pt) -> f64 {
@@ -523,7 +530,7 @@ impl Document {
     pub fn add(&mut self, layer: usize, kind: Kind, xf: Xf) -> u64 {
         let id = self.next_id;
         self.next_id += 1;
-        self.shapes.push(Shape { id, layer, kind, xf, group: None });
+        self.shapes.push(Shape { id, layer, kind, xf, group: None, locked: false });
         id
     }
     pub fn add_shape(&mut self, mut s: Shape) -> u64 {
@@ -567,6 +574,14 @@ impl Document {
     }
     pub fn shape(&self, id: u64) -> Option<&Shape> {
         self.shapes.iter().find(|s| s.id == id)
+    }
+    /// Mutable access for editing: `None` when the shape does not exist or is locked.
+    pub fn unlocked_mut(&mut self, id: u64) -> Option<&mut Shape> {
+        self.shape_mut(id).filter(|s| !s.locked)
+    }
+    /// The ids in `ids` that may be edited.
+    pub fn unlocked_ids(&self, ids: &[u64]) -> Vec<u64> {
+        ids.iter().copied().filter(|id| self.shape(*id).is_some_and(|s| !s.locked)).collect()
     }
     pub fn shape_mut(&mut self, id: u64) -> Option<&mut Shape> {
         self.shapes.iter_mut().find(|s| s.id == id)

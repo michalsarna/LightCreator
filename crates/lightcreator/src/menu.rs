@@ -33,6 +33,8 @@ pub enum Act {
     ToCurves,
     Group,
     Ungroup,
+    Lock,
+    Unlock,
     ImportAi,
     TraceImage,
     AdjustImage,
@@ -156,6 +158,8 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
                     Sep,
                     Item(Act::Group, "Group", key("CmdOrCtrl+G", "Ctrl+G")),
                     Item(Act::Ungroup, "Ungroup", key("CmdOrCtrl+Shift+G", "Ctrl+Shift+G")),
+                    Item(Act::Lock, "Lock", key("CmdOrCtrl+L", "Ctrl+L")),
+                    Item(Act::Unlock, "Unlock", key("CmdOrCtrl+Shift+L", "Ctrl+Shift+L")),
                     Sep,
                     Item(Act::ToFront, "Bring to front", None),
                     Item(Act::ToBack, "Send to back", None),
@@ -193,7 +197,7 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
         (
             "Settings",
             vec![
-                Item(Act::GridOptions, "Grid options…", None),
+                Item(Act::GridOptions, "View options…", None),
                 Sep,
                 Sub("Language", Lang::ALL.iter().map(|l| Item(Act::SetLang(*l), l.name(), None)).collect()),
                 Sub("Colour scheme", Scheme::ALL.iter().map(|s| Item(Act::SetScheme(*s), s.label(), None)).collect()),

@@ -124,6 +124,8 @@ impl App {
         }
         let mut open = true;
         let units = self.doc.device.units;
+        let bed_fill = self.bed_fill();
+        let line_w = self.grid_prefs.line_width;
         let (bw, bh) = (self.doc.device.bed_w, self.doc.device.bed_h);
         let Some((_, job)) = self.pv.job.take() else { return };
         egui::Window::new(tr("Preview")).open(&mut open).default_size([980.0, 640.0]).resizable(true).show(ctx, |ui| {
@@ -218,7 +220,7 @@ impl App {
                 let w2s = |p: lc_core::Pt| -> Pos2 { o + pan + egui::vec2(p.x as f32 * zoom, p.y as f32 * zoom) };
                 let bed = egui::Rect::from_min_max(w2s(lc_core::Pt::new(0.0, 0.0)), w2s(lc_core::Pt::new(bw, bh)));
                 let painter = painter.with_clip_rect(rect);
-                painter.rect_filled(bed, 0.0, Color32::WHITE);
+                painter.rect_filled(bed, 0.0, bed_fill);
                 painter.rect_stroke(bed, 0.0, Stroke::new(1.0, Color32::from_gray(0x99)), egui::StrokeKind::Outside);
                 // Machine zero.
                 let home = w2s(self.doc.device.home_point());
@@ -241,9 +243,9 @@ impl App {
                                 Color32::from_rgb(p[0], p[1], p[2])
                             }
                         };
-                        Some(Stroke::new(1.4, c))
+                        Some(Stroke::new(line_w * 0.8, c))
                     } else if self.pv.show_travel && !skip_travel {
-                        Some(Stroke::new(0.8, Color32::from_rgb(0x90, 0x90, 0xa0).gamma_multiply(0.8)))
+                        Some(Stroke::new(0.5, Color32::from_rgb(0x90, 0x90, 0xa0).gamma_multiply(0.8)))
                     } else {
                         None
                     }

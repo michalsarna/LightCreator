@@ -85,9 +85,12 @@ impl App {
     fn bezier_shapes(&self) -> Vec<(u64, &Vec<lc_core::Contour>)> {
         self.sel
             .iter()
-            .filter_map(|id| match &self.doc.shape(*id)?.kind {
-                Kind::Bezier(cs) => Some((*id, cs)),
-                _ => None,
+            .filter_map(|id| {
+                let s = self.doc.shape(*id).filter(|s| !s.locked)?;
+                match &s.kind {
+                    Kind::Bezier(cs) => Some((*id, cs)),
+                    _ => None,
+                }
             })
             .collect()
     }
@@ -243,7 +246,7 @@ impl App {
         painter.rect_filled(rect, 0.0, theme::workspace());
         let bed = egui::Rect::from_min_max(self.w2s(o, Pt::new(0.0, 0.0)), self.w2s(o, Pt::new(bw, bh)));
         painter.rect_filled(bed.translate(egui::vec2(3.0, 3.0)), 0.0, Color32::from_black_alpha(25));
-        painter.rect_filled(bed, 0.0, Color32::WHITE);
+        painter.rect_filled(bed, 0.0, self.bed_fill());
         let painter = painter.with_clip_rect(rect);
         {
             let gp = &self.grid_prefs;
@@ -346,7 +349,7 @@ impl App {
             } else if !layer.output {
                 c = c.gamma_multiply(0.45);
             }
-            let st = Stroke::new(1.5, c);
+            let st = Stroke::new(self.grid_prefs.line_width, c);
             for p in s.polys() {
                 let pts: Vec<Pos2> = p.pts.iter().map(|q| self.w2s(o, *q)).collect();
                 if pts.len() < 2 {
@@ -363,7 +366,7 @@ impl App {
                     if !m.laser && skip_travel {
                         continue;
                     }
-                    let st = if m.laser { Stroke::new(1.2, col(self.doc.layers[m.layer].color)) } else { Stroke::new(0.6, Color32::from_rgb(0xb0, 0xb0, 0xc0)) };
+                    let st = if m.laser { Stroke::new(self.grid_prefs.line_width * 0.8, col(self.doc.layers[m.layer].color)) } else { Stroke::new(0.5, Color32::from_rgb(0xb0, 0xb0, 0xc0)) };
                     shapes.push(egui::Shape::line_segment([self.w2s(o, m.a), self.w2s(o, m.b)], st));
                 }
                 painter.extend(shapes);
@@ -372,11 +375,19 @@ impl App {
             }
         }
 
+        // Padlock on locked objects.
+        for s in self.doc.shapes.iter().filter(|s| s.locked && self.doc.layers[s.layer].visible) {
+            if let Some(b) = s.bounds() {
+                let p = self.w2s(o, Pt::new(b.max.x, b.min.y));
+                crate::icons::paint_lock(&painter, p + egui::vec2(-7.0, 7.0), theme::accent());
+            }
+        }
         // ---- selection ----
         if let Some(b) = self.sel_bounds() {
             let sr = egui::Rect::from_min_max(self.w2s(o, b.min), self.w2s(o, b.max));
             painter.rect_stroke(sr, 0.0, Stroke::new(1.0, theme::accent()), egui::StrokeKind::Outside);
-            if self.tool == Tool::Select {
+            let all_locked = self.sel.iter().all(|id| self.doc.shape(*id).map_or(true, |s| s.locked));
+            if self.tool == Tool::Select && !all_locked {
                 for h in handle_pts(&b) {
                     let r = egui::Rect::from_center_size(self.w2s(o, h), egui::vec2(8.0, 8.0));
                     painter.rect_filled(r, 1.0, Color32::WHITE);
@@ -470,7 +481,7 @@ impl App {
                             let b = self.sel_bounds().unwrap();
                             let hp = handle_pts(&b);
                             self.checkpoint();
-                            let orig = self.sel.iter().filter_map(|i| self.doc.shape(*i).map(|s| (*i, s.xf))).collect();
+                            let orig = self.sel.iter().filter_map(|i| self.doc.shape(*i).filter(|s| !s.locked).map(|s| (*i, s.xf))).collect();
                             self.drag = Some(Drag::Scale { anchor: hp[(h + 4) % 8], grab: hp[h], handle: h, orig });
                         } else if let Some(id) = self.hit_shape(w) {
                             if !self.sel.contains(&id) {
@@ -484,7 +495,7 @@ impl App {
                                 }
                             }
                             self.checkpoint();
-                            let orig = self.sel.iter().filter_map(|i| self.doc.shape(*i).map(|s| (*i, s.xf))).collect();
+                            let orig = self.sel.iter().filter_map(|i| self.doc.shape(*i).filter(|s| !s.locked).map(|s| (*i, s.xf))).collect();
                             self.drag = Some(Drag::Move { start: w, orig });
                         } else {
                             if !shift {
@@ -646,7 +657,7 @@ impl App {
                         }
                         let orig = orig.clone();
                         for (id, xf) in orig {
-                            if let Some(s) = self.doc.shape_mut(id) {
+                            if let Some(s) = self.doc.unlocked_mut(id) {
                                 s.xf = xf.then(Xf::translate(dx, dy));
                             }
                         }
@@ -670,7 +681,7 @@ impl App {
                         let (sx, sy) = (if sx.abs() < 0.001 { 0.001 } else { sx }, if sy.abs() < 0.001 { 0.001 } else { sy });
                         let orig = orig.clone();
                         for (id, xf) in orig {
-                            if let Some(s) = self.doc.shape_mut(id) {
+                            if let Some(s) = self.doc.unlocked_mut(id) {
                                 s.xf = xf.then(Xf::scale_about(sx, sy, anchor));
                             }
                         }
@@ -710,13 +721,15 @@ impl App {
                         painter.rect_stroke(r, 0.0, Stroke::new(1.0, theme::accent()), egui::StrokeKind::Middle);
                     }
                     Drag::Marquee { start } => {
+                        // Left to right selects what is wholly inside (blue); right to left also what is only touched (green).
+                        let c = if w.x >= start.x { theme::accent() } else { Color32::from_rgb(0x2e, 0xa0, 0x4f) };
                         let r = egui::Rect::from_two_pos(self.w2s(o, *start), m);
-                        painter.rect_filled(r, 0.0, theme::accent().gamma_multiply(0.1));
-                        painter.rect_stroke(r, 0.0, Stroke::new(1.0, theme::accent()), egui::StrokeKind::Middle);
+                        painter.rect_filled(r, 0.0, c.gamma_multiply(0.1));
+                        painter.rect_stroke(r, 0.0, Stroke::new(1.0, c), egui::StrokeKind::Middle);
                     }
                     Drag::Create { start } => {
                         let end = self.snapped(w);
-                        let st = Stroke::new(1.5, col(self.active_layer));
+                        let st = Stroke::new(self.grid_prefs.line_width, col(self.active_layer));
                         let (a, b) = (self.w2s(o, *start), self.w2s(o, end));
                         match self.tool {
                             Tool::Rect => {
@@ -754,14 +767,7 @@ impl App {
                 match d {
                     Drag::Marquee { start } => {
                         let r = Rect::from_pts([start, w]).unwrap();
-                        let hits: Vec<u64> = self
-                            .doc
-                            .shapes
-                            .iter()
-                            .filter(|s| self.doc.layers[s.layer].visible)
-                            .filter(|s| s.bounds().is_some_and(|b| r.contains(b.min) && r.contains(b.max)))
-                            .map(|s| s.id)
-                            .collect();
+                        let hits = self.marquee_hits(&r, w.x >= start.x);
                         for id in hits {
                             for m in self.doc.group_of(id) {
                                 if !self.sel.contains(&m) {
@@ -817,7 +823,7 @@ impl App {
 
         // pen preview
         if self.tool == Tool::Pen && !self.pen_pts.is_empty() {
-            let st = Stroke::new(1.5, col(self.active_layer));
+            let st = Stroke::new(self.grid_prefs.line_width, col(self.active_layer));
             let mut pts: Vec<Pos2> = self.pen_pts.iter().map(|p| self.w2s(o, *p)).collect();
             if let Some(m) = mouse {
                 pts.push(m);

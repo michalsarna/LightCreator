@@ -15,7 +15,7 @@ impl App {
 
     /// Combine the selected shapes (in selection order) with a boolean operation.
     pub fn bool_op(&mut self, op: BoolOp) {
-        let ids: Vec<u64> = self.sel.iter().copied().filter(|id| self.doc.shape(*id).is_some_and(|s| !s.is_image())).collect();
+        let ids: Vec<u64> = self.sel.iter().copied().filter(|id| self.doc.shape(*id).is_some_and(|s| !s.is_image() && !s.locked)).collect();
         if ids.len() < 2 {
             self.status_is(tr("Select at least two shapes (not images)."));
             return;
@@ -59,13 +59,31 @@ impl App {
         }
         self.checkpoint();
         if !keep_original {
-            self.doc.shapes.retain(|s| !ids.contains(&s.id));
+            self.doc.shapes.retain(|s| !ids.contains(&s.id) || s.locked);
         }
         for (layer, polys) in created {
             made.push(self.doc.add(layer, Kind::Path(polys), Xf::IDENTITY));
         }
         self.sel = made;
         self.node_sel.clear();
+    }
+
+    /// Shapes picked by a selection rectangle: dragged left to right only what lies wholly inside,
+    /// right to left everything the rectangle touches. Groups are completed by the caller.
+    pub fn marquee_hits(&self, r: &lc_core::Rect, left_to_right: bool) -> Vec<u64> {
+        self.doc
+            .shapes
+            .iter()
+            .filter(|s| self.doc.layers[s.layer].visible)
+            .filter(|s| {
+                if left_to_right {
+                    s.bounds().is_some_and(|b| r.contains(b.min) && r.contains(b.max))
+                } else {
+                    s.intersects_rect(r)
+                }
+            })
+            .map(|s| s.id)
+            .collect()
     }
 
     /// Group the selected shapes. Layers are untouched; a group moves, scales and selects as one.
@@ -82,6 +100,25 @@ impl App {
             }
         }
         self.status_is(tr("Grouped. The objects keep their layers."));
+    }
+
+    /// Lock or unlock the selected objects (a group is selected as a whole, so it locks as a whole).
+    pub fn lock_selection(&mut self, lock: bool) {
+        if !self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.locked != lock)) {
+            return;
+        }
+        self.checkpoint();
+        let mut n = 0;
+        for id in self.sel.clone() {
+            if let Some(s) = self.doc.shape_mut(id) {
+                if s.locked != lock {
+                    s.locked = lock;
+                    n += 1;
+                }
+            }
+        }
+        self.node_sel.clear();
+        self.status_is(if lock { trf("Locked {} object(s).", &[&n]) } else { trf("Unlocked {} object(s).", &[&n]) });
     }
 
     pub fn ungroup_selection(&mut self) {
@@ -125,6 +162,8 @@ impl App {
         use crate::menu::Act;
         let has_sel = !self.sel.is_empty();
         let multi = self.sel.len() >= 2;
+        let any_unlocked = self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| !s.locked));
+        let any_locked = self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.locked));
         let grouped = self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.group.is_some()));
         let single_image = self.sel.len() == 1 && self.doc.shape(self.sel[0]).is_some_and(|s| s.is_image());
         let chosen: std::cell::Cell<Option<Act>> = std::cell::Cell::new(None);
@@ -158,6 +197,20 @@ impl App {
         ui.separator();
         item(ui, multi, Act::Group, "Group");
         item(ui, grouped, Act::Ungroup, "Ungroup");
+        item(ui, any_unlocked, Act::Lock, "Lock");
+        item(ui, any_locked, Act::Unlock, "Unlock");
+        ui.separator();
+        // Mirroring and turning, apart from grouping and ordering.
+        for (act, label, icon) in [
+            (Act::FlipH, "Flip horizontal", MenuIcon::FlipH),
+            (Act::FlipV, "Flip vertical", MenuIcon::FlipV),
+            (Act::RotCw, "Rotate 90° CW", MenuIcon::RotCw),
+            (Act::RotCcw, "Rotate 90° CCW", MenuIcon::RotCcw),
+        ] {
+            if let Some(a) = icon_item(ui, any_unlocked, act, label, icon) {
+                chosen.set(Some(a));
+            }
+        }
         ui.separator();
         ui.menu_button(tr("Arrange"), |ui| {
             let put = |ui: &mut egui::Ui, on: bool, act: Act, label: &'static str, icon: MenuIcon| {
@@ -181,10 +234,6 @@ impl App {
             }
             ui.separator();
             put(ui, has_sel, Act::CenterOnBed, "Centre on bed", MenuIcon::CenterOnBed);
-            put(ui, has_sel, Act::FlipH, "Flip horizontal", MenuIcon::FlipH);
-            put(ui, has_sel, Act::FlipV, "Flip vertical", MenuIcon::FlipV);
-            put(ui, has_sel, Act::RotCw, "Rotate 90° CW", MenuIcon::RotCw);
-            put(ui, has_sel, Act::RotCcw, "Rotate 90° CCW", MenuIcon::RotCcw);
         });
         ui.menu_button(tr("Shape operations"), |ui| {
             item(ui, multi, Act::BoolUnion, "Union");
@@ -210,7 +259,7 @@ impl App {
         }
         self.checkpoint();
         for id in self.sel.clone() {
-            if let Some(s) = self.doc.shape_mut(id) {
+            if let Some(s) = self.doc.unlocked_mut(id) {
                 if !s.is_image() {
                     s.to_bezier();
                 }
@@ -299,5 +348,64 @@ mod tests {
         assert_eq!(job.ops.len(), 5);
         assert!(job.moves.iter().all(|m| m.op < job.ops.len()));
         assert_eq!(job.moves.iter().filter(|m| m.laser).map(|m| m.op).collect::<std::collections::BTreeSet<_>>().len(), 5);
+    }
+
+    #[test]
+    fn marquee_direction_decides_between_inside_and_touching() {
+        let mut a = app();
+        let small = a.doc.add(0, lc_core::Kind::Rect { w: 4.0, h: 4.0 }, Xf::translate(2.0, 2.0));
+        let big = a.doc.add(0, lc_core::Kind::Rect { w: 30.0, h: 30.0 }, Xf::translate(5.0, 5.0));
+        let far = a.doc.add(0, lc_core::Kind::Rect { w: 4.0, h: 4.0 }, Xf::translate(100.0, 100.0));
+        let r = lc_core::Rect { min: lc_core::Pt::new(0.0, 0.0), max: lc_core::Pt::new(10.0, 10.0) };
+        assert_eq!(a.marquee_hits(&r, true), vec![small], "left to right: only wholly inside");
+        let mut touched = a.marquee_hits(&r, false);
+        touched.sort();
+        assert_eq!(touched, vec![small, big], "right to left: also partly touched");
+        assert!(!touched.contains(&far));
+    }
+
+    #[test]
+    fn locked_objects_do_not_move_or_vanish_but_copy_unlocked() {
+        let mut a = app();
+        let id = a.doc.add(0, lc_core::Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(5.0, 5.0));
+        a.sel = vec![id];
+        a.lock_selection(true);
+        assert!(a.doc.shape(id).unwrap().locked);
+        let before = a.doc.shape(id).unwrap().xf;
+        a.transform_selection(Xf::translate(20.0, 0.0));
+        a.flip(true);
+        a.rotate_sel(90.0);
+        a.center_on_bed();
+        a.align(0);
+        a.assign_layer(3);
+        a.to_path();
+        a.delete_selection();
+        let s = a.doc.shape(id).expect("still there");
+        assert_eq!((s.xf, s.layer), (before, 3 * 0), "unchanged, still on layer 0");
+        // Copy and paste gives an editable copy; the original stays locked.
+        a.duplicate();
+        assert_eq!(a.doc.shapes.len(), 2);
+        let copy = a.doc.shape(a.sel[0]).unwrap();
+        assert!(!copy.locked);
+        a.transform_selection(Xf::translate(1.0, 0.0));
+        assert!(a.doc.shape(a.sel[0]).unwrap().xf != before);
+        assert!(a.doc.shape(id).unwrap().locked);
+        // Unlock makes it editable again.
+        a.sel = vec![id];
+        a.lock_selection(false);
+        a.transform_selection(Xf::translate(2.0, 0.0));
+        assert!(a.doc.shape(id).unwrap().xf != before);
+    }
+
+    #[test]
+    fn work_area_background_follows_the_colour_scheme() {
+        let mut a = app();
+        a.scheme = crate::theme::Scheme::Light;
+        assert_eq!(a.bed_fill(), eframe::egui::Color32::WHITE);
+        a.scheme = crate::theme::Scheme::Dark;
+        let g = a.bed_fill();
+        assert!(g.r() > 0xdd && g.r() < 0xff, "very light grey, not white: {g:?}");
+        a.grid_prefs.bed_color = Some([10, 20, 30, 255]);
+        assert_eq!(a.bed_fill(), eframe::egui::Color32::from_rgb(10, 20, 30));
     }
 }

@@ -34,7 +34,7 @@ impl Scheme {
     pub fn from_id(s: &str) -> Option<Scheme> {
         Scheme::ALL.into_iter().find(|x| x.id() == s)
     }
-    fn is_dark(self) -> bool {
+    pub fn is_dark(self) -> bool {
         matches!(self, Scheme::Dark | Scheme::LightDark)
     }
     fn index(self) -> u8 {

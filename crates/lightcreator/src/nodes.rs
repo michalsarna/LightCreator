@@ -16,7 +16,7 @@ impl App {
             .copied()
             .filter(|id| {
                 self.doc.shape(*id).is_some_and(|s| {
-                    let editable = !matches!(s.kind, Kind::Image { .. });
+                    let editable = !s.locked && !matches!(s.kind, Kind::Image { .. });
                     editable && (!matches!(s.kind, Kind::Bezier(_)) || s.xf != Xf::IDENTITY)
                 })
             })
@@ -26,7 +26,7 @@ impl App {
         }
         self.checkpoint();
         for id in todo {
-            if let Some(s) = self.doc.shape_mut(id) {
+            if let Some(s) = self.doc.unlocked_mut(id) {
                 s.to_bezier();
             }
         }
@@ -34,7 +34,7 @@ impl App {
     }
 
     pub fn contour_mut(&mut self, id: u64, ci: usize) -> Option<&mut Contour> {
-        match &mut self.doc.shape_mut(id)?.kind {
+        match &mut self.doc.unlocked_mut(id)?.kind {
             Kind::Bezier(cs) => cs.get_mut(ci),
             _ => None,
         }

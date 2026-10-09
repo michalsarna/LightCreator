@@ -14,14 +14,20 @@
 * Numeric position and size, rotate, flip, align, centre on bed, grid array, copy / paste / duplicate.
 * **Grouping:** group objects so they select and transform together; layers are not changed. Copies get their
   own group.
+* **Locking:** lock objects or groups (Ctrl+L, Ctrl+Shift+L to unlock). Locked objects cannot be moved,
+  edited or deleted but can be selected and copied; the copy is not locked. A padlock marks them.
+* **Selection rectangle:** dragged from left to right it selects only objects (and groups) wholly inside;
+  dragged from right to left it also selects everything it touches. Pressing Escape twice returns to the
+  select tool.
 * **Right-click context menu** (with small icons for flips, rotations, order, alignment) with the common commands (copy, paste, group, arrange, shape operations,
   adjust and trace for images).
 * Undo / redo, snap to grid, rulers, zoom and pan, drag and drop of files.
 * **Auto-fit:** the work area is fitted to the window and refitted whenever the window or the side panels are
   resized. Zooming or panning by hand switches it off; View > "Fit bed to window" turns it back on (and
   "Auto-fit work area to window" toggles it). The preview window behaves the same way.
-* **Grid options** (Settings menu): main grid and a finer secondary grid, each with its own line distance and
-  colour.
+* **View options** (Settings menu): main grid and a finer secondary grid, each with its own line distance and
+  colour, the work-area background colour (automatically very light grey in the dark colour schemes and
+  white in the light ones, or your own) and the thickness of the drawn lines.
 
 **Files**
 * **Import** submenu: SVG (curves are kept as Béziers; colours map to layers), bitmaps (PNG, JPEG, BMP, GIF,
@@ -39,6 +45,9 @@
 * **Raster engraving:** images engrave line by line at the layer interval with threshold, Floyd-Steinberg,
   Jarvis, Stucki, Atkinson, ordered or grayscale power (minimum and maximum power); negative option per image.
 * Inner shapes are cut first, nearest-neighbour ordering, live toolpath preview with time estimate.
+* The layer colour strip at the bottom shows the layer names. Double-clicking a layer name there or in the
+  Layers tab opens the layer options window (name, mode, speed, power, passes, fill and image settings). Offset
+  fill rows have no separate speed field.
 * The **Layers** tab lists layers in burn order; move them up or down to change the order. The Properties tab
   shows the colour of the selected object's layer.
 * **Preview window:** the whole job with each burn operation (layer, fill, line, offset, image, pass) in its own

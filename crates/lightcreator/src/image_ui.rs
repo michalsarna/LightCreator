@@ -174,7 +174,7 @@ impl App {
             match d.target {
                 Some(id) => {
                     self.checkpoint();
-                    if let Some(s) = self.doc.shape_mut(id) {
+                    if let Some(s) = self.doc.unlocked_mut(id) {
                         s.kind = Kind::Image(im);
                     }
                 }
@@ -276,7 +276,7 @@ impl App {
         }
         self.checkpoint();
         if d.delete_original {
-            self.doc.shapes.retain(|s| s.id != d.shape);
+            self.doc.shapes.retain(|s| s.id != d.shape || s.locked);
         }
         let n = contours.len();
         let id = self.doc.add(shape.layer, Kind::Bezier(contours), Xf::IDENTITY);

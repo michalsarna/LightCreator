@@ -59,6 +59,12 @@ fn install(text: &str, version: Version) -> Result<String, String> {
 }
 
 impl App {
+    /// Close the sharing dialog (used by tests and screenshots).
+    #[cfg(test)]
+    pub fn show_ser2net_off(&mut self) {
+        self.ser2net = None;
+    }
+
     pub fn open_ser2net(&mut self) {
         let installed = run("ser2net", &["-v"]);
         let version = installed.as_deref().and_then(version_from_output).unwrap_or(Version::V4);

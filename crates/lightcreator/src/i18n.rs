@@ -522,6 +522,19 @@ const TABLE: &[[&str; 7]] = &[
     ["By hand: sudo cp <saved file> {} && sudo systemctl restart ser2net", "Ręcznie: sudo cp <zapisany plik> {} && sudo systemctl restart ser2net", "Von Hand: sudo cp <gespeicherte Datei> {} && sudo systemctl restart ser2net", "A mano: sudo cp <file salvato> {} && sudo systemctl restart ser2net", "Käsin: sudo cp <tallennettu tiedosto> {} && sudo systemctl restart ser2net", "手动：sudo cp <已保存的文件> {} && sudo systemctl restart ser2net", "हाथ से: sudo cp <सहेजी फ़ाइल> {} && sudo systemctl restart ser2net"],
     ["Camera rotation", "Obrót kamery", "Kameradrehung", "Rotazione fotocamera", "Kameran kierto", "摄像头旋转", "कैमरा रोटेशन"],
     ["Auto-fit work area to window", "Automatycznie dopasuj obszar roboczy do okna", "Arbeitsbereich automatisch an Fenster anpassen", "Adatta automaticamente l'area di lavoro alla finestra", "Sovita työalue ikkunaan automaattisesti", "自动使工作区域适应窗口", "कार्य क्षेत्र को विंडो में स्वतः फ़िट करें"],
+    // ---- locking, selection, background, line width, layer dialog ----
+    ["Lock", "Zablokuj", "Sperren", "Blocca", "Lukitse", "锁定", "लॉक करें"],
+    ["Locked: unlock to edit. Copies are not locked.", "Zablokowane: odblokuj, aby edytować. Kopie nie są zablokowane.", "Gesperrt: zum Bearbeiten entsperren. Kopien sind nicht gesperrt.", "Bloccato: sblocca per modificare. Le copie non sono bloccate.", "Lukittu: avaa lukitus muokataksesi. Kopiot eivät ole lukittuja.", "已锁定：解锁后才能编辑。副本不会被锁定。", "लॉक है: संपादित करने के लिए अनलॉक करें। प्रतियाँ लॉक नहीं होतीं।"],
+    ["Locked {} object(s).", "Zablokowano obiektów: {}.", "{} Objekt(e) gesperrt.", "Bloccati {} oggetti.", "Lukittu {} kohdetta.", "已锁定 {} 个对象。", "{} ऑब्जेक्ट लॉक किए गए।"],
+    ["Unlocked {} object(s).", "Odblokowano obiektów: {}.", "{} Objekt(e) entsperrt.", "Sbloccati {} oggetti.", "Lukitus avattu {} kohteelta.", "已解锁 {} 个对象。", "{} ऑब्जेक्ट अनलॉक किए गए।"],
+    ["Double-click to edit the layer options", "Kliknij dwukrotnie, aby edytować opcje warstwy", "Doppelklicken, um die Ebenenoptionen zu bearbeiten", "Doppio clic per modificare le opzioni del livello", "Kaksoisnapsauta muokataksesi tason asetuksia", "双击以编辑图层选项", "लेयर विकल्प संपादित करने के लिए डबल-क्लिक करें"],
+    ["Layer options — {}", "Opcje warstwy — {}", "Ebenenoptionen — {}", "Opzioni del livello — {}", "Tason asetukset — {}", "图层选项 — {}", "लेयर विकल्प — {}"],
+    ["{} — click to assign selection / set active; double-click for options", "{} — kliknij, aby przypisać zaznaczenie / ustawić jako aktywną; dwukrotnie, aby zobaczyć opcje", "{} — klicken, um die Auswahl zuzuweisen / zu aktivieren; doppelklicken für Optionen", "{} — clic per assegnare la selezione / impostare come attivo; doppio clic per le opzioni", "{} — napsauta määrittääksesi valinnan / asettaaksesi aktiiviseksi; kaksoisnapsautus avaa asetukset", "{} — 点击以分配所选对象 / 设为当前图层；双击打开选项", "{} — चयन असाइन करने / सक्रिय सेट करने के लिए क्लिक करें; विकल्पों के लिए डबल-क्लिक करें"],
+    ["View options…", "Opcje widoku…", "Ansichtsoptionen…", "Opzioni di visualizzazione…", "Näkymän asetukset…", "视图选项…", "दृश्य विकल्प…"],
+    ["View options", "Opcje widoku", "Ansichtsoptionen", "Opzioni di visualizzazione", "Näkymän asetukset", "视图选项", "दृश्य विकल्प"],
+    ["Background colour", "Kolor tła", "Hintergrundfarbe", "Colore di sfondo", "Taustaväri", "背景颜色", "पृष्ठभूमि रंग"],
+    ["Automatic", "Automatyczny", "Automatisch", "Automatico", "Automaattinen", "自动", "स्वचालित"],
+    ["Line thickness", "Grubość linii", "Linienstärke", "Spessore delle linee", "Viivan paksuus", "线条粗细", "रेखा की मोटाई"],
 ];
 #[cfg(test)]
 mod tests {
