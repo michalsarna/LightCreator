@@ -451,3 +451,14 @@ fn ser2net_configs() {
     assert_eq!(version_from_output("nothing"), None);
     assert_eq!(Version::V4.file(), "/etc/ser2net.yaml");
 }
+
+#[test]
+fn camera_rotation_is_stored_with_the_device() {
+    let mut d = Device::default();
+    d.camera_rotation = 3;
+    let back: Device = serde_json::from_str(&serde_json::to_string(&d).unwrap()).unwrap();
+    assert_eq!(back.camera_rotation, 3);
+    assert_eq!(back, d);
+    let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
+    assert_eq!(serde_json::from_str::<Device>(old).unwrap().camera_rotation, 0);
+}

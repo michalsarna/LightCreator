@@ -282,6 +282,13 @@ impl App {
                 ui.label(tr("Camera URL"));
                 ui.add(egui::TextEdit::singleline(&mut d.camera_url).hint_text("http://raspberrypi.local:8080/stream.mjpg").desired_width(260.0)).on_hover_text(tr("Live picture of the machine: an MJPEG stream or a JPEG snapshot address (http or https)."));
                 ui.end_row();
+                ui.label(tr("Camera rotation"));
+                ui.horizontal(|ui| {
+                    for q in 0..4u8 {
+                        ui.selectable_value(&mut d.camera_rotation, q, format!("{}°", q as u32 * 90));
+                    }
+                });
+                ui.end_row();
             });
             ui.add_space(8.0);
             let valid = !cfg.draft.name.trim().is_empty();
@@ -423,6 +430,7 @@ impl App {
             }
             if !dev.camera_url.trim().is_empty() {
                 row(tr("Camera URL"), dev.camera_url.clone());
+                row(tr("Camera rotation"), format!("{}°", dev.camera_rotation as u32 % 4 * 90));
             }
         });
         ui.add_space(6.0);

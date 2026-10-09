@@ -63,7 +63,8 @@
   work area. RTSP streams are not supported; use an MJPEG address (most camera software offers one). The view
   can float inside the application, open as a separate operating-system window that can leave the application
   (and sit on another screen) or be docked as a tab of the side panel, and the picture can be rotated by 90°,
-  180° or 270° (remembered per device).
+  180° or 270°. The rotation is a device setting (Camera rotation in the device configuration) and is saved
+  with the other device options.
 * The camera overlay on the work area can be switched on and off at any time: the "Overlay" button in the
   control bar and View > Show camera overlay work even when no camera window is open.
 * **GRBL** and **Marlin** (laser feature, inline power) stream over a serial port or TCP: connect, jog, home, unlock,

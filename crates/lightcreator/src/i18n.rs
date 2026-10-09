@@ -520,6 +520,7 @@ const TABLE: &[[&str; 7]] = &[
     ["Installed {} and restarted ser2net.", "Zainstalowano {} i zrestartowano ser2net.", "{} installiert und ser2net neu gestartet.", "Installato {} e riavviato ser2net.", "Asennettu {} ja ser2net käynnistetty uudelleen.", "已安装 {} 并重启 ser2net。", "{} इंस्टॉल किया और ser2net रीस्टार्ट किया।"],
     ["Could not install the configuration: {}", "Nie udało się zainstalować konfiguracji: {}", "Die Konfiguration konnte nicht installiert werden: {}", "Impossibile installare la configurazione: {}", "Asetusten asennus epäonnistui: {}", "无法安装配置：{}", "कॉन्फ़िगरेशन इंस्टॉल नहीं हो सका: {}"],
     ["By hand: sudo cp <saved file> {} && sudo systemctl restart ser2net", "Ręcznie: sudo cp <zapisany plik> {} && sudo systemctl restart ser2net", "Von Hand: sudo cp <gespeicherte Datei> {} && sudo systemctl restart ser2net", "A mano: sudo cp <file salvato> {} && sudo systemctl restart ser2net", "Käsin: sudo cp <tallennettu tiedosto> {} && sudo systemctl restart ser2net", "手动：sudo cp <已保存的文件> {} && sudo systemctl restart ser2net", "हाथ से: sudo cp <सहेजी फ़ाइल> {} && sudo systemctl restart ser2net"],
+    ["Camera rotation", "Obrót kamery", "Kameradrehung", "Rotazione fotocamera", "Kameran kierto", "摄像头旋转", "कैमरा रोटेशन"],
 ];
 #[cfg(test)]
 mod tests {

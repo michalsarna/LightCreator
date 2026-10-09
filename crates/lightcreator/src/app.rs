@@ -123,6 +123,8 @@ pub struct App {
     pub ser2net: Option<crate::ser2net_ui::Ser2NetDlg>,
     pub stream_mode: crate::stream_ui::StreamMode,
     pub tab_seen: bool,
+    /// Rotation the current stream texture was made with.
+    pub stream_rot: u8,
     pub stream: Option<(String, crate::camera_stream::StreamWorker)>,
     pub stream_tex: Option<egui::TextureHandle>,
     pub stream_err: String,
@@ -238,6 +240,7 @@ impl App {
             ser2net: None,
             stream_mode: crate::stream_ui::StreamMode::Floating,
             tab_seen: false,
+            stream_rot: 0,
             stream: None,
             stream_tex: None,
             stream_err: String::new(),

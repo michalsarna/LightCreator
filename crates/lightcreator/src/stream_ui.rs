@@ -48,6 +48,12 @@ impl App {
             self.stream_err.clear();
             self.stream = Some((url.to_string(), camera_stream::spawn(url.to_string(), ctx.clone())));
         }
+        // The rotation is a device setting: a change shows up at once.
+        let rotation = self.doc.device.camera_rotation % 4;
+        if self.stream_rot != rotation {
+            self.stream_rot = rotation;
+            self.stream_tex = None;
+        }
         let mut latest = None;
         if let Some((_, w)) = &self.stream {
             while let Ok(m) = w.rx.try_recv() {
@@ -61,7 +67,7 @@ impl App {
             }
         }
         if let Some(f) = latest {
-            let (w, h, rgb) = rotate_rgb(&f.rgb, f.w, f.h, self.doc.device.camera_rotation);
+            let (w, h, rgb) = rotate_rgb(&f.rgb, f.w, f.h, rotation);
             let img = egui::ColorImage::from_rgb([w as usize, h as usize], &rgb);
             match &mut self.stream_tex {
                 Some(t) if t.size() == [w as usize, h as usize] => t.set(img.clone(), egui::TextureOptions::LINEAR),
@@ -87,19 +93,6 @@ impl App {
             }
             if before == StreamMode::Tab && self.stream_mode != StreamMode::Tab && self.side_tab == SideTab::Camera {
                 self.side_tab = SideTab::Properties;
-            }
-        });
-        ui.horizontal(|ui| {
-            ui.label(tr("Rotate"));
-            let mut r = self.doc.device.camera_rotation % 4;
-            for q in 0..4u8 {
-                ui.selectable_value(&mut r, q, format!("{}°", q as u32 * 90));
-            }
-            if r != self.doc.device.camera_rotation {
-                self.doc.device.camera_rotation = r;
-                self.sync_profile();
-                // The next frame is rotated; refresh the texture size right away.
-                self.stream_tex = None;
             }
         });
         ui.label(RichText::new(&url).monospace().color(theme::text_dim()));
@@ -213,5 +206,16 @@ mod tests {
         a.side_tab = SideTab::Camera;
         a.stream_closed();
         assert_eq!(a.side_tab, SideTab::Properties);
+    }
+
+    #[test]
+    fn rotation_comes_from_the_device_and_resets_the_picture() {
+        let (mut a, ctx) = app_with_overlay();
+        a.stream_tex = Some(ctx.load_texture("t", egui::ColorImage::from_rgb([2, 1], &[0u8; 6]), egui::TextureOptions::LINEAR));
+        a.doc.device.camera_rotation = 1;
+        a.stream_poll(&ctx, "http://127.0.0.1:9/none.mjpg");
+        assert!(a.stream_tex.is_none(), "texture is rebuilt with the new rotation");
+        assert_eq!(a.stream_rot, 1);
+        a.stream = None;
     }
 }
