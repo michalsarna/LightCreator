@@ -117,6 +117,12 @@ fn render_screenshots() {
         let a = app(&mut h);
         a.side_tab = SideTab::Device;
         a.open_cfg_edit(0);
+        if let Some(c) = a.cfg.as_mut() {
+            c.draft.link = lc_core::LinkKind::Tcp;
+            c.draft.host = "raspberrypi.local".into();
+            c.draft.tcp_port = 3333;
+            c.draft.camera_url = "http://raspberrypi.local:8080/stream.mjpg".into();
+        }
     }
     save(&mut h, "05-device-config.png");
 
@@ -241,6 +247,7 @@ fn render_screenshots() {
         a.touch();
         a.show_preview = true;
         a.pv.show_travel = true;
+        a.pv.progress = 0.6;
         a.status = "Ready".into();
     }
     save(&mut h, "12-preview.png");
@@ -309,7 +316,7 @@ fn render_screenshots() {
         a.grid_prefs.minor_on = false;
         a.grid = 10.0;
         a.side_tab = SideTab::Properties;
-        let mut add = |a: &mut App, ct: lc_core::Contour, x: f64, layer: usize| {
+        let add = |a: &mut App, ct: lc_core::Contour, x: f64, layer: usize| {
             a.doc.add(layer, Kind::Bezier(vec![ct]), Xf::translate(x, 60.0))
         };
         add(a, lc_core::Contour::triangle(60.0, 52.0), 30.0, 2);

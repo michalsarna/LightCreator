@@ -474,6 +474,23 @@ const TABLE: &[[&str; 7]] = &[
     ["Number of sides", "Liczba boków", "Anzahl der Seiten", "Numero di lati", "Sivujen määrä", "边数", "भुजाओं की संख्या"],
     ["Drag on the work area to draw it. At most 360 sides.", "Przeciągnij na obszarze roboczym, aby narysować. Maksymalnie 360 boków.", "Zum Zeichnen im Arbeitsbereich ziehen. Höchstens 360 Seiten.", "Trascina sull'area di lavoro per disegnare. Al massimo 360 lati.", "Piirrä vetämällä työalueella. Enintään 360 sivua.", "在工作区域拖动绘制。最多 360 条边。", "बनाने के लिए कार्य क्षेत्र पर खींचें। अधिकतम 360 भुजाएँ।"],
     ["OK", "OK", "OK", "OK", "OK", "确定", "ठीक है"],
+    // ---- TCP link, camera stream ----
+    ["Connection type", "Typ połączenia", "Verbindungsart", "Tipo di connessione", "Yhteyden tyyppi", "连接类型", "कनेक्शन प्रकार"],
+    ["Serial port", "Port szeregowy", "Serieller Port", "Porta seriale", "Sarjaportti", "串口", "सीरियल पोर्ट"],
+    ["Network (TCP, e.g. ser2net)", "Sieć (TCP, np. ser2net)", "Netzwerk (TCP, z. B. ser2net)", "Rete (TCP, es. ser2net)", "Verkko (TCP, esim. ser2net)", "网络（TCP，如 ser2net）", "नेटवर्क (TCP, जैसे ser2net)"],
+    ["Host", "Host", "Host", "Host", "Isäntä", "主机", "होस्ट"],
+    ["TCP port", "Port TCP", "TCP-Port", "Porta TCP", "TCP-portti", "TCP 端口", "TCP पोर्ट"],
+    ["Connected to {}", "Połączono z {}", "Verbunden mit {}", "Connesso a {}", "Yhdistetty: {}", "已连接到 {}", "{} से कनेक्ट हुआ"],
+    ["Camera URL", "Adres URL kamery", "Kamera-URL", "URL della fotocamera", "Kameran URL", "摄像头 URL", "कैमरा URL"],
+    ["Live picture of the machine: an MJPEG stream or a JPEG snapshot address (http or https).", "Obraz na żywo z maszyny: strumień MJPEG lub adres zdjęcia JPEG (http lub https).", "Live-Bild der Maschine: ein MJPEG-Stream oder eine JPEG-Schnappschuss-Adresse (http oder https).", "Immagine dal vivo della macchina: un flusso MJPEG o l'indirizzo di uno snapshot JPEG (http o https).", "Koneen suora kuva: MJPEG-virta tai JPEG-tilannekuvan osoite (http tai https).", "机器的实时画面：MJPEG 视频流或 JPEG 快照地址（http 或 https）。", "मशीन का लाइव चित्र: MJPEG स्ट्रीम या JPEG स्नैपशॉट का पता (http या https)।"],
+    ["Camera view", "Widok z kamery", "Kameraansicht", "Vista fotocamera", "Kameran näkymä", "摄像头画面", "कैमरा दृश्य"],
+    ["Show the live camera picture of this machine", "Pokaż obraz na żywo z kamery tej maszyny", "Live-Kamerabild dieser Maschine anzeigen", "Mostra l'immagine dal vivo della fotocamera di questa macchina", "Näytä tämän koneen kameran suora kuva", "显示此机器的实时摄像头画面", "इस मशीन का लाइव कैमरा चित्र दिखाएँ"],
+    ["Waiting for the picture…", "Oczekiwanie na obraz…", "Warte auf das Bild…", "In attesa dell'immagine…", "Odotetaan kuvaa…", "正在等待画面…", "चित्र की प्रतीक्षा…"],
+    ["Show as overlay on the work area", "Pokaż jako nakładkę na obszarze roboczym", "Als Überlagerung im Arbeitsbereich zeigen", "Mostra come sovrapposizione sull'area di lavoro", "Näytä peittona työalueella", "在工作区域上显示为叠加", "कार्य क्षेत्र पर ओवरले के रूप में दिखाएँ"],
+    ["Stream error: {}", "Błąd strumienia: {}", "Stream-Fehler: {}", "Errore del flusso: {}", "Virhe virrassa: {}", "视频流错误：{}", "स्ट्रीम त्रुटि: {}"],
+    ["Fit 15 s", "Dopasuj do 15 s", "Auf 15 s anpassen", "Adatta a 15 s", "Sovita 15 s", "适配 15 秒", "15 सेकंड में फ़िट"],
+    ["Real time", "Czas rzeczywisty", "Echtzeit", "Tempo reale", "Reaaliaika", "实时", "वास्तविक समय"],
+    ["Set a camera URL in the device settings first.", "Najpierw ustaw adres URL kamery w ustawieniach urządzenia.", "Zuerst eine Kamera-URL in den Geräteeinstellungen festlegen.", "Imposta prima un URL della fotocamera nelle impostazioni del dispositivo.", "Aseta ensin kameran URL laitteen asetuksissa.", "请先在设备设置中设置摄像头 URL。", "पहले डिवाइस सेटिंग्स में कैमरा URL सेट करें।"],
 ];
 #[cfg(test)]
 mod tests {

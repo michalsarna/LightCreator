@@ -1,5 +1,6 @@
 mod app;
 mod camera;
+mod camera_stream;
 mod canvas;
 mod device_ui;
 mod fonts;
@@ -17,6 +18,7 @@ mod panels;
 mod preview_ui;
 mod prefs;
 mod shape_ops;
+mod stream_ui;
 #[cfg(test)]
 mod screenshots;
 mod theme;

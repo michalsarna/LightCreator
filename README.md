@@ -56,8 +56,8 @@ A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
   bitmap import with adjustments, image tracing.
 * **Engraving:** line, fill, offset fill and raster image engraving with six dithering methods and
   grayscale power; LightBurn-style cut layers; toolpath preview with time estimate.
-* **Devices:** profile per machine (controller, laser type, work area, units, port, jog settings), start
-  window, live serial console.
+* **Devices:** profile per machine (controller, laser type, work area, units, serial port or TCP / ser2net,
+  jog settings, camera URL), start window, live console, camera view.
 * **Controllers:** GRBL and Marlin over a serial port. Ruida and Trocen jobs are exported as PLT / DXF for the
   controller's own software.
 * **Helpers:** material library with starting settings and your own presets, camera / photo overlay with

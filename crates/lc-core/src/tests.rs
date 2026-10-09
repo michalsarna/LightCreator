@@ -406,3 +406,30 @@ fn automatic_shapes() {
     // Top tip touches the top edge of the box.
     assert!((star.nodes[0].p.y - 0.0).abs() < 1e-9);
 }
+
+#[test]
+fn jobs_start_and_end_at_the_machine_origin() {
+    for (origin, home) in [(Origin::FrontLeft, Pt::new(0.0, 400.0)), (Origin::BackLeft, Pt::new(0.0, 0.0))] {
+        let mut d = Document::default();
+        d.device.origin = origin;
+        d.device.return_home = true;
+        d.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(50.0, 50.0));
+        assert_eq!(d.device.home_point(), home);
+        let job = gcode::generate(&d);
+        assert_eq!(job.moves[0].a, home, "starts at the machine zero");
+        assert_eq!(job.moves.last().unwrap().b, home, "returns to the machine zero");
+        // Machine coordinates of the home move are X0 Y0.
+        assert!(job.gcode.contains("G0 X0.000 Y0.000"), "{}", job.gcode);
+        assert!(job.moves.iter().all(|m| m.dur >= 0.0));
+        let total: f64 = job.moves.iter().map(|m| m.dur).sum();
+        assert!((total - job.est_seconds).abs() < 1e-6);
+    }
+}
+
+#[test]
+fn old_devices_get_link_defaults() {
+    let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
+    let d: Device = serde_json::from_str(old).unwrap();
+    assert_eq!((d.link, d.tcp_port, d.camera_url.is_empty()), (LinkKind::Serial, 3333, true));
+    assert!(!d.has_target());
+}

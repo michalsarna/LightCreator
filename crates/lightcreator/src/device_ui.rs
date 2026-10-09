@@ -1,14 +1,14 @@
 //! Start screen (device chooser) and the device configuration window.
 //! The editor can only be entered once at least one device profile exists and one is selected.
 use crate::app::{App, Screen, APP_VERSION};
-use crate::laser::{self, Cmd};
+use crate::laser::{self, Cmd, Target};
 use crate::i18n::{tr, trf, Lang};
 use crate::menu::Act;
 use crate::theme::{self, Scheme};
 use eframe::egui::{self, Align, Color32, Layout, RichText};
 use crate::units_ui::{drag_len, drag_speed_min, fmt_len, fmt_speed_min};
 use lc_core::controller::Action;
-use lc_core::{Controller, Device, LaserKind, Origin, Units};
+use lc_core::{Controller, Device, LaserKind, LinkKind, Origin, Units};
 
 /// An in-progress "read settings from the device" request.
 pub struct ReadCfg {
@@ -231,25 +231,43 @@ impl App {
                 ui.label(tr("Return to origin"));
                 ui.checkbox(&mut d.return_home, "");
                 ui.end_row();
-                ui.label(tr("Baud rate"));
-                ui.add(egui::DragValue::new(&mut d.baud).range(1200..=1_000_000));
-                ui.end_row();
                 if d.controller.is_serial() {
-                    ui.label(tr("Port"));
-                    ui.horizontal_wrapped(|ui| {
-                        egui::ComboBox::from_id_salt("cfg_port").width(170.0).selected_text(if d.port.is_empty() { tr("No port") } else { d.port.as_str() }).show_ui(ui, |ui| {
-                            for p in &self.ports {
-                                ui.selectable_value(&mut d.port, p.clone(), p);
-                            }
-                        });
-                        if ui.button(tr("Refresh")).clicked() {
-                            self.ports = laser::list_ports();
-                        }
-                        let label = if reading { tr("Reading…") } else { tr("Read from device") };
-                        if ui.add_enabled(!reading && !d.port.is_empty(), egui::Button::new(label)).on_hover_text(tr("Connect and read work area, S-value max and speed from the controller")).clicked() {
-                            read_clicked = true;
+                    ui.label(tr("Connection type"));
+                    egui::ComboBox::from_id_salt("link_kind").width(230.0).selected_text(tr(d.link.label())).show_ui(ui, |ui| {
+                        for k in LinkKind::ALL {
+                            ui.selectable_value(&mut d.link, k, tr(k.label()));
                         }
                     });
+                    ui.end_row();
+                    if d.link == LinkKind::Serial {
+                        ui.label(tr("Baud rate"));
+                        ui.add(egui::DragValue::new(&mut d.baud).range(1200..=1_000_000));
+                        ui.end_row();
+                        ui.label(tr("Port"));
+                        ui.horizontal_wrapped(|ui| {
+                            egui::ComboBox::from_id_salt("cfg_port").width(170.0).selected_text(if d.port.is_empty() { tr("No port") } else { d.port.as_str() }).show_ui(ui, |ui| {
+                                for p in &self.ports {
+                                    ui.selectable_value(&mut d.port, p.clone(), p);
+                                }
+                            });
+                            if ui.button(tr("Refresh")).clicked() {
+                                self.ports = laser::list_ports();
+                            }
+                        });
+                        ui.end_row();
+                    } else {
+                        ui.label(tr("Host"));
+                        ui.add(egui::TextEdit::singleline(&mut d.host).hint_text("raspberrypi.local").desired_width(200.0));
+                        ui.end_row();
+                        ui.label(tr("TCP port"));
+                        ui.add(egui::DragValue::new(&mut d.tcp_port).range(1..=65535));
+                        ui.end_row();
+                    }
+                    ui.label("");
+                    let label = if reading { tr("Reading…") } else { tr("Read from device") };
+                    if ui.add_enabled(!reading && d.has_target(), egui::Button::new(label)).on_hover_text(tr("Connect and read work area, S-value max and speed from the controller")).clicked() {
+                        read_clicked = true;
+                    }
                     ui.end_row();
                 }
                 ui.label(tr("Jog step"));
@@ -260,6 +278,9 @@ impl App {
                 ui.end_row();
                 ui.label(tr("Frame power"));
                 ui.add(egui::DragValue::new(&mut d.frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
+                ui.end_row();
+                ui.label(tr("Camera URL"));
+                ui.add(egui::TextEdit::singleline(&mut d.camera_url).hint_text("http://raspberrypi.local:8080/stream.mjpg").desired_width(260.0)).on_hover_text(tr("Live picture of the machine: an MJPEG stream or a JPEG snapshot address (http or https)."));
                 ui.end_row();
             });
             ui.add_space(8.0);
@@ -393,7 +414,16 @@ impl App {
             row(tr("Dynamic power (M4)"), yes_no(dev.dynamic_power).to_string());
             row(tr("Travel speed"), fmt_speed_min(units, dev.travel_speed));
             row(tr("Return to origin"), yes_no(dev.return_home).to_string());
-            row(tr("Baud rate"), dev.baud.to_string());
+            if dev.controller.is_serial() {
+                row(tr("Connection type"), tr(dev.link.label()).to_string());
+                if dev.link == LinkKind::Serial {
+                    row(tr("Baud rate"), dev.baud.to_string());
+                }
+                row(tr("Port"), if dev.has_target() { dev.target_label() } else { tr("No port").to_string() });
+            }
+            if !dev.camera_url.trim().is_empty() {
+                row(tr("Camera URL"), dev.camera_url.clone());
+            }
         });
         ui.add_space(6.0);
         ui.separator();
@@ -408,24 +438,35 @@ impl App {
             return;
         }
         let mut port = self.doc.device.port.clone();
+        let tcp = self.doc.device.link == LinkKind::Tcp;
         ui.horizontal(|ui| {
-            egui::ComboBox::from_id_salt("port").width(150.0).selected_text(if port.is_empty() { tr("No port") } else { port.as_str() }).show_ui(ui, |ui| {
-                for p in self.ports.clone() {
-                    ui.selectable_value(&mut port, p.clone(), p);
-                }
-            });
-            if ui.button(tr("Refresh")).on_hover_text(tr("Rescan serial ports")).clicked() {
-                self.ports = laser::list_ports();
-                if !self.ports.contains(&port) {
-                    port = self.ports.first().cloned().unwrap_or_default();
+            if tcp {
+                ui.label(RichText::new(self.doc.device.target_label()).monospace());
+            } else {
+                egui::ComboBox::from_id_salt("port").width(150.0).selected_text(if port.is_empty() { tr("No port") } else { port.as_str() }).show_ui(ui, |ui| {
+                    for p in self.ports.clone() {
+                        ui.selectable_value(&mut port, p.clone(), p);
+                    }
+                });
+                if ui.button(tr("Refresh")).on_hover_text(tr("Rescan serial ports")).clicked() {
+                    self.ports = laser::list_ports();
+                    if !self.ports.contains(&port) {
+                        port = self.ports.first().cloned().unwrap_or_default();
+                    }
                 }
             }
             if self.connected {
                 if ui.button(tr("Disconnect")).clicked() {
                     self.link.send(Cmd::Disconnect);
                 }
-            } else if ui.add_enabled(!port.is_empty(), egui::Button::new(tr("Connect"))).clicked() {
-                self.link.send(Cmd::Connect { port: port.clone(), baud: self.doc.device.baud, controller: ctrl });
+            } else {
+                let mut dev = self.doc.device.clone();
+                dev.port = port.clone();
+                if ui.add_enabled(dev.has_target(), egui::Button::new(tr("Connect"))).clicked() {
+                    if let Some(target) = Target::of(&dev) {
+                        self.link.send(Cmd::Connect { target, controller: ctrl });
+                    }
+                }
             }
         });
         self.doc.device.port = port;
@@ -499,7 +540,10 @@ impl App {
             st.request_at = Some(std::time::Instant::now());
         } else {
             st.waiting_connect = true;
-            self.link.send(Cmd::Connect { port: draft.port.clone(), baud: draft.baud, controller: c });
+            match Target::of(draft) {
+                Some(target) => self.link.send(Cmd::Connect { target, controller: c }),
+                None => return,
+            }
         }
         self.read_cfg = Some(st);
         self.status = tr("Reading settings from the device…").to_string();

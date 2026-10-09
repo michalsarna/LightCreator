@@ -12,6 +12,8 @@ pub struct Move {
     pub layer: usize,
     /// Index into `Job::ops`: which burn operation this move belongs to.
     pub op: usize,
+    /// Time the move takes, seconds.
+    pub dur: f64,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -68,7 +70,7 @@ struct Writer<'a> {
 
 impl<'a> Writer<'a> {
     fn new(dev: &'a Device) -> Self {
-        Writer { dev, out: String::new(), moves: vec![], pos: Pt::new(0.0, 0.0), s: None, f: None, layer: 0, op: 0, ops: vec![], seconds: 0.0, cut_len: 0.0 }
+        Writer { dev, out: String::new(), moves: vec![], pos: dev.home_point(), s: None, f: None, layer: 0, op: 0, ops: vec![], seconds: 0.0, cut_len: 0.0 }
     }
 
     fn map(&self, p: Pt) -> (f64, f64) {
@@ -91,7 +93,7 @@ impl<'a> Writer<'a> {
         }
         let (x, y) = self.map(p);
         let _ = writeln!(self.out, "G0 X{:.3} Y{:.3}", x, y);
-        self.moves.push(Move { a: self.pos, b: p, laser: false, layer: self.layer, op: self.op });
+        self.moves.push(Move { a: self.pos, b: p, laser: false, layer: self.layer, op: self.op, dur: p.dist(self.pos) / self.dev.travel_speed.max(1.0) * 60.0 });
         self.seconds += p.dist(self.pos) / self.dev.travel_speed.max(1.0) * 60.0;
         self.pos = p;
     }
@@ -152,7 +154,7 @@ impl<'a> Writer<'a> {
         self.out.push_str(&l);
         self.out.push('\n');
         let d = p.dist(self.pos);
-        self.moves.push(Move { a: self.pos, b: p, laser: power > 0.0, layer: self.layer, op: self.op });
+        self.moves.push(Move { a: self.pos, b: p, laser: power > 0.0, layer: self.layer, op: self.op, dur: d / speed.max(0.1) });
         self.seconds += d / speed.max(0.1);
         if power > 0.0 {
             self.cut_len += d;
@@ -335,7 +337,7 @@ pub fn generate(doc: &Document) -> Job {
     }
     let _ = writeln!(w.out, "{}", if dev.controller == Controller::Marlin { "M5 I ; laser off" } else { "M5 ; laser off" });
     if dev.return_home {
-        w.travel(Pt::new(0.0, 0.0));
+        w.travel(dev.home_point());
     }
     if dev.controller != Controller::Marlin {
         let _ = writeln!(w.out, "M2");

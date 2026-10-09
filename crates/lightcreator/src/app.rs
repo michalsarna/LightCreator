@@ -117,6 +117,11 @@ pub struct App {
     pub show_offset: bool,
     pub show_materials: bool,
     pub show_prefs: bool,
+    pub show_stream: bool,
+    pub stream: Option<(String, crate::camera_stream::StreamWorker)>,
+    pub stream_tex: Option<egui::TextureHandle>,
+    pub stream_err: String,
+    pub stream_overlay: bool,
     pub polygon_sides: u32,
     pub show_polygon: bool,
     pub read_cfg: Option<crate::device_ui::ReadCfg>,
@@ -224,6 +229,11 @@ impl App {
             show_offset: false,
             show_materials: false,
             show_prefs: false,
+            show_stream: false,
+            stream: None,
+            stream_tex: None,
+            stream_err: String::new(),
+            stream_overlay: false,
             polygon_sides: 6,
             show_polygon: false,
             read_cfg: None,
@@ -755,6 +765,13 @@ impl App {
             Act::CameraOverlay => self.show_overlay = true,
             Act::GridOptions => self.show_prefs = true,
             Act::PreviewWindow => self.show_preview = true,
+            Act::CameraView => {
+                if self.doc.device.camera_url.trim().is_empty() {
+                    self.status = tr("Set a camera URL in the device settings first.").to_string();
+                } else {
+                    self.show_stream = true;
+                }
+            }
             Act::MaterialLibrary => {
                 self.mat_laser = Some(self.doc.device.laser);
                 self.show_materials = true;
@@ -858,6 +875,9 @@ impl App {
             }
             if ui.button(tr("Preview…")).on_hover_text(tr("Open the preview window")).clicked() {
                 self.show_preview = true;
+            }
+            if !self.doc.device.camera_url.trim().is_empty() && ui.button(tr("Camera view")).on_hover_text(tr("Show the live camera picture of this machine")).clicked() {
+                self.show_stream = !self.show_stream;
             }
 
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
@@ -1034,6 +1054,7 @@ impl App {
         self.prefs_window(ctx);
         self.preview_window(ctx);
         self.image_dialogs(ctx);
+        self.stream_window(ctx);
     }
 }
 

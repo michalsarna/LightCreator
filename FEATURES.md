@@ -39,8 +39,8 @@
 * The **Layers** tab lists layers in burn order; move them up or down to change the order. The Properties tab
   shows the colour of the selected object's layer.
 * **Preview window:** the whole job with each burn operation (layer, fill, line, offset, image, pass) in its own
-  colour or in the layer colour, per-operation switches, optional travel moves with the laser off, and a play
-  / scrub slider.
+  colour or in the layer colour, per-operation switches, optional travel moves with the laser off, the machine
+  zero marked at its real corner, and smooth time-based playback (15 s fit, real time, ×10 to ×200) with a scrub slider.
 
 **Devices and controllers**
 * Start window to choose the device (machine profile) you work with; profiles are remembered.
@@ -49,7 +49,13 @@
   camera alignment. The Device tab selects a device and shows all its settings.
 * **Read from device:** the device configuration window can connect and read work area, S-value max, travel
   speed and laser mode from GRBL (and the feed rate from Marlin).
-* **GRBL** and **Marlin** (laser feature, inline power) stream over a serial port: connect, jog, home, unlock,
+* **TCP link:** a device can connect through the network instead of a serial port, for example to `ser2net` on
+  a Raspberry Pi (set the host and TCP port in the device configuration; the baud rate is configured in
+  `ser2net`). Everything else works the same, including the console and reading settings.
+* **Camera view:** give the device a camera URL (an MJPEG stream or a JPEG snapshot address, http or https) and a
+  "Camera view" button appears next to the preview button. The picture can also be shown as the overlay on the
+  work area. RTSP streams are not supported; use an MJPEG address (most camera software offers one).
+* **GRBL** and **Marlin** (laser feature, inline power) stream over a serial port or TCP: connect, jog, home, unlock,
   pause / resume, stop, framing, progress.
 * **Ruida** and **Trocen** jobs are exported as HPGL / DXF with one pen or layer per colour, to be opened in the
   controller's own software (for example RDWorks). Fill is exported as hatch lines, raster images are skipped.

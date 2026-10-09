@@ -351,6 +351,30 @@ pub struct CameraCfg {
     pub index: u32,
 }
 
+/// How LightCreator reaches the controller.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum LinkKind {
+    /// A serial (USB) port.
+    #[default]
+    Serial,
+    /// A TCP socket, for example a Raspberry Pi running `ser2net`.
+    Tcp,
+}
+
+impl LinkKind {
+    pub const ALL: [LinkKind; 2] = [LinkKind::Serial, LinkKind::Tcp];
+    pub fn label(self) -> &'static str {
+        match self {
+            LinkKind::Serial => "Serial port",
+            LinkKind::Tcp => "Network (TCP, e.g. ser2net)",
+        }
+    }
+}
+
+fn d_tcp_port() -> u16 {
+    3333
+}
+
 fn d_jog_step() -> f64 {
     5.0
 }
@@ -394,6 +418,43 @@ pub struct Device {
     /// Camera overlay alignment for this machine.
     #[serde(default)]
     pub camera: Option<CameraCfg>,
+    /// Serial port or TCP socket.
+    #[serde(default)]
+    pub link: LinkKind,
+    /// TCP host (name or address) when `link` is `Tcp`.
+    #[serde(default)]
+    pub host: String,
+    #[serde(default = "d_tcp_port")]
+    pub tcp_port: u16,
+    /// URL of a live picture of the machine (MJPEG stream or JPEG snapshot). Empty = none.
+    #[serde(default)]
+    pub camera_url: String,
+}
+
+impl Device {
+    /// Where the machine's zero is, in design coordinates (millimetres, y down). Jobs start and end here.
+    pub fn home_point(&self) -> Pt {
+        match self.origin {
+            Origin::FrontLeft => Pt::new(0.0, self.bed_h),
+            Origin::BackLeft => Pt::new(0.0, 0.0),
+        }
+    }
+
+    /// Short description of the connection target.
+    pub fn target_label(&self) -> String {
+        match self.link {
+            LinkKind::Serial => self.port.clone(),
+            LinkKind::Tcp => format!("{}:{}", self.host, self.tcp_port),
+        }
+    }
+
+    /// Is a connection target configured?
+    pub fn has_target(&self) -> bool {
+        match self.link {
+            LinkKind::Serial => !self.port.is_empty(),
+            LinkKind::Tcp => !self.host.trim().is_empty(),
+        }
+    }
 }
 
 impl Default for Device {
@@ -416,6 +477,10 @@ impl Default for Device {
             jog_feed: 3000.0,
             frame_power: 0.0,
             camera: None,
+            link: LinkKind::Serial,
+            host: String::new(),
+            tcp_port: 3333,
+            camera_url: String::new(),
         }
     }
 }
