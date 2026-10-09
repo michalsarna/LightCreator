@@ -13,6 +13,7 @@ serialport = { version = "4", default-features = false }
 serde_json = "1"
 image = { version = "0.25", default-features = false, features = ["png"] }
 nokhwa = { version = "0.10", default-features = false, features = ["input-native"], optional = true }
+serde = { version = "1.0.229", features = ["derive"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 # Native macOS menu bar (same approach as VectorCraft): Tauri's menu crate, AppKit menus behind a safe API.

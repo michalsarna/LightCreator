@@ -10,10 +10,41 @@ pub struct Move {
     pub b: Pt,
     pub laser: bool,
     pub layer: usize,
+    /// Index into `Job::ops`: which burn operation this move belongs to.
+    pub op: usize,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum OpKind {
+    Image,
+    Offset,
+    Fill,
+    Line,
+}
+
+impl OpKind {
+    pub fn label(self) -> &'static str {
+        match self {
+            OpKind::Image => "Image",
+            OpKind::Offset => "Offset fill",
+            OpKind::Fill => "Fill",
+            OpKind::Line => "Line",
+        }
+    }
+}
+
+/// One burn operation: a layer's image, fill, offset or line pass.
+#[derive(Clone, Copy, Debug)]
+pub struct OpInfo {
+    pub layer: usize,
+    pub kind: OpKind,
+    pub pass: u32,
+    pub passes: u32,
 }
 
 #[derive(Clone, Debug, Default)]
 pub struct Job {
+    pub ops: Vec<OpInfo>,
     pub gcode: String,
     pub moves: Vec<Move>,
     pub est_seconds: f64,
@@ -29,13 +60,15 @@ struct Writer<'a> {
     s: Option<f64>,
     f: Option<f64>,
     layer: usize,
+    op: usize,
+    ops: Vec<OpInfo>,
     seconds: f64,
     cut_len: f64,
 }
 
 impl<'a> Writer<'a> {
     fn new(dev: &'a Device) -> Self {
-        Writer { dev, out: String::new(), moves: vec![], pos: Pt::new(0.0, 0.0), s: None, f: None, layer: 0, seconds: 0.0, cut_len: 0.0 }
+        Writer { dev, out: String::new(), moves: vec![], pos: Pt::new(0.0, 0.0), s: None, f: None, layer: 0, op: 0, ops: vec![], seconds: 0.0, cut_len: 0.0 }
     }
 
     fn map(&self, p: Pt) -> (f64, f64) {
@@ -58,9 +91,15 @@ impl<'a> Writer<'a> {
         }
         let (x, y) = self.map(p);
         let _ = writeln!(self.out, "G0 X{:.3} Y{:.3}", x, y);
-        self.moves.push(Move { a: self.pos, b: p, laser: false, layer: self.layer });
+        self.moves.push(Move { a: self.pos, b: p, laser: false, layer: self.layer, op: self.op });
         self.seconds += p.dist(self.pos) / self.dev.travel_speed.max(1.0) * 60.0;
         self.pos = p;
+    }
+
+    /// Start a new burn operation; following moves belong to it.
+    fn begin_op(&mut self, layer: usize, kind: OpKind, pass: u32, passes: u32) {
+        self.ops.push(OpInfo { layer, kind, pass, passes });
+        self.op = self.ops.len() - 1;
     }
 
     /// Engrave scan rows (image raster): each run at its own power, leaving gaps with the laser off.
@@ -113,7 +152,7 @@ impl<'a> Writer<'a> {
         self.out.push_str(&l);
         self.out.push('\n');
         let d = p.dist(self.pos);
-        self.moves.push(Move { a: self.pos, b: p, laser: power > 0.0, layer: self.layer });
+        self.moves.push(Move { a: self.pos, b: p, laser: power > 0.0, layer: self.layer, op: self.op });
         self.seconds += d / speed.max(0.1);
         if power > 0.0 {
             self.cut_len += d;
@@ -225,7 +264,8 @@ pub fn generate(doc: &Document) -> Job {
         let _ = writeln!(w.out, "{} S0", if dev.dynamic_power { "M4" } else { "M3" });
     }
 
-    for (li, layer) in doc.layers.iter().enumerate() {
+    for li in doc.layer_order() {
+        let layer = &doc.layers[li];
         if !layer.output {
             continue;
         }
@@ -240,13 +280,16 @@ pub fn generate(doc: &Document) -> Job {
             if layer.passes > 1 {
                 let _ = writeln!(w.out, "; pass {}/{}", pass + 1, layer.passes);
             }
+            let (pn, pt) = (pass + 1, layer.passes.max(1));
             for sh in &images {
                 if let Kind::Image(im) = &sh.kind {
+                    w.begin_op(li, OpKind::Image, pn, pt);
                     let rows = crate::raster::rows_for(sh, im, layer);
                     w.raster(&rows, layer);
                 }
             }
             if layer.mode == LayerMode::Offset {
+                w.begin_op(li, OpKind::Offset, pn, pt);
                 let rings = crate::ops::inset_rings(&polys, layer.interval, 10_000);
                 for p in order_paths(rings, w.pos) {
                     w.travel(p.pts[0]);
@@ -259,6 +302,7 @@ pub fn generate(doc: &Document) -> Job {
                 }
             }
             if matches!(layer.mode, LayerMode::Fill | LayerMode::FillAndLine) {
+                w.begin_op(li, OpKind::Fill, pn, pt);
                 let os = layer.overscan.max(0.0);
                 for (a, b) in fill_lines(&polys, layer.interval, layer.angle, layer.bidirectional) {
                     let d = Pt::new(b.x - a.x, b.y - a.y);
@@ -276,6 +320,7 @@ pub fn generate(doc: &Document) -> Job {
                 }
             }
             if matches!(layer.mode, LayerMode::Line | LayerMode::FillAndLine) && !polys.is_empty() {
+                w.begin_op(li, OpKind::Line, pn, pt);
                 for p in order_paths(polys.clone(), w.pos) {
                     w.travel(p.pts[0]);
                     for q in &p.pts[1..] {
@@ -295,7 +340,7 @@ pub fn generate(doc: &Document) -> Job {
     if dev.controller != Controller::Marlin {
         let _ = writeln!(w.out, "M2");
     }
-    Job { gcode: w.out, moves: w.moves, est_seconds: w.seconds, cut_length: w.cut_len }
+    Job { ops: w.ops, gcode: w.out, moves: w.moves, est_seconds: w.seconds, cut_length: w.cut_len }
 }
 
 /// G-code that traces the bounding box of the design. `power` is percent (0 = laser off, 1-2 gives a visible dot on diodes).

@@ -32,7 +32,7 @@ fn out_y(dev: &Device, y: f64) -> f64 {
 
 /// Layers that have something to output.
 fn active_layers(doc: &Document) -> Vec<usize> {
-    (0..doc.layers.len()).filter(|&li| doc.layers[li].output && doc.shapes.iter().any(|s| s.layer == li)).collect()
+    doc.layer_order().into_iter().filter(|&li| doc.layers[li].output && doc.shapes.iter().any(|s| s.layer == li)).collect()
 }
 
 /// Number of images that cannot be represented in these formats.

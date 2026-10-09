@@ -46,6 +46,8 @@ pub enum Act {
     SwitchDevice,
     MaterialLibrary,
     CameraOverlay,
+    GridOptions,
+    PreviewWindow,
     Frame,
     StartJob,
     About,
@@ -142,6 +144,7 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
                 Item(Act::ToggleGrid, "Grid", None),
                 Item(Act::ToggleSnap, "Snap to grid", None),
                 Item(Act::TogglePreview, "Toolpath preview", None),
+                Item(Act::PreviewWindow, "Preview window…", None),
                 Item(Act::FitBed, "Fit bed to window", None),
                 Item(Act::CameraOverlay, "Camera overlay…", None),
             ],
@@ -154,6 +157,8 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
         (
             "Settings",
             vec![
+                Item(Act::GridOptions, "Grid options…", None),
+                Sep,
                 Sub("Language", Lang::ALL.iter().map(|l| Item(Act::SetLang(*l), l.name(), None)).collect()),
                 Sub("Colour scheme", Scheme::ALL.iter().map(|s| Item(Act::SetScheme(*s), s.label(), None)).collect()),
             ],

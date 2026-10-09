@@ -123,7 +123,7 @@ fn bezier_ellipse_area_and_node_insert() {
 
 #[test]
 fn shape_to_bezier_keeps_geometry() {
-    let mut s = Shape { id: 1, layer: 0, kind: Kind::Rect { w: 10.0, h: 4.0 }, xf: Xf::translate(3.0, 2.0) };
+    let mut s = Shape { id: 1, layer: 0, kind: Kind::Rect { w: 10.0, h: 4.0 }, xf: Xf::translate(3.0, 2.0), group: None };
     let before = s.bounds().unwrap();
     s.to_bezier();
     let after = s.bounds().unwrap();
@@ -215,7 +215,7 @@ fn text_produces_outlines() {
     let t = TextData { text: "Hi".into(), size: 10.0, ..TextData::default() };
     let c = text::contours(&t);
     assert!(c.len() >= 3, "{}", c.len());
-    let s = Shape { id: 1, layer: 0, kind: Kind::Text(t), xf: Xf::IDENTITY };
+    let s = Shape { id: 1, layer: 0, kind: Kind::Text(t), xf: Xf::IDENTITY, group: None };
     let b = s.bounds().unwrap();
     assert!(b.width() > 5.0 && b.height() > 4.0 && b.height() < 12.0, "{:?}", b);
 }
@@ -246,4 +246,135 @@ fn material_presets_apply_to_layers() {
     assert_eq!((l.mode, l.passes, l.power), (LayerMode::Line, 2, 100.0));
     let user = materials::Preset::from_layer("Mine", "Cut", LaserKind::Diode, &l);
     assert!(user.user && user.speed == l.speed);
+}
+
+#[test]
+fn layer_order_groups_and_old_files() {
+    let mut d = Document::default();
+    d.move_layer(0, false);
+    assert_eq!(&d.layer_order()[..3], &[1, 0, 2]);
+    d.move_layer(0, true);
+    assert_eq!(&d.layer_order()[..3], &[0, 1, 2]);
+    d.move_layer(0, true); // already first: no change
+    assert_eq!(d.layer_order()[0], 0);
+    // Broken order lists are repaired.
+    d.order = vec![5, 5, 99, 1];
+    let o = d.layer_order();
+    assert_eq!(o.len(), 30);
+    assert_eq!(&o[..2], &[5, 1]);
+    // Output follows the order: layer 1 is burnt before layer 0.
+    let mut d = Document::default();
+    d.layers[0].power = 11.0;
+    d.layers[1].power = 22.0;
+    d.add(0, Kind::Rect { w: 5.0, h: 5.0 }, Xf::IDENTITY);
+    d.add(1, Kind::Rect { w: 5.0, h: 5.0 }, Xf::translate(20.0, 0.0));
+    d.move_layer(1, true);
+    d.move_layer(1, true);
+    let job = gcode::generate(&d);
+    let first_layer = job.moves.iter().find(|m| m.laser).unwrap().layer;
+    assert_eq!(first_layer, 1);
+    // Groups.
+    let a = d.add(0, Kind::Rect { w: 1.0, h: 1.0 }, Xf::IDENTITY);
+    let b = d.add(1, Kind::Rect { w: 1.0, h: 1.0 }, Xf::IDENTITY);
+    let g = d.new_group_id();
+    d.shape_mut(a).unwrap().group = Some(g);
+    d.shape_mut(b).unwrap().group = Some(g);
+    assert_eq!(d.group_of(a).len(), 2);
+    assert_eq!((d.shape(a).unwrap().layer, d.shape(b).unwrap().layer), (0, 1));
+    // A document saved before these fields existed still loads.
+    let mut v: serde_json::Value = serde_json::from_str(&Document::default().to_json()).unwrap();
+    v.as_object_mut().unwrap().remove("order");
+    v.as_object_mut().unwrap().remove("next_group");
+    assert_eq!(Document::from_json(&v.to_string()).unwrap().layer_order().len(), 30);
+}
+
+fn tiny_pdf(content: &str) -> Vec<u8> {
+    use lopdf::{dictionary, Document as Pdf, Object, Stream};
+    let mut pdf = Pdf::with_version("1.5");
+    let pages_id = pdf.new_object_id();
+    let content_id = pdf.add_object(Stream::new(dictionary! {}, content.as_bytes().to_vec()));
+    let page_id = pdf.add_object(dictionary! {
+        "Type" => "Page",
+        "Parent" => pages_id,
+        "MediaBox" => vec![0.into(), 0.into(), 200.into(), 100.into()],
+        "Contents" => content_id,
+    });
+    pdf.objects.insert(pages_id, Object::Dictionary(dictionary! {
+        "Type" => "Pages", "Kids" => vec![page_id.into()], "Count" => 1,
+    }));
+    let catalog = pdf.add_object(dictionary! { "Type" => "Catalog", "Pages" => pages_id });
+    pdf.trailer.set("Root", catalog);
+    let mut out = Vec::new();
+    pdf.save_to(&mut out).unwrap();
+    out
+}
+
+#[test]
+fn illustrator_pdf_paths_become_shapes() {
+    // Red stroked rectangle (x 10..110, y 20..60 in PDF space, y up) and a blue curve.
+    let data = tiny_pdf("1 0 0 RG 10 20 100 40 re S 0 0 1 RG 0 0 m 30 50 70 50 100 0 c S");
+    let mut d = Document::default();
+    let ids = pdf::import(&data, &mut d, None).unwrap();
+    assert_eq!(ids.len(), 2);
+    let rect = d.shape(ids[0]).unwrap();
+    assert_eq!(rect.layer, 2); // red
+    let b = rect.bounds().unwrap();
+    // 100 pt wide = 35.28 mm; y is flipped: the top of the page is y = 0 (page is 100 pt = 35.28 mm tall).
+    assert!((b.width() - 100.0 * 25.4 / 72.0).abs() < 1e-6);
+    assert!((b.min.y - (100.0 - 60.0) * 25.4 / 72.0).abs() < 1e-6);
+    let curve = d.shape(ids[1]).unwrap();
+    assert_eq!(curve.layer, 1); // blue
+    assert!(matches!(&curve.kind, Kind::Bezier(cs) if cs[0].nodes.len() == 2 && cs[0].seg_is_curve(0)));
+}
+
+fn square_with_hole() -> ImageData {
+    // 40x40 white image, black 20x20 square at (10,10) with a white 6x6 hole.
+    let mut g = vec![255u8; 40 * 40];
+    for y in 10..30 {
+        for x in 10..30 {
+            g[y * 40 + x] = 0;
+        }
+    }
+    for y in 17..23 {
+        for x in 17..23 {
+            g[y * 40 + x] = 255;
+        }
+    }
+    ImageData { name: "t".into(), px_w: 40, px_h: 40, gray: g, w: 40.0, h: 40.0, invert: false }
+}
+
+#[test]
+fn trace_finds_outline_and_hole() {
+    let im = square_with_hole();
+    let cs = trace::trace(&im, &trace::TraceParams { smooth: false, tolerance: 0.0, ..Default::default() });
+    assert_eq!(cs.len(), 2, "outline and hole");
+    let areas: Vec<f64> = cs.iter().map(|c| c.flatten(0.01).area().abs()).collect();
+    let (big, small) = (areas.iter().cloned().fold(0.0, f64::max), areas.iter().cloned().fold(f64::MAX, f64::min));
+    assert!((big - 400.0).abs() < 1.0 && (small - 36.0).abs() < 1.0, "{areas:?}");
+    // Speckle filter drops the hole.
+    let cs = trace::trace(&im, &trace::TraceParams { min_area: 50.0, ..Default::default() });
+    assert_eq!(cs.len(), 1);
+    // Tracing the light areas finds the background frame and the hole's island.
+    let cs = trace::trace(&im, &trace::TraceParams { invert: true, smooth: false, min_area: 1.0, ..Default::default() });
+    assert_eq!(cs.len(), 3);
+}
+
+#[test]
+fn image_adjustments() {
+    let im = square_with_hole();
+    let rot = im.adjusted(&Adjust { quarter_turns: 1, ..Default::default() });
+    assert_eq!((rot.px_w, rot.px_h), (40, 40));
+    let wide = ImageData { px_w: 4, px_h: 2, gray: vec![0, 10, 20, 30, 40, 50, 60, 70], w: 40.0, h: 20.0, ..im.clone() };
+    let r = wide.adjusted(&Adjust { quarter_turns: 1, ..Default::default() });
+    assert_eq!((r.px_w, r.px_h, r.w, r.h), (2, 4, 20.0, 40.0));
+    // Clockwise: the top-left pixel ends up top-right.
+    assert_eq!(r.gray[1], 0);
+    let f = wide.adjusted(&Adjust { flip_h: true, ..Default::default() });
+    assert_eq!(&f.gray[..4], &[30, 20, 10, 0]);
+    let b = wide.adjusted(&Adjust { brightness: 0.5, ..Default::default() });
+    assert!(b.gray[0] >= 127 && b.gray[7] > wide.gray[7]);
+    let c = wide.adjusted(&Adjust { auto_levels: true, ..Default::default() });
+    assert_eq!((c.gray[0], c.gray[7]), (0, 255));
+    let free = im.adjusted(&Adjust { angle_deg: 45.0, ..Default::default() });
+    assert!(free.px_w > 40 && free.px_w < 60);
 }

@@ -225,23 +225,33 @@ impl App {
         painter.rect_filled(bed.translate(egui::vec2(3.0, 3.0)), 0.0, Color32::from_black_alpha(25));
         painter.rect_filled(bed, 0.0, Color32::WHITE);
         let painter = painter.with_clip_rect(rect);
-        if self.show_grid {
-            let mut step = self.grid;
-            while step * (self.view.zoom as f64) < 8.0 {
-                step *= 2.0;
+        {
+            let gp = &self.grid_prefs;
+            let z = self.view.zoom as f64;
+            let lines = |step: f64, color: [u8; 4], width: f32| {
+                // Skip grids so dense that the lines would merge into a tint.
+                if step * z < 4.0 || step <= 0.0 {
+                    return;
+                }
+                let st = Stroke::new(width, Color32::from_rgba_unmultiplied(color[0], color[1], color[2], color[3]));
+                let mut x = 0.0;
+                while x <= bw {
+                    let sx = self.w2s(o, Pt::new(x, 0.0)).x;
+                    painter.line_segment([Pos2::new(sx, bed.min.y), Pos2::new(sx, bed.max.y)], st);
+                    x += step;
+                }
+                let mut y = 0.0;
+                while y <= bh {
+                    let sy = self.w2s(o, Pt::new(0.0, y)).y;
+                    painter.line_segment([Pos2::new(bed.min.x, sy), Pos2::new(bed.max.x, sy)], st);
+                    y += step;
+                }
+            };
+            if gp.minor_on {
+                lines(gp.minor_mm.min(self.grid * 0.99), gp.minor_color, 0.6);
             }
-            let gc = Color32::from_gray(0xe6);
-            let mut x = 0.0;
-            while x <= bw {
-                let sx = self.w2s(o, Pt::new(x, 0.0)).x;
-                painter.line_segment([Pos2::new(sx, bed.min.y), Pos2::new(sx, bed.max.y)], Stroke::new(1.0, gc));
-                x += step;
-            }
-            let mut y = 0.0;
-            while y <= bh {
-                let sy = self.w2s(o, Pt::new(0.0, y)).y;
-                painter.line_segment([Pos2::new(bed.min.x, sy), Pos2::new(bed.max.x, sy)], Stroke::new(1.0, gc));
-                y += step;
+            if self.show_grid {
+                lines(self.grid, gp.main_color, 1.0);
             }
         }
         painter.rect_stroke(bed, 0.0, Stroke::new(1.0, Color32::from_gray(0x99)), egui::StrokeKind::Outside);

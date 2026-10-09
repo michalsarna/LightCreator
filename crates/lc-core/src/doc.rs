@@ -152,6 +152,9 @@ pub struct Shape {
     pub layer: usize,
     pub kind: Kind,
     pub xf: Xf,
+    /// Shapes with the same group id move and select together. Grouping never changes the layer.
+    #[serde(default)]
+    pub group: Option<u64>,
 }
 
 impl Shape {
@@ -423,6 +426,15 @@ pub struct Document {
     pub layers: Vec<Layer>,
     pub device: Device,
     next_id: u64,
+    /// Order in which layers are output (a permutation of the layer indices).
+    #[serde(default = "identity_order")]
+    pub order: Vec<usize>,
+    #[serde(default)]
+    next_group: u64,
+}
+
+fn identity_order() -> Vec<usize> {
+    (0..30).collect()
 }
 
 impl Default for Document {
@@ -432,6 +444,8 @@ impl Default for Document {
             layers: (0..30).map(Layer::new).collect(),
             device: Device::default(),
             next_id: 1,
+            order: identity_order(),
+            next_group: 1,
         }
     }
 }
@@ -440,7 +454,7 @@ impl Document {
     pub fn add(&mut self, layer: usize, kind: Kind, xf: Xf) -> u64 {
         let id = self.next_id;
         self.next_id += 1;
-        self.shapes.push(Shape { id, layer, kind, xf });
+        self.shapes.push(Shape { id, layer, kind, xf, group: None });
         id
     }
     pub fn add_shape(&mut self, mut s: Shape) -> u64 {
@@ -449,6 +463,38 @@ impl Document {
         let id = s.id;
         self.shapes.push(s);
         id
+    }
+    /// Layer indices in output order, repaired so every layer appears exactly once.
+    pub fn layer_order(&self) -> Vec<usize> {
+        let n = self.layers.len();
+        let mut seen = vec![false; n];
+        let mut out: Vec<usize> = self.order.iter().copied().filter(|&i| i < n && !std::mem::replace(&mut seen[i], true)).collect();
+        out.extend((0..n).filter(|&i| !seen[i]));
+        out
+    }
+    /// Move a layer one place earlier (`up`) or later in the output order.
+    pub fn move_layer(&mut self, layer: usize, up: bool) {
+        let mut o = self.layer_order();
+        if let Some(i) = o.iter().position(|&l| l == layer) {
+            let j = if up { i.checked_sub(1) } else { (i + 1 < o.len()).then_some(i + 1) };
+            if let Some(j) = j {
+                o.swap(i, j);
+            }
+        }
+        self.order = o;
+    }
+    pub fn new_group_id(&mut self) -> u64 {
+        self.next_group = self.next_group.max(1);
+        let g = self.next_group;
+        self.next_group += 1;
+        g
+    }
+    /// All shape ids in the same group as `id` (just `id` when ungrouped).
+    pub fn group_of(&self, id: u64) -> Vec<u64> {
+        match self.shape(id).and_then(|s| s.group) {
+            Some(g) => self.shapes.iter().filter(|s| s.group == Some(g)).map(|s| s.id).collect(),
+            None => vec![id],
+        }
     }
     pub fn shape(&self, id: u64) -> Option<&Shape> {
         self.shapes.iter().find(|s| s.id == id)

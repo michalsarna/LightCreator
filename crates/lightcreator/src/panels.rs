@@ -109,6 +109,10 @@ impl App {
         let first = self.doc.shape(self.sel[0]).map(|s| s.layer).unwrap_or(0);
         let mut layer = first;
         ui.horizontal(|ui| {
+            let lc = PALETTE[self.doc.layers[layer].color.min(29)];
+            let (r, _) = ui.allocate_exact_size(egui::vec2(16.0, 16.0), egui::Sense::hover());
+            ui.painter().rect_filled(r, 3.0, Color32::from_rgb(lc[0], lc[1], lc[2]));
+            ui.painter().rect_stroke(r, 3.0, egui::Stroke::new(1.0, theme::border()), egui::StrokeKind::Inside);
             ui.label(tr("Layer"));
             egui::ComboBox::from_id_salt("sel_layer").selected_text(self.doc.layers[layer].name.clone()).show_ui(ui, |ui| {
                 for i in 0..30 {
@@ -221,12 +225,21 @@ impl App {
         let before = self.doc.layers.clone();
         let used: Vec<bool> = (0..30).map(|i| self.doc.shapes.iter().any(|s| s.layer == i)).collect();
         ui.checkbox(&mut self.show_all_layers, tr("Show all 30 layers"));
-        for i in 0..30 {
+        let order = self.doc.layer_order();
+        let mut move_req: Option<(usize, bool)> = None;
+        for &i in &order {
             if !(used[i] || self.show_all_layers || i == self.active_layer) {
                 continue;
             }
             let c = PALETTE[i];
             ui.horizontal(|ui| {
+                ui.spacing_mut().item_spacing.x = 3.0;
+                if ui.small_button("▲").on_hover_text(tr("Burn earlier")).clicked() {
+                    move_req = Some((i, true));
+                }
+                if ui.small_button("▼").on_hover_text(tr("Burn later")).clicked() {
+                    move_req = Some((i, false));
+                }
                 let (r, resp) = ui.allocate_exact_size(egui::vec2(18.0, 18.0), egui::Sense::click());
                 ui.painter().rect_filled(r, 3.0, Color32::from_rgb(c[0], c[1], c[2]));
                 if self.active_layer == i {
@@ -250,6 +263,11 @@ impl App {
                 ui.checkbox(&mut l.visible, "").on_hover_text(tr("Visible"));
             });
         }
+        if let Some((i, up)) = move_req {
+            self.checkpoint();
+            self.doc.move_layer(i, up);
+        }
+        ui.label(RichText::new(tr("Layers are burnt from top to bottom.")).color(theme::text_dim()));
         ui.separator();
         let l = &mut self.doc.layers[self.active_layer];
         ui.label(RichText::new(trf("Cut settings — {}", &[&l.name])).strong());

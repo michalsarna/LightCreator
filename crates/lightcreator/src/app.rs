@@ -49,7 +49,7 @@ pub enum SideTab {
 impl SideTab {
     pub const ALL: [(SideTab, &'static str); 4] = [
         (SideTab::Properties, "Properties"),
-        (SideTab::Layers, "Cuts / Layers"),
+        (SideTab::Layers, "Layers"),
         (SideTab::Device, "Device"),
         (SideTab::Console, "Console"),
     ];
@@ -110,6 +110,10 @@ pub struct App {
     pub image_tex: std::collections::HashMap<(u64, bool), egui::TextureHandle>,
     pub show_offset: bool,
     pub show_materials: bool,
+    pub show_prefs: bool,
+    pub show_preview: bool,
+    pub pv: crate::preview_ui::PreviewState,
+    pub grid_prefs: crate::prefs::GridPrefs,
     pub overlay: Option<crate::overlay::Overlay>,
     pub overlay_visible: bool,
     pub overlay_edit: bool,
@@ -159,6 +163,9 @@ impl App {
         let profiles: Vec<lc_core::Device> = saved("profiles").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let active = saved("active_profile").and_then(|v| v.parse::<usize>().ok()).filter(|i| *i < profiles.len()).unwrap_or(0);
         let user_presets: Vec<lc_core::materials::Preset> = saved("user_materials").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
+        let grid_prefs: crate::prefs::GridPrefs = saved("grid_prefs").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
+        let show_grid = saved("grid_main_on").map(|v| v == "1").unwrap_or(true);
+        let grid = saved("grid_main_mm").and_then(|v| v.parse::<f64>().ok()).filter(|g| *g >= 0.1).unwrap_or(10.0);
         i18n::set_lang(lang);
         theme::apply(ctx, scheme);
         crate::fonts::install(ctx);
@@ -177,9 +184,9 @@ impl App {
             path: None,
             status: tr("Ready").into(),
             revision: 0,
-            show_grid: true,
+            show_grid,
             snap: false,
-            grid: 10.0,
+            grid,
             preview_on: false,
             preview: None,
             lock_aspect: true,
@@ -205,6 +212,10 @@ impl App {
             image_tex: Default::default(),
             show_offset: false,
             show_materials: false,
+            show_prefs: false,
+            show_preview: false,
+            pv: Default::default(),
+            grid_prefs,
             overlay: None,
             overlay_visible: true,
             overlay_edit: false,
@@ -701,6 +712,8 @@ impl App {
             Act::OffsetShape => self.show_offset = true,
             Act::ImportImage => self.import_image(),
             Act::CameraOverlay => self.show_overlay = true,
+            Act::GridOptions => self.show_prefs = true,
+            Act::PreviewWindow => self.show_preview = true,
             Act::MaterialLibrary => {
                 self.mat_laser = Some(self.doc.device.laser);
                 self.show_materials = true;
@@ -799,8 +812,11 @@ impl App {
             ui.checkbox(&mut self.snap, tr("Snap"));
             drag_len(ui, self.doc.device.units, &mut self.grid, 0.5, Some((0.5, 100.0)));
             ui.separator();
-            if ui.selectable_label(self.preview_on, tr("Preview")).clicked() {
+            if ui.selectable_label(self.preview_on, tr("Toolpaths")).on_hover_text(tr("Show the toolpaths on the work area")).clicked() {
                 self.preview_on = !self.preview_on;
+            }
+            if ui.button(tr("Preview…")).on_hover_text(tr("Open the preview window")).clicked() {
+                self.show_preview = true;
             }
 
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
@@ -951,6 +967,8 @@ impl App {
         self.config_window(ctx);
         self.materials_window(ctx);
         self.overlay_window(ctx);
+        self.prefs_window(ctx);
+        self.preview_window(ctx);
     }
 }
 
@@ -967,6 +985,11 @@ impl eframe::App for App {
             storage.set_string("profiles", j);
         }
         storage.set_string("active_profile", self.active.to_string());
+        if let Ok(j) = serde_json::to_string(&self.grid_prefs) {
+            storage.set_string("grid_prefs", j);
+        }
+        storage.set_string("grid_main_on", if self.show_grid { "1" } else { "0" }.into());
+        storage.set_string("grid_main_mm", self.grid.to_string());
         if let Ok(j) = serde_json::to_string(&self.user_presets) {
             storage.set_string("user_materials", j);
         }

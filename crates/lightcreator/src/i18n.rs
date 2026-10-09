@@ -395,6 +395,34 @@ const TABLE: &[[&str; 7]] = &[
     ["Drag each corner to the matching corner of the material or work area; perspective is corrected.", "Przeciągnij każdy narożnik do odpowiedniego narożnika materiału lub obszaru roboczego; perspektywa jest korygowana.", "Jede Ecke auf die passende Ecke des Materials oder Arbeitsbereichs ziehen; die Perspektive wird korrigiert.", "Trascina ogni angolo sull'angolo corrispondente del materiale o dell'area di lavoro; la prospettiva viene corretta.", "Vedä kukin kulma materiaalin tai työalueen vastaavaan kulmaan; perspektiivi korjataan.", "将每个角拖到材料或工作区域的对应角；透视会被校正。", "प्रत्येक कोने को सामग्री या कार्य क्षेत्र के संबंधित कोने तक खींचें; परिप्रेक्ष्य सुधारा जाता है।"],
     ["Reset to work area", "Przywróć do obszaru roboczego", "Auf Arbeitsbereich zurücksetzen", "Ripristina all'area di lavoro", "Palauta työalueeseen", "重置为工作区域", "कार्य क्षेत्र पर रीसेट करें"],
     ["Rotate 90°", "Obróć o 90°", "90° drehen", "Ruota di 90°", "Kierrä 90°", "旋转 90°", "90° घुमाएँ"],
+    // ---- layer order ----
+    ["Burn earlier", "Wypal wcześniej", "Früher brennen", "Incidi prima", "Polta aiemmin", "提前执行", "पहले जलाएँ"],
+    ["Burn later", "Wypal później", "Später brennen", "Incidi dopo", "Polta myöhemmin", "延后执行", "बाद में जलाएँ"],
+    ["Layers are burnt from top to bottom.", "Warstwy są wypalane od góry do dołu.", "Ebenen werden von oben nach unten gebrannt.", "I livelli vengono incisi dall'alto verso il basso.", "Tasot poltetaan ylhäältä alas.", "图层按从上到下的顺序执行。", "लेयर ऊपर से नीचे के क्रम में जलाई जाती हैं।"],
+    // ---- grid options ----
+    ["Grid options…", "Opcje siatki…", "Rasteroptionen…", "Opzioni griglia…", "Ruudukon asetukset…", "网格选项…", "ग्रिड विकल्प…"],
+    ["Grid options", "Opcje siatki", "Rasteroptionen", "Opzioni griglia", "Ruudukon asetukset", "网格选项", "ग्रिड विकल्प"],
+    ["Main grid", "Siatka główna", "Hauptraster", "Griglia principale", "Pääruudukko", "主网格", "मुख्य ग्रिड"],
+    ["Secondary grid", "Siatka pomocnicza", "Hilfsraster", "Griglia secondaria", "Apuruudukko", "辅助网格", "सहायक ग्रिड"],
+    ["Show", "Pokaż", "Anzeigen", "Mostra", "Näytä", "显示", "दिखाएँ"],
+    ["Distance between lines", "Odległość między liniami", "Abstand zwischen den Linien", "Distanza tra le linee", "Viivojen väli", "线间距", "रेखाओं के बीच दूरी"],
+    ["Colour", "Kolor", "Farbe", "Colore", "Väri", "颜色", "रंग"],
+    ["The secondary grid must be finer than the main grid.", "Siatka pomocnicza musi być gęstsza niż główna.", "Das Hilfsraster muss feiner als das Hauptraster sein.", "La griglia secondaria deve essere più fine di quella principale.", "Apuruudukon on oltava tiheämpi kuin pääruudukon.", "辅助网格必须比主网格更细。", "सहायक ग्रिड मुख्य ग्रिड से बारीक होनी चाहिए।"],
+    ["Reset grid", "Przywróć siatkę", "Raster zurücksetzen", "Ripristina griglia", "Palauta ruudukko", "重置网格", "ग्रिड रीसेट करें"],
+    // ---- preview window ----
+    ["Toolpaths", "Ścieżki", "Werkzeugwege", "Percorsi", "Työstöradat", "刀路", "टूलपाथ"],
+    ["Show the toolpaths on the work area", "Pokaż ścieżki na obszarze roboczym", "Werkzeugwege im Arbeitsbereich anzeigen", "Mostra i percorsi sull'area di lavoro", "Näytä työstöradat työalueella", "在工作区域显示刀路", "कार्य क्षेत्र पर टूलपाथ दिखाएँ"],
+    ["Preview…", "Podgląd…", "Vorschau…", "Anteprima…", "Esikatselu…", "预览…", "पूर्वावलोकन…"],
+    ["Preview window…", "Okno podglądu…", "Vorschaufenster…", "Finestra di anteprima…", "Esikatseluikkuna…", "预览窗口…", "पूर्वावलोकन विंडो…"],
+    ["Open the preview window", "Otwórz okno podglądu", "Vorschaufenster öffnen", "Apri la finestra di anteprima", "Avaa esikatseluikkuna", "打开预览窗口", "पूर्वावलोकन विंडो खोलें"],
+    ["Colour by", "Koloruj według", "Färben nach", "Colora per", "Väritä", "着色方式", "रंग आधार"],
+    ["Show travel moves", "Pokaż przejazdy", "Leerfahrten anzeigen", "Mostra gli spostamenti", "Näytä siirtoliikkeet", "显示空走移动", "यात्रा गतियाँ दिखाएँ"],
+    ["Moves of the machine with the laser off", "Ruchy maszyny przy wyłączonym laserze", "Maschinenbewegungen bei ausgeschaltetem Laser", "Movimenti della macchina con il laser spento", "Koneen liikkeet laser sammutettuna", "激光关闭时机器的移动", "लेज़र बंद होने पर मशीन की गतियाँ"],
+    ["Play", "Odtwarzaj", "Abspielen", "Riproduci", "Toista", "播放", "चलाएँ"],
+    ["Fit", "Dopasuj", "Einpassen", "Adatta", "Sovita", "适应", "फ़िट"],
+    ["Operations", "Operacje", "Vorgänge", "Operazioni", "Toiminnot", "操作", "ऑपरेशन"],
+    ["Too many moves: travel lines are hidden.", "Zbyt wiele ruchów: linie przejazdów są ukryte.", "Zu viele Bewegungen: Leerfahrten werden ausgeblendet.", "Troppi movimenti: gli spostamenti sono nascosti.", "Liikaa liikkeitä: siirtoviivat piilotettu.", "移动过多：已隐藏空走线。", "बहुत अधिक गतियाँ: यात्रा रेखाएँ छिपी हैं।"],
+    ["{} moves", "{} ruchów", "{} Bewegungen", "{} movimenti", "{} liikettä", "{} 个移动", "{} गतियाँ"],
 ];
 #[cfg(test)]
 mod tests {

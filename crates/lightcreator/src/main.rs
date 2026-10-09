@@ -13,6 +13,8 @@ mod nodes;
 mod native_menu;
 mod overlay;
 mod panels;
+mod preview_ui;
+mod prefs;
 mod shape_ops;
 #[cfg(test)]
 mod screenshots;
