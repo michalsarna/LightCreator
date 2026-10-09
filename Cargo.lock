@@ -1744,7 +1744,7 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 
 [[package]]
 name = "lc-core"
-version = "0.0.2"
+version = "0.0.3"
 dependencies = [
  "base64",
  "epaint_default_fonts",
@@ -1793,7 +1793,7 @@ dependencies = [
 
 [[package]]
 name = "lightcreator"
-version = "0.0.2"
+version = "0.0.3"
 dependencies = [
  "eframe",
  "egui_kittest",
