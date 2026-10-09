@@ -17,6 +17,7 @@ mod overlay;
 mod panels;
 mod preview_ui;
 mod prefs;
+mod ser2net_ui;
 mod shape_ops;
 mod stream_ui;
 #[cfg(test)]

@@ -433,3 +433,21 @@ fn old_devices_get_link_defaults() {
     assert_eq!((d.link, d.tcp_port, d.camera_url.is_empty()), (LinkKind::Serial, 3333, true));
     assert!(!d.has_target());
 }
+
+#[test]
+fn ser2net_configs() {
+    use ser2net::{config, shell_safe, version_from_output, Settings, Version};
+    let s = Settings { serial_port: "/dev/ttyUSB0".into(), baud: 115200, tcp_port: 3333, bind: None, kick_old_user: true };
+    let y = config(Version::V4, &s);
+    assert!(y.contains("accepter: tcp,3333\n") && y.contains("connector: serialdev,/dev/ttyUSB0,115200n81,local") && y.contains("kickolduser: true"));
+    let local = Settings { bind: Some("127.0.0.1".into()), kick_old_user: false, ..s.clone() };
+    assert!(config(Version::V4, &local).contains("accepter: tcp,127.0.0.1,3333"));
+    let old = config(Version::V3, &s);
+    assert!(old.contains("3333:raw:0:/dev/ttyUSB0:115200 8DATABITS NONE 1STOPBIT kickolduser"));
+    assert!(config(Version::V3, &local).contains("127.0.0.1,3333:raw:0:"));
+    assert!(shell_safe("/dev/ttyUSB0") && !shell_safe("a'b"));
+    assert_eq!(version_from_output("ser2net version 4.6.1"), Some(Version::V4));
+    assert_eq!(version_from_output("ser2net version 3.5.1"), Some(Version::V3));
+    assert_eq!(version_from_output("nothing"), None);
+    assert_eq!(Version::V4.file(), "/etc/ser2net.yaml");
+}

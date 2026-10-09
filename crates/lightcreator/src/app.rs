@@ -120,6 +120,7 @@ pub struct App {
     pub show_materials: bool,
     pub show_prefs: bool,
     pub show_stream: bool,
+    pub ser2net: Option<crate::ser2net_ui::Ser2NetDlg>,
     pub stream_mode: crate::stream_ui::StreamMode,
     pub tab_seen: bool,
     pub stream: Option<(String, crate::camera_stream::StreamWorker)>,
@@ -234,6 +235,7 @@ impl App {
             show_materials: false,
             show_prefs: false,
             show_stream: false,
+            ser2net: None,
             stream_mode: crate::stream_ui::StreamMode::Floating,
             tab_seen: false,
             stream: None,
@@ -773,6 +775,7 @@ impl App {
             Act::CameraOverlay => self.show_overlay = true,
             Act::GridOptions => self.show_prefs = true,
             Act::PreviewWindow => self.show_preview = true,
+            Act::ShareSer2net => self.open_ser2net(),
             Act::ToggleOverlay => {
                 if self.overlay.is_some() {
                     self.overlay_visible = !self.overlay_visible;
@@ -1073,6 +1076,7 @@ impl App {
         self.preview_window(ctx);
         self.image_dialogs(ctx);
         self.stream_window(ctx);
+        self.ser2net_window(ctx);
     }
 }
 

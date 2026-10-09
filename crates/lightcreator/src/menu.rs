@@ -54,6 +54,7 @@ pub enum Act {
     GridOptions,
     PreviewWindow,
     CameraView,
+    ShareSer2net,
     ToggleOverlay,
     Frame,
     StartJob,
@@ -112,6 +113,18 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
     let mut help = vec![];
     if !cfg!(target_os = "macos") {
         help.push(Item(Act::About, "About", None));
+    }
+    let mut laser = vec![
+        Item(Act::SwitchDevice, "Switch device…", None),
+        Item(Act::MaterialLibrary, "Material library…", None),
+        Item(Act::DeviceSettings, "Device settings…", None),
+        Item(Act::Frame, "Frame", None),
+        Item(Act::StartJob, "Start job", None),
+    ];
+    // Sharing a local serial port with ser2net is a Linux feature.
+    if cfg!(target_os = "linux") {
+        laser.push(Sep);
+        laser.push(Item(Act::ShareSer2net, "Share over network (ser2net)…", None));
     }
     vec![
         ("File", file),
@@ -174,11 +187,7 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
                 Item(Act::CameraOverlay, "Camera overlay…", None),
             ],
         ),
-        (
-            "Laser",
-            vec![Item(Act::SwitchDevice, "Switch device…", None),
-                Item(Act::MaterialLibrary, "Material library…", None), Item(Act::DeviceSettings, "Device settings…", None), Item(Act::Frame, "Frame", None), Item(Act::StartJob, "Start job", None)],
-        ),
+        ("Laser", laser),
         (
             "Settings",
             vec![

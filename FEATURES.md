@@ -52,6 +52,12 @@
 * **TCP link:** a device can connect through the network instead of a serial port, for example to `ser2net` on
   a Raspberry Pi (set the host and TCP port in the device configuration; the baud rate is configured in
   `ser2net`). Everything else works the same, including the console and reading settings.
+* **Share over network (Linux):** Laser > "Share over network (ser2net)…" prepares ser2net for the laser on this
+  computer: it picks the serial port, baud rate and TCP port, writes the configuration for ser2net 4.x (YAML) or
+  3.x, shows the address to connect to, and can copy or save the file or install it and restart the service
+  (asks for administrator rights through `pkexec`, keeps a backup of the old file, needs a confirmation). A
+  local-only option is offered for use with an SSH tunnel, with a warning that the port is otherwise open to the
+  network.
 * **Camera view:** give the device a camera URL (an MJPEG stream or a JPEG snapshot address, http or https) and a
   "Camera view" button appears next to the preview button. The picture can also be shown as the overlay on the
   work area. RTSP streams are not supported; use an MJPEG address (most camera software offers one). The view

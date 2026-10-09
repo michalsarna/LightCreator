@@ -144,6 +144,11 @@ The menu bar is inside the window on both X11 and Wayland.
 
 ## Optional: laser behind a Raspberry Pi (ser2net)
 
+If LightCreator itself runs on the Linux computer or Pi that the laser is plugged into, open
+*Laser > Share over network (ser2net)…*: it writes the ser2net configuration for you and can install it and
+restart the service (administrator rights are requested). Install ser2net first (`sudo apt install ser2net`).
+By hand, on the computer with the laser:
+
 Install `ser2net` on the Pi and expose the laser's serial port as a TCP port, for example in
 `/etc/ser2net.yaml`:
 

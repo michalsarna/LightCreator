@@ -10,6 +10,7 @@ pub mod materials;
 pub mod ops;
 pub mod pdf;
 pub mod raster;
+pub mod ser2net;
 pub mod svg;
 pub mod text;
 pub mod trace;

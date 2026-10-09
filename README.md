@@ -28,8 +28,8 @@ written in Rust. The interface follows the look of [VectorCraft](https://github.
 | Image import with rotate, flip, brightness, contrast and gamma | Trace an image into curves |
 | ![Grid options](docs/screenshots/15-grid-layers.png) | ![Automatic shapes](docs/screenshots/16-shapes.png) |
 | Main and secondary grid options, layers in burn order | Triangle, star and polygon tools with the sides popup |
-| ![Camera view as a tab](docs/screenshots/17-camera-tab.png) | |
-| Camera view docked as a side tab, rotated 90° | |
+| ![Camera view as a tab](docs/screenshots/17-camera-tab.png) | ![Share over network](docs/screenshots/18-ser2net.png) |
+| Camera view docked as a side tab, rotated 90° | Sharing the laser's serial port with ser2net (Linux) |
 
 The pictures are rendered headlessly from the real UI; regenerate them with
 `cargo test -p lightcreator --release render_screenshots -- --ignored`.

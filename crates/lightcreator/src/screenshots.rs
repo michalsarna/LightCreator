@@ -351,6 +351,22 @@ fn render_screenshots() {
         a.status = "Ready".into();
     }
     save(&mut h, "17-camera-tab.png");
+
+    // ser2net sharing dialog (what a Linux user sees).
+    {
+        let a = app(&mut h);
+        a.show_stream = false;
+        a.stream_mode = crate::stream_ui::StreamMode::Floating;
+        a.side_tab = SideTab::Properties;
+        a.open_ser2net();
+        if let Some(d) = a.ser2net.as_mut() {
+            d.serial_port = "/dev/ttyUSB0".into();
+            d.installed = Some("ser2net version 4.6.1".into());
+            d.addresses = vec!["192.168.1.50".into()];
+            d.version = lc_core::ser2net::Version::V4;
+        }
+    }
+    save(&mut h, "18-ser2net.png");
 }
 
 /// Renders every context-menu icon large and small so they can be checked by eye (`target/menu-icons.png`).
