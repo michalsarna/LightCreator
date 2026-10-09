@@ -74,7 +74,7 @@ install -Dm644 assets/icons/icon-256.png ~/.local/share/icons/hicolor/256x256/ap
 ## Language and colour scheme
 
 Use the **Settings** menu: *Language* (English by default, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी) and
-*Colour scheme* (Dark, Light Dark, Medium Light, Light). Both choices are remembered between runs.
+*Colour scheme* (Dark, Light Dark, Medium Light, Light; default: Light Dark). Both choices are remembered between runs.
 
 ## Fonts
 

@@ -93,7 +93,7 @@ impl App {
         let ports = laser::list_ports();
         let saved = |k: &str| cc.storage.and_then(|st| st.get_string(k));
         let lang = saved("lang").and_then(|c| Lang::from_code(&c)).unwrap_or(Lang::En);
-        let scheme = saved("scheme").and_then(|c| Scheme::from_id(&c)).unwrap_or(Scheme::Light);
+        let scheme = saved("scheme").and_then(|c| Scheme::from_id(&c)).unwrap_or(Scheme::LightDark);
         i18n::set_lang(lang);
         theme::apply(&cc.egui_ctx, scheme);
         crate::fonts::install(&cc.egui_ctx);
