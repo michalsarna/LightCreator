@@ -253,8 +253,8 @@ const TABLE: &[[&str; 7]] = &[
     ["Down", "Dół", "Runter", "Giù", "Alas", "下", "नीचे"],
     ["Stop", "Stop", "Stopp", "Stop", "Pysäytä", "停止", "रुकें"],
     ["Cancel jog", "Anuluj przesuw", "Jog abbrechen", "Annulla jog", "Peruuta ajo", "取消点动", "जॉग रद्द करें"],
-    ["Home $H", "Bazuj $H", "Referenzfahrt $H", "Home $H", "Kotiutus $H", "回零 $H", "होम $H"],
-    ["Unlock $X", "Odblokuj $X", "Entsperren $X", "Sblocca $X", "Avaa lukitus $X", "解锁 $X", "अनलॉक $X"],
+    ["Home", "Bazuj", "Referenzfahrt", "Home", "Kotiutus", "回零", "होम"],
+    ["Unlock", "Odblokuj", "Entsperren", "Sblocca", "Avaa lukitus", "解锁", "अनलॉक"],
     ["Pause", "Pauza", "Pause", "Pausa", "Tauko", "暂停", "रोकें"],
     ["Resume", "Wznów", "Fortsetzen", "Riprendi", "Jatka", "继续", "फिर शुरू करें"],
     ["STOP", "STOP", "STOPP", "STOP", "PYSÄYTÄ", "急停", "रुकें"],
@@ -286,6 +286,17 @@ const TABLE: &[[&str; 7]] = &[
     ["Status polls", "Zapytania o stan", "Statusabfragen", "Richieste di stato", "Tilakyselyt", "状态查询", "स्थिति पोल"],
     ["Auto-scroll", "Autoprzewijanie", "Automatisch scrollen", "Scorrimento automatico", "Automaattinen vieritys", "自动滚动", "ऑटो-स्क्रॉल"],
     ["Clear", "Wyczyść", "Leeren", "Cancella", "Tyhjennä", "清除", "साफ़ करें"],
+    // ---- device profile ----
+    ["Controller", "Sterownik", "Steuerung", "Controller", "Ohjain", "控制器", "कंट्रोलर"],
+    ["Laser type", "Typ lasera", "Lasertyp", "Tipo di laser", "Laserin tyyppi", "激光器类型", "लेज़र प्रकार"],
+    ["Work area", "Obszar roboczy", "Arbeitsbereich", "Area di lavoro", "Työalue", "工作区域", "कार्य क्षेत्र"],
+    ["Yes", "Tak", "Ja", "Sì", "Kyllä", "是", "हाँ"],
+    ["No", "Nie", "Nein", "No", "Ei", "否", "नहीं"],
+    ["Connection", "Połączenie", "Verbindung", "Connessione", "Yhteys", "连接", "कनेक्शन"],
+    ["Port", "Port", "Port", "Porta", "Portti", "端口", "पोर्ट"],
+    ["Jog step", "Krok przesuwu", "Jog-Schritt", "Passo jog", "Ajoaskel", "点动步长", "जॉग चरण"],
+    ["Jog feed", "Posuw przesuwu", "Jog-Vorschub", "Avanzamento jog", "Ajonopeus", "点动进给", "जॉग फ़ीड"],
+    ["This controller has no live connection: jobs are exported as files.", "Ten sterownik nie ma połączenia na żywo: zadania są eksportowane do plików.", "Diese Steuerung hat keine Live-Verbindung: Aufträge werden als Dateien exportiert.", "Questo controller non ha una connessione diretta: i lavori vengono esportati come file.", "Tällä ohjaimella ei ole suoraa yhteyttä: työt viedään tiedostoina.", "此控制器没有实时连接：任务将导出为文件。", "इस कंट्रोलर का लाइव कनेक्शन नहीं है: जॉब फ़ाइलों के रूप में निर्यात होते हैं।"],
 ];
 #[cfg(test)]
 mod tests {

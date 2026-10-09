@@ -98,7 +98,7 @@ fn render_screenshots() {
         // Keep local paths and ports out of the pictures.
         a.status = "Imported 4 paths from badge.svg".into();
         a.ports = vec!["/dev/ttyUSB0".into()];
-        a.port = "/dev/ttyUSB0".into();
+        a.doc.device.port = "/dev/ttyUSB0".into();
     }
     h.run_steps(3);
     save(&mut h, "02-editor-properties.png");

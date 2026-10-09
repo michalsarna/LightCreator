@@ -106,7 +106,6 @@ pub struct App {
     // laser
     pub link: LaserLink,
     pub ports: Vec<String>,
-    pub port: String,
     pub connected: bool,
     pub machine: (String, f64, f64),
     pub progress: (usize, usize),
@@ -115,9 +114,6 @@ pub struct App {
     pub console_polls: bool,
     pub console_autoscroll: bool,
     pub console_input: String,
-    pub jog_step: f64,
-    pub jog_feed: f64,
-    pub frame_power: f64,
 }
 
 impl App {
@@ -176,7 +172,6 @@ impl App {
             #[cfg(target_os = "macos")]
             native_menu: native_menu.then(|| crate::native_menu::NativeMenu::install(ctx)),
             link: LaserLink::spawn(ctx.clone()),
-            port: ports.first().cloned().unwrap_or_default(),
             ports,
             connected: false,
             machine: (tr("Disconnected").into(), 0.0, 0.0),
@@ -186,9 +181,6 @@ impl App {
             console_polls: false,
             console_autoscroll: true,
             console_input: String::new(),
-            jog_step: 5.0,
-            jog_feed: 3000.0,
-            frame_power: 0.0,
         }
     }
 
@@ -470,7 +462,7 @@ impl App {
             self.status = tr("Connect to a laser first (Laser panel)").into();
             return;
         }
-        let g = gcode::frame_gcode(b, &self.doc.device, self.frame_power, 40.0);
+        let g = gcode::frame_gcode(b, &self.doc.device, self.doc.device.frame_power, 40.0);
         for l in laser::clean_gcode(&g) {
             self.link.send(Cmd::Line(l));
         }

@@ -2,10 +2,12 @@
 use std::collections::VecDeque;
 use std::io::{Read, Write};
 use std::sync::mpsc::{channel, Receiver, Sender, TryRecvError};
+use lc_core::controller::StatusPoll;
+use lc_core::Controller;
 use std::time::{Duration, Instant};
 
 pub enum Cmd {
-    Connect { port: String, baud: u32 },
+    Connect { port: String, baud: u32, controller: Controller },
     Disconnect,
     /// A single immediate line (jog, $H, ...), queued ahead of any running job.
     Line(String),
@@ -87,21 +89,6 @@ pub fn clean_gcode(text: &str) -> Vec<String> {
         .collect()
 }
 
-fn parse_status(line: &str) -> Option<Evt> {
-    let inner = line.strip_prefix('<')?.strip_suffix('>')?;
-    let mut parts = inner.split('|');
-    let state = parts.next()?.to_string();
-    for p in parts {
-        if let Some(v) = p.strip_prefix("MPos:").or_else(|| p.strip_prefix("WPos:")) {
-            let n: Vec<f64> = v.split(',').filter_map(|s| s.parse().ok()).collect();
-            if n.len() >= 2 {
-                return Some(Evt::Status { state, x: n[0], y: n[1] });
-            }
-        }
-    }
-    Some(Evt::Status { state, x: f64::NAN, y: f64::NAN })
-}
-
 fn realtime_name(b: u8) -> String {
     match b {
         0x18 => "0x18 (soft reset)".into(),
@@ -115,24 +102,37 @@ fn realtime_name(b: u8) -> String {
 
 const RX_BUFFER: usize = 120; // GRBL has 128 bytes; keep a margin.
 
+/// Why a line is in the queue; decides how its `ok` is shown in the console.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Kind {
+    Job,
+    Immediate,
+    Poll,
+}
+
 fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
     let emit = |e: Evt| {
         let _ = tx.send(e);
         ctx.request_repaint();
     };
+    let traffic = |dir: Dir, text: String, poll: bool| Evt::Traffic(ConsoleLine { dir, text, poll });
     let mut port: Option<Box<dyn serialport::SerialPort>> = None;
-    let mut queue: VecDeque<(String, bool)> = VecDeque::new(); // (line, belongs_to_job)
-    let mut pending: VecDeque<(usize, bool)> = VecDeque::new();
+    let mut controller = Controller::Grbl;
+    let mut queue: VecDeque<(String, Kind)> = VecDeque::new();
+    let mut pending: VecDeque<(usize, Kind)> = VecDeque::new();
     let mut inbuf = Vec::<u8>::new();
     let (mut total, mut done) = (0usize, 0usize);
     let mut last_poll = Instant::now();
     loop {
         loop {
             match rx.try_recv() {
-                Ok(Cmd::Connect { port: name, baud }) => {
+                Ok(Cmd::Connect { port: name, baud, controller: c }) => {
                     match serialport::new(&name, baud).timeout(Duration::from_millis(5)).open() {
                         Ok(mut p) => {
-                            let _ = p.write_all(&[0x18]);
+                            controller = c;
+                            if let Some(b) = c.on_connect() {
+                                let _ = p.write_all(&[b]);
+                            }
                             port = Some(p);
                             queue.clear();
                             pending.clear();
@@ -151,29 +151,34 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                 }
                 Ok(Cmd::Line(l)) => {
                     // Immediate lines go ahead of job lines.
-                    let at = queue.iter().position(|(_, j)| *j).unwrap_or(queue.len());
-                    queue.insert(at, (l, false));
+                    let at = queue.iter().position(|(_, k)| *k == Kind::Job).unwrap_or(queue.len());
+                    queue.insert(at, (l, Kind::Immediate));
                 }
                 Ok(Cmd::Job(lines)) => {
                     total = lines.len();
                     done = 0;
-                    queue.extend(lines.into_iter().map(|l| (l, true)));
+                    queue.extend(lines.into_iter().map(|l| (l, Kind::Job)));
                     emit(Evt::Progress { done, total });
                 }
                 Ok(Cmd::Realtime(b)) => {
                     if let Some(p) = port.as_mut() {
                         let _ = p.write_all(&[b]);
-                        emit(Evt::Traffic(ConsoleLine { dir: Dir::Tx, text: realtime_name(b), poll: false }));
+                        emit(traffic(Dir::Tx, realtime_name(b), false));
                     }
                 }
                 Ok(Cmd::Abort) => {
-                    if let Some(p) = port.as_mut() {
-                        let _ = p.write_all(&[0x18]);
-                        emit(Evt::Traffic(ConsoleLine { dir: Dir::Tx, text: realtime_name(0x18), poll: false }));
-                    }
                     queue.clear();
                     pending.clear();
                     total = 0;
+                    if let Some(p) = port.as_mut() {
+                        if let Some(b) = controller.abort_byte() {
+                            let _ = p.write_all(&[b]);
+                            emit(traffic(Dir::Tx, realtime_name(b), false));
+                        }
+                        if let Some(l) = controller.abort_line() {
+                            queue.push_back((l.to_string(), Kind::Immediate));
+                        }
+                    }
                     emit(Evt::Progress { done: 0, total: 0 });
                     emit(Evt::Log(crate::i18n::tr("Aborted (soft reset)").into()));
                 }
@@ -196,19 +201,18 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                 if line.is_empty() {
                     continue;
                 }
-                if let Some(e) = parse_status(&line) {
-                    emit(Evt::Traffic(ConsoleLine { dir: Dir::Rx, text: line.clone(), poll: true }));
-                    emit(e);
+                if let Some((state, x, y)) = lc_core::controller::parse_status(&line) {
+                    emit(traffic(Dir::Rx, line.clone(), true));
+                    emit(Evt::Status { state, x, y });
                 } else if line == "ok" || line.starts_with("error") {
-                    emit(Evt::Traffic(ConsoleLine { dir: Dir::Rx, text: line.clone(), poll: false }));
-                    if let Some((_, job)) = pending.pop_front() {
-                        if job {
-                            done += 1;
-                            emit(Evt::Progress { done, total });
-                        }
+                    let kind = pending.pop_front().map(|(_, k)| k);
+                    emit(traffic(Dir::Rx, line.clone(), kind == Some(Kind::Poll)));
+                    if kind == Some(Kind::Job) {
+                        done += 1;
+                        emit(Evt::Progress { done, total });
                     }
                 } else {
-                    emit(Evt::Traffic(ConsoleLine { dir: Dir::Rx, text: line, poll: false }));
+                    emit(traffic(Dir::Rx, line, false));
                 }
             }
             // Write while the controller's RX buffer has room.
@@ -217,18 +221,25 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                 if used + l.len() + 1 > RX_BUFFER {
                     break;
                 }
-                let (l, job) = queue.pop_front().unwrap();
-                emit(Evt::Traffic(ConsoleLine { dir: Dir::Tx, text: l.clone(), poll: false }));
+                let (l, kind) = queue.pop_front().unwrap();
+                emit(traffic(Dir::Tx, l.clone(), kind == Kind::Poll));
                 if p.write_all(format!("{l}\n").as_bytes()).is_err() {
                     lost = true;
                     break;
                 }
-                pending.push_back((l.len() + 1, job));
+                pending.push_back((l.len() + 1, kind));
             }
-            if last_poll.elapsed() > Duration::from_millis(250) {
+            if last_poll.elapsed() > Duration::from_millis(controller.poll_interval_ms()) {
                 last_poll = Instant::now();
-                let _ = p.write_all(b"?");
-                emit(Evt::Traffic(ConsoleLine { dir: Dir::Tx, text: "?".into(), poll: true }));
+                match controller.status_poll() {
+                    StatusPoll::Byte(b) => {
+                        let _ = p.write_all(&[b]);
+                        emit(traffic(Dir::Tx, (b as char).to_string(), true));
+                    }
+                    // Line-based polling only when nothing else is waiting, so jobs are not slowed down.
+                    StatusPoll::Line(l) if queue.is_empty() && pending.is_empty() => queue.push_back((l.to_string(), Kind::Poll)),
+                    _ => {}
+                }
             }
         }
         if lost {

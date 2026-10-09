@@ -186,7 +186,12 @@ pub fn generate(doc: &Document) -> Job {
     let mut w = Writer::new(dev);
     let _ = writeln!(w.out, "; LightCreator job — {}", dev.name);
     let _ = writeln!(w.out, "G21 ; mm\nG90 ; absolute\nG17");
-    let _ = writeln!(w.out, "{} S0", if dev.dynamic_power { "M4" } else { "M3" });
+    if dev.controller == Controller::Marlin {
+        // Marlin laser feature: inline power, S on each G1 sets the power.
+        let _ = writeln!(w.out, "M3 I S0");
+    } else {
+        let _ = writeln!(w.out, "{} S0", if dev.dynamic_power { "M4" } else { "M3" });
+    }
 
     for (li, layer) in doc.layers.iter().enumerate() {
         if !layer.output {
@@ -232,23 +237,29 @@ pub fn generate(doc: &Document) -> Job {
             }
         }
     }
-    let _ = writeln!(w.out, "M5 ; laser off");
+    let _ = writeln!(w.out, "{}", if dev.controller == Controller::Marlin { "M5 I ; laser off" } else { "M5 ; laser off" });
     if dev.return_home {
         w.travel(Pt::new(0.0, 0.0));
     }
-    let _ = writeln!(w.out, "M2");
+    if dev.controller != Controller::Marlin {
+        let _ = writeln!(w.out, "M2");
+    }
     Job { gcode: w.out, moves: w.moves, est_seconds: w.seconds, cut_length: w.cut_len }
 }
 
 /// G-code that traces the bounding box of the design. `power` is percent (0 = laser off, 1-2 gives a visible dot on diodes).
 pub fn frame_gcode(bounds: Rect, dev: &Device, power: f64, speed_mm_s: f64) -> String {
     let mut w = Writer::new(dev);
-    let _ = writeln!(w.out, "G21\nG90\nM4 S0");
+    if dev.controller == Controller::Marlin {
+        let _ = writeln!(w.out, "G21\nG90\nM3 I S0");
+    } else {
+        let _ = writeln!(w.out, "G21\nG90\nM4 S0");
+    }
     let (a, b) = (bounds.min, bounds.max);
     w.travel(a);
     for p in [Pt::new(b.x, a.y), b, Pt::new(a.x, b.y), a] {
         w.line(p, power, speed_mm_s);
     }
-    let _ = writeln!(w.out, "M5");
+    let _ = writeln!(w.out, "{}", if dev.controller == Controller::Marlin { "M5 I" } else { "M5" });
     w.out
 }

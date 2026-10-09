@@ -2,7 +2,7 @@
 
 # LightCreator
 
-**Current version: v0.02** — see [VERSIONS.md](VERSIONS.md) for the change log, [FEATURES.md](FEATURES.md) for what the app can do and [INSTALL.md](INSTALL.md) for how to run it from source.
+See [FEATURES.md](FEATURES.md) for what the app can do, [INSTALL.md](INSTALL.md) for how to run it from source and [VERSIONS.md](VERSIONS.md) for the change log.
 
 An open-source alternative to [LightBurn](https://lightburnsoftware.com/) for CNC laser engravers and cutters,
 written in Rust. The interface follows the look of [VectorCraft](https://github.com/storytold/vectorcraft)
@@ -80,12 +80,3 @@ machines whose zero is at the front-left (configurable under *Laser → Device s
 
 > **Safety:** lasers are dangerous. Always test G-code at low power, wear eye protection, never leave a
 > running machine unattended and verify your machine's `$30` (S-max) and `$32` (laser mode) settings.
-
-## License
-
-MIT
-
-## Versioning
-
-Work is committed directly to `main`. Each release gets the next version number and a branch named
-after it (`v0.01`, `v0.02`, …). Current version: **v0.01**.

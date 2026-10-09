@@ -37,3 +37,8 @@ pub fn fmt_len(u: Units, mm: f64, decimals_mm: usize) -> String {
         Units::Inch => format!("{:.3}{}", u.from_mm(mm), u.suffix()),
     }
 }
+
+/// Format a speed given in mm/min.
+pub fn fmt_speed_min(u: Units, mm_min: f64) -> String {
+    format!("{:.0}{}", u.from_mm(mm_min), u.speed_min_suffix())
+}

@@ -1,7 +1,7 @@
 use crate::app::{App, SideTab};
-use crate::units_ui::{drag_len, drag_speed_min, drag_speed_s};
+use crate::units_ui::{drag_len, drag_speed_s};
 use crate::i18n::{tr, trf};
-use crate::laser::{self, Cmd, ConsoleLine, Dir};
+use crate::laser::{Cmd, ConsoleLine, Dir};
 use crate::theme;
 use eframe::egui::{self, Color32, RichText};
 use lc_core::{LayerMode, Xf, PALETTE};
@@ -24,7 +24,7 @@ impl App {
                 egui::ScrollArea::vertical().id_salt("tab_layers").auto_shrink([false, false]).show(ui, |ui| self.layers_panel(ui));
             }
             SideTab::Device => {
-                egui::ScrollArea::vertical().id_salt("tab_device").auto_shrink([false, false]).show(ui, |ui| self.laser_panel(ui));
+                egui::ScrollArea::vertical().id_salt("tab_device").auto_shrink([false, false]).show(ui, |ui| self.device_tab(ui));
             }
             SideTab::Console => self.console_panel(ui),
         }
@@ -201,85 +201,6 @@ impl App {
             self.last_layer_undo = now;
             self.touch();
         }
-    }
-
-    fn laser_panel(&mut self, ui: &mut egui::Ui) {
-        let units = self.doc.device.units;
-        ui.horizontal(|ui| {
-            egui::ComboBox::from_id_salt("port").width(150.0).selected_text(if self.port.is_empty() { tr("No port") } else { self.port.as_str() }).show_ui(ui, |ui| {
-                for p in self.ports.clone() {
-                    ui.selectable_value(&mut self.port, p.clone(), p);
-                }
-            });
-            if ui.button(tr("Refresh")).on_hover_text(tr("Rescan serial ports")).clicked() {
-                self.ports = laser::list_ports();
-                if !self.ports.contains(&self.port) {
-                    self.port = self.ports.first().cloned().unwrap_or_default();
-                }
-            }
-            if self.connected {
-                if ui.button(tr("Disconnect")).clicked() {
-                    self.link.send(Cmd::Disconnect);
-                }
-            } else if ui.add_enabled(!self.port.is_empty(), egui::Button::new(tr("Connect"))).clicked() {
-                self.link.send(Cmd::Connect { port: self.port.clone(), baud: self.doc.device.baud });
-            }
-        });
-        ui.label(format!("{}: {}   X {:.2}  Y {:.2}", tr("State"), self.machine.0, self.machine.1, self.machine.2));
-        ui.add_enabled_ui(self.connected, |ui| {
-            ui.horizontal(|ui| {
-                ui.label(tr("Step"));
-                drag_len(ui, units, &mut self.jog_step, 0.1, Some((0.1, 200.0)));
-                ui.label(tr("Feed"));
-                drag_speed_min(ui, units, &mut self.jog_feed, 10.0, Some((10.0, 20000.0)));
-            });
-            let (s, f) = (self.jog_step, self.jog_feed);
-            let jog = |app: &App, dx: f64, dy: f64| app.link.send(Cmd::Line(format!("$J=G91 G21 X{dx} Y{dy} F{f}")));
-            egui::Grid::new("jog").spacing([4.0, 4.0]).show(ui, |ui| {
-                ui.label("");
-                if ui.button(format!("  {}  ", tr("Up"))).clicked() {
-                    jog(self, 0.0, s);
-                }
-                ui.label("");
-                ui.end_row();
-                if ui.button(format!(" {} ", tr("Left"))).clicked() {
-                    jog(self, -s, 0.0);
-                }
-                if ui.button(format!("  {}  ", tr("Stop"))).on_hover_text(tr("Cancel jog")).clicked() {
-                    self.link.send(Cmd::Realtime(0x85));
-                }
-                if ui.button(format!(" {} ", tr("Right"))).clicked() {
-                    jog(self, s, 0.0);
-                }
-                ui.end_row();
-                ui.label("");
-                if ui.button(format!(" {} ", tr("Down"))).clicked() {
-                    jog(self, 0.0, -s);
-                }
-                ui.end_row();
-            });
-            ui.horizontal_wrapped(|ui| {
-                if ui.button(tr("Home $H")).clicked() {
-                    self.link.send(Cmd::Line("$H".into()));
-                }
-                if ui.button(tr("Unlock $X")).clicked() {
-                    self.link.send(Cmd::Line("$X".into()));
-                }
-                if ui.button(tr("Pause")).clicked() {
-                    self.link.send(Cmd::Realtime(b'!'));
-                }
-                if ui.button(tr("Resume")).clicked() {
-                    self.link.send(Cmd::Realtime(b'~'));
-                }
-                if ui.add(egui::Button::new(RichText::new(tr("STOP")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0xc0, 0x30, 0x30))).clicked() {
-                    self.link.send(Cmd::Abort);
-                }
-            });
-            ui.horizontal(|ui| {
-                ui.label(tr("Frame power"));
-                ui.add(egui::DragValue::new(&mut self.frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
-            });
-        });
     }
 
     /// Live view of everything crossing the serial port.

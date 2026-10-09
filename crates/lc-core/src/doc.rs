@@ -207,12 +207,72 @@ impl Units {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+/// Which controller family a device speaks.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Controller {
+    /// GRBL 1.1 over a serial port (streamed live).
+    #[default]
+    Grbl,
+    /// Marlin firmware with laser support over a serial port (streamed live).
+    Marlin,
+    /// Ruida DSP controllers: jobs are exported as `.rd` files.
+    Ruida,
+    /// Trocen DSP controllers: jobs are exported as HPGL `.plt` files.
+    Trocen,
+}
+
+impl Controller {
+    pub const ALL: [Controller; 4] = [Controller::Grbl, Controller::Marlin, Controller::Ruida, Controller::Trocen];
+    pub fn label(self) -> &'static str {
+        match self {
+            Controller::Grbl => "GRBL",
+            Controller::Marlin => "Marlin",
+            Controller::Ruida => "Ruida",
+            Controller::Trocen => "Trocen",
+        }
+    }
+    /// Can LightCreator talk to this controller over a serial port?
+    pub fn is_serial(self) -> bool {
+        matches!(self, Controller::Grbl | Controller::Marlin)
+    }
+}
+
+/// Laser source type; selects matching entries in the material library.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum LaserKind {
+    #[default]
+    Diode,
+    Co2,
+}
+
+impl LaserKind {
+    pub const ALL: [LaserKind; 2] = [LaserKind::Diode, LaserKind::Co2];
+    pub fn label(self) -> &'static str {
+        match self {
+            LaserKind::Diode => "Diode",
+            LaserKind::Co2 => "CO2",
+        }
+    }
+}
+
+fn d_jog_step() -> f64 {
+    5.0
+}
+fn d_jog_feed() -> f64 {
+    3000.0
+}
+
+/// A device (machine) profile: everything the Device tab shows and the job generators need.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Device {
     pub name: String,
     /// Display units; profiles saved before this existed load as millimetres.
     #[serde(default)]
     pub units: Units,
+    #[serde(default)]
+    pub controller: Controller,
+    #[serde(default)]
+    pub laser: LaserKind,
     pub bed_w: f64,
     pub bed_h: f64,
     pub origin: Origin,
@@ -223,6 +283,18 @@ pub struct Device {
     pub travel_speed: f64,
     pub return_home: bool,
     pub baud: u32,
+    /// Serial port used for this device (empty = none chosen yet).
+    #[serde(default)]
+    pub port: String,
+    /// Jog step in mm.
+    #[serde(default = "d_jog_step")]
+    pub jog_step: f64,
+    /// Jog feed in mm/min.
+    #[serde(default = "d_jog_feed")]
+    pub jog_feed: f64,
+    /// Laser power (percent) while framing; 0 keeps the laser off.
+    #[serde(default)]
+    pub frame_power: f64,
 }
 
 impl Default for Device {
@@ -230,6 +302,8 @@ impl Default for Device {
         Device {
             name: "GRBL 1.1 (diode / CO2)".into(),
             units: Units::Mm,
+            controller: Controller::Grbl,
+            laser: LaserKind::Diode,
             bed_w: 400.0,
             bed_h: 400.0,
             origin: Origin::FrontLeft,
@@ -238,6 +312,10 @@ impl Default for Device {
             travel_speed: 3000.0,
             return_home: true,
             baud: 115_200,
+            port: String::new(),
+            jog_step: 5.0,
+            jog_feed: 3000.0,
+            frame_power: 0.0,
         }
     }
 }

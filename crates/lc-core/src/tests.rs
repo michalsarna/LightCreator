@@ -84,3 +84,21 @@ fn units_convert_and_old_profiles_default_to_mm() {
     let d: Device = serde_json::from_str(old).unwrap();
     assert_eq!(d.units, Units::Mm);
 }
+
+#[test]
+fn status_parsing_for_both_dialects() {
+    let (st, x, y) = controller::parse_status("<Idle|MPos:12.500,3.250,0.000|FS:0,0>").unwrap();
+    assert_eq!((st.as_str(), x, y), ("Idle", 12.5, 3.25));
+    let (_, x, y) = controller::parse_status("X:10.00 Y:20.50 Z:0.00 E:0.00 Count X:800 Y:1640").unwrap();
+    assert_eq!((x, y), (10.0, 20.5));
+    assert!(controller::parse_status("ok").is_none());
+}
+
+#[test]
+fn old_device_json_gets_new_fields() {
+    let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
+    let d: Device = serde_json::from_str(old).unwrap();
+    assert_eq!(d.controller, Controller::Grbl);
+    assert_eq!(d.jog_step, 5.0);
+    assert!(d.port.is_empty());
+}
