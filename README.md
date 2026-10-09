@@ -8,6 +8,35 @@ An open-source alternative to [LightBurn](https://lightburnsoftware.com/) for CN
 written in Rust. The interface follows the look of [VectorCraft](https://github.com/storytold/vectorcraft)
 (light flat chrome, vertical tool bar, collapsible side panels, colour swatch strip, red-orange accent).
 
+## Screenshots
+
+| | |
+|---|---|
+| ![Start window](docs/screenshots/01-start.png) | ![Properties tab](docs/screenshots/02-editor-properties.png) |
+| Start window: pick the device to work with | Editor, Properties tab, toolpath preview on |
+| ![Cuts / Layers tab](docs/screenshots/03-layers.png) | ![Console tab](docs/screenshots/04-console.png) |
+| Cuts / Layers tab | Console tab: live view of the serial traffic |
+| ![Device configuration](docs/screenshots/05-device-config.png) | ![Light scheme, Polish](docs/screenshots/06-light-polish.png) |
+| Device configuration (units, work area, GRBL settings) | Light colour scheme with the Polish interface |
+
+The pictures are rendered headlessly from the real UI; regenerate them with
+`cargo test -p lightcreator --release render_screenshots -- --ignored`.
+
+## Settings and configuration files
+
+Language, colour scheme, device profiles (including their units), the last used profile and the window
+size are stored by the application in a single file, `app.ron`:
+
+| System | Location |
+|--------|----------|
+| macOS | `~/Library/Application Support/lightcreator/app.ron` |
+| Windows | `%APPDATA%\lightcreator\data\app.ron` (usually `C:\Users\<you>\AppData\Roaming\lightcreator\data\app.ron`) |
+| Linux | `$XDG_DATA_HOME/lightcreator/app.ron`, by default `~/.local/share/lightcreator/app.ron` |
+
+The file is written when the application closes. Delete it to reset everything to the defaults (the start
+window then asks for a device profile again). Projects (`.lcr`), SVG and G-code files are saved wherever you
+choose in the file dialog.
+
 ## Features
 
 A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
@@ -15,6 +44,8 @@ A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
 * Design, import / export (SVG, G-code, native `.lcr`), LightBurn-style cut layers, toolpath preview.
 * GRBL laser control over a serial port.
 * Native menu bar on macOS, in-window menu on Windows and Linux.
+* Start window with device profiles, millimetre or inch units per device.
+* Side-panel tabs: Properties, Cuts / Layers, Device and a live serial Console.
 * Seven languages (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी) and four colour schemes.
 
 Not yet implemented (contributions welcome): image/raster engraving, offset fill, boolean operations,

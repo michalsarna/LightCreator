@@ -5,7 +5,8 @@ use crate::i18n::{tr, trf, Lang};
 use crate::menu::Act;
 use crate::theme::{self, Scheme};
 use eframe::egui::{self, Align, Color32, Layout, RichText};
-use lc_core::{Device, Origin};
+use crate::units_ui::{drag_len, drag_speed_min, fmt_len};
+use lc_core::{Device, Origin, Units};
 
 /// A device profile being edited in the configuration window.
 pub struct CfgEdit {
@@ -100,7 +101,7 @@ impl App {
         egui::ScrollArea::vertical().max_height(220.0).auto_shrink([false, true]).show(ui, |ui| {
             for i in 0..self.profiles.len() {
                 let d = &self.profiles[i];
-                let text = format!("{}    {:.0} × {:.0} mm", d.name, d.bed_w, d.bed_h);
+                let text = format!("{}    {} × {}", d.name, fmt_len(d.units, d.bed_w, 0), fmt_len(d.units, d.bed_h, 0));
                 let r = ui.add_sized([ui.available_width(), 28.0], egui::Button::selectable(self.start_sel == i, text));
                 if r.clicked() {
                     self.start_sel = i;
@@ -166,11 +167,19 @@ impl App {
                 ui.label(tr("Name"));
                 ui.add(egui::TextEdit::singleline(&mut d.name).hint_text(tr("e.g. My diode laser")));
                 ui.end_row();
-                ui.label(tr("Work area X (mm)"));
-                ui.add(egui::DragValue::new(&mut d.bed_w).range(10.0..=5000.0));
+                ui.label(tr("Units"));
+                egui::ComboBox::from_id_salt("units").selected_text(tr(d.units.label())).show_ui(ui, |ui| {
+                    for u in Units::ALL {
+                        ui.selectable_value(&mut d.units, u, tr(u.label()));
+                    }
+                });
                 ui.end_row();
-                ui.label(tr("Work area Y (mm)"));
-                ui.add(egui::DragValue::new(&mut d.bed_h).range(10.0..=5000.0));
+                let u = d.units;
+                ui.label(tr("Work area X"));
+                drag_len(ui, u, &mut d.bed_w, 1.0, Some((10.0, 5000.0)));
+                ui.end_row();
+                ui.label(tr("Work area Y"));
+                drag_len(ui, u, &mut d.bed_h, 1.0, Some((10.0, 5000.0)));
                 ui.end_row();
                 ui.label(tr("Machine zero (0,0)"));
                 egui::ComboBox::from_id_salt("origin")
@@ -186,8 +195,8 @@ impl App {
                 ui.label(tr("Dynamic power (M4)"));
                 ui.checkbox(&mut d.dynamic_power, "");
                 ui.end_row();
-                ui.label(tr("Travel speed (mm/min)"));
-                ui.add(egui::DragValue::new(&mut d.travel_speed).range(100.0..=60000.0));
+                ui.label(tr("Travel speed"));
+                drag_speed_min(ui, u, &mut d.travel_speed, 50.0, Some((100.0, 60000.0)));
                 ui.end_row();
                 ui.label(tr("Return to origin"));
                 ui.checkbox(&mut d.return_home, "");

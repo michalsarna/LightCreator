@@ -1,8 +1,7 @@
-use crate::laser::{self, Cmd, Evt, LaserLink};
+use crate::laser::{self, Cmd, ConsoleLine, Evt, LaserLink};
+use crate::units_ui::{drag_len, fmt_len};
 use crate::i18n::{self, tr, trf, Lang};
-use crate::menu::Act;
-#[cfg(not(target_os = "macos"))]
-use crate::menu::{menus, Entry};
+use crate::menu::{menus, Act, Entry};
 use crate::theme::{self, Scheme};
 use eframe::egui::{self, Color32, Key, Modifiers, RichText};
 use lc_core::{gcode, svg, Document, Pt, Rect, Shape, Xf};
@@ -33,6 +32,24 @@ impl Tool {
 
 /// Human-facing release label (branch name matches it).
 pub const APP_VERSION: &str = "v0.02";
+
+/// Tabs of the right-hand panel.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum SideTab {
+    Properties,
+    Layers,
+    Device,
+    Console,
+}
+
+impl SideTab {
+    pub const ALL: [(SideTab, &'static str); 4] = [
+        (SideTab::Properties, "Properties"),
+        (SideTab::Layers, "Cuts / Layers"),
+        (SideTab::Device, "Device"),
+        (SideTab::Console, "Console"),
+    ];
+}
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum Screen {
@@ -93,7 +110,10 @@ pub struct App {
     pub connected: bool,
     pub machine: (String, f64, f64),
     pub progress: (usize, usize),
-    pub console: Vec<String>,
+    pub console: Vec<ConsoleLine>,
+    pub side_tab: SideTab,
+    pub console_polls: bool,
+    pub console_autoscroll: bool,
     pub console_input: String,
     pub jog_step: f64,
     pub jog_feed: f64,
@@ -102,15 +122,20 @@ pub struct App {
 
 impl App {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+        Self::build(&cc.egui_ctx, cc.storage, true)
+    }
+
+    /// Build the app without a window: used by `new` and by the screenshot tests.
+    pub fn build(ctx: &egui::Context, storage: Option<&dyn eframe::Storage>, native_menu: bool) -> Self {
         let ports = laser::list_ports();
-        let saved = |k: &str| cc.storage.and_then(|st| st.get_string(k));
+        let saved = |k: &str| storage.and_then(|st| st.get_string(k));
         let lang = saved("lang").and_then(|c| Lang::from_code(&c)).unwrap_or(Lang::En);
         let scheme = saved("scheme").and_then(|c| Scheme::from_id(&c)).unwrap_or(Scheme::LightDark);
         let profiles: Vec<lc_core::Device> = saved("profiles").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let active = saved("active_profile").and_then(|v| v.parse::<usize>().ok()).filter(|i| *i < profiles.len()).unwrap_or(0);
         i18n::set_lang(lang);
-        theme::apply(&cc.egui_ctx, scheme);
-        crate::fonts::install(&cc.egui_ctx);
+        theme::apply(ctx, scheme);
+        crate::fonts::install(ctx);
         App {
             doc: Document::default(),
             undo: vec![],
@@ -147,16 +172,19 @@ impl App {
             show_about: false,
             lang,
             scheme,
-            logo: crate::load_logo(&cc.egui_ctx),
+            logo: crate::load_logo(ctx),
             #[cfg(target_os = "macos")]
-            native_menu: Some(crate::native_menu::NativeMenu::install(&cc.egui_ctx)),
-            link: LaserLink::spawn(cc.egui_ctx.clone()),
+            native_menu: native_menu.then(|| crate::native_menu::NativeMenu::install(ctx)),
+            link: LaserLink::spawn(ctx.clone()),
             port: ports.first().cloned().unwrap_or_default(),
             ports,
             connected: false,
             machine: (tr("Disconnected").into(), 0.0, 0.0),
             progress: (0, 0),
             console: vec![],
+            side_tab: SideTab::Properties,
+            console_polls: false,
+            console_autoscroll: true,
             console_input: String::new(),
             jog_step: 5.0,
             jog_feed: 3000.0,
@@ -432,7 +460,7 @@ impl App {
             return;
         }
         let lines = laser::clean_gcode(&job.gcode);
-        self.console.push(trf("Starting job: {} lines, ~{}", &[&lines.len(), &fmt_time(job.est_seconds)]));
+        self.push_console(ConsoleLine::info(trf("Starting job: {} lines, ~{}", &[&lines.len(), &fmt_time(job.est_seconds)])));
         self.link.send(Cmd::Job(lines));
     }
     pub fn frame(&mut self) {
@@ -447,15 +475,18 @@ impl App {
             self.link.send(Cmd::Line(l));
         }
     }
+    pub fn push_console(&mut self, l: ConsoleLine) {
+        self.console.push(l);
+        if self.console.len() > 4000 {
+            self.console.drain(..1000);
+        }
+    }
+
     fn poll_laser(&mut self) {
         for e in self.link.poll() {
             match e {
-                Evt::Log(s) => {
-                    self.console.push(s);
-                    if self.console.len() > 500 {
-                        self.console.remove(0);
-                    }
-                }
+                Evt::Log(s) => self.push_console(ConsoleLine::info(s)),
+                Evt::Traffic(l) => self.push_console(l),
                 Evt::Connected(c) => {
                     self.connected = c;
                     if !c {
@@ -613,7 +644,6 @@ impl App {
         }
     }
 
-    #[cfg(not(target_os = "macos"))]
     fn menu_entries(&mut self, ui: &mut egui::Ui, entries: &[Entry], pending: &mut Option<Act>) {
         for e in entries {
             match e {
@@ -655,8 +685,7 @@ impl App {
         self.native_menu = Some(nm);
     }
 
-    /// In-window menu bar (Windows / Linux). macOS uses the native menu bar instead.
-    #[cfg(not(target_os = "macos"))]
+    /// In-window menu bar (Windows / Linux, and macOS when no native menu is installed).
     fn menu_bar(&mut self, ui: &mut egui::Ui) {
         let mut pending = None;
         egui::MenuBar::new().ui(ui, |ui| {
@@ -682,7 +711,7 @@ impl App {
             ui.separator();
             ui.checkbox(&mut self.show_grid, tr("Grid"));
             ui.checkbox(&mut self.snap, tr("Snap"));
-            ui.add(egui::DragValue::new(&mut self.grid).range(0.5..=100.0).suffix(" mm"));
+            drag_len(ui, self.doc.device.units, &mut self.grid, 0.5, Some((0.5, 100.0)));
             ui.separator();
             if ui.selectable_label(self.preview_on, tr("Preview")).clicked() {
                 self.preview_on = !self.preview_on;
@@ -700,7 +729,8 @@ impl App {
                 }
                 let (w, h) = self.sel_bounds().map(|b| (b.width(), b.height())).unwrap_or((0.0, 0.0));
                 if !self.sel.is_empty() {
-                    ui.label(RichText::new(format!("{:.1} × {:.1} mm", w, h)).color(theme::text_dim()));
+                    let u = self.doc.device.units;
+                    ui.label(RichText::new(format!("{} × {}", fmt_len(u, w, 1), fmt_len(u, h, 1))).color(theme::text_dim()));
                 }
             });
         });
@@ -751,7 +781,10 @@ impl App {
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                 ui.label(format!("{}%", (self.view.zoom / 2.0 * 100.0).round()));
                 if let Some(p) = self.cursor_mm {
-                    ui.label(format!("X {:.2}  Y {:.2} mm", p.x, p.y));
+                    let u = self.doc.device.units;
+                    let (x, y) = (u.from_mm(p.x), u.from_mm(p.y));
+                    let d = if u == lc_core::Units::Mm { 2 } else { 3 };
+                    ui.label(format!("X {:.*}  Y {:.*}{}", d, x, d, y, u.suffix()));
                 }
                 let color = if self.connected { Color32::from_rgb(0x2e, 0xa0, 0x4f) } else { theme::text_dim() };
                 ui.label(RichText::new(self.machine.0.clone()).color(color));
@@ -775,11 +808,11 @@ impl App {
                 ui.label(tr("Rows"));
                 ui.add(egui::DragValue::new(&mut self.array.1).range(1..=100));
                 ui.end_row();
-                ui.label(tr("Gap X (mm)"));
-                ui.add(egui::DragValue::new(&mut self.array.2));
+                ui.label(tr("Gap X"));
+                drag_len(ui, self.doc.device.units, &mut self.array.2, 0.5, None);
                 ui.end_row();
-                ui.label(tr("Gap Y (mm)"));
-                ui.add(egui::DragValue::new(&mut self.array.3));
+                ui.label(tr("Gap Y"));
+                drag_len(ui, self.doc.device.units, &mut self.array.3, 0.5, None);
                 ui.end_row();
             });
             apply = ui.button(tr("Create array")).clicked();
@@ -830,6 +863,13 @@ impl eframe::App for App {
     }
 
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+        self.draw(ui);
+    }
+}
+
+impl App {
+    /// Draw one frame of the whole application into `ui`.
+    pub fn draw(&mut self, ui: &mut egui::Ui) {
         let ctx = ui.ctx().clone();
         self.poll_laser();
         if self.preview_on && self.preview.as_ref().map(|p| p.0) != Some(self.revision) {
@@ -845,8 +885,13 @@ impl eframe::App for App {
         self.shortcuts(&ctx);
 
         let chrome = egui::Frame::new().fill(theme::panel()).stroke(egui::Stroke::new(1.0, theme::border())).inner_margin(egui::Margin::symmetric(8, 4));
+        #[cfg(target_os = "macos")]
+        let in_window_menu = self.native_menu.is_none();
         #[cfg(not(target_os = "macos"))]
-        egui::Panel::top("menu").frame(chrome).show(ui, |ui| self.menu_bar(ui));
+        let in_window_menu = true;
+        if in_window_menu {
+            egui::Panel::top("menu").frame(chrome).show(ui, |ui| self.menu_bar(ui));
+        }
         egui::Panel::top("controls").frame(chrome).exact_size(36.0).show(ui, |ui| self.control_bar(ui));
         egui::Panel::bottom("status").frame(chrome).exact_size(26.0).show(ui, |ui| self.status_bar(ui));
         egui::Panel::bottom("swatches").frame(chrome).exact_size(36.0).show(ui, |ui| self.swatches(ui));
@@ -857,5 +902,5 @@ impl eframe::App for App {
         if self.connected || self.progress.0 < self.progress.1 {
             ctx.request_repaint_after(std::time::Duration::from_millis(250));
         }
-    }
+        }
 }

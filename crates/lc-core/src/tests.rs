@@ -74,3 +74,13 @@ fn json_roundtrip() {
     let d2 = Document::from_json(&d.to_json()).unwrap();
     assert_eq!(d2.shapes.len(), 1);
 }
+
+#[test]
+fn units_convert_and_old_profiles_default_to_mm() {
+    assert!((Units::Inch.to_mm(2.0) - 50.8).abs() < 1e-9);
+    assert!((Units::Inch.from_mm(25.4) - 1.0).abs() < 1e-9);
+    // A device saved before units existed has no "units" key.
+    let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
+    let d: Device = serde_json::from_str(old).unwrap();
+    assert_eq!(d.units, Units::Mm);
+}

@@ -179,7 +179,7 @@ impl App {
                     shapes.push(egui::Shape::line_segment([self.w2s(o, m.a), self.w2s(o, m.b)], st));
                 }
                 painter.extend(shapes);
-                let r = painter.text(rect.left_bottom() + egui::vec2(30.0, -12.0), egui::Align2::LEFT_BOTTOM, format!("{} {}   {} {:.0} mm", crate::i18n::tr("Estimated time"), crate::app::fmt_time(job.est_seconds), crate::i18n::tr("cut length"), job.cut_length), egui::FontId::proportional(13.0), theme::text());
+                let r = painter.text(rect.left_bottom() + egui::vec2(30.0, -12.0), egui::Align2::LEFT_BOTTOM, format!("{} {}   {} {}", crate::i18n::tr("Estimated time"), crate::app::fmt_time(job.est_seconds), crate::i18n::tr("cut length"), crate::units_ui::fmt_len(self.doc.device.units, job.cut_length, 0)), egui::FontId::proportional(13.0), theme::text());
                 let _ = r;
             }
         }
@@ -441,34 +441,39 @@ impl App {
         let bg = theme::panel();
         painter.rect_filled(egui::Rect::from_min_size(rect.min, egui::vec2(rect.width(), t)), 0.0, bg);
         painter.rect_filled(egui::Rect::from_min_size(rect.min, egui::vec2(t, rect.height())), 0.0, bg);
+        // Work in display units: `k` is millimetres per unit, `z` pixels per millimetre.
+        let units = self.doc.device.units;
+        let k = units.to_mm(1.0);
         let z = self.view.zoom as f64;
-        let major = nice_step(60.0 / z);
+        let major = nice_step(60.0 / (z * k));
         let minor = major / 5.0;
+        let decimals = if major >= 1.0 { 0 } else { (-major.log10()).ceil() as usize };
+        let label = |v: f64| format!("{:.*}", decimals, v);
         let font = egui::FontId::proportional(9.5);
         let tick = Stroke::new(1.0, theme::text_dim());
         // horizontal
-        let (x0, x1) = (((rect.min.x - rect.min.x - self.view.pan.x) as f64 / z), ((rect.width() - self.view.pan.x) as f64 / z));
+        let (x0, x1) = ((-self.view.pan.x) as f64 / (z * k), (rect.width() - self.view.pan.x) as f64 / (z * k));
         let mut v = (x0 / minor).floor() * minor;
         while v <= x1 {
-            let sx = rect.min.x + self.view.pan.x + (v * z) as f32;
+            let sx = rect.min.x + self.view.pan.x + (v * k * z) as f32;
             let is_major = ((v / major).round() * major - v).abs() < minor * 0.01;
             if sx > rect.min.x + t {
                 painter.line_segment([Pos2::new(sx, rect.min.y + if is_major { 2.0 } else { 12.0 }), Pos2::new(sx, rect.min.y + t)], tick);
                 if is_major {
-                    painter.text(Pos2::new(sx + 2.0, rect.min.y + 1.0), egui::Align2::LEFT_TOP, format!("{}", v.round()), font.clone(), theme::text_dim());
+                    painter.text(Pos2::new(sx + 2.0, rect.min.y + 1.0), egui::Align2::LEFT_TOP, label(v), font.clone(), theme::text_dim());
                 }
             }
             v += minor;
         }
-        let (y0, y1) = ((-self.view.pan.y) as f64 / z, (rect.height() - self.view.pan.y) as f64 / z);
+        let (y0, y1) = ((-self.view.pan.y) as f64 / (z * k), (rect.height() - self.view.pan.y) as f64 / (z * k));
         let mut v = (y0 / minor).floor() * minor;
         while v <= y1 {
-            let sy = rect.min.y + self.view.pan.y + (v * z) as f32;
+            let sy = rect.min.y + self.view.pan.y + (v * k * z) as f32;
             let is_major = ((v / major).round() * major - v).abs() < minor * 0.01;
             if sy > rect.min.y + t {
                 painter.line_segment([Pos2::new(rect.min.x + if is_major { 2.0 } else { 12.0 }, sy), Pos2::new(rect.min.x + t, sy)], tick);
                 if is_major {
-                    painter.text(Pos2::new(rect.min.x + 1.0, sy + 2.0), egui::Align2::LEFT_TOP, format!("{}", v.round()), font.clone(), theme::text_dim());
+                    painter.text(Pos2::new(rect.min.x + 1.0, sy + 2.0), egui::Align2::LEFT_TOP, label(v), font.clone(), theme::text_dim());
                 }
             }
             v += minor;

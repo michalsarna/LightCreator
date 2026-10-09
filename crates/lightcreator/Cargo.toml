@@ -28,3 +28,7 @@ name = "LightCreator"
 identifier = "io.github.michalsarna.lightcreator"
 icon = ["../../assets/icons/icon-256.png", "../../assets/icons/icon-512.png"]
 short_description = "Open-source laser engraver / cutter design and control software"
+
+[dev-dependencies]
+# Renders the UI headlessly to PNG for the README screenshots (see src/screenshots.rs).
+egui_kittest = { version = "0.36", features = ["wgpu"] }

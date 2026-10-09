@@ -19,9 +19,11 @@
 **Devices**
 * Start window to choose the device (machine profile) you work with; profiles are remembered.
 * Device configuration window (work area, machine zero, S-value max, speeds, baud rate).
+* Per-device display units: millimetres or inches (stored geometry stays in millimetres).
 * The editor cannot be opened until at least one device profile exists. "Laser > Switch device…" returns to the start window.
 
 **Interface**
+* Side panel with four tabs: Properties, Cuts / Layers, Device and Console (live view of everything sent to and received from the serial port, with status polling hidden by default).
 * Native macOS menu bar; in-window menu on Windows and Linux.
 * Languages: English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी.
 * Colour schemes: Dark, Light Dark, Medium Light, Light.

@@ -9,7 +9,10 @@ mod menu;
 #[cfg(target_os = "macos")]
 mod native_menu;
 mod panels;
+#[cfg(test)]
+mod screenshots;
 mod theme;
+mod units_ui;
 
 const ICON_256: &[u8] = include_bytes!("../../../assets/icons/icon-256.png");
 const ICON_512: &[u8] = include_bytes!("../../../assets/icons/icon-512.png");

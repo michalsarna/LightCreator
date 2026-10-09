@@ -150,9 +150,69 @@ pub enum Origin {
     BackLeft,
 }
 
+/// Unit system used to show and enter lengths in the interface. All stored geometry is in millimetres.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Units {
+    #[default]
+    Mm,
+    Inch,
+}
+
+impl Units {
+    pub const ALL: [Units; 2] = [Units::Mm, Units::Inch];
+    pub fn from_mm(self, mm: f64) -> f64 {
+        match self {
+            Units::Mm => mm,
+            Units::Inch => mm / 25.4,
+        }
+    }
+    pub fn to_mm(self, v: f64) -> f64 {
+        match self {
+            Units::Mm => v,
+            Units::Inch => v * 25.4,
+        }
+    }
+    /// Suffix for lengths, with a leading space.
+    pub fn suffix(self) -> &'static str {
+        match self {
+            Units::Mm => " mm",
+            Units::Inch => " in",
+        }
+    }
+    pub fn speed_s_suffix(self) -> &'static str {
+        match self {
+            Units::Mm => " mm/s",
+            Units::Inch => " in/s",
+        }
+    }
+    pub fn speed_min_suffix(self) -> &'static str {
+        match self {
+            Units::Mm => " mm/min",
+            Units::Inch => " in/min",
+        }
+    }
+    /// Decimal places that make sense when entering lengths.
+    pub fn decimals(self) -> usize {
+        match self {
+            Units::Mm => 3,
+            Units::Inch => 4,
+        }
+    }
+    /// English label (translated in the UI).
+    pub fn label(self) -> &'static str {
+        match self {
+            Units::Mm => "Millimetres (mm)",
+            Units::Inch => "Inches (in)",
+        }
+    }
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Device {
     pub name: String,
+    /// Display units; profiles saved before this existed load as millimetres.
+    #[serde(default)]
+    pub units: Units,
     pub bed_w: f64,
     pub bed_h: f64,
     pub origin: Origin,
@@ -169,6 +229,7 @@ impl Default for Device {
     fn default() -> Self {
         Device {
             name: "GRBL 1.1 (diode / CO2)".into(),
+            units: Units::Mm,
             bed_w: 400.0,
             bed_h: 400.0,
             origin: Origin::FrontLeft,

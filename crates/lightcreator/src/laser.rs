@@ -17,8 +17,35 @@ pub enum Cmd {
     Abort,
 }
 
+/// Direction of a console line.
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum Dir {
+    /// Message from the application itself.
+    Info,
+    /// Sent to the controller.
+    Tx,
+    /// Received from the controller.
+    Rx,
+}
+
+#[derive(Clone)]
+pub struct ConsoleLine {
+    pub dir: Dir,
+    pub text: String,
+    /// Part of the periodic `?` status polling (hidden by default in the console).
+    pub poll: bool,
+}
+
+impl ConsoleLine {
+    pub fn info(text: impl Into<String>) -> Self {
+        ConsoleLine { dir: Dir::Info, text: text.into(), poll: false }
+    }
+}
+
 pub enum Evt {
     Log(String),
+    /// A line that crossed the serial port.
+    Traffic(ConsoleLine),
     Connected(bool),
     Status { state: String, x: f64, y: f64 },
     Progress { done: usize, total: usize },
@@ -75,6 +102,17 @@ fn parse_status(line: &str) -> Option<Evt> {
     Some(Evt::Status { state, x: f64::NAN, y: f64::NAN })
 }
 
+fn realtime_name(b: u8) -> String {
+    match b {
+        0x18 => "0x18 (soft reset)".into(),
+        0x85 => "0x85 (jog cancel)".into(),
+        b'!' => "! (feed hold)".into(),
+        b'~' => "~ (cycle start)".into(),
+        b'?' => "?".into(),
+        _ => format!("0x{b:02X}"),
+    }
+}
+
 const RX_BUFFER: usize = 120; // GRBL has 128 bytes; keep a margin.
 
 fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
@@ -125,11 +163,13 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                 Ok(Cmd::Realtime(b)) => {
                     if let Some(p) = port.as_mut() {
                         let _ = p.write_all(&[b]);
+                        emit(Evt::Traffic(ConsoleLine { dir: Dir::Tx, text: realtime_name(b), poll: false }));
                     }
                 }
                 Ok(Cmd::Abort) => {
                     if let Some(p) = port.as_mut() {
                         let _ = p.write_all(&[0x18]);
+                        emit(Evt::Traffic(ConsoleLine { dir: Dir::Tx, text: realtime_name(0x18), poll: false }));
                     }
                     queue.clear();
                     pending.clear();
@@ -157,19 +197,18 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                     continue;
                 }
                 if let Some(e) = parse_status(&line) {
+                    emit(Evt::Traffic(ConsoleLine { dir: Dir::Rx, text: line.clone(), poll: true }));
                     emit(e);
                 } else if line == "ok" || line.starts_with("error") {
+                    emit(Evt::Traffic(ConsoleLine { dir: Dir::Rx, text: line.clone(), poll: false }));
                     if let Some((_, job)) = pending.pop_front() {
                         if job {
                             done += 1;
                             emit(Evt::Progress { done, total });
                         }
                     }
-                    if line != "ok" {
-                        emit(Evt::Log(line));
-                    }
                 } else {
-                    emit(Evt::Log(line));
+                    emit(Evt::Traffic(ConsoleLine { dir: Dir::Rx, text: line, poll: false }));
                 }
             }
             // Write while the controller's RX buffer has room.
@@ -179,9 +218,7 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                     break;
                 }
                 let (l, job) = queue.pop_front().unwrap();
-                if !job {
-                    emit(Evt::Log(format!("> {l}")));
-                }
+                emit(Evt::Traffic(ConsoleLine { dir: Dir::Tx, text: l.clone(), poll: false }));
                 if p.write_all(format!("{l}\n").as_bytes()).is_err() {
                     lost = true;
                     break;
@@ -191,6 +228,7 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
             if last_poll.elapsed() > Duration::from_millis(250) {
                 last_poll = Instant::now();
                 let _ = p.write_all(b"?");
+                emit(Evt::Traffic(ConsoleLine { dir: Dir::Tx, text: "?".into(), poll: true }));
             }
         }
         if lost {
