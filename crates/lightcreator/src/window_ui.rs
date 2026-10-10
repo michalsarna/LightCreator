@@ -1,0 +1,157 @@
+//! The application draws its own window frame: no system title bar and no rounded corners. A flat bar on top
+//! carries the icon, the title and the minimise / maximise / close buttons, and doubles as the drag handle.
+use crate::app::{App, APP_VERSION};
+use crate::theme;
+use eframe::egui::{self, Color32, CursorIcon, Id, Pos2, Rect, Sense, Stroke, ViewportCommand};
+
+const BAR_H: f32 = 32.0;
+const BTN_W: f32 = 46.0;
+/// Width of the invisible strip along the window edge that starts a resize.
+const EDGE: f32 = 5.0;
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Glyph {
+    Minimize,
+    Maximize,
+    Restore,
+    Close,
+}
+
+/// One flat button of the title bar, drawn with a few lines so it needs no font or icon.
+fn caption_button(ui: &mut egui::Ui, rect: Rect, id: &str, glyph: Glyph, tip: &str) -> bool {
+    let r = ui.interact(rect, Id::new(id), Sense::click());
+    let close = glyph == Glyph::Close;
+    if r.hovered() {
+        let fill = if close { Color32::from_rgb(0xe8, 0x11, 0x23) } else { theme::text().gamma_multiply(0.12) };
+        ui.painter().rect_filled(rect, 0.0, fill);
+    }
+    let ink = if close && r.hovered() { Color32::WHITE } else { theme::text() };
+    let st = Stroke::new(1.2, ink);
+    let c = rect.center();
+    let h = 5.0;
+    let p = ui.painter();
+    match glyph {
+        Glyph::Minimize => {
+            p.line_segment([Pos2::new(c.x - h, c.y), Pos2::new(c.x + h, c.y)], st);
+        }
+        Glyph::Maximize => {
+            p.rect_stroke(Rect::from_center_size(c, egui::vec2(2.0 * h, 2.0 * h)), 0.0, st, egui::StrokeKind::Middle);
+        }
+        Glyph::Restore => {
+            let back = Rect::from_center_size(c + egui::vec2(1.5, -1.5), egui::vec2(2.0 * h - 2.0, 2.0 * h - 2.0));
+            let front = Rect::from_center_size(c + egui::vec2(-1.0, 1.0), egui::vec2(2.0 * h - 2.0, 2.0 * h - 2.0));
+            p.rect_stroke(back, 0.0, st, egui::StrokeKind::Middle);
+            p.rect_filled(front, 0.0, if close && r.hovered() { Color32::TRANSPARENT } else { theme::panel() });
+            p.rect_stroke(front, 0.0, st, egui::StrokeKind::Middle);
+        }
+        Glyph::Close => {
+            p.line_segment([Pos2::new(c.x - h, c.y - h), Pos2::new(c.x + h, c.y + h)], st);
+            p.line_segment([Pos2::new(c.x - h, c.y + h), Pos2::new(c.x + h, c.y - h)], st);
+        }
+    }
+    r.on_hover_text(tip).clicked()
+}
+
+impl App {
+    /// The bar across the top of the window.
+    pub fn title_bar(&mut self, ui: &mut egui::Ui) {
+        let ctx = ui.ctx().clone();
+        let maximized = ctx.input(|i| i.viewport().maximized.unwrap_or(false));
+        let frame = egui::Frame::new().fill(theme::panel_dark()).stroke(Stroke::new(1.0, theme::border()));
+        egui::Panel::top("title_bar").frame(frame).exact_size(BAR_H).show(ui, |ui| {
+            let rect = ui.max_rect();
+            let drag = ui.interact(rect, Id::new("title_drag"), Sense::click_and_drag());
+            if drag.double_clicked() {
+                ctx.send_viewport_cmd(ViewportCommand::Maximized(!maximized));
+            } else if drag.drag_started_by(egui::PointerButton::Primary) {
+                ctx.send_viewport_cmd(ViewportCommand::StartDrag);
+            }
+            // Icon and title.
+            let mut x = rect.left() + 10.0;
+            if let Some(logo) = &self.logo {
+                let img = Rect::from_min_size(Pos2::new(x, rect.center().y - 9.0), egui::vec2(18.0, 18.0));
+                ui.painter().image(logo.id(), img, Rect::from_min_max(Pos2::ZERO, Pos2::new(1.0, 1.0)), Color32::WHITE);
+                x += 26.0;
+            }
+            let mut title = format!("LightCreator {APP_VERSION}");
+            if let Some(name) = self.path.as_ref().and_then(|p| p.file_name()) {
+                title.push_str(&format!("  —  {}", name.to_string_lossy()));
+            }
+            ui.painter().text(Pos2::new(x, rect.center().y), egui::Align2::LEFT_CENTER, title, egui::FontId::proportional(13.0), theme::text());
+            // Buttons on the right.
+            let btn = |n: usize| Rect::from_min_size(Pos2::new(rect.right() - BTN_W * (n as f32 + 1.0), rect.top()), egui::vec2(BTN_W, rect.height()));
+            if caption_button(ui, btn(0), "cap_close", Glyph::Close, &crate::i18n::tr("Close")) {
+                ctx.send_viewport_cmd(ViewportCommand::Close);
+            }
+            let (g, tip) = if maximized { (Glyph::Restore, "Restore") } else { (Glyph::Maximize, "Maximise") };
+            if caption_button(ui, btn(1), "cap_max", g, &crate::i18n::tr(tip)) {
+                ctx.send_viewport_cmd(ViewportCommand::Maximized(!maximized));
+            }
+            if caption_button(ui, btn(2), "cap_min", Glyph::Minimize, &crate::i18n::tr("Minimise")) {
+                ctx.send_viewport_cmd(ViewportCommand::Minimized(true));
+            }
+        });
+    }
+
+    /// Resizing by the window edges, which the missing system frame no longer offers.
+    pub fn window_edges(&mut self, ctx: &egui::Context) {
+        if ctx.input(|i| i.viewport().maximized.unwrap_or(false) || i.viewport().fullscreen.unwrap_or(false)) {
+            return;
+        }
+        let screen = ctx.content_rect();
+        // Thin outline so the flat window stays visible against the desktop.
+        ctx.layer_painter(egui::LayerId::new(egui::Order::Foreground, Id::new("window_outline")))
+            .rect_stroke(screen, 0.0, Stroke::new(1.0, theme::border()), egui::StrokeKind::Inside);
+        let Some(p) = ctx.input(|i| i.pointer.hover_pos()) else { return };
+        let (l, r, t, b) = (p.x - screen.left() < EDGE, screen.right() - p.x < EDGE, p.y - screen.top() < EDGE, screen.bottom() - p.y < EDGE);
+        use egui::ResizeDirection as D;
+        let dir = match (l, r, t, b) {
+            (true, _, true, _) => Some(D::NorthWest),
+            (_, true, true, _) => Some(D::NorthEast),
+            (true, _, _, true) => Some(D::SouthWest),
+            (_, true, _, true) => Some(D::SouthEast),
+            (true, ..) => Some(D::West),
+            (_, true, ..) => Some(D::East),
+            (_, _, true, _) => Some(D::North),
+            (_, _, _, true) => Some(D::South),
+            _ => None,
+        };
+        let Some(dir) = dir else { return };
+        ctx.set_cursor_icon(match dir {
+            D::North | D::South => CursorIcon::ResizeVertical,
+            D::East | D::West => CursorIcon::ResizeHorizontal,
+            D::NorthWest | D::SouthEast => CursorIcon::ResizeNwSe,
+            D::NorthEast | D::SouthWest => CursorIcon::ResizeNeSw,
+        });
+        #[cfg(not(target_os = "macos"))]
+        if ctx.input(|i| i.pointer.primary_pressed()) {
+            ctx.send_viewport_cmd(ViewportCommand::BeginResize(dir));
+        }
+        // macOS cannot start a system resize on a frameless window: grow or shrink from the right and bottom
+        // edges by following the pointer instead.
+        #[cfg(target_os = "macos")]
+        {
+            let id = Id::new("edge_grab");
+            if ctx.input(|i| i.pointer.primary_pressed()) && matches!(dir, D::East | D::South | D::SouthEast) {
+                let grab = egui::vec2(screen.right() - p.x, screen.bottom() - p.y);
+                ctx.data_mut(|d| d.insert_temp(id, (matches!(dir, D::East | D::SouthEast), matches!(dir, D::South | D::SouthEast), grab)));
+            }
+        }
+    }
+
+    /// Continue a resize started on the right or bottom edge (macOS).
+    #[cfg(target_os = "macos")]
+    pub fn window_edge_drag(&mut self, ctx: &egui::Context) {
+        let id = Id::new("edge_grab");
+        let Some((east, south, grab)) = ctx.data(|d| d.get_temp::<(bool, bool, egui::Vec2)>(id)) else { return };
+        let (down, pos) = ctx.input(|i| (i.pointer.primary_down(), i.pointer.latest_pos()));
+        let (Some(p), true) = (pos, down) else {
+            ctx.data_mut(|d| d.remove_temp::<(bool, bool, egui::Vec2)>(id));
+            return;
+        };
+        let size = ctx.content_rect().size();
+        let w = if east { p.x + grab.x } else { size.x };
+        let h = if south { p.y + grab.y } else { size.y };
+        ctx.send_viewport_cmd(ViewportCommand::InnerSize(egui::vec2(w.max(900.0), h.max(560.0))));
+    }
+}

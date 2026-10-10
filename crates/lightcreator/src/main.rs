@@ -30,6 +30,7 @@ mod stream_ui;
 mod screenshots;
 mod theme;
 mod units_ui;
+mod window_ui;
 
 const ICON_256: &[u8] = include_bytes!("../../../assets/icons/icon-256.png");
 const ICON_512: &[u8] = include_bytes!("../../../assets/icons/icon-512.png");
@@ -52,7 +53,9 @@ fn main() -> eframe::Result {
         .with_title(format!("LightCreator {}", app::APP_VERSION))
         .with_app_id("lightcreator")
         .with_inner_size([1360.0, 860.0])
-        .with_min_inner_size([900.0, 560.0]);
+        .with_min_inner_size([900.0, 560.0])
+        // The application draws its own flat, square frame (see window_ui.rs).
+        .with_decorations(false);
     if let Some(icon) = window_icon() {
         viewport = viewport.with_icon(icon);
     }

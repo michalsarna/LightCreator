@@ -157,6 +157,8 @@ pub fn apply(ctx: &egui::Context, scheme: Scheme) {
     v.faint_bg_color = p.panel_dark;
     v.override_text_color = Some(p.text);
     v.window_stroke = Stroke::new(1.0, p.border);
+    v.window_corner_radius = CornerRadius::ZERO;
+    v.menu_corner_radius = CornerRadius::ZERO;
     v.selection.bg_fill = accent.gamma_multiply(0.35);
     v.selection.stroke = Stroke::new(1.0, accent);
     v.hyperlink_color = accent;

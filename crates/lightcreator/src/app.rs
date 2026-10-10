@@ -1406,6 +1406,10 @@ impl App {
         }
         #[cfg(target_os = "macos")]
         self.native_menu_frame(&ctx);
+        self.title_bar(ui);
+        self.window_edges(&ctx);
+        #[cfg(target_os = "macos")]
+        self.window_edge_drag(&ctx);
         if self.screen == Screen::Start {
             self.start_screen(ui);
             self.dialogs(&ctx);

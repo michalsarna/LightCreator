@@ -130,6 +130,9 @@
 **Interface**
 * Side panel with four tabs: Properties, Cuts / Layers, Device and Console (live view of everything sent to and
   received from the serial port, with status polling hidden by default).
+* **Own window frame:** no system title bar and no rounded corners. A flat bar at the top shows the icon, the
+  title (with the open file) and modern minimise / maximise / close buttons; drag it to move the window, double-click
+  to maximise, and resize from the window edges.
 * Native macOS menu bar; in-window menu on Windows and Linux.
 * Languages: English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी.
 * Colour schemes: Dark, Light Dark, Medium Light, Light.
