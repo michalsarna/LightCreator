@@ -311,6 +311,7 @@ const TABLE: &[[&str; 7]] = &[
     ["Alignment", "Wyrównanie", "Ausrichtung", "Allineamento", "Tasaus", "对齐", "संरेखण"],
     ["Fold up", "Zwiń", "Zuklappen", "Comprimi", "Pienennä ryhmä", "折叠", "समेटें"],
     ["Unfold", "Rozwiń", "Aufklappen", "Espandi", "Laajenna", "展开", "फैलाएँ"],
+    ["Time", "Czas", "Zeit", "Tempo", "Aika", "时间", "समय"],
     ["Units", "Jednostki", "Einheiten", "Unità", "Yksiköt", "单位", "इकाइयाँ"],
     ["Millimetres (mm)", "Milimetry (mm)", "Millimeter (mm)", "Millimetri (mm)", "Millimetrit (mm)", "毫米 (mm)", "मिलीमीटर (mm)"],
     ["Inches (in)", "Cale (in)", "Zoll (in)", "Pollici (in)", "Tuumat (in)", "英寸 (in)", "इंच (in)"],
