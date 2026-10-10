@@ -98,7 +98,10 @@
   pause / resume, stop, framing, progress.
 * **Ruida** and **Trocen** jobs are exported as HPGL / DXF with one pen or layer per colour, to be opened in the
   controller's own software (for example RDWorks). Fill is exported as hatch lines, raster images are skipped.
-* Per-device display units: millimetres or inches (stored geometry stays in millimetres).
+* Per-device display units: millimetres or inches (stored geometry stays in millimetres) and, separately, speeds
+  per second or per minute (mm/s, mm/min, in/s, in/min). This applies to layer speed, travel speed, jog feed and the
+  material list; values are converted automatically and the G-code always carries the mm/min feed that GRBL and Marlin
+  expect after `G21`.
 * The editor cannot be opened until at least one device profile exists.
 
 **Clipart gallery**

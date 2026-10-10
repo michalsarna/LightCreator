@@ -288,6 +288,9 @@ const TABLE: &[[&str; 7]] = &[
     ["Switch device…", "Zmień urządzenie…", "Gerät wechseln…", "Cambia dispositivo…", "Vaihda laitetta…", "切换设备…", "डिवाइस बदलें…"],
     ["Device: {}", "Urządzenie: {}", "Gerät: {}", "Dispositivo: {}", "Laite: {}", "设备：{}", "डिवाइस: {}"],
     // ---- units, tabs, console ----
+    ["Speed units", "Jednostki prędkości", "Geschwindigkeitseinheiten", "Unità di velocità", "Nopeuden yksikkö", "速度单位", "गति की इकाई"],
+    ["Per second (mm/s, in/s)", "Na sekundę (mm/s, in/s)", "Pro Sekunde (mm/s, in/s)", "Al secondo (mm/s, in/s)", "Sekunnissa (mm/s, in/s)", "每秒 (mm/s, in/s)", "प्रति सेकंड (mm/s, in/s)"],
+    ["Per minute (mm/min, in/min)", "Na minutę (mm/min, in/min)", "Pro Minute (mm/min, in/min)", "Al minuto (mm/min, in/min)", "Minuutissa (mm/min, in/min)", "每分钟 (mm/min, in/min)", "प्रति मिनट (mm/min, in/min)"],
     ["Units", "Jednostki", "Einheiten", "Unità", "Yksiköt", "单位", "इकाइयाँ"],
     ["Millimetres (mm)", "Milimetry (mm)", "Millimeter (mm)", "Millimetri (mm)", "Millimetrit (mm)", "毫米 (mm)", "मिलीमीटर (mm)"],
     ["Inches (in)", "Cale (in)", "Zoll (in)", "Pollici (in)", "Tuumat (in)", "英寸 (in)", "इंच (in)"],
