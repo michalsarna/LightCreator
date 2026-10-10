@@ -2,6 +2,40 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.0.7
+
+**Window and bars**
+* Own flat, square window frame with a title bar and minimise / maximise / close buttons (no system frame).
+* New control bar: tool name in a fixed-width box, New / Open / Save, grid, secondary grid and snap icons, green / grey
+  Toolpaths button, Preview and Camera view buttons that turn light blue while their window is open and close it when
+  pressed again, Overlay button after Camera view. START / STOP in capitals; Start and Frame need a connected laser.
+* **File > Open recent** with the last 10 files.
+* **Arrange bar** between the work area and the side panel: align, centre, turn, mirror, group, lock and order as icons.
+  Union, intersection, subtract and exclusive or on the tool bar. Double chevrons show when more icons are out of sight.
+* Arrange menu regrouped (curve editing together, "Round corners…" with it; Adjust and Trace image apart), wider menus,
+  new icons for node editing and trace image, "Centre on each other".
+
+**Panels**
+* Properties laid out as a table with titled sections and icon buttons of one size; Layers tab with the note on top,
+  switch headings (output, visible, air pump) and the layer colour in the settings title; image settings only for
+  layers that hold bitmaps.
+* **Air assist** per layer (M8 / M9 for GRBL, fan commands for Marlin).
+* Layer speeds are kept per device: default 1000 mm/min for every layer, saved in the device profile.
+* Speed units per device: per second or per minute, millimetres or inches, converted automatically.
+* Device tab: jog arrows, Home, Unlock, Pause and Resume as large icon buttons, orange cancel-jog, full-width STOP,
+  frame power with the other jog options, properties in full width. Console output has its own background.
+* Clipart categories fold up with an arrow on their title line.
+
+**Preview and camera**
+* The preview opens zoomed to the objects to burn; fit icons in its title line; slimmer window titles.
+* Camera view: zoom in / out, drag, default zoom, icons for floating / separate window / tab, no address shown.
+* The Start button turns into STOP while a job runs, and Frame is disabled meanwhile.
+* Toolpaths on the work area are drawn in higher contrast.
+
+**Documentation**
+* Screenshots moved to their own page (`docs/SCREENSHOTS.md`) and re-rendered; wiki and quick guide updated.
+* A test keeps the version in `app.rs`, `Cargo.toml`, `VERSIONS.md` and `SECURITY.md` in sync.
+
 ## v0.0.6
 
 **Release packages**

@@ -149,8 +149,8 @@
   and Help > Project page on GitHub opens the repository.
 
 **Interface**
-* Side panel with four tabs: Properties, Cuts / Layers, Device and Console (live view of everything sent to and
-  received from the serial port, with status polling hidden by default).
+* Side panel with tabs for Properties, Layers, Device, Console (live view of everything sent to and received from
+  the serial port, with status polling hidden by default), Clipart and, when a camera is set, Camera view.
 * **Own window frame:** no system title bar and no rounded corners. A flat bar at the top shows the icon, the
   title (with the open file) and modern minimise / maximise / close buttons; drag it to move the window, double-click
   to maximise, and resize from the window edges.

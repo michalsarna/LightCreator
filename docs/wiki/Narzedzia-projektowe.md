@@ -8,7 +8,7 @@
 * Narzędzia: prostokąt, elipsa, linia, linia łamana i tekst; zaznaczanie, przesuwanie i skalowanie uchwytami.
 * **Kształty automatyczne:** trójkąt (Y), pięcioramienna gwiazda (S), wielokąt foremny (G, od 3 do 360 boków wybieranych w okienku) i serce (K). Przeciągnij ramkę (Shift utrzymuje kwadrat); wynik to zwykły edytowalny kształt Béziera.
   ![Kształty](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/16-shapes.png)
-* **Grupy na pasku narzędzi:** zaznaczanie / edycja węzłów, narzędzia wstawiania, nawigacja, rozdzielone liniami.
+* **Grupy na pasku narzędzi:** zaznaczanie / edycja węzłów, narzędzia wstawiania, operacje na kształtach (suma, część wspólna, odejmowanie, różnica symetryczna), nawigacja, rozdzielone liniami. Podwójna strzałka na brzegu paska oznacza, że dalsze ikony są poza widokiem: przewiń, by je zobaczyć.
 
 ## Edycja węzłów (N)
 Przeciągaj węzły i uchwyty, przełączaj węzeł narożny / gładki, wstawiaj (dwuklik na segmencie) i usuwaj węzły, zamieniaj segmenty na linie lub krzywe, otwieraj i zamykaj ścieżki. Otworzysz ją drugim narzędziem, przez *Arrange → Edit nodes*, menu prawego przycisku lub dwukliknięciem kształtu. Cliparty edytuje się tak samo. Tekst nie jest zamieniany automatycznie: najpierw użyj *Convert to curves*.
@@ -22,7 +22,8 @@ Tekst na żywo z czcionek systemowych (wyszukiwanie rodziny, pogrubienie, kursyw
 * **Offset:** powiększanie lub zmniejszanie konturów z zachowaniem albo zastąpieniem oryginału.
 * **Zaokrąglanie rogów:** *Arrange → Round corners…* zaokrągla ostre proste narożniki zadanym promieniem; przy dwóch zaznaczonych liniach łączy je łukiem. W narzędziu węzłów pasek zaokrągla tylko zaznaczone narożniki.
   ![Zaokrąglanie](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/23-rounded-shapes.png)
-* Numeryczna pozycja i rozmiar, obrót, odbicie, wyrównanie, środek stołu, tablica siatki, kopiuj / wklej / powiel.
+* Numeryczna pozycja i rozmiar, obrót, odbicie, wyrównanie, środek stołu, **wyśrodkowanie względem siebie** (środki zaznaczonych obiektów, grupa liczy się jako jeden, trafiają w jeden punkt), tablica siatki, kopiuj / wklej / powiel.
+* **Pasek wyrównania:** wąski pasek ikon między obszarem roboczym a panelem bocznym z poleceniami wyrównania, środkowania, obrotu, odbicia, grupowania, blokowania i kolejności dla zaznaczenia (nazwy w podpowiedziach). Menu *Arrange* ma te same polecenia; edycja krzywych (węzły, konwersja, zaokrąglanie rogów) jest razem, a *Adjust image* / *Trace image* osobno.
 * **Grupowanie** (Ctrl+G) i **blokowanie** (Ctrl+L). Zablokowanych obiektów nie da się przesunąć, edytować ani usunąć, ale można je zaznaczyć i skopiować (kopia jest odblokowana).
 
 ## Zaznaczanie

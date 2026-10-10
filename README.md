@@ -56,7 +56,8 @@ A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
   four-corner alignment.
 * **Preview:** separate preview window with every burn operation in its own colour, optional travel moves and a
   simulation slider; layers can be reordered to change the burn order.
-* **Interface:** native menu bar on macOS, in-window menu on Windows and Linux, seven languages
+* **Interface:** flat, square window frame with its own title bar, icon control bar and arrange bar, recent files,
+  native menu bar on macOS, in-window menu on Windows and Linux, seven languages
   (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी) and four colour schemes.
 
 ### What has and has not been verified
