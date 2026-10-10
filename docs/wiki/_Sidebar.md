@@ -1,0 +1,31 @@
+**🌐 [English](Home) · [Polski](Home-PL)**
+
+### English
+* [🏠 Home](Home)
+* [Installation](Installation)
+* [Quick Start](Quick-Start)
+* [Design Tools](Design-Tools)
+* [Cuts and Layers](Cuts-and-Layers)
+* [Devices and Controllers](Devices-and-Controllers)
+* [Clipart Gallery](Clipart-Gallery)
+* [Keyboard Shortcuts](Keyboard-Shortcuts)
+* [Settings and Files](Settings-and-Files)
+* [Architecture](Architecture)
+* [GRBL Simulator](GRBL-Simulator)
+* [Safety and Limitations](Safety-and-Limitations)
+* [Support](Support)
+
+### Polski
+* [🏠 Strona główna](Home-PL)
+* [Instalacja](Instalacja)
+* [Szybki start](Szybki-start)
+* [Narzędzia projektowe](Narzedzia-projektowe)
+* [Cięcia i warstwy](Ciecia-i-warstwy)
+* [Urządzenia i sterowniki](Urzadzenia-i-sterowniki)
+* [Galeria clipartów](Galeria-clipartow)
+* [Skróty klawiszowe](Skroty-klawiszowe)
+* [Ustawienia i pliki](Ustawienia-i-pliki)
+* [Architektura](Architektura)
+* [Symulator GRBL](Symulator-GRBL)
+* [Bezpieczeństwo i ograniczenia](Bezpieczenstwo-i-ograniczenia)
+* [Wsparcie](Wsparcie)

@@ -1,0 +1,1 @@
+LightCreator · MIT · [GitHub](https://github.com/michalsarna/LightCreator) · [Issues](https://github.com/michalsarna/LightCreator/issues) · [☕ Buy me a coffee](https://buymeacoffee.com/michalsarna) · Polska wersja / Polish: [Home-PL](Home-PL)
