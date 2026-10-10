@@ -30,7 +30,10 @@
   adjust and trace for images).
 * Undo / redo, snap to grid, rulers, zoom and pan, drag and drop of files.
 * **Tool bar groups:** selecting and node editing, then the tools that insert new objects (shapes, line,
-  polyline, text), then view navigation, each group set apart by a separator.
+  polyline, text), then the shape operations (union, intersection, subtract, exclusive or) and finally view
+  navigation, each group set apart by a separator.
+* **Arrange bar:** a narrow icon strip between the work area and the side panel with align, centre, turn, mirror,
+  group / lock and order commands for the selection (hover for the names).
 * The node-editing bar on the canvas hides when you click another window such as the preview, and comes back when
   you click the work area again.
 * **Navigation:** pan, zoom in and zoom out sit in their own group under the drawing tools, together with two

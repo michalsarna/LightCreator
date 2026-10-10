@@ -181,5 +181,7 @@ pub fn apply(ctx: &egui::Context, scheme: Scheme) {
         s.spacing.item_spacing = egui::vec2(6.0, 5.0);
         s.spacing.button_padding = egui::vec2(8.0, 3.0);
         s.spacing.interact_size.y = 22.0;
+        // Wide enough that menu entries are not cut short with an ellipsis.
+        s.spacing.menu_width = 280.0;
     });
 }

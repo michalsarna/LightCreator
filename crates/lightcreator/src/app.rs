@@ -1200,6 +1200,26 @@ impl App {
             for (t, tip, _) in Tool::ALL.into_iter().filter(|t| !t.0.is_edit() && !t.0.is_nav()) {
                 self.tool_button(ui, t, tip);
             }
+            // Shape operations on the selected objects.
+            ui.add_space(4.0);
+            ui.separator();
+            ui.add_space(4.0);
+            let multi = self.sel.len() >= 2;
+            let mut op = None;
+            for (a, icon, tip) in [
+                (Act::BoolUnion, "squares-unite", "Union"),
+                (Act::BoolIntersect, "squares-intersect", "Intersection"),
+                (Act::BoolSubtract, "squares-subtract", "Subtract"),
+                (Act::BoolXor, "squares-exclude", "Exclusive or"),
+            ] {
+                if icon_button(ui, icon, &tr(tip), multi, 36.0) {
+                    op = Some(a);
+                }
+            }
+            if let Some(a) = op {
+                let ctx = ui.ctx().clone();
+                self.do_act(&ctx, a);
+            }
             // View navigation, apart from the rest.
             ui.add_space(4.0);
             ui.separator();
@@ -1214,8 +1234,7 @@ impl App {
                 if resp.hovered() {
                     ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
                 }
-                let on = a == Act::FitBed && self.view.auto_fit;
-                crate::icons::paint(ui, rect.shrink(7.0), icon, if on { theme::accent() } else { ink });
+                crate::icons::paint(ui, rect.shrink(7.0), icon, ink);
                 if resp.on_hover_text(tr(tip)).clicked() {
                     act = Some(a);
                 }
@@ -1226,6 +1245,65 @@ impl App {
                 self.do_act(&ctx, a);
             }
         }));
+    }
+
+    /// Narrow strip between the work area and the side panel: align, turn, mirror and group the selection.
+    fn arrange_bar(&mut self, ui: &mut egui::Ui) {
+        let has_sel = !self.sel.is_empty();
+        let any_unlocked = self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| !s.locked));
+        let any_locked = self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.locked));
+        let grouped = self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.group.is_some()));
+        let multi = self.sel.len() >= 2;
+        let _ = has_sel;
+        let sections: [Vec<(Act, bool, &str)>; 4] = [
+            vec![
+                (Act::Align(0), any_unlocked, "Align left"),
+                (Act::Align(1), any_unlocked, "Align centre (H)"),
+                (Act::Align(2), any_unlocked, "Align right"),
+                (Act::Align(3), any_unlocked, "Align top"),
+                (Act::Align(4), any_unlocked, "Align centre (V)"),
+                (Act::Align(5), any_unlocked, "Align bottom"),
+                (Act::CenterOnBed, any_unlocked, "Centre on bed"),
+                (Act::CenterEachOther, multi, "Centre on each other"),
+            ],
+            vec![
+                (Act::RotCcw, any_unlocked, "Rotate 90° CCW"),
+                (Act::RotCw, any_unlocked, "Rotate 90° CW"),
+                (Act::FlipH, any_unlocked, "Flip horizontal"),
+                (Act::FlipV, any_unlocked, "Flip vertical"),
+            ],
+            vec![
+                (Act::Group, multi, "Group"),
+                (Act::Ungroup, grouped, "Ungroup"),
+                (Act::Lock, any_unlocked, "Lock"),
+                (Act::Unlock, any_locked, "Unlock"),
+            ],
+            vec![(Act::ToFront, any_unlocked, "Bring to front"), (Act::ToBack, any_unlocked, "Send to back")],
+        ];
+        let mut chosen = None;
+        egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
+            ui.add_space(6.0);
+            for (i, section) in sections.iter().enumerate() {
+                if i > 0 {
+                    ui.add_space(2.0);
+                    ui.separator();
+                    ui.add_space(2.0);
+                }
+                ui.horizontal_wrapped(|ui| {
+                    ui.spacing_mut().item_spacing = egui::vec2(2.0, 2.0);
+                    for (act, on, tip) in section {
+                        let icon = crate::icons::act_icon(*act).unwrap_or("shapes");
+                        if icon_button(ui, icon, &tr(tip), *on, 28.0) {
+                            chosen = Some(*act);
+                        }
+                    }
+                });
+            }
+        });
+        if let Some(a) = chosen {
+            let ctx = ui.ctx().clone();
+            self.do_act(&ctx, a);
+        }
     }
 
     fn tool_button(&mut self, ui: &mut egui::Ui, t: Tool, tip: &'static str) {
@@ -1434,6 +1512,20 @@ impl eframe::App for App {
     }
 }
 
+/// A square icon-only button with a tooltip; greyed out and inert when `on` is false.
+fn icon_button(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool, size: f32) -> bool {
+    let sense = if on { egui::Sense::click() } else { egui::Sense::hover() };
+    let (rect, resp) = ui.allocate_exact_size(egui::vec2(size, size), sense);
+    if on && resp.hovered() {
+        ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
+    }
+    let ink = if on { theme::text() } else { theme::text().gamma_multiply(0.35) };
+    crate::icons::paint(ui, rect.shrink(size * 0.2), icon, ink);
+    let resp = resp.on_hover_text(tip);
+    ui.add_space(2.0);
+    on && resp.clicked()
+}
+
 impl App {
     /// Draw one frame of the whole application into `ui`.
     pub fn draw(&mut self, ui: &mut egui::Ui) {
@@ -1479,6 +1571,7 @@ impl App {
         egui::Panel::bottom("swatches").frame(chrome).exact_size(36.0).show(ui, |ui| self.swatches(ui));
         egui::Panel::left("tools").frame(chrome).exact_size(52.0).resizable(false).show(ui, |ui| self.tool_bar(ui));
         egui::Panel::right("side").frame(chrome.inner_margin(egui::Margin::same(8))).default_size(330.0).show(ui, |ui| self.side_panel(ui));
+        egui::Panel::right("arrange_bar").frame(chrome.inner_margin(egui::Margin::symmetric(3, 4))).exact_size(76.0).resizable(false).show(ui, |ui| self.arrange_bar(ui));
         egui::CentralPanel::no_frame().show(ui, |ui| self.canvas(ui));
         self.dialogs(&ctx);
         if self.connected || self.progress.0 < self.progress.1 {
