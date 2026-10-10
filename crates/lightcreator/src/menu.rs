@@ -70,6 +70,7 @@ pub enum Act {
     MaterialLibrary,
     CameraOverlay,
     GridOptions,
+    ProgramOptions,
     PreviewWindow,
     CameraView,
     ShareSer2net,
@@ -228,6 +229,7 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
             "Settings",
             vec![
                 Item(Act::GridOptions, "View options…", None),
+                Item(Act::ProgramOptions, "Program options…", None),
                 Sep,
                 Sub("Language", Lang::ALL.iter().map(|l| Item(Act::SetLang(*l), l.name(), None)).collect()),
                 Sub("Colour scheme", Scheme::ALL.iter().map(|s| Item(Act::SetScheme(*s), s.label(), None)).collect()),

@@ -127,7 +127,10 @@ impl NativeMenu {
         let _ = app.append(&PredefinedMenuItem::hide_others(None));
         let _ = app.append(&PredefinedMenuItem::show_all(None));
         let _ = app.append(&PredefinedMenuItem::separator());
-        let _ = app.append(&PredefinedMenuItem::quit(None));
+        // Our own Quit item, so closing asks about unsaved work first.
+        let quit = MenuItem::with_id(id(Act::Quit), tr("Quit"), true, "CmdOrCtrl+Q".parse::<Accelerator>().ok());
+        let _ = app.append(&quit);
+        items.push((Act::Quit, Handle::Plain(quit)));
         let _ = menu.append(&app);
         let mut recent_sub = None;
         for (title, entries) in menus() {

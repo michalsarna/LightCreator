@@ -81,7 +81,7 @@ impl App {
             // Buttons on the right.
             let btn = |n: usize| Rect::from_min_size(Pos2::new(rect.right() - BTN_W * (n as f32 + 1.0), rect.top()), egui::vec2(BTN_W, rect.height()));
             if caption_button(ui, btn(0), "cap_close", Glyph::Close, &crate::i18n::tr("Close")) {
-                ctx.send_viewport_cmd(ViewportCommand::Close);
+                self.request_close(&ctx);
             }
             let (g, tip) = if maximized { (Glyph::Restore, "Restore") } else { (Glyph::Maximize, "Maximise") };
             if caption_button(ui, btn(1), "cap_max", g, &crate::i18n::tr(tip)) {

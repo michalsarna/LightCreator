@@ -111,6 +111,17 @@ pub struct App {
     pub recent: Vec<PathBuf>,
     pub status: String,
     pub revision: u64,
+    /// Revision at the last save by hand (or open / new), and at the last auto-save.
+    pub saved_revision: u64,
+    pub autosaved_revision: u64,
+    pub autosave_on: bool,
+    pub autosave_secs: u32,
+    pub last_autosave: std::time::Instant,
+    /// A short message (text, until when) such as "file saved".
+    pub toast: Option<(String, std::time::Instant)>,
+    pub show_close_dlg: bool,
+    pub allow_close: bool,
+    pub show_options: bool,
     pub show_grid: bool,
     pub snap: bool,
     pub grid: f64,
@@ -252,6 +263,15 @@ impl App {
             recent: saved("recent_files").and_then(|j| serde_json::from_str::<Vec<PathBuf>>(&j).ok()).unwrap_or_default().into_iter().take(crate::menu::MAX_RECENT).collect(),
             status: tr("Ready").into(),
             revision: 0,
+            saved_revision: 0,
+            autosaved_revision: 0,
+            autosave_on: saved("autosave_on").map(|v| v != "0").unwrap_or(true),
+            autosave_secs: saved("autosave_secs").and_then(|v| v.parse().ok()).filter(|v| (10..=3600).contains(v)).unwrap_or(crate::session_ui::DEFAULT_AUTOSAVE_SECS),
+            last_autosave: std::time::Instant::now(),
+            toast: None,
+            show_close_dlg: false,
+            allow_close: false,
+            show_options: false,
             show_grid,
             snap: false,
             grid,
@@ -566,6 +586,7 @@ impl App {
         self.sel.clear();
         self.path = None;
         self.touch();
+        self.mark_saved();
         self.view.need_fit = true;
     }
     pub fn open(&mut self) {
@@ -601,6 +622,7 @@ impl App {
                 self.add_recent(&p);
                 self.path = Some(p);
                 self.touch();
+                self.mark_saved();
                 self.view.need_fit = true;
             }
             Err(e) => self.status = trf("Open failed: {}", &[&e]),
@@ -616,8 +638,11 @@ impl App {
             match std::fs::write(&p, self.doc.to_json()) {
                 Ok(_) => {
                     self.status = trf("Saved {}", &[&p.display()]);
+                    let name = p.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
+                    self.toast(trf("File saved: {}", &[&name]));
                     self.add_recent(&p);
                     self.path = Some(p);
+                    self.mark_saved();
                 }
                 Err(e) => self.status = trf("Save failed: {}", &[&e]),
             }
@@ -939,7 +964,7 @@ impl App {
             Act::ExportSvg => self.export_svg(),
             Act::ExportGcode => self.export_gcode(),
             Act::ExportCam => self.export_cam(),
-            Act::Quit => ctx.send_viewport_cmd(egui::ViewportCommand::Close),
+            Act::Quit => self.request_close(ctx),
             Act::Undo => self.do_undo(),
             Act::Redo => self.do_redo(),
             Act::Copy => self.copy(),
@@ -981,6 +1006,7 @@ impl App {
             Act::ImportImage => self.import_image(),
             Act::CameraOverlay => self.show_overlay = true,
             Act::GridOptions => self.show_prefs = true,
+            Act::ProgramOptions => self.show_options = true,
             Act::PreviewWindow => self.show_preview = true,
             Act::ShareSer2net => self.open_ser2net(),
             Act::ToggleOverlay => {
@@ -1552,6 +1578,8 @@ impl eframe::App for App {
             storage.set_string("profiles", j);
         }
         storage.set_string("active_profile", self.active.to_string());
+        storage.set_string("autosave_on", if self.autosave_on { "1" } else { "0" }.into());
+        storage.set_string("autosave_secs", self.autosave_secs.to_string());
         if let Ok(j) = serde_json::to_string(&self.recent) {
             storage.set_string("recent_files", j);
         }
@@ -1638,6 +1666,7 @@ impl App {
         self.native_menu_frame(&ctx);
         self.title_bar(ui);
         self.window_edges(&ctx);
+        self.session_tick(&ctx);
         #[cfg(target_os = "macos")]
         self.window_edge_drag(&ctx);
         if self.screen == Screen::Start {

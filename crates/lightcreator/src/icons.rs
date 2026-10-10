@@ -152,6 +152,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::StartJob => "play",
         Act::ShareSer2net => "wifi",
         Act::GridOptions => "sliders-horizontal",
+        Act::ProgramOptions => "settings",
         Act::About => "info",
         Act::TraceImage => "portrait",
         Act::AdjustImage => "sliders-horizontal",
