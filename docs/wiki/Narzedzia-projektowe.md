@@ -6,7 +6,7 @@
 
 ## Rysowanie
 * Narzędzia: prostokąt, elipsa, linia, linia łamana i tekst; zaznaczanie, przesuwanie i skalowanie uchwytami.
-* **Kształty automatyczne:** trójkąt (Y), pięcioramienna gwiazda (S), wielokąt foremny (G, od 3 do 360 boków wybieranych w okienku) i serce (K). Przeciągnij ramkę (Shift utrzymuje kwadrat); wynik to zwykły edytowalny kształt Béziera.
+* **Kształty automatyczne:** trójkąt (Y), pięcioramienna gwiazda (S), wielokąt foremny (G, od 3 do 360 boków wybieranych w okienku) serce (K) i spirala (I). Przeciągnij ramkę (Shift utrzymuje kwadrat); wynik to zwykły edytowalny kształt Béziera. Małe okno w rogu obszaru roboczego ustawia liczbę boków lub zwojów (domyślnie 3); nie ma przycisku OK i zostaje, dopóki narzędzie jest aktywne; wielokąt ma suwak od 5 do 36 boków, a spirala od 1 do 24 zwojów, obok pola liczby (3 do 360 i 1 do 30), a zmiana zmienia też ostatnio narysowany kształt.
   ![Kształty](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/16-shapes.png)
 * **Grupy na pasku narzędzi:** zaznaczanie / edycja węzłów, narzędzia wstawiania, operacje na kształtach (suma, część wspólna, odejmowanie, różnica symetryczna), nawigacja, rozdzielone liniami. Podwójna strzałka na brzegu paska oznacza, że dalsze ikony są poza widokiem: przewiń, by je zobaczyć.
 
@@ -27,6 +27,8 @@ Tekst na żywo z czcionek systemowych (wyszukiwanie rodziny, pogrubienie, kursyw
 * **Grupowanie** (Ctrl+G) i **blokowanie** (Ctrl+L). Zablokowanych obiektów nie da się przesunąć, edytować ani usunąć, ale można je zaznaczyć i skopiować (kopia jest odblokowana).
 
 ## Zaznaczanie
+Kwadratowe uchwyty wokół zaznaczenia zmieniają rozmiar. **Kliknij uchwyt** (bez przeciągania), a zamienią się w okrągłe uchwyty narożne, które obracają zaznaczenie wokół jego środka (Shift: co 15°), i rombowe uchwyty krawędzi, które pochylają je wzdłuż tej krawędzi; ponowne kliknięcie uchwytu wraca do zmiany rozmiaru.
+
 Ramka z lewej do prawej: tylko obiekty w całości w środku. Z prawej do lewej: wszystko, czego dotyka. Shift+klik dodaje. Dwukrotne Escape wraca do narzędzia zaznaczania. Menu prawego przycisku zawiera najczęstsze polecenia.
 
 ## Widok i nawigacja

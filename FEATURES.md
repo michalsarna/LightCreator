@@ -2,8 +2,11 @@
 
 **Design**
 * Rectangle, ellipse, line, polyline and text tools; select, move and resize with handles.
-* **Automatic shapes:** triangle (Y), five-pointed star (S), regular polygon (G) and heart (K). The polygon tool opens a
-  popup to choose the number of sides, 3 to 360. Shapes are drawn by dragging a box (Shift keeps it square)
+* **Automatic shapes:** triangle (Y), five-pointed star (S), regular polygon (G), heart (K) and spiral (I). The polygon
+  tool opens a small window to choose the number of sides, 3 to 360, and the spiral tool one for the number of turns
+  (3 by default). The window sits in the corner of the work area, has no OK button and stays while the tool is
+  active; the polygon offers a slider from 5 to 36 sides and the spiral one from 1 to 24 turns next to the number box (3 to 360 and 1 to 30), and a change also
+  applies to the shape drawn last. Shapes are drawn by dragging a box (Shift keeps it square)
   and are ordinary editable Bézier shapes.
 * **Node editing (N):** drag nodes and Bézier handles, corner / smooth nodes, insert (double-click a segment) and
   delete nodes, turn segments into lines or curves, open and close paths. Any shape converts to curves.
@@ -23,6 +26,10 @@
   own group.
 * **Locking:** lock objects or groups (Ctrl+L, Ctrl+Shift+L to unlock). Locked objects cannot be moved,
   edited or deleted but can be selected and copied; the copy is not locked. A padlock marks them.
+* **Resize, turn and slant:** the square handles around a selection resize it. Click a handle (without dragging) and
+  they turn into round corner handles that rotate the selection about its middle (Shift snaps to 15°) and diamond
+  edge handles that slant it along that edge; click a handle again to go back to resizing. The selection frame and
+  handles are red while they resize and blue while they turn and slant.
 * **Selection rectangle:** dragged from left to right it selects only objects (and groups) wholly inside;
   dragged from right to left it also selects everything it touches. Pressing Escape twice returns to the
   select tool.
@@ -56,6 +63,9 @@
   white in the light ones, or your own) and the thickness of the drawn lines.
 
 **Files**
+* **Saving:** a "File saved" message appears for 5 seconds after saving by hand. Auto-save (Settings → Program options…,
+  every 120 s by default) writes work without a file name to a temporary folder and a named file in place. Closing
+  with unsaved work asks: Save, Discard (also deletes the temporary file) or Cancel.
 * **Open recent** (File menu, under Open): the last 10 projects and SVG files you opened or saved, newest first, kept
   between sessions; "Clear list" empties it and a file that no longer exists is dropped when picked.
 * **Import** submenu: SVG (curves are kept as Béziers; colours map to layers), bitmaps (PNG, JPEG, BMP, GIF,
@@ -86,7 +96,9 @@
   Layers tab opens the layer options window (name, mode, speed, power, passes, fill and image settings). New layers start at 100 % power and 1000 mm/min; the speed of each layer is kept in the device profile (a speed you type for a layer becomes that layer's default for the device and for new documents).
 * The **Layers** tab lists layers in burn order; move them up or down to change the order. The Properties tab
   shows the colour of the selected object's layer.
-* **Preview window:** the whole job with each burn operation (layer, fill, line, offset, image, pass) in its own
+* **Preview window:** playback starts at ×10; the bottom line shows the real job time at the slider position out of
+  the total; the play / pause button has a fixed width.
+* **Preview window (details):** the whole job with each burn operation (layer, fill, line, offset, image, pass) in its own
   colour or in the layer colour, per-operation switches, optional travel moves with the laser off, the machine
   zero marked at its real corner, and smooth time-based playback (the totals are shown under the picture) (15 s fit, real time, ×10 to ×200) with a scrub slider. The view opens zoomed to the objects to burn; the "Fit all objects" and "Fit work area" buttons switch between that and the whole work area.
 
@@ -96,6 +108,8 @@
   machine zero, S-value max, travel speed, baud rate, serial port, jog step and feed, frame power and the
   camera alignment. The device configuration window groups the options into Device, Connection (serial port or TCP) and
   Camera; the Device tab selects a device and shows all its settings.
+* **While a job runs** the Device tab locks jog, cancel jog, home, unlock and the jog options; pause, resume and STOP
+  stay. Connect is green and Disconnect purple.
 * **Read from device:** the device configuration window can connect and read work area, S-value max, travel
   speed and laser mode from GRBL (and the feed rate from Marlin).
 * **TCP link:** a device can connect through the network instead of a serial port, for example to `ser2net` on

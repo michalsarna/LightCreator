@@ -33,6 +33,8 @@ name = "LightCreator"
 identifier = "io.github.michalsarna.lightcreator"
 icon = ["../../assets/icons/icon-256.png", "../../assets/icons/icon-512.png"]
 short_description = "Open-source laser engraver / cutter design and control software"
+osx_minimum_system_version = "11.0"
+osx_info_plist_exts = ["../../packaging/macos/camera-usage.plist"]
 
 [package.metadata.deb]
 name = "lightcreator"

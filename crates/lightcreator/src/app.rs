@@ -17,6 +17,7 @@ pub enum Tool {
     Star,
     Polygon,
     Heart,
+    Spiral,
     Line,
     Pen,
     Text,
@@ -26,7 +27,7 @@ pub enum Tool {
 }
 
 impl Tool {
-    pub const ALL: [(Tool, &'static str, Key); 14] = [
+    pub const ALL: [(Tool, &'static str, Key); 15] = [
         (Tool::Select, "Select (V)", Key::V),
         (Tool::Node, "Node edit (N)", Key::N),
         (Tool::Rect, "Rectangle (R)", Key::R),
@@ -35,6 +36,7 @@ impl Tool {
         (Tool::Star, "Star (S)", Key::S),
         (Tool::Polygon, "Polygon (G)", Key::G),
         (Tool::Heart, "Heart (K)", Key::K),
+        (Tool::Spiral, "Spiral (I)", Key::I),
         (Tool::Line, "Line (L)", Key::L),
         (Tool::Pen, "Polyline / pen (P)", Key::P),
         (Tool::Text, "Text (T)", Key::T),
@@ -55,7 +57,7 @@ impl Tool {
 }
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.0.7";
+pub const APP_VERSION: &str = "v0.0.8";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -105,10 +107,23 @@ pub struct App {
     pub pen_pts: Vec<Pt>,
     pub clipboard: Vec<Shape>,
     pub path: Option<PathBuf>,
+    /// The selection handles turn and slant (true) instead of resizing (false); a click on a handle swaps them.
+    pub rotate_mode: bool,
     /// Most recently opened or saved project files, newest first (at most `MAX_RECENT`).
     pub recent: Vec<PathBuf>,
     pub status: String,
     pub revision: u64,
+    /// Revision at the last save by hand (or open / new), and at the last auto-save.
+    pub saved_revision: u64,
+    pub autosaved_revision: u64,
+    pub autosave_on: bool,
+    pub autosave_secs: u32,
+    pub last_autosave: std::time::Instant,
+    /// A short message (text, until when) such as "file saved".
+    pub toast: Option<(String, std::time::Instant)>,
+    pub show_close_dlg: bool,
+    pub allow_close: bool,
+    pub show_options: bool,
     pub show_grid: bool,
     pub snap: bool,
     pub grid: f64,
@@ -145,6 +160,8 @@ pub struct App {
     pub space_prev: Option<Tool>,
     /// Size in pixels of the canvas as last drawn.
     pub canvas_avail: (f32, f32),
+    /// Top-left corner of the work area on screen, for tests and overlays.
+    pub canvas_origin: egui::Pos2,
     /// Fit the view to all objects on the next frame.
     pub fit_all_req: bool,
     pub clip: crate::clipart_ui::ClipState,
@@ -168,7 +185,11 @@ pub struct App {
     pub stream_err: String,
     pub stream_overlay: bool,
     pub polygon_sides: u32,
-    pub show_polygon: bool,
+    /// The small window with the number of sides (polygon) or turns (spiral).
+    pub show_shape_popup: bool,
+    pub spiral_turns: u32,
+    /// The last polygon or spiral drawn: tool, shape id and the box it was drawn in. The popup edits it.
+    pub last_param: Option<(Tool, u64, f64, f64)>,
     pub read_cfg: Option<crate::device_ui::ReadCfg>,
     pub img_dlg: Option<crate::image_ui::ImgDlg>,
     pub trace_dlg: Option<crate::image_ui::TraceDlg>,
@@ -244,9 +265,19 @@ impl App {
             pen_pts: vec![],
             clipboard: vec![],
             path: None,
+            rotate_mode: false,
             recent: saved("recent_files").and_then(|j| serde_json::from_str::<Vec<PathBuf>>(&j).ok()).unwrap_or_default().into_iter().take(crate::menu::MAX_RECENT).collect(),
             status: tr("Ready").into(),
             revision: 0,
+            saved_revision: 0,
+            autosaved_revision: 0,
+            autosave_on: saved("autosave_on").map(|v| v != "0").unwrap_or(true),
+            autosave_secs: saved("autosave_secs").and_then(|v| v.parse().ok()).filter(|v| (10..=3600).contains(v)).unwrap_or(crate::session_ui::DEFAULT_AUTOSAVE_SECS),
+            last_autosave: std::time::Instant::now(),
+            toast: None,
+            show_close_dlg: false,
+            allow_close: false,
+            show_options: false,
             show_grid,
             snap: false,
             grid,
@@ -279,6 +310,7 @@ impl App {
             node_bar_active: true,
             space_prev: None,
             canvas_avail: (900.0, 600.0),
+            canvas_origin: egui::Pos2::ZERO,
             fit_all_req: false,
             clip: crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(eframe::storage_dir("lightcreator").unwrap_or_else(std::env::temp_dir).join("clipart"))),
             show_guide: false,
@@ -299,7 +331,9 @@ impl App {
             stream_err: String::new(),
             stream_overlay: false,
             polygon_sides: 6,
-            show_polygon: false,
+            show_shape_popup: false,
+            spiral_turns: 3,
+            last_param: None,
             read_cfg: None,
             img_dlg: None,
             trace_dlg: None,
@@ -560,6 +594,7 @@ impl App {
         self.sel.clear();
         self.path = None;
         self.touch();
+        self.mark_saved();
         self.view.need_fit = true;
     }
     pub fn open(&mut self) {
@@ -595,6 +630,7 @@ impl App {
                 self.add_recent(&p);
                 self.path = Some(p);
                 self.touch();
+                self.mark_saved();
                 self.view.need_fit = true;
             }
             Err(e) => self.status = trf("Open failed: {}", &[&e]),
@@ -610,8 +646,11 @@ impl App {
             match std::fs::write(&p, self.doc.to_json()) {
                 Ok(_) => {
                     self.status = trf("Saved {}", &[&p.display()]);
+                    let name = p.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
+                    self.toast(trf("File saved: {}", &[&name]));
                     self.add_recent(&p);
                     self.path = Some(p);
+                    self.mark_saved();
                 }
                 Err(e) => self.status = trf("Save failed: {}", &[&e]),
             }
@@ -855,9 +894,7 @@ impl App {
             if plain(k) {
                 self.tool = t;
                 self.pen_pts.clear();
-                if t == Tool::Polygon {
-                    self.show_polygon = true;
-                }
+                self.show_shape_popup = matches!(t, Tool::Polygon | Tool::Spiral);
             }
         }
         if plain(Key::Escape) {
@@ -933,7 +970,7 @@ impl App {
             Act::ExportSvg => self.export_svg(),
             Act::ExportGcode => self.export_gcode(),
             Act::ExportCam => self.export_cam(),
-            Act::Quit => ctx.send_viewport_cmd(egui::ViewportCommand::Close),
+            Act::Quit => self.request_close(ctx),
             Act::Undo => self.do_undo(),
             Act::Redo => self.do_redo(),
             Act::Copy => self.copy(),
@@ -975,6 +1012,7 @@ impl App {
             Act::ImportImage => self.import_image(),
             Act::CameraOverlay => self.show_overlay = true,
             Act::GridOptions => self.show_prefs = true,
+            Act::ProgramOptions => self.show_options = true,
             Act::PreviewWindow => self.show_preview = true,
             Act::ShareSer2net => self.open_ser2net(),
             Act::ToggleOverlay => {
@@ -1371,9 +1409,7 @@ impl App {
             self.tool = t;
             self.space_prev = None;
             self.pen_pts.clear();
-            if t == Tool::Polygon {
-                self.show_polygon = true;
-            }
+            self.show_shape_popup = matches!(t, Tool::Polygon | Tool::Spiral);
         }
         ui.add_space(2.0);
     }
@@ -1433,26 +1469,61 @@ impl App {
         });
     }
 
-    fn dialogs(&mut self, ctx: &egui::Context) {
-        let mut open = self.show_polygon;
-        let mut done = false;
-        egui::Window::new(tr("Polygon")).open(&mut open).collapsible(false).resizable(false).anchor(egui::Align2::LEFT_TOP, [64.0, 120.0]).show(ctx, |ui| {
+    /// Small window of the polygon and spiral tools: how many sides / turns. It sits in the corner of the work
+    /// area (not over the bars), looks like the preview window and has no OK button: a change applies at once, to
+    /// the shape drawn last as well as to the next ones. It stays while the tool is active.
+    fn shape_popup(&mut self, ctx: &egui::Context) {
+        let tool = self.tool;
+        if !self.show_shape_popup || !matches!(tool, Tool::Polygon | Tool::Spiral) {
+            return;
+        }
+        let polygon = tool == Tool::Polygon;
+        let mut open = true;
+        let before = if polygon { self.polygon_sides } else { self.spiral_turns };
+        let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 8, right: 8, top: 6, bottom: 6 });
+        let pos = self.canvas_origin + egui::vec2(12.0, 12.0);
+        egui::Window::new("shape_popup").title_bar(false).frame(frame).default_pos(pos).resizable(false).show(ctx, |ui| {
+            crate::window_ui::mini_title(ui, &tr(if polygon { "Polygon" } else { "Spiral" }), &mut open, |_| {});
+            let (value, range, label): (&mut u32, std::ops::RangeInclusive<u32>, &str) = if polygon {
+                (&mut self.polygon_sides, 3..=360, "Number of sides")
+            } else {
+                (&mut self.spiral_turns, 1..=30, "Number of turns")
+            };
             ui.horizontal(|ui| {
-                ui.label(tr("Number of sides"));
-                ui.add(egui::DragValue::new(&mut self.polygon_sides).range(3..=360));
+                ui.label(tr(label));
+                ui.add(egui::DragValue::new(value).range(range.clone()));
             });
-            ui.horizontal_wrapped(|ui| {
-                for n in [3u32, 4, 5, 6, 8, 12, 24, 360] {
-                    if ui.selectable_label(self.polygon_sides == n, n.to_string()).clicked() {
-                        self.polygon_sides = n;
-                    }
-                }
-            });
-            ui.label(RichText::new(tr("Drag on the work area to draw it. At most 360 sides.")).color(theme::text_dim()));
-            done = ui.button(tr("OK")).clicked();
+            // The usual choice sits on the slider (polygon 5 to 36, spiral 1 to 24); the number box takes more.
+            let slider = if polygon { 5..=36 } else { 1..=24 };
+            ui.spacing_mut().slider_width = 200.0;
+            ui.add(egui::Slider::new(value, slider).clamping(egui::SliderClamping::Never).show_value(false));
+            ui.label(RichText::new(tr("Drag on the work area to draw it.")).color(theme::text_dim()));
         });
         self.polygon_sides = self.polygon_sides.clamp(3, 360);
-        self.show_polygon = open && !done;
+        self.spiral_turns = self.spiral_turns.clamp(1, 30);
+        let now = if polygon { self.polygon_sides } else { self.spiral_turns };
+        if now != before {
+            self.reshape_last(tool);
+        }
+        self.show_shape_popup = open;
+    }
+
+    /// Give the polygon or spiral drawn last the number of sides / turns now set, keeping its place and size.
+    pub fn reshape_last(&mut self, tool: Tool) {
+        let Some((t, id, w, h)) = self.last_param else { return };
+        if t != tool || self.doc.shape(id).is_none() {
+            return;
+        }
+        let contour = if tool == Tool::Polygon { lc_core::Contour::polygon(self.polygon_sides, w, h) } else { lc_core::Contour::spiral(self.spiral_turns, w, h) };
+        self.checkpoint();
+        if let Some(s) = self.doc.unlocked_mut(id) {
+            s.kind = lc_core::Kind::Bezier(vec![contour]);
+            self.touch();
+        }
+    }
+
+    fn dialogs(&mut self, ctx: &egui::Context) {
+        self.shape_popup(ctx);
 
         let mut open = self.show_offset;
         let mut apply = false;
@@ -1546,6 +1617,8 @@ impl eframe::App for App {
             storage.set_string("profiles", j);
         }
         storage.set_string("active_profile", self.active.to_string());
+        storage.set_string("autosave_on", if self.autosave_on { "1" } else { "0" }.into());
+        storage.set_string("autosave_secs", self.autosave_secs.to_string());
         if let Ok(j) = serde_json::to_string(&self.recent) {
             storage.set_string("recent_files", j);
         }
@@ -1632,6 +1705,7 @@ impl App {
         self.native_menu_frame(&ctx);
         self.title_bar(ui);
         self.window_edges(&ctx);
+        self.session_tick(&ctx);
         #[cfg(target_os = "macos")]
         self.window_edge_drag(&ctx);
         if self.screen == Screen::Start {
@@ -1906,13 +1980,56 @@ mod tool_name_tests {
         for tool in [Tool::Select, Tool::Node, Tool::Polygon, Tool::Text] {
             a.tool = tool;
             let mut x = 0.0;
-            let _ = ctx.run_ui(egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1400.0, 900.0))), ..Default::default() }, |ui| {
+            let mut out = ctx.run_ui(egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1400.0, 900.0))), ..Default::default() }, |ui| {
                 a.draw(ui);
                 x = ctx.data(|d| d.get_temp::<f32>(egui::Id::new("tool_name_right"))).unwrap_or(-1.0);
             });
+            // Debug builds insist that texture updates are consumed before the output is dropped.
+            out.textures_delta.clear();
             xs.push(x);
         }
         assert!(xs.iter().all(|x| *x > 0.0), "{xs:?}");
         assert!(xs.windows(2).all(|w| (w[0] - w[1]).abs() < 0.01), "{xs:?}");
+    }
+}
+
+#[cfg(test)]
+mod shape_popup_tests {
+    use super::*;
+
+    #[test]
+    fn changing_the_number_of_sides_reshapes_the_last_polygon() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.screen = Screen::Editor;
+        let ct = lc_core::Contour::polygon(6, 30.0, 20.0);
+        let id = a.doc.add(0, lc_core::Kind::Bezier(vec![ct]), Xf::translate(10.0, 10.0));
+        a.last_param = Some((Tool::Polygon, id, 30.0, 20.0));
+        a.tool = Tool::Polygon;
+        a.polygon_sides = 9;
+        a.reshape_last(Tool::Polygon);
+        let nodes = match &a.doc.shape(id).unwrap().kind {
+            lc_core::Kind::Bezier(cs) => cs[0].nodes.len(),
+            _ => 0,
+        };
+        assert_eq!(nodes, 9);
+        // The place is kept.
+        assert_eq!(a.doc.shape(id).unwrap().xf.e, 10.0);
+        // A spiral change does not touch a polygon.
+        a.spiral_turns = 5;
+        a.reshape_last(Tool::Spiral);
+        assert!(matches!(&a.doc.shape(id).unwrap().kind, lc_core::Kind::Bezier(cs) if cs[0].closed));
+        // Spiral as the last shape: its turns change.
+        let sp = a.doc.add(0, lc_core::Kind::Bezier(vec![lc_core::Contour::spiral(3, 30.0, 30.0)]), Xf::IDENTITY);
+        a.last_param = Some((Tool::Spiral, sp, 30.0, 30.0));
+        a.spiral_turns = 6;
+        a.reshape_last(Tool::Spiral);
+        assert!(matches!(&a.doc.shape(sp).unwrap().kind, lc_core::Kind::Bezier(cs) if cs[0].nodes.len() == 6 * 12 + 1));
+    }
+
+    #[test]
+    fn spiral_tool_is_in_the_insert_group_with_its_own_key() {
+        assert!(Tool::ALL.iter().any(|t| t.0 == Tool::Spiral && t.2 == egui::Key::I));
+        assert!(!Tool::Spiral.is_edit() && !Tool::Spiral.is_nav());
     }
 }

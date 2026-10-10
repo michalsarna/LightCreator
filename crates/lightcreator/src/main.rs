@@ -29,6 +29,7 @@ mod stream_ui;
 #[cfg(test)]
 mod screenshots;
 mod theme;
+mod session_ui;
 mod units_ui;
 mod window_ui;
 

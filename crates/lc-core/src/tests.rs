@@ -694,3 +694,33 @@ fn air_assist_is_switched_per_layer_and_off_at_the_end() {
     let n = crate::gcode::generate(&doc).gcode;
     assert!(!n.contains("M8") && !n.contains("M9") && !n.contains("M106"));
 }
+
+#[test]
+fn skew_keeps_the_anchor_line_and_shifts_points_in_proportion() {
+    let o = Pt::new(10.0, 20.0);
+    let sx = Xf::skew_about(0.5, 0.0, o);
+    // Points on the anchor line y = 20 stay; a point 10 above moves left by 5.
+    let p = sx.apply(Pt::new(30.0, 20.0));
+    assert!((p.x - 30.0).abs() < 1e-9 && (p.y - 20.0).abs() < 1e-9);
+    let q = sx.apply(Pt::new(30.0, 10.0));
+    assert!((q.x - 25.0).abs() < 1e-9 && (q.y - 10.0).abs() < 1e-9);
+    let sy = Xf::skew_about(0.0, 0.25, o);
+    let r = sy.apply(Pt::new(14.0, 50.0));
+    assert!((r.x - 14.0).abs() < 1e-9 && (r.y - 51.0).abs() < 1e-9);
+}
+
+#[test]
+fn spiral_starts_in_the_middle_and_fills_the_box() {
+    let c = Contour::spiral(3, 60.0, 40.0);
+    assert!(!c.closed);
+    let first = c.nodes[0].p;
+    assert!((first.x - 30.0).abs() < 1e-9 && (first.y - 20.0).abs() < 1e-9);
+    let last = c.nodes.last().unwrap().p;
+    // Ends at the outer edge after whole turns: straight above the middle (the start angle is the top).
+    assert!((last.x - 30.0).abs() < 1e-6 && last.y.abs() < 1e-6, "{last:?}");
+    let flat = c.flatten(0.05);
+    let (min_x, max_x) = flat.pts.iter().fold((f64::MAX, f64::MIN), |a, p| (a.0.min(p.x), a.1.max(p.x)));
+    assert!(min_x >= -0.1 && max_x <= 60.1 && max_x - min_x > 45.0, "{min_x} {max_x}");
+    // More turns, more nodes.
+    assert!(Contour::spiral(6, 60.0, 40.0).nodes.len() > c.nodes.len());
+}

@@ -501,13 +501,15 @@ impl App {
                 }
             }
             if self.connected {
-                if ui.button(tr("Disconnect")).clicked() {
+                let purple = egui::Button::new(RichText::new(tr("Disconnect")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x8e, 0x44, 0xad));
+                if ui.add(purple).clicked() {
                     self.link.send(Cmd::Disconnect);
                 }
             } else {
                 let mut dev = self.doc.device.clone();
                 dev.port = port.clone();
-                if ui.add_enabled(dev.has_target(), egui::Button::new(tr("Connect"))).clicked() {
+                let green = egui::Button::new(RichText::new(tr("Connect")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f));
+                if ui.add_enabled(dev.has_target(), green).clicked() {
                     if let Some(target) = Target::of(&dev) {
                         self.link.send(Cmd::Connect { target, controller: ctrl });
                     }
@@ -518,7 +520,8 @@ impl App {
         ui.label(format!("{}: {}   X {:.2}  Y {:.2}", tr("State"), self.machine.0, self.machine.1, self.machine.2));
         let mut act: Option<Action> = None;
         // Options of the device that belong to jogging and framing, always editable.
-        egui::Grid::new("jog_opts").num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
+        let running = self.job_running();
+        ui.add_enabled_ui(!running, |ui| egui::Grid::new("jog_opts").num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
             ui.label(tr("Jog step"));
             drag_len(ui, units, &mut self.doc.device.jog_step, 0.1, Some((0.1, 200.0)));
             ui.end_row();
@@ -528,7 +531,7 @@ impl App {
             ui.label(tr("Frame power"));
             ui.add(egui::DragValue::new(&mut self.doc.device.frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
             ui.end_row();
-        });
+        }));
         ui.separator();
         ui.add_enabled_ui(self.connected, |ui| {
             let (s, f) = (self.doc.device.jog_step, self.doc.device.jog_feed);
@@ -550,7 +553,8 @@ impl App {
                 resp.on_hover_text(tip).clicked()
             };
             let centre = |ui: &mut egui::Ui, total: f32| ui.add_space(((ui.available_width() - total) / 2.0).max(0.0));
-            ui.horizontal(|ui| {
+            // While a job runs the machine must not be moved by hand: only pause, resume and stop stay available.
+            ui.add_enabled_ui(!running, |ui| ui.horizontal(|ui| {
             centre(ui, 3.0 * size.x + 2.0 * 4.0);
             egui::Grid::new("jog").spacing([4.0, 4.0]).show(ui, |ui| {
                 ui.allocate_exact_size(size, egui::Sense::hover());
@@ -575,16 +579,20 @@ impl App {
                 }
                 ui.end_row();
             });
-            });
+            }));
             ui.add_space(4.0);
             ui.horizontal(|ui| {
                 centre(ui, 4.0 * size.x + 3.0 * ui.spacing().item_spacing.x);
-                if icon(ui, "house", tr("Home").to_string(), None) {
-                    act = Some(ctrl.home());
-                }
-                if icon(ui, "lock-open", tr("Unlock").to_string(), None) {
-                    act = Some(ctrl.unlock());
-                }
+                ui.add_enabled_ui(!running, |ui| {
+                    if icon(ui, "house", tr("Home").to_string(), None) {
+                        act = Some(ctrl.home());
+                    }
+                });
+                ui.add_enabled_ui(!running, |ui| {
+                    if icon(ui, "lock-open", tr("Unlock").to_string(), None) {
+                        act = Some(ctrl.unlock());
+                    }
+                });
                 if icon(ui, "pause", tr("Pause").to_string(), None) {
                     act = Some(ctrl.pause());
                 }

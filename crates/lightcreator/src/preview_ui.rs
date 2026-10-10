@@ -65,7 +65,7 @@ pub struct PreviewState {
 impl Default for PreviewState {
     fn default() -> Self {
         PreviewState {
-            speed: PlaySpeed::Fit,
+            speed: PlaySpeed::X10,
             cum: vec![],
             view: View { zoom: 1.0, pan: egui::vec2(0.0, 0.0), need_fit: true, auto_fit: true },
             color_by: ColorBy::Operation,
@@ -131,7 +131,9 @@ impl App {
         let line_w = self.grid_prefs.line_width;
         let (bw, bh) = (self.doc.device.bed_w, self.doc.device.bed_h);
         let Some((_, job)) = self.pv.job.take() else { return };
-        egui::Window::new("preview_window").title_bar(false).default_size([980.0, 640.0]).resizable(true).show(ctx, |ui| {
+        // A slim frame: the default window margin leaves a wide empty strip under the totals.
+        let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 8, right: 8, top: 6, bottom: 3 });
+        egui::Window::new("preview_window").title_bar(false).frame(frame).default_size([980.0, 640.0]).resizable(true).show(ctx, |ui| {
             let pv = &mut self.pv;
             crate::window_ui::mini_title(ui, &tr("Preview"), &mut open, |ui| {
                 // Icons are added right to left: the work area button is the one on the left.
@@ -150,7 +152,10 @@ impl App {
                 ui.separator();
                 ui.checkbox(&mut self.pv.show_travel, tr("Show travel moves")).on_hover_text(tr("Moves of the machine with the laser off"));
                 ui.separator();
-                if ui.button(if self.pv.playing { tr("Pause") } else { tr("Play") }).clicked() {
+                // Fixed width, so the slider next to it does not move when the label changes.
+                let (icon, label) = if self.pv.playing { ("pause", tr("Pause")) } else { ("play", tr("Play")) };
+                let play = egui::Button::image_and_text(crate::icons::slot(Some(icon), theme::text()), label);
+                if ui.add_sized([86.0, 22.0], play).clicked() {
                     if self.pv.progress >= 1.0 {
                         self.pv.progress = 0.0;
                     }
@@ -170,7 +175,9 @@ impl App {
             egui::Panel::bottom("pv_totals").frame(egui::Frame::NONE).show(ui, |ui| {
                 ui.separator();
                 ui.horizontal_wrapped(|ui| {
-                    ui.label(RichText::new(format!("{} {}", tr("Estimated time"), crate::app::fmt_time(job.est_seconds))).strong());
+                    // Real time of the job at the point shown: where the slider stands, out of the whole.
+                    let now = self.pv.progress as f64 * job.est_seconds;
+                    ui.label(RichText::new(format!("{} {} / {}", tr("Time"), crate::app::fmt_time(now), crate::app::fmt_time(job.est_seconds))).strong());
                     ui.separator();
                     ui.label(format!("{} {}", tr("cut length"), crate::units_ui::fmt_len(units, job.cut_length, 0)));
                     ui.separator();
