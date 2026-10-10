@@ -6,91 +6,8 @@ use eframe::egui::{self, Color32, Rect, Ui};
 use std::collections::HashMap;
 use std::sync::{Arc, OnceLock};
 
-macro_rules! icon_files {
-    ($($name:literal),* $(,)?) => {
-        const FILES: &[(&str, &[u8])] = &[$(($name, include_bytes!(concat!("../../../assets/ui-icons/", $name, ".svg")))),*];
-    };
-}
-
-icon_files!(
-    "align-center-horizontal",
-    "align-center-vertical",
-    "align-end-horizontal",
-    "align-end-vertical",
-    "align-start-horizontal",
-    "align-start-vertical",
-    "bring-to-front",
-    "check",
-    "chevron-down",
-    "chevron-up",
-    "circle",
-    "circle-question-mark",
-    "clipboard-paste",
-    "copy",
-    "copy-plus",
-    "download",
-    "eye",
-    "file",
-    "file-code",
-    "file-input",
-    "file-output",
-    "file-plus",
-    "flip-horizontal",
-    "flip-vertical",
-    "focus",
-    "folder-open",
-    "grid-3x3",
-    "group",
-    "hand",
-    "hexagon",
-    "image",
-    "info",
-    "languages",
-    "lasso-select",
-    "layers",
-    "lock",
-    "lock-open",
-    "magnet",
-    "maximize",
-    "minus",
-    "mouse-pointer-2",
-    "package",
-    "palette",
-    "pen-tool",
-    "pencil",
-    "play",
-    "plus",
-    "redo-2",
-    "refresh-cw",
-    "rotate-ccw",
-    "rotate-cw",
-    "route",
-    "save",
-    "scan",
-    "send-to-back",
-    "settings",
-    "shapes",
-    "sliders-horizontal",
-    "spline",
-    "square",
-    "square-dashed",
-    "squares-exclude",
-    "squares-intersect",
-    "squares-subtract",
-    "squares-unite",
-    "star",
-    "trash",
-    "triangle",
-    "type",
-    "undo-2",
-    "ungroup",
-    "upload",
-    "video",
-    "wifi",
-    "x",
-    "zap",
-    "zoom-in"
-);
+// Every file of `assets/ui-icons`, collected by `build.rs`.
+include!(concat!(env!("OUT_DIR"), "/ui_icon_files.rs"));
 
 /// SVG bytes by name; strokes use `currentColor`, which is replaced by white so a tint can recolour the icon.
 fn table() -> &'static HashMap<&'static str, Arc<[u8]>> {
@@ -139,6 +56,7 @@ pub fn tool_icon(t: Tool) -> &'static str {
         Tool::Text => "type",
         Tool::Pan => "hand",
         Tool::Zoom => "zoom-in",
+        Tool::ZoomOut => "zoom-out",
     }
 }
 
@@ -217,6 +135,9 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::TogglePreview => "route",
         Act::PreviewWindow => "play",
         Act::FitBed | Act::ToggleAutoFit => "scan",
+        Act::FitAll => "expand",
+        Act::ZoomIn => "zoom-in",
+        Act::ZoomOut => "zoom-out",
         Act::CameraView => "video",
         Act::ToggleOverlay | Act::CameraOverlay => "layers",
         Act::DeviceSettings => "settings",
@@ -245,4 +166,45 @@ pub fn slot(name: Option<&str>, color: Color32) -> egui::Image<'static> {
 #[cfg(target_os = "macos")]
 pub fn svg_text(name: &str) -> Option<String> {
     FILES.iter().find(|(n, _)| *n == name).map(|(_, b)| String::from_utf8_lossy(b).to_string())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Every icon the program asks for must exist in the assets folder (a missing one would draw nothing).
+    #[test]
+    fn all_requested_icons_exist() {
+        let have: std::collections::HashSet<&str> = all_names().into_iter().collect();
+        for t in Tool::ALL {
+            assert!(have.contains(tool_icon(t.0)), "tool icon {}", tool_icon(t.0));
+        }
+        for (_, entries) in crate::menu::menus() {
+            fn walk(es: &[crate::menu::Entry], have: &std::collections::HashSet<&str>) {
+                for e in es {
+                    match e {
+                        crate::menu::Entry::Item(a, _, _) => {
+                            if let Some(n) = act_icon(*a) {
+                                assert!(have.contains(n), "act icon {n}");
+                            }
+                        }
+                        crate::menu::Entry::Sub(t, c) => {
+                            if let Some(n) = submenu_icon(t) {
+                                assert!(have.contains(n), "submenu icon {n}");
+                            }
+                            walk(c, have);
+                        }
+                        crate::menu::Entry::Sep => {}
+                    }
+                }
+            }
+            walk(&entries, &have);
+        }
+        for t in ["File", "Edit", "Arrange", "View", "Laser", "Settings", "Help"] {
+            assert!(have.contains(menu_title_icon(t).unwrap()), "{t}");
+        }
+        for n in ["check", "lock", "lock-open", "chevron-up", "chevron-down", "star", "rotate-cw", "rotate-ccw", "scan", "expand", "zoom-in", "zoom-out", "shapes", "squares-unite", "flip-horizontal", "flip-vertical"] {
+            assert!(have.contains(n), "{n}");
+        }
+    }
 }

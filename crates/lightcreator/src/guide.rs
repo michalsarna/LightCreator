@@ -19,7 +19,7 @@ const EN: &[Section] = &[
     Section {
         title: "Drawing and editing",
         lines: &[
-            "Tool bar (left): select (V), node edit (N), rectangle (R), ellipse (E), triangle (Y), star (S), polygon (G, asks for the number of sides, 3 to 360), line (L), polyline (P), text (T), pan (H), zoom (Z). Drag to draw; Shift keeps shapes square. Press Escape twice to return to the select tool.",
+            "Tool bar (left): select (V), node edit (N), rectangle (R), ellipse (E), triangle (Y), star (S), polygon (G, asks for the number of sides, 3 to 360), line (L), polyline (P) and text (T). Drag to draw; Shift keeps shapes square. Press Escape twice to return to the select tool.",
             "Selection: click, Shift+click to add. Drag a rectangle from left to right to select what is wholly inside, from right to left to select everything the rectangle touches. Ctrl+A selects all.",
             "Node edit: drag nodes and Bézier handles, double-click a segment to add a node, Delete removes nodes. The bar on the canvas switches nodes between corner and smooth, makes segments straight or curved, adds or deletes nodes, opens or closes a path and rounds the selected corners.",
             "Arrange menu: align, centre on bed, flip, rotate, order, group (Ctrl+G), lock (Ctrl+L), convert to path or curves, union / intersection / subtract / exclusive or, offset shape and round corners. Right-click opens the same commands as a context menu.",
@@ -73,7 +73,7 @@ const EN: &[Section] = &[
             "Ctrl+N new, Ctrl+O open, Ctrl+S save, Ctrl+Shift+S save as, Ctrl+I import SVG, Ctrl+Z undo, Ctrl+Y redo.",
             "Ctrl+C copy, Ctrl+V paste, Ctrl+D duplicate, Delete delete, Ctrl+A select all, Arrow keys nudge (Shift = 10 ×).",
             "Ctrl+G group, Ctrl+Shift+G ungroup, Ctrl+L lock, Ctrl+Shift+L unlock, F1 this guide.",
-            "Mouse wheel zooms, middle button drags the view; the work area is fitted to the window until you zoom by hand (View > Fit bed to window turns it on again).",
+            "Navigation: the group under the tools holds pan (H), zoom in (Z), zoom out (X) and two fit buttons, fit work area (Ctrl+0) and fit all objects (Ctrl+9). Hold Space to pan with any tool and release it to go back. Mouse wheel zooms, middle button drags the view; the work area is fitted to the window until you zoom by hand (Fit work area turns it on again).",
         ],
     },
 ];
@@ -90,7 +90,7 @@ const PL: &[Section] = &[
     Section {
         title: "Rysowanie i edycja",
         lines: &[
-            "Pasek narzędzi (po lewej): zaznaczanie (V), edycja węzłów (N), prostokąt (R), elipsa (E), trójkąt (Y), gwiazda (S), wielokąt (G, pyta o liczbę boków od 3 do 360), linia (L), łamana (P), tekst (T), przesuwanie widoku (H), zoom (Z). Rysuj przeciągając; Shift utrzymuje proporcje. Dwa razy Escape wracają do zaznaczania.",
+            "Pasek narzędzi (po lewej): zaznaczanie (V), edycja węzłów (N), prostokąt (R), elipsa (E), trójkąt (Y), gwiazda (S), wielokąt (G, pyta o liczbę boków od 3 do 360), linia (L), łamana (P) i tekst (T). Rysuj przeciągając; Shift utrzymuje proporcje. Dwa razy Escape wracają do zaznaczania.",
             "Zaznaczanie: kliknięcie, Shift+kliknięcie dodaje. Ramka od lewej do prawej zaznacza tylko to, co jest w niej w całości; od prawej do lewej także to, czego dotyka. Ctrl+A zaznacza wszystko.",
             "Edycja węzłów: przeciągaj węzły i uchwyty Béziera, dwukrotne kliknięcie odcinka dodaje węzeł, Delete usuwa węzły. Pasek na płótnie przełącza węzły między narożnikiem a gładkim, robi odcinki prostymi lub krzywymi, dodaje i usuwa węzły, otwiera lub zamyka ścieżkę i zaokrągla zaznaczone rogi.",
             "Menu Arrange: wyrównanie, środek stołu, odbicia, obroty, kolejność, grupowanie (Ctrl+G), blokowanie (Ctrl+L), zamiana na ścieżkę lub krzywe, suma / część wspólna / odejmowanie / różnica symetryczna, offset kształtu i zaokrąglanie rogów. Prawy klawisz myszy otwiera te same polecenia jako menu kontekstowe.",
@@ -144,7 +144,7 @@ const PL: &[Section] = &[
             "Ctrl+N nowy, Ctrl+O otwórz, Ctrl+S zapisz, Ctrl+Shift+S zapisz jako, Ctrl+I import SVG, Ctrl+Z cofnij, Ctrl+Y ponów.",
             "Ctrl+C kopiuj, Ctrl+V wklej, Ctrl+D powiel, Delete usuń, Ctrl+A zaznacz wszystko, strzałki przesuwają (Shift = 10 ×).",
             "Ctrl+G grupuj, Ctrl+Shift+G rozgrupuj, Ctrl+L zablokuj, Ctrl+Shift+L odblokuj, F1 ten przewodnik.",
-            "Kółko myszy zbliża, środkowy przycisk przesuwa widok; obszar roboczy jest dopasowany do okna, dopóki nie zmienisz zbliżenia ręcznie (View > Fit bed to window włącza to z powrotem).",
+            "Nawigacja: osobna grupa pod narzędziami zawiera przesuwanie widoku (H), powiększanie (Z), pomniejszanie (X) oraz dwa przyciski dopasowania: do obszaru roboczego (Ctrl+0) i do wszystkich obiektów (Ctrl+9). Przytrzymaj spację, aby przesuwać widok dowolnym narzędziem; po puszczeniu wraca poprzednie. Kółko myszy zbliża, środkowy przycisk przesuwa widok; obszar roboczy jest dopasowany do okna, dopóki nie zmienisz zbliżenia ręcznie (przycisk dopasowania do obszaru włącza to z powrotem).",
         ],
     },
 ];

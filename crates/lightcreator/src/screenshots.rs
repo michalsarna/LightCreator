@@ -482,6 +482,71 @@ fn render_screenshots() {
     save(&mut h, "25-clipart-online.png");
 }
 
+/// "Fit all objects" frames everything that is on the page, wherever it is.
+#[test]
+fn fit_all_objects_shows_every_shape() {
+    let mut h: Shot = Harness::builder().with_size([1200.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.enter_editor(0);
+        // Two small shapes in opposite corners of a big bed.
+        a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(20.0, 20.0));
+        a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(120.0, 90.0));
+    }
+    h.run_steps(3);
+    let before = app(&mut h).view.zoom;
+    let ctx = h.ctx.clone();
+    app(&mut h).do_act(&ctx, crate::menu::Act::FitAll);
+    h.run_steps(3);
+    let a = app(&mut h);
+    assert!(a.view.zoom > before * 1.5, "zoomed in on the objects: {before} -> {}", a.view.zoom);
+    assert!(!a.view.auto_fit);
+    let (w, hh) = a.canvas_avail;
+    for p in [(20.0f32, 20.0f32), (130.0, 100.0)] {
+        let (x, y) = (p.0 * a.view.zoom + a.view.pan.x, p.1 * a.view.zoom + a.view.pan.y);
+        assert!(x > 0.0 && x < w && y > 0.0 && y < hh, "({x}, {y}) inside {w} x {hh}");
+    }
+    // The work-area button brings the whole bed back and keeps it fitted.
+    app(&mut h).do_act(&ctx, crate::menu::Act::FitBed);
+    h.run_steps(3);
+    let a = app(&mut h);
+    assert!(a.view.auto_fit && (a.view.zoom - before).abs() < 0.01 * before.max(1.0));
+}
+
+/// The Space key really switches to the hand tool while it is held down.
+#[test]
+fn space_key_pans_while_held() {
+    let mut h: Shot = Harness::builder().with_size([1000.0, 700.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.enter_editor(0);
+        a.tool = Tool::Rect;
+    }
+    h.run_steps(2);
+    h.key_down(eframe::egui::Key::Space);
+    h.run_steps(2);
+    assert_eq!(app(&mut h).tool, Tool::Pan, "hand tool while Space is held");
+    h.key_up(eframe::egui::Key::Space);
+    h.run_steps(2);
+    assert_eq!(app(&mut h).tool, Tool::Rect, "back to the rectangle tool");
+}
+
 /// Renders every embedded icon (`target/menu-icons.png`) so the whole set can be checked by eye.
 #[test]
 #[ignore = "visual check only"]

@@ -614,6 +614,14 @@ const TABLE: &[[&str; 7]] = &[
     ["Download failed: {}", "Pobieranie nie powiodło się: {}", "Download fehlgeschlagen: {}", "Download non riuscito: {}", "Lataus epäonnistui: {}", "下载失败：{}", "डाउनलोड विफल: {}"],
     ["Or download a picture from an address", "Albo pobierz obrazek spod adresu", "Oder ein Bild von einer Adresse herunterladen", "Oppure scarica un'immagine da un indirizzo", "Tai lataa kuva osoitteesta", "或从网址下载图片", "या किसी पते से चित्र डाउनलोड करें"],
     ["Only save pictures you may use. Check the licence of the source.", "Zapisuj tylko obrazki, z których wolno Ci korzystać. Sprawdź licencję źródła.", "Speichere nur Bilder, die du verwenden darfst. Prüfe die Lizenz der Quelle.", "Salva solo immagini che puoi usare. Controlla la licenza della fonte.", "Tallenna vain kuvia, joita saat käyttää. Tarkista lähteen lisenssi.", "仅保存你有权使用的图片。请检查来源的许可证。", "केवल वे चित्र सहेजें जिनका आप उपयोग कर सकते हैं। स्रोत का लाइसेंस जाँचें।"],
+    // ---- navigation ----
+    ["Zoom in (Z)", "Powiększ (Z)", "Vergrößern (Z)", "Ingrandisci (Z)", "Lähennä (Z)", "放大 (Z)", "ज़ूम इन (Z)"],
+    ["Zoom out (X)", "Pomniejsz (X)", "Verkleinern (X)", "Riduci (X)", "Loitonna (X)", "缩小 (X)", "ज़ूम आउट (X)"],
+    ["Fit work area (Ctrl+0)", "Dopasuj obszar roboczy (Ctrl+0)", "Arbeitsbereich einpassen (Strg+0)", "Adatta l'area di lavoro (Ctrl+0)", "Sovita työalue (Ctrl+0)", "适应工作区域 (Ctrl+0)", "कार्य क्षेत्र फ़िट करें (Ctrl+0)"],
+    ["Fit all objects (Ctrl+9)", "Dopasuj do wszystkich obiektów (Ctrl+9)", "Alle Objekte einpassen (Strg+9)", "Adatta a tutti gli oggetti (Ctrl+9)", "Sovita kaikki kohteet (Ctrl+9)", "适应所有对象 (Ctrl+9)", "सभी ऑब्जेक्ट फ़िट करें (Ctrl+9)"],
+    ["Zoom in", "Powiększ", "Vergrößern", "Ingrandisci", "Lähennä", "放大", "ज़ूम इन"],
+    ["Zoom out", "Pomniejsz", "Verkleinern", "Riduci", "Loitonna", "缩小", "ज़ूम आउट"],
+    ["Fit all objects", "Dopasuj do wszystkich obiektów", "Alle Objekte einpassen", "Adatta a tutti gli oggetti", "Sovita kaikki kohteet", "适应所有对象", "सभी ऑब्जेक्ट फ़िट करें"],
 ];
 #[cfg(test)]
 mod tests {

@@ -25,6 +25,10 @@
 * **Right-click context menu** (with small icons for flips, rotations, order, alignment) with the common commands (copy, paste, group, arrange, shape operations,
   adjust and trace for images).
 * Undo / redo, snap to grid, rulers, zoom and pan, drag and drop of files.
+* **Navigation:** pan, zoom in and zoom out sit in their own group under the drawing tools, together with two
+  fit buttons, "Fit work area" (Ctrl+0) and "Fit all objects" (Ctrl+9). Holding Space switches to panning with any
+  tool and returns to the previous tool on release (not while typing in a text field). Ctrl++ and Ctrl+- zoom
+  around the middle of the view; the mouse wheel and the middle button still work everywhere.
 * **Auto-fit:** the work area is fitted to the window and refitted whenever the window or the side panels are
   resized. Zooming or panning by hand switches it off; View > "Fit bed to window" turns it back on (and
   "Auto-fit work area to window" toggles it). The preview window behaves the same way.
