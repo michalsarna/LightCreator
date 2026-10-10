@@ -2,7 +2,7 @@
 
 **Design**
 * Rectangle, ellipse, line, polyline and text tools; select, move and resize with handles.
-* **Automatic shapes:** triangle (Y), five-pointed star (S) and regular polygon (G). The polygon tool opens a
+* **Automatic shapes:** triangle (Y), five-pointed star (S), regular polygon (G) and heart (K). The polygon tool opens a
   popup to choose the number of sides, 3 to 360. Shapes are drawn by dragging a box (Shift keeps it square)
   and are ordinary editable Bézier shapes.
 * **Node editing (N):** drag nodes and Bézier handles, corner / smooth nodes, insert (double-click a segment) and
@@ -28,6 +28,10 @@
 * **Right-click context menu** (with small icons for flips, rotations, order, alignment) with the common commands (copy, paste, group, arrange, shape operations,
   adjust and trace for images).
 * Undo / redo, snap to grid, rulers, zoom and pan, drag and drop of files.
+* **Tool bar groups:** selecting and node editing, then the tools that insert new objects (shapes, line,
+  polyline, text), then view navigation, each group set apart by a separator.
+* The node-editing bar on the canvas hides when you click another window such as the preview, and comes back when
+  you click the work area again.
 * **Navigation:** pan, zoom in and zoom out sit in their own group under the drawing tools, together with two
   fit buttons, "Fit work area" (Ctrl+0) and "Fit all objects" (Ctrl+9). Holding Space switches to panning with any
   tool and returns to the previous tool on release (not while typing in a text field). Ctrl++ and Ctrl+- zoom

@@ -321,6 +321,7 @@ fn render_screenshots() {
         };
         add(a, lc_core::Contour::triangle(60.0, 52.0), 30.0, 2);
         add(a, lc_core::Contour::star(5, 0.382, 60.0, 57.0), 110.0, 5);
+        add(a, lc_core::Contour::heart(60.0, 54.0), 270.0, 2);
         let id = add(a, lc_core::Contour::polygon(9, 60.0, 60.0), 190.0, 1);
         a.sel = vec![id];
         a.tool = Tool::Polygon;
@@ -480,6 +481,53 @@ fn render_screenshots() {
         a.clip.online = Some(o);
     }
     save(&mut h, "25-clipart-online.png");
+}
+
+/// The node-editing bar disappears when another window (the preview) is clicked and returns on a click in the canvas.
+#[test]
+fn node_bar_hides_when_another_window_is_clicked() {
+    use eframe::egui::{Event, Modifiers, PointerButton};
+    let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.cfg = None;
+        a.enter_editor(0);
+        a.doc.add(0, Kind::Rect { w: 40.0, h: 30.0 }, Xf::translate(60.0, 60.0));
+        a.tool = Tool::Node;
+        a.sel = vec![a.doc.shapes[0].id];
+        a.show_preview = true;
+    }
+    h.run_steps(4);
+    let ctx = h.ctx.clone();
+    let press = |h: &Shot, x: f32, y: f32| {
+        let pos = eframe::egui::pos2(x, y);
+        h.event(Event::PointerMoved(pos));
+        h.event(Event::PointerButton { pos, button: PointerButton::Primary, pressed: true, modifiers: Modifiers::NONE });
+        h.event(Event::PointerButton { pos, button: PointerButton::Primary, pressed: false, modifiers: Modifiers::NONE });
+    };
+    assert!(app(&mut h).node_bar_active, "shown while editing nodes");
+    // A click inside the preview window hides the bar.
+    press(&h, 800.0, 400.0);
+    h.run_steps(3);
+    assert!(!app(&mut h).node_bar_active, "the bar goes away");
+    assert_ne!(ctx.layer_id_at(eframe::egui::pos2(150.0, 122.0)).map(|l| l.id), Some(eframe::egui::Id::new("node_bar")));
+    // A click on the work area brings it back.
+    press(&h, 150.0, 400.0);
+    h.run_steps(3);
+    assert!(app(&mut h).node_bar_active, "and returns");
+    // Leaving the node tool resets it for the next time.
+    app(&mut h).tool = Tool::Select;
+    app(&mut h).node_bar_active = false;
+    h.run_steps(2);
+    assert!(app(&mut h).node_bar_active);
 }
 
 /// A picture from the gallery placed on the work area and opened in the node tool.

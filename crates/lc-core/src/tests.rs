@@ -621,3 +621,18 @@ fn iconify_search_answers_are_read() {
     let by = clipart::iconify::Hit { prefix: "x".into(), name: "y".into(), set_name: String::new(), license_title: "CC BY 4.0".into(), license_spdx: "CC-BY-4.0".into(), license_url: String::new(), author: String::new() };
     assert!(!by.needs_no_credit(), "attribution licences are flagged");
 }
+
+#[test]
+fn heart_shape_fills_its_box() {
+    let c = Contour::heart(40.0, 36.0);
+    assert!(c.closed && c.nodes.len() == 6);
+    let b = c.flatten(0.01).bounds().unwrap();
+    assert!(b.min.x.abs() < 0.2 && (b.max.x - 40.0).abs() < 0.2, "{b:?}");
+    assert!(b.min.y.abs() < 0.2 && (b.max.y - 36.0).abs() < 0.2, "{b:?}");
+    // Symmetric about the vertical middle line, with its dip above the tip.
+    let area = c.flatten(0.01).area().abs();
+    assert!(area > 0.5 * 40.0 * 36.0 && area < 0.9 * 40.0 * 36.0, "{area}");
+    assert!(c.nodes[0].p.y < c.nodes[3].p.y);
+    let cx: f64 = c.flatten(0.01).pts.iter().map(|p| p.x).sum::<f64>() / c.flatten(0.01).pts.len() as f64;
+    assert!((cx - 20.0).abs() < 1.0, "centroid x {cx}");
+}

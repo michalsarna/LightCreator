@@ -19,7 +19,7 @@ const EN: &[Section] = &[
     Section {
         title: "Drawing and editing",
         lines: &[
-            "Tool bar (left): select (V), node edit (N), rectangle (R), ellipse (E), triangle (Y), star (S), polygon (G, asks for the number of sides, 3 to 360), line (L), polyline (P) and text (T). Drag to draw; Shift keeps shapes square. Press Escape twice to return to the select tool.",
+            "Tool bar (left): select (V), node edit (N), rectangle (R), ellipse (E), triangle (Y), star (S), polygon (G, asks for the number of sides, 3 to 360), heart (K), line (L), polyline (P) and text (T). Drag to draw; Shift keeps shapes square. Press Escape twice to return to the select tool.",
             "Selection: click, Shift+click to add. Drag a rectangle from left to right to select what is wholly inside, from right to left to select everything the rectangle touches. Ctrl+A selects all.",
             "Node edit: open it with the tool bar button (N), Arrange > Edit nodes or by double-clicking a shape; pictures from the gallery can be edited too. Text must be converted to curves first. Drag nodes and Bézier handles, double-click a segment to add a node, Delete removes nodes. The bar on the canvas switches nodes between corner and smooth, makes segments straight or curved, adds or deletes nodes, opens or closes a path and rounds the selected corners.",
             "Arrange menu: align, centre on bed, flip, rotate, order, group (Ctrl+G), lock (Ctrl+L), convert to path or curves, union / intersection / subtract / exclusive or, offset shape and round corners. Right-click opens the same commands as a context menu.",
@@ -90,7 +90,7 @@ const PL: &[Section] = &[
     Section {
         title: "Rysowanie i edycja",
         lines: &[
-            "Pasek narzędzi (po lewej): zaznaczanie (V), edycja węzłów (N), prostokąt (R), elipsa (E), trójkąt (Y), gwiazda (S), wielokąt (G, pyta o liczbę boków od 3 do 360), linia (L), łamana (P) i tekst (T). Rysuj przeciągając; Shift utrzymuje proporcje. Dwa razy Escape wracają do zaznaczania.",
+            "Pasek narzędzi (po lewej): zaznaczanie (V), edycja węzłów (N), prostokąt (R), elipsa (E), trójkąt (Y), gwiazda (S), wielokąt (G, pyta o liczbę boków od 3 do 360), serce (K), linia (L), łamana (P) i tekst (T). Rysuj przeciągając; Shift utrzymuje proporcje. Dwa razy Escape wracają do zaznaczania.",
             "Zaznaczanie: kliknięcie, Shift+kliknięcie dodaje. Ramka od lewej do prawej zaznacza tylko to, co jest w niej w całości; od prawej do lewej także to, czego dotyka. Ctrl+A zaznacza wszystko.",
             "Edycja węzłów: otwierasz ją przyciskiem na pasku narzędzi (N), przez Arrange > Edit nodes albo dwukrotnym kliknięciem kształtu; cliparty z galerii też można edytować. Tekst trzeba najpierw zamienić na krzywe. Przeciągaj węzły i uchwyty Béziera, dwukrotne kliknięcie odcinka dodaje węzeł, Delete usuwa węzły. Pasek na płótnie przełącza węzły między narożnikiem a gładkim, robi odcinki prostymi lub krzywymi, dodaje i usuwa węzły, otwiera lub zamyka ścieżkę i zaokrągla zaznaczone rogi.",
             "Menu Arrange: wyrównanie, środek stołu, odbicia, obroty, kolejność, grupowanie (Ctrl+G), blokowanie (Ctrl+L), zamiana na ścieżkę lub krzywe, suma / część wspólna / odejmowanie / różnica symetryczna, offset kształtu i zaokrąglanie rogów. Prawy klawisz myszy otwiera te same polecenia jako menu kontekstowe.",

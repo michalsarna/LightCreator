@@ -16,6 +16,7 @@ pub enum Tool {
     Triangle,
     Star,
     Polygon,
+    Heart,
     Line,
     Pen,
     Text,
@@ -25,7 +26,7 @@ pub enum Tool {
 }
 
 impl Tool {
-    pub const ALL: [(Tool, &'static str, Key); 13] = [
+    pub const ALL: [(Tool, &'static str, Key); 14] = [
         (Tool::Select, "Select (V)", Key::V),
         (Tool::Node, "Node edit (N)", Key::N),
         (Tool::Rect, "Rectangle (R)", Key::R),
@@ -33,6 +34,7 @@ impl Tool {
         (Tool::Triangle, "Triangle (Y)", Key::Y),
         (Tool::Star, "Star (S)", Key::S),
         (Tool::Polygon, "Polygon (G)", Key::G),
+        (Tool::Heart, "Heart (K)", Key::K),
         (Tool::Line, "Line (L)", Key::L),
         (Tool::Pen, "Polyline / pen (P)", Key::P),
         (Tool::Text, "Text (T)", Key::T),
@@ -41,6 +43,11 @@ impl Tool {
         (Tool::ZoomOut, "Zoom out (X)", Key::X),
     ];
 
+    /// Selecting and editing tools, kept apart from the tools that insert new objects.
+    pub fn is_edit(self) -> bool {
+        matches!(self, Tool::Select | Tool::Node)
+    }
+
     /// View navigation tools, kept apart from the drawing and editing tools.
     pub fn is_nav(self) -> bool {
         matches!(self, Tool::Pan | Tool::Zoom | Tool::ZoomOut)
@@ -48,7 +55,7 @@ impl Tool {
 }
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.04";
+pub const APP_VERSION: &str = "v0.0.5";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -130,6 +137,8 @@ pub struct App {
     pub show_offset: bool,
     pub show_materials: bool,
     pub show_prefs: bool,
+    /// The node-editing bar is shown while the canvas, the bar or the tool bars were the last thing clicked.
+    pub node_bar_active: bool,
     /// The tool to return to when Space (temporary pan) is released.
     pub space_prev: Option<Tool>,
     /// Size in pixels of the canvas as last drawn.
@@ -261,6 +270,7 @@ impl App {
             show_offset: false,
             show_materials: false,
             show_prefs: false,
+            node_bar_active: true,
             space_prev: None,
             canvas_avail: (900.0, 600.0),
             fit_all_req: false,
@@ -1065,8 +1075,15 @@ impl App {
     fn tool_bar(&mut self, ui: &mut egui::Ui) {
         ui.add_space(6.0);
         egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| ui.vertical_centered(|ui| {
-            // Drawing and editing tools.
-            for (t, tip, _) in Tool::ALL.into_iter().filter(|t| !t.0.is_nav()) {
+            // Selecting and node editing.
+            for (t, tip, _) in Tool::ALL.into_iter().filter(|t| t.0.is_edit()) {
+                self.tool_button(ui, t, tip);
+            }
+            // Tools that insert new objects.
+            ui.add_space(4.0);
+            ui.separator();
+            ui.add_space(4.0);
+            for (t, tip, _) in Tool::ALL.into_iter().filter(|t| !t.0.is_edit() && !t.0.is_nav()) {
                 self.tool_button(ui, t, tip);
             }
             // View navigation, apart from the rest.

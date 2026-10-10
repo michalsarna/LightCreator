@@ -109,6 +109,24 @@ impl Contour {
         Contour { nodes, closed: true }
     }
 
+    /// A heart filling a `w` x `h` box: two lobes on top, a point at the bottom.
+    pub fn heart(w: f64, h: f64) -> Contour {
+        let p = |x: f64, y: f64| Pt::new(x * w, y * h);
+        let n = |at: Pt, hin: Pt, hout: Pt, smooth: bool| Node { p: at, hin, hout, smooth };
+        let (dip, tip) = (p(0.5, 0.28), p(0.5, 1.0));
+        Contour {
+            nodes: vec![
+                n(dip, p(0.5, 0.06), p(0.5, 0.06), false),
+                n(p(0.25, 0.0), p(0.40, 0.0), p(0.10, 0.0), true),
+                n(p(0.0, 0.28), p(0.0, 0.08), p(0.0, 0.55), true),
+                n(tip, p(0.30, 0.80), p(0.70, 0.80), false),
+                n(p(1.0, 0.28), p(1.0, 0.55), p(1.0, 0.08), true),
+                n(p(0.75, 0.0), p(0.90, 0.0), p(0.60, 0.0), true),
+            ],
+            closed: true,
+        }
+    }
+
     pub fn transformed(&self, xf: &Xf) -> Contour {
         Contour { nodes: self.nodes.iter().map(|n| n.transformed(xf)).collect(), closed: self.closed }
     }

@@ -200,6 +200,7 @@ impl App {
             Tool::Triangle => Some(lc_core::Contour::triangle(w, h)),
             Tool::Star => Some(lc_core::Contour::star(5, 0.382, w, h)),
             Tool::Polygon => Some(lc_core::Contour::polygon(self.polygon_sides, w, h)),
+            Tool::Heart => Some(lc_core::Contour::heart(w, h)),
             _ => None,
         }
     }
@@ -633,7 +634,7 @@ impl App {
                     }
                 }
             }
-            Tool::Rect | Tool::Ellipse | Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Line => {
+            Tool::Rect | Tool::Ellipse | Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart | Tool::Line => {
                 ui.ctx().set_cursor_icon(CursorIcon::Crosshair);
                 if resp.drag_started_by(PointerButton::Primary) {
                     if let Some(m) = press {
@@ -782,7 +783,7 @@ impl App {
                                     .collect();
                                 painter.add(egui::Shape::closed_line(pts, st));
                             }
-                            Tool::Triangle | Tool::Star | Tool::Polygon => {
+                            Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart => {
                                 let r = egui::Rect::from_two_pos(a, b);
                                 let (wm, hm) = ((r.width() / self.view.zoom) as f64, (r.height() / self.view.zoom) as f64);
                                 if let Some(ct) = self.auto_contour(wm, hm) {
@@ -833,7 +834,7 @@ impl App {
                     }
                     Drag::Create { start } => {
                         let mut end = self.snapped(w);
-                        if shift && matches!(self.tool, Tool::Rect | Tool::Ellipse | Tool::Triangle | Tool::Star | Tool::Polygon) {
+                        if shift && matches!(self.tool, Tool::Rect | Tool::Ellipse | Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart) {
                             let s = (end.x - start.x).abs().max((end.y - start.y).abs());
                             end = Pt::new(start.x + s * (end.x - start.x).signum(), start.y + s * (end.y - start.y).signum());
                         }
@@ -844,7 +845,7 @@ impl App {
                             let id = match self.tool {
                                 Tool::Rect => self.doc.add(layer, Kind::Rect { w: r.width(), h: r.height() }, Xf::translate(r.min.x, r.min.y)),
                                 Tool::Ellipse => self.doc.add(layer, Kind::Ellipse { w: r.width(), h: r.height() }, Xf::translate(r.min.x, r.min.y)),
-                                Tool::Triangle | Tool::Star | Tool::Polygon => match self.auto_contour(r.width(), r.height()) {
+                                Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart => match self.auto_contour(r.width(), r.height()) {
                                     Some(ct) => self.doc.add(layer, Kind::Bezier(vec![ct]), Xf::translate(r.min.x, r.min.y)),
                                     None => 0,
                                 },
@@ -873,10 +874,16 @@ impl App {
 
         self.rulers(&painter, rect);
 
-        // Floating node-editing toolbar.
-        if self.tool == Tool::Node {
+        // Floating node-editing toolbar: it goes away when you click another window, such as the preview, and comes
+        // back when you click the work area again.
+        if self.tool != Tool::Node {
+            self.node_bar_active = true;
+        } else if let Some(p) = ui.input(|i| if i.pointer.any_pressed() { i.pointer.interact_pos() } else { None }) {
+            self.node_bar_active = ui.ctx().layer_id_at(p).map_or(true, |l| l.order == egui::Order::Background || l.id == egui::Id::new("node_bar"));
+        }
+        if self.tool == Tool::Node && self.node_bar_active {
             let ctx = ui.ctx().clone();
-            egui::Area::new(egui::Id::new("node_bar")).order(egui::Order::Foreground).fixed_pos(rect.min + egui::vec2(28.0, 26.0)).show(&ctx, |ui| {
+            egui::Area::new(egui::Id::new("node_bar")).order(egui::Order::Middle).fixed_pos(rect.min + egui::vec2(28.0, 26.0)).show(&ctx, |ui| {
                 egui::Frame::popup(ui.style()).show(ui, |ui| {
                     ui.horizontal(|ui| self.node_bar(ui));
                 });
