@@ -29,6 +29,10 @@
 * **Right-click context menu** (with small icons for flips, rotations, order, alignment) with the common commands (copy, paste, group, arrange, shape operations,
   adjust and trace for images).
 * Undo / redo, snap to grid, rulers, zoom and pan, drag and drop of files.
+* **Control bar:** name of the current tool in a box of fixed width, New / Open / Save icons, switches for the grid,
+  the secondary grid and snapping (icons, highlighted while on) and the Toolpaths button, green while the toolpaths
+  are shown and grey otherwise. Toolpaths are drawn in layer colours darkened or lightened until they stand out from
+  the work area.
 * **Tool bar groups:** selecting and node editing, then the tools that insert new objects (shapes, line,
   polyline, text), then the shape operations (union, intersection, subtract, exclusive or) and finally view
   navigation, each group set apart by a separator.

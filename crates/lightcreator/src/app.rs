@@ -1103,19 +1103,35 @@ impl App {
 
     fn control_bar(&mut self, ui: &mut egui::Ui) {
         ui.horizontal_centered(|ui| {
+            // Name of the current tool in a box of fixed width, so the bar does not jump around.
             let name = Tool::ALL.iter().find(|t| t.0 == self.tool).map(|t| t.1).unwrap_or("");
-            ui.label(RichText::new(tr(name).split(" (").next().unwrap_or("")).strong());
+            ui.allocate_ui_with_layout(egui::vec2(96.0, 22.0), egui::Layout::left_to_right(egui::Align::Center), |ui| {
+                ui.add(egui::Label::new(RichText::new(tr(name).split(" (").next().unwrap_or("")).strong()).truncate());
+            });
             ui.separator();
-            let c = lc_core::PALETTE[self.active_layer];
-            let (r, _) = ui.allocate_exact_size(egui::vec2(16.0, 16.0), egui::Sense::hover());
-            ui.painter().rect_filled(r, 3.0, Color32::from_rgb(c[0], c[1], c[2]));
-            ui.label(trf("Layer {}", &[&self.doc.layers[self.active_layer].name]));
+            let ctx = ui.ctx().clone();
+            for (act, icon, tip) in [(Act::New, "file-plus", "New"), (Act::Open, "folder-open", "Open…"), (Act::Save, "save", "Save")] {
+                if icon_button(ui, icon, &tr(tip), true, 28.0) {
+                    self.do_act(&ctx, act);
+                }
+            }
             ui.separator();
-            ui.checkbox(&mut self.show_grid, tr("Grid"));
-            ui.checkbox(&mut self.snap, tr("Snap"));
-            drag_len(ui, self.doc.device.units, &mut self.grid, 0.5, Some((0.5, 100.0)));
+            let minor = self.grid_prefs.minor_on;
+            if toggle_icon(ui, "grid-2x2", &tr("Show or hide the grid"), self.show_grid) {
+                self.show_grid = !self.show_grid;
+            }
+            if toggle_icon(ui, "grid-3x3", &tr("Show or hide the secondary grid"), minor) {
+                self.grid_prefs.minor_on = !minor;
+            }
+            if toggle_icon(ui, "magnet", &tr("Snap to grid"), self.snap) {
+                self.snap = !self.snap;
+            }
             ui.separator();
-            if ui.selectable_label(self.preview_on, tr("Toolpaths")).on_hover_text(tr("Show the toolpaths on the work area")).clicked() {
+            // Green while the toolpaths are shown, grey otherwise.
+            let on = self.preview_on;
+            let (fill, ink) = if on { (Color32::from_rgb(0x2e, 0xa0, 0x4f), Color32::WHITE) } else { (theme::panel_dark(), theme::text_dim()) };
+            let btn = egui::Button::image_and_text(crate::icons::slot(Some("route"), ink), RichText::new(tr("Toolpaths")).color(ink)).fill(fill);
+            if ui.add(btn).on_hover_text(tr("Show the toolpaths on the work area")).clicked() {
                 self.preview_on = !self.preview_on;
             }
             if ui.button(tr("Preview…")).on_hover_text(tr("Open the preview window")).clicked() {
@@ -1532,6 +1548,18 @@ fn scroll_hints<R>(ui: &egui::Ui, out: &egui::scroll_area::ScrollAreaOutput<R>) 
         painter.rect_filled(rect, 0.0, theme::panel().gamma_multiply(0.92));
         crate::icons::paint(ui, egui::Rect::from_center_size(rect.center(), egui::vec2(h - 2.0, h - 2.0)), name, theme::accent());
     }
+}
+
+/// An icon button that stays highlighted while `on`.
+fn toggle_icon(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool) -> bool {
+    let (rect, resp) = ui.allocate_exact_size(egui::vec2(28.0, 28.0), egui::Sense::click());
+    if on {
+        ui.painter().rect_filled(rect, 6.0, theme::accent().gamma_multiply(0.3));
+    } else if resp.hovered() {
+        ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
+    }
+    crate::icons::paint(ui, rect.shrink(5.6), icon, if on { theme::accent() } else { theme::text() });
+    resp.on_hover_text(tip).clicked()
 }
 
 /// A square icon-only button with a tooltip; greyed out and inert when `on` is false.

@@ -300,6 +300,8 @@ const TABLE: &[[&str; 7]] = &[
     ["Minimise", "Minimalizuj", "Minimieren", "Riduci a icona", "Pienennä", "最小化", "छोटा करें"],
     ["Maximise", "Maksymalizuj", "Maximieren", "Ingrandisci", "Suurenna", "最大化", "बड़ा करें"],
     ["Restore", "Przywróć", "Wiederherstellen", "Ripristina", "Palauta", "还原", "पूर्ववत करें"],
+    ["Show or hide the grid", "Pokaż lub ukryj siatkę", "Raster ein- oder ausblenden", "Mostra o nascondi la griglia", "Näytä tai piilota ruudukko", "显示或隐藏网格", "ग्रिड दिखाएँ या छिपाएँ"],
+    ["Show or hide the secondary grid", "Pokaż lub ukryj siatkę pomocniczą", "Feines Raster ein- oder ausblenden", "Mostra o nascondi la griglia secondaria", "Näytä tai piilota apuruudukko", "显示或隐藏辅助网格", "सहायक ग्रिड दिखाएँ या छिपाएँ"],
     ["Units", "Jednostki", "Einheiten", "Unità", "Yksiköt", "单位", "इकाइयाँ"],
     ["Millimetres (mm)", "Milimetry (mm)", "Millimeter (mm)", "Millimetri (mm)", "Millimetrit (mm)", "毫米 (mm)", "मिलीमीटर (mm)"],
     ["Inches (in)", "Cale (in)", "Zoll (in)", "Pollici (in)", "Tuumat (in)", "英寸 (in)", "इंच (in)"],
