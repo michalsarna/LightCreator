@@ -302,8 +302,8 @@ impl App {
         ui.separator();
         let l = &mut self.doc.layers[self.active_layer];
         ui.label(RichText::new(trf("Cut settings — {}", &[&l.name])).strong());
-        let panel_salt = format!("panel-{}", self.active_layer);
-        layer_settings_ui(ui, units, l, panel_salt.as_str());
+        let panel_scope = format!("panel-{}", self.active_layer);
+        layer_settings_ui(ui, units, l, panel_scope.as_str());
         let now = ui.input(|i| i.time);
         self.commit_layer_edit(now, before);
     }
@@ -396,11 +396,11 @@ impl App {
 }
 
 /// The cut settings of one layer: mode, speed, power, passes, fill options and image options.
-/// `salt` keeps the widget ids apart when the same settings are shown in the panel and in the dialog.
-pub fn layer_settings_ui(ui: &mut egui::Ui, units: lc_core::Units, l: &mut lc_core::Layer, salt: &str) {
-    egui::Grid::new(("cut", salt)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
+/// `id_scope` keeps the widget ids apart when the same settings are shown in the panel and in the dialog.
+pub fn layer_settings_ui(ui: &mut egui::Ui, units: lc_core::Units, l: &mut lc_core::Layer, id_scope: &str) {
+    egui::Grid::new(("cut", id_scope)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
         ui.label(tr("Mode"));
-        egui::ComboBox::from_id_salt(("cm", salt)).selected_text(tr(l.mode.label())).show_ui(ui, |ui| {
+        egui::ComboBox::from_id_salt(("cm", id_scope)).selected_text(tr(l.mode.label())).show_ui(ui, |ui| {
             for m in LayerMode::ALL {
                 ui.selectable_value(&mut l.mode, m, tr(m.label()));
             }
@@ -434,11 +434,11 @@ pub fn layer_settings_ui(ui: &mut egui::Ui, units: lc_core::Units, l: &mut lc_co
             ui.end_row();
         }
     });
-    egui::CollapsingHeader::new(tr("Image settings")).id_salt(("img_hdr", salt)).default_open(false).show(ui, |ui| {
+    egui::CollapsingHeader::new(tr("Image settings")).id_salt(("img_hdr", id_scope)).default_open(false).show(ui, |ui| {
         ui.label(RichText::new(tr("Images use the interval, speed, power and overscan of their layer.")).color(theme::text_dim()));
-        egui::Grid::new(("img_cut", salt)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
+        egui::Grid::new(("img_cut", id_scope)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
             ui.label(tr("Dithering"));
-            egui::ComboBox::from_id_salt(("dither", salt)).selected_text(tr(l.dither.label())).show_ui(ui, |ui| {
+            egui::ComboBox::from_id_salt(("dither", id_scope)).selected_text(tr(l.dither.label())).show_ui(ui, |ui| {
                 for d in Dither::ALL {
                     ui.selectable_value(&mut l.dither, d, tr(d.label()));
                 }

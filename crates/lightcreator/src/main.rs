@@ -6,6 +6,8 @@ mod clipart_ui;
 mod canvas;
 mod device_ui;
 mod fonts;
+#[cfg(test)]
+mod grbl_sim_tests;
 mod i18n;
 mod guide;
 mod help_ui;
