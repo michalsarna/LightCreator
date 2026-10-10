@@ -547,3 +547,77 @@ fn filleting_two_lines() {
     assert!(fillet::as_segment(&[Contour { nodes: vec![Node::corner(Pt::new(0.0, 0.0)), Node::corner(Pt::new(1.0, 1.0))], closed: false }]).is_some());
     assert!(fillet::as_segment(&[Contour::rect(1.0, 1.0)]).is_none());
 }
+
+fn temp_dir(tag: &str) -> std::path::PathBuf {
+    let d = std::env::temp_dir().join(format!("lc-test-{tag}-{}-{}", std::process::id(), std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos()));
+    std::fs::create_dir_all(&d).unwrap();
+    d
+}
+
+const CAT_SVG: &str = r##"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2,2L22,2L22,12L2,12Z M5,15L19,15L19,22L5,22Z"/></svg>"##;
+
+#[test]
+fn user_clipart_library_roundtrip() {
+    let dir = temp_dir("lib");
+    let mut lib = clipart::Library::open(&dir);
+    assert!(lib.items.is_empty());
+    let a = lib.add(CAT_SVG, "Big Cat!", "Animals", "https://example.org/cat.svg", "CC0", "Someone").unwrap();
+    let b = lib.add(&CAT_SVG.replace("<path", "<path fill=\"currentColor\""), "Big Cat!", "", "file", "", "").unwrap();
+    assert_eq!(a.id, "big-cat");
+    assert_eq!(b.id, "big-cat-2", "same name gets a different file");
+    assert_eq!(b.category, clipart::DEFAULT_CATEGORY);
+    assert!(lib.svg("big-cat-2").unwrap().contains("#000000"), "currentColor is made explicit");
+    lib.set_category("big-cat", "Pets").unwrap();
+    lib.rename("big-cat", "Kitty").unwrap();
+    // Reopen: everything is remembered.
+    let lib2 = clipart::Library::open(&dir);
+    assert_eq!(lib2.items.len(), 2);
+    let k = lib2.items.iter().find(|c| c.id == "big-cat").unwrap();
+    assert_eq!((k.name.as_str(), k.category.as_str(), k.license.as_str()), ("Kitty", "Pets", "CC0"));
+    assert_eq!(lib2.categories(), vec!["My clipart".to_string(), "Pets".to_string()]);
+    // Removing deletes the file and the entry; an index entry whose file vanished is dropped on open.
+    let mut lib3 = clipart::Library::open(&dir);
+    lib3.remove("big-cat").unwrap();
+    assert!(!dir.join("big-cat.svg").exists());
+    std::fs::remove_file(dir.join("big-cat-2.svg")).unwrap();
+    assert!(clipart::Library::open(&dir).items.is_empty());
+    // Bad input is refused.
+    assert!(lib3.add("<html></html>", "x", "", "", "", "").is_err());
+    assert!(lib3.add("<svg", "x", "", "", "", "").is_err());
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn clipart_import_scales_centres_and_groups_on_one_layer() {
+    let mut d = Document::default();
+    let ids = clipart::import_clip(CAT_SVG.as_bytes(), &mut d, 7, 50.0, Pt::new(100.0, 80.0)).unwrap();
+    assert_eq!(ids.len(), 1, "one path element");
+    let b = d.bounds_of(&ids).unwrap();
+    assert!((b.width().max(b.height()) - 50.0).abs() < 1e-6, "{b:?}");
+    assert!(b.center().dist(Pt::new(100.0, 80.0)) < 1e-6);
+    assert!(d.shapes.iter().all(|s| s.layer == 7), "colours do not spread the picture over layers");
+    // Two elements become a group.
+    let two = r##"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="red" d="M2,2L10,2L10,10Z"/><path fill="blue" d="M14,14L22,14L22,22Z"/></svg>"##;
+    let ids = clipart::import_clip(two.as_bytes(), &mut d, 3, 30.0, Pt::new(10.0, 10.0)).unwrap();
+    assert_eq!(ids.len(), 2);
+    assert_eq!(d.group_of(ids[0]).len(), 2);
+    assert!(ids.iter().all(|i| d.shape(*i).unwrap().layer == 3));
+}
+
+#[test]
+fn iconify_search_answers_are_read() {
+    let json = r#"{"icons":["mdi:cat","tabler:cat","unknown:thing"],"total":3,"limit":3,"start":0,"collections":{
+        "mdi":{"name":"Material Design Icons","author":{"name":"Pictogrammers","url":"https://x"},"license":{"title":"Apache 2.0","spdx":"Apache-2.0","url":"https://l"}},
+        "tabler":{"name":"Tabler Icons","author":{"name":"Paweł Kuna"},"license":{"title":"MIT","spdx":"MIT"}}}}"#;
+    let hits = clipart::iconify::parse_search(json).unwrap();
+    assert_eq!(hits.len(), 3);
+    assert_eq!(hits[0].key(), "mdi:cat");
+    assert_eq!((hits[0].set_name.as_str(), hits[0].license_spdx.as_str(), hits[0].author.as_str()), ("Material Design Icons", "Apache-2.0", "Pictogrammers"));
+    assert!(hits[0].needs_no_credit() && hits[1].needs_no_credit());
+    assert!(hits[2].license_title.is_empty() && !hits[2].needs_no_credit());
+    assert_eq!(hits[0].svg_url("https://api.iconify.design"), "https://api.iconify.design/mdi/cat.svg");
+    assert_eq!(clipart::iconify::search_url("https://a", "paper plane", 20), "https://a/search?query=paper%20plane&limit=20");
+    assert!(clipart::iconify::parse_search("nonsense").is_err());
+    let by = clipart::iconify::Hit { prefix: "x".into(), name: "y".into(), set_name: String::new(), license_title: "CC BY 4.0".into(), license_spdx: "CC-BY-4.0".into(), license_url: String::new(), author: String::new() };
+    assert!(!by.needs_no_credit(), "attribution licences are flagged");
+}

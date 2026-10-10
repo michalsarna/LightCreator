@@ -174,6 +174,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::Save | Act::SaveAs => "save",
         Act::ImportSvg | Act::ImportAi => "file-input",
         Act::ImportImage => "image",
+        Act::OnlineClipart => "globe",
         Act::ExportSvg | Act::ExportCam => "file-output",
         Act::ExportGcode => "file-code",
         Act::Quit => "x",

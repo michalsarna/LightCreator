@@ -50,16 +50,18 @@ pub enum SideTab {
     Layers,
     Device,
     Console,
+    Clipart,
     /// The camera picture; only listed while the stream is shown as a tab.
     Camera,
 }
 
 impl SideTab {
-    pub const ALL: [(SideTab, &'static str); 4] = [
+    pub const ALL: [(SideTab, &'static str); 5] = [
         (SideTab::Properties, "Properties"),
         (SideTab::Layers, "Layers"),
         (SideTab::Device, "Device"),
         (SideTab::Console, "Console"),
+        (SideTab::Clipart, "Clipart"),
     ];
 }
 
@@ -121,6 +123,7 @@ pub struct App {
     pub show_offset: bool,
     pub show_materials: bool,
     pub show_prefs: bool,
+    pub clip: crate::clipart_ui::ClipState,
     pub show_guide: bool,
     pub guide_filter: String,
     pub show_round: bool,
@@ -245,6 +248,7 @@ impl App {
             show_offset: false,
             show_materials: false,
             show_prefs: false,
+            clip: crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(eframe::storage_dir("lightcreator").unwrap_or_else(std::env::temp_dir).join("clipart"))),
             show_guide: false,
             guide_filter: String::new(),
             show_round: false,
@@ -808,6 +812,10 @@ impl App {
             Act::Unlock => self.lock_selection(false),
             Act::Ungroup => self.ungroup_selection(),
             Act::ImportAi => self.import_ai(),
+            Act::OnlineClipart => {
+                self.side_tab = SideTab::Clipart;
+                self.open_online_clipart(ctx);
+            }
             Act::TraceImage => self.open_trace(),
             Act::AdjustImage => self.open_adjust(),
             Act::BoolUnion => self.bool_op(lc_core::ops::BoolOp::Union),
@@ -1156,6 +1164,8 @@ impl App {
         self.config_window(ctx);
         self.layer_dialog(ctx);
         self.guide_window(ctx);
+        self.clip_dialogs(ctx);
+        self.online_clipart_window(ctx);
         self.round_window(ctx);
         self.materials_window(ctx);
         self.overlay_window(ctx);

@@ -35,6 +35,7 @@ impl App {
                 egui::ScrollArea::vertical().id_salt("tab_device").auto_shrink([false, false]).show(ui, |ui| self.device_tab(ui));
             }
             SideTab::Console => self.console_panel(ui),
+            SideTab::Clipart => self.clipart_panel(ui),
             SideTab::Camera => {
                 egui::ScrollArea::vertical().id_salt("tab_camera").auto_shrink([false, false]).show(ui, |ui| self.stream_view(ui));
             }

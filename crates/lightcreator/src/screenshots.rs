@@ -438,6 +438,48 @@ fn render_screenshots() {
         a.show_round = false;
     }
     save(&mut h, "23-rounded-shapes.png");
+
+    // Clipart gallery: shipped pictures (blue) mixed with saved ones (green), and the online search.
+    {
+        let a = app(&mut h);
+        a.show_guide = false;
+        a.show_round = false;
+        a.doc.shapes.clear();
+        let dir = std::env::temp_dir().join(format!("lc-shot-clip-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        a.clip = crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(dir));
+        let pick = |cat: &str, name: &str| crate::clipart_ui::BUILTIN_CLIPART.iter().find(|c| c.0 == cat && c.1 == name).map(|c| String::from_utf8_lossy(c.2).to_string()).unwrap();
+        for (cat, n, new_name) in [("Animals", "owl", "Wise owl"), ("Animals", "penguin", "Penguin"), ("Nature", "leaf", "Autumn leaf"), ("Celebrations", "gift", "Gift box")] {
+            let _ = a.clip.lib.add(&pick(cat, n), new_name, cat, "https://icon-sets.iconify.design/tabler/x/", "MIT", "Tabler");
+        }
+        let _ = a.clip.lib.add(&pick("Tools", "hammer"), "Hammer", "Workshop", "https://api.iconify.design/ph/hammer.svg", "MIT", "Phosphor");
+        a.clip.reload();
+        a.clip.category = Some("Animals".to_string());
+        a.side_tab = SideTab::Clipart;
+        a.status = "Ready".into();
+    }
+    save(&mut h, "24-clipart.png");
+    {
+        let a = app(&mut h);
+        a.clip.category = None;
+        let ctx2 = ctx.clone();
+        let mut o = crate::clipart_ui::OnlineDlg::new(&ctx2, "http://127.0.0.1:9");
+        o.query = "cat".into();
+        let names = [("cat", "mdi", "Material Design Icons", "Apache-2.0", "Apache 2.0"), ("cat-outline", "mdi", "Material Design Icons", "Apache-2.0", "Apache 2.0"), ("dog", "ph", "Phosphor", "MIT", "MIT"), ("paw", "tabler", "Tabler Icons", "MIT", "MIT"), ("bird", "fa6-solid", "Font Awesome 6 Solid", "CC-BY-4.0", "CC BY 4.0"), ("fish", "mdi", "Material Design Icons", "Apache-2.0", "Apache 2.0")];
+        for (n, prefix, set, spdx, title) in names {
+            let key = format!("{prefix}:{n}");
+            let src = crate::clipart_ui::BUILTIN_CLIPART.iter().find(|c| c.1 == n.replace('-', " ")).or_else(|| crate::clipart_ui::BUILTIN_CLIPART.iter().find(|c| c.1 == "cat"));
+            if let Some(c) = src {
+                o.thumbs.insert(key, std::sync::Arc::from(c.2.to_vec().into_boxed_slice()));
+            }
+            o.hits.push(lc_core::clipart::iconify::Hit { prefix: prefix.into(), name: n.into(), set_name: set.into(), license_title: title.into(), license_spdx: spdx.into(), license_url: "https://www.apache.org/licenses/LICENSE-2.0".into(), author: "Pictogrammers".into() });
+        }
+        o.sel = Some(0);
+        o.name = "cat".into();
+        o.status = "6 pictures found".into();
+        a.clip.online = Some(o);
+    }
+    save(&mut h, "25-clipart-online.png");
 }
 
 /// Renders every embedded icon (`target/menu-icons.png`) so the whole set can be checked by eye.

@@ -34,8 +34,10 @@ written in Rust. The interface follows the look of [VectorCraft](https://github.
 | Layer names in the strip, layer options window, locked object, light work area in a dark scheme | Chinese interface, fonts and icons from the assets folder |
 | ![Hindi interface](docs/screenshots/21-hindi.png) | ![Quick guide and round corners](docs/screenshots/22-round-help.png) |
 | Hindi interface | Built-in quick guide (F1) and the round corners window |
-| ![Rounded shapes](docs/screenshots/23-rounded-shapes.png) | |
-| Rounded rectangle and triangle | |
+| ![Rounded shapes](docs/screenshots/23-rounded-shapes.png) | ![Clipart gallery](docs/screenshots/24-clipart.png) |
+| Rounded rectangle and triangle | Clipart gallery: blue dots ship with the program, green dots are yours |
+| ![Online clipart](docs/screenshots/25-clipart-online.png) | |
+| Searching open icon collections and saving into a category | |
 
 The pictures are rendered headlessly from the real UI; regenerate them with
 `cargo test -p lightcreator --release render_screenshots -- --ignored`.
@@ -50,6 +52,9 @@ presets, the last used profile and the window size are stored by the application
 | macOS | `~/Library/Application Support/lightcreator/app.ron` |
 | Windows | `%APPDATA%\lightcreator\data\app.ron` (usually `C:\Users\<you>\AppData\Roaming\lightcreator\data\app.ron`) |
 | Linux | `$XDG_DATA_HOME/lightcreator/app.ron`, by default `~/.local/share/lightcreator/app.ron` |
+
+Pictures you saved or downloaded for the clipart gallery are kept in the `clipart` folder next to it, together with an
+`index.json` that records each picture's name, category, source, licence and author.
 
 The file is written when the application closes. Delete it to reset everything to the defaults (the start
 window then asks for a device profile again). Projects (`.lcr`), SVG and G-code files are saved wherever you

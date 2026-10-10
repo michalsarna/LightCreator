@@ -36,6 +36,7 @@ pub enum Act {
     Lock,
     Unlock,
     ImportAi,
+    OnlineClipart,
     TraceImage,
     AdjustImage,
     BoolUnion,
@@ -101,6 +102,7 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
                 Item(Act::ImportSvg, "Import SVG…", key("CmdOrCtrl+I", "Ctrl+I")),
                 Item(Act::ImportImage, "Import image…", None),
                 Item(Act::ImportAi, "Import Adobe Illustrator / PDF…", None),
+                Item(Act::OnlineClipart, "Online clipart…", None),
             ],
         ),
         Sub(

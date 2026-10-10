@@ -89,6 +89,17 @@
 * Per-device display units: millimetres or inches (stored geometry stays in millimetres).
 * The editor cannot be opened until at least one device profile exists.
 
+**Clipart gallery**
+* A side-panel tab with 310 ready-made single-colour pictures in 9 categories (animals, nature, celebrations,
+  symbols, shapes, tools, food, objects, music and fun) shipped with the program, searchable by name. Click one
+  to place it on the active layer at a size you set; multi-part pictures are grouped.
+* **Dots:** blue for pictures that come with the program, green for pictures you saved or downloaded.
+* **Online:** search the open icon collections of Iconify from inside the program, see the collection, licence
+  and author of each result (orange dot when the licence asks for credit), and save a picture on your disk under a
+  category of your choice, existing or new. Pictures can also be downloaded from a web address, or added from files.
+  Saved pictures keep their source, licence and author and can be renamed, moved to another category, inspected
+  or deleted from the right-click menu. They live in the application's data folder next to `app.ron`, in the `clipart` folder (the location per system is in the README).
+
 **Helpers**
 * **Material library:** starting settings for common materials and operations for diode and CO2 lasers,
   apply to the active layer, save your own presets.

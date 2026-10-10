@@ -43,6 +43,15 @@ const EN: &[Section] = &[
         ],
     },
     Section {
+        title: "Clipart gallery",
+        lines: &[
+            "The Clipart tab holds ready-made pictures in categories. A blue dot marks pictures that come with the program, a green dot those you saved or downloaded. Click a picture to place it on the active layer, in the middle of the work area, at the size set in the tab. A picture with several parts is grouped.",
+            "Online… searches open icon collections on the internet (Iconify). Click a result to see its collection, licence and author, give it a name and a category (an existing one or a new one) and save it. The file is stored on your disk and shows up in the gallery with a green dot. Orange dots mark pictures whose licence asks you to credit the author. You can also download a picture from a web address, or add SVG files from your computer with Add file….",
+            "Right-click a picture of yours to rename it, move it to another category, see its details (source, licence, author) or delete it. Right-click a shipped picture to save a copy in your own category.",
+            "Only save pictures you are allowed to use and check the licence of the source before you sell what you make.",
+        ],
+    },
+    Section {
         title: "Preview and output",
         lines: &[
             "Toolpaths shows the paths on the work area; Preview… opens the preview window with every operation in its own colour, travel moves, a time estimate and a play slider. The red ring is the machine zero.",
@@ -102,6 +111,15 @@ const PL: &[Section] = &[
             "Każdy obiekt należy do jednej z 30 kolorowych warstw. Kliknij kolor na dolnym pasku, aby uczynić warstwę aktywną (zaznaczone obiekty przechodzą na nią); dwukrotne kliknięcie nazwy otwiera wszystkie opcje warstwy.",
             "Warstwa ma tryb (Line, Fill, Fill + Line, Offset fill), prędkość, moc, przejścia, odstęp, kąt, overscan, a dla obrazów rastrowanie i moc minimalną. Zakładka Layers pokazuje warstwy w kolejności wypalania; strzałkami zmieniasz ją.",
             "Biblioteka materiałów (menu Laser) zawiera wartości startowe dla typowych materiałów; zastosuj je do aktywnej warstwy lub zapisz własne. Zawsze testuj na ścinku.",
+        ],
+    },
+    Section {
+        title: "Galeria clipartów",
+        lines: &[
+            "Zakładka Clipart zawiera gotowe obrazki w kategoriach. Niebieska kropka oznacza obrazki dostarczone z programem, zielona obrazki zapisane lub pobrane przez Ciebie. Kliknij obrazek, aby umieścić go na aktywnej warstwie, na środku obszaru roboczego, w rozmiarze ustawionym w zakładce. Obrazek z wieloma częściami jest grupowany.",
+            "Online… przeszukuje otwarte kolekcje ikon w internecie (Iconify). Kliknij wynik, aby zobaczyć kolekcję, licencję i autora, nadaj mu nazwę i kategorię (istniejącą lub nową) i zapisz. Plik trafia na Twój dysk i pojawia się w galerii z zieloną kropką. Pomarańczowa kropka oznacza obrazki, których licencja wymaga podania autora. Możesz też pobrać obrazek spod adresu internetowego albo dodać pliki SVG z komputera przyciskiem Add file….",
+            "Kliknij prawym przyciskiem własny obrazek, aby zmienić jego nazwę, przenieść do innej kategorii, zobaczyć szczegóły (źródło, licencję, autora) lub go usunąć. Prawy przycisk na obrazku z zestawu zapisuje jego kopię w Twojej kategorii.",
+            "Zapisuj tylko obrazki, z których wolno Ci korzystać, i sprawdź licencję źródła, zanim zaczniesz sprzedawać wykonane prace.",
         ],
     },
     Section {
