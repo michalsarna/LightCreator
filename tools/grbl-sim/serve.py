@@ -100,6 +100,7 @@ def main():
     ap.add_argument("--sim", default=os.environ.get("LC_GRBL_SIM_EXE", DEFAULT_SIM), help="path to grbl_sim.exe")
     ap.add_argument("-v", "--verbose", action="store_true", help="log connections and keep the step / block traces")
     a = ap.parse_args()
+    a.sim = os.path.abspath(a.sim)  # the simulator runs in a temporary directory
     if not os.access(a.sim, os.X_OK):
         sys.exit(f"grbl-sim not found at {a.sim}; build it with tools/grbl-sim/build.sh")
     srv = socket.create_server((a.host, a.port), reuse_port=False)

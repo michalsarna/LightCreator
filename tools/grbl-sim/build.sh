@@ -26,16 +26,25 @@ if [ ! -d "$sim/.git" ]; then
     git -C "$sim" -c advice.detachedHead=false checkout --quiet "$SIM_REF"
 fi
 
-# Fixes for grbl-sim, see the comments in the patch and docs/grbl-sim.md:
+# Simulator-only fixes, see the comments in the patches and docs/grbl-sim.md:
+#  grbl-sim-fixes.patch
 #  * input read unbuffered (each reply used to wait for the next byte to arrive),
 #  * no terminal mode switching around every input poll (tens of thousands of syscalls per simulated second),
-#  * a separate SREG for the interrupt thread (a race could leave interrupts disabled and stall the steppers).
-if git -C "$sim" apply --check "$here/grbl-sim-fixes.patch" 2>/dev/null; then
-    git -C "$sim" apply "$here/grbl-sim-fixes.patch"
-elif ! git -C "$sim" apply --reverse --check "$here/grbl-sim-fixes.patch" 2>/dev/null; then
-    echo "grbl-sim-fixes.patch does not apply to grbl-sim $SIM_REF" >&2
-    exit 1
-fi
+#  * a separate SREG for the interrupt thread (a race could leave interrupts disabled and stall the steppers),
+#  * exit when the input hangs up (a simulator whose bridge was killed kept running);
+#  grbl-fixes.patch
+#  * atomic updates of GRBL's realtime flags: on an AVR cli() makes them atomic, in grbl-sim the interrupts run on
+#    another thread, and a reset request could be lost.
+apply_patch() { # repo, patch
+    if git -C "$1" apply --check "$here/$2" 2>/dev/null; then
+        git -C "$1" apply "$here/$2"
+    elif ! git -C "$1" apply --reverse --check "$here/$2" 2>/dev/null; then
+        echo "$2 does not apply to $1" >&2
+        exit 1
+    fi
+}
+apply_patch "$sim" grbl-sim-fixes.patch
+apply_patch "$out/grbl" grbl-fixes.patch
 
 case "$(uname -s)" in
     Darwin) platform=OSX ;;

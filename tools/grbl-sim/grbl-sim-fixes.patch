@@ -48,7 +48,7 @@ index 5dea8c4..e34d2c5 100644
  
  
 diff --git a/platform_LINUX.c b/platform_LINUX.c
-index 426d6c3..cda6a1c 100644
+index 426d6c3..d12164a 100644
 --- a/platform_LINUX.c
 +++ b/platform_LINUX.c
 @@ -128,10 +128,8 @@ void platform_kill_thread(plat_thread_t* th){
@@ -58,13 +58,13 @@ index 426d6c3..cda6a1c 100644
 -  enable_kbhit(1);
    if ( kbhit()) {
 -	 char_in = getchar();
-+	 { unsigned char c; if (read(STDIN_FILENO, &c, 1) == 1) char_in = c; }
++	 { unsigned char c; if (read(STDIN_FILENO, &c, 1) == 1) char_in = c; else exit(0); } // readable but no byte: hung up
    }
 -  enable_kbhit(0);
    return char_in;
  }
 diff --git a/platform_OSX.c b/platform_OSX.c
-index cad3202..af59fed 100644
+index cad3202..4454ede 100644
 --- a/platform_OSX.c
 +++ b/platform_OSX.c
 @@ -137,10 +137,8 @@ void platform_kill_thread(plat_thread_t* th){
@@ -74,7 +74,7 @@ index cad3202..af59fed 100644
 -  enable_kbhit(1);
    if ( kbhit()) {
 -	 char_in = getchar();
-+	 { unsigned char c; if (read(STDIN_FILENO, &c, 1) == 1) char_in = c; }
++	 { unsigned char c; if (read(STDIN_FILENO, &c, 1) == 1) char_in = c; else exit(0); } // readable but no byte: hung up
    }
 -  enable_kbhit(0);
    return char_in;

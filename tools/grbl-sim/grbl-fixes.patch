@@ -1,0 +1,38 @@
+diff --git a/grbl/system.c b/grbl/system.c
+index 55e6c40..58f47ef 100644
+--- a/grbl/system.c
++++ b/grbl/system.c
+@@ -356,14 +356,14 @@ uint8_t system_check_travel_limits(float *target)
+ void system_set_exec_state_flag(uint8_t mask) {
+   uint8_t sreg = SREG;
+   cli();
+-  sys_rt_exec_state |= (mask);
++  __atomic_or_fetch(&sys_rt_exec_state, (mask), __ATOMIC_SEQ_CST); // grbl-sim: cli() does not stop the interrupt thread
+   SREG = sreg;
+ }
+ 
+ void system_clear_exec_state_flag(uint8_t mask) {
+   uint8_t sreg = SREG;
+   cli();
+-  sys_rt_exec_state &= ~(mask);
++  __atomic_and_fetch(&sys_rt_exec_state, ~(mask), __ATOMIC_SEQ_CST); // grbl-sim: cli() does not stop the interrupt thread
+   SREG = sreg;
+ }
+ 
+@@ -384,14 +384,14 @@ void system_clear_exec_alarm() {
+ void system_set_exec_motion_override_flag(uint8_t mask) {
+   uint8_t sreg = SREG;
+   cli();
+-  sys_rt_exec_motion_override |= (mask);
++  __atomic_or_fetch(&sys_rt_exec_motion_override, (mask), __ATOMIC_SEQ_CST); // grbl-sim: cli() does not stop the interrupt thread
+   SREG = sreg;
+ }
+ 
+ void system_set_exec_accessory_override_flag(uint8_t mask) {
+   uint8_t sreg = SREG;
+   cli();
+-  sys_rt_exec_accessory_override |= (mask);
++  __atomic_or_fetch(&sys_rt_exec_accessory_override, (mask), __ATOMIC_SEQ_CST); // grbl-sim: cli() does not stop the interrupt thread
+   SREG = sreg;
+ }
+ 
