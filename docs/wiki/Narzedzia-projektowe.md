@@ -6,7 +6,7 @@
 
 ## Rysowanie
 * Narzędzia: prostokąt, elipsa, linia, linia łamana i tekst; zaznaczanie, przesuwanie i skalowanie uchwytami.
-* **Kształty automatyczne:** trójkąt (Y), pięcioramienna gwiazda (S), wielokąt foremny (G, od 3 do 360 boków wybieranych w okienku) serce (K) i spirala (I). Przeciągnij ramkę (Shift utrzymuje kwadrat); wynik to zwykły edytowalny kształt Béziera. Małe okno w rogu obszaru roboczego ustawia liczbę boków lub zwojów (domyślnie 3); nie ma przycisku OK i zostaje, dopóki narzędzie jest aktywne; wielokąt ma suwak od 5 do 36 boków obok pola liczby (3 do 360), a zmiana zmienia też ostatnio narysowany kształt.
+* **Kształty automatyczne:** trójkąt (Y), pięcioramienna gwiazda (S), wielokąt foremny (G, od 3 do 360 boków wybieranych w okienku) serce (K) i spirala (I). Przeciągnij ramkę (Shift utrzymuje kwadrat); wynik to zwykły edytowalny kształt Béziera. Małe okno w rogu obszaru roboczego ustawia liczbę boków lub zwojów (domyślnie 3); nie ma przycisku OK i zostaje, dopóki narzędzie jest aktywne; wielokąt ma suwak od 5 do 36 boków, a spirala od 1 do 24 zwojów, obok pola liczby (3 do 360 i 1 do 30), a zmiana zmienia też ostatnio narysowany kształt.
   ![Kształty](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/16-shapes.png)
 * **Grupy na pasku narzędzi:** zaznaczanie / edycja węzłów, narzędzia wstawiania, operacje na kształtach (suma, część wspólna, odejmowanie, różnica symetryczna), nawigacja, rozdzielone liniami. Podwójna strzałka na brzegu paska oznacza, że dalsze ikony są poza widokiem: przewiń, by je zobaczyć.
 

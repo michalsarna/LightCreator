@@ -32,6 +32,8 @@ All pictures are rendered headlessly from the real UI. Back to the [README](../R
 | Searching open icon collections and saving into a category | A gallery picture opened in the node tool |
 | ![Device tab](screenshots/27-device-tab.png) | ![Rotate and slant mode](screenshots/28-rotate-mode.png) |
 | Device tab: settings in full width, jog arrows and controls as large equal buttons, STOP across the panel | Click a handle: the red resize selection turns blue, with round corner handles (rotate) and diamond edge handles (slant) |
+| ![Close dialog](screenshots/29-close-dialog.png) | |
+| Closing with unsaved work: Save, Discard or Cancel | |
 
 Regenerate them with
 `cargo test -p lightcreator --release render_screenshots -- --ignored`.

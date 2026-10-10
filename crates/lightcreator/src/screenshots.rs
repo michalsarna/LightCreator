@@ -110,6 +110,13 @@ fn render_screenshots() {
     app(&mut h).rotate_mode = false;
     h.run_steps(2);
 
+    // The question asked when closing with unsaved work.
+    app(&mut h).show_close_dlg = true;
+    h.run_steps(3);
+    save(&mut h, "29-close-dialog.png");
+    app(&mut h).show_close_dlg = false;
+    h.run_steps(2);
+
     app(&mut h).side_tab = SideTab::Layers;
     save(&mut h, "03-layers.png");
 

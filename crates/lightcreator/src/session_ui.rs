@@ -111,22 +111,27 @@ impl App {
         }
         let mut choice = None;
         egui::Window::new("close_dialog").title_bar(false).collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {
-            ui.label(RichText::new(tr("Save your work before closing?")).strong());
-            ui.label(RichText::new(tr("The design has not been saved to a file.")).color(theme::text_dim()));
-            ui.add_space(8.0);
+            ui.set_min_width(420.0);
+            ui.add_space(6.0);
+            ui.label(RichText::new(tr("Save your work before closing?")).size(18.0).strong());
+            ui.add_space(4.0);
+            ui.label(RichText::new(tr("The design has not been saved to a file.")).size(14.0).color(theme::text_dim()));
+            ui.add_space(14.0);
             ui.horizontal(|ui| {
-                let save = egui::Button::new(RichText::new(tr("Save")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f));
-                if ui.add(save).clicked() {
+                let size = egui::vec2((ui.available_width() - 2.0 * ui.spacing().item_spacing.x) / 3.0, 38.0);
+                let save = egui::Button::new(RichText::new(tr("Save")).size(15.0).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f));
+                if ui.add_sized(size, save).clicked() {
                     choice = Some(Close::Save);
                 }
-                let discard = egui::Button::new(RichText::new(tr("Discard")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0xc0, 0x30, 0x30));
-                if ui.add(discard).clicked() {
+                let discard = egui::Button::new(RichText::new(tr("Discard")).size(15.0).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0xc0, 0x30, 0x30));
+                if ui.add_sized(size, discard).clicked() {
                     choice = Some(Close::Discard);
                 }
-                if ui.button(tr("Cancel")).clicked() {
+                if ui.add_sized(size, egui::Button::new(RichText::new(tr("Cancel")).size(15.0))).clicked() {
                     choice = Some(Close::Cancel);
                 }
             });
+            ui.add_space(4.0);
         });
         if ctx.input(|i| i.key_pressed(egui::Key::Escape)) {
             choice = Some(Close::Cancel);

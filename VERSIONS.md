@@ -2,6 +2,33 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.0.8
+
+**Editor**
+* Click a handle of the selection to swap resizing for turning and slanting: round corner handles rotate (Shift snaps to
+  15°), diamond edge handles slant; the frame is red while resizing and blue while turning / slanting.
+* **Spiral** tool (I) with a number-of-turns window (3 by default). The polygon and spiral windows have the slim look
+  of the preview window, no OK button, stay while the tool is active, sit in the corner of the work area and a change
+  in them also applies to the shape drawn last. The polygon has a slider from 5 to 36 sides, the spiral from 1 to 24 turns.
+
+**Saving**
+* A "File saved" message for 5 seconds after saving by hand.
+* **Auto-save** (Settings > Program options…, every 120 s by default): work without a file name goes to a temporary
+  folder, a named file is saved in place.
+* Closing with unsaved work asks Save, Discard (deletes the temporary file) or Cancel; the question also appears for the
+  window close button and Quit (on macOS Cmd+Q).
+
+**Preview and device**
+* Preview: slimmer bottom margin, the real job time at the slider position, ×10 by default, play / pause with icons and a
+  fixed width.
+* Device tab: jog, cancel jog, home, unlock and the jog options are locked while a job runs; Connect is green,
+  Disconnect purple.
+
+**Other**
+* `SUPPORT.md` in English (Polish in `SUPPORT.pl.md`).
+* macOS: the app bundle is ad-hoc code signed and carries a camera usage description.
+* The tool-name test no longer fails in debug builds (CI).
+
 ## v0.0.7
 
 **Window and bars**

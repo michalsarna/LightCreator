@@ -6,7 +6,7 @@
 
 ## Drawing
 * Rectangle, ellipse, line, polyline and text tools; select, move and resize with handles.
-* **Automatic shapes:** triangle (Y), five-pointed star (S), regular polygon (G, 3 to 360 sides chosen in a popup), heart (K) and spiral (I). Drag a box (Shift keeps it square); the result is an ordinary editable Bézier shape. A small window in the corner of the work area sets the number of sides or of turns (3 by default); it has no OK button and stays while the tool is active; the polygon has a slider from 5 to 36 sides next to the number box (3 to 360), and a change also reshapes the shape drawn last.
+* **Automatic shapes:** triangle (Y), five-pointed star (S), regular polygon (G, 3 to 360 sides chosen in a popup), heart (K) and spiral (I). Drag a box (Shift keeps it square); the result is an ordinary editable Bézier shape. A small window in the corner of the work area sets the number of sides or of turns (3 by default); it has no OK button and stays while the tool is active; the polygon has a slider from 5 to 36 sides and the spiral one from 1 to 24 turns next to the number box (3 to 360 and 1 to 30), and a change also reshapes the shape drawn last.
   ![Shapes](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/16-shapes.png)
 * **Tool bar groups:** selecting / node editing, then insert tools, then the shape operations (union, intersection, subtract, exclusive or), then navigation, separated by lines. A double arrow at the edge of a bar means more icons are out of sight: scroll to reach them.
 

@@ -57,7 +57,7 @@ impl Tool {
 }
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.0.7";
+pub const APP_VERSION: &str = "v0.0.8";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -1493,19 +1493,10 @@ impl App {
                 ui.label(tr(label));
                 ui.add(egui::DragValue::new(value).range(range.clone()));
             });
-            if polygon {
-                // The usual choice runs from 5 to 36; the number box above takes anything from 3 to 360.
-                ui.spacing_mut().slider_width = 200.0;
-                ui.add(egui::Slider::new(value, 5..=36).clamping(egui::SliderClamping::Never).show_value(false));
-            } else {
-                ui.horizontal_wrapped(|ui| {
-                    for n in [1u32, 2, 3, 5, 8, 12] {
-                        if ui.selectable_label(*value == n, n.to_string()).clicked() {
-                            *value = n;
-                        }
-                    }
-                });
-            }
+            // The usual choice sits on the slider (polygon 5 to 36, spiral 1 to 24); the number box takes more.
+            let slider = if polygon { 5..=36 } else { 1..=24 };
+            ui.spacing_mut().slider_width = 200.0;
+            ui.add(egui::Slider::new(value, slider).clamping(egui::SliderClamping::Never).show_value(false));
             ui.label(RichText::new(tr("Drag on the work area to draw it.")).color(theme::text_dim()));
         });
         self.polygon_sides = self.polygon_sides.clamp(3, 360);
