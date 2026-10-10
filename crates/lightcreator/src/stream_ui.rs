@@ -96,6 +96,11 @@ impl App {
                 self.side_tab = SideTab::Properties;
             }
             ui.separator();
+            let (on, can) = self.overlay_state();
+            if crate::app::window_toggle(ui, &tr("Overlay"), &tr("Show or hide the camera overlay on the work area"), on, can) {
+                self.toggle_overlay_button();
+            }
+            ui.separator();
             if ui.button("+").on_hover_text(tr("Zoom in")).clicked() {
                 self.stream_zoom = (self.stream_zoom * 1.25).min(MAX_ZOOM);
             }
@@ -156,7 +161,7 @@ impl App {
             StreamMode::Floating => {
                 let mut open = true;
                 egui::Window::new("camera_window").title_bar(false).default_size([680.0, 540.0]).resizable(true).show(ctx, |ui| {
-                    crate::window_ui::mini_title(ui, &tr("Camera view"), &mut open);
+                    crate::window_ui::mini_title(ui, &tr("Camera view"), &mut open, |_| {});
                     self.stream_view(ui);
                 });
                 if !open {

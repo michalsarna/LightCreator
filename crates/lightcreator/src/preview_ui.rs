@@ -132,7 +132,17 @@ impl App {
         let (bw, bh) = (self.doc.device.bed_w, self.doc.device.bed_h);
         let Some((_, job)) = self.pv.job.take() else { return };
         egui::Window::new("preview_window").title_bar(false).default_size([980.0, 640.0]).resizable(true).show(ctx, |ui| {
-            crate::window_ui::mini_title(ui, &tr("Preview"), &mut open);
+            let pv = &mut self.pv;
+            crate::window_ui::mini_title(ui, &tr("Preview"), &mut open, |ui| {
+                // Icons are added right to left: the work area button is the one on the left.
+                for (objects, icon, tip) in [(true, "expand", "Fit all objects"), (false, "scan", "Fit work area")] {
+                    if crate::app::icon_button(ui, icon, &tr(tip), true, 22.0) {
+                        pv.fit_objects = objects;
+                        pv.view.need_fit = true;
+                        pv.view.auto_fit = true;
+                    }
+                }
+            });
             ui.horizontal_wrapped(|ui| {
                 ui.label(tr("Colour by"));
                 ui.selectable_value(&mut self.pv.color_by, ColorBy::Operation, tr("Operation"));
@@ -153,13 +163,6 @@ impl App {
                         ui.selectable_value(&mut self.pv.speed, s, tr(s.label()));
                     }
                 });
-                for (objects, label) in [(false, "Fit work area"), (true, "Fit all objects")] {
-                    if ui.button(tr(label)).clicked() {
-                        self.pv.fit_objects = objects;
-                        self.pv.view.need_fit = true;
-                        self.pv.view.auto_fit = true;
-                    }
-                }
             });
             ui.separator();
             let n_ops = job.ops.len();

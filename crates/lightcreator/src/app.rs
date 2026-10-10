@@ -685,6 +685,25 @@ impl App {
     pub fn can_start(&self) -> bool {
         !self.doc.device.controller.is_serial() || self.connected
     }
+    /// (shown, available) for the Overlay buttons.
+    pub fn overlay_state(&self) -> (bool, bool) {
+        (self.overlay.is_some() && self.overlay_visible, self.overlay.is_some() || self.show_stream)
+    }
+    /// The overlay is fed from the live camera while its window is open, otherwise it is the saved photo.
+    pub fn toggle_overlay_button(&mut self) {
+        let (on, _) = self.overlay_state();
+        if self.show_stream {
+            if on && self.stream_overlay {
+                self.stream_overlay = false;
+                self.overlay_visible = false;
+            } else {
+                self.stream_overlay = true;
+                self.overlay_visible = true;
+            }
+        } else {
+            self.overlay_visible = !self.overlay_visible;
+        }
+    }
     /// A job is being streamed to the laser.
     pub fn job_running(&self) -> bool {
         self.progress.1 > 0 && self.progress.0 < self.progress.1
@@ -1141,21 +1160,9 @@ impl App {
             if has_camera && window_toggle(ui, &tr("Camera view"), &tr("Show the live camera picture of this machine"), self.show_stream, true) {
                 self.show_stream = !self.show_stream;
             }
-            // The overlay is shown from the live camera while its window is open, otherwise it is the saved photo.
-            let overlay_on = self.overlay.is_some() && self.overlay_visible;
-            let can_overlay = self.overlay.is_some() || self.show_stream;
+            let (overlay_on, can_overlay) = self.overlay_state();
             if window_toggle(ui, &tr("Overlay"), &tr("Show or hide the camera overlay on the work area"), overlay_on, can_overlay) {
-                if self.show_stream {
-                    if overlay_on && self.stream_overlay {
-                        self.stream_overlay = false;
-                        self.overlay_visible = false;
-                    } else {
-                        self.stream_overlay = true;
-                        self.overlay_visible = true;
-                    }
-                } else {
-                    self.overlay_visible = !self.overlay_visible;
-                }
+                self.toggle_overlay_button();
             }
 
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
@@ -1565,7 +1572,7 @@ fn scroll_hints<R>(ui: &egui::Ui, out: &egui::scroll_area::ScrollAreaOutput<R>) 
 }
 
 /// Text button for a window that can be open or closed: light blue while it is open.
-fn window_toggle(ui: &mut egui::Ui, text: &str, tip: &str, open: bool, enabled: bool) -> bool {
+pub fn window_toggle(ui: &mut egui::Ui, text: &str, tip: &str, open: bool, enabled: bool) -> bool {
     let btn = if open {
         egui::Button::new(RichText::new(text).color(Color32::WHITE)).fill(Color32::from_rgb(0x3f, 0xa9, 0xf5))
     } else {
@@ -1587,7 +1594,7 @@ pub fn toggle_icon(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool) -> bool {
 }
 
 /// A square icon-only button with a tooltip; greyed out and inert when `on` is false.
-fn icon_button(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool, size: f32) -> bool {
+pub fn icon_button(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool, size: f32) -> bool {
     let sense = if on { egui::Sense::click() } else { egui::Sense::hover() };
     let (rect, resp) = ui.allocate_exact_size(egui::vec2(size, size), sense);
     if on && resp.hovered() {

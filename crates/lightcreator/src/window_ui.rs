@@ -156,13 +156,14 @@ impl App {
     }
 }
 
-/// A slim title line for floating tool windows (preview, camera): small text and a small close button.
-pub fn mini_title(ui: &mut egui::Ui, title: &str, open: &mut bool) {
+/// A slim title line for floating tool windows (preview, camera): small text and a small close button. `extra`
+/// adds widgets next to the close button, right-aligned.
+pub fn mini_title(ui: &mut egui::Ui, title: &str, open: &mut bool, extra: impl FnOnce(&mut egui::Ui)) {
     ui.horizontal(|ui| {
         ui.spacing_mut().item_spacing.y = 0.0;
-        ui.label(egui::RichText::new(title).size(11.0).strong().color(theme::text_dim()));
+        ui.label(egui::RichText::new(title).size(13.0).strong().color(theme::text()));
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-            let (rect, resp) = ui.allocate_exact_size(egui::vec2(16.0, 16.0), Sense::click());
+            let (rect, resp) = ui.allocate_exact_size(egui::vec2(18.0, 18.0), Sense::click());
             if resp.hovered() {
                 ui.painter().rect_filled(rect, 3.0, theme::text().gamma_multiply(0.15));
             }
@@ -170,6 +171,7 @@ pub fn mini_title(ui: &mut egui::Ui, title: &str, open: &mut bool) {
             if resp.on_hover_text(crate::i18n::tr("Close")).clicked() {
                 *open = false;
             }
+            extra(ui);
         });
     });
     ui.separator();
