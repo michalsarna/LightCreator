@@ -18,7 +18,13 @@ jobs:
       - name: Linux build dependencies
         run: sudo apt-get update && sudo apt-get install -y libxkbcommon-x11-dev libgl1-mesa-dev
       - name: Unit tests
-        run: cargo test --workspace
+        run: |
+          set -o pipefail
+          cargo test --workspace 2>&1 | tee unit-tests.log || {
+            # Show each failure as an annotation on the pull request.
+            grep -E -A3 "^---- .* stdout ----" unit-tests.log | grep -v "^--$" | grep -v "^note:" | sed 's/^/::error title=unit tests::/'
+            exit 1
+          }
 
       # End-to-end streaming tests against the real GRBL 1.1h firmware compiled for the PC (grbl-sim).
       - name: Cache grbl-sim
