@@ -55,7 +55,7 @@ impl Tool {
 }
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.0.5";
+pub const APP_VERSION: &str = "v0.0.6";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -1583,5 +1583,22 @@ mod recent_tests {
         a.do_act(&ctx, Act::ClearRecent);
         assert!(a.recent.is_empty());
         let _ = std::fs::remove_dir_all(&dir);
+    }
+}
+
+#[cfg(test)]
+mod version_tests {
+    /// The version shown in About, the Cargo version, the newest VERSIONS.md section and the supported
+    /// version in SECURITY.md must all name the same release.
+    #[test]
+    fn version_is_the_same_everywhere() {
+        let cargo = env!("CARGO_PKG_VERSION");
+        assert_eq!(super::APP_VERSION, format!("v{cargo}"), "APP_VERSION in app.rs vs Cargo.toml");
+        let versions = include_str!("../../../VERSIONS.md");
+        let top = versions.lines().find_map(|l| l.strip_prefix("## ")).expect("a section in VERSIONS.md");
+        assert_eq!(top.trim(), super::APP_VERSION, "newest section of VERSIONS.md");
+        let security = include_str!("../../../SECURITY.md");
+        let latest = security.lines().find(|l| l.contains("(latest)")).expect("a (latest) row in SECURITY.md");
+        assert!(latest.contains(super::APP_VERSION), "SECURITY.md latest row: {latest}");
     }
 }
