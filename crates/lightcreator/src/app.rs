@@ -956,7 +956,7 @@ impl App {
 
     pub fn do_act(&mut self, ctx: &egui::Context, a: Act) {
         // On the start screen only application-level actions are available.
-        if self.screen == Screen::Start && !matches!(a, Act::Quit | Act::About | Act::SetLang(_) | Act::SetScheme(_)) {
+        if self.screen == Screen::Start && !matches!(a, Act::Quit | Act::About | Act::SetLang(_) | Act::SetScheme(_) | Act::RestoreBackup | Act::CheckUpdates) {
             return;
         }
         match a {
@@ -1024,6 +1024,10 @@ impl App {
             Act::ProgramOptions => self.show_options = true,
             Act::CheckUpdates => self.start_update_check(ctx, true),
             Act::DownloadBackup => self.download_backup(),
+            Act::RestoreBackup => {
+                let confirm = !self.profiles.is_empty();
+                self.restore_backup_dialog(ctx, confirm);
+            }
             Act::PreviewWindow => self.show_preview = true,
             Act::ShareSer2net => self.open_ser2net(),
             Act::ToggleOverlay => {

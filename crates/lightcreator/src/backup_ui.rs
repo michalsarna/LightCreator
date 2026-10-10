@@ -52,6 +52,113 @@ impl App {
         }
     }
 
+    /// Choose a backup zip and restore from it. `confirm` asks first, because it replaces what is there now.
+    pub fn restore_backup_dialog(&mut self, ctx: &eframe::egui::Context, confirm: bool) {
+        let Some(src) = rfd::FileDialog::new().add_filter("Zip", &["zip"]).pick_file() else { return };
+        if confirm {
+            let sure = rfd::MessageDialog::new()
+                .set_level(rfd::MessageLevel::Warning)
+                .set_title(crate::i18n::tr("Restore from backup"))
+                .set_description(crate::i18n::tr("Your current settings and clipart will be replaced by the backup. Continue?"))
+                .set_buttons(rfd::MessageButtons::YesNo)
+                .show();
+            if sure != rfd::MessageDialogResult::Yes {
+                return;
+            }
+        }
+        match self.restore_backup(ctx, &src) {
+            Ok(n) => {
+                self.status = trf("Backup restored: {}", &[&src.display()]);
+                self.toast(trf("Backup restored: {}", &[&src.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default()]));
+                let _ = n;
+            }
+            Err(e) => self.status = trf("Restore failed: {}", &[&e]),
+        }
+    }
+
+    /// Put the settings and the clipart of a backup in place. Returns the number of files read.
+    pub fn restore_backup(&mut self, ctx: &eframe::egui::Context, src: &Path) -> Result<usize, String> {
+        let file = std::fs::File::open(src).map_err(|e| e.to_string())?;
+        let mut zip = zip::ZipArchive::new(file).map_err(|e| e.to_string())?;
+        // Settings first: a backup without them is not one of ours.
+        let settings: BTreeMap<String, String> = {
+            let mut f = zip.by_name("app.ron").map_err(|_| "app.ron not found in the file".to_string())?;
+            let mut text = String::new();
+            std::io::Read::read_to_string(&mut f, &mut text).map_err(|e| e.to_string())?;
+            ron::from_str(&text).map_err(|e| e.to_string())?
+        };
+        let dir = self.clip.lib.dir().to_path_buf();
+        let mut count = 1usize;
+        for i in 0..zip.len() {
+            let mut f = zip.by_index(i).map_err(|e| e.to_string())?;
+            if f.is_dir() {
+                continue;
+            }
+            // Only files below `clipart/`, and never outside the folder.
+            let Some(rel) = f.enclosed_name().and_then(|p| p.strip_prefix("clipart").ok().map(Path::to_path_buf)) else { continue };
+            if rel.as_os_str().is_empty() {
+                continue;
+            }
+            let target = dir.join(rel);
+            if let Some(parent) = target.parent() {
+                std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+            }
+            let mut out = std::fs::File::create(&target).map_err(|e| format!("{}: {}", target.display(), e))?;
+            std::io::copy(&mut f, &mut out).map_err(|e| e.to_string())?;
+            count += 1;
+        }
+        self.apply_settings(ctx, &settings);
+        self.clip.lib = lc_core::clipart::Library::open(dir);
+        self.clip.reload();
+        Ok(count)
+    }
+
+    /// Take the settings of a backup (the strings of `settings_pairs`) into the running program.
+    pub fn apply_settings(&mut self, ctx: &eframe::egui::Context, m: &BTreeMap<String, String>) {
+        let get = |k: &str| m.get(k).map(String::as_str);
+        if let Some(l) = get("lang").and_then(crate::i18n::Lang::from_code) {
+            self.lang = l;
+            crate::i18n::set_lang(l);
+        }
+        if let Some(s) = get("scheme").and_then(crate::theme::Scheme::from_id) {
+            self.scheme = s;
+            crate::theme::apply(ctx, s);
+        }
+        if let Some(p) = get("profiles").and_then(|j| serde_json::from_str::<Vec<lc_core::Device>>(j).ok()) {
+            self.profiles = p;
+        }
+        self.active = get("active_profile").and_then(|v| v.parse::<usize>().ok()).filter(|i| *i < self.profiles.len()).unwrap_or(0);
+        self.start_sel = self.active;
+        if let Some(v) = get("autosave_on") {
+            self.autosave_on = v != "0";
+        }
+        if let Some(v) = get("autosave_secs").and_then(|v| v.parse::<u32>().ok()).filter(|v| (10..=3600).contains(v)) {
+            self.autosave_secs = v;
+        }
+        if let Some(v) = get("check_updates") {
+            self.check_updates = v != "0";
+        }
+        if let Some(r) = get("recent_files").and_then(|j| serde_json::from_str::<Vec<PathBuf>>(j).ok()) {
+            self.recent = r.into_iter().take(crate::menu::MAX_RECENT).collect();
+        }
+        if let Some(g) = get("grid_prefs").and_then(|j| serde_json::from_str(j).ok()) {
+            self.grid_prefs = g;
+        }
+        if let Some(v) = get("grid_main_on") {
+            self.show_grid = v != "0";
+        }
+        if let Some(v) = get("grid_main_mm").and_then(|v| v.parse::<f64>().ok()) {
+            self.grid = v;
+        }
+        if let Some(p) = get("user_materials").and_then(|j| serde_json::from_str(j).ok()) {
+            self.user_presets = p;
+        }
+        self.cfg = None;
+        if self.screen == crate::app::Screen::Editor && !self.profiles.is_empty() {
+            self.enter_editor(self.active);
+        }
+    }
+
     /// Write the zip: `app.ron` (the settings as they are now), the whole `clipart` folder and a short README.
     /// Returns the number of files in it.
     pub fn write_backup(&self, dest: &Path) -> Result<usize, String> {
@@ -128,6 +235,42 @@ mod tests {
         let map: BTreeMap<String, String> = ron::from_str(&ron_text).unwrap();
         assert!(map.get("profiles").is_some_and(|p| p.contains("Diode")), "{map:?}");
         assert_eq!(map.get("lang").map(String::as_str), Some("en"));
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn a_backup_restores_profiles_and_clipart_into_a_fresh_program() {
+        let ctx = eframe::egui::Context::default();
+        let dir = std::env::temp_dir().join(format!("lc-restore-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        // The program that makes the backup.
+        let mut a = App::build(&ctx, None, false);
+        let clip = dir.join("old/clipart");
+        std::fs::create_dir_all(clip.join("Mine")).unwrap();
+        std::fs::write(clip.join("index.json"), "{\"items\":[]}").unwrap();
+        std::fs::write(clip.join("Mine/star.svg"), "<svg/>").unwrap();
+        a.clip = crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(clip));
+        let mut dev = lc_core::Device::default();
+        dev.name = "My laser".into();
+        a.profiles = vec![dev];
+        a.lang = crate::i18n::Lang::Pl;
+        let zip_path = dir.join("b.zip");
+        a.write_backup(&zip_path).unwrap();
+        // A fresh program with nothing: no profiles, empty clipart folder.
+        let mut b = App::build(&ctx, None, false);
+        let fresh = dir.join("new/clipart");
+        b.clip = crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(fresh.clone()));
+        b.profiles.clear();
+        assert!(b.restore_backup(&ctx, &zip_path).is_ok());
+        assert_eq!(b.profiles.len(), 1);
+        assert_eq!(b.profiles[0].name, "My laser");
+        assert_eq!(b.lang, crate::i18n::Lang::Pl);
+        assert!(fresh.join("Mine/star.svg").is_file(), "clipart files come back");
+        crate::i18n::set_lang(crate::i18n::Lang::En);
+        // Something that is not a backup is refused.
+        let junk = dir.join("junk.zip");
+        std::fs::write(&junk, "not a zip").unwrap();
+        assert!(b.restore_backup(&ctx, &junk).is_err());
         let _ = std::fs::remove_dir_all(&dir);
     }
 }
