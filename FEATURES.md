@@ -61,6 +61,11 @@
 * **Import** submenu: SVG (curves are kept as Béziers; colours map to layers), bitmaps (PNG, JPEG, BMP, GIF,
   WebP) and Adobe Illustrator / PDF (first page, vector paths; Illustrator files saved with PDF compatibility).
 * **Export** submenu: SVG, G-code, and HPGL (`.plt`) / DXF. Native `.lcr` projects embed images.
+* **Side panel layout:** Properties is laid out as a table with sections separated by lines (position and size,
+  rotation, mirroring, alignment, layer) and buttons of one size. Image settings of a layer show only when the layer
+  holds bitmap images. In the Device tab the jog arrows, Home, Unlock, Pause and Resume are equal icon buttons (STOP
+  stays red and plain), and jog step, jog feed and frame power sit together above them. The console output has its
+  own background colour.
 * **Image import dialog:** preview with rotate (90° steps and free angle), flip, brightness, contrast, gamma,
   auto levels, negative and size. The same dialog adjusts an image already on the page.
 * **Trace image:** turn the dark (or light) areas of a bitmap into Bézier outlines with threshold, speckle
@@ -69,6 +74,8 @@
 **Cuts and layers**
 * 30 colour layers with mode Line, Fill, Fill + Line or Offset fill; speed, power, passes, interval, scan
   angle, overscan and bidirectional scanning; output and visibility switches.
+* **Air assist:** each layer has an "Air pump on" switch; the G-code turns the pump on (M8, or the fan on Marlin)
+  when a layer that wants it starts, off when a layer without it starts, and off at the end of the job.
 * **Offset fill:** concentric inward rings at the layer interval.
 * **Raster engraving:** images engrave line by line at the layer interval with threshold, Floyd-Steinberg,
   Jarvis, Stucki, Atkinson, ordered or grayscale power (minimum and maximum power); negative option per image.

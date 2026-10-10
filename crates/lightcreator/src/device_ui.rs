@@ -512,57 +512,73 @@ impl App {
         self.doc.device.port = port;
         ui.label(format!("{}: {}   X {:.2}  Y {:.2}", tr("State"), self.machine.0, self.machine.1, self.machine.2));
         let mut act: Option<Action> = None;
+        // Options of the device that belong to jogging and framing, always editable.
+        egui::Grid::new("jog_opts").num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
+            ui.label(tr("Jog step"));
+            drag_len(ui, units, &mut self.doc.device.jog_step, 0.1, Some((0.1, 200.0)));
+            ui.end_row();
+            ui.label(tr("Jog feed"));
+            drag_speed(ui, units, self.doc.device.speed_unit, true, &mut self.doc.device.jog_feed, 10.0, Some((10.0, 20000.0)));
+            ui.end_row();
+            ui.label(tr("Frame power"));
+            ui.add(egui::DragValue::new(&mut self.doc.device.frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
+            ui.end_row();
+        });
+        ui.separator();
         ui.add_enabled_ui(self.connected, |ui| {
-            ui.horizontal(|ui| {
-                ui.label(tr("Jog step"));
-                drag_len(ui, units, &mut self.doc.device.jog_step, 0.1, Some((0.1, 200.0)));
-                ui.label(tr("Jog feed"));
-                drag_speed(ui, units, self.doc.device.speed_unit, true, &mut self.doc.device.jog_feed, 10.0, Some((10.0, 20000.0)));
-            });
             let (s, f) = (self.doc.device.jog_step, self.doc.device.jog_feed);
+            // Arrow keys and the controls below are buttons of one size.
+            let size = egui::vec2(40.0, 32.0);
+            let icon = |ui: &mut egui::Ui, name: &str, tip: String| -> bool {
+                let (rect, resp) = ui.allocate_exact_size(size, egui::Sense::click());
+                let hovered = resp.hovered() && ui.is_enabled();
+                let fill = if hovered { theme::panel_dark() } else { ui.visuals().widgets.inactive.weak_bg_fill };
+                ui.painter().rect_filled(rect, 4.0, fill);
+                ui.painter().rect_stroke(rect, 4.0, egui::Stroke::new(1.0, theme::border()), egui::StrokeKind::Inside);
+                let ink = if ui.is_enabled() { theme::text() } else { theme::text().gamma_multiply(0.4) };
+                crate::icons::paint(ui, egui::Rect::from_center_size(rect.center(), egui::vec2(18.0, 18.0)), name, ink);
+                resp.on_hover_text(tip).clicked()
+            };
             egui::Grid::new("jog").spacing([4.0, 4.0]).show(ui, |ui| {
-                ui.label("");
-                if ui.button(format!("  {}  ", tr("Up"))).clicked() {
+                ui.allocate_exact_size(size, egui::Sense::hover());
+                if icon(ui, "arrow-up", tr("Up").to_string()) {
                     act = Some(ctrl.jog(0.0, s, f));
                 }
-                ui.label("");
+                ui.allocate_exact_size(size, egui::Sense::hover());
                 ui.end_row();
-                if ui.button(format!(" {} ", tr("Left"))).clicked() {
+                if icon(ui, "arrow-left", tr("Left").to_string()) {
                     act = Some(ctrl.jog(-s, 0.0, f));
                 }
-                if ui.button(format!("  {}  ", tr("Stop"))).on_hover_text(tr("Cancel jog")).clicked() {
+                if icon(ui, "square", tr("Cancel jog").to_string()) {
                     act = Some(ctrl.cancel_jog());
                 }
-                if ui.button(format!(" {} ", tr("Right"))).clicked() {
+                if icon(ui, "arrow-right", tr("Right").to_string()) {
                     act = Some(ctrl.jog(s, 0.0, f));
                 }
                 ui.end_row();
-                ui.label("");
-                if ui.button(format!(" {} ", tr("Down"))).clicked() {
+                ui.allocate_exact_size(size, egui::Sense::hover());
+                if icon(ui, "arrow-down", tr("Down").to_string()) {
                     act = Some(ctrl.jog(0.0, -s, f));
                 }
                 ui.end_row();
             });
+            ui.add_space(4.0);
             ui.horizontal_wrapped(|ui| {
-                if ui.button(tr("Home")).clicked() {
+                if icon(ui, "house", tr("Home").to_string()) {
                     act = Some(ctrl.home());
                 }
-                if ui.button(tr("Unlock")).clicked() {
+                if icon(ui, "lock-open", tr("Unlock").to_string()) {
                     act = Some(ctrl.unlock());
                 }
-                if ui.button(tr("Pause")).clicked() {
+                if icon(ui, "pause", tr("Pause").to_string()) {
                     act = Some(ctrl.pause());
                 }
-                if ui.button(tr("Resume")).clicked() {
+                if icon(ui, "play", tr("Resume").to_string()) {
                     act = Some(ctrl.resume());
                 }
-                if ui.add(egui::Button::new(RichText::new(tr("STOP")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0xc0, 0x30, 0x30))).clicked() {
+                if ui.add_sized(size, egui::Button::new(RichText::new(tr("STOP")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0xc0, 0x30, 0x30))).clicked() {
                     self.link.send(Cmd::Abort);
                 }
-            });
-            ui.horizontal(|ui| {
-                ui.label(tr("Frame power"));
-                ui.add(egui::DragValue::new(&mut self.doc.device.frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
             });
         });
         if let Some(a) = act {

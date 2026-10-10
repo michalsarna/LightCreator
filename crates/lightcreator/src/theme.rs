@@ -142,6 +142,14 @@ pub fn workspace() -> Color32 {
 pub fn text() -> Color32 {
     pal().text
 }
+/// Background of the console output: near black in the dark schemes, a warm paper tone in the light ones.
+pub fn console_bg() -> Color32 {
+    if CURRENT.load(Ordering::Relaxed) <= 1 {
+        rgb(0x0f, 0x13, 0x1b)
+    } else {
+        rgb(0xfb, 0xf7, 0xe9)
+    }
+}
 pub fn text_dim() -> Color32 {
     pal().text_dim
 }

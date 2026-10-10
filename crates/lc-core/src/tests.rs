@@ -658,3 +658,24 @@ fn speed_units_convert_between_display_and_stored_values() {
     let _ = id;
     assert!(crate::gcode::generate(&doc).gcode.contains("F1200"));
 }
+
+#[test]
+fn air_assist_is_switched_per_layer_and_off_at_the_end() {
+    let mut doc = Document::default();
+    doc.layers[0].air_assist = true;
+    doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::IDENTITY);
+    doc.add(1, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(20.0, 0.0));
+    let g = crate::gcode::generate(&doc).gcode;
+    let (on, off) = (g.find("M8 ;").expect("air on"), g.rfind("M9 ;").expect("air off"));
+    assert!(on < off);
+    // The second layer has no air assist: it is switched off before it burns.
+    assert_eq!(g.matches("M8 ;").count(), 1);
+    assert!(g.matches("M9 ;").count() >= 1);
+    doc.device.controller = Controller::Marlin;
+    let m = crate::gcode::generate(&doc).gcode;
+    assert!(m.contains("M106 S255") && m.contains("M107"));
+    // Without air assist nothing is emitted.
+    doc.layers[0].air_assist = false;
+    let n = crate::gcode::generate(&doc).gcode;
+    assert!(!n.contains("M8") && !n.contains("M9") && !n.contains("M106"));
+}

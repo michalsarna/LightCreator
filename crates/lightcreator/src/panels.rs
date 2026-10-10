@@ -65,6 +65,7 @@ impl App {
         let (mut x, mut y, mut w, mut h) = (b.min.x, b.min.y, b.width(), b.height());
         let mut changed = None;
         egui::Grid::new("props").num_columns(4).spacing([6.0, 6.0]).show(ui, |ui| {
+            ui.spacing_mut().interact_size.x = 78.0;
             let f = |ui: &mut egui::Ui, label: &str, v: &mut f64| -> egui::Response {
                 ui.label(label);
                 drag_len(ui, units, v, 0.1, None)
@@ -102,35 +103,43 @@ impl App {
             };
             self.transform_selection(t);
         }
-        ui.horizontal(|ui| {
-            ui.label(tr("Rotate"));
-            ui.add(egui::DragValue::new(&mut self.rot_input).suffix("°"));
-            if ui.button(tr("Apply")).clicked() {
+        // Rotate, mirror, align and layer: each section in its own block, buttons of one size.
+        ui.separator();
+        let bw = (ui.available_width() - 12.0) / 3.0;
+        egui::Grid::new("props_rotate").num_columns(3).spacing([6.0, 6.0]).show(ui, |ui| {
+            ui.allocate_ui_with_layout(egui::vec2(bw, 24.0), egui::Layout::left_to_right(egui::Align::Center), |ui| {
+                ui.label(tr("Rotate"));
+                ui.add(egui::DragValue::new(&mut self.rot_input).suffix("°"));
+            });
+            if ui.add_sized([bw, 24.0], egui::Button::new(tr("Apply"))).clicked() {
                 self.rotate_sel(self.rot_input);
             }
-            if ui.button("90°").clicked() {
+            if ui.add_sized([bw, 24.0], egui::Button::new("90°")).clicked() {
                 self.rotate_sel(90.0);
             }
+            ui.end_row();
         });
-        ui.horizontal(|ui| {
-            if ui.button(tr("Flip H")).clicked() {
-                self.flip(true);
-            }
-            if ui.button(tr("Flip V")).clicked() {
-                self.flip(false);
-            }
-            if ui.button(tr("Centre")).clicked() {
-                self.center_on_bed();
-            }
-        });
-        ui.horizontal_wrapped(|ui| {
-            for (i, n) in [tr("Left"), tr("Mid-H"), tr("Right"), tr("Top"), tr("Mid-V"), tr("Bottom")].iter().enumerate() {
-                let tips = [tr("Align left"), tr("Align centre"), tr("Align right"), tr("Align top"), tr("Align middle"), tr("Align bottom")];
-                if ui.button(*n).on_hover_text(tips[i]).clicked() {
-                    self.align(i as u8);
-                }
-            }
-        });
+        ui.separator();
+        let flips = [(tr("Flip H"), tr("Flip horizontal")), (tr("Flip V"), tr("Flip vertical")), (tr("Centre"), tr("Centre on bed"))];
+        match button_grid(ui, "props_flip", &flips) {
+            Some(0) => self.flip(true),
+            Some(1) => self.flip(false),
+            Some(2) => self.center_on_bed(),
+            _ => {}
+        }
+        ui.separator();
+        let aligns = [
+            (tr("Left"), tr("Align left")),
+            (tr("Mid-H"), tr("Align centre")),
+            (tr("Right"), tr("Align right")),
+            (tr("Top"), tr("Align top")),
+            (tr("Mid-V"), tr("Align middle")),
+            (tr("Bottom"), tr("Align bottom")),
+        ];
+        if let Some(i) = button_grid(ui, "props_align", &aligns) {
+            self.align(i as u8);
+        }
+        ui.separator();
         // Layer of selection
         let first = self.doc.shape(self.sel[0]).map(|s| s.layer).unwrap_or(0);
         let mut layer = first;
@@ -300,10 +309,11 @@ impl App {
         }
         ui.label(RichText::new(tr("Layers are burnt from top to bottom.")).color(theme::text_dim()));
         ui.separator();
+        let has_images = self.doc.shapes.iter().any(|s| s.layer == self.active_layer && s.is_image());
         let l = &mut self.doc.layers[self.active_layer];
         ui.label(RichText::new(trf("Cut settings — {}", &[&l.name])).strong());
         let panel_scope = format!("panel-{}", self.active_layer);
-        layer_settings_ui(ui, (units, su), l, panel_scope.as_str());
+        layer_settings_ui(ui, (units, su), l, panel_scope.as_str(), has_images);
         let now = ui.input(|i| i.time);
         self.commit_layer_edit(now, before);
     }
@@ -327,6 +337,7 @@ impl App {
         let Some(i) = self.layer_dlg else { return };
         let before = self.doc.layers.clone();
         let (units, su) = (self.doc.device.units, self.doc.device.speed_unit);
+        let has_images = self.doc.shapes.iter().any(|s| s.layer == i && s.is_image());
         let mut open = true;
         let title = trf("Layer options — {}", &[&self.doc.layers[i].name]);
         egui::Window::new(title).id(egui::Id::new("layer_dialog")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
@@ -348,7 +359,7 @@ impl App {
                 ui.end_row();
             });
             ui.separator();
-            layer_settings_ui(ui, (units, su), l, "dialog");
+            layer_settings_ui(ui, (units, su), l, "dialog", has_images);
         });
         let now = ctx.input(|i| i.time);
         self.commit_layer_edit(now, before);
@@ -373,7 +384,8 @@ impl App {
         let row_h = 14.0;
         let input_h = 34.0;
         let h = (ui.available_height() - input_h).max(80.0);
-        egui::ScrollArea::vertical().id_salt("console").max_height(h).auto_shrink([false, false]).stick_to_bottom(self.console_autoscroll).show_rows(ui, row_h, rows.len(), |ui, range| {
+        egui::Frame::new().fill(theme::console_bg()).stroke(egui::Stroke::new(1.0, theme::border())).inner_margin(egui::Margin::same(4)).show(ui, |ui| {
+        egui::ScrollArea::vertical().id_salt("console").max_height(h - 10.0).auto_shrink([false, false]).stick_to_bottom(self.console_autoscroll).show_rows(ui, row_h, rows.len(), |ui, range| {
             for l in &rows[range] {
                 let (prefix, color) = match l.dir {
                     Dir::Tx => ("> ", accent_tx),
@@ -382,6 +394,7 @@ impl App {
                 };
                 ui.label(RichText::new(format!("{prefix}{}", l.text)).monospace().size(11.0).color(color));
             }
+        });
         });
         ui.horizontal(|ui| {
             let r = ui.add(egui::TextEdit::singleline(&mut self.console_input).desired_width(ui.available_width() - 70.0).hint_text(tr("send G-code / $ command")));
@@ -395,9 +408,26 @@ impl App {
     }
 }
 
+/// Buttons of one size in rows of three, as a table. Returns the index of the clicked one.
+fn button_grid(ui: &mut egui::Ui, id: &str, cells: &[(&str, &str)]) -> Option<usize> {
+    let mut clicked = None;
+    let bw = (ui.available_width() - 12.0) / 3.0;
+    egui::Grid::new(id).num_columns(3).spacing([6.0, 6.0]).show(ui, |ui| {
+        for (i, (label, tip)) in cells.iter().enumerate() {
+            if ui.add_sized([bw, 24.0], egui::Button::new(*label)).on_hover_text(*tip).clicked() {
+                clicked = Some(i);
+            }
+            if i % 3 == 2 {
+                ui.end_row();
+            }
+        }
+    });
+    clicked
+}
+
 /// The cut settings of one layer: mode, speed, power, passes, fill options and image options.
 /// `id_scope` keeps the widget ids apart when the same settings are shown in the panel and in the dialog.
-pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_core::SpeedUnit), l: &mut lc_core::Layer, id_scope: &str) {
+pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_core::SpeedUnit), l: &mut lc_core::Layer, id_scope: &str, has_images: bool) {
     egui::Grid::new(("cut", id_scope)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
         ui.label(tr("Mode"));
         egui::ComboBox::from_id_salt(("cm", id_scope)).selected_text(tr(l.mode.label())).show_ui(ui, |ui| {
@@ -414,6 +444,9 @@ pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_cor
         ui.end_row();
         ui.label(tr("Passes"));
         ui.add(egui::DragValue::new(&mut l.passes).range(1..=100));
+        ui.end_row();
+        ui.label(tr("Air assist"));
+        ui.checkbox(&mut l.air_assist, tr("Air pump on")).on_hover_text(tr("Switch the air pump on while this layer burns (M8 / M9)"));
         ui.end_row();
         if l.mode == LayerMode::Offset {
             ui.label(tr("Interval"));
@@ -434,6 +467,10 @@ pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_cor
             ui.end_row();
         }
     });
+    // Dithering only matters for bitmap images, not for vector shapes.
+    if !has_images {
+        return;
+    }
     egui::CollapsingHeader::new(tr("Image settings")).id_salt(("img_hdr", id_scope)).default_open(false).show(ui, |ui| {
         ui.label(RichText::new(tr("Images use the interval, speed, power and overscan of their layer.")).color(theme::text_dim()));
         egui::Grid::new(("img_cut", id_scope)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {

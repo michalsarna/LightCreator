@@ -109,6 +109,9 @@ pub struct Layer {
     /// Image engraving: power (percent) for the lightest burnt dot in grayscale mode.
     #[serde(default = "d_min_power")]
     pub min_power: f64,
+    /// Switch the air assist (air pump) on while this layer burns.
+    #[serde(default)]
+    pub air_assist: bool,
 }
 
 impl Layer {
@@ -128,6 +131,7 @@ impl Layer {
             visible: true,
             dither: Dither::default(),
             min_power: 0.0,
+            air_assist: false,
         }
     }
 }
