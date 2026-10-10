@@ -1188,7 +1188,7 @@ impl App {
 
     fn tool_bar(&mut self, ui: &mut egui::Ui) {
         ui.add_space(6.0);
-        egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| ui.vertical_centered(|ui| {
+        let out = egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| ui.vertical_centered(|ui| {
             // Selecting and node editing.
             for (t, tip, _) in Tool::ALL.into_iter().filter(|t| t.0.is_edit()) {
                 self.tool_button(ui, t, tip);
@@ -1245,6 +1245,7 @@ impl App {
                 self.do_act(&ctx, a);
             }
         }));
+        scroll_hints(ui, &out);
     }
 
     /// Narrow strip between the work area and the side panel: align, turn, mirror and group the selection.
@@ -1281,7 +1282,7 @@ impl App {
             vec![(Act::ToFront, any_unlocked, "Bring to front"), (Act::ToBack, any_unlocked, "Send to back")],
         ];
         let mut chosen = None;
-        egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
+        let out = egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
             ui.add_space(6.0);
             for (i, section) in sections.iter().enumerate() {
                 if i > 0 {
@@ -1300,6 +1301,7 @@ impl App {
                 });
             }
         });
+        scroll_hints(ui, &out);
         if let Some(a) = chosen {
             let ctx = ui.ctx().clone();
             self.do_act(&ctx, a);
@@ -1509,6 +1511,26 @@ impl eframe::App for App {
 
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         self.draw(ui);
+    }
+}
+
+/// Double chevrons at the top and / or bottom edge of a scrolled icon strip when more icons lie beyond it.
+fn scroll_hints<R>(ui: &egui::Ui, out: &egui::scroll_area::ScrollAreaOutput<R>) {
+    let view = out.inner_rect;
+    let (up, down) = (out.state.offset.y > 1.0, out.state.offset.y + view.height() < out.content_size.y - 1.0);
+    for (show, name, top) in [(up, "chevrons-up", true), (down, "chevrons-down", false)] {
+        if !show {
+            continue;
+        }
+        let h = 16.0;
+        let rect = if top {
+            egui::Rect::from_min_size(view.left_top(), egui::vec2(view.width(), h))
+        } else {
+            egui::Rect::from_min_size(egui::pos2(view.left(), view.bottom() - h), egui::vec2(view.width(), h))
+        };
+        let painter = ui.painter().with_clip_rect(view);
+        painter.rect_filled(rect, 0.0, theme::panel().gamma_multiply(0.92));
+        crate::icons::paint(ui, egui::Rect::from_center_size(rect.center(), egui::vec2(h - 2.0, h - 2.0)), name, theme::accent());
     }
 }
 
