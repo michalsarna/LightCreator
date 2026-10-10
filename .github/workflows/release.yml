@@ -27,9 +27,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { os: ubuntu-latest, name: linux-x86_64 }
+          - { os: ubuntu-latest, name: linux-x86_64, deb: amd64 }
+          - { os: ubuntu-24.04-arm, name: linux-arm64, deb: arm64 }
           - { os: windows-latest, name: windows-x86_64 }
           - { os: macos-latest, name: macos-arm64 }
+          - { os: macos-15-intel, name: macos-x86_64 }
     runs-on: ${{ matrix.os }}
     env:
       TAG: ${{ github.ref_name }}
@@ -57,7 +59,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           cargo install cargo-deb --locked
-          cargo deb -p lightcreator --no-build --output "lightcreator-${TAG}-linux-amd64.deb"
+          cargo deb -p lightcreator --no-build --output "lightcreator-${TAG}-linux-${{ matrix.deb }}.deb"
 
       # Windows: NSIS installer (makensis is preinstalled on the runner image; install it if missing)
       - name: Windows installer
@@ -75,7 +77,7 @@ jobs:
           cargo install cargo-bundle --locked
           (cd crates/lightcreator && cargo bundle --release)
           mkdir dmg && cp -R target/release/bundle/osx/LightCreator.app dmg/ && ln -s /Applications dmg/Applications
-          hdiutil create -volname LightCreator -srcfolder dmg -ov -format UDZO "lightcreator-${TAG}-macos-arm64.dmg"
+          hdiutil create -volname LightCreator -srcfolder dmg -ov -format UDZO "lightcreator-${TAG}-${{ matrix.name }}.dmg"
 
       - uses: actions/upload-artifact@v4
         with:
