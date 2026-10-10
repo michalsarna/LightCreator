@@ -25,7 +25,8 @@
   edited or deleted but can be selected and copied; the copy is not locked. A padlock marks them.
 * **Resize, turn and slant:** the square handles around a selection resize it. Click a handle (without dragging) and
   they turn into round corner handles that rotate the selection about its middle (Shift snaps to 15°) and diamond
-  edge handles that slant it along that edge; click a handle again to go back to resizing.
+  edge handles that slant it along that edge; click a handle again to go back to resizing. The selection frame and
+  handles are red while they resize and blue while they turn and slant.
 * **Selection rectangle:** dragged from left to right it selects only objects (and groups) wholly inside;
   dragged from right to left it also selects everything it touches. Pressing Escape twice returns to the
   select tool.

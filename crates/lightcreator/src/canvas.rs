@@ -438,7 +438,9 @@ impl App {
         }
         if let Some(b) = self.sel_bounds() {
             let sr = egui::Rect::from_min_max(self.w2s(o, b.min), self.w2s(o, b.max));
-            painter.rect_stroke(sr, 0.0, Stroke::new(1.0, theme::accent()), egui::StrokeKind::Outside);
+            // Red while the handles resize, blue while they turn and slant.
+            let ink = if self.rotate_mode { Color32::from_rgb(0x2f, 0x7f, 0xe8) } else { Color32::from_rgb(0xe0, 0x30, 0x30) };
+            painter.rect_stroke(sr, 0.0, Stroke::new(1.0, ink), egui::StrokeKind::Outside);
             let all_locked = self.sel.iter().filter_map(|id| self.doc.shape(*id)).all(|s| s.locked);
             if self.tool == Tool::Select && !all_locked {
                 for (i, h) in handle_pts(&b).into_iter().enumerate() {
@@ -446,16 +448,16 @@ impl App {
                     if !self.rotate_mode {
                         let r = egui::Rect::from_center_size(p, egui::vec2(8.0, 8.0));
                         painter.rect_filled(r, 1.0, Color32::WHITE);
-                        painter.rect_stroke(r, 1.0, Stroke::new(1.2, theme::accent()), egui::StrokeKind::Middle);
+                        painter.rect_stroke(r, 1.0, Stroke::new(1.2, ink), egui::StrokeKind::Middle);
                     } else if i % 2 == 0 {
                         // Corners turn the selection: round handles.
                         painter.circle_filled(p, 5.0, Color32::WHITE);
-                        painter.circle_stroke(p, 5.0, Stroke::new(1.4, theme::accent()));
+                        painter.circle_stroke(p, 5.0, Stroke::new(1.4, ink));
                     } else {
                         // Edges slant it: diamond handles.
                         let d = 5.5;
                         let pts = vec![p + egui::vec2(0.0, -d), p + egui::vec2(d, 0.0), p + egui::vec2(0.0, d), p + egui::vec2(-d, 0.0)];
-                        painter.add(egui::Shape::convex_polygon(pts, Color32::WHITE, Stroke::new(1.4, theme::accent())));
+                        painter.add(egui::Shape::convex_polygon(pts, Color32::WHITE, Stroke::new(1.4, ink)));
                     }
                 }
             }

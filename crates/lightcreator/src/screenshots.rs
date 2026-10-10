@@ -103,6 +103,13 @@ fn render_screenshots() {
     h.run_steps(3);
     save(&mut h, "02-editor-properties.png");
 
+    // The same selection in turn / slant mode: blue round and diamond handles.
+    app(&mut h).rotate_mode = true;
+    h.run_steps(2);
+    save(&mut h, "28-rotate-mode.png");
+    app(&mut h).rotate_mode = false;
+    h.run_steps(2);
+
     app(&mut h).side_tab = SideTab::Layers;
     save(&mut h, "03-layers.png");
 

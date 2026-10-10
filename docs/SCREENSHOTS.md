@@ -30,8 +30,8 @@ All pictures are rendered headlessly from the real UI. Back to the [README](../R
 | Rounded rectangle and triangle | Clipart gallery: blue dots ship with the program, green dots are yours |
 | ![Online clipart](screenshots/25-clipart-online.png) | ![Node editing of a gallery picture](screenshots/26-clipart-nodes.png) |
 | Searching open icon collections and saving into a category | A gallery picture opened in the node tool |
-| ![Device tab](screenshots/27-device-tab.png) | |
-| Device tab: settings in full width, jog arrows and controls as large equal buttons, STOP across the panel | |
+| ![Device tab](screenshots/27-device-tab.png) | ![Rotate and slant mode](screenshots/28-rotate-mode.png) |
+| Device tab: settings in full width, jog arrows and controls as large equal buttons, STOP across the panel | Click a handle: the red resize selection turns blue, with round corner handles (rotate) and diamond edge handles (slant) |
 
 Regenerate them with
 `cargo test -p lightcreator --release render_screenshots -- --ignored`.
