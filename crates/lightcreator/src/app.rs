@@ -1134,26 +1134,40 @@ impl App {
             if ui.add(btn).on_hover_text(tr("Show the toolpaths on the work area")).clicked() {
                 self.preview_on = !self.preview_on;
             }
-            if ui.button(tr("Preview…")).on_hover_text(tr("Open the preview window")).clicked() {
-                self.show_preview = true;
+            if window_toggle(ui, &tr("Preview…"), &tr("Open the preview window"), self.show_preview, true) {
+                self.show_preview = !self.show_preview;
             }
-            if self.overlay.is_some() && ui.selectable_label(self.overlay_visible, tr("Overlay")).on_hover_text(tr("Show or hide the camera overlay on the work area")).clicked() {
-                self.overlay_visible = !self.overlay_visible;
-            }
-            if !self.doc.device.camera_url.trim().is_empty() && ui.button(tr("Camera view")).on_hover_text(tr("Show the live camera picture of this machine")).clicked() {
+            let has_camera = !self.doc.device.camera_url.trim().is_empty();
+            if has_camera && window_toggle(ui, &tr("Camera view"), &tr("Show the live camera picture of this machine"), self.show_stream, true) {
                 self.show_stream = !self.show_stream;
+            }
+            // The overlay is shown from the live camera while its window is open, otherwise it is the saved photo.
+            let overlay_on = self.overlay.is_some() && self.overlay_visible;
+            let can_overlay = self.overlay.is_some() || self.show_stream;
+            if window_toggle(ui, &tr("Overlay"), &tr("Show or hide the camera overlay on the work area"), overlay_on, can_overlay) {
+                if self.show_stream {
+                    if overlay_on && self.stream_overlay {
+                        self.stream_overlay = false;
+                        self.overlay_visible = false;
+                    } else {
+                        self.stream_overlay = true;
+                        self.overlay_visible = true;
+                    }
+                } else {
+                    self.overlay_visible = !self.overlay_visible;
+                }
             }
 
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                 let running = self.job_running();
                 if running {
-                    let stop = egui::Button::new(RichText::new(format!("   {}   ", tr("STOP"))).color(Color32::WHITE).strong())
+                    let stop = egui::Button::new(RichText::new(format!("   {}   ", tr("STOP").to_uppercase())).color(Color32::WHITE).strong())
                         .fill(Color32::from_rgb(0xc0, 0x30, 0x30));
                     if ui.add(stop).on_hover_text(tr("Abort the running job")).clicked() {
                         self.link.send(Cmd::Abort);
                     }
                 } else {
-                    let go = egui::Button::new(RichText::new(format!("   {}   ", tr("Start"))).color(Color32::WHITE).strong()).fill(theme::accent());
+                    let go = egui::Button::new(RichText::new(format!("   {}   ", tr("Start").to_uppercase())).color(Color32::WHITE).strong()).fill(theme::accent());
                     let tip = if self.can_start() { tr("Stream the job to the connected laser") } else { tr("Connect to a laser first (Laser panel)") };
                     if ui.add_enabled(self.can_start(), go).on_hover_text(tip).clicked() {
                         self.send_job();
@@ -1550,8 +1564,18 @@ fn scroll_hints<R>(ui: &egui::Ui, out: &egui::scroll_area::ScrollAreaOutput<R>) 
     }
 }
 
+/// Text button for a window that can be open or closed: light blue while it is open.
+fn window_toggle(ui: &mut egui::Ui, text: &str, tip: &str, open: bool, enabled: bool) -> bool {
+    let btn = if open {
+        egui::Button::new(RichText::new(text).color(Color32::WHITE)).fill(Color32::from_rgb(0x3f, 0xa9, 0xf5))
+    } else {
+        egui::Button::new(text)
+    };
+    ui.add_enabled(enabled, btn).on_hover_text(tip).clicked()
+}
+
 /// An icon button that stays highlighted while `on`.
-fn toggle_icon(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool) -> bool {
+pub fn toggle_icon(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool) -> bool {
     let (rect, resp) = ui.allocate_exact_size(egui::vec2(28.0, 28.0), egui::Sense::click());
     if on {
         ui.painter().rect_filled(rect, 6.0, theme::accent().gamma_multiply(0.3));

@@ -29,6 +29,10 @@
 * **Right-click context menu** (with small icons for flips, rotations, order, alignment) with the common commands (copy, paste, group, arrange, shape operations,
   adjust and trace for images).
 * Undo / redo, snap to grid, rulers, zoom and pan, drag and drop of files.
+* **Window buttons:** Preview and Camera view buttons turn light blue while their window is open and close it when
+  pressed again. The Overlay button follows Camera view and is always visible; it is greyed out until there is a
+  picture to show (a saved photo, or the live camera while its window is open) and then switches it on the work area.
+  Start / STOP are written in capitals.
 * **Control bar:** name of the current tool in a box of fixed width, New / Open / Save icons, switches for the grid,
   the secondary grid and snapping (icons, highlighted while on) and the Toolpaths button, green while the toolpaths
   are shown and grey otherwise. Toolpaths are drawn in layer colours darkened or lightened until they stand out from
