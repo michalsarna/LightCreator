@@ -11,6 +11,7 @@ Everything the interface shows comes from this folder: the fonts are embedded in
 | `fonts/NotoSansSC-Regular.otf` | [Noto Sans CJK SC subset](https://github.com/notofonts/noto-cjk) | SIL Open Font License 1.1 (`fonts/OFL.txt`) |
 | `ui-icons/*.svg` | [Lucide](https://lucide.dev) | ISC (`ui-icons/LICENSE-lucide.txt`) |
 | `clipart/*/*.svg` | [Material Design Icons](https://github.com/Templarian/MaterialDesign-SVG) by Pictogrammers (gallery pictures) | Apache License 2.0 (`clipart/LICENSE-apache-2.0.txt`) |
+| `lang/*.txt` | Interface texts of the European languages, written for LightCreator (prepared with machine help, to be corrected by native speakers) | same license as LightCreator |
 | `ui-icons/flip-horizontal.svg`, `ui-icons/flip-vertical.svg` | Drawn for LightCreator in the Lucide style | same license as LightCreator |
 
 `icons/`, `lightcreator.ico` and `lightcreator.icns` are the LightCreator app icon in several sizes.

@@ -724,3 +724,29 @@ fn spiral_starts_in_the_middle_and_fills_the_box() {
     // More turns, more nodes.
     assert!(Contour::spiral(6, 60.0, 40.0).nodes.len() > c.nodes.len());
 }
+
+/// Every character of the European translations must exist in the interface font, or the program would show
+/// empty boxes in that language.
+#[test]
+fn the_interface_font_covers_every_european_translation() {
+    let font = include_bytes!("../../../assets/fonts/NotoSans-Regular.ttf");
+    let face = ttf_parser::Face::parse(font, 0).expect("font parses");
+    let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../assets/lang");
+    let mut missing = std::collections::BTreeMap::<String, String>::new();
+    for entry in std::fs::read_dir(dir).unwrap().flatten() {
+        let path = entry.path();
+        if path.extension().is_some_and(|e| e == "txt") {
+            let name = path.file_stem().unwrap().to_string_lossy().into_owned();
+            let text = std::fs::read_to_string(&path).unwrap();
+            for line in text.lines() {
+                let body = line.split_once(|c| c == '|' || c == '\t').map(|(_, t)| t).unwrap_or(line);
+                for c in body.chars() {
+                    if !c.is_control() && face.glyph_index(c).is_none() && !missing.entry(name.clone()).or_default().contains(c) {
+                        missing.get_mut(&name).unwrap().push(c);
+                    }
+                }
+            }
+        }
+    }
+    assert!(missing.is_empty(), "characters without a glyph: {missing:?}");
+}

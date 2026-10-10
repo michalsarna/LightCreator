@@ -1,0 +1,573 @@
+0|Fail
+1|Redigeeri
+2|Korrasta
+3|Vaade
+4|Laser
+5|Seaded
+6|Abi
+7|Uus
+8|Ava…
+9|Salvesta
+10|Salvesta nimega…
+11|Impordi SVG…
+12|Ekspordi SVG…
+13|Ekspordi G-code…
+14|Välju
+15|Võta tagasi
+16|Tee uuesti
+17|Kopeeri
+18|Kleebi
+19|Dubleeri
+20|Kustuta
+21|Vali kõik
+22|Joonda vasakule
+23|Keskele (H)
+24|Joonda paremale
+25|Joonda üles
+26|Keskele (V)
+27|Joonda alla
+28|Tsentreeri üksteise suhtes
+29|Tsentreeri lauale
+30|Pööra horisontaalselt
+31|Pööra vertikaalselt
+32|Pööra 90° päripäeva
+33|Pööra 90° vastupäeva
+34|Too ette
+35|Saada taha
+36|Teisenda teeks
+37|Koopiate ruudustik…
+38|Ruudustik
+39|Joondu ruudustikuga
+40|Trajektooride eelvaade
+41|Sobita laud aknaga
+42|Seadme seaded…
+43|Raam
+44|Alusta tööd
+45|Teave
+46|Keel
+47|Värviskeem
+48|Tume
+49|Heletume
+50|Keskmiselt hele
+51|Hele
+52|Valik (V)
+53|Ristkülik (R)
+54|Ellips (E)
+55|Joon (L)
+56|Murdjoon / pliiats (P)
+57|Vaate nihutamine (H)
+58|Suum (Z)
+59|Valik
+60|Ristkülik
+61|Ellips
+62|Joon
+63|Täide
+64|Täide + joon
+65|Kiht {}
+66|Magnet
+67|Eelvaade
+68|Start
+69|Saadab töö ühendatud laserile
+70|Läbib ala piirjoone
+71|Salvesta G-code
+72|Kihid
+73|{} — klõpsake, et määrata valik / teha aktiivseks
+74|Valmis
+75|Avatud: {}
+76|Avamine ebaõnnestus: {}
+77|Salvestatud: {}
+78|Salvestamine ebaõnnestus: {}
+79|Imporditud teid: {} failist {}
+80|Importimine ebaõnnestus: {}
+81|Eksporditud: {}
+82|Eksportimine ebaõnnestus: {}
+83|G-code salvestatud: {}
+84|Ühendage esmalt laser (paneel Laser)
+85|Pole mida graveerida: väljundkihtides pole kujundeid
+86|Töö algab: {} rida, ~{}
+87|Lahti ühendatud
+88|Ühendatud: {} @ {}
+89|Ei saa avada {}: {}
+90|Katkestatud (tarkvaraline lähtestus)
+91|Ühendus katkes
+92|Hinnanguline aeg
+93|lõike pikkus
+94|Seadme seaded
+95|Nimi
+96|Tööala X
+97|Tööala Y
+98|Masina null (0,0)
+99|Ees vasakul (GRBL-i vaikimisi)
+100|Taga vasakul
+101|S-väärtus maks ($30)
+102|Dünaamiline võimsus (M4)
+103|Liikumiskiirus
+104|Tagasi lähtepunkti
+105|Siduskiirus (baud)
+106|Koopiate ruudustik
+107|Veerud
+108|Read
+109|Vahe X
+110|Vahe Y
+111|Loo ruudustik
+112|Teave LightCreatori kohta
+113|Versioon {}
+114|Avatud lähtekoodiga tarkvara laser-graveerimis- ja lõikemasinate kavandamiseks ja juhtimiseks.
+115|Päritolu: kirjutatud Rustiga, kasutades egui/eframe'i.
+116|Inspireeritud LightBurnist; liides inspireeritud VectorCraftist.
+117|Autor: Michał Sarna
+118|MIT-litsents.
+119|Atribuudid
+120|Lõiked / Kihid
+121|Midagi pole valitud
+122|Lukusta mõõtkava
+123|Pööra
+124|Rakenda
+125|Pööra H
+126|Pööra V
+127|Keskele
+128|Vasak
+129|Kesk H
+130|Parem
+131|Ülal
+132|Kesk V
+133|All
+134|Keskele
+135|Joonda keskele
+136|Kiht
+137|Näita kõiki 30 kihti
+138|Väljund (graveeri see kiht)
+139|Nähtav
+140|Lõikeseaded — {}
+141|Režiim
+142|Kiirus
+143|Võimsus (%)
+144|Läbimised
+145|Samm
+146|Skaneerimisnurk
+147|Ületus
+148|Kahesuunaline
+149|Porti pole
+150|Värskenda
+151|Otsi jadaporte uuesti
+152|Katkesta ühendus
+153|Ühenda
+154|Olek
+155|Samm
+156|Etteanne
+157|Üles
+158|Alla
+159|Katkesta käimasolev töö
+160|Stopp
+161|Tühista liigutus
+162|Algasend
+163|Ava lukustus
+164|Paus
+165|Jätka
+166|STOPP
+167|Raami võimsus
+168|0 % hoiab laseri raamimise ajal väljas; 1–2 % näitab dioodlaseritel nõrka punkti
+169|saada G-code / käsk $
+170|Saada
+171|Vali seade
+172|Valige seade, millega töötate.
+173|Jätkamiseks looge vähemalt üks seadeprofiil.
+174|Jätka
+175|Lisa seade…
+176|Redigeeri…
+177|Kinnita kustutamine
+178|Tühista
+179|Seadme häälestus
+180|Uus seade
+181|nt Minu dioodlaser
+182|Profiili nimi on nõutav.
+183|Vaheta seadet…
+184|Seade: {}
+185|Kiiruse ühikud
+186|Sekundis (mm/s, in/s)
+187|Minutis (mm/min, in/min)
+188|Ava hiljutised
+189|(tühi)
+190|Tühjenda loend
+191|ei eksisteeri enam
+192|Sulge
+193|Minimeeri
+194|Maksimeeri
+195|Taasta
+196|Näita või peida ruudustik
+197|Näita või peida abiruudustik
+198|Õhuabi
+199|Õhupump sees
+200|Lülitab õhupumba sisse, kuni seda kihti graveeritakse (M8 / M9)
+201|Asukoht ja suurus
+202|Pööramine
+203|Peegeldus ja keskele seadmine
+204|Joondus
+205|Ahenda
+206|Laienda
+207|Aeg
+208|Fail salvestatud: {}
+209|Automaatselt salvestatud: {}
+210|Kas salvestada töö enne sulgemist?
+211|Kavandit pole failina salvestatud.
+212|Loobu
+213|Programmi valikud…
+214|Programmi valikud
+215|Automaatsalvestus
+216|Salvesta töö automaatselt
+217|Salvesta automaatselt iga
+218|Failinimeta töö läheb ajutisse kausta; nimega fail salvestatakse kohapeal
+219|Spiraal
+220|Spiraal (I)
+221|Keerdude arv
+222|Lohistage tööalal, et see joonistada.
+223|Laadi alla varukoopia…
+224|Otsi uuendusi…
+225|Varukoopia salvestatud: {}
+226|Varundamine ebaõnnestus: {}
+227|Uuendused
+228|Saadaval on uuem versioon: {}
+229|Teil on versioon {}.
+230|Ava allalaadimisleht
+231|Teil on uusim versioon.
+232|Uusim väljalase: {}
+233|Uuenduste kontrollimine ebaõnnestus.
+234|Otsi programmi käivitamisel uuemat versiooni
+235|Taasta varukoopiast…
+236|Taasta varukoopiast
+237|Teie praegused seaded ja klipid asendatakse varukoopiaga. Kas jätkata?
+238|Varukoopia taastatud: {}
+239|Taastamine ebaõnnestus: {}
+240|Profiilifaile ei leitud. Kas teil on varukoopia?
+241|Ühikud
+242|Millimeetrid (mm)
+243|Tollid (in)
+244|Seade
+245|Konsool
+246|Olekupäringud
+247|Automaatne kerimine
+248|Tühjenda
+249|Kontroller
+250|Laseri tüüp
+251|Tööala
+252|Jah
+253|Ei
+254|Ühendus
+255|Port
+256|Liikumissamm
+257|Liikumise etteanne
+258|Sellel kontrolleril pole otseühendust: tööd eksporditakse failidena.
+259|Sõlmede redigeerimine (N)
+260|Tekst (T)
+261|Nurk
+262|Sile
+263|Jooneks
+264|Kõveraks
+265|Lisa sõlm
+266|Kustuta sõlm
+267|Ava / sulge
+268|Tee valitud sõlmed nurkadeks
+269|Tee valitud sõlmed siledaks
+270|Tee iga valitud sõlme järgne lõik sirgeks
+271|Tee iga valitud sõlme järgne lõik kõveraks
+272|Lisa sõlm (või tehke lõigul topeltklõps)
+273|Sulge avatud tee või ava suletud tee valitud sõlmes
+274|Teisenda kõverateks
+275|Muuda tekst muudetavateks Bézier' kujunditeks
+276|Ühend
+277|Ühisosa
+278|Lahutamine
+279|Välistav VÕI
+280|Nihuta kuju…
+281|Nihuta kuju
+282|Kaugus
+283|Positiivne väärtus suurendab piirjoont, negatiivne vähendab.
+284|Säilita originaal
+285|Loo nihe
+286|Valige vähemalt kaks kuju (mitte pilte).
+287|Tulemus on tühi.
+288|Impordi pilt…
+289|Pilt {} imporditud
+290|Tekst
+291|Font
+292|Otsi
+293|Suurus
+294|Stiil
+295|Paks
+296|Kursiiv
+297|Tähevahe
+298|Reavahe
+299|Joondus
+300|Pilt
+301|Negatiivpilt
+302|Graveeri heledad osad tumedate asemel
+303|Graveerimine kasutab kihi sammu, kiirust, võimsust ja rastreerimist.
+304|Pildi seaded
+305|Pildid kasutavad oma kihi sammu, kiirust, võimsust ja ületust.
+306|Rastreerimine
+307|Min. võimsus (%)
+308|Lävi
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Korrastatud
+314|Halltoonid
+315|Nihkega täide
+316|Ekspordi PLT / DXF…
+317|Eksporditud: {}. Vahele jäetud pilte: {} — see vorming ei toeta rastrit.
+318|Eksportige PLT või DXF ja avage see kontrolleri enda tarkvaras (nt RDWorks Ruida jaoks), mis seab kiiruse ja võimsuse kihi värvi järgi.
+319|Materjalide teek…
+320|Materjalide teek
+321|Kõik
+322|Materjal
+323|Toiming
+324|Võimsus
+325|Lõikamine
+326|Graveerimine
+327|Märkimine
+328|Algväärtused tüüpilistele 10 W dioodlaseritele ja 40 W CO2-laseritele. Proovige alati jääkmaterjalil.
+329|Rakenda kihile {}
+330|{} ({}) rakendatud kihile {}
+331|Salvesta aktiivne kiht eelseadena
+332|Materjali nimi
+333|Salvesta eelseade
+334|Kaamera ülekate…
+335|Kaamera ülekate
+336|Näitab disaini all fotot või reaalajas kaamerapilti, et paigutada töö materjalile.
+337|Laadi pilt…
+338|Eemalda
+339|Reaalajas kaamera
+340|Selles järgus pole kaamera tuge. Ehitage käsuga: cargo run --release --features camera
+341|Kaamerat pole
+342|Leia kaamerad
+343|Käivita kaamera
+344|Külmuta kaader
+345|Kaamera
+346|Ülekate: {}
+347|Näita ülekatet
+348|Läbipaistmatus
+349|Joondus: lohistage neli nurka tööalal
+350|Lohistage iga nurk materjali või tööala vastavasse nurka; perspektiiv korrigeeritakse.
+351|Lähtesta tööalale
+352|Pööra 90°
+353|Graveeri varem
+354|Graveeri hiljem
+355|Kihte graveeritakse ülalt alla.
+356|Ruudustiku valikud…
+357|Ruudustiku valikud
+358|Pearuudustik
+359|Abiruudustik
+360|Näita
+361|Joonte vahe
+362|Värv
+363|Abiruudustik peab olema peenem kui pearuudustik.
+364|Lähtesta ruudustik
+365|Trajektoorid
+366|Näitab trajektoore tööalal
+367|Eelvaade…
+368|Eelvaateaken…
+369|Ava eelvaateaken
+370|Värvi järgi
+371|Näita tühikäigu liikumisi
+372|Masina liikumised väljalülitatud laseriga
+373|Esita
+374|Sobita
+375|Toimingud
+376|Liiga palju liikumisi: tühikäigu jooned on peidetud.
+377|Liikumisi: {}
+378|Import
+379|Eksport
+380|Impordi Adobe Illustrator / PDF…
+381|Grupeeri
+382|Tühista grupeerimine
+383|Grupeerimiseks valige vähemalt kaks objekti.
+384|Grupeeritud. Objektid säilitavad oma kihid.
+385|Kujundite toimingud
+386|Kohanda pilti…
+387|Vektoriseeri pilt…
+388|Pildi import
+389|Pildi kohandamine
+390|Pööramine ja peegeldamine
+391|Nurk
+392|Toon
+393|Eredus
+394|Kontrast
+395|Gamma
+396|Automaatsed tasemed
+397|Laius
+398|{} × {} px
+399|Lähtesta
+400|Pildi vektoriseerimine
+401|Ignoreeri väikesi alasid
+402|Lihtsusta
+403|Silu kõverad
+404|Vektoriseeri heledad alad
+405|Kustuta pilt pärast
+406|Piirjooni: {}
+407|Vektoriseeri
+408|Vektoriseeritud piirjooni: {}
+409|Loe seadmest
+410|Loen…
+411|Ühendub ja loeb kontrollerist tööala, S-väärtuse maksimumi ja kiiruse
+412|Loen seadme seadeid…
+413|Seadmega ühendamine ebaõnnestus.
+414|Seade ei teatanud ühtegi seadet.
+415|Seadmest loetud väärtusi: {}
+416|Kolmnurk (Y)
+417|Täht (S)
+418|Hulknurk (G)
+419|Kolmnurk
+420|Täht
+421|Hulknurk
+422|Külgede arv
+423|Lohistage tööalal, et see joonistada. Kuni 360 külge.
+424|OK
+425|Ühenduse tüüp
+426|Jadaport
+427|Võrk (TCP, nt ser2net)
+428|Host
+429|TCP-port
+430|Ühendatud: {}
+431|Kaamera URL
+432|Masina otsepilt: MJPEG-voog või JPEG-pildi aadress (http või https).
+433|Kaameravaade
+434|Näitab selle masina kaamera otsepilti
+435|Ootan pilti…
+436|Vaikesuum
+437|Tagasi kogu pildile
+438|Näita ülekattena tööalal
+439|Voo viga: {}
+440|Sobita 15 s
+441|Reaalaeg
+442|Määrake esmalt seadme seadetes kaamera URL.
+443|Näita
+444|Hõljuv aken
+445|Eraldi aken
+446|Külgsakk
+447|Ülekate
+448|Näita või peida kaamera ülekate tööalal
+449|Näita kaamera ülekatet
+450|Kaamera ülekatet pole veel. Laadige pilt või käivitage kaameravaade.
+451|Jaga võrgus (ser2net)…
+452|Jaga võrgus (ser2net)
+453|ser2net leitud: {}
+454|ser2net'i ei leitud. Paigaldage see esmalt, nt: sudo apt install ser2net
+455|See jagab selle arvuti laseri jadaporti võrgus, et LightCreator mujal saaks ühenduda ühenduse tüübiga „Võrk (TCP)“.
+456|ser2net'i versioon
+457|Kuula ainult sellel arvutil (kasutage SSH-tunneliga)
+458|Uus klient asendab ühendatud kliendi
+459|Fail: {}
+460|Seejärel ühenduge teisest arvutist aadressile {}:{}
+461|Hoiatus: igaüks võrgus, kes sellele pordile ligi pääseb, saab laserit juhtida. Kasutage usaldusväärset võrku, tulemüüri või ainult kohalikku valikut SSH-tunneliga.
+462|Kopeeritud.
+463|Paigalda ja taaskäivita ser2net…
+464|See asendab faili {} (varukoopia säilitatakse) ja taaskäivitab ser2net'i. Küsitakse administraatori õigusi.
+465|Kinnita
+466|Ootan administraatori kinnitust…
+467|{} paigaldatud ja ser2net taaskäivitatud.
+468|Konfiguratsiooni paigaldamine ebaõnnestus: {}
+469|Käsitsi: sudo cp <salvestatud fail> {} && sudo systemctl restart ser2net
+470|Kaamera pööramine
+471|Sobita tööala automaatselt aknaga
+472|Lukusta
+473|Lukus: redigeerimiseks tehke lukust lahti. Koopiad pole lukus.
+474|Lukustatud objekte: {}
+475|Lukust lahti tehtud objekte: {}
+476|Kihi valikute redigeerimiseks tehke topeltklõps
+477|Kihi valikud — {}
+478|{} — klõpsake, et määrata valik / teha aktiivseks; valikute jaoks topeltklõps
+479|Vaate valikud…
+480|Vaate valikud
+481|Taustavärv
+482|Automaatne
+483|Joonte paksus
+484|Läbimisi: {}
+485|Kiirjuhend
+486|Projekti leht GitHubis
+487|See juhend on saadaval inglise ja poola keeles; teised keeled näitavad ingliskeelset teksti.
+488|Ümarda nurgad…
+489|Ümarda nurgad
+490|Raadius
+491|Ümarda
+492|Ümardamise raadius
+493|Ümardab valitud nurgad selle raadiusega
+494|Valitud on kaks sirget: need ühendatakse ümardatud nurgaga.
+495|Iga valitud kujundi sirge nurk ümardatakse.
+496|Neid jooni ei saa ühendada (paralleelsed või raadius ei mahu).
+497|Kaks joont ühendati ümardatud nurgaga.
+498|Valige esmalt ümardatavad kujundid.
+499|Ümardamiseks pole sirgeid nurki.
+500|Ümardatud nurki: {}
+501|Klipid
+502|Loomad
+503|Loodus
+504|Pühad
+505|Sümbolid
+506|Kujundid
+507|Tööriistad
+508|Toit
+509|Esemed
+510|Muusika ja lõbu
+511|Minu klipid
+512|Kõik kategooriad
+513|Kaasasolevad
+514|Minu omad
+515|Pildid, mis tulevad programmiga kaasa
+516|Pildid, mille olete alla laadinud või lisanud
+517|Suurus paigutamisel
+518|Veebis…
+519|Lisa fail…
+520|Otsige internetist rohkem pilte ja salvestage need siia
+521|Lisab teie arvutist SVG-faile teie klippidesse
+522|Siin pole pilte. Leidmiseks kasutage Veebis….
+523|tuleb programmiga kaasa
+524|teie oma
+525|Klõpsake, et paigutada tööalale
+526|Paigutatud: {}
+527|Nimeta ümber
+528|Nimeta ümber…
+529|Muuda kategooriat
+530|Muuda kategooriat…
+531|Üksikasjad
+532|Üksikasjad…
+533|Kustuta…
+534|Kas eemaldada see pilt teie klippidest? Fail teie kettalt kustutatakse.
+535|Salvesta koopia minu klippidesse
+536|või uus kategooria
+537|Lisatud pilte: {} kategooriasse {}
+538|Allikas
+539|Kategooria
+540|Litsents
+541|Autor
+542|Kollektsioon
+543|Veebiklipid…
+544|Veebiklipid
+545|Otsige avatud ikoonikogudest (Iconify). Pildid salvestatakse teie kettale teie valitud kategooriasse.
+546|nt kass, lill, hammasratas
+547|Otsin…
+548|Midagi ei leitud.
+549|Leitud pilte: {}
+550|Otsing ebaõnnestus: {}
+551|Klõpsake pildil, et näha selle litsentsi ja see salvestada.
+552|autori viitamine pole vajalik
+553|viidake autorile
+554|Salvesta minu klippidesse
+555|{} salvestatud kategooriasse {}
+556|Laadi alla
+557|Laadin alla…
+558|Allalaadimine ebaõnnestus: {}
+559|Või laadige pilt alla aadressilt
+560|Salvestage ainult pilte, mida tohite kasutada. Kontrollige allika litsentsi.
+561|Suurenda (Z)
+562|Vähenda (X)
+563|Sobita tööalaga (Ctrl+0)
+564|Sobita kõigi objektidega (Ctrl+9)
+565|Suurenda
+566|Vähenda
+567|Sobita tööalaga
+568|Sobita kõigi objektidega
+569|Redigeeri sõlmi
+570|Teisendage tekst kõverateks või vektoriseerige pilt, et selle sõlmi redigeerida.
+571|Valige esmalt kuju, seejärel redigeerige selle sõlmi.
+572|Süda (K)

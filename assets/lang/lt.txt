@@ -1,0 +1,573 @@
+0|Failas
+1|Redaguoti
+2|Išdėstyti
+3|Rodinys
+4|Lazeris
+5|Nustatymai
+6|Žinynas
+7|Naujas
+8|Atverti…
+9|Įrašyti
+10|Įrašyti kaip…
+11|Importuoti SVG…
+12|Eksportuoti SVG…
+13|Eksportuoti G-code…
+14|Išeiti
+15|Atšaukti
+16|Grąžinti
+17|Kopijuoti
+18|Įklijuoti
+19|Dubliuoti
+20|Naikinti
+21|Pasirinkti viską
+22|Lygiuoti kairėje
+23|Centruoti (H)
+24|Lygiuoti dešinėje
+25|Lygiuoti viršuje
+26|Centruoti (V)
+27|Lygiuoti apačioje
+28|Centruoti vieną kito atžvilgiu
+29|Centruoti ant stalo
+30|Apversti horizontaliai
+31|Apversti vertikaliai
+32|Pasukti 90° pagal laikrodžio rodyklę
+33|Pasukti 90° prieš laikrodžio rodyklę
+34|Perkelti į priekį
+35|Perkelti į galą
+36|Konvertuoti į kontūrą
+37|Kopijų tinklelis…
+38|Tinklelis
+39|Prilipdyti prie tinklelio
+40|Trajektorijų peržiūra
+41|Pritaikyti stalą prie lango
+42|Įrenginio nustatymai…
+43|Rėmelis
+44|Pradėti darbą
+45|Apie
+46|Kalba
+47|Spalvų schema
+48|Tamsi
+49|Šviesiai tamsi
+50|Vidutiniškai šviesi
+51|Šviesi
+52|Žymėjimas (V)
+53|Stačiakampis (R)
+54|Elipsė (E)
+55|Linija (L)
+56|Laužtė / plunksna (P)
+57|Rodinio stumdymas (H)
+58|Didinimas (Z)
+59|Žymėjimas
+60|Stačiakampis
+61|Elipsė
+62|Linija
+63|Užpildas
+64|Užpildas + linija
+65|Sluoksnis {}
+66|Magnetas
+67|Peržiūra
+68|Pradėti
+69|Siunčia darbą į prijungtą lazerį
+70|Apeina srities kontūrą
+71|Įrašyti G-code
+72|Sluoksniai
+73|{} — spustelėkite, kad priskirtumėte pažymėtą / padarytumėte aktyvų
+74|Paruošta
+75|Atidaryta: {}
+76|Nepavyko atverti: {}
+77|Įrašyta: {}
+78|Nepavyko įrašyti: {}
+79|Importuota kontūrų: {} iš {}
+80|Importuoti nepavyko: {}
+81|Eksportuota: {}
+82|Eksportuoti nepavyko: {}
+83|G-code įrašytas: {}
+84|Pirmiausia prijunkite lazerį (skydelis Lazeris)
+85|Nėra ką graviruoti: išvesties sluoksniuose nėra formų
+86|Pradedamas darbas: {} eilučių, ~{}
+87|Atjungta
+88|Prisijungta prie {} @ {}
+89|Nepavyksta atverti {}: {}
+90|Nutraukta (programinis atstatymas)
+91|Ryšys prarastas
+92|Numatomas laikas
+93|pjūvio ilgis
+94|Įrenginio nustatymai
+95|Pavadinimas
+96|Darbo sritis X
+97|Darbo sritis Y
+98|Staklių nulis (0,0)
+99|Priekyje kairėje (numatytasis GRBL)
+100|Gale kairėje
+101|S reikšmė maks. ($30)
+102|Dinaminė galia (M4)
+103|Judėjimo greitis
+104|Grįžti į pradžią
+105|Perdavimo sparta (baud)
+106|Kopijų tinklelis
+107|Stulpeliai
+108|Eilutės
+109|Tarpas X
+110|Tarpas Y
+111|Sukurti tinklelį
+112|Apie LightCreator
+113|Versija {}
+114|Atvirojo kodo programinė įranga lazerinių graviravimo ir pjovimo staklių projektavimui ir valdymui.
+115|Kilmė: parašyta Rust kalba naudojant egui/eframe.
+116|Įkvėpta LightBurn; sąsają įkvėpė VectorCraft.
+117|Autorius: Michał Sarna
+118|MIT licencija.
+119|Ypatybės
+120|Pjūviai / Sluoksniai
+121|Nieko nepažymėta
+122|Užrakinti proporcijas
+123|Sukti
+124|Taikyti
+125|Apversti H
+126|Apversti V
+127|Centruoti
+128|Kairė
+129|Vidurys H
+130|Dešinė
+131|Viršus
+132|Vidurys V
+133|Apačia
+134|Centruoti
+135|Lygiuoti viduryje
+136|Sluoksnis
+137|Rodyti visus 30 sluoksnių
+138|Išvestis (graviruoti šį sluoksnį)
+139|Matomas
+140|Pjovimo nustatymai — {}
+141|Režimas
+142|Greitis
+143|Galia (%)
+144|Praėjimai
+145|Intervalas
+146|Skenavimo kampas
+147|Viršijimas
+148|Dvikryptis
+149|Nėra prievado
+150|Atnaujinti
+151|Iš naujo ieškoti nuosekliųjų prievadų
+152|Atsijungti
+153|Prisijungti
+154|Būsena
+155|Žingsnis
+156|Paduotis
+157|Aukštyn
+158|Žemyn
+159|Nutraukti vykdomą darbą
+160|Stop
+161|Atšaukti judėjimą
+162|Pradžia
+163|Atrakinti
+164|Pauzė
+165|Tęsti
+166|STOP
+167|Rėmelio galia
+168|0 % laiko lazerį išjungtą apvedant rėmelį; 1–2 % rodo silpną tašką diodiniuose lazeriuose
+169|siųsti G-code / komandą $
+170|Siųsti
+171|Pasirinkite įrenginį
+172|Pasirinkite įrenginį, su kuriuo dirbsite.
+173|Norėdami tęsti, sukurkite bent vieną įrenginio profilį.
+174|Tęsti
+175|Pridėti įrenginį…
+176|Redaguoti…
+177|Patvirtinti naikinimą
+178|Atšaukti
+179|Įrenginio konfigūracija
+180|Naujas įrenginys
+181|pvz., Mano diodinis lazeris
+182|Reikalingas profilio pavadinimas.
+183|Pakeisti įrenginį…
+184|Įrenginys: {}
+185|Greičio vienetai
+186|Per sekundę (mm/s, in/s)
+187|Per minutę (mm/min, in/min)
+188|Atverti neseniai naudotus
+189|(tuščia)
+190|Išvalyti sąrašą
+191|nebeegzistuoja
+192|Uždaryti
+193|Sumažinti
+194|Padidinti
+195|Atkurti
+196|Rodyti ar slėpti tinklelį
+197|Rodyti ar slėpti antrinį tinklelį
+198|Oro pagalba
+199|Oro siurblys įjungtas
+200|Įjungia oro siurblį, kol graviruojamas šis sluoksnis (M8 / M9)
+201|Padėtis ir dydis
+202|Sukimas
+203|Veidrodis ir centravimas
+204|Lygiavimas
+205|Suskleisti
+206|Išskleisti
+207|Laikas
+208|Failas įrašytas: {}
+209|Įrašyta automatiškai: {}
+210|Įrašyti darbą prieš uždarant?
+211|Dizainas neįrašytas į failą.
+212|Atmesti
+213|Programos parinktys…
+214|Programos parinktys
+215|Automatinis įrašymas
+216|Įrašyti darbą automatiškai
+217|Įrašyti automatiškai kas
+218|Darbas be failo pavadinimo patenka į laikinąjį aplanką; failas su pavadinimu įrašomas vietoje
+219|Spiralė
+220|Spiralė (I)
+221|Vijų skaičius
+222|Vilkite darbo srityje, kad ją nupieštumėte.
+223|Atsisiųsti atsarginę kopiją…
+224|Tikrinti, ar yra naujinimų…
+225|Atsarginė kopija įrašyta: {}
+226|Atsarginė kopija nepavyko: {}
+227|Naujinimai
+228|Yra naujesnė versija: {}
+229|Jūs turite versiją {}.
+230|Atverti atsisiuntimo puslapį
+231|Turite naujausią versiją.
+232|Naujausias leidimas: {}
+233|Nepavyko patikrinti naujinimų.
+234|Paleidžiant programą ieškoti naujesnės versijos
+235|Atkurti iš atsarginės kopijos…
+236|Atkurti iš atsarginės kopijos
+237|Dabartiniai nustatymai ir klipartai bus pakeisti atsargine kopija. Tęsti?
+238|Atsarginė kopija atkurta: {}
+239|Atkurti nepavyko: {}
+240|Profilių failų nerasta. Ar turite atsarginę kopiją?
+241|Vienetai
+242|Milimetrai (mm)
+243|Coliai (in)
+244|Įrenginys
+245|Konsolė
+246|Būsenos užklausos
+247|Automatinis slinkimas
+248|Išvalyti
+249|Valdiklis
+250|Lazerio tipas
+251|Darbo sritis
+252|Taip
+253|Ne
+254|Ryšys
+255|Prievadas
+256|Judėjimo žingsnis
+257|Judėjimo paduotis
+258|Šis valdiklis neturi tiesioginio ryšio: darbai eksportuojami kaip failai.
+259|Mazgų redagavimas (N)
+260|Tekstas (T)
+261|Kampas
+262|Glotnus
+263|Į liniją
+264|Į kreivę
+265|Pridėti mazgą
+266|Naikinti mazgą
+267|Atverti / uždaryti
+268|Pažymėtus mazgus paversti kampiniais
+269|Pažymėtus mazgus padaryti glotniais
+270|Atkarpą po kiekvieno pažymėto mazgo padaryti tiesią
+271|Atkarpą po kiekvieno pažymėto mazgo padaryti kreivą
+272|Įterpti mazgą (arba dukart spustelėti atkarpą)
+273|Uždaryti atvirą kontūrą arba atverti uždarą ties pažymėtu mazgu
+274|Konvertuoti į kreives
+275|Paversti tekstą redaguojamomis Bezjė formomis
+276|Sąjunga
+277|Sankirta
+278|Atimtis
+279|Išskirtinis ARBA
+280|Pastumti formą…
+281|Pastumti formą
+282|Atstumas
+283|Teigiama reikšmė didina kontūrą, neigiama — mažina.
+284|Palikti originalą
+285|Sukurti postūmį
+286|Pasirinkite bent dvi formas (ne paveikslėlius).
+287|Rezultatas tuščias.
+288|Importuoti paveikslėlį…
+289|Paveikslėlis {} importuotas
+290|Tekstas
+291|Šriftas
+292|Paieška
+293|Dydis
+294|Stilius
+295|Pusjuodis
+296|Kursyvas
+297|Tarpai tarp raidžių
+298|Eilučių tarpai
+299|Lygiavimas
+300|Paveikslėlis
+301|Neigiamas paveikslėlis
+302|Graviruoti šviesias dalis vietoj tamsių
+303|Graviravimas naudoja sluoksnio intervalą, greitį, galią ir rastravimą.
+304|Paveikslėlio nustatymai
+305|Paveikslėliai naudoja savo sluoksnio intervalą, greitį, galią ir viršijimą.
+306|Rastravimas
+307|Min. galia (%)
+308|Slenkstis
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Sutvarkytas
+314|Pilkumo tonai
+315|Užpildas postūmiu
+316|Eksportuoti PLT / DXF…
+317|Eksportuota: {}. Praleista paveikslėlių: {} — šis formatas neturi rastro.
+318|Eksportuokite PLT arba DXF ir atverkite paties valdiklio programoje (pavyzdžiui, RDWorks, skirta Ruida), kuri nustato greitį ir galią pagal sluoksnio spalvą.
+319|Medžiagų biblioteka…
+320|Medžiagų biblioteka
+321|Visi
+322|Medžiaga
+323|Operacija
+324|Galia
+325|Pjovimas
+326|Graviravimas
+327|Brėžimas
+328|Pradinės reikšmės tipiniams 10 W diodiniams ir 40 W CO2 lazeriams. Visada išbandykite su atliekomis.
+329|Taikyti sluoksniui {}
+330|{} ({}) pritaikyta sluoksniui {}
+331|Įrašyti aktyvų sluoksnį kaip šabloną
+332|Medžiagos pavadinimas
+333|Įrašyti šabloną
+334|Kameros perdanga…
+335|Kameros perdanga
+336|Rodo nuotrauką arba tiesioginį kameros vaizdą po dizainu, kad galėtumėte padėti darbą ant medžiagos.
+337|Įkelti paveikslėlį…
+338|Pašalinti
+339|Tiesioginė kamera
+340|Šiame leidinyje nėra kameros palaikymo. Kompiliuokite su: cargo run --release --features camera
+341|Nėra kameros
+342|Rasti kameras
+343|Paleisti kamerą
+344|Sustabdyti kadrą
+345|Kamera
+346|Perdanga: {}
+347|Rodyti perdangą
+348|Nepermatomumas
+349|Lygiavimas: vilkite keturis kampus darbo srityje
+350|Vilkite kiekvieną kampą į atitinkamą medžiagos ar darbo srities kampą; perspektyva ištaisoma.
+351|Atstatyti į darbo sritį
+352|Pasukti 90°
+353|Graviruoti anksčiau
+354|Graviruoti vėliau
+355|Sluoksniai graviruojami iš viršaus į apačią.
+356|Tinklelio parinktys…
+357|Tinklelio parinktys
+358|Pagrindinis tinklelis
+359|Antrinis tinklelis
+360|Rodyti
+361|Atstumas tarp linijų
+362|Spalva
+363|Antrinis tinklelis turi būti smulkesnis už pagrindinį.
+364|Atstatyti tinklelį
+365|Trajektorijos
+366|Rodo trajektorijas darbo srityje
+367|Peržiūra…
+368|Peržiūros langas…
+369|Atverti peržiūros langą
+370|Spalvinti pagal
+371|Rodyti tuščiosios eigos judesius
+372|Staklių judesiai išjungus lazerį
+373|Groti
+374|Pritaikyti
+375|Operacijos
+376|Per daug judesių: tuščiosios eigos linijos paslėptos.
+377|Judesių: {}
+378|Importas
+379|Eksportas
+380|Importuoti Adobe Illustrator / PDF…
+381|Grupuoti
+382|Išgrupuoti
+383|Norėdami grupuoti, pasirinkite bent du objektus.
+384|Sugrupuota. Objektai išlaiko savo sluoksnius.
+385|Formų operacijos
+386|Koreguoti paveikslėlį…
+387|Vektorizuoti paveikslėlį…
+388|Paveikslėlio importas
+389|Paveikslėlio koregavimas
+390|Sukimas ir apvertimas
+391|Kampas
+392|Tonas
+393|Ryškumas
+394|Kontrastas
+395|Gama
+396|Automatiniai lygiai
+397|Plotis
+398|{} × {} px
+399|Atstatyti
+400|Paveikslėlio vektorizavimas
+401|Ignoruoti mažas sritis
+402|Supaprastinti
+403|Išlyginti kreives
+404|Vektorizuoti šviesias sritis
+405|Po to naikinti paveikslėlį
+406|Kontūrų: {}
+407|Vektorizuoti
+408|Suvektorizuota kontūrų: {}
+409|Nuskaityti iš įrenginio
+410|Skaitoma…
+411|Prisijungia ir iš valdiklio nuskaito darbo sritį, S reikšmę maks. ir greitį
+412|Skaitomi įrenginio nustatymai…
+413|Nepavyko prisijungti prie įrenginio.
+414|Įrenginys nepranešė jokių nustatymų.
+415|Nuskaityta reikšmių iš įrenginio: {}
+416|Trikampis (Y)
+417|Žvaigždė (S)
+418|Daugiakampis (G)
+419|Trikampis
+420|Žvaigždė
+421|Daugiakampis
+422|Kraštinių skaičius
+423|Vilkite darbo srityje, kad jį nupieštumėte. Daugiausia 360 kraštinių.
+424|Gerai
+425|Ryšio tipas
+426|Nuoseklusis prievadas
+427|Tinklas (TCP, pvz., ser2net)
+428|Pagrindinis kompiuteris
+429|TCP prievadas
+430|Prisijungta prie {}
+431|Kameros URL
+432|Tiesioginis staklių vaizdas: MJPEG srautas arba JPEG paveikslėlio adresas (http arba https).
+433|Kameros vaizdas
+434|Rodo šių staklių kameros tiesioginį vaizdą
+435|Laukiama vaizdo…
+436|Numatytasis mastelis
+437|Atgal į visą vaizdą
+438|Rodyti kaip perdangą darbo srityje
+439|Srauto klaida: {}
+440|Pritaikyti 15 s
+441|Realusis laikas
+442|Pirmiausia įrenginio nustatymuose nurodykite kameros URL.
+443|Rodyti
+444|Plaukiojantis langas
+445|Atskiras langas
+446|Šoninis skirtukas
+447|Perdanga
+448|Rodyti ar slėpti kameros perdangą darbo srityje
+449|Rodyti kameros perdangą
+450|Kameros perdangos dar nėra. Įkelkite paveikslėlį arba paleiskite kameros vaizdą.
+451|Bendrinti tinkle (ser2net)…
+452|Bendrinti tinkle (ser2net)
+453|ser2net rastas: {}
+454|ser2net nerastas. Pirmiausia jį įdiekite, pavyzdžiui: sudo apt install ser2net
+455|Tai bendrina lazerio nuoseklųjį prievadą šiame kompiuteryje tinkle, kad LightCreator kitur galėtų prisijungti naudodamas ryšio tipą „Tinklas (TCP)“.
+456|ser2net versija
+457|Klausytis tik šiame kompiuteryje (naudoti su SSH tuneliu)
+458|Naujas klientas pakeičia prisijungusį
+459|Failas: {}
+460|Tada iš kito kompiuterio prisijunkite prie {}:{}
+461|Įspėjimas: bet kas tinkle, pasiekęs šį prievadą, gali valdyti lazerį. Naudokite patikimą tinklą, ugniasienę arba parinktį tik vietoje su SSH tuneliu.
+462|Nukopijuota.
+463|Įdiegti ir iš naujo paleisti ser2net…
+464|Tai pakeičia {} (išsaugoma kopija) ir iš naujo paleidžia ser2net. Prašoma administratoriaus teisių.
+465|Patvirtinti
+466|Laukiama administratoriaus patvirtinimo…
+467|{} įdiegtas ir ser2net paleistas iš naujo.
+468|Nepavyko įdiegti konfigūracijos: {}
+469|Rankiniu būdu: sudo cp <įrašytas failas> {} && sudo systemctl restart ser2net
+470|Kameros pasukimas
+471|Automatiškai pritaikyti darbo sritį prie lango
+472|Užrakinti
+473|Užrakinta: norėdami redaguoti, atrakinkite. Kopijos neužrakintos.
+474|Užrakinta objektų: {}
+475|Atrakinta objektų: {}
+476|Dukart spustelėkite, kad redaguotumėte sluoksnio parinktis
+477|Sluoksnio parinktys — {}
+478|{} — spustelėkite, kad priskirtumėte pažymėtą / padarytumėte aktyvų; dukart spustelėkite parinktims
+479|Rodinio parinktys…
+480|Rodinio parinktys
+481|Fono spalva
+482|Automatinė
+483|Linijų storis
+484|Praėjimų: {}
+485|Greitasis vadovas
+486|Projekto puslapis GitHub
+487|Šis vadovas pateikiamas anglų ir lenkų kalbomis; kitomis kalbomis rodomas angliškas tekstas.
+488|Suapvalinti kampus…
+489|Suapvalinti kampus
+490|Spindulys
+491|Suapvalinti
+492|Apvalinimo spindulys
+493|Suapvalina pažymėtus kampus šiuo spinduliu
+494|Pažymėtos dvi tiesios linijos: jos sujungiamos suapvalintu kampu.
+495|Kiekvienas tiesus pažymėtų formų kampas bus suapvalintas.
+496|Šių linijų sujungti negalima (lygiagrečios arba spindulys netelpa).
+497|Dvi linijos sujungtos suapvalintu kampu.
+498|Pirmiausia pasirinkite formas apvalinimui.
+499|Nėra tiesių kampų apvalinimui.
+500|Suapvalinta kampų: {}
+501|Klipartai
+502|Gyvūnai
+503|Gamta
+504|Šventės
+505|Simboliai
+506|Formos
+507|Įrankiai
+508|Maistas
+509|Daiktai
+510|Muzika ir pramogos
+511|Mano klipartai
+512|Visos kategorijos
+513|Įtraukti
+514|Mano
+515|Paveikslėliai, pateikiami su programa
+516|Paveikslėliai, kuriuos atsisiuntėte ar pridėjote
+517|Dydis dedant
+518|Internetu…
+519|Pridėti failą…
+520|Ieškokite daugiau paveikslėlių internete ir įrašykite juos čia
+521|Prideda SVG failus iš jūsų kompiuterio prie jūsų klipartų
+522|Čia nėra paveikslėlių. Naudokite Internetu…, kad jų rastumėte.
+523|pateikiamas su programa
+524|jūsų
+525|Spustelėkite, kad padėtumėte darbo srityje
+526|Padėta: {}
+527|Pervadinti
+528|Pervadinti…
+529|Keisti kategoriją
+530|Keisti kategoriją…
+531|Išsami informacija
+532|Išsami informacija…
+533|Naikinti…
+534|Pašalinti šį paveikslėlį iš jūsų klipartų? Failas jūsų diske bus ištrintas.
+535|Įrašyti kopiją į mano klipartus
+536|arba nauja kategorija
+537|Pridėta paveikslėlių: {} į {}
+538|Šaltinis
+539|Kategorija
+540|Licencija
+541|Autorius
+542|Kolekcija
+543|Klipartai internete…
+544|Klipartai internete
+545|Ieškokite atvirose piktogramų kolekcijose (Iconify). Paveikslėliai įrašomi jūsų diske, jūsų pasirinktoje kategorijoje.
+546|pvz., katė, gėlė, krumpliaratis
+547|Ieškoma…
+548|Nieko nerasta.
+549|Rasta paveikslėlių: {}
+550|Paieška nepavyko: {}
+551|Spustelėkite paveikslėlį, kad pamatytumėte jo licenciją ir įrašytumėte.
+552|autoriaus nurodyti nereikia
+553|nurodykite autorių
+554|Įrašyti į mano klipartus
+555|{} įrašyta į {}
+556|Atsisiųsti
+557|Siunčiama…
+558|Atsisiuntimas nepavyko: {}
+559|Arba atsisiųskite paveikslėlį iš adreso
+560|Įrašykite tik tuos paveikslėlius, kuriuos galite naudoti. Patikrinkite šaltinio licenciją.
+561|Priartinti (Z)
+562|Nutolinti (X)
+563|Pritaikyti prie darbo srities (Ctrl+0)
+564|Pritaikyti prie visų objektų (Ctrl+9)
+565|Priartinti
+566|Nutolinti
+567|Pritaikyti prie darbo srities
+568|Pritaikyti prie visų objektų
+569|Redaguoti mazgus
+570|Konvertuokite tekstą į kreives arba vektorizuokite paveikslėlį, kad galėtumėte redaguoti jo mazgus.
+571|Pirmiausia pasirinkite formą, tada redaguokite jos mazgus.
+572|Širdis (K)

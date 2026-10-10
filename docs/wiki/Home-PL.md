@@ -30,7 +30,7 @@ Otwartoźródłowy odpowiednik [LightBurn](https://lightburnsoftware.com/) dla g
 * **Grawerowanie:** linia, wypełnienie, wypełnienie offsetem i obrazy rastrowe z sześcioma metodami ditheringu i mocą w skali szarości; 30 warstw cięcia w stylu LightBurn; podgląd z szacowanym czasem.
 * **Urządzenia:** profil dla każdej maszyny; GRBL i Marlin przez port szeregowy lub TCP (ser2net); Ruida i Trocen przez eksport PLT / DXF.
 * **Pomocnicze:** biblioteka materiałów, nakładka z kamery z wyrównaniem czterech rogów, galeria 310 clipartów z wyszukiwaniem online.
-* **Interfejs:** siedem języków (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी) i cztery schematy kolorów.
+* **Interfejs:** 30 języków (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी i 23 inne europejskie) i cztery schematy kolorów.
 
 > ⚠️ **Bezpieczeństwo:** lasery są niebezpieczne. Testuj G-code przy niskiej mocy, noś okulary ochronne, nie zostawiaj pracującej maszyny bez nadzoru. Zobacz [Bezpieczeństwo i ograniczenia](Bezpieczenstwo-i-ograniczenia).
 

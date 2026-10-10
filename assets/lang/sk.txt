@@ -1,0 +1,573 @@
+0|Súbor
+1|Úpravy
+2|Usporiadať
+3|Zobrazenie
+4|Laser
+5|Nastavenia
+6|Pomocník
+7|Nový
+8|Otvoriť…
+9|Uložiť
+10|Uložiť ako…
+11|Importovať SVG…
+12|Exportovať SVG…
+13|Exportovať G-code…
+14|Koniec
+15|Späť
+16|Znova
+17|Kopírovať
+18|Prilepiť
+19|Duplikovať
+20|Odstrániť
+21|Vybrať všetko
+22|Zarovnať doľava
+23|Na stred (H)
+24|Zarovnať doprava
+25|Zarovnať nahor
+26|Na stred (V)
+27|Zarovnať nadol
+28|Vycentrovať na seba
+29|Vycentrovať na stôl
+30|Prevrátiť vodorovne
+31|Prevrátiť zvisle
+32|Otočiť o 90° doprava
+33|Otočiť o 90° doľava
+34|Preniesť do popredia
+35|Preniesť do pozadia
+36|Previesť na cestu
+37|Mriežka kópií…
+38|Mriežka
+39|Prichytávať k mriežke
+40|Náhľad dráh
+41|Prispôsobiť stôl oknu
+42|Nastavenia zariadenia…
+43|Rámik
+44|Spustiť úlohu
+45|O programe
+46|Jazyk
+47|Farebná schéma
+48|Tmavá
+49|Svetlo tmavá
+50|Stredne svetlá
+51|Svetlá
+52|Výber (V)
+53|Obdĺžnik (R)
+54|Elipsa (E)
+55|Čiara (L)
+56|Lomená čiara / pero (P)
+57|Posun pohľadu (H)
+58|Lupa (Z)
+59|Výber
+60|Obdĺžnik
+61|Elipsa
+62|Čiara
+63|Výplň
+64|Výplň + čiara
+65|Vrstva {}
+66|Magnet
+67|Náhľad
+68|Štart
+69|Odošle úlohu do pripojeného lasera
+70|Obíde obrys oblasti
+71|Uložiť G-code
+72|Vrstvy
+73|{} — kliknutím sem priradíte výber / nastavíte ako aktívnu
+74|Pripravené
+75|Otvorené: {}
+76|Otvorenie zlyhalo: {}
+77|Uložené: {}
+78|Uloženie zlyhalo: {}
+79|Importované cesty: {} zo súboru {}
+80|Import zlyhal: {}
+81|Exportované: {}
+82|Export zlyhal: {}
+83|G-code uložený: {}
+84|Najprv pripojte laser (panel Laser)
+85|Nie je čo vypáliť: na výstupných vrstvách nie sú žiadne tvary
+86|Spúšťa sa úloha: {} riadkov, ~{}
+87|Odpojené
+88|Pripojené k {} @ {}
+89|Nemožno otvoriť {}: {}
+90|Prerušené (mäkký reset)
+91|Spojenie sa stratilo
+92|Odhadovaný čas
+93|dĺžka rezu
+94|Nastavenia zariadenia
+95|Názov
+96|Pracovná plocha X
+97|Pracovná plocha Y
+98|Nula stroja (0,0)
+99|Vľavo vpredu (predvolené pre GRBL)
+100|Vľavo vzadu
+101|Hodnota S max ($30)
+102|Dynamický výkon (M4)
+103|Rýchlosť presunu
+104|Návrat do začiatku
+105|Prenosová rýchlosť
+106|Mriežka kópií
+107|Stĺpce
+108|Riadky
+109|Medzera X
+110|Medzera Y
+111|Vytvoriť mriežku
+112|O programe LightCreator
+113|Verzia {}
+114|Open-source softvér na návrh a ovládanie laserových gravírovačiek a rezačiek.
+115|Pôvod: napísané v jazyku Rust s využitím egui/eframe.
+116|Inšpirované programom LightBurn; rozhranie inšpirované programom VectorCraft.
+117|Autor: Michał Sarna
+118|Licencia MIT.
+119|Vlastnosti
+120|Rezy / Vrstvy
+121|Nič nie je vybrané
+122|Zamknúť pomer strán
+123|Otočiť
+124|Použiť
+125|Prevrátiť H
+126|Prevrátiť V
+127|Na stred
+128|Vľavo
+129|Stred H
+130|Vpravo
+131|Hore
+132|Stred V
+133|Dole
+134|Na stred
+135|Zarovnať na stred
+136|Vrstva
+137|Zobraziť všetkých 30 vrstiev
+138|Výstup (vypáliť túto vrstvu)
+139|Viditeľná
+140|Nastavenia rezu — {}
+141|Režim
+142|Rýchlosť
+143|Výkon (%)
+144|Prechody
+145|Rozstup
+146|Uhol skenovania
+147|Presah
+148|Obojsmerne
+149|Žiadny port
+150|Obnoviť
+151|Znova vyhľadať sériové porty
+152|Odpojiť
+153|Pripojiť
+154|Stav
+155|Krok
+156|Posuv
+157|Hore
+158|Dole
+159|Prerušiť prebiehajúcu úlohu
+160|Stop
+161|Zrušiť posun
+162|Domov
+163|Odomknúť
+164|Pozastaviť
+165|Pokračovať
+166|STOP
+167|Výkon rámika
+168|0 % ponechá laser pri rámovaní vypnutý; 1–2 % ukáže slabú bodku pri diódových laseroch
+169|odoslať G-code / príkaz $
+170|Odoslať
+171|Vybrať zariadenie
+172|Vyberte zariadenie, s ktorým budete pracovať.
+173|Ak chcete pokračovať, vytvorte aspoň jeden profil zariadenia.
+174|Pokračovať
+175|Pridať zariadenie…
+176|Upraviť…
+177|Potvrdiť odstránenie
+178|Zrušiť
+179|Konfigurácia zariadenia
+180|Nové zariadenie
+181|napr. Môj diódový laser
+182|Názov profilu je povinný.
+183|Zmeniť zariadenie…
+184|Zariadenie: {}
+185|Jednotky rýchlosti
+186|Za sekundu (mm/s, in/s)
+187|Za minútu (mm/min, in/min)
+188|Naposledy otvorené
+189|(prázdne)
+190|Vymazať zoznam
+191|už neexistuje
+192|Zavrieť
+193|Minimalizovať
+194|Maximalizovať
+195|Obnoviť
+196|Zobraziť alebo skryť mriežku
+197|Zobraziť alebo skryť vedľajšiu mriežku
+198|Prídavný vzduch
+199|Vzduchové čerpadlo zapnuté
+200|Zapne vzduchové čerpadlo pri vypaľovaní tejto vrstvy (M8 / M9)
+201|Poloha a veľkosť
+202|Otočenie
+203|Zrkadlenie a vycentrovanie
+204|Zarovnanie
+205|Zbaliť
+206|Rozbaliť
+207|Čas
+208|Súbor uložený: {}
+209|Automaticky uložené: {}
+210|Uložiť prácu pred zatvorením?
+211|Návrh nebol uložený do súboru.
+212|Zahodiť
+213|Možnosti programu…
+214|Možnosti programu
+215|Automatické ukladanie
+216|Ukladať prácu automaticky
+217|Automaticky ukladať každých
+218|Práca bez názvu súboru ide do dočasného priečinka; súbor s názvom sa uloží na mieste
+219|Špirála
+220|Špirála (I)
+221|Počet závitov
+222|Potiahnutím na pracovnej ploche ju nakreslíte.
+223|Stiahnuť zálohu…
+224|Skontrolovať aktualizácie…
+225|Záloha uložená: {}
+226|Záloha zlyhala: {}
+227|Aktualizácie
+228|K dispozícii je novšia verzia: {}
+229|Máte verziu {}.
+230|Otvoriť stránku na stiahnutie
+231|Máte najnovšiu verziu.
+232|Najnovšie vydanie: {}
+233|Aktualizácie sa nepodarilo skontrolovať.
+234|Pri spustení programu hľadať novšiu verziu
+235|Obnoviť zo zálohy…
+236|Obnoviť zo zálohy
+237|Vaše súčasné nastavenia a klipart budú nahradené zálohou. Pokračovať?
+238|Záloha obnovená: {}
+239|Obnovenie zlyhalo: {}
+240|Nenašli sa žiadne súbory profilov. Máte zálohu?
+241|Jednotky
+242|Milimetre (mm)
+243|Palce (in)
+244|Zariadenie
+245|Konzola
+246|Dotazy na stav
+247|Automatické rolovanie
+248|Vymazať
+249|Riadič
+250|Typ lasera
+251|Pracovná plocha
+252|Áno
+253|Nie
+254|Pripojenie
+255|Port
+256|Krok posunu
+257|Rýchlosť posunu
+258|Tento riadič nemá priame pripojenie: úlohy sa exportujú ako súbory.
+259|Úprava uzlov (N)
+260|Text (T)
+261|Roh
+262|Hladký
+263|Na úsečku
+264|Na krivku
+265|Pridať uzol
+266|Odstrániť uzol
+267|Otvoriť / zavrieť
+268|Zmeniť vybrané uzly na rohové
+269|Zmeniť vybrané uzly na hladké
+270|Zmeniť úsek za každým vybraným uzlom na priamy
+271|Zmeniť úsek za každým vybraným uzlom na krivku
+272|Vložiť uzol (alebo dvakrát kliknúť na úsek)
+273|Zavrieť otvorenú cestu, alebo otvoriť uzavretú vo vybranom uzle
+274|Previesť na krivky
+275|Zmeniť text na upraviteľné Bézierove tvary
+276|Zjednotenie
+277|Prienik
+278|Rozdiel
+279|Exkluzívne alebo
+280|Odsadiť tvar…
+281|Odsadiť tvar
+282|Vzdialenosť
+283|Kladná hodnota obrys zväčší, záporná zmenší.
+284|Ponechať originál
+285|Vytvoriť odsadenie
+286|Vyberte aspoň dva tvary (nie obrázky).
+287|Výsledok je prázdny.
+288|Importovať obrázok…
+289|Obrázok {} importovaný
+290|Text
+291|Písmo
+292|Hľadať
+293|Veľkosť
+294|Štýl
+295|Tučné
+296|Kurzíva
+297|Medzery medzi písmenami
+298|Riadkovanie
+299|Zarovnanie
+300|Obrázok
+301|Negatívny obrázok
+302|Gravírovať svetlé časti namiesto tmavých
+303|Gravírovanie používa rozstup, rýchlosť, výkon a rastrovanie vrstvy.
+304|Nastavenia obrázka
+305|Obrázky používajú rozstup, rýchlosť, výkon a presah svojej vrstvy.
+306|Rastrovanie
+307|Min. výkon (%)
+308|Prah
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Usporiadané
+314|Odtiene sivej
+315|Výplň odsadením
+316|Exportovať PLT / DXF…
+317|Exportované: {}. Preskočené obrázky: {} — tento formát nemá raster.
+318|Exportujte PLT alebo DXF a otvorte ho v programe samotného riadiča (napríklad RDWorks pre Ruida), ktorý nastaví rýchlosť a výkon podľa farby vrstvy.
+319|Knižnica materiálov…
+320|Knižnica materiálov
+321|Všetko
+322|Materiál
+323|Operácia
+324|Výkon
+325|Rez
+326|Gravírovanie
+327|Ryhovanie
+328|Počiatočné hodnoty pre typické diódové lasery 10 W a CO2 lasery 40 W. Vždy skúšajte na odrezku.
+329|Použiť na vrstvu {}
+330|{} ({}) použité na vrstvu {}
+331|Uložiť aktívnu vrstvu ako predvoľbu
+332|Názov materiálu
+333|Uložiť predvoľbu
+334|Prekrytie z kamery…
+335|Prekrytie z kamery
+336|Zobrazí fotografiu alebo živý obraz z kamery pod návrhom, aby ste mohli prácu umiestniť na materiál.
+337|Načítať obrázok…
+338|Odstrániť
+339|Živá kamera
+340|Táto verzia nepodporuje kameru. Zostavte pomocou: cargo run --release --features camera
+341|Žiadna kamera
+342|Nájsť kamery
+343|Spustiť kameru
+344|Zastaviť obraz
+345|Kamera
+346|Prekrytie: {}
+347|Zobraziť prekrytie
+348|Priehľadnosť
+349|Zarovnanie: potiahnite štyri rohy na pracovnej ploche
+350|Potiahnite každý roh na zodpovedajúci roh materiálu alebo pracovnej plochy; perspektíva sa opraví.
+351|Obnoviť podľa pracovnej plochy
+352|Otočiť o 90°
+353|Vypáliť skôr
+354|Vypáliť neskôr
+355|Vrstvy sa pália zhora nadol.
+356|Možnosti mriežky…
+357|Možnosti mriežky
+358|Hlavná mriežka
+359|Vedľajšia mriežka
+360|Zobraziť
+361|Vzdialenosť medzi čiarami
+362|Farba
+363|Vedľajšia mriežka musí byť jemnejšia ako hlavná.
+364|Obnoviť mriežku
+365|Dráhy
+366|Zobrazí dráhy na pracovnej ploche
+367|Náhľad…
+368|Okno náhľadu…
+369|Otvoriť okno náhľadu
+370|Farbiť podľa
+371|Zobraziť presuny
+372|Pohyby stroja s vypnutým laserom
+373|Prehrať
+374|Prispôsobiť
+375|Operácie
+376|Príliš veľa pohybov: presuny sú skryté.
+377|Pohybov: {}
+378|Import
+379|Export
+380|Importovať Adobe Illustrator / PDF…
+381|Zoskupiť
+382|Zrušiť zoskupenie
+383|Na zoskupenie vyberte aspoň dva objekty.
+384|Zoskupené. Objekty si ponechajú svoje vrstvy.
+385|Operácie s tvarmi
+386|Upraviť obrázok…
+387|Vektorizovať obrázok…
+388|Import obrázka
+389|Úprava obrázka
+390|Otočenie a prevrátenie
+391|Uhol
+392|Tón
+393|Jas
+394|Kontrast
+395|Gama
+396|Automatické úrovne
+397|Šírka
+398|{} × {} px
+399|Obnoviť
+400|Vektorizácia obrázka
+401|Ignorovať malé plochy
+402|Zjednodušiť
+403|Vyhladiť krivky
+404|Vektorizovať svetlé plochy
+405|Potom obrázok odstrániť
+406|Obrysov: {}
+407|Vektorizovať
+408|Vektorizovaných obrysov: {}
+409|Načítať zo zariadenia
+410|Načítava sa…
+411|Pripojí sa a načíta z riadiča pracovnú plochu, hodnotu S max a rýchlosť
+412|Načítavajú sa nastavenia zo zariadenia…
+413|K zariadeniu sa nepodarilo pripojiť.
+414|Zariadenie nenahlásilo žiadne nastavenia.
+415|Načítané hodnoty zo zariadenia: {}
+416|Trojuholník (Y)
+417|Hviezda (S)
+418|Mnohouholník (G)
+419|Trojuholník
+420|Hviezda
+421|Mnohouholník
+422|Počet strán
+423|Potiahnutím na pracovnej ploche ho nakreslíte. Najviac 360 strán.
+424|OK
+425|Typ pripojenia
+426|Sériový port
+427|Sieť (TCP, napr. ser2net)
+428|Hostiteľ
+429|Port TCP
+430|Pripojené k {}
+431|Adresa URL kamery
+432|Živý obraz stroja: prúd MJPEG alebo adresa snímky JPEG (http alebo https).
+433|Pohľad z kamery
+434|Zobrazí živý obraz z kamery tohto stroja
+435|Čaká sa na obraz…
+436|Predvolené priblíženie
+437|Späť na celý obraz
+438|Zobraziť ako prekrytie na pracovnej ploche
+439|Chyba prúdu: {}
+440|Prispôsobiť na 15 s
+441|Skutočný čas
+442|Najprv nastavte adresu URL kamery v nastaveniach zariadenia.
+443|Zobraziť v
+444|Plávajúce okno
+445|Samostatné okno
+446|Bočná karta
+447|Prekrytie
+448|Zobrazí alebo skryje prekrytie z kamery na pracovnej ploche
+449|Zobraziť prekrytie z kamery
+450|Prekrytie z kamery zatiaľ nie je. Načítajte obrázok alebo spustite pohľad z kamery.
+451|Zdieľať po sieti (ser2net)…
+452|Zdieľať po sieti (ser2net)
+453|Nájdený ser2net: {}
+454|Program ser2net sa nenašiel. Najprv ho nainštalujte, napríklad: sudo apt install ser2net
+455|Tým sa sériový port lasera na tomto počítači sprístupní po sieti, takže sa LightCreator inde môže pripojiť s typom pripojenia „Sieť (TCP)“.
+456|Verzia ser2net
+457|Počúvať iba na tomto počítači (použite s tunelom SSH)
+458|Nový klient nahradí pripojeného
+459|Súbor: {}
+460|Potom sa z druhého počítača pripojte k {}:{}
+461|Upozornenie: ktokoľvek v sieti, kto sa k tomuto portu dostane, môže laser ovládať. Použite dôveryhodnú sieť, firewall alebo možnosť iba lokálne s tunelom SSH.
+462|Skopírované.
+463|Nainštalovať a reštartovať ser2net…
+464|Tým sa nahradí {} (záloha sa zachová) a reštartuje sa ser2net. Budú vyžadované oprávnenia správcu.
+465|Potvrdiť
+466|Čaká sa na schválenie správcom…
+467|Nainštalované: {}, ser2net reštartovaný.
+468|Konfiguráciu sa nepodarilo nainštalovať: {}
+469|Ručne: sudo cp <uložený súbor> {} && sudo systemctl restart ser2net
+470|Otočenie kamery
+471|Automaticky prispôsobiť pracovnú plochu oknu
+472|Zamknúť
+473|Zamknuté: na úpravy odomknite. Kópie nie sú zamknuté.
+474|Zamknutých objektov: {}
+475|Odomknutých objektov: {}
+476|Dvojitým kliknutím upravíte možnosti vrstvy
+477|Možnosti vrstvy — {}
+478|{} — kliknutím sem priradíte výber / nastavíte ako aktívnu; dvojité kliknutie otvorí možnosti
+479|Možnosti zobrazenia…
+480|Možnosti zobrazenia
+481|Farba pozadia
+482|Automaticky
+483|Hrúbka čiar
+484|Prechodov: {}
+485|Rýchly sprievodca
+486|Stránka projektu na GitHube
+487|Tento sprievodca je k dispozícii v angličtine a poľštine; ostatné jazyky zobrazujú anglický text.
+488|Zaobliť rohy…
+489|Zaobliť rohy
+490|Polomer
+491|Zaobliť
+492|Polomer zaoblenia
+493|Zaobli vybrané rohy týmto polomerom
+494|Sú vybrané dve priamky: spoja sa zaobleným rohom.
+495|Každý priamy roh vybraných tvarov sa zaobli.
+496|Tieto priamky nemožno spojiť (sú rovnobežné, alebo sa polomer nezmestí).
+497|Obe priamky boli spojené zaobleným rohom.
+498|Najprv vyberte tvary, ktoré sa majú zaobliť.
+499|Nie sú žiadne priame rohy na zaoblenie.
+500|Zaoblených rohov: {}
+501|Klipart
+502|Zvieratá
+503|Príroda
+504|Oslavy
+505|Symboly
+506|Tvary
+507|Nástroje
+508|Jedlo
+509|Predmety
+510|Hudba a zábava
+511|Môj klipart
+512|Všetky kategórie
+513|Súčasť programu
+514|Moje
+515|Obrázky, ktoré sú súčasťou programu
+516|Obrázky, ktoré ste stiahli alebo pridali
+517|Veľkosť pri vložení
+518|Online…
+519|Pridať súbor…
+520|Vyhľadajte na internete ďalšie obrázky a uložte ich sem
+521|Pridá súbory SVG z vášho počítača do vášho kliparu
+522|Žiadne obrázky. Použite Online… a nejaké nájdite.
+523|je súčasťou programu
+524|vaše
+525|Kliknutím umiestnite na pracovnú plochu
+526|Umiestnené: {}
+527|Premenovať
+528|Premenovať…
+529|Zmeniť kategóriu
+530|Zmeniť kategóriu…
+531|Podrobnosti
+532|Podrobnosti…
+533|Odstrániť…
+534|Odstrániť tento obrázok z kliparu? Súbor na disku sa odstráni.
+535|Uložiť kópiu do môjho kliparu
+536|alebo nová kategória
+537|Pridané obrázky: {} do kategórie {}
+538|Zdroj
+539|Kategória
+540|Licencia
+541|Autor
+542|Kolekcia
+543|Online klipart…
+544|Online klipart
+545|Vyhľadávanie v otvorených zbierkach ikon (Iconify). Obrázky sa ukladajú na váš disk do vami zvolenej kategórie.
+546|napr. mačka, kvet, ozubené koleso
+547|Hľadá sa…
+548|Nič sa nenašlo.
+549|Nájdené obrázky: {}
+550|Hľadanie zlyhalo: {}
+551|Kliknutím na obrázok zobrazíte jeho licenciu a môžete ho uložiť.
+552|uvedenie autora nie je potrebné
+553|uveďte autora
+554|Uložiť do môjho kliparu
+555|{} uložené do kategórie {}
+556|Stiahnuť
+557|Sťahuje sa…
+558|Stiahnutie zlyhalo: {}
+559|Alebo stiahnite obrázok z adresy
+560|Ukladajte len obrázky, ktoré smiete použiť. Skontrolujte licenciu zdroja.
+561|Priblížiť (Z)
+562|Oddialiť (X)
+563|Prispôsobiť pracovnej ploche (Ctrl+0)
+564|Prispôsobiť všetkým objektom (Ctrl+9)
+565|Priblížiť
+566|Oddialiť
+567|Prispôsobiť pracovnej ploche
+568|Prispôsobiť všetkým objektom
+569|Upraviť uzly
+570|Preveďte text na krivky, alebo obrázok vektorizujte, aby ste mohli upravovať jeho uzly.
+571|Najprv vyberte tvar a potom upravte jeho uzly.
+572|Srdce (K)

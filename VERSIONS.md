@@ -2,6 +2,17 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.0.10
+
+**Languages**
+* 23 more European languages, 30 in all: Български, Català, Hrvatski, Čeština, Dansk, Nederlands, Eesti, Français,
+  Ελληνικά, Magyar, Íslenska, Gaeilge, Latviešu, Lietuvių, Malti, Norsk bokmål, Português, Română, Slovenčina,
+  Slovenščina, Español, Svenska and Українська (Russian is left out). The texts live in `assets/lang/<code>.txt`, one file
+  per language, keyed by the line of `assets/lang/keys.txt`.
+* They were prepared with machine help; corrections from native speakers are welcome.
+* Tests check that every language file is complete, keeps the `{}` placeholders and that the interface font has a glyph
+  for every character used.
+
 ## v0.0.9
 
 **Backup and updates**

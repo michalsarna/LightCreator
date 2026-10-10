@@ -1,0 +1,573 @@
+0	File
+1	Edit
+2	Arrange
+3	View
+4	Laser
+5	Settings
+6	Help
+7	New
+8	Open…
+9	Save
+10	Save as…
+11	Import SVG…
+12	Export SVG…
+13	Export G-code…
+14	Quit
+15	Undo
+16	Redo
+17	Copy
+18	Paste
+19	Duplicate
+20	Delete
+21	Select all
+22	Align left
+23	Align centre (H)
+24	Align right
+25	Align top
+26	Align centre (V)
+27	Align bottom
+28	Centre on each other
+29	Centre on bed
+30	Flip horizontal
+31	Flip vertical
+32	Rotate 90° CW
+33	Rotate 90° CCW
+34	Bring to front
+35	Send to back
+36	Convert to path
+37	Grid array…
+38	Grid
+39	Snap to grid
+40	Toolpath preview
+41	Fit bed to window
+42	Device settings…
+43	Frame
+44	Start job
+45	About
+46	Language
+47	Colour scheme
+48	Dark
+49	Light Dark
+50	Medium Light
+51	Light
+52	Select (V)
+53	Rectangle (R)
+54	Ellipse (E)
+55	Line (L)
+56	Polyline / pen (P)
+57	Pan (H)
+58	Zoom (Z)
+59	Select
+60	Rectangle
+61	Ellipse
+62	Line
+63	Fill
+64	Fill + Line
+65	Layer {}
+66	Snap
+67	Preview
+68	Start
+69	Stream the job to the connected laser
+70	Trace the bounding box
+71	Save G-code
+72	Layers
+73	{} — click to assign selection / set active
+74	Ready
+75	Opened {}
+76	Open failed: {}
+77	Saved {}
+78	Save failed: {}
+79	Imported {} paths from {}
+80	Import failed: {}
+81	Exported {}
+82	Export failed: {}
+83	Saved G-code {}
+84	Connect to a laser first (Laser panel)
+85	Nothing to burn: no shapes on output layers
+86	Starting job: {} lines, ~{}
+87	Disconnected
+88	Connected to {} @ {}
+89	Cannot open {}: {}
+90	Aborted (soft reset)
+91	Connection lost
+92	Estimated time
+93	cut length
+94	Device settings
+95	Name
+96	Work area X
+97	Work area Y
+98	Machine zero (0,0)
+99	Front-left (GRBL default)
+100	Back-left
+101	S-value max ($30)
+102	Dynamic power (M4)
+103	Travel speed
+104	Return to origin
+105	Baud rate
+106	Grid array
+107	Columns
+108	Rows
+109	Gap X
+110	Gap Y
+111	Create array
+112	About LightCreator
+113	Version {}
+114	Open-source design & control software for laser engravers and cutters.
+115	Origin: written in Rust with egui/eframe.
+116	Inspired by LightBurn; interface inspired by VectorCraft.
+117	Author: Michał Sarna
+118	MIT licensed.
+119	Properties
+120	Cuts / Layers
+121	Nothing selected
+122	Lock aspect ratio
+123	Rotate
+124	Apply
+125	Flip H
+126	Flip V
+127	Centre
+128	Left
+129	Mid-H
+130	Right
+131	Top
+132	Mid-V
+133	Bottom
+134	Align centre
+135	Align middle
+136	Layer
+137	Show all 30 layers
+138	Output (burn this layer)
+139	Visible
+140	Cut settings — {}
+141	Mode
+142	Speed
+143	Power (%)
+144	Passes
+145	Interval
+146	Scan angle
+147	Overscan
+148	Bidirectional
+149	No port
+150	Refresh
+151	Rescan serial ports
+152	Disconnect
+153	Connect
+154	State
+155	Step
+156	Feed
+157	Up
+158	Down
+159	Abort the running job
+160	Stop
+161	Cancel jog
+162	Home
+163	Unlock
+164	Pause
+165	Resume
+166	STOP
+167	Frame power
+168	0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers
+169	send G-code / $ command
+170	Send
+171	Select device
+172	Choose the device you will work with.
+173	Create at least one device profile to continue.
+174	Continue
+175	Add device…
+176	Edit…
+177	Confirm delete
+178	Cancel
+179	Device configuration
+180	New device
+181	e.g. My diode laser
+182	A profile name is required.
+183	Switch device…
+184	Device: {}
+185	Speed units
+186	Per second (mm/s, in/s)
+187	Per minute (mm/min, in/min)
+188	Open recent
+189	(empty)
+190	Clear list
+191	no longer exists
+192	Close
+193	Minimise
+194	Maximise
+195	Restore
+196	Show or hide the grid
+197	Show or hide the secondary grid
+198	Air assist
+199	Air pump on
+200	Switch the air pump on while this layer burns (M8 / M9)
+201	Position and size
+202	Rotation
+203	Mirror and centre
+204	Alignment
+205	Fold up
+206	Unfold
+207	Time
+208	File saved: {}
+209	Auto-saved {}
+210	Save your work before closing?
+211	The design has not been saved to a file.
+212	Discard
+213	Program options…
+214	Program options
+215	Auto-save
+216	Save the work automatically
+217	Auto-save every
+218	Work without a file name goes to a temporary folder; a file with a name is saved in place
+219	Spiral
+220	Spiral (I)
+221	Number of turns
+222	Drag on the work area to draw it.
+223	Download backup…
+224	Check for updates…
+225	Backup saved: {}
+226	Backup failed: {}
+227	Updates
+228	A newer version is available: {}
+229	You have {}.
+230	Open the download page
+231	You have the newest version.
+232	Newest release: {}
+233	Could not check for updates.
+234	Look for a newer version when the program starts
+235	Restore from backup…
+236	Restore from backup
+237	Your current settings and clipart will be replaced by the backup. Continue?
+238	Backup restored: {}
+239	Restore failed: {}
+240	No profile files were found. Have a backup?
+241	Units
+242	Millimetres (mm)
+243	Inches (in)
+244	Device
+245	Console
+246	Status polls
+247	Auto-scroll
+248	Clear
+249	Controller
+250	Laser type
+251	Work area
+252	Yes
+253	No
+254	Connection
+255	Port
+256	Jog step
+257	Jog feed
+258	This controller has no live connection: jobs are exported as files.
+259	Node edit (N)
+260	Text (T)
+261	Corner
+262	Smooth
+263	To line
+264	To curve
+265	Add node
+266	Delete node
+267	Open / close
+268	Make the selected nodes corners
+269	Make the selected nodes smooth
+270	Make the segment after each selected node straight
+271	Make the segment after each selected node a curve
+272	Insert a node (or double-click a segment)
+273	Close an open path, or open a closed one at the selected node
+274	Convert to curves
+275	Turn the text into editable Bézier shapes
+276	Union
+277	Intersection
+278	Subtract
+279	Exclusive or
+280	Offset shape…
+281	Offset shape
+282	Distance
+283	Positive grows the outline, negative shrinks it.
+284	Keep the original
+285	Create offset
+286	Select at least two shapes (not images).
+287	The result is empty.
+288	Import image…
+289	Imported image {}
+290	Text
+291	Font
+292	Search
+293	Size
+294	Style
+295	Bold
+296	Italic
+297	Letter spacing
+298	Line spacing
+299	Align
+300	Image
+301	Negative image
+302	Engrave the light parts instead of the dark parts
+303	Engraving uses the layer's interval, speed, power and dithering.
+304	Image settings
+305	Images use the interval, speed, power and overscan of their layer.
+306	Dithering
+307	Min power (%)
+308	Threshold
+309	Floyd-Steinberg
+310	Jarvis
+311	Stucki
+312	Atkinson
+313	Ordered
+314	Grayscale
+315	Offset fill
+316	Export PLT / DXF…
+317	Exported {}. {} image(s) skipped: this format has no raster.
+318	Export PLT or DXF and open it in the controller's own software (for example RDWorks for Ruida), which sets speed and power per layer colour.
+319	Material library…
+320	Material library
+321	All
+322	Material
+323	Operation
+324	Power
+325	Cut
+326	Engrave
+327	Score
+328	Starting values for typical 10 W diode and 40 W CO2 lasers. Always test on scrap.
+329	Apply to layer {}
+330	Applied {} ({}) to layer {}
+331	Save the active layer as a preset
+332	Material name
+333	Save preset
+334	Camera overlay…
+335	Camera overlay
+336	Show a photo or the live camera under the design to position work on the material.
+337	Load picture…
+338	Remove
+339	Live camera
+340	This build has no camera support. Build with: cargo run --release --features camera
+341	No camera
+342	Find cameras
+343	Start camera
+344	Freeze frame
+345	Camera
+346	Overlay: {}
+347	Show overlay
+348	Opacity
+349	Align: drag the four corners on the work area
+350	Drag each corner to the matching corner of the material or work area; perspective is corrected.
+351	Reset to work area
+352	Rotate 90°
+353	Burn earlier
+354	Burn later
+355	Layers are burnt from top to bottom.
+356	Grid options…
+357	Grid options
+358	Main grid
+359	Secondary grid
+360	Show
+361	Distance between lines
+362	Colour
+363	The secondary grid must be finer than the main grid.
+364	Reset grid
+365	Toolpaths
+366	Show the toolpaths on the work area
+367	Preview…
+368	Preview window…
+369	Open the preview window
+370	Colour by
+371	Show travel moves
+372	Moves of the machine with the laser off
+373	Play
+374	Fit
+375	Operations
+376	Too many moves: travel lines are hidden.
+377	{} moves
+378	Import
+379	Export
+380	Import Adobe Illustrator / PDF…
+381	Group
+382	Ungroup
+383	Select at least two objects to group.
+384	Grouped. The objects keep their layers.
+385	Shape operations
+386	Adjust image…
+387	Trace image…
+388	Import image
+389	Adjust image
+390	Rotate and flip
+391	Angle
+392	Tone
+393	Brightness
+394	Contrast
+395	Gamma
+396	Auto levels
+397	Width
+398	{} × {} px
+399	Reset
+400	Trace image
+401	Ignore small areas
+402	Simplify
+403	Smooth curves
+404	Trace the light areas
+405	Delete the image afterwards
+406	{} outlines
+407	Trace
+408	Traced {} outlines
+409	Read from device
+410	Reading…
+411	Connect and read work area, S-value max and speed from the controller
+412	Reading settings from the device…
+413	Could not connect to the device.
+414	The device did not report any settings.
+415	Read {} values from the device
+416	Triangle (Y)
+417	Star (S)
+418	Polygon (G)
+419	Triangle
+420	Star
+421	Polygon
+422	Number of sides
+423	Drag on the work area to draw it. At most 360 sides.
+424	OK
+425	Connection type
+426	Serial port
+427	Network (TCP, e.g. ser2net)
+428	Host
+429	TCP port
+430	Connected to {}
+431	Camera URL
+432	Live picture of the machine: an MJPEG stream or a JPEG snapshot address (http or https).
+433	Camera view
+434	Show the live camera picture of this machine
+435	Waiting for the picture…
+436	Default zoom
+437	Back to the whole picture
+438	Show as overlay on the work area
+439	Stream error: {}
+440	Fit 15 s
+441	Real time
+442	Set a camera URL in the device settings first.
+443	Show in
+444	Floating window
+445	Separate window
+446	Side tab
+447	Overlay
+448	Show or hide the camera overlay on the work area
+449	Show camera overlay
+450	There is no camera overlay yet. Load a picture or start the camera view.
+451	Share over network (ser2net)…
+452	Share over network (ser2net)
+453	ser2net found: {}
+454	ser2net was not found. Install it first, for example: sudo apt install ser2net
+455	This shares the laser's serial port on this computer over the network, so LightCreator elsewhere can connect with the "Network (TCP)" connection type.
+456	ser2net version
+457	Listen only on this computer (use with an SSH tunnel)
+458	A new client replaces the connected one
+459	File: {}
+460	Then connect from the other computer to {}:{}
+461	Warning: anyone on the network who reaches this port can drive the laser. Use a trusted network, a firewall, or the local-only option with an SSH tunnel.
+462	Copied.
+463	Install and restart ser2net…
+464	This replaces {} (a backup is kept) and restarts ser2net. Administrator rights are requested.
+465	Confirm
+466	Waiting for administrator approval…
+467	Installed {} and restarted ser2net.
+468	Could not install the configuration: {}
+469	By hand: sudo cp <saved file> {} && sudo systemctl restart ser2net
+470	Camera rotation
+471	Auto-fit work area to window
+472	Lock
+473	Locked: unlock to edit. Copies are not locked.
+474	Locked {} object(s).
+475	Unlocked {} object(s).
+476	Double-click to edit the layer options
+477	Layer options — {}
+478	{} — click to assign selection / set active; double-click for options
+479	View options…
+480	View options
+481	Background colour
+482	Automatic
+483	Line thickness
+484	{} passes
+485	Quick guide
+486	Project page on GitHub
+487	This guide is available in English and Polish; other languages show the English text.
+488	Round corners…
+489	Round corners
+490	Radius
+491	Round
+492	Radius for rounding
+493	Round the selected corners with this radius
+494	Two straight lines are selected: they are joined with a rounded corner.
+495	Every straight corner of the selected shapes is rounded.
+496	These lines cannot be joined (parallel, or the radius does not fit).
+497	Joined the two lines with a rounded corner.
+498	Select shapes to round first.
+499	There are no straight corners to round.
+500	Rounded {} corner(s).
+501	Clipart
+502	Animals
+503	Nature
+504	Celebrations
+505	Symbols
+506	Shapes
+507	Tools
+508	Food
+509	Objects
+510	Music and fun
+511	My clipart
+512	All categories
+513	Included
+514	Mine
+515	Pictures that come with the program
+516	Pictures you downloaded or added
+517	Size when placed
+518	Online…
+519	Add file…
+520	Search the internet for more pictures and save them here
+521	Add SVG files from your computer to your clipart
+522	No pictures here. Use Online… to find some.
+523	comes with the program
+524	yours
+525	Click to place on the work area
+526	Placed {}
+527	Rename
+528	Rename…
+529	Change category
+530	Change category…
+531	Details
+532	Details…
+533	Delete…
+534	Remove this picture from your clipart? The file on your disk is deleted.
+535	Save a copy in my clipart
+536	or a new category
+537	Added {} picture(s) to {}
+538	Source
+539	Category
+540	Licence
+541	Author
+542	Collection
+543	Online clipart…
+544	Online clipart
+545	Search open icon collections (Iconify). Pictures are saved on your disk, in a category of your choice.
+546	e.g. cat, flower, gear
+547	Searching…
+548	Nothing found.
+549	{} pictures found
+550	Search failed: {}
+551	Click a picture to see its licence and save it.
+552	no credit needed
+553	credit the author
+554	Save to my clipart
+555	Saved {} in {}
+556	Download
+557	Downloading…
+558	Download failed: {}
+559	Or download a picture from an address
+560	Only save pictures you may use. Check the licence of the source.
+561	Zoom in (Z)
+562	Zoom out (X)
+563	Fit work area (Ctrl+0)
+564	Fit all objects (Ctrl+9)
+565	Zoom in
+566	Zoom out
+567	Fit work area
+568	Fit all objects
+569	Edit nodes
+570	Convert text to curves, or trace the image, to edit its nodes.
+571	Select a shape first, then edit its nodes.
+572	Heart (K)

@@ -1,0 +1,573 @@
+0|Fitxer
+1|Edita
+2|Organitza
+3|Visualitza
+4|Làser
+5|Configuració
+6|Ajuda
+7|Nou
+8|Obre…
+9|Desa
+10|Desa com a…
+11|Importa SVG…
+12|Exporta SVG…
+13|Exporta G-code…
+14|Surt
+15|Desfés
+16|Refés
+17|Copia
+18|Enganxa
+19|Duplica
+20|Suprimeix
+21|Selecciona-ho tot
+22|Alinea a l'esquerra
+23|Centra (H)
+24|Alinea a la dreta
+25|Alinea a dalt
+26|Centra (V)
+27|Alinea a baix
+28|Centra entre ells
+29|Centra a la taula
+30|Gira horitzontalment
+31|Gira verticalment
+32|Gira 90° a la dreta
+33|Gira 90° a l'esquerra
+34|Porta al davant
+35|Envia al darrere
+36|Converteix en traçat
+37|Matriu de còpies…
+38|Quadrícula
+39|Ajusta a la quadrícula
+40|Previsualització dels traçats
+41|Ajusta la taula a la finestra
+42|Configuració del dispositiu…
+43|Marc
+44|Inicia el treball
+45|Quant a
+46|Llengua
+47|Esquema de colors
+48|Fosc
+49|Clar-fosc
+50|Mig clar
+51|Clar
+52|Selecciona (V)
+53|Rectangle (R)
+54|El·lipse (E)
+55|Línia (L)
+56|Polilínia / ploma (P)
+57|Mou la vista (H)
+58|Zoom (Z)
+59|Selecciona
+60|Rectangle
+61|El·lipse
+62|Línia
+63|Emplenament
+64|Emplenament + línia
+65|Capa {}
+66|Imant
+67|Previsualització
+68|Inicia
+69|Envia el treball al làser connectat
+70|Recorre el contorn de l'àrea
+71|Desa el G-code
+72|Capes
+73|{} — fes clic per assignar-hi la selecció / activar-la
+74|A punt
+75|{} obert
+76|No s'ha pogut obrir: {}
+77|{} desat
+78|No s'ha pogut desar: {}
+79|{} traçats importats de {}
+80|La importació ha fallat: {}
+81|{} exportat
+82|L'exportació ha fallat: {}
+83|G-code {} desat
+84|Connecteu primer un làser (tauler Làser)
+85|No hi ha res per gravar: no hi ha formes a les capes de sortida
+86|S'inicia el treball: {} línies, ~{}
+87|Desconnectat
+88|Connectat a {} @ {}
+89|No es pot obrir {}: {}
+90|Interromput (reinici per programari)
+91|S'ha perdut la connexió
+92|Temps estimat
+93|longitud de tall
+94|Configuració del dispositiu
+95|Nom
+96|Àrea de treball X
+97|Àrea de treball Y
+98|Zero de la màquina (0,0)
+99|Davant a l'esquerra (per defecte de GRBL)
+100|Darrere a l'esquerra
+101|Valor S màx ($30)
+102|Potència dinàmica (M4)
+103|Velocitat de desplaçament
+104|Torna a l'origen
+105|Velocitat en bauds
+106|Matriu de còpies
+107|Columnes
+108|Files
+109|Espai X
+110|Espai Y
+111|Crea la matriu
+112|Quant a LightCreator
+113|Versió {}
+114|Programari de codi obert per dissenyar i controlar gravadores i talladores làser.
+115|Origen: escrit en Rust amb egui/eframe.
+116|Inspirat en LightBurn; interfície inspirada en VectorCraft.
+117|Autor: Michał Sarna
+118|Llicència MIT.
+119|Propietats
+120|Talls / Capes
+121|No hi ha res seleccionat
+122|Bloqueja la proporció
+123|Gira
+124|Aplica
+125|Gira H
+126|Gira V
+127|Centra
+128|Esquerra
+129|Mig H
+130|Dreta
+131|Dalt
+132|Mig V
+133|Baix
+134|Centra
+135|Alinea al mig
+136|Capa
+137|Mostra les 30 capes
+138|Sortida (grava aquesta capa)
+139|Visible
+140|Configuració del tall — {}
+141|Mode
+142|Velocitat
+143|Potència (%)
+144|Passades
+145|Interval
+146|Angle d'escaneig
+147|Sobreescaneig
+148|Bidireccional
+149|Cap port
+150|Actualitza
+151|Torna a cercar els ports sèrie
+152|Desconnecta
+153|Connecta
+154|Estat
+155|Pas
+156|Avanç
+157|Amunt
+158|Avall
+159|Interromp el treball en curs
+160|Atura
+161|Cancel·la el moviment
+162|Inici
+163|Desbloqueja
+164|Pausa
+165|Reprèn
+166|ATURA
+167|Potència del marc
+168|0 % manté el làser apagat en emmarcar; 1–2 % mostra un punt tènue als làsers de díode
+169|envia G-code / ordre $
+170|Envia
+171|Selecciona el dispositiu
+172|Trieu el dispositiu amb què treballareu.
+173|Creeu com a mínim un perfil de dispositiu per continuar.
+174|Continua
+175|Afegeix un dispositiu…
+176|Edita…
+177|Confirma la supressió
+178|Cancel·la
+179|Configuració del dispositiu
+180|Dispositiu nou
+181|p. ex. El meu làser de díode
+182|Cal un nom de perfil.
+183|Canvia de dispositiu…
+184|Dispositiu: {}
+185|Unitats de velocitat
+186|Per segon (mm/s, in/s)
+187|Per minut (mm/min, in/min)
+188|Obre recents
+189|(buit)
+190|Buida la llista
+191|ja no existeix
+192|Tanca
+193|Minimitza
+194|Maximitza
+195|Restaura
+196|Mostra o amaga la quadrícula
+197|Mostra o amaga la quadrícula secundària
+198|Assistència d'aire
+199|Bomba d'aire activada
+200|Activa la bomba d'aire mentre es grava aquesta capa (M8 / M9)
+201|Posició i mida
+202|Rotació
+203|Mirall i centrat
+204|Alineació
+205|Replega
+206|Desplega
+207|Temps
+208|Fitxer desat: {}
+209|Desat automàticament {}
+210|Voleu desar la feina abans de tancar?
+211|El disseny no s'ha desat en cap fitxer.
+212|Descarta
+213|Opcions del programa…
+214|Opcions del programa
+215|Desament automàtic
+216|Desa la feina automàticament
+217|Desa automàticament cada
+218|La feina sense nom de fitxer va a una carpeta temporal; un fitxer amb nom es desa al mateix lloc
+219|Espiral
+220|Espiral (I)
+221|Nombre de voltes
+222|Arrossegueu sobre l'àrea de treball per dibuixar-la.
+223|Baixa una còpia de seguretat…
+224|Cerca actualitzacions…
+225|Còpia de seguretat desada: {}
+226|La còpia de seguretat ha fallat: {}
+227|Actualitzacions
+228|Hi ha una versió més nova disponible: {}
+229|Teniu la versió {}.
+230|Obre la pàgina de baixada
+231|Teniu la versió més recent.
+232|Darrera versió: {}
+233|No s'han pogut cercar actualitzacions.
+234|Cerca una versió més nova en iniciar el programa
+235|Restaura des d'una còpia de seguretat…
+236|Restaura des d'una còpia de seguretat
+237|La configuració i els cliparts actuals se substituiran per la còpia de seguretat. Voleu continuar?
+238|Còpia de seguretat restaurada: {}
+239|La restauració ha fallat: {}
+240|No s'ha trobat cap fitxer de perfil. Teniu una còpia de seguretat?
+241|Unitats
+242|Mil·límetres (mm)
+243|Polzades (in)
+244|Dispositiu
+245|Consola
+246|Consultes d'estat
+247|Desplaçament automàtic
+248|Esborra
+249|Controlador
+250|Tipus de làser
+251|Àrea de treball
+252|Sí
+253|No
+254|Connexió
+255|Port
+256|Pas de moviment
+257|Avanç de moviment
+258|Aquest controlador no té connexió directa: els treballs s'exporten com a fitxers.
+259|Edició de nodes (N)
+260|Text (T)
+261|Cantonada
+262|Suau
+263|A línia
+264|A corba
+265|Afegeix un node
+266|Suprimeix el node
+267|Obre / tanca
+268|Converteix els nodes seleccionats en cantonades
+269|Fes suaus els nodes seleccionats
+270|Fes recte el segment posterior a cada node seleccionat
+271|Fes corb el segment posterior a cada node seleccionat
+272|Insereix un node (o fes doble clic en un segment)
+273|Tanca un traçat obert, o obre'n un de tancat al node seleccionat
+274|Converteix en corbes
+275|Converteix el text en formes de Bézier editables
+276|Unió
+277|Intersecció
+278|Resta
+279|O exclusiu
+280|Desplaça la forma…
+281|Desplaça la forma
+282|Distància
+283|Un valor positiu fa créixer el contorn, un de negatiu l'encongeix.
+284|Conserva l'original
+285|Crea el desplaçament
+286|Seleccioneu com a mínim dues formes (no imatges).
+287|El resultat és buit.
+288|Importa una imatge…
+289|Imatge {} importada
+290|Text
+291|Tipus de lletra
+292|Cerca
+293|Mida
+294|Estil
+295|Negreta
+296|Cursiva
+297|Espaiat de lletres
+298|Interlineat
+299|Alineació
+300|Imatge
+301|Imatge en negatiu
+302|Grava les parts clares en lloc de les fosques
+303|El gravat utilitza l'interval, la velocitat, la potència i la trama de la capa.
+304|Configuració de la imatge
+305|Les imatges utilitzen l'interval, la velocitat, la potència i el sobreescaneig de la seva capa.
+306|Trama
+307|Potència mín (%)
+308|Llindar
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Ordenada
+314|Escala de grisos
+315|Emplenament per desplaçament
+316|Exporta PLT / DXF…
+317|{} exportat. {} imatge(s) omesa(es): aquest format no té ràster.
+318|Exporteu a PLT o DXF i obriu-lo al programari del mateix controlador (per exemple RDWorks per a Ruida), que fixa la velocitat i la potència per color de capa.
+319|Biblioteca de materials…
+320|Biblioteca de materials
+321|Tots
+322|Material
+323|Operació
+324|Potència
+325|Tall
+326|Gravat
+327|Marcatge
+328|Valors inicials per a làsers típics de díode de 10 W i de CO2 de 40 W. Proveu sempre amb retalls.
+329|Aplica a la capa {}
+330|{} ({}) aplicat a la capa {}
+331|Desa la capa activa com a predefinició
+332|Nom del material
+333|Desa la predefinició
+334|Superposició de la càmera…
+335|Superposició de la càmera
+336|Mostra una foto o la càmera en directe sota el disseny per col·locar la feina sobre el material.
+337|Carrega una imatge…
+338|Treu
+339|Càmera en directe
+340|Aquesta versió no té suport de càmera. Compileu amb: cargo run --release --features camera
+341|Sense càmera
+342|Cerca càmeres
+343|Inicia la càmera
+344|Congela la imatge
+345|Càmera
+346|Superposició: {}
+347|Mostra la superposició
+348|Opacitat
+349|Alineació: arrossegueu les quatre cantonades sobre l'àrea de treball
+350|Arrossegueu cada cantonada a la cantonada corresponent del material o de l'àrea de treball; la perspectiva es corregeix.
+351|Restableix a l'àrea de treball
+352|Gira 90°
+353|Grava abans
+354|Grava després
+355|Les capes es graven de dalt a baix.
+356|Opcions de la quadrícula…
+357|Opcions de la quadrícula
+358|Quadrícula principal
+359|Quadrícula secundària
+360|Mostra
+361|Distància entre línies
+362|Color
+363|La quadrícula secundària ha de ser més fina que la principal.
+364|Restableix la quadrícula
+365|Traçats
+366|Mostra els traçats a l'àrea de treball
+367|Previsualització…
+368|Finestra de previsualització…
+369|Obre la finestra de previsualització
+370|Acoloreix per
+371|Mostra els desplaçaments en buit
+372|Moviments de la màquina amb el làser apagat
+373|Reprodueix
+374|Ajusta
+375|Operacions
+376|Massa moviments: els desplaçaments en buit s'amaguen.
+377|{} moviments
+378|Importa
+379|Exporta
+380|Importa Adobe Illustrator / PDF…
+381|Agrupa
+382|Desagrupa
+383|Seleccioneu com a mínim dos objectes per agrupar.
+384|Agrupat. Els objectes conserven les seves capes.
+385|Operacions amb formes
+386|Ajusta la imatge…
+387|Vectoritza la imatge…
+388|Importa una imatge
+389|Ajusta la imatge
+390|Gira i inverteix
+391|Angle
+392|To
+393|Brillantor
+394|Contrast
+395|Gamma
+396|Nivells automàtics
+397|Amplada
+398|{} × {} px
+399|Restableix
+400|Vectoritza la imatge
+401|Ignora les àrees petites
+402|Simplifica
+403|Suavitza les corbes
+404|Vectoritza les àrees clares
+405|Suprimeix la imatge després
+406|{} contorns
+407|Vectoritza
+408|{} contorns vectoritzats
+409|Llegeix del dispositiu
+410|S'està llegint…
+411|Es connecta i llegeix del controlador l'àrea de treball, el valor S màx i la velocitat
+412|S'està llegint la configuració del dispositiu…
+413|No s'ha pogut connectar amb el dispositiu.
+414|El dispositiu no ha informat de cap paràmetre.
+415|S'han llegit {} valors del dispositiu
+416|Triangle (Y)
+417|Estrella (S)
+418|Polígon (G)
+419|Triangle
+420|Estrella
+421|Polígon
+422|Nombre de costats
+423|Arrossegueu sobre l'àrea de treball per dibuixar-lo. Com a màxim 360 costats.
+424|D'acord
+425|Tipus de connexió
+426|Port sèrie
+427|Xarxa (TCP, p. ex. ser2net)
+428|Amfitrió
+429|Port TCP
+430|Connectat a {}
+431|URL de la càmera
+432|Imatge en directe de la màquina: un flux MJPEG o l'adreça d'una imatge JPEG (http o https).
+433|Vista de la càmera
+434|Mostra la imatge en directe de la càmera d'aquesta màquina
+435|S'espera la imatge…
+436|Zoom per defecte
+437|Torna a la imatge completa
+438|Mostra com a superposició a l'àrea de treball
+439|Error del flux: {}
+440|Ajusta a 15 s
+441|Temps real
+442|Indiqueu primer un URL de càmera a la configuració del dispositiu.
+443|Mostra a
+444|Finestra flotant
+445|Finestra independent
+446|Pestanya lateral
+447|Superposició
+448|Mostra o amaga la superposició de la càmera a l'àrea de treball
+449|Mostra la superposició de la càmera
+450|Encara no hi ha superposició de la càmera. Carregueu una imatge o inicieu la vista de la càmera.
+451|Comparteix per la xarxa (ser2net)…
+452|Comparteix per la xarxa (ser2net)
+453|ser2net trobat: {}
+454|No s'ha trobat ser2net. Instal·leu-lo primer, per exemple: sudo apt install ser2net
+455|Això comparteix per la xarxa el port sèrie del làser d'aquest ordinador, de manera que LightCreator en un altre lloc es pugui connectar amb el tipus de connexió «Xarxa (TCP)».
+456|Versió de ser2net
+457|Escolta només en aquest ordinador (per usar amb un túnel SSH)
+458|Un client nou substitueix el connectat
+459|Fitxer: {}
+460|Després connecteu-vos des de l'altre ordinador a {}:{}
+461|Avís: qualsevol persona de la xarxa que arribi a aquest port pot controlar el làser. Feu servir una xarxa de confiança, un tallafoc o l'opció només local amb un túnel SSH.
+462|Copiat.
+463|Instal·la i reinicia ser2net…
+464|Això substitueix {} (es conserva una còpia) i reinicia ser2net. Es demanen permisos d'administrador.
+465|Confirma
+466|S'espera l'aprovació de l'administrador…
+467|{} instal·lat i ser2net reiniciat.
+468|No s'ha pogut instal·lar la configuració: {}
+469|A mà: sudo cp <fitxer desat> {} && sudo systemctl restart ser2net
+470|Rotació de la càmera
+471|Ajusta automàticament l'àrea de treball a la finestra
+472|Bloqueja
+473|Bloquejat: desbloquegeu per editar. Les còpies no es bloquegen.
+474|{} objecte(s) bloquejat(s).
+475|{} objecte(s) desbloquejat(s).
+476|Feu doble clic per editar les opcions de la capa
+477|Opcions de la capa — {}
+478|{} — fes clic per assignar-hi la selecció / activar-la; doble clic per a les opcions
+479|Opcions de visualització…
+480|Opcions de visualització
+481|Color de fons
+482|Automàtic
+483|Gruix de les línies
+484|{} passades
+485|Guia ràpida
+486|Pàgina del projecte a GitHub
+487|Aquesta guia està disponible en anglès i en polonès; les altres llengües mostren el text en anglès.
+488|Arrodoneix les cantonades…
+489|Arrodoneix les cantonades
+490|Radi
+491|Arrodoneix
+492|Radi d'arrodoniment
+493|Arrodoneix les cantonades seleccionades amb aquest radi
+494|Hi ha dues línies rectes seleccionades: s'uneixen amb una cantonada arrodonida.
+495|Cada cantonada recta de les formes seleccionades s'arrodoneix.
+496|Aquestes línies no es poden unir (són paral·leles, o el radi no hi cap).
+497|Les dues línies s'han unit amb una cantonada arrodonida.
+498|Seleccioneu primer les formes que cal arrodonir.
+499|No hi ha cantonades rectes per arrodonir.
+500|{} cantonada(es) arrodonida(es).
+501|Cliparts
+502|Animals
+503|Natura
+504|Celebracions
+505|Símbols
+506|Formes
+507|Eines
+508|Menjar
+509|Objectes
+510|Música i diversió
+511|Els meus cliparts
+512|Totes les categories
+513|Inclosos
+514|Meus
+515|Imatges que venen amb el programa
+516|Imatges que heu baixat o afegit
+517|Mida en col·locar
+518|En línia…
+519|Afegeix un fitxer…
+520|Cerqueu més imatges a Internet i deseu-les aquí
+521|Afegeix fitxers SVG del vostre ordinador als vostres cliparts
+522|No hi ha imatges aquí. Utilitzeu En línia… per trobar-ne.
+523|ve amb el programa
+524|vostre
+525|Feu clic per col·locar a l'àrea de treball
+526|{} col·locat
+527|Canvia el nom
+528|Canvia el nom…
+529|Canvia la categoria
+530|Canvia la categoria…
+531|Detalls
+532|Detalls…
+533|Suprimeix…
+534|Voleu treure aquesta imatge dels vostres cliparts? El fitxer del disc se suprimeix.
+535|Desa una còpia als meus cliparts
+536|o una categoria nova
+537|{} imatge(s) afegida(es) a {}
+538|Font
+539|Categoria
+540|Llicència
+541|Autor
+542|Col·lecció
+543|Cliparts en línia…
+544|Cliparts en línia
+545|Cerqueu en col·leccions d'icones obertes (Iconify). Les imatges es desen al vostre disc, en una categoria que trieu.
+546|p. ex. gat, flor, engranatge
+547|S'està cercant…
+548|No s'ha trobat res.
+549|{} imatges trobades
+550|La cerca ha fallat: {}
+551|Feu clic en una imatge per veure'n la llicència i desar-la.
+552|no cal atribució
+553|atribuïu l'autor
+554|Desa als meus cliparts
+555|{} desat a {}
+556|Baixa
+557|S'està baixant…
+558|La baixada ha fallat: {}
+559|O baixeu una imatge d'una adreça
+560|Deseu només imatges que pugueu utilitzar. Comproveu la llicència de la font.
+561|Apropa (Z)
+562|Allunya (X)
+563|Ajusta a l'àrea de treball (Ctrl+0)
+564|Ajusta a tots els objectes (Ctrl+9)
+565|Apropa
+566|Allunya
+567|Ajusta a l'àrea de treball
+568|Ajusta a tots els objectes
+569|Edita els nodes
+570|Convertiu el text en corbes, o vectoritzeu la imatge, per editar-ne els nodes.
+571|Seleccioneu primer una forma i després editeu-ne els nodes.
+572|Cor (K)

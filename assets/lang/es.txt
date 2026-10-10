@@ -1,0 +1,573 @@
+0|Archivo
+1|Edición
+2|Organizar
+3|Ver
+4|Láser
+5|Ajustes
+6|Ayuda
+7|Nuevo
+8|Abrir…
+9|Guardar
+10|Guardar como…
+11|Importar SVG…
+12|Exportar SVG…
+13|Exportar G-code…
+14|Salir
+15|Deshacer
+16|Rehacer
+17|Copiar
+18|Pegar
+19|Duplicar
+20|Eliminar
+21|Seleccionar todo
+22|Alinear a la izquierda
+23|Centrar (H)
+24|Alinear a la derecha
+25|Alinear arriba
+26|Centrar (V)
+27|Alinear abajo
+28|Centrar entre sí
+29|Centrar en la mesa
+30|Voltear horizontalmente
+31|Voltear verticalmente
+32|Girar 90° a la derecha
+33|Girar 90° a la izquierda
+34|Traer al frente
+35|Enviar al fondo
+36|Convertir en trazado
+37|Matriz de copias…
+38|Cuadrícula
+39|Ajustar a la cuadrícula
+40|Vista previa de trayectorias
+41|Ajustar la mesa a la ventana
+42|Ajustes del dispositivo…
+43|Marco
+44|Iniciar trabajo
+45|Acerca de
+46|Idioma
+47|Esquema de color
+48|Oscuro
+49|Gris oscuro
+50|Gris claro
+51|Claro
+52|Seleccionar (V)
+53|Rectángulo (R)
+54|Elipse (E)
+55|Línea (L)
+56|Polilínea / pluma (P)
+57|Mover vista (H)
+58|Zoom (Z)
+59|Seleccionar
+60|Rectángulo
+61|Elipse
+62|Línea
+63|Relleno
+64|Relleno + línea
+65|Capa {}
+66|Imán
+67|Vista previa
+68|Iniciar
+69|Envía el trabajo al láser conectado
+70|Recorre el contorno del área
+71|Guardar G-code
+72|Capas
+73|{} — clic para asignarle la selección / activarla
+74|Listo
+75|{} abierto
+76|Error al abrir: {}
+77|{} guardado
+78|Error al guardar: {}
+79|{} trazados importados de {}
+80|Error al importar: {}
+81|{} exportado
+82|Error al exportar: {}
+83|G-code {} guardado
+84|Conecte primero un láser (panel Láser)
+85|Nada que grabar: no hay formas en las capas de salida
+86|Iniciando el trabajo: {} líneas, ~{}
+87|Desconectado
+88|Conectado a {} @ {}
+89|No se puede abrir {}: {}
+90|Interrumpido (reinicio por software)
+91|Conexión perdida
+92|Tiempo estimado
+93|longitud de corte
+94|Ajustes del dispositivo
+95|Nombre
+96|Área de trabajo X
+97|Área de trabajo Y
+98|Cero de la máquina (0,0)
+99|Delante a la izquierda (predeterminado de GRBL)
+100|Detrás a la izquierda
+101|Valor S máx ($30)
+102|Potencia dinámica (M4)
+103|Velocidad de desplazamiento
+104|Volver al origen
+105|Velocidad en baudios
+106|Matriz de copias
+107|Columnas
+108|Filas
+109|Separación X
+110|Separación Y
+111|Crear matriz
+112|Acerca de LightCreator
+113|Versión {}
+114|Software libre de diseño y control para grabadoras y cortadoras láser.
+115|Origen: escrito en Rust con egui/eframe.
+116|Inspirado en LightBurn; interfaz inspirada en VectorCraft.
+117|Autor: Michał Sarna
+118|Licencia MIT.
+119|Propiedades
+120|Cortes / Capas
+121|Nada seleccionado
+122|Bloquear proporción
+123|Girar
+124|Aplicar
+125|Voltear H
+126|Voltear V
+127|Centrar
+128|Izquierda
+129|Medio H
+130|Derecha
+131|Arriba
+132|Medio V
+133|Abajo
+134|Centrar
+135|Alinear al medio
+136|Capa
+137|Mostrar las 30 capas
+138|Salida (grabar esta capa)
+139|Visible
+140|Ajustes de corte — {}
+141|Modo
+142|Velocidad
+143|Potencia (%)
+144|Pasadas
+145|Intervalo
+146|Ángulo de barrido
+147|Sobrebarrido
+148|Bidireccional
+149|Sin puerto
+150|Actualizar
+151|Buscar de nuevo los puertos serie
+152|Desconectar
+153|Conectar
+154|Estado
+155|Paso
+156|Avance
+157|Arriba
+158|Abajo
+159|Interrumpir el trabajo en curso
+160|Parar
+161|Cancelar el movimiento
+162|Inicio
+163|Desbloquear
+164|Pausa
+165|Reanudar
+166|PARAR
+167|Potencia del marco
+168|0 % mantiene el láser apagado al enmarcar; 1–2 % muestra un punto tenue en láseres de diodo
+169|enviar G-code / comando $
+170|Enviar
+171|Seleccionar dispositivo
+172|Elija el dispositivo con el que va a trabajar.
+173|Cree al menos un perfil de dispositivo para continuar.
+174|Continuar
+175|Añadir dispositivo…
+176|Editar…
+177|Confirmar eliminación
+178|Cancelar
+179|Configuración del dispositivo
+180|Dispositivo nuevo
+181|p. ej. Mi láser de diodo
+182|Se necesita un nombre de perfil.
+183|Cambiar de dispositivo…
+184|Dispositivo: {}
+185|Unidades de velocidad
+186|Por segundo (mm/s, in/s)
+187|Por minuto (mm/min, in/min)
+188|Abrir reciente
+189|(vacío)
+190|Vaciar lista
+191|ya no existe
+192|Cerrar
+193|Minimizar
+194|Maximizar
+195|Restaurar
+196|Mostrar u ocultar la cuadrícula
+197|Mostrar u ocultar la cuadrícula secundaria
+198|Asistencia de aire
+199|Bomba de aire activada
+200|Activa la bomba de aire mientras se graba esta capa (M8 / M9)
+201|Posición y tamaño
+202|Rotación
+203|Espejo y centrado
+204|Alineación
+205|Contraer
+206|Expandir
+207|Tiempo
+208|Archivo guardado: {}
+209|Guardado automático {}
+210|¿Guardar su trabajo antes de cerrar?
+211|El diseño no se ha guardado en un archivo.
+212|Descartar
+213|Opciones del programa…
+214|Opciones del programa
+215|Guardado automático
+216|Guardar el trabajo automáticamente
+217|Guardar automáticamente cada
+218|El trabajo sin nombre de archivo va a una carpeta temporal; un archivo con nombre se guarda en su sitio
+219|Espiral
+220|Espiral (I)
+221|Número de vueltas
+222|Arrastre sobre el área de trabajo para dibujarla.
+223|Descargar copia de seguridad…
+224|Buscar actualizaciones…
+225|Copia de seguridad guardada: {}
+226|Error en la copia de seguridad: {}
+227|Actualizaciones
+228|Hay una versión más reciente: {}
+229|Tiene la versión {}.
+230|Abrir la página de descargas
+231|Tiene la versión más reciente.
+232|Última versión: {}
+233|No se pudo buscar actualizaciones.
+234|Buscar una versión más reciente al iniciar el programa
+235|Restaurar desde una copia de seguridad…
+236|Restaurar desde una copia de seguridad
+237|Sus ajustes y cliparts actuales serán reemplazados por la copia de seguridad. ¿Continuar?
+238|Copia de seguridad restaurada: {}
+239|Error al restaurar: {}
+240|No se encontraron archivos de perfil. ¿Tiene una copia de seguridad?
+241|Unidades
+242|Milímetros (mm)
+243|Pulgadas (in)
+244|Dispositivo
+245|Consola
+246|Consultas de estado
+247|Desplazamiento automático
+248|Borrar
+249|Controlador
+250|Tipo de láser
+251|Área de trabajo
+252|Sí
+253|No
+254|Conexión
+255|Puerto
+256|Paso de desplazamiento
+257|Avance de desplazamiento
+258|Este controlador no tiene conexión directa: los trabajos se exportan como archivos.
+259|Edición de nodos (N)
+260|Texto (T)
+261|Esquina
+262|Suave
+263|A línea
+264|A curva
+265|Añadir nodo
+266|Eliminar nodo
+267|Abrir / cerrar
+268|Convertir los nodos seleccionados en esquinas
+269|Hacer suaves los nodos seleccionados
+270|Hacer recto el segmento posterior a cada nodo seleccionado
+271|Hacer curvo el segmento posterior a cada nodo seleccionado
+272|Insertar un nodo (o doble clic en un segmento)
+273|Cerrar un trazado abierto, o abrir uno cerrado en el nodo seleccionado
+274|Convertir en curvas
+275|Convertir el texto en formas de Bézier editables
+276|Unión
+277|Intersección
+278|Sustracción
+279|O exclusivo
+280|Desplazar forma…
+281|Desplazar forma
+282|Distancia
+283|Un valor positivo agranda el contorno, uno negativo lo reduce.
+284|Conservar el original
+285|Crear desplazamiento
+286|Seleccione al menos dos formas (no imágenes).
+287|El resultado está vacío.
+288|Importar imagen…
+289|Imagen {} importada
+290|Texto
+291|Fuente
+292|Buscar
+293|Tamaño
+294|Estilo
+295|Negrita
+296|Cursiva
+297|Espaciado de letras
+298|Interlineado
+299|Alineación
+300|Imagen
+301|Imagen en negativo
+302|Grabar las partes claras en lugar de las oscuras
+303|El grabado usa el intervalo, la velocidad, la potencia y el tramado de la capa.
+304|Ajustes de imagen
+305|Las imágenes usan el intervalo, la velocidad, la potencia y el sobrebarrido de su capa.
+306|Tramado
+307|Potencia mín (%)
+308|Umbral
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Ordenado
+314|Escala de grises
+315|Relleno por desplazamiento
+316|Exportar PLT / DXF…
+317|{} exportado. {} imagen(es) omitida(s): este formato no admite ráster.
+318|Exporte a PLT o DXF y ábralo en el software del propio controlador (por ejemplo RDWorks para Ruida), que ajusta velocidad y potencia por color de capa.
+319|Biblioteca de materiales…
+320|Biblioteca de materiales
+321|Todos
+322|Material
+323|Operación
+324|Potencia
+325|Corte
+326|Grabado
+327|Marcado
+328|Valores iniciales para láseres típicos de diodo de 10 W y CO2 de 40 W. Pruebe siempre en un recorte.
+329|Aplicar a la capa {}
+330|{} ({}) aplicado a la capa {}
+331|Guardar la capa activa como ajuste preestablecido
+332|Nombre del material
+333|Guardar ajuste
+334|Superposición de cámara…
+335|Superposición de cámara
+336|Muestra una foto o la cámara en vivo bajo el diseño para colocar el trabajo sobre el material.
+337|Cargar imagen…
+338|Quitar
+339|Cámara en vivo
+340|Esta versión no tiene compatibilidad con cámara. Compile con: cargo run --release --features camera
+341|Sin cámara
+342|Buscar cámaras
+343|Iniciar cámara
+344|Congelar imagen
+345|Cámara
+346|Superposición: {}
+347|Mostrar superposición
+348|Opacidad
+349|Alinear: arrastre las cuatro esquinas sobre el área de trabajo
+350|Arrastre cada esquina a la esquina correspondiente del material o del área de trabajo; la perspectiva se corrige.
+351|Restablecer al área de trabajo
+352|Girar 90°
+353|Grabar antes
+354|Grabar después
+355|Las capas se graban de arriba abajo.
+356|Opciones de cuadrícula…
+357|Opciones de cuadrícula
+358|Cuadrícula principal
+359|Cuadrícula secundaria
+360|Mostrar
+361|Distancia entre líneas
+362|Color
+363|La cuadrícula secundaria debe ser más fina que la principal.
+364|Restablecer cuadrícula
+365|Trayectorias
+366|Muestra las trayectorias en el área de trabajo
+367|Vista previa…
+368|Ventana de vista previa…
+369|Abrir la ventana de vista previa
+370|Colorear por
+371|Mostrar desplazamientos en vacío
+372|Movimientos de la máquina con el láser apagado
+373|Reproducir
+374|Ajustar
+375|Operaciones
+376|Demasiados movimientos: se ocultan los desplazamientos en vacío.
+377|{} movimientos
+378|Importar
+379|Exportar
+380|Importar Adobe Illustrator / PDF…
+381|Agrupar
+382|Desagrupar
+383|Seleccione al menos dos objetos para agrupar.
+384|Agrupado. Los objetos conservan sus capas.
+385|Operaciones con formas
+386|Ajustar imagen…
+387|Vectorizar imagen…
+388|Importar imagen
+389|Ajustar imagen
+390|Girar y voltear
+391|Ángulo
+392|Tono
+393|Brillo
+394|Contraste
+395|Gamma
+396|Niveles automáticos
+397|Anchura
+398|{} × {} px
+399|Restablecer
+400|Vectorizar imagen
+401|Ignorar áreas pequeñas
+402|Simplificar
+403|Suavizar curvas
+404|Vectorizar las zonas claras
+405|Eliminar la imagen después
+406|{} contornos
+407|Vectorizar
+408|{} contornos vectorizados
+409|Leer del dispositivo
+410|Leyendo…
+411|Conecta y lee el área de trabajo, el valor S máx y la velocidad del controlador
+412|Leyendo los ajustes del dispositivo…
+413|No se pudo conectar con el dispositivo.
+414|El dispositivo no informó de ningún ajuste.
+415|Se leyeron {} valores del dispositivo
+416|Triángulo (Y)
+417|Estrella (S)
+418|Polígono (G)
+419|Triángulo
+420|Estrella
+421|Polígono
+422|Número de lados
+423|Arrastre sobre el área de trabajo para dibujarlo. Máximo 360 lados.
+424|Aceptar
+425|Tipo de conexión
+426|Puerto serie
+427|Red (TCP, p. ej. ser2net)
+428|Host
+429|Puerto TCP
+430|Conectado a {}
+431|URL de la cámara
+432|Imagen en vivo de la máquina: una transmisión MJPEG o la dirección de una imagen JPEG (http o https).
+433|Vista de cámara
+434|Muestra la imagen en vivo de la cámara de esta máquina
+435|Esperando la imagen…
+436|Zoom predeterminado
+437|Volver a la imagen completa
+438|Mostrar como superposición en el área de trabajo
+439|Error de transmisión: {}
+440|Ajustado a 15 s
+441|Tiempo real
+442|Indique primero una URL de cámara en los ajustes del dispositivo.
+443|Mostrar en
+444|Ventana flotante
+445|Ventana separada
+446|Pestaña lateral
+447|Superposición
+448|Muestra u oculta la superposición de cámara en el área de trabajo
+449|Mostrar superposición de cámara
+450|Aún no hay superposición de cámara. Cargue una imagen o inicie la vista de cámara.
+451|Compartir en la red (ser2net)…
+452|Compartir en la red (ser2net)
+453|ser2net encontrado: {}
+454|No se encontró ser2net. Instálelo primero, por ejemplo: sudo apt install ser2net
+455|Esto comparte en la red el puerto serie del láser de este ordenador, para que LightCreator en otro equipo pueda conectarse con el tipo de conexión «Red (TCP)».
+456|Versión de ser2net
+457|Escuchar solo en este ordenador (para usar con un túnel SSH)
+458|Un cliente nuevo reemplaza al conectado
+459|Archivo: {}
+460|Luego conéctese desde el otro ordenador a {}:{}
+461|Aviso: cualquiera en la red que llegue a este puerto puede manejar el láser. Use una red de confianza, un cortafuegos o la opción solo local con un túnel SSH.
+462|Copiado.
+463|Instalar y reiniciar ser2net…
+464|Esto reemplaza {} (se conserva una copia) y reinicia ser2net. Se piden permisos de administrador.
+465|Confirmar
+466|Esperando la aprobación del administrador…
+467|{} instalado y ser2net reiniciado.
+468|No se pudo instalar la configuración: {}
+469|A mano: sudo cp <archivo guardado> {} && sudo systemctl restart ser2net
+470|Rotación de la cámara
+471|Ajustar automáticamente el área de trabajo a la ventana
+472|Bloquear
+473|Bloqueado: desbloquee para editar. Las copias no se bloquean.
+474|{} objeto(s) bloqueado(s).
+475|{} objeto(s) desbloqueado(s).
+476|Doble clic para editar las opciones de la capa
+477|Opciones de la capa — {}
+478|{} — clic para asignarle la selección / activarla; doble clic para las opciones
+479|Opciones de vista…
+480|Opciones de vista
+481|Color de fondo
+482|Automático
+483|Grosor de línea
+484|{} pasadas
+485|Guía rápida
+486|Página del proyecto en GitHub
+487|Esta guía está disponible en inglés y polaco; los demás idiomas muestran el texto en inglés.
+488|Redondear esquinas…
+489|Redondear esquinas
+490|Radio
+491|Redondear
+492|Radio de redondeo
+493|Redondea las esquinas seleccionadas con este radio
+494|Hay dos líneas rectas seleccionadas: se unen con una esquina redondeada.
+495|Se redondea cada esquina recta de las formas seleccionadas.
+496|Estas líneas no se pueden unir (son paralelas, o el radio no cabe).
+497|Se unieron las dos líneas con una esquina redondeada.
+498|Seleccione primero las formas que redondear.
+499|No hay esquinas rectas que redondear.
+500|{} esquina(s) redondeada(s).
+501|Cliparts
+502|Animales
+503|Naturaleza
+504|Celebraciones
+505|Símbolos
+506|Formas
+507|Herramientas
+508|Comida
+509|Objetos
+510|Música y diversión
+511|Mis cliparts
+512|Todas las categorías
+513|Incluidos
+514|Míos
+515|Imágenes que vienen con el programa
+516|Imágenes que ha descargado o añadido
+517|Tamaño al insertar
+518|En línea…
+519|Añadir archivo…
+520|Busque más imágenes en Internet y guárdelas aquí
+521|Añade archivos SVG de su ordenador a sus cliparts
+522|No hay imágenes aquí. Use En línea… para encontrar algunas.
+523|viene con el programa
+524|suyo
+525|Clic para colocar en el área de trabajo
+526|{} colocado
+527|Renombrar
+528|Renombrar…
+529|Cambiar de categoría
+530|Cambiar de categoría…
+531|Detalles
+532|Detalles…
+533|Eliminar…
+534|¿Quitar esta imagen de sus cliparts? El archivo de su disco se elimina.
+535|Guardar una copia en mis cliparts
+536|o una categoría nueva
+537|{} imagen(es) añadida(s) a {}
+538|Fuente
+539|Categoría
+540|Licencia
+541|Autor
+542|Colección
+543|Cliparts en línea…
+544|Cliparts en línea
+545|Busque en colecciones abiertas de iconos (Iconify). Las imágenes se guardan en su disco, en la categoría que elija.
+546|p. ej. gato, flor, engranaje
+547|Buscando…
+548|No se encontró nada.
+549|{} imágenes encontradas
+550|Error en la búsqueda: {}
+551|Haga clic en una imagen para ver su licencia y guardarla.
+552|no requiere atribución
+553|atribuya al autor
+554|Guardar en mis cliparts
+555|{} guardado en {}
+556|Descargar
+557|Descargando…
+558|Error en la descarga: {}
+559|O descargue una imagen desde una dirección
+560|Guarde solo imágenes que pueda usar. Compruebe la licencia de la fuente.
+561|Acercar (Z)
+562|Alejar (X)
+563|Ajustar al área de trabajo (Ctrl+0)
+564|Ajustar a todos los objetos (Ctrl+9)
+565|Acercar
+566|Alejar
+567|Ajustar al área de trabajo
+568|Ajustar a todos los objetos
+569|Editar nodos
+570|Convierta el texto en curvas, o vectorice la imagen, para editar sus nodos.
+571|Seleccione primero una forma y luego edite sus nodos.
+572|Corazón (K)

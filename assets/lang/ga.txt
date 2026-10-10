@@ -1,0 +1,573 @@
+0|Comhad
+1|Eagar
+2|Socraigh
+3|Amharc
+4|Léasar
+5|Socruithe
+6|Cabhair
+7|Nua
+8|Oscail…
+9|Sábháil
+10|Sábháil mar…
+11|Iompórtáil SVG…
+12|Easpórtáil SVG…
+13|Easpórtáil G-code…
+14|Scoir
+15|Cealaigh
+16|Athdhéan
+17|Cóipeáil
+18|Greamaigh
+19|Dúbailt
+20|Scrios
+21|Roghnaigh gach rud
+22|Ailínigh ar clé
+23|Láraigh (L)
+24|Ailínigh ar dheis
+25|Ailínigh ag an mbarr
+26|Láraigh (Ing)
+27|Ailínigh ag an mbun
+28|Láraigh ar a chéile
+29|Láraigh ar an mbord
+30|Iompaigh go cothrománach
+31|Iompaigh go hingearach
+32|Rothlaigh 90° deiseal
+33|Rothlaigh 90° tuathal
+34|Tabhair chun tosaigh
+35|Seol ar gcúl
+36|Tiontaigh ina chosán
+37|Eangach cóipeanna…
+38|Eangach
+39|Greamaigh den eangach
+40|Réamhamharc cosán
+41|Oiriúnaigh an bord don fhuinneog
+42|Socruithe an ghléis…
+43|Fráma
+44|Tosaigh an obair
+45|Maidir leis
+46|Teanga
+47|Scéim dathanna
+48|Dorcha
+49|Éadrom-dorcha
+50|Measartha éadrom
+51|Éadrom
+52|Roghnaigh (V)
+53|Dronuilleog (R)
+54|Éilips (E)
+55|Líne (L)
+56|Il-líne / peann (P)
+57|Bog an t-amharc (H)
+58|Súmáil (Z)
+59|Roghnaigh
+60|Dronuilleog
+61|Éilips
+62|Líne
+63|Líonadh
+64|Líonadh + líne
+65|Ciseal {}
+66|Maighnéad
+67|Réamhamharc
+68|Tosaigh
+69|Seolann an obair chuig an léasar atá ceangailte
+70|Leanann imlíne an cheantair
+71|Sábháil G-code
+72|Ciseail
+73|{} — cliceáil chun an roghnúchán a shannadh / a dhéanamh gníomhach
+74|Réidh
+75|Osclaíodh {}
+76|Theip ar an oscailt: {}
+77|Sábháilte: {}
+78|Theip ar an sábháil: {}
+79|Iompórtáladh {} cosán ó {}
+80|Theip ar an iompórtáil: {}
+81|Easpórtáilte: {}
+82|Theip ar an easpórtáil: {}
+83|G-code sábháilte: {}
+84|Ceangail léasar ar dtús (painéal Léasar)
+85|Níl aon rud le greanadh: níl cruthanna ar na ciseail aschuir
+86|Ag tosú na hoibre: {} líne, ~{}
+87|Dícheangailte
+88|Ceangailte le {} @ {}
+89|Ní féidir {} a oscailt: {}
+90|Tarscaoilte (athshocrú bogearraí)
+91|Cailleadh an ceangal
+92|Am measta
+93|fad gearrtha
+94|Socruithe an ghléis
+95|Ainm
+96|Limistéar oibre X
+97|Limistéar oibre Y
+98|Nialas an mheaisín (0,0)
+99|Tosaigh ar chlé (réamhshocrú GRBL)
+100|Cúl ar chlé
+101|Luach S uas ($30)
+102|Cumhacht dhinimiciúil (M4)
+103|Luas taistil
+104|Fill ar an tionscnamh
+105|Ráta baud
+106|Eangach cóipeanna
+107|Colúin
+108|Sraitheanna
+109|Bearna X
+110|Bearna Y
+111|Cruthaigh an eangach
+112|Maidir le LightCreator
+113|Leagan {}
+114|Bogearraí foinse oscailte chun léasair ghreanta agus ghearrtha a dhearadh agus a rialú.
+115|Bunús: scríofa i Rust le egui/eframe.
+116|Spreagtha ag LightBurn; comhéadan spreagtha ag VectorCraft.
+117|Údar: Michał Sarna
+118|Ceadúnas MIT.
+119|Airíonna
+120|Gearrthaí / Ciseail
+121|Níl aon rud roghnaithe
+122|Faoi ghlas na comhréireanna
+123|Rothlaigh
+124|Cuir i bhfeidhm
+125|Iompaigh L
+126|Iompaigh Ing
+127|Láraigh
+128|Clé
+129|Lár L
+130|Deis
+131|Barr
+132|Lár Ing
+133|Bun
+134|Láraigh
+135|Ailínigh sa lár
+136|Ciseal
+137|Taispeáin gach ceann de na 30 ciseal
+138|Aschur (greanadh an chiseal seo)
+139|Infheicthe
+140|Socruithe gearrtha — {}
+141|Mód
+142|Luas
+143|Cumhacht (%)
+144|Pasanna
+145|Eatramh
+146|Uillinn scanta
+147|Barrscanadh
+148|Déthreocha
+149|Gan port
+150|Athnuaigh
+151|Cuardaigh na calafoirt shraitheacha arís
+152|Dícheangail
+153|Ceangail
+154|Staid
+155|Céim
+156|Beatha
+157|Suas
+158|Síos
+159|Stop an obair atá ar siúl
+160|Stop
+161|Cealaigh an ghluaiseacht
+162|Baile
+163|Díghlasáil
+164|Sos
+165|Lean ar aghaidh
+166|STOP
+167|Cumhacht an fhráma
+168|Coinníonn 0 % an léasar múchta le linn frámála; taispeánann 1–2 % ponc lag ar léasair dé-óide
+169|seol G-code / ordú $
+170|Seol
+171|Roghnaigh gléas
+172|Roghnaigh an gléas a mbeidh tú ag obair leis.
+173|Cruthaigh próifíl ghléis amháin ar a laghad chun leanúint ar aghaidh.
+174|Lean ar aghaidh
+175|Cuir gléas leis…
+176|Cuir in eagar…
+177|Deimhnigh an scriosadh
+178|Cealaigh
+179|Cumraíocht an ghléis
+180|Gléas nua
+181|m.sh. Mo léasar dé-óide
+182|Tá ainm próifíle ag teastáil.
+183|Athraigh an gléas…
+184|Gléas: {}
+185|Aonaid luais
+186|In aghaidh na soicindé (mm/s, in/s)
+187|In aghaidh an nóiméid (mm/nóim, in/nóim)
+188|Oscail le déanaí
+189|(folamh)
+190|Glan an liosta
+191|níl ann a thuilleadh
+192|Dún
+193|Íoslaghdaigh
+194|Uasmhéadaigh
+195|Athchóirigh
+196|Taispeáin nó folaigh an eangach
+197|Taispeáin nó folaigh an eangach thánaisteach
+198|Cúnamh aeir
+199|Caidéal aeir air
+200|Cuireann sé an caidéal aeir ar siúl agus an ciseal seo á ghreanadh (M8 / M9)
+201|Suíomh agus méid
+202|Rothlú
+203|Scáthán agus lárú
+204|Ailíniú
+205|Laghdaigh
+206|Leathnaigh
+207|Am
+208|Comhad sábháilte: {}
+209|Sábháilte go huathoibríoch: {}
+210|An bhfuil tú ag iarraidh d'obair a shábháil sula ndúnann tú?
+211|Níor sábháladh an dearadh i gcomhad.
+212|Caith uait
+213|Roghanna an chláir…
+214|Roghanna an chláir
+215|Uath-shábháil
+216|Sábháil an obair go huathoibríoch
+217|Sábháil go huathoibríoch gach
+218|Téann obair gan ainm comhaid isteach i bhfillteán sealadach; sábháiltear comhad le hainm san áit chéanna
+219|Bís
+220|Bís (I)
+221|Líon na gcas
+222|Tarraing ar an limistéar oibre chun é a tharraingt.
+223|Íoslódáil cúltaca…
+224|Seiceáil le haghaidh nuashonruithe…
+225|Cúltaca sábháilte: {}
+226|Theip ar an gcúltaca: {}
+227|Nuashonruithe
+228|Tá leagan níos nuaí ar fáil: {}
+229|Tá leagan {} agat.
+230|Oscail an leathanach íoslódála
+231|Tá an leagan is nuaí agat.
+232|An eisiúint is nuaí: {}
+233|Níorbh fhéidir nuashonruithe a sheiceáil.
+234|Cuardaigh leagan níos nuaí nuair a thosaíonn an clár
+235|Athchóirigh ó chúltaca…
+236|Athchóirigh ó chúltaca
+237|Cuirfear an cúltaca in ionad do shocruithe agus do chlipeanna reatha. Lean ar aghaidh?
+238|Cúltaca athchóirithe: {}
+239|Theip ar an athchóiriú: {}
+240|Ní bhfuarthas aon chomhad próifíle. An bhfuil cúltaca agat?
+241|Aonaid
+242|Milliméadair (mm)
+243|Orlaí (in)
+244|Gléas
+245|Consól
+246|Fiosruithe stádais
+247|Scrollú uathoibríoch
+248|Glan
+249|Rialaitheoir
+250|Cineál léasair
+251|Limistéar oibre
+252|Tá
+253|Níl
+254|Ceangal
+255|Port
+256|Céim gluaiseachta
+257|Beatha gluaiseachta
+258|Níl aon cheangal díreach ag an rialaitheoir seo: easpórtáiltear oibreacha mar chomhaid.
+259|Eagarthóireacht nód (N)
+260|Téacs (T)
+261|Cúinne
+262|Réidh
+263|Go líne
+264|Go cuar
+265|Cuir nód leis
+266|Scrios nód
+267|Oscail / dún
+268|Déan cúinní de na nóid roghnaithe
+269|Déan réidh de na nóid roghnaithe
+270|Déan díreach an deighleog tar éis gach nóid roghnaithe
+271|Déan cuartha an deighleog tar éis gach nóid roghnaithe
+272|Cuir nód isteach (nó déchliceáil ar dheighleog)
+273|Dún cosán oscailte, nó oscail ceann dúnta ag an nód roghnaithe
+274|Tiontaigh ina gcuair
+275|Tiontaigh an téacs ina chruthanna Bézier in-eagarthóireachta
+276|Aontas
+277|Trasnú
+278|Dealú
+279|Nó eisiach
+280|Díláithrigh an cruth…
+281|Díláithrigh an cruth
+282|Achar
+283|Méadaíonn luach dearfach an imlíne, laghdaíonn luach diúltach í.
+284|Coinnigh an bunchruth
+285|Cruthaigh an díláithriú
+286|Roghnaigh dhá chruth ar a laghad (gan íomhánna).
+287|Tá an toradh folamh.
+288|Iompórtáil íomhá…
+289|Iompórtáladh an íomhá {}
+290|Téacs
+291|Cló
+292|Cuardaigh
+293|Méid
+294|Stíl
+295|Trom
+296|Iodálach
+297|Spásáil litreacha
+298|Spásáil línte
+299|Ailíniú
+300|Íomhá
+301|Íomhá dhiúltach
+302|Greanáil na codanna éadroma in ionad na gcodanna dorcha
+303|Úsáideann an ghreanáil eatramh, luas, cumhacht agus dathú an chiseal.
+304|Socruithe íomhá
+305|Úsáideann íomhánna eatramh, luas, cumhacht agus barrscanadh a gciseal.
+306|Dathú
+307|Cumhacht íos. (%)
+308|Tairseach
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Ordaithe
+314|Scála liath
+315|Líonadh díláithrithe
+316|Easpórtáil PLT / DXF…
+317|Easpórtáilte: {}. Scipeadh {} íomhá: níl raster sa fhormáid seo.
+318|Easpórtáil PLT nó DXF agus oscail i mbogearraí an rialaitheora féin é (mar shampla RDWorks do Ruida), a shocraíonn luas agus cumhacht de réir dath an chiseal.
+319|Leabharlann ábhar…
+320|Leabharlann ábhar
+321|Gach
+322|Ábhar
+323|Oibríocht
+324|Cumhacht
+325|Gearradh
+326|Greanadh
+327|Scríobadh
+328|Luachanna tosaigh do léasair dé-óide 10 W agus CO2 40 W is gnách. Déan tástáil i gcónaí ar fhuílleach.
+329|Cuir i bhfeidhm ar chiseal {}
+330|Cuireadh {} ({}) i bhfeidhm ar chiseal {}
+331|Sábháil an ciseal gníomhach mar réamhshocrú
+332|Ainm an ábhair
+333|Sábháil an réamhshocrú
+334|Forleagan ceamara…
+335|Forleagan ceamara
+336|Taispeánann grianghraf nó an ceamara beo faoin dearadh chun an obair a shuíomh ar an ábhar.
+337|Luchtaigh íomhá…
+338|Bain
+339|Ceamara beo
+340|Níl tacaíocht ceamara sa tógáil seo. Tóg le: cargo run --release --features camera
+341|Gan ceamara
+342|Aimsigh ceamaraí
+343|Tosaigh an ceamara
+344|Reoigh an fráma
+345|Ceamara
+346|Forleagan: {}
+347|Taispeáin an forleagan
+348|Teimhneacht
+349|Ailíniú: tarraing na ceithre chúinne ar an limistéar oibre
+350|Tarraing gach cúinne chuig cúinne comhfhreagrach an ábhair nó an limistéir oibre; ceartaítear an peirspictíocht.
+351|Athshocraigh go dtí an limistéar oibre
+352|Rothlaigh 90°
+353|Greanáil níos luaithe
+354|Greanáil níos déanaí
+355|Greantar na ciseail ón mbarr go dtí an bun.
+356|Roghanna eangaí…
+357|Roghanna eangaí
+358|An phríomh-eangach
+359|An eangach thánaisteach
+360|Taispeáin
+361|Achar idir línte
+362|Dath
+363|Caithfidh an eangach thánaisteach a bheith níos míne ná an phríomh-eangach.
+364|Athshocraigh an eangach
+365|Cosáin
+366|Taispeánann na cosáin ar an limistéar oibre
+367|Réamhamharc…
+368|Fuinneog réamhamhairc…
+369|Oscail an fhuinneog réamhamhairc
+370|Dathaigh de réir
+371|Taispeáin gluaiseachtaí folamha
+372|Gluaiseachtaí an mheaisín agus an léasar múchta
+373|Seinn
+374|Oiriúnaigh
+375|Oibríochtaí
+376|An iomarca gluaiseachtaí: tá línte na ngluaiseachtaí folamha i bhfolach.
+377|Gluaiseachtaí: {}
+378|Iompórtáil
+379|Easpórtáil
+380|Iompórtáil Adobe Illustrator / PDF…
+381|Grúpáil
+382|Dí-ghrúpáil
+383|Roghnaigh dhá réad ar a laghad chun grúpáil.
+384|Grúpáilte. Coinníonn na réada a gciseail.
+385|Oibríochtaí cruthanna
+386|Coigeartaigh an íomhá…
+387|Veicteoraigh an íomhá…
+388|Iompórtáil íomhá
+389|Coigeartaigh an íomhá
+390|Rothlú agus iompú
+391|Uillinn
+392|Tonn
+393|Gile
+394|Codarsnacht
+395|Gáma
+396|Leibhéil uathoibríocha
+397|Leithead
+398|{} × {} px
+399|Athshocraigh
+400|Veicteoriú íomhá
+401|Déan neamhaird de limistéir bheaga
+402|Simpligh
+403|Mínigh na cuair
+404|Veicteoraigh na limistéir éadroma
+405|Scrios an íomhá ina dhiaidh
+406|Imlínte: {}
+407|Veicteoraigh
+408|Imlínte veicteoraithe: {}
+409|Léigh ón ngléas
+410|Ag léamh…
+411|Ceanglaíonn sé agus léann sé ón rialaitheoir an limistéar oibre, an luach S uas agus an luas
+412|Ag léamh socruithe ón ngléas…
+413|Níorbh fhéidir ceangal leis an ngléas.
+414|Níor thuairiscigh an gléas aon socrú.
+415|Léadh luachanna ón ngléas: {}
+416|Triantán (Y)
+417|Réalta (S)
+418|Polagán (G)
+419|Triantán
+420|Réalta
+421|Polagán
+422|Líon na dtaobh
+423|Tarraing ar an limistéar oibre chun é a tharraingt. 360 taobh ar a mhéad.
+424|Ceart go leor
+425|Cineál ceangail
+426|Port sraitheach
+427|Líonra (TCP, m.sh. ser2net)
+428|Óstríomhaire
+429|Port TCP
+430|Ceangailte le {}
+431|URL an cheamara
+432|Íomhá bheo den mheaisín: sruth MJPEG nó seoladh íomhá JPEG (http nó https).
+433|Amharc ceamara
+434|Taispeánann íomhá bheo ó cheamara an mheaisín seo
+435|Ag fanacht leis an íomhá…
+436|Súmáil réamhshocraithe
+437|Ar ais go dtí an íomhá iomlán
+438|Taispeáin mar fhorleagan ar an limistéar oibre
+439|Earráid sreabha: {}
+440|Oiriúnaigh go 15 s
+441|Fíor-am
+442|Socraigh URL ceamara ar dtús i socruithe an ghléis.
+443|Taispeáin i
+444|Fuinneog snámhach
+445|Fuinneog ar leith
+446|Cluaisín taoibh
+447|Forleagan
+448|Taispeáin nó folaigh forleagan an cheamara ar an limistéar oibre
+449|Taispeáin forleagan an cheamara
+450|Níl forleagan ceamara ann fós. Luchtaigh íomhá nó tosaigh an t-amharc ceamara.
+451|Roinn ar an líonra (ser2net)…
+452|Roinn ar an líonra (ser2net)
+453|ser2net aimsithe: {}
+454|Níor aimsíodh ser2net. Suiteáil ar dtús é, mar shampla: sudo apt install ser2net
+455|Roinneann sé seo port sraitheach an léasair ar an ríomhaire seo ar an líonra, ionas gur féidir le LightCreator in áit eile ceangal leis an gcineál ceangail “Líonra (TCP)”.
+456|Leagan ser2net
+457|Éist ar an ríomhaire seo amháin (le húsáid le tollán SSH)
+458|Cuireann cliant nua in ionad an chliaint atá ceangailte
+459|Comhad: {}
+460|Ansin ceangail ón ríomhaire eile le {}:{}
+461|Rabhadh: is féidir le duine ar bith ar an líonra a shroicheann an port seo an léasar a rialú. Úsáid líonra iontaofa, balla dóiteáin, nó an rogha áitiúil amháin le tollán SSH.
+462|Cóipeáilte.
+463|Suiteáil agus atosaigh ser2net…
+464|Cuireann sé seo {} in ionad (coinnítear cúltaca) agus atosaíonn sé ser2net. Iarrtar cearta riarthóra.
+465|Deimhnigh
+466|Ag fanacht le ceadú an riarthóra…
+467|Suiteáladh {} agus atosaíodh ser2net.
+468|Níorbh fhéidir an chumraíocht a shuiteáil: {}
+469|De láimh: sudo cp <comhad sábháilte> {} && sudo systemctl restart ser2net
+470|Rothlú an cheamara
+471|Oiriúnaigh an limistéar oibre don fhuinneog go huathoibríoch
+472|Glasáil
+473|Faoi ghlas: díghlasáil chun cur in eagar. Ní ghlasáiltear cóipeanna.
+474|Réada glasáilte: {}
+475|Réada díghlasáilte: {}
+476|Déchliceáil chun roghanna an chiseal a chur in eagar
+477|Roghanna an chiseal — {}
+478|{} — cliceáil chun an roghnúchán a shannadh / a dhéanamh gníomhach; déchliceáil le haghaidh roghanna
+479|Roghanna amhairc…
+480|Roghanna amhairc
+481|Dath cúlra
+482|Uathoibríoch
+483|Tiús na línte
+484|Pasanna: {}
+485|Treoir ghasta
+486|Leathanach an tionscadail ar GitHub
+487|Tá an treoir seo ar fáil i mBéarla agus i bPolainnis; taispeánann teangacha eile an téacs Béarla.
+488|Cruinnigh cúinní…
+489|Cruinnigh cúinní
+490|Ga
+491|Cruinnigh
+492|Ga cruinnithe
+493|Cruinníonn na cúinní roghnaithe leis an ga seo
+494|Tá dhá líne dhíreacha roghnaithe: ceanglaítear iad le cúinne cruinn.
+495|Cruinneofar gach cúinne díreach de na cruthanna roghnaithe.
+496|Ní féidir na línte seo a cheangal (comhthreomhar, nó ní oireann an ga).
+497|Ceanglaíodh an dá líne le cúinne cruinn.
+498|Roghnaigh na cruthanna le cruinniú ar dtús.
+499|Níl aon chúinní díreacha le cruinniú.
+500|Cruinníodh {} cúinne.
+501|Clipeanna
+502|Ainmhithe
+503|Nádúr
+504|Ceiliúradh
+505|Siombailí
+506|Cruthanna
+507|Uirlisí
+508|Bia
+509|Réada
+510|Ceol agus spraoi
+511|Mo chlipeanna
+512|Gach catagóir
+513|San áireamh
+514|Mianta
+515|Íomhánna a thagann leis an gclár
+516|Íomhánna a d'íoslódáil nó a chuir tú leis
+517|Méid agus á chur
+518|Ar líne…
+519|Cuir comhad leis…
+520|Cuardaigh tuilleadh íomhánna ar an idirlíon agus sábháil anseo iad
+521|Cuireann comhaid SVG ó do ríomhaire le do chlipeanna
+522|Níl aon íomhánna anseo. Úsáid Ar líne… chun roinnt a aimsiú.
+523|thagann leis an gclár
+524|leatsa
+525|Cliceáil chun a chur ar an limistéar oibre
+526|Curtha: {}
+527|Athainmnigh
+528|Athainmnigh…
+529|Athraigh an chatagóir
+530|Athraigh an chatagóir…
+531|Sonraí
+532|Sonraí…
+533|Scrios…
+534|An bhfuil tú ag iarraidh an íomhá seo a bhaint de do chlipeanna? Scriostar an comhad ar do dhiosca.
+535|Sábháil cóip i mo chlipeanna
+536|nó catagóir nua
+537|Cuireadh {} íomhá le {}
+538|Foinse
+539|Catagóir
+540|Ceadúnas
+541|Údar
+542|Bailiúchán
+543|Clipeanna ar líne…
+544|Clipeanna ar líne
+545|Cuardaigh bailiúcháin oscailte deilbhíní (Iconify). Sábháiltear íomhánna ar do dhiosca, i gcatagóir de do rogha.
+546|m.sh. cat, bláth, fiacail rotha
+547|Ag cuardach…
+548|Níor aimsíodh aon rud.
+549|Aimsíodh íomhánna: {}
+550|Theip ar an gcuardach: {}
+551|Cliceáil ar íomhá chun a ceadúnas a fheiceáil agus í a shábháil.
+552|ní gá an t-údar a lua
+553|luaigh an t-údar
+554|Sábháil i mo chlipeanna
+555|{} sábháilte i {}
+556|Íoslódáil
+557|Ag íoslódáil…
+558|Theip ar an íoslódáil: {}
+559|Nó íoslódáil íomhá ó sheoladh
+560|Ná sábháil ach íomhánna a bhfuil cead agat iad a úsáid. Seiceáil ceadúnas na foinse.
+561|Súmáil isteach (Z)
+562|Súmáil amach (X)
+563|Oiriúnaigh don limistéar oibre (Ctrl+0)
+564|Oiriúnaigh do gach réad (Ctrl+9)
+565|Súmáil isteach
+566|Súmáil amach
+567|Oiriúnaigh don limistéar oibre
+568|Oiriúnaigh do gach réad
+569|Cuir nóid in eagar
+570|Tiontaigh an téacs ina chuair, nó veicteoraigh an íomhá, chun a nóid a chur in eagar.
+571|Roghnaigh cruth ar dtús, ansin cuir a nóid in eagar.
+572|Croí (K)

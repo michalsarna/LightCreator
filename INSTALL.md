@@ -148,7 +148,7 @@ The menu bar is inside the window on both X11 and Wayland.
 
 * On start the **start window** asks which device to work with. Create at least one profile first (name,
   units, work area, machine zero, GRBL settings); the editor opens only once a profile is selected.
-* **Settings** menu: *Language* (English by default; Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी) and
+* **Settings** menu: *Language* (English by default; 29 other languages, see FEATURES.md) and
   *Colour scheme* (Dark, Light Dark, Medium Light, Light; default Light Dark). Both are remembered.
 * **Laser > Switch device…** goes back to the start window; **Laser > Device settings…** edits the active
   profile.

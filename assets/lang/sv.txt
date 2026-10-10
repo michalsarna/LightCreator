@@ -1,0 +1,573 @@
+0|Arkiv
+1|Redigera
+2|Ordna
+3|Visa
+4|Laser
+5|Inställningar
+6|Hjälp
+7|Ny
+8|Öppna…
+9|Spara
+10|Spara som…
+11|Importera SVG…
+12|Exportera SVG…
+13|Exportera G-code…
+14|Avsluta
+15|Ångra
+16|Gör om
+17|Kopiera
+18|Klistra in
+19|Duplicera
+20|Ta bort
+21|Markera allt
+22|Justera till vänster
+23|Centrera (H)
+24|Justera till höger
+25|Justera uppåt
+26|Centrera (V)
+27|Justera nedåt
+28|Centrera på varandra
+29|Centrera på bordet
+30|Vänd horisontellt
+31|Vänd vertikalt
+32|Rotera 90° medurs
+33|Rotera 90° moturs
+34|Flytta längst fram
+35|Flytta längst bak
+36|Konvertera till bana
+37|Rutnätskopior…
+38|Rutnät
+39|Fäst mot rutnät
+40|Förhandsvisning av banor
+41|Anpassa bordet till fönstret
+42|Enhetsinställningar…
+43|Ram
+44|Starta jobb
+45|Om
+46|Språk
+47|Färgschema
+48|Mörkt
+49|Ljusmörkt
+50|Mellanljust
+51|Ljust
+52|Markera (V)
+53|Rektangel (R)
+54|Ellips (E)
+55|Linje (L)
+56|Polylinje / penna (P)
+57|Panorera (H)
+58|Zooma (Z)
+59|Markera
+60|Rektangel
+61|Ellips
+62|Linje
+63|Fyllning
+64|Fyllning + linje
+65|Lager {}
+66|Magnet
+67|Förhandsgranska
+68|Start
+69|Skickar jobbet till den anslutna lasern
+70|Följer områdets kontur
+71|Spara G-code
+72|Lager
+73|{} — klicka för att tilldela markeringen / göra aktivt
+74|Klar
+75|{} öppnad
+76|Kunde inte öppna: {}
+77|{} sparad
+78|Kunde inte spara: {}
+79|{} banor importerade från {}
+80|Importen misslyckades: {}
+81|{} exporterad
+82|Exporten misslyckades: {}
+83|G-code {} sparad
+84|Anslut först en laser (panelen Laser)
+85|Inget att bränna: inga former på utdatalager
+86|Startar jobb: {} rader, ~{}
+87|Frånkopplad
+88|Ansluten till {} @ {}
+89|Kan inte öppna {}: {}
+90|Avbruten (mjuk återställning)
+91|Anslutningen förlorades
+92|Beräknad tid
+93|skärlängd
+94|Enhetsinställningar
+95|Namn
+96|Arbetsyta X
+97|Arbetsyta Y
+98|Maskinens nollpunkt (0,0)
+99|Främre vänster (GRBL-standard)
+100|Bakre vänster
+101|S-värde max ($30)
+102|Dynamisk effekt (M4)
+103|Förflyttningshastighet
+104|Återgå till origo
+105|Baudhastighet
+106|Rutnätskopior
+107|Kolumner
+108|Rader
+109|Avstånd X
+110|Avstånd Y
+111|Skapa rutnät
+112|Om LightCreator
+113|Version {}
+114|Programvara med öppen källkod för design och styrning av lasergraverare och laserskärare.
+115|Ursprung: skrivet i Rust med egui/eframe.
+116|Inspirerat av LightBurn; gränssnittet inspirerat av VectorCraft.
+117|Upphovsperson: Michał Sarna
+118|MIT-licens.
+119|Egenskaper
+120|Skärning / Lager
+121|Inget markerat
+122|Lås proportioner
+123|Rotera
+124|Använd
+125|Vänd H
+126|Vänd V
+127|Centrera
+128|Vänster
+129|Mitt H
+130|Höger
+131|Överkant
+132|Mitt V
+133|Nederkant
+134|Centrera
+135|Justera i mitten
+136|Lager
+137|Visa alla 30 lager
+138|Utdata (bränn detta lager)
+139|Synligt
+140|Skärinställningar — {}
+141|Läge
+142|Hastighet
+143|Effekt (%)
+144|Pass
+145|Intervall
+146|Skanningsvinkel
+147|Överskanning
+148|Dubbelriktad
+149|Ingen port
+150|Uppdatera
+151|Sök efter serieportar igen
+152|Koppla från
+153|Anslut
+154|Status
+155|Steg
+156|Matning
+157|Upp
+158|Ned
+159|Avbryt det pågående jobbet
+160|Stopp
+161|Avbryt förflyttning
+162|Hem
+163|Lås upp
+164|Paus
+165|Fortsätt
+166|STOPP
+167|Ramens effekt
+168|0 % håller lasern avstängd vid inramning; 1–2 % visar en svag prick på diodlasrar
+169|skicka G-code / $-kommando
+170|Skicka
+171|Välj enhet
+172|Välj den enhet du ska arbeta med.
+173|Skapa minst en enhetsprofil för att fortsätta.
+174|Fortsätt
+175|Lägg till enhet…
+176|Redigera…
+177|Bekräfta borttagning
+178|Avbryt
+179|Enhetskonfiguration
+180|Ny enhet
+181|t.ex. Min diodlaser
+182|Ett profilnamn krävs.
+183|Byt enhet…
+184|Enhet: {}
+185|Hastighetsenheter
+186|Per sekund (mm/s, in/s)
+187|Per minut (mm/min, in/min)
+188|Öppna senaste
+189|(tom)
+190|Rensa listan
+191|finns inte längre
+192|Stäng
+193|Minimera
+194|Maximera
+195|Återställ
+196|Visa eller dölj rutnätet
+197|Visa eller dölj det sekundära rutnätet
+198|Luftassistans
+199|Luftpump på
+200|Slå på luftpumpen medan detta lager bränns (M8 / M9)
+201|Position och storlek
+202|Rotation
+203|Spegla och centrera
+204|Justering
+205|Fäll ihop
+206|Fäll ut
+207|Tid
+208|Filen sparad: {}
+209|Sparad automatiskt {}
+210|Spara ditt arbete innan du stänger?
+211|Designen har inte sparats i en fil.
+212|Förkasta
+213|Programinställningar…
+214|Programinställningar
+215|Automatisk sparning
+216|Spara arbetet automatiskt
+217|Spara automatiskt var
+218|Arbete utan filnamn hamnar i en tillfällig mapp; en fil med namn sparas på plats
+219|Spiral
+220|Spiral (I)
+221|Antal varv
+222|Dra på arbetsytan för att rita den.
+223|Hämta säkerhetskopia…
+224|Sök efter uppdateringar…
+225|Säkerhetskopia sparad: {}
+226|Säkerhetskopieringen misslyckades: {}
+227|Uppdateringar
+228|En nyare version finns: {}
+229|Du har {}.
+230|Öppna nedladdningssidan
+231|Du har den senaste versionen.
+232|Senaste utgåvan: {}
+233|Kunde inte söka efter uppdateringar.
+234|Sök efter en nyare version när programmet startar
+235|Återställ från säkerhetskopia…
+236|Återställ från säkerhetskopia
+237|Dina nuvarande inställningar och clipart ersätts av säkerhetskopian. Fortsätta?
+238|Säkerhetskopia återställd: {}
+239|Återställningen misslyckades: {}
+240|Inga profilfiler hittades. Har du en säkerhetskopia?
+241|Enheter
+242|Millimeter (mm)
+243|Tum (in)
+244|Enhet
+245|Konsol
+246|Statusfrågor
+247|Rulla automatiskt
+248|Rensa
+249|Styrenhet
+250|Lasertyp
+251|Arbetsyta
+252|Ja
+253|Nej
+254|Anslutning
+255|Port
+256|Förflyttningssteg
+257|Förflyttningsmatning
+258|Den här styrenheten har ingen direkt anslutning: jobb exporteras som filer.
+259|Redigera noder (N)
+260|Text (T)
+261|Hörn
+262|Mjuk
+263|Till linje
+264|Till kurva
+265|Lägg till nod
+266|Ta bort nod
+267|Öppna / stäng
+268|Gör de markerade noderna till hörn
+269|Gör de markerade noderna mjuka
+270|Gör segmentet efter varje markerad nod rakt
+271|Gör segmentet efter varje markerad nod krökt
+272|Infoga en nod (eller dubbelklicka på ett segment)
+273|Stäng en öppen bana, eller öppna en stängd vid den markerade noden
+274|Konvertera till kurvor
+275|Gör texten till redigerbara Bézier-former
+276|Union
+277|Snitt
+278|Subtrahera
+279|Exklusiv eller
+280|Förskjut form…
+281|Förskjut form
+282|Avstånd
+283|Positivt värde förstorar konturen, negativt förminskar den.
+284|Behåll originalet
+285|Skapa förskjutning
+286|Markera minst två former (inte bilder).
+287|Resultatet är tomt.
+288|Importera bild…
+289|Bilden {} importerad
+290|Text
+291|Teckensnitt
+292|Sök
+293|Storlek
+294|Stil
+295|Fet
+296|Kursiv
+297|Teckenavstånd
+298|Radavstånd
+299|Justering
+300|Bild
+301|Negativ bild
+302|Gravera de ljusa delarna i stället för de mörka
+303|Gravyren använder lagrets intervall, hastighet, effekt och rastrering.
+304|Bildinställningar
+305|Bilder använder intervall, hastighet, effekt och överskanning från sitt lager.
+306|Rastrering
+307|Min effekt (%)
+308|Tröskel
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Ordnad
+314|Gråskala
+315|Förskjutningsfyllning
+316|Exportera PLT / DXF…
+317|{} exporterad. {} bild(er) hoppades över: formatet saknar raster.
+318|Exportera PLT eller DXF och öppna filen i styrenhetens eget program (till exempel RDWorks för Ruida), som ställer in hastighet och effekt per lagerfärg.
+319|Materialbibliotek…
+320|Materialbibliotek
+321|Alla
+322|Material
+323|Operation
+324|Effekt
+325|Skärning
+326|Gravering
+327|Ritsning
+328|Startvärden för typiska 10 W-diod- och 40 W-CO2-lasrar. Testa alltid på spillmaterial.
+329|Använd på lager {}
+330|{} ({}) använt på lager {}
+331|Spara det aktiva lagret som förinställning
+332|Materialnamn
+333|Spara förinställning
+334|Kameraöverlägg…
+335|Kameraöverlägg
+336|Visa ett foto eller liveöverföring från kameran under designen för att placera arbetet på materialet.
+337|Läs in bild…
+338|Ta bort
+339|Livekamera
+340|Den här versionen saknar kamerastöd. Bygg med: cargo run --release --features camera
+341|Ingen kamera
+342|Sök efter kameror
+343|Starta kameran
+344|Frys bilden
+345|Kamera
+346|Överlägg: {}
+347|Visa överlägg
+348|Opacitet
+349|Justera: dra de fyra hörnen på arbetsytan
+350|Dra varje hörn till motsvarande hörn på materialet eller arbetsytan; perspektivet korrigeras.
+351|Återställ till arbetsytan
+352|Rotera 90°
+353|Bränn tidigare
+354|Bränn senare
+355|Lager bränns uppifrån och ned.
+356|Rutnätsalternativ…
+357|Rutnätsalternativ
+358|Huvudrutnät
+359|Sekundärt rutnät
+360|Visa
+361|Avstånd mellan linjer
+362|Färg
+363|Det sekundära rutnätet måste vara finare än huvudrutnätet.
+364|Återställ rutnät
+365|Banor
+366|Visar banorna på arbetsytan
+367|Förhandsgranska…
+368|Förhandsgranskningsfönster…
+369|Öppna förhandsgranskningsfönstret
+370|Färglägg efter
+371|Visa förflyttningar
+372|Maskinens rörelser med avstängd laser
+373|Spela upp
+374|Anpassa
+375|Operationer
+376|För många rörelser: förflyttningslinjer är dolda.
+377|{} rörelser
+378|Importera
+379|Exportera
+380|Importera Adobe Illustrator / PDF…
+381|Gruppera
+382|Avgruppera
+383|Markera minst två objekt för att gruppera.
+384|Grupperat. Objekten behåller sina lager.
+385|Formoperationer
+386|Justera bild…
+387|Vektorisera bild…
+388|Importera bild
+389|Justera bild
+390|Rotera och vänd
+391|Vinkel
+392|Ton
+393|Ljusstyrka
+394|Kontrast
+395|Gamma
+396|Automatiska nivåer
+397|Bredd
+398|{} × {} px
+399|Återställ
+400|Vektorisera bild
+401|Ignorera små områden
+402|Förenkla
+403|Jämna ut kurvor
+404|Vektorisera de ljusa områdena
+405|Ta bort bilden efteråt
+406|{} konturer
+407|Vektorisera
+408|{} konturer vektoriserade
+409|Läs från enheten
+410|Läser…
+411|Ansluter och läser arbetsyta, S-värde max och hastighet från styrenheten
+412|Läser inställningarna från enheten…
+413|Kunde inte ansluta till enheten.
+414|Enheten rapporterade inga inställningar.
+415|Läste {} värden från enheten
+416|Triangel (Y)
+417|Stjärna (S)
+418|Polygon (G)
+419|Triangel
+420|Stjärna
+421|Polygon
+422|Antal sidor
+423|Dra på arbetsytan för att rita den. Högst 360 sidor.
+424|OK
+425|Anslutningstyp
+426|Serieport
+427|Nätverk (TCP, t.ex. ser2net)
+428|Värd
+429|TCP-port
+430|Ansluten till {}
+431|Kamerans URL
+432|Livebild från maskinen: en MJPEG-ström eller adressen till en JPEG-bild (http eller https).
+433|Kameravy
+434|Visar liveöverföringen från den här maskinens kamera
+435|Väntar på bilden…
+436|Standardzoom
+437|Tillbaka till hela bilden
+438|Visa som överlägg på arbetsytan
+439|Strömfel: {}
+440|Anpassa till 15 s
+441|Realtid
+442|Ange först en kamera-URL i enhetsinställningarna.
+443|Visa i
+444|Flytande fönster
+445|Separat fönster
+446|Sidoflik
+447|Överlägg
+448|Visa eller dölj kameraöverlägget på arbetsytan
+449|Visa kameraöverlägg
+450|Det finns inget kameraöverlägg än. Läs in en bild eller starta kameravyn.
+451|Dela över nätverket (ser2net)…
+452|Dela över nätverket (ser2net)
+453|ser2net hittades: {}
+454|ser2net hittades inte. Installera det först, till exempel: sudo apt install ser2net
+455|Detta delar laserns serieport på den här datorn över nätverket, så att LightCreator på en annan dator kan ansluta med anslutningstypen ”Nätverk (TCP)”.
+456|ser2net-version
+457|Lyssna bara på den här datorn (används med en SSH-tunnel)
+458|En ny klient ersätter den anslutna
+459|Fil: {}
+460|Anslut sedan från den andra datorn till {}:{}
+461|Varning: alla i nätverket som når den här porten kan styra lasern. Använd ett pålitligt nätverk, en brandvägg eller alternativet endast lokalt med en SSH-tunnel.
+462|Kopierat.
+463|Installera och starta om ser2net…
+464|Detta ersätter {} (en säkerhetskopia sparas) och startar om ser2net. Administratörsbehörighet begärs.
+465|Bekräfta
+466|Väntar på administratörens godkännande…
+467|{} installerad och ser2net omstartad.
+468|Kunde inte installera konfigurationen: {}
+469|För hand: sudo cp <sparad fil> {} && sudo systemctl restart ser2net
+470|Kamerarotation
+471|Anpassa arbetsytan automatiskt till fönstret
+472|Lås
+473|Låst: lås upp för att redigera. Kopior är inte låsta.
+474|{} objekt låsta.
+475|{} objekt upplåsta.
+476|Dubbelklicka för att redigera lageralternativen
+477|Lageralternativ — {}
+478|{} — klicka för att tilldela markeringen / göra aktivt; dubbelklicka för alternativ
+479|Visningsalternativ…
+480|Visningsalternativ
+481|Bakgrundsfärg
+482|Automatisk
+483|Linjetjocklek
+484|{} pass
+485|Snabbguide
+486|Projektsidan på GitHub
+487|Den här guiden finns på engelska och polska; andra språk visar den engelska texten.
+488|Runda hörn…
+489|Runda hörn
+490|Radie
+491|Runda
+492|Radie för rundning
+493|Runda de markerade hörnen med den här radien
+494|Två raka linjer är markerade: de förenas med ett rundat hörn.
+495|Varje rakt hörn i de markerade formerna rundas.
+496|Linjerna kan inte förenas (parallella, eller så ryms inte radien).
+497|De två linjerna förenades med ett rundat hörn.
+498|Markera först formerna som ska rundas.
+499|Det finns inga raka hörn att runda.
+500|{} hörn rundade.
+501|Clipart
+502|Djur
+503|Natur
+504|Högtider
+505|Symboler
+506|Former
+507|Verktyg
+508|Mat
+509|Föremål
+510|Musik och nöje
+511|Min clipart
+512|Alla kategorier
+513|Medföljande
+514|Mina
+515|Bilder som följer med programmet
+516|Bilder du har laddat ner eller lagt till
+517|Storlek vid placering
+518|Online…
+519|Lägg till fil…
+520|Sök efter fler bilder på internet och spara dem här
+521|Lägg till SVG-filer från din dator i din clipart
+522|Inga bilder här. Använd Online… för att hitta några.
+523|följer med programmet
+524|dina
+525|Klicka för att placera på arbetsytan
+526|{} placerad
+527|Byt namn
+528|Byt namn…
+529|Byt kategori
+530|Byt kategori…
+531|Detaljer
+532|Detaljer…
+533|Ta bort…
+534|Ta bort den här bilden från din clipart? Filen på din disk raderas.
+535|Spara en kopia i min clipart
+536|eller en ny kategori
+537|{} bild(er) tillagda i {}
+538|Källa
+539|Kategori
+540|Licens
+541|Upphovsperson
+542|Samling
+543|Clipart online…
+544|Clipart online
+545|Sök i öppna ikonsamlingar (Iconify). Bilder sparas på din disk, i en kategori som du väljer.
+546|t.ex. katt, blomma, kugghjul
+547|Söker…
+548|Inget hittades.
+549|{} bilder hittades
+550|Sökningen misslyckades: {}
+551|Klicka på en bild för att se dess licens och spara den.
+552|ingen namngivning krävs
+553|ange upphovspersonen
+554|Spara i min clipart
+555|{} sparad i {}
+556|Ladda ner
+557|Laddar ner…
+558|Nedladdningen misslyckades: {}
+559|Eller ladda ner en bild från en adress
+560|Spara bara bilder du får använda. Kontrollera källans licens.
+561|Zooma in (Z)
+562|Zooma ut (X)
+563|Anpassa till arbetsytan (Ctrl+0)
+564|Anpassa till alla objekt (Ctrl+9)
+565|Zooma in
+566|Zooma ut
+567|Anpassa till arbetsytan
+568|Anpassa till alla objekt
+569|Redigera noder
+570|Konvertera texten till kurvor, eller vektorisera bilden, för att redigera dess noder.
+571|Markera först en form och redigera sedan dess noder.
+572|Hjärta (K)

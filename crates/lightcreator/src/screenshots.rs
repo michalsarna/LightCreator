@@ -438,6 +438,21 @@ fn render_screenshots() {
         a.status = "तैयार".into();
     }
     save(&mut h, "21-hindi.png");
+    // Greek and Ukrainian: the Greek and Cyrillic letters come from Noto Sans.
+    {
+        let a = app(&mut h);
+        a.lang = Lang::El;
+        i18n::set_lang(Lang::El);
+        a.status = "Έτοιμο".into();
+    }
+    save(&mut h, "31-greek.png");
+    {
+        let a = app(&mut h);
+        a.lang = Lang::Uk;
+        i18n::set_lang(Lang::Uk);
+        a.status = "Готово".into();
+    }
+    save(&mut h, "32-ukrainian.png");
     i18n::set_lang(Lang::En);
 
     // Help window and rounded corners.

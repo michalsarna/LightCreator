@@ -1,0 +1,573 @@
+0|Skrá
+1|Breyta
+2|Raða
+3|Skoða
+4|Leysir
+5|Stillingar
+6|Hjálp
+7|Ný
+8|Opna…
+9|Vista
+10|Vista sem…
+11|Flytja inn SVG…
+12|Flytja út SVG…
+13|Flytja út G-code…
+14|Hætta
+15|Afturkalla
+16|Endurgera
+17|Afrita
+18|Líma
+19|Tvöfalda
+20|Eyða
+21|Velja allt
+22|Jafna til vinstri
+23|Miðja (L)
+24|Jafna til hægri
+25|Jafna efst
+26|Miðja (Lt)
+27|Jafna neðst
+28|Miðja hvað á annað
+29|Miðja á borðinu
+30|Snúa lárétt
+31|Snúa lóðrétt
+32|Snúa 90° réttsælis
+33|Snúa 90° rangsælis
+34|Færa fremst
+35|Færa aftast
+36|Breyta í feril
+37|Afritunarnet…
+38|Rúðunet
+39|Grípa í rúðunet
+40|Forskoðun ferla
+41|Laga borð að glugga
+42|Stillingar tækis…
+43|Rammi
+44|Hefja verk
+45|Um forritið
+46|Tungumál
+47|Litaþema
+48|Dökkt
+49|Ljóst-dökkt
+50|Miðlungs ljóst
+51|Ljóst
+52|Velja (V)
+53|Rétthyrningur (R)
+54|Sporbaugur (E)
+55|Lína (L)
+56|Brotalína / penni (P)
+57|Færa sýn (H)
+58|Aðdráttur (Z)
+59|Velja
+60|Rétthyrningur
+61|Sporbaugur
+62|Lína
+63|Fylling
+64|Fylling + lína
+65|Lag {}
+66|Segull
+67|Forskoðun
+68|Byrja
+69|Sendir verkið til tengda leysisins
+70|Rekur útlínu svæðisins
+71|Vista G-code
+72|Lög
+73|{} — smelltu til að úthluta vali / gera virkt
+74|Tilbúið
+75|Opnað: {}
+76|Ekki tókst að opna: {}
+77|Vistað: {}
+78|Ekki tókst að vista: {}
+79|Fluttir inn ferlar: {} úr {}
+80|Innflutningur mistókst: {}
+81|Flutt út: {}
+82|Útflutningur mistókst: {}
+83|G-code vistað: {}
+84|Tengdu fyrst leysi (spjaldið Leysir)
+85|Ekkert til að grafa: engin form á úttakslögum
+86|Verk hafið: {} línur, ~{}
+87|Aftengt
+88|Tengt við {} @ {}
+89|Get ekki opnað {}: {}
+90|Hætt við (hugbúnaðarendurstilling)
+91|Tengingin rofnaði
+92|Áætlaður tími
+93|skurðlengd
+94|Stillingar tækis
+95|Heiti
+96|Vinnusvæði X
+97|Vinnusvæði Y
+98|Núllpunktur vélar (0,0)
+99|Fremst til vinstri (sjálfgefið í GRBL)
+100|Aftast til vinstri
+101|S-gildi hám. ($30)
+102|Kvikt afl (M4)
+103|Færsluhraði
+104|Aftur á upphafspunkt
+105|Baud-hraði
+106|Afritunarnet
+107|Dálkar
+108|Raðir
+109|Bil X
+110|Bil Y
+111|Búa til net
+112|Um LightCreator
+113|Útgáfa {}
+114|Opinn hugbúnaður til hönnunar og stýringar á leysigröfurum og leysiskerum.
+115|Uppruni: skrifað í Rust með egui/eframe.
+116|Innblásið af LightBurn; viðmótið innblásið af VectorCraft.
+117|Höfundur: Michał Sarna
+118|MIT-leyfi.
+119|Eiginleikar
+120|Skurðir / Lög
+121|Ekkert valið
+122|Læsa hlutföllum
+123|Snúa
+124|Virkja
+125|Spegla L
+126|Spegla Lt
+127|Miðja
+128|Vinstri
+129|Mið L
+130|Hægri
+131|Efst
+132|Mið Lt
+133|Neðst
+134|Miðja
+135|Jafna í miðju
+136|Lag
+137|Sýna öll 30 lögin
+138|Úttak (grafa þetta lag)
+139|Sýnilegt
+140|Skurðarstillingar — {}
+141|Hamur
+142|Hraði
+143|Afl (%)
+144|Umferðir
+145|Bil
+146|Skönnunarhorn
+147|Yfirskönnun
+148|Tvíátta
+149|Engin tengi
+150|Endurnýja
+151|Leita aftur að raðtengjum
+152|Aftengja
+153|Tengja
+154|Staða
+155|Skref
+156|Mötun
+157|Upp
+158|Niður
+159|Stöðva verkið sem er í gangi
+160|Stopp
+161|Hætta við hreyfingu
+162|Heim
+163|Aflæsa
+164|Hlé
+165|Halda áfram
+166|STOPP
+167|Afl ramma
+168|0 % heldur leysinum slökktum við römmun; 1–2 % sýnir daufan punkt á díóðuleysum
+169|senda G-code / $-skipun
+170|Senda
+171|Veldu tæki
+172|Veldu tækið sem þú ætlar að vinna með.
+173|Búðu til að minnsta kosti eitt tækjasnið til að halda áfram.
+174|Áfram
+175|Bæta við tæki…
+176|Breyta…
+177|Staðfesta eyðingu
+178|Hætta við
+179|Uppsetning tækis
+180|Nýtt tæki
+181|t.d. Díóðuleysirinn minn
+182|Heiti sniðs er áskilið.
+183|Skipta um tæki…
+184|Tæki: {}
+185|Hraðaeiningar
+186|Á sekúndu (mm/s, in/s)
+187|Á mínútu (mm/mín, in/mín)
+188|Opna nýleg
+189|(tómt)
+190|Hreinsa lista
+191|er ekki lengur til
+192|Loka
+193|Lágmarka
+194|Hámarka
+195|Endurheimta
+196|Sýna eða fela rúðunetið
+197|Sýna eða fela aukarúðunetið
+198|Loftaðstoð
+199|Loftdæla í gangi
+200|Kveikir á loftdælunni meðan þetta lag er grafið (M8 / M9)
+201|Staða og stærð
+202|Snúningur
+203|Speglun og miðjun
+204|Jöfnun
+205|Fella saman
+206|Stækka
+207|Tími
+208|Skrá vistuð: {}
+209|Vistað sjálfkrafa: {}
+210|Vista vinnuna áður en lokað er?
+211|Hönnunin hefur ekki verið vistuð í skrá.
+212|Henda
+213|Valkostir forrits…
+214|Valkostir forrits
+215|Sjálfvirk vistun
+216|Vista vinnuna sjálfkrafa
+217|Vista sjálfkrafa á
+218|Vinna án skráarnafns fer í tímabundna möppu; skrá með nafni er vistuð á staðnum
+219|Spírall
+220|Spírall (I)
+221|Fjöldi hringja
+222|Dragðu á vinnusvæðinu til að teikna hann.
+223|Sækja öryggisafrit…
+224|Leita að uppfærslum…
+225|Öryggisafrit vistað: {}
+226|Öryggisafritun mistókst: {}
+227|Uppfærslur
+228|Nýrri útgáfa er í boði: {}
+229|Þú ert með útgáfu {}.
+230|Opna niðurhalssíðuna
+231|Þú ert með nýjustu útgáfuna.
+232|Nýjasta útgáfa: {}
+233|Ekki tókst að leita að uppfærslum.
+234|Leita að nýrri útgáfu þegar forritið ræsist
+235|Endurheimta úr öryggisafriti…
+236|Endurheimta úr öryggisafriti
+237|Núverandi stillingar þínar og klippimyndir verða leystar af hólmi með öryggisafritinu. Halda áfram?
+238|Öryggisafrit endurheimt: {}
+239|Endurheimt mistókst: {}
+240|Engar sniðskrár fundust. Áttu öryggisafrit?
+241|Einingar
+242|Millimetrar (mm)
+243|Tommur (in)
+244|Tæki
+245|Skipanagluggi
+246|Stöðufyrirspurnir
+247|Sjálfvirk skrun
+248|Hreinsa
+249|Stýring
+250|Gerð leysis
+251|Vinnusvæði
+252|Já
+253|Nei
+254|Tenging
+255|Tengi
+256|Færsluskref
+257|Færslumötun
+258|Þessi stýring hefur enga beina tengingu: verk eru flutt út sem skrár.
+259|Hnútabreyting (N)
+260|Texti (T)
+261|Horn
+262|Mjúkur
+263|Í línu
+264|Í feril
+265|Bæta við hnút
+266|Eyða hnút
+267|Opna / loka
+268|Gera valda hnúta að hornum
+269|Gera valda hnúta mjúka
+270|Gera bútinn á eftir hverjum völdum hnút beinan
+271|Gera bútinn á eftir hverjum völdum hnút bogadreginn
+272|Setja inn hnút (eða tvísmella á bút)
+273|Loka opnum ferli eða opna lokaðan við valinn hnút
+274|Breyta í ferla
+275|Breyta textanum í breytanleg Bézier-form
+276|Sameining
+277|Sniðmengi
+278|Frádráttur
+279|Útilokandi EÐA
+280|Færa form til…
+281|Færa form til
+282|Fjarlægð
+283|Jákvætt gildi stækkar útlínuna, neikvætt minnkar hana.
+284|Halda upprunalegu
+285|Búa til tilfærslu
+286|Veldu að minnsta kosti tvö form (ekki myndir).
+287|Niðurstaðan er tóm.
+288|Flytja inn mynd…
+289|Mynd {} flutt inn
+290|Texti
+291|Letur
+292|Leita
+293|Stærð
+294|Stíll
+295|Feitletrað
+296|Skáletrað
+297|Bil milli stafa
+298|Línubil
+299|Jöfnun
+300|Mynd
+301|Neikvæð mynd
+302|Grafa ljósu hlutana í stað þeirra dökku
+303|Gröftur notar bil, hraða, afl og rastun lagsins.
+304|Myndastillingar
+305|Myndir nota bil, hraða, afl og yfirskönnun síns lags.
+306|Rastun
+307|Lágmarksafl (%)
+308|Þröskuldur
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Raðað
+314|Grátóna
+315|Fylling með tilfærslu
+316|Flytja út PLT / DXF…
+317|Flutt út: {}. Slepptar myndir: {} — þetta snið hefur ekki raster.
+318|Fluttu út PLT eða DXF og opnaðu í hugbúnaði stýringarinnar sjálfrar (t.d. RDWorks fyrir Ruida), sem stillir hraða og afl eftir lit lags.
+319|Efnissafn…
+320|Efnissafn
+321|Allt
+322|Efni
+323|Aðgerð
+324|Afl
+325|Skurður
+326|Gröftur
+327|Rispun
+328|Upphafsgildi fyrir dæmigerða 10 W díóðuleysa og 40 W CO2-leysa. Prófaðu alltaf á afgangi.
+329|Beita á lag {}
+330|{} ({}) beitt á lag {}
+331|Vista virka lagið sem forstillingu
+332|Heiti efnis
+333|Vista forstillingu
+334|Myndavélaryfirlag…
+335|Myndavélaryfirlag
+336|Sýnir ljósmynd eða beina mynd úr myndavél undir hönnuninni til að staðsetja verkið á efninu.
+337|Hlaða mynd…
+338|Fjarlægja
+339|Bein myndavél
+340|Þessi útgáfa styður ekki myndavél. Byggðu með: cargo run --release --features camera
+341|Engin myndavél
+342|Finna myndavélar
+343|Ræsa myndavél
+344|Frysta mynd
+345|Myndavél
+346|Yfirlag: {}
+347|Sýna yfirlag
+348|Ógegnsæi
+349|Jöfnun: dragðu hornin fjögur á vinnusvæðinu
+350|Dragðu hvert horn á samsvarandi horn efnisins eða vinnusvæðisins; sjónarhorn er leiðrétt.
+351|Endurstilla á vinnusvæði
+352|Snúa 90°
+353|Grafa fyrr
+354|Grafa síðar
+355|Lög eru grafin ofan frá og niður.
+356|Valkostir rúðunets…
+357|Valkostir rúðunets
+358|Aðalrúðunet
+359|Aukarúðunet
+360|Sýna
+361|Fjarlægð milli lína
+362|Litur
+363|Aukarúðunetið verður að vera fínna en aðalrúðunetið.
+364|Endurstilla rúðunet
+365|Ferlar
+366|Sýnir ferla á vinnusvæðinu
+367|Forskoðun…
+368|Forskoðunargluggi…
+369|Opna forskoðunargluggann
+370|Lita eftir
+371|Sýna tómagangshreyfingar
+372|Hreyfingar vélarinnar með slökktan leysi
+373|Spila
+374|Laga
+375|Aðgerðir
+376|Of margar hreyfingar: tómagangslínur eru faldar.
+377|Hreyfingar: {}
+378|Innflutningur
+379|Útflutningur
+380|Flytja inn Adobe Illustrator / PDF…
+381|Hópa
+382|Afhópa
+383|Veldu að minnsta kosti tvo hluti til að hópa.
+384|Hópað. Hlutirnir halda lögum sínum.
+385|Formaðgerðir
+386|Laga mynd…
+387|Vigurgera mynd…
+388|Innflutningur myndar
+389|Laga mynd
+390|Snúningur og speglun
+391|Horn
+392|Tónn
+393|Birta
+394|Birtuskil
+395|Gamma
+396|Sjálfvirk stig
+397|Breidd
+398|{} × {} px
+399|Endurstilla
+400|Vigurgerð myndar
+401|Hunsa lítil svæði
+402|Einfalda
+403|Slétta ferla
+404|Vigurgera ljósu svæðin
+405|Eyða myndinni á eftir
+406|Útlínur: {}
+407|Vigurgera
+408|Vigurgerðar útlínur: {}
+409|Lesa úr tækinu
+410|Les…
+411|Tengist og les vinnusvæði, S-gildi hám. og hraða úr stýringunni
+412|Les stillingar úr tækinu…
+413|Ekki tókst að tengjast tækinu.
+414|Tækið tilkynnti engar stillingar.
+415|Lesin gildi úr tækinu: {}
+416|Þríhyrningur (Y)
+417|Stjarna (S)
+418|Marghyrningur (G)
+419|Þríhyrningur
+420|Stjarna
+421|Marghyrningur
+422|Fjöldi hliða
+423|Dragðu á vinnusvæðinu til að teikna hann. Mest 360 hliðar.
+424|Í lagi
+425|Gerð tengingar
+426|Raðtengi
+427|Net (TCP, t.d. ser2net)
+428|Hýsill
+429|TCP-tengi
+430|Tengt við {}
+431|Vefslóð myndavélar
+432|Bein mynd frá vélinni: MJPEG-straumur eða vistfang JPEG-myndar (http eða https).
+433|Myndavélarsýn
+434|Sýnir beina mynd úr myndavél þessarar vélar
+435|Bíð eftir myndinni…
+436|Sjálfgefinn aðdráttur
+437|Aftur á alla myndina
+438|Sýna sem yfirlag á vinnusvæðinu
+439|Straumvilla: {}
+440|Laga að 15 s
+441|Rauntími
+442|Stilltu fyrst vefslóð myndavélar í stillingum tækisins.
+443|Sýna í
+444|Fljótandi gluggi
+445|Sérstakur gluggi
+446|Hliðarflipi
+447|Yfirlag
+448|Sýna eða fela myndavélaryfirlagið á vinnusvæðinu
+449|Sýna myndavélaryfirlag
+450|Ekkert myndavélaryfirlag enn. Hladdu mynd eða ræstu myndavélarsýn.
+451|Deila á netinu (ser2net)…
+452|Deila á netinu (ser2net)
+453|ser2net fannst: {}
+454|ser2net fannst ekki. Settu það fyrst upp, t.d.: sudo apt install ser2net
+455|Þetta deilir raðtengi leysisins á þessari tölvu á netinu svo LightCreator annars staðar geti tengst með tengingargerðinni „Net (TCP)“.
+456|Útgáfa ser2net
+457|Hlusta aðeins á þessari tölvu (nota með SSH-göngum)
+458|Nýr biðlari kemur í stað þess tengda
+459|Skrá: {}
+460|Tengstu síðan frá hinni tölvunni við {}:{}
+461|Viðvörun: hver sem er á netinu sem nær þessu tengi getur stýrt leysinum. Notaðu traust net, eldvegg eða valkostinn aðeins staðbundið með SSH-göngum.
+462|Afritað.
+463|Setja upp og endurræsa ser2net…
+464|Þetta kemur í stað {} (afrit er geymt) og endurræsir ser2net. Beðið er um stjórnandaréttindi.
+465|Staðfesta
+466|Bíð eftir samþykki stjórnanda…
+467|{} sett upp og ser2net endurræst.
+468|Ekki tókst að setja upp stillinguna: {}
+469|Í höndunum: sudo cp <vistuð skrá> {} && sudo systemctl restart ser2net
+470|Snúningur myndavélar
+471|Laga vinnusvæði sjálfkrafa að glugga
+472|Læsa
+473|Læst: aflæstu til að breyta. Afrit eru ekki læst.
+474|Læstir hlutir: {}
+475|Aflæstir hlutir: {}
+476|Tvísmelltu til að breyta valkostum lagsins
+477|Valkostir lags — {}
+478|{} — smelltu til að úthluta vali / gera virkt; tvísmelltu fyrir valkosti
+479|Skoðunarvalkostir…
+480|Skoðunarvalkostir
+481|Bakgrunnslitur
+482|Sjálfvirkur
+483|Línuþykkt
+484|Umferðir: {}
+485|Flýtileiðbeiningar
+486|Verkefnissíða á GitHub
+487|Þessar leiðbeiningar eru til á ensku og pólsku; önnur tungumál sýna enska textann.
+488|Ávala horn…
+489|Ávala horn
+490|Radíus
+491|Ávala
+492|Radíus ávölunar
+493|Ávalar valin horn með þessum radíus
+494|Tvær beinar línur eru valdar: þær eru tengdar með ávölu horni.
+495|Hvert beint horn valinna forma er ávalað.
+496|Ekki er hægt að tengja þessar línur (samsíða eða radíusinn passar ekki).
+497|Línurnar tvær voru tengdar með ávölu horni.
+498|Veldu fyrst form til að ávala.
+499|Engin bein horn til að ávala.
+500|Ávöluð horn: {}
+501|Klippimyndir
+502|Dýr
+503|Náttúra
+504|Hátíðir
+505|Tákn
+506|Form
+507|Verkfæri
+508|Matur
+509|Hlutir
+510|Tónlist og gaman
+511|Mínar klippimyndir
+512|Allir flokkar
+513|Innifalið
+514|Mínar
+515|Myndir sem fylgja forritinu
+516|Myndir sem þú sóttir eða bættir við
+517|Stærð við staðsetningu
+518|Á netinu…
+519|Bæta við skrá…
+520|Leitaðu að fleiri myndum á netinu og vistaðu þær hér
+521|Bætir SVG-skrám úr tölvunni þinni við klippimyndirnar þínar
+522|Engar myndir hér. Notaðu Á netinu… til að finna nokkrar.
+523|fylgir forritinu
+524|þín
+525|Smelltu til að setja á vinnusvæðið
+526|Sett: {}
+527|Endurnefna
+528|Endurnefna…
+529|Breyta flokki
+530|Breyta flokki…
+531|Nánar
+532|Nánar…
+533|Eyða…
+534|Fjarlægja þessa mynd úr klippimyndunum þínum? Skránni á disknum þínum er eytt.
+535|Vista afrit í mínar klippimyndir
+536|eða nýr flokkur
+537|Bætt við myndum: {} í {}
+538|Heimild
+539|Flokkur
+540|Leyfi
+541|Höfundur
+542|Safn
+543|Klippimyndir á netinu…
+544|Klippimyndir á netinu
+545|Leitaðu í opnum táknasöfnum (Iconify). Myndir eru vistaðar á disknum þínum, í flokki að eigin vali.
+546|t.d. köttur, blóm, tannhjól
+547|Leita…
+548|Ekkert fannst.
+549|Myndir fundust: {}
+550|Leit mistókst: {}
+551|Smelltu á mynd til að sjá leyfi hennar og vista hana.
+552|ekki þarf að geta höfundar
+553|nefndu höfundinn
+554|Vista í mínar klippimyndir
+555|{} vistað í {}
+556|Sækja
+557|Sæki…
+558|Niðurhal mistókst: {}
+559|Eða sæktu mynd af vistfangi
+560|Vistaðu aðeins myndir sem þú mátt nota. Athugaðu leyfi heimildarinnar.
+561|Stækka (Z)
+562|Minnka (X)
+563|Laga að vinnusvæði (Ctrl+0)
+564|Laga að öllum hlutum (Ctrl+9)
+565|Stækka
+566|Minnka
+567|Laga að vinnusvæði
+568|Laga að öllum hlutum
+569|Breyta hnútum
+570|Breyttu textanum í ferla, eða vigurgerðu myndina, til að breyta hnútum hennar.
+571|Veldu fyrst form og breyttu síðan hnútum þess.
+572|Hjarta (K)
