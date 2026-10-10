@@ -1133,8 +1133,13 @@ impl App {
             // Name of the current tool in a box of fixed width, so the bar does not jump around.
             let name = Tool::ALL.iter().find(|t| t.0 == self.tool).map(|t| t.1).unwrap_or("");
             ui.allocate_ui_with_layout(egui::vec2(96.0, 22.0), egui::Layout::left_to_right(egui::Align::Center), |ui| {
+                // The box keeps its width whatever the name is: it grows to the minimum and never past the maximum.
+                ui.set_min_size(egui::vec2(96.0, 22.0));
+                ui.set_max_width(96.0);
                 ui.add(egui::Label::new(RichText::new(tr(name).split(" (").next().unwrap_or("")).strong()).truncate());
             });
+            // Where the box ends, for the test that checks it does not move.
+            ui.ctx().data_mut(|d| d.insert_temp(egui::Id::new("tool_name_right"), ui.cursor().left()));
             ui.separator();
             let ctx = ui.ctx().clone();
             for (act, icon, tip) in [(Act::New, "file-plus", "New"), (Act::Open, "folder-open", "Open…"), (Act::Save, "save", "Save")] {
@@ -1884,5 +1889,30 @@ mod layer_speed_tests {
         a.new_doc();
         assert_eq!(a.doc.layers[2].speed, 30.0);
         assert!((a.doc.layers[3].speed - 1000.0 / 60.0).abs() < 1e-9);
+    }
+}
+
+#[cfg(test)]
+mod tool_name_tests {
+    use super::*;
+
+    /// The control bar must not move when the tool changes: the box with the tool name has one width.
+    #[test]
+    fn tool_name_box_has_a_fixed_width() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.screen = Screen::Editor;
+        let mut xs = vec![];
+        for tool in [Tool::Select, Tool::Node, Tool::Polygon, Tool::Text] {
+            a.tool = tool;
+            let mut x = 0.0;
+            let _ = ctx.run_ui(egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1400.0, 900.0))), ..Default::default() }, |ui| {
+                a.draw(ui);
+                x = ctx.data(|d| d.get_temp::<f32>(egui::Id::new("tool_name_right"))).unwrap_or(-1.0);
+            });
+            xs.push(x);
+        }
+        assert!(xs.iter().all(|x| *x > 0.0), "{xs:?}");
+        assert!(xs.windows(2).all(|w| (w[0] - w[1]).abs() < 0.01), "{xs:?}");
     }
 }
