@@ -26,16 +26,16 @@ if [ ! -d "$sim/.git" ]; then
     git -C "$sim" -c advice.detachedHead=false checkout --quiet "$SIM_REF"
 fi
 
-# grbl-sim checks for input with select() on the file descriptor but reads it with buffered getchar(): the rest of a
-# line then waits in stdio's buffer, unseen by select(), until more bytes arrive, so every reply comes one line late
-# and a character-counting sender stalls. Read the byte straight from the descriptor instead.
-# It also switches the terminal mode (tcgetattr + 2x tcsetattr) around every poll, i.e. every simulated byte time:
-# tens of thousands of syscalls per simulated second, enough to make it fall behind real time on a CI runner.
-# serve.py (or socat ... raw) already hands it a raw terminal, so those calls are dropped.
-for f in "$sim"/platform_LINUX.c "$sim"/platform_OSX.c; do
-    sed -i.orig -e 's/char_in = getchar();/{ unsigned char c; if (read(STDIN_FILENO, \&c, 1) == 1) char_in = c; }/' \
-        -e '/^ *enable_kbhit([01]);$/d' "$f"
-done
+# Fixes for grbl-sim, see the comments in the patch and docs/grbl-sim.md:
+#  * input read unbuffered (each reply used to wait for the next byte to arrive),
+#  * no terminal mode switching around every input poll (tens of thousands of syscalls per simulated second),
+#  * a separate SREG for the interrupt thread (a race could leave interrupts disabled and stall the steppers).
+if git -C "$sim" apply --check "$here/grbl-sim-fixes.patch" 2>/dev/null; then
+    git -C "$sim" apply "$here/grbl-sim-fixes.patch"
+elif ! git -C "$sim" apply --reverse --check "$here/grbl-sim-fixes.patch" 2>/dev/null; then
+    echo "grbl-sim-fixes.patch does not apply to grbl-sim $SIM_REF" >&2
+    exit 1
+fi
 
 case "$(uname -s)" in
     Darwin) platform=OSX ;;

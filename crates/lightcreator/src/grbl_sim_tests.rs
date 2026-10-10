@@ -113,9 +113,7 @@ impl Session {
         self.seen.mark = self.seen.rx.len();
     }
 
-    /// Fast machine settings so jobs run in a few seconds of (roughly real) simulated time, laser mode on. Steps per
-    /// mm stay at GRBL's default: with very few (e.g. `$100=20`) grbl-sim slowed to a crawl on GitHub's runners
-    /// while being polled with `?`.
+    /// Fast machine settings so jobs run in a few seconds of (roughly real) simulated time, laser mode on.
     fn fast_machine(&mut self) {
         let lines = ["$110=30000", "$111=30000", "$120=5000", "$121=5000", "$32=1"];
         let before = self.ok_count();
@@ -191,14 +189,13 @@ fn grbl_sim_streams_a_generated_job() {
 #[test]
 #[ignore = "needs grbl-sim: tools/grbl-sim/build.sh"]
 fn grbl_sim_long_job_keeps_character_counting_in_sync() {
-    // A dense fill gives a few hundred short lines that execute faster than they arrive, so the 120-byte RX window is
-    // full all the time. A wrong byte count would overflow GRBL's 128-byte buffer (lost or garbled lines -> errors)
-    // or stall the stream. (Denser jobs work too, but grbl-sim can fall far behind real time on a shared CI runner.)
+    // A dense fill gives hundreds of short lines: the 120-byte RX window is full all the time. A wrong byte count
+    // would overflow GRBL's 128-byte buffer (lost or garbled lines -> errors) or stall the stream.
     let mut s = Session::connect();
     s.wait_banner();
     s.fast_machine();
-    let job = sample_job(0.4);
-    assert!(job.len() > 200, "{}", job.len());
+    let job = sample_job(0.1);
+    assert!(job.len() > 500, "{}", job.len());
     s.run_job(job, 240.0);
     s.wait_idle_at(0.0, 0.0, 60.0);
     assert!(s.errors().is_empty(), "GRBL rejected lines: {:?}", s.errors());
@@ -244,8 +241,8 @@ fn grbl_sim_abort_then_new_job_runs() {
     let mut s = Session::connect();
     s.wait_banner();
     s.fast_machine();
-    s.link.send(Cmd::Job(sample_job(1.0)));
-    s.wait("job started", 20.0, |v| v.progress.0 > 10);
+    s.link.send(Cmd::Job(sample_job(0.2)));
+    s.wait("job started", 20.0, |v| v.progress.0 > 20);
     s.link.send(Cmd::Abort);
     // Real GRBL 1.1 comes back in alarm (ALARM:3, position lost) after a reset while moving and needs $X;
     // grbl-sim comes back idle, where $X is a harmless `ok`.
