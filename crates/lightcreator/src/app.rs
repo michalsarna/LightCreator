@@ -124,6 +124,9 @@ pub struct App {
     pub show_close_dlg: bool,
     pub allow_close: bool,
     pub show_options: bool,
+    /// Look for a newer release on GitHub when the program starts.
+    pub check_updates: bool,
+    pub update: crate::update_ui::UpdateState,
     pub show_grid: bool,
     pub snap: bool,
     pub grid: f64,
@@ -233,7 +236,11 @@ pub struct App {
 
 impl App {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
-        Self::build(&cc.egui_ctx, cc.storage, true)
+        let mut app = Self::build(&cc.egui_ctx, cc.storage, true);
+        if app.check_updates {
+            app.start_update_check(&cc.egui_ctx, false);
+        }
+        app
     }
 
     /// Build the app without a window: used by `new` and by the screenshot tests.
@@ -278,6 +285,8 @@ impl App {
             show_close_dlg: false,
             allow_close: false,
             show_options: false,
+            check_updates: saved("check_updates").map(|v| v != "0").unwrap_or(true),
+            update: Default::default(),
             show_grid,
             snap: false,
             grid,
@@ -1013,6 +1022,8 @@ impl App {
             Act::CameraOverlay => self.show_overlay = true,
             Act::GridOptions => self.show_prefs = true,
             Act::ProgramOptions => self.show_options = true,
+            Act::CheckUpdates => self.start_update_check(ctx, true),
+            Act::DownloadBackup => self.download_backup(),
             Act::PreviewWindow => self.show_preview = true,
             Act::ShareSer2net => self.open_ser2net(),
             Act::ToggleOverlay => {
@@ -1569,24 +1580,28 @@ impl App {
         self.show_array = open;
 
         let mut open = self.show_about;
-        egui::Window::new(tr("About LightCreator")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
-            ui.horizontal(|ui| {
-                if let Some(logo) = &self.logo {
-                    ui.image((logo.id(), egui::vec2(72.0, 72.0)));
-                }
-                ui.vertical(|ui| {
-                    ui.heading("LightCreator");
-                    ui.label(trf("Version {}", &[&APP_VERSION]));
+        if open {
+            let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 10, right: 10, top: 6, bottom: 8 });
+            egui::Window::new("about_window").title_bar(false).frame(frame).collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {
+                crate::window_ui::mini_title(ui, &tr("About LightCreator"), &mut open, |_| {});
+                ui.horizontal(|ui| {
+                    if let Some(logo) = &self.logo {
+                        ui.image((logo.id(), egui::vec2(72.0, 72.0)));
+                    }
+                    ui.vertical(|ui| {
+                        ui.heading("LightCreator");
+                        ui.label(trf("Version {}", &[&APP_VERSION]));
+                    });
                 });
+                ui.label(tr("Open-source design & control software for laser engravers and cutters."));
+                ui.separator();
+                ui.label(tr("Origin: written in Rust with egui/eframe."));
+                ui.label(tr("Inspired by LightBurn; interface inspired by VectorCraft."));
+                ui.label(tr("Author: Michał Sarna"));
+                ui.hyperlink(crate::help_ui::GITHUB_URL);
+                ui.label(tr("MIT licensed."));
             });
-            ui.label(tr("Open-source design & control software for laser engravers and cutters."));
-            ui.separator();
-            ui.label(tr("Origin: written in Rust with egui/eframe."));
-            ui.label(tr("Inspired by LightBurn; interface inspired by VectorCraft."));
-            ui.label(tr("Author: Michał Sarna"));
-            ui.hyperlink(crate::help_ui::GITHUB_URL);
-            ui.label(tr("MIT licensed."));
-        });
+        }
         self.show_about = open;
         self.config_window(ctx);
         self.layer_dialog(ctx);
@@ -1611,24 +1626,8 @@ pub fn fmt_time(s: f64) -> String {
 
 impl eframe::App for App {
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
-        storage.set_string("lang", self.lang.code().to_owned());
-        storage.set_string("scheme", self.scheme.id().to_owned());
-        if let Ok(j) = serde_json::to_string(&self.profiles) {
-            storage.set_string("profiles", j);
-        }
-        storage.set_string("active_profile", self.active.to_string());
-        storage.set_string("autosave_on", if self.autosave_on { "1" } else { "0" }.into());
-        storage.set_string("autosave_secs", self.autosave_secs.to_string());
-        if let Ok(j) = serde_json::to_string(&self.recent) {
-            storage.set_string("recent_files", j);
-        }
-        if let Ok(j) = serde_json::to_string(&self.grid_prefs) {
-            storage.set_string("grid_prefs", j);
-        }
-        storage.set_string("grid_main_on", if self.show_grid { "1" } else { "0" }.into());
-        storage.set_string("grid_main_mm", self.grid.to_string());
-        if let Ok(j) = serde_json::to_string(&self.user_presets) {
-            storage.set_string("user_materials", j);
+        for (k, v) in self.settings_pairs() {
+            storage.set_string(k, v);
         }
     }
 
@@ -1694,6 +1693,30 @@ pub fn icon_button(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool, size: f32
 }
 
 impl App {
+    /// Everything the program remembers between runs, as the key / value strings kept in `app.ron`.
+    pub fn settings_pairs(&self) -> Vec<(&'static str, String)> {
+        let mut v: Vec<(&'static str, String)> = vec![("lang", self.lang.code().to_owned()), ("scheme", self.scheme.id().to_owned())];
+        if let Ok(j) = serde_json::to_string(&self.profiles) {
+            v.push(("profiles", j));
+        }
+        v.push(("active_profile", self.active.to_string()));
+        v.push(("autosave_on", if self.autosave_on { "1" } else { "0" }.into()));
+        v.push(("autosave_secs", self.autosave_secs.to_string()));
+        v.push(("check_updates", if self.check_updates { "1" } else { "0" }.into()));
+        if let Ok(j) = serde_json::to_string(&self.recent) {
+            v.push(("recent_files", j));
+        }
+        if let Ok(j) = serde_json::to_string(&self.grid_prefs) {
+            v.push(("grid_prefs", j));
+        }
+        v.push(("grid_main_on", if self.show_grid { "1" } else { "0" }.into()));
+        v.push(("grid_main_mm", self.grid.to_string()));
+        if let Ok(j) = serde_json::to_string(&self.user_presets) {
+            v.push(("user_materials", j));
+        }
+        v
+    }
+
     /// Draw one frame of the whole application into `ui`.
     pub fn draw(&mut self, ui: &mut egui::Ui) {
         let ctx = ui.ctx().clone();

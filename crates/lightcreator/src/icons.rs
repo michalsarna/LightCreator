@@ -154,6 +154,8 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::ShareSer2net => "wifi",
         Act::GridOptions => "sliders-horizontal",
         Act::ProgramOptions => "settings",
+        Act::CheckUpdates => "refresh-cw",
+        Act::DownloadBackup => "package",
         Act::About => "info",
         Act::TraceImage => "portrait",
         Act::AdjustImage => "sliders-horizontal",

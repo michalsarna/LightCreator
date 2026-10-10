@@ -82,6 +82,7 @@ impl App {
             }
             ctx.request_repaint_after(Duration::from_secs(1));
         }
+        self.update_tick(ctx);
         self.toast_ui(ctx);
         self.close_dialog(ctx);
         self.options_window(ctx);
@@ -169,6 +170,9 @@ impl App {
                 ui.end_row();
                 ui.label(tr("Auto-save every"));
                 ui.add_enabled(self.autosave_on, egui::DragValue::new(&mut self.autosave_secs).range(10..=3600).suffix(" s"));
+                ui.end_row();
+                ui.label(tr("Updates"));
+                ui.checkbox(&mut self.check_updates, tr("Look for a newer version when the program starts"));
                 ui.end_row();
             });
         });

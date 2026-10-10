@@ -117,6 +117,12 @@ fn render_screenshots() {
     app(&mut h).show_close_dlg = false;
     h.run_steps(2);
 
+    app(&mut h).show_about = true;
+    h.run_steps(3);
+    save(&mut h, "30-about.png");
+    app(&mut h).show_about = false;
+    h.run_steps(2);
+
     app(&mut h).side_tab = SideTab::Layers;
     save(&mut h, "03-layers.png");
 
