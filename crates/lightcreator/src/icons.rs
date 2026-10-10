@@ -114,6 +114,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::Align(4) => "align-center-horizontal",
         Act::Align(_) => "align-end-horizontal",
         Act::CenterOnBed => "focus",
+        Act::CenterEachOther => "target",
         Act::FlipH => "flip-horizontal",
         Act::FlipV => "flip-vertical",
         Act::RotCw => "rotate-cw",

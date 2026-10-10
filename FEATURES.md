@@ -17,7 +17,8 @@
   them with a rounded corner instead. In the node tool the bar rounds just the selected corners.
 * **Boolean operations:** union, intersection, subtract and exclusive or of selected shapes.
 * **Offset shape:** grow or shrink outlines by a distance, keeping or replacing the original.
-* Numeric position and size, rotate, flip, align, centre on bed, grid array, copy / paste / duplicate.
+* Numeric position and size, rotate, flip, align, centre on bed, **centre on each other** (Arrange menu and
+  right-click menu: the centres of the selected objects, groups counting as one, are put on the same point), grid array, copy / paste / duplicate.
 * **Grouping:** group objects so they select and transform together; layers are not changed. Copies get their
   own group.
 * **Locking:** lock objects or groups (Ctrl+L, Ctrl+Shift+L to unlock). Locked objects cannot be moved,

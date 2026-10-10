@@ -202,6 +202,7 @@ impl App {
             }
             ui.separator();
             item(ui, any_unlocked, Act::CenterOnBed, "Centre on bed");
+            item(ui, any_unlocked, Act::CenterEachOther, "Centre on each other");
         });
         ui.menu_button((icons::slot(Some("squares-unite"), theme::text()), tr("Shape operations")), |ui| {
             item(ui, multi, Act::BoolUnion, "Union");

@@ -126,6 +126,7 @@ const TABLE: &[[&str; 7]] = &[
     ["Align top", "Wyrównaj do góry", "Oben ausrichten", "Allinea in alto", "Tasaa ylös", "顶部对齐", "ऊपर संरेखित करें"],
     ["Align centre (V)", "Wyśrodkuj w pionie", "Vertikal zentrieren", "Centra verticalmente", "Keskitä pystysuunnassa", "垂直居中", "ऊर्ध्वाधर केंद्रित करें"],
     ["Align bottom", "Wyrównaj do dołu", "Unten ausrichten", "Allinea in basso", "Tasaa alas", "底部对齐", "नीचे संरेखित करें"],
+    ["Centre on each other", "Wyśrodkuj względem siebie", "Aufeinander zentrieren", "Centra l'uno sull'altro", "Keskitä toistensa suhteen", "相互居中", "एक-दूसरे के केंद्र पर रखें"],
     ["Centre on bed", "Wyśrodkuj na stole", "Auf Arbeitsfläche zentrieren", "Centra sul piano", "Keskitä alustalle", "在工作台居中", "बेड पर केंद्रित करें"],
     ["Flip horizontal", "Odbij w poziomie", "Horizontal spiegeln", "Rifletti orizzontalmente", "Käännä vaakasuunnassa", "水平翻转", "क्षैतिज पलटें"],
     ["Flip vertical", "Odbij w pionie", "Vertikal spiegeln", "Rifletti verticalmente", "Käännä pystysuunnassa", "垂直翻转", "ऊर्ध्वाधर पलटें"],

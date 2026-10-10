@@ -455,6 +455,33 @@ impl App {
             }
         }
     }
+    /// Move the selected objects so that their centres coincide, at the centre of the whole selection. A group
+    /// counts as one object. With the small shape inside the large one, the large one stays where it is.
+    pub fn center_on_each_other(&mut self) {
+        let Some(all) = self.sel_bounds() else { return };
+        let target = all.center();
+        // Objects are single shapes or whole groups.
+        let mut units: Vec<Vec<u64>> = vec![];
+        for id in self.sel.clone() {
+            if units.iter().any(|u| u.contains(&id)) {
+                continue;
+            }
+            units.push(self.doc.group_of(id));
+        }
+        if units.len() < 2 {
+            return;
+        }
+        self.checkpoint();
+        for unit in units {
+            let Some(b) = self.doc.bounds_of(&unit) else { continue };
+            let t = Xf::translate(target.x - b.center().x, target.y - b.center().y);
+            for id in unit {
+                if let Some(s) = self.doc.unlocked_mut(id) {
+                    s.xf = s.xf.then(t);
+                }
+            }
+        }
+    }
     pub fn flip(&mut self, horizontal: bool) {
         if let Some(b) = self.sel_bounds() {
             self.checkpoint();
@@ -841,6 +868,7 @@ impl App {
             Act::Undo => !self.undo.is_empty(),
             Act::Redo => !self.redo.is_empty(),
             Act::ClearRecent => !self.recent.is_empty(),
+            Act::CenterEachOther => self.sel.len() >= 2,
             Act::ToggleOverlay => self.overlay.is_some(),
             _ => true,
         }
@@ -881,6 +909,7 @@ impl App {
             Act::SelectAll => self.select_all(),
             Act::Align(m) => self.align(m),
             Act::CenterOnBed => self.center_on_bed(),
+            Act::CenterEachOther => self.center_on_each_other(),
             Act::FlipH => self.flip(true),
             Act::FlipV => self.flip(false),
             Act::RotCw => self.rotate_sel(90.0),
@@ -1604,5 +1633,42 @@ mod version_tests {
         let security = include_str!("../../../SECURITY.md");
         let latest = security.lines().find(|l| l.contains("(latest)")).expect("a (latest) row in SECURITY.md");
         assert!(latest.contains(super::APP_VERSION), "SECURITY.md latest row: {latest}");
+    }
+}
+
+#[cfg(test)]
+mod centre_tests {
+    use super::*;
+
+    #[test]
+    fn objects_are_centred_on_each_other_and_groups_stay_together() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.screen = Screen::Editor;
+        let big = a.doc.add(0, lc_core::Kind::Rect { w: 100.0, h: 60.0 }, Xf::translate(10.0, 10.0));
+        let small = a.doc.add(0, lc_core::Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(20.0, 15.0));
+        a.sel = vec![big, small];
+        a.do_act(&ctx, Act::CenterEachOther);
+        let (cb, cs) = (a.doc.shape(big).unwrap().bounds().unwrap().center(), a.doc.shape(small).unwrap().bounds().unwrap().center());
+        assert!((cb.x - 60.0).abs() < 1e-6 && (cb.y - 40.0).abs() < 1e-6, "the large one stays: {cb:?}");
+        assert!((cs.x - cb.x).abs() < 1e-6 && (cs.y - cb.y).abs() < 1e-6, "{cs:?} vs {cb:?}");
+        // A group of two shapes moves as one object and keeps its inner layout.
+        let g1 = a.doc.add(0, lc_core::Kind::Rect { w: 4.0, h: 4.0 }, Xf::translate(200.0, 200.0));
+        let g2 = a.doc.add(0, lc_core::Kind::Rect { w: 4.0, h: 4.0 }, Xf::translate(210.0, 200.0));
+        let gid = a.doc.new_group_id();
+        for id in [g1, g2] {
+            a.doc.shape_mut(id).unwrap().group = Some(gid);
+        }
+        a.sel = vec![big, g1, g2];
+        let gap = a.doc.shape(g2).unwrap().bounds().unwrap().min.x - a.doc.shape(g1).unwrap().bounds().unwrap().min.x;
+        a.do_act(&ctx, Act::CenterEachOther);
+        let gb = a.doc.bounds_of(&[g1, g2]).unwrap().center();
+        let bb = a.doc.shape(big).unwrap().bounds().unwrap().center();
+        assert!((gb.x - bb.x).abs() < 1e-6 && (gb.y - bb.y).abs() < 1e-6);
+        let gap2 = a.doc.shape(g2).unwrap().bounds().unwrap().min.x - a.doc.shape(g1).unwrap().bounds().unwrap().min.x;
+        assert!((gap - gap2).abs() < 1e-9);
+        // One object alone is not enough.
+        a.sel = vec![big];
+        assert!(!a.act_enabled(Act::CenterEachOther));
     }
 }

@@ -29,6 +29,7 @@ pub enum Act {
     SelectAll,
     Align(u8),
     CenterOnBed,
+    CenterEachOther,
     FlipH,
     FlipV,
     RotCw,
@@ -170,6 +171,7 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
                 vec![
                     Sep,
                     Item(Act::CenterOnBed, "Centre on bed", None),
+                    Item(Act::CenterEachOther, "Centre on each other", None),
                     Item(Act::FlipH, "Flip horizontal", None),
                     Item(Act::FlipV, "Flip vertical", None),
                     Item(Act::RotCw, "Rotate 90° CW", None),
