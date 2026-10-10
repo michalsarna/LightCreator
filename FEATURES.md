@@ -61,6 +61,8 @@
 * **Import** submenu: SVG (curves are kept as Béziers; colours map to layers), bitmaps (PNG, JPEG, BMP, GIF,
   WebP) and Adobe Illustrator / PDF (first page, vector paths; Illustrator files saved with PDF compatibility).
 * **Export** submenu: SVG, G-code, and HPGL (`.plt`) / DXF. Native `.lcr` projects embed images.
+* **Layer list:** the three switches at the end of each row (output, visible, air pump) have icon headings above
+  the list; the layer colour is shown next to the title of the cut settings.
 * **Side panel layout:** Properties is laid out as a table with sections separated by lines (position and size,
   rotation, mirroring, alignment, layer) and buttons of one size. Image settings of a layer show only when the layer
   holds bitmap images. In the Device tab the jog arrows, Home, Unlock, Pause and Resume are equal icon buttons (STOP

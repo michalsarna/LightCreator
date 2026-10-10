@@ -437,7 +437,8 @@ impl App {
         ui.add_space(4.0);
         let dev = self.doc.device.clone();
         let yes_no = |b: bool| if b { tr("Yes") } else { tr("No") };
-        egui::Grid::new("dev_summary").num_columns(2).spacing([12.0, 3.0]).striped(true).show(ui, |ui| {
+        let half = ((ui.available_width() - 12.0) / 2.0).max(60.0);
+        egui::Grid::new("dev_summary").num_columns(2).min_col_width(half).spacing([12.0, 3.0]).striped(true).show(ui, |ui| {
             let mut row = |k: &str, v: String| {
                 ui.label(RichText::new(k).color(theme::text_dim()));
                 ui.label(v);
@@ -528,58 +529,69 @@ impl App {
         ui.add_enabled_ui(self.connected, |ui| {
             let (s, f) = (self.doc.device.jog_step, self.doc.device.jog_feed);
             // Arrow keys and the controls below are buttons of one size.
-            let size = egui::vec2(40.0, 32.0);
-            let icon = |ui: &mut egui::Ui, name: &str, tip: String| -> bool {
+            let size = egui::vec2(60.0, 48.0);
+            let icon = |ui: &mut egui::Ui, name: &str, tip: String, accent: Option<Color32>| -> bool {
                 let (rect, resp) = ui.allocate_exact_size(size, egui::Sense::click());
                 let hovered = resp.hovered() && ui.is_enabled();
-                let fill = if hovered { theme::panel_dark() } else { ui.visuals().widgets.inactive.weak_bg_fill };
+                let fill = match (accent, hovered) {
+                    (Some(c), true) => c.gamma_multiply(0.85),
+                    (Some(c), false) => c,
+                    (None, true) => theme::panel_dark(),
+                    (None, false) => ui.visuals().widgets.inactive.weak_bg_fill,
+                };
                 ui.painter().rect_filled(rect, 4.0, fill);
                 ui.painter().rect_stroke(rect, 4.0, egui::Stroke::new(1.0, theme::border()), egui::StrokeKind::Inside);
-                let ink = if ui.is_enabled() { theme::text() } else { theme::text().gamma_multiply(0.4) };
-                crate::icons::paint(ui, egui::Rect::from_center_size(rect.center(), egui::vec2(18.0, 18.0)), name, ink);
+                let ink = if accent.is_some() { Color32::WHITE } else if ui.is_enabled() { theme::text() } else { theme::text().gamma_multiply(0.4) };
+                crate::icons::paint(ui, egui::Rect::from_center_size(rect.center(), egui::vec2(27.0, 27.0)), name, ink);
                 resp.on_hover_text(tip).clicked()
             };
+            let centre = |ui: &mut egui::Ui, total: f32| ui.add_space(((ui.available_width() - total) / 2.0).max(0.0));
+            ui.horizontal(|ui| {
+            centre(ui, 3.0 * size.x + 2.0 * 4.0);
             egui::Grid::new("jog").spacing([4.0, 4.0]).show(ui, |ui| {
                 ui.allocate_exact_size(size, egui::Sense::hover());
-                if icon(ui, "arrow-up", tr("Up").to_string()) {
+                if icon(ui, "arrow-up", tr("Up").to_string(), None) {
                     act = Some(ctrl.jog(0.0, s, f));
                 }
                 ui.allocate_exact_size(size, egui::Sense::hover());
                 ui.end_row();
-                if icon(ui, "arrow-left", tr("Left").to_string()) {
+                if icon(ui, "arrow-left", tr("Left").to_string(), None) {
                     act = Some(ctrl.jog(-s, 0.0, f));
                 }
-                if icon(ui, "square", tr("Cancel jog").to_string()) {
+                if icon(ui, "square", tr("Cancel jog").to_string(), Some(Color32::from_rgb(0xe8, 0x8a, 0x1f))) {
                     act = Some(ctrl.cancel_jog());
                 }
-                if icon(ui, "arrow-right", tr("Right").to_string()) {
+                if icon(ui, "arrow-right", tr("Right").to_string(), None) {
                     act = Some(ctrl.jog(s, 0.0, f));
                 }
                 ui.end_row();
                 ui.allocate_exact_size(size, egui::Sense::hover());
-                if icon(ui, "arrow-down", tr("Down").to_string()) {
+                if icon(ui, "arrow-down", tr("Down").to_string(), None) {
                     act = Some(ctrl.jog(0.0, -s, f));
                 }
                 ui.end_row();
             });
+            });
             ui.add_space(4.0);
-            ui.horizontal_wrapped(|ui| {
-                if icon(ui, "house", tr("Home").to_string()) {
+            ui.horizontal(|ui| {
+                centre(ui, 4.0 * size.x + 3.0 * ui.spacing().item_spacing.x);
+                if icon(ui, "house", tr("Home").to_string(), None) {
                     act = Some(ctrl.home());
                 }
-                if icon(ui, "lock-open", tr("Unlock").to_string()) {
+                if icon(ui, "lock-open", tr("Unlock").to_string(), None) {
                     act = Some(ctrl.unlock());
                 }
-                if icon(ui, "pause", tr("Pause").to_string()) {
+                if icon(ui, "pause", tr("Pause").to_string(), None) {
                     act = Some(ctrl.pause());
                 }
-                if icon(ui, "play", tr("Resume").to_string()) {
+                if icon(ui, "play", tr("Resume").to_string(), None) {
                     act = Some(ctrl.resume());
                 }
-                if ui.add_sized(size, egui::Button::new(RichText::new(tr("STOP")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0xc0, 0x30, 0x30))).clicked() {
-                    self.link.send(Cmd::Abort);
-                }
             });
+            ui.add_space(6.0);
+            if ui.add_sized([ui.available_width(), 40.0], egui::Button::new(RichText::new(tr("STOP")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0xc0, 0x30, 0x30))).clicked() {
+                self.link.send(Cmd::Abort);
+            }
         });
         if let Some(a) = act {
             self.run_action(a);

@@ -64,6 +64,7 @@ impl App {
         let units = self.doc.device.units;
         let (mut x, mut y, mut w, mut h) = (b.min.x, b.min.y, b.width(), b.height());
         let mut changed = None;
+        section_title(ui, "move", &tr("Position and size"));
         egui::Grid::new("props").num_columns(4).spacing([6.0, 6.0]).show(ui, |ui| {
             ui.spacing_mut().interact_size.x = 78.0;
             let f = |ui: &mut egui::Ui, label: &str, v: &mut f64| -> egui::Response {
@@ -105,22 +106,29 @@ impl App {
         }
         // Rotate, mirror, align and layer: each section in its own block, buttons of one size.
         ui.separator();
+        section_title(ui, "rotate-cw", &tr("Rotation"));
         let bw = (ui.available_width() - 12.0) / 3.0;
         egui::Grid::new("props_rotate").num_columns(3).spacing([6.0, 6.0]).show(ui, |ui| {
             ui.allocate_ui_with_layout(egui::vec2(bw, 24.0), egui::Layout::left_to_right(egui::Align::Center), |ui| {
                 ui.label(tr("Rotate"));
                 ui.add(egui::DragValue::new(&mut self.rot_input).suffix("°"));
             });
-            if ui.add_sized([bw, 24.0], egui::Button::new(tr("Apply"))).clicked() {
+            let ink = theme::text();
+            if ui.add_sized([bw, 24.0], egui::Button::image_and_text(crate::icons::slot(Some("check"), ink), tr("Apply"))).clicked() {
                 self.rotate_sel(self.rot_input);
             }
-            if ui.add_sized([bw, 24.0], egui::Button::new("90°")).clicked() {
+            if ui.add_sized([bw, 24.0], egui::Button::image_and_text(crate::icons::slot(Some("rotate-cw"), ink), "90°")).clicked() {
                 self.rotate_sel(90.0);
             }
             ui.end_row();
         });
         ui.separator();
-        let flips = [(tr("Flip H"), tr("Flip horizontal")), (tr("Flip V"), tr("Flip vertical")), (tr("Centre"), tr("Centre on bed"))];
+        section_title(ui, "flip-horizontal", &tr("Mirror and centre"));
+        let flips = [
+            (tr("Flip H"), tr("Flip horizontal"), "flip-horizontal"),
+            (tr("Flip V"), tr("Flip vertical"), "flip-vertical"),
+            (tr("Centre"), tr("Centre on bed"), "focus"),
+        ];
         match button_grid(ui, "props_flip", &flips) {
             Some(0) => self.flip(true),
             Some(1) => self.flip(false),
@@ -128,19 +136,21 @@ impl App {
             _ => {}
         }
         ui.separator();
+        section_title(ui, "align-center-vertical", &tr("Alignment"));
         let aligns = [
-            (tr("Left"), tr("Align left")),
-            (tr("Mid-H"), tr("Align centre")),
-            (tr("Right"), tr("Align right")),
-            (tr("Top"), tr("Align top")),
-            (tr("Mid-V"), tr("Align middle")),
-            (tr("Bottom"), tr("Align bottom")),
+            (tr("Left"), tr("Align left"), "align-start-vertical"),
+            (tr("Mid-H"), tr("Align centre"), "align-center-vertical"),
+            (tr("Right"), tr("Align right"), "align-end-vertical"),
+            (tr("Top"), tr("Align top"), "align-start-horizontal"),
+            (tr("Mid-V"), tr("Align middle"), "align-center-horizontal"),
+            (tr("Bottom"), tr("Align bottom"), "align-end-horizontal"),
         ];
         if let Some(i) = button_grid(ui, "props_align", &aligns) {
             self.align(i as u8);
         }
         ui.separator();
         // Layer of selection
+        section_title(ui, "layers", &tr("Layer"));
         let first = self.doc.shape(self.sel[0]).map(|s| s.layer).unwrap_or(0);
         let mut layer = first;
         ui.horizontal(|ui| {
@@ -259,7 +269,18 @@ impl App {
         let (units, su) = (self.doc.device.units, self.doc.device.speed_unit);
         let before = self.doc.layers.clone();
         let used: Vec<bool> = (0..30).map(|i| self.doc.shapes.iter().any(|s| s.layer == i)).collect();
-        ui.checkbox(&mut self.show_all_layers, tr("Show all 30 layers"));
+        ui.label(RichText::new(tr("Layers are burnt from top to bottom.")).color(theme::text_dim()));
+        // Headings of the three switches at the end of each row.
+        ui.horizontal(|ui| {
+            ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                for (icon, tip) in [("wind", "Air pump on"), ("eye", "Visible"), ("zap", "Output (burn this layer)")] {
+                    ui.allocate_ui_with_layout(egui::vec2(SWITCH_W, 18.0), egui::Layout::top_down(egui::Align::Center), |ui| {
+                        let r = ui.add(crate::icons::slot(Some(icon), theme::text_dim()));
+                        r.on_hover_text(tr(tip));
+                    });
+                }
+            });
+        });
         let order = self.doc.layer_order();
         let mut move_req: Option<(usize, bool)> = None;
         for &i in &order {
@@ -292,26 +313,33 @@ impl App {
                     self.active_layer = i;
                     self.layer_dlg = Some(i);
                 }
-                egui::ComboBox::from_id_salt(("mode", i)).width(78.0).selected_text(tr(l.mode.label())).show_ui(ui, |ui| {
-                    for m in LayerMode::ALL {
-                        ui.selectable_value(&mut l.mode, m, tr(m.label()));
-                    }
-                });
                 drag_speed(ui, units, su, false, &mut l.speed, 0.5, Some((0.5, 1000.0)));
                 ui.add(egui::DragValue::new(&mut l.power).range(0.0..=100.0).suffix(" %"));
-                ui.checkbox(&mut l.output, "").on_hover_text(tr("Output (burn this layer)"));
-                ui.checkbox(&mut l.visible, "").on_hover_text(tr("Visible"));
+                ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                    // Right to left: air pump, visible, output.
+                    for (flag, tip) in [(&mut l.air_assist, "Air pump on"), (&mut l.visible, "Visible"), (&mut l.output, "Output (burn this layer)")] {
+                        ui.allocate_ui_with_layout(egui::vec2(SWITCH_W, 20.0), egui::Layout::top_down(egui::Align::Center), |ui| {
+                            ui.checkbox(flag, "").on_hover_text(tr(tip));
+                        });
+                    }
+                });
             });
         }
         if let Some((i, up)) = move_req {
             self.checkpoint();
             self.doc.move_layer(i, up);
         }
-        ui.label(RichText::new(tr("Layers are burnt from top to bottom.")).color(theme::text_dim()));
+        ui.checkbox(&mut self.show_all_layers, tr("Show all 30 layers"));
         ui.separator();
         let has_images = self.doc.shapes.iter().any(|s| s.layer == self.active_layer && s.is_image());
         let l = &mut self.doc.layers[self.active_layer];
-        ui.label(RichText::new(trf("Cut settings — {}", &[&l.name])).strong());
+        ui.horizontal(|ui| {
+            let c = PALETTE[l.color.min(29)];
+            let (r, _) = ui.allocate_exact_size(egui::vec2(16.0, 16.0), egui::Sense::hover());
+            ui.painter().rect_filled(r, 3.0, Color32::from_rgb(c[0], c[1], c[2]));
+            ui.painter().rect_stroke(r, 3.0, egui::Stroke::new(1.0, theme::border()), egui::StrokeKind::Inside);
+            ui.label(RichText::new(trf("Cut settings — {}", &[&l.name])).strong());
+        });
         let panel_scope = format!("panel-{}", self.active_layer);
         layer_settings_ui(ui, (units, su), l, panel_scope.as_str(), has_images);
         let now = ui.input(|i| i.time);
@@ -408,13 +436,26 @@ impl App {
     }
 }
 
+/// Width of the cell of one of the switches (output, visible, air pump) in the layer list.
+const SWITCH_W: f32 = 22.0;
+
+/// Heading of a block in a side-panel tab: a small icon and a bold title.
+fn section_title(ui: &mut egui::Ui, icon: &str, title: &str) {
+    ui.horizontal(|ui| {
+        ui.add(crate::icons::slot(Some(icon), theme::text_dim()));
+        ui.label(RichText::new(title).strong().color(theme::text_dim()));
+    });
+    ui.add_space(2.0);
+}
+
 /// Buttons of one size in rows of three, as a table. Returns the index of the clicked one.
-fn button_grid(ui: &mut egui::Ui, id: &str, cells: &[(&str, &str)]) -> Option<usize> {
+fn button_grid(ui: &mut egui::Ui, id: &str, cells: &[(&str, &str, &str)]) -> Option<usize> {
     let mut clicked = None;
     let bw = (ui.available_width() - 12.0) / 3.0;
     egui::Grid::new(id).num_columns(3).spacing([6.0, 6.0]).show(ui, |ui| {
-        for (i, (label, tip)) in cells.iter().enumerate() {
-            if ui.add_sized([bw, 24.0], egui::Button::new(*label)).on_hover_text(*tip).clicked() {
+        for (i, (label, tip, icon)) in cells.iter().enumerate() {
+            let btn = egui::Button::image_and_text(crate::icons::slot(Some(icon), theme::text()), *label);
+            if ui.add_sized([bw, 24.0], btn).on_hover_text(*tip).clicked() {
                 clicked = Some(i);
             }
             if i % 3 == 2 {
