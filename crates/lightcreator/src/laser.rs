@@ -155,6 +155,8 @@ fn realtime_name(b: u8) -> String {
 }
 
 const RX_BUFFER: usize = 120; // GRBL has 128 bytes; keep a margin.
+/// Longest wait for GRBL's start-up banner after a soft reset before streaming anyway.
+const BANNER_TIMEOUT: Duration = Duration::from_millis(2500);
 
 /// Why a line is in the queue; decides how its `ok` is shown in the console.
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -178,6 +180,9 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
     let mut inbuf = Vec::<u8>::new();
     let (mut total, mut done) = (0usize, 0usize);
     let mut last_poll = Instant::now();
+    // Set after a soft reset: GRBL drops everything it receives until it has restarted and printed its banner
+    // (`Grbl 1.1h ['$' for help]`), so queued lines are held back until then.
+    let mut restarting: Option<Instant> = None;
     loop {
         loop {
             match rx.try_recv() {
@@ -187,8 +192,10 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                         Ok((mut p, tcp)) => {
                             is_tcp = tcp;
                             controller = c;
+                            restarting = None;
                             if let Some(b) = c.on_connect() {
                                 let _ = p.write_all(&[b]);
+                                restarting = Some(Instant::now());
                             }
                             port = Some(p);
                             queue.clear();
@@ -231,6 +238,7 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                         if let Some(b) = controller.abort_byte() {
                             let _ = p.write_all(&[b]);
                             emit(traffic(Dir::Tx, realtime_name(b), false));
+                            restarting = Some(Instant::now());
                         }
                         if let Some(l) = controller.abort_line() {
                             queue.push_back((l.to_string(), Kind::Immediate));
@@ -260,9 +268,18 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                 if line.is_empty() {
                     continue;
                 }
-                if let Some((state, x, y)) = lc_core::controller::parse_status(&line) {
+                if restarting.is_some() && line.starts_with("Grbl ") {
+                    // Restarted: anything sent before the reset is gone, and so are its acknowledgements.
+                    restarting = None;
+                    pending.clear();
+                    emit(traffic(Dir::Rx, line, false));
+                } else if let Some((state, x, y)) = lc_core::controller::parse_status(&line) {
                     emit(traffic(Dir::Rx, line.clone(), true));
                     emit(Evt::Status { state, x, y });
+                } else if restarting.is_some() && (line == "ok" || line.starts_with("error")) {
+                    // Start-up noise (e.g. `error:7` from an empty EEPROM) or a late reply to a line sent before the
+                    // reset: not the acknowledgement of anything queued now.
+                    emit(traffic(Dir::Rx, line, false));
                 } else if line == "ok" || line.starts_with("error") {
                     let kind = pending.pop_front().map(|(_, k)| k);
                     emit(traffic(Dir::Rx, line.clone(), kind == Some(Kind::Poll)));
@@ -274,8 +291,13 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                     emit(traffic(Dir::Rx, line, false));
                 }
             }
+            if restarting.is_some_and(|t| t.elapsed() > BANNER_TIMEOUT) {
+                // No banner (a clone that does not print one?): stream anyway rather than hang.
+                restarting = None;
+                pending.clear();
+            }
             // Write while the controller's RX buffer has room.
-            while let Some((l, _)) = queue.front() {
+            while let Some((l, _)) = queue.front().filter(|_| restarting.is_none()) {
                 let used: usize = pending.iter().map(|(n, _)| n).sum();
                 if used + l.len() + 1 > RX_BUFFER {
                     break;
@@ -317,7 +339,8 @@ mod tests {
     use super::*;
     use std::net::TcpListener;
 
-    /// A stand-in for `ser2net` + GRBL: answers every line with `ok` and every `?` with a status report.
+    /// A stand-in for `ser2net` + GRBL: answers every line with `ok`, every `?` with a status report and a soft reset
+    /// with the start-up banner.
     fn fake_grbl(listener: TcpListener, close_after_ms: u64) {
         std::thread::spawn(move || {
             let (mut s, _) = listener.accept().unwrap();
@@ -336,7 +359,11 @@ mod tests {
                                 buf.clear();
                                 let _ = s.write_all(b"ok\n");
                             }
-                            0x18 => {}
+                            0x18 => {
+                                // Like GRBL after a soft reset.
+                                buf.clear();
+                                let _ = s.write_all(b"\r\nGrbl 1.1h ['$' for help]\r\n");
+                            }
                             _ => buf.push(b),
                         }
                     }
