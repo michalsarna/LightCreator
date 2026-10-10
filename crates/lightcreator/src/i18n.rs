@@ -64,7 +64,11 @@ pub fn lang() -> Lang {
 
 /// Translate an English UI string.
 pub fn tr(s: &'static str) -> &'static str {
-    let i = CURRENT.load(Ordering::Relaxed) as usize;
+    lookup(CURRENT.load(Ordering::Relaxed) as usize, s)
+}
+
+/// Translate `s` into the language with table column `i` (0 = English); unknown strings pass through.
+fn lookup(i: usize, s: &'static str) -> &'static str {
     if i == 0 {
         return s;
     }
@@ -76,13 +80,18 @@ pub fn tr(s: &'static str) -> &'static str {
     }
 }
 
-/// Translate and substitute each `{}` with the next argument.
-pub fn trf(s: &'static str, args: &[&dyn Display]) -> String {
-    let mut out = tr(s).to_string();
+/// Substitute each `{}` in `text` with the next argument.
+fn fill(text: &str, args: &[&dyn Display]) -> String {
+    let mut out = text.to_string();
     for a in args {
         out = out.replacen("{}", &a.to_string(), 1);
     }
     out
+}
+
+/// Translate and substitute each `{}` with the next argument.
+pub fn trf(s: &'static str, args: &[&dyn Display]) -> String {
+    fill(tr(s), args)
 }
 
 // Columns: English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी
@@ -571,13 +580,14 @@ mod tests {
         }
     }
 
+    // Uses the pure helpers with an explicit language: the current language is process-global and other
+    // tests (anything that builds an `App`) reset it concurrently.
     #[test]
     fn lookup_and_fallback() {
-        set_lang(Lang::De);
-        assert_eq!(tr("Save"), "Speichern");
-        assert_eq!(tr("not in table"), "not in table");
-        assert_eq!(trf("Opened {}", &[&"x.svg"]), "x.svg geöffnet");
-        set_lang(Lang::En);
-        assert_eq!(tr("Save"), "Save");
+        let de = Lang::De.index() as usize;
+        assert_eq!(lookup(de, "Save"), "Speichern");
+        assert_eq!(lookup(de, "not in table"), "not in table");
+        assert_eq!(fill(lookup(de, "Opened {}"), &[&"x.svg"]), "x.svg geöffnet");
+        assert_eq!(lookup(0, "Save"), "Save");
     }
 }
