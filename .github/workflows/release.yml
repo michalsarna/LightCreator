@@ -24,31 +24,59 @@ jobs:
   build:
     needs: check-main
     strategy:
+      fail-fast: false
       matrix:
         include:
-          - { os: ubuntu-latest, name: linux-x86_64, ext: tar.gz }
-          - { os: windows-latest, name: windows-x86_64, ext: zip }
-          - { os: macos-latest, name: macos-arm64, ext: tar.gz }
+          - { os: ubuntu-latest, name: linux-x86_64 }
+          - { os: windows-latest, name: windows-x86_64 }
+          - { os: macos-latest, name: macos-arm64 }
     runs-on: ${{ matrix.os }}
+    env:
+      TAG: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
       - name: Linux build dependencies
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libxkbcommon-x11-dev libgl1-mesa-dev
       - run: cargo build --release -p lightcreator
-      - name: Package
+
+      # Plain archive (all platforms): binary + README + LICENSE
+      - name: Archive
         shell: bash
         run: |
           mkdir dist
           cp README.md LICENSE dist/
           cp target/release/lightcreator dist/ 2>/dev/null || cp target/release/lightcreator.exe dist/
-          name="lightcreator-${GITHUB_REF_NAME}-${{ matrix.name }}"
-          if [ "${{ matrix.ext }}" = zip ]; then
-            7z a "$name.zip" ./dist/*
-          else
-            tar czf "$name.tar.gz" -C dist .
-          fi
+          name="lightcreator-${TAG}-${{ matrix.name }}"
+          if [ "$RUNNER_OS" = Windows ]; then 7z a "$name.zip" ./dist/*; else tar czf "$name.tar.gz" -C dist .; fi
+
+      # Linux: .deb
+      - name: Debian package
+        if: runner.os == 'Linux'
+        run: |
+          cargo install cargo-deb --locked
+          cargo deb -p lightcreator --no-build --output "lightcreator-${TAG}-linux-amd64.deb"
+
+      # Windows: NSIS installer (makensis is preinstalled on the runner image; install it if missing)
+      - name: Windows installer
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if (-not (Get-Command makensis -ErrorAction SilentlyContinue)) { choco install nsis -y --no-progress; $env:PATH += ";C:\Program Files (x86)\NSIS" }
+          $version = $env:TAG.TrimStart('v')
+          makensis /V2 "/DVERSION=$version" "/DOUTFILE=$PWD\lightcreator-$env:TAG-windows-x86_64-setup.exe" packaging/windows/installer.nsi
+
+      # macOS: .app bundle inside a .dmg
+      - name: macOS app bundle and dmg
+        if: runner.os == 'macOS'
+        run: |
+          cargo install cargo-bundle --locked
+          (cd crates/lightcreator && cargo bundle --release)
+          mkdir dmg && cp -R target/release/bundle/osx/LightCreator.app dmg/ && ln -s /Applications dmg/Applications
+          hdiutil create -volname LightCreator -srcfolder dmg -ov -format UDZO "lightcreator-${TAG}-macos-arm64.dmg"
+
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
@@ -61,7 +89,11 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           merge-multiple: true
+      - name: Checksums
+        run: sha256sum lightcreator-* > SHA256SUMS.txt
       - uses: softprops/action-gh-release@v2
         with:
-          files: lightcreator-*
+          files: |
+            lightcreator-*
+            SHA256SUMS.txt
           generate_release_notes: true

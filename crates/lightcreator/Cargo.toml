@@ -34,6 +34,24 @@ identifier = "io.github.michalsarna.lightcreator"
 icon = ["../../assets/icons/icon-256.png", "../../assets/icons/icon-512.png"]
 short_description = "Open-source laser engraver / cutter design and control software"
 
+[package.metadata.deb]
+name = "lightcreator"
+maintainer = "LightCreator contributors <noreply@github.com>"
+section = "graphics"
+priority = "optional"
+# The GUI loads libxkbcommon-x11 and libGL at run time, so list them explicitly.
+depends = "$auto, libxkbcommon-x11-0, libgl1"
+extended-description = "Design shapes, import SVG, configure cut layers and stream jobs to GRBL laser controllers."
+assets = [
+  ["target/release/lightcreator", "usr/bin/", "755"],
+  ["../../assets/lightcreator.desktop", "usr/share/applications/", "644"],
+  ["../../assets/icons/icon-48.png", "usr/share/icons/hicolor/48x48/apps/lightcreator.png", "644"],
+  ["../../assets/icons/icon-128.png", "usr/share/icons/hicolor/128x128/apps/lightcreator.png", "644"],
+  ["../../assets/icons/icon-256.png", "usr/share/icons/hicolor/256x256/apps/lightcreator.png", "644"],
+  ["../../assets/icons/icon-512.png", "usr/share/icons/hicolor/512x512/apps/lightcreator.png", "644"],
+  ["../../README.md", "usr/share/doc/lightcreator/README.md", "644"],
+]
+
 [dev-dependencies]
 # Renders the UI headlessly to PNG for the README screenshots (see src/screenshots.rs).
 egui_kittest = { version = "0.36", features = ["wgpu"] }
