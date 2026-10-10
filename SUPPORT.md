@@ -1,4 +1,6 @@
-# Wesprzyj projekt
+🌐 **English** · [Polski](SUPPORT.pl.md)
+
+# Support the project
 
 <p align="center">
   <a href="https://buymeacoffee.com/michalsarna">
@@ -7,15 +9,15 @@
   </a>
 </p>
 
-LightCreator jest darmowy i otwarty. Jeśli ci się przydaje i chcesz pomóc w jego rozwoju, możesz postawić
-autorowi kawę: **<https://buymeacoffee.com/michalsarna>**
+LightCreator is free and open source. If it is useful to you and you would like to help its development, you can
+buy the author a coffee: **<https://buymeacoffee.com/michalsarna>**
 
-Wsparcie finansowe nie jest wymagane. Pomagasz też, kiedy:
+Money is not required. You also help when you:
 
-- zgłaszasz błędy i pomysły w zakładce Issues na GitHubie,
-- testujesz program na prawdziwych maszynach (GRBL, Marlin, ser2net, kamera) i opisujesz wyniki,
-- poprawiasz tłumaczenia,
-- dodajesz własne cliparty i materiały do biblioteki,
-- dajesz projektowi gwiazdkę i mówisz o nim innym.
+- report bugs and ideas in the Issues tab on GitHub,
+- test the program on real machines (GRBL, Marlin, ser2net, camera) and describe the results,
+- improve the translations,
+- add your own clipart and materials to the library,
+- star the project and tell others about it.
 
-Dziękuję!
+Thank you!
