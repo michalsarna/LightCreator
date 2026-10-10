@@ -3,10 +3,16 @@
 use crate::i18n::Lang;
 use crate::theme::Scheme;
 
+/// How many recently opened files are remembered.
+pub const MAX_RECENT: usize = 10;
+
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
 pub enum Act {
     New,
     Open,
+    /// Entry `n` (0-based) of the recently opened files.
+    OpenRecent(u8),
+    ClearRecent,
     Save,
     SaveAs,
     ImportSvg,
@@ -80,9 +86,11 @@ pub enum Entry {
     Item(Act, &'static str, Option<(&'static str, &'static str)>),
     Sep,
     Sub(&'static str, Vec<Entry>),
+    /// The "Open recent" submenu, filled from the list of recently used files.
+    Recent,
 }
 
-use Entry::{Item, Sep, Sub};
+use Entry::{Item, Recent, Sep, Sub};
 
 const fn key(accel: &'static str, shown: &'static str) -> Option<(&'static str, &'static str)> {
     Some((accel, shown))
@@ -97,6 +105,7 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
     let mut file = vec![
         Item(Act::New, "New", key("CmdOrCtrl+N", "Ctrl+N")),
         Item(Act::Open, "Open…", key("CmdOrCtrl+O", "Ctrl+O")),
+        Recent,
         Item(Act::Save, "Save", key("CmdOrCtrl+S", "Ctrl+S")),
         Item(Act::SaveAs, "Save as…", key("CmdOrCtrl+Shift+S", "Ctrl+Shift+S")),
         Sep,

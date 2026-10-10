@@ -80,6 +80,7 @@ pub fn submenu_icon(title: &str) -> Option<&'static str> {
     Some(match title {
         "Import" => "download",
         "Export" => "upload",
+        "Open recent" => "history",
         "Language" => "languages",
         "Colour scheme" => "palette",
         _ => return None,
@@ -90,6 +91,8 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
     Some(match a {
         Act::New => "file-plus",
         Act::Open => "folder-open",
+        Act::OpenRecent(_) => "file",
+        Act::ClearRecent => "trash",
         Act::Save | Act::SaveAs => "save",
         Act::ImportSvg | Act::ImportAi => "file-input",
         Act::ImportImage => "image",
@@ -195,7 +198,7 @@ mod tests {
                             }
                             walk(c, have);
                         }
-                        crate::menu::Entry::Sep => {}
+                        crate::menu::Entry::Sep | crate::menu::Entry::Recent => {}
                     }
                 }
             }

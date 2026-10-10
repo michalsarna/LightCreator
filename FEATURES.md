@@ -44,6 +44,8 @@
   white in the light ones, or your own) and the thickness of the drawn lines.
 
 **Files**
+* **Open recent** (File menu, under Open): the last 10 projects and SVG files you opened or saved, newest first, kept
+  between sessions; "Clear list" empties it and a file that no longer exists is dropped when picked.
 * **Import** submenu: SVG (curves are kept as Béziers; colours map to layers), bitmaps (PNG, JPEG, BMP, GIF,
   WebP) and Adobe Illustrator / PDF (first page, vector paths; Illustrator files saved with PDF compatibility).
 * **Export** submenu: SVG, G-code, and HPGL (`.plt`) / DXF. Native `.lcr` projects embed images.
