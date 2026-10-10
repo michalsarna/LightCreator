@@ -32,9 +32,12 @@ port `3333`, and connect. The simulator behaves like a laser shared with ser2net
 simulator with GRBL's default settings; the connection is accepted once it has booted, so the console shows the
 `Grbl 1.1h` banner that answers LightCreator's soft reset on connect.
 
-The defaults are slow (`$110`/`$111` = 500 mm/min, 10 mm/s² acceleration). For quicker runs send, in the console:
+The defaults are slow (`$110`/`$111` = 500 mm/min, 10 mm/s² acceleration). For quicker runs send, in the console
+(the low steps per mm keep the simulator, which computes every step, in real time):
 
 ```
+$100=20
+$101=20
 $110=30000
 $111=30000
 $120=5000

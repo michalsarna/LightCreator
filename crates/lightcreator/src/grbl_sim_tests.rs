@@ -113,9 +113,11 @@ impl Session {
         self.seen.mark = self.seen.rx.len();
     }
 
-    /// Fast machine settings so jobs run in a few seconds of (roughly real) simulated time, laser mode on.
+    /// Fast machine settings so jobs run in a few seconds of (roughly real) simulated time, laser mode on. Few steps
+    /// per mm: grbl-sim simulates every step, and 500 mm/s at the default 250 steps/mm is more than a CI runner keeps
+    /// up with.
     fn fast_machine(&mut self) {
-        let lines = ["$110=30000", "$111=30000", "$120=5000", "$121=5000", "$32=1"];
+        let lines = ["$100=20", "$101=20", "$110=30000", "$111=30000", "$120=5000", "$121=5000", "$32=1"];
         let before = self.ok_count();
         for l in lines {
             self.link.send(Cmd::Line(l.into()));
@@ -231,7 +233,7 @@ fn grbl_sim_abort_then_new_job_runs() {
     s.link.send(Cmd::Abort);
     // Real GRBL 1.1 comes back in alarm (ALARM:3, position lost) after a reset while moving and needs $X;
     // grbl-sim comes back idle, where $X is a harmless `ok`.
-    s.wait("reset banner", 10.0, |v| v.rx.iter().filter(|l| l.starts_with("Grbl ")).count() >= 2);
+    s.wait("reset banner", 20.0, |v| v.rx.iter().filter(|l| l.starts_with("Grbl ")).count() >= 2);
     s.seen.mark = s.seen.rx.len();
     s.link.send(Cmd::Line("$X".into()));
     s.link.send(Cmd::Line("G10 L20 P1 X0 Y0".into()));
