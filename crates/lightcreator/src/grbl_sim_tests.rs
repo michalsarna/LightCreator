@@ -107,8 +107,7 @@ impl Session {
         panic!("timed out waiting for {what}; state {:?} at {:?}, progress {:?}, last replies {:?}", self.seen.state, self.seen.pos, self.seen.progress, last(&self.seen.rx, 12));
     }
 
-    /// Wait for GRBL's start-up banner after the soft reset the worker sends on connect. Replies up to here are not
-    /// checked: a fresh simulator has an empty EEPROM and reports `error:7` plus its default settings at boot.
+    /// Wait for GRBL's banner after the soft reset the worker sends on connect. Replies up to here are not checked.
     fn wait_banner(&mut self) {
         self.wait("GRBL banner", 5.0, |v| v.rx.iter().any(|l| l.starts_with("Grbl ")));
         self.seen.mark = self.seen.rx.len();
@@ -246,8 +245,8 @@ fn grbl_sim_abort_then_new_job_runs() {
 #[ignore = "needs grbl-sim: tools/grbl-sim/build.sh"]
 fn grbl_sim_job_sent_right_after_connect_is_not_lost() {
     // The app lets the user press Start as soon as the link reports "connected", while GRBL is still restarting from
-    // the soft reset (0x18) the worker sends on connect. The job must still run to the end. Note: grbl-sim keeps
-    // bytes that arrive during its restart, real hardware may drop them, so this does not prove the hardware case.
+    // the soft reset (0x18) the worker sends on connect and throws away whatever it receives. The worker has to hold
+    // the job back until the banner, or the lines are lost and the job never finishes.
     let mut s = Session::connect();
     let job: Vec<String> = ["G21", "G90", "G0 X2 Y3", "M5"].iter().map(|l| l.to_string()).collect();
     s.run_job(job, 15.0);

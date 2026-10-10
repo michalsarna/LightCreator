@@ -6,7 +6,8 @@
 Then in LightCreator: Laser -> Device settings -> connection "TCP", host 127.0.0.1, port 3333, controller GRBL.
 
 Every connection starts a fresh simulator in its own temporary directory, so each session begins with GRBL's
-default settings and an empty EEPROM. Standard library only (uses a pseudo-terminal), works on Linux and macOS.
+default settings. The connection is handed over once the simulator has booted, like ser2net in front of a running
+controller. Standard library only (uses a pseudo-terminal), works on Linux and macOS.
 """
 import argparse
 import os
@@ -53,6 +54,22 @@ def pump_to_client(conn, fd):
             pass
 
 
+def wait_for_boot(fd, timeout=10.0):
+    """Swallow the simulator's start-up output up to its banner, so the client meets an already running GRBL, as it
+    would behind ser2net. A fresh simulator has an empty EEPROM and prints `error:7` and its settings first."""
+    import select
+    import time
+    seen = b""
+    end = time.monotonic() + timeout
+    while b"['$' for help]" not in seen and time.monotonic() < end:
+        ready, _, _ = select.select([fd], [], [], 0.1)
+        if ready:
+            try:
+                seen += os.read(fd, 4096)
+            except OSError:
+                return
+
+
 def serve_one(conn, addr, sim, verbose):
     workdir = tempfile.mkdtemp(prefix="grbl-sim-")
     # grbl-sim block-buffers its output on a pipe, so it gets a raw pseudo-terminal, like `socat ... pty,raw,echo=0`.
@@ -62,6 +79,7 @@ def serve_one(conn, addr, sim, verbose):
     args = [sim, "-n", "-b", os.path.join(workdir, "block.out"), "-s", os.path.join(workdir, "step.out")]
     proc = subprocess.Popen(args, cwd=workdir, stdin=slave, stdout=slave, stderr=subprocess.DEVNULL, close_fds=True)
     os.close(slave)
+    wait_for_boot(master)
     if verbose:
         print(f"[grbl-sim] {addr[0]}:{addr[1]} connected, traces in {workdir}", flush=True)
     threading.Thread(target=pump_to_sim, args=(conn, master, proc), daemon=True).start()

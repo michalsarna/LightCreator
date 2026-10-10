@@ -29,8 +29,8 @@ python3 tools/grbl-sim/serve.py            # listens on 127.0.0.1:3333
 
 In LightCreator open *Laser → Device settings*, choose controller **GRBL**, connection **TCP**, host `127.0.0.1`,
 port `3333`, and connect. The simulator behaves like a laser shared with ser2net. Every connection starts a fresh
-simulator with GRBL's default settings, so the first lines in the console are `error:7` (empty EEPROM) followed by
-the settings and the `Grbl 1.1h` banner.
+simulator with GRBL's default settings; the connection is accepted once it has booted, so the console shows the
+`Grbl 1.1h` banner that answers LightCreator's soft reset on connect.
 
 The defaults are slow (`$110`/`$111` = 500 mm/min, 10 mm/s² acceleration). For quicker runs send, in the console:
 
