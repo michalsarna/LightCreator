@@ -680,6 +680,11 @@ impl App {
         self.push_console(ConsoleLine::info(trf("Starting job: {} lines, ~{}", &[&lines.len(), &fmt_time(job.est_seconds)])));
         self.link.send(Cmd::Job(lines));
     }
+    /// Start can be pressed: a streaming controller needs a connected laser, the file-based ones (Ruida, Trocen)
+    /// just export the job.
+    pub fn can_start(&self) -> bool {
+        !self.doc.device.controller.is_serial() || self.connected
+    }
     /// A job is being streamed to the laser.
     pub fn job_running(&self) -> bool {
         self.progress.1 > 0 && self.progress.0 < self.progress.1
@@ -868,6 +873,8 @@ impl App {
             Act::Undo => !self.undo.is_empty(),
             Act::Redo => !self.redo.is_empty(),
             Act::ClearRecent => !self.recent.is_empty(),
+            Act::Frame => self.connected && !self.job_running(),
+            Act::StartJob => self.can_start() && !self.job_running(),
             Act::CenterEachOther => self.sel.len() >= 2,
             Act::ToggleOverlay => self.overlay.is_some(),
             _ => true,
@@ -1131,11 +1138,13 @@ impl App {
                     }
                 } else {
                     let go = egui::Button::new(RichText::new(format!("   {}   ", tr("Start"))).color(Color32::WHITE).strong()).fill(theme::accent());
-                    if ui.add(go).on_hover_text(tr("Stream the job to the connected laser")).clicked() {
+                    let tip = if self.can_start() { tr("Stream the job to the connected laser") } else { tr("Connect to a laser first (Laser panel)") };
+                    if ui.add_enabled(self.can_start(), go).on_hover_text(tip).clicked() {
                         self.send_job();
                     }
                 }
-                if ui.add_enabled(!running, egui::Button::new(tr("Frame"))).on_hover_text(tr("Trace the bounding box")).clicked() {
+                let tip = if self.connected { tr("Trace the bounding box") } else { tr("Connect to a laser first (Laser panel)") };
+                if ui.add_enabled(self.connected && !running, egui::Button::new(tr("Frame"))).on_hover_text(tip).clicked() {
                     self.frame();
                 }
                 if ui.button(tr("Save G-code")).clicked() {
