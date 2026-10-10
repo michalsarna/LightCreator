@@ -113,6 +113,15 @@ impl App {
     fn device_list(&mut self, ui: &mut egui::Ui) {
         if self.profiles.is_empty() {
             ui.label(RichText::new(tr("Create at least one device profile to continue.")).color(theme::text_dim()));
+            // No profile found: offer to bring the settings back from a backup.
+            ui.add_space(4.0);
+            ui.label(RichText::new(tr("No profile files were found. Have a backup?")).color(theme::text_dim()));
+            let btn = egui::Button::image_and_text(crate::icons::slot(Some("package-open"), Color32::WHITE), RichText::new(tr("Restore from backup…")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f));
+            if ui.add_sized([ui.available_width(), 30.0], btn).clicked() {
+                let ctx = ui.ctx().clone();
+                self.restore_backup_dialog(&ctx, false);
+            }
+            ui.add_space(6.0);
         }
         self.start_sel = self.start_sel.min(self.profiles.len().saturating_sub(1));
         let mut go = false;

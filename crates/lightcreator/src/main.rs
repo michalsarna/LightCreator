@@ -30,6 +30,8 @@ mod stream_ui;
 mod screenshots;
 mod theme;
 mod session_ui;
+mod update_ui;
+mod backup_ui;
 mod units_ui;
 mod window_ui;
 

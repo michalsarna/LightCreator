@@ -159,6 +159,14 @@
   with four draggable corners (perspective corrected), opacity, flip and rotate; saved per device.
 
 **Help**
+* **Download backup…** (Help menu): asks where to save a zip file with everything the program keeps on this computer,
+  the settings (`app.ron`: device profiles, language, colour scheme, material presets, recent files) and the whole
+  `clipart` folder, plus a README. **Restore from backup…** (Help menu) reads such a file back: settings and clipart
+  are replaced after a confirmation. When no profile files are found at start, the start window offers the same
+  restore with a green button.
+* **Updates:** the program looks for a newer release on GitHub when it starts (switch it off in Settings → Program
+  options…) and Help → Check for updates… does it on demand. A newer version opens a window with a button to the page
+  with the release packages.
 * Help > Quick guide (F1): built-in documentation of the program's options with search (English and Polish),
   and Help > Project page on GitHub opens the repository.
 

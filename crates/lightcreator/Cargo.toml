@@ -16,6 +16,8 @@ nokhwa = { version = "0.10", default-features = false, features = ["input-native
 serde = { version = "1.0.229", features = ["derive"] }
 ureq = "2"
 egui_extras = { version = "0.36", default-features = false, features = ["svg"] }
+zip = { version = "9.0.1", default-features = false, features = ["deflate"] }
+ron = "0.12"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 # Native macOS menu bar (same approach as VectorCraft): Tauri's menu crate, AppKit menus behind a safe API.
