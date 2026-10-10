@@ -1906,10 +1906,12 @@ mod tool_name_tests {
         for tool in [Tool::Select, Tool::Node, Tool::Polygon, Tool::Text] {
             a.tool = tool;
             let mut x = 0.0;
-            let _ = ctx.run_ui(egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1400.0, 900.0))), ..Default::default() }, |ui| {
+            let mut out = ctx.run_ui(egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1400.0, 900.0))), ..Default::default() }, |ui| {
                 a.draw(ui);
                 x = ctx.data(|d| d.get_temp::<f32>(egui::Id::new("tool_name_right"))).unwrap_or(-1.0);
             });
+            // Debug builds insist that texture updates are consumed before the output is dropped.
+            out.textures_delta.clear();
             xs.push(x);
         }
         assert!(xs.iter().all(|x| *x > 0.0), "{xs:?}");
