@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -26,4 +29,10 @@ jobs:
       - name: Build grbl-sim
         run: tools/grbl-sim/build.sh
       - name: GRBL simulator tests
-        run: cargo test -p lightcreator grbl_sim -- --ignored --test-threads=1
+        run: |
+          set -o pipefail
+          cargo test -p lightcreator grbl_sim -- --ignored --test-threads=1 2>&1 | tee grbl-sim-tests.log || {
+            # Show each failure as an annotation on the pull request.
+            grep -E -A3 "^---- .* stdout ----" grbl-sim-tests.log | grep -v "^--$" | grep -v "^note:" | sed 's/^/::error title=grbl-sim::/'
+            exit 1
+          }
