@@ -1,8 +1,14 @@
 <p align="center"><img src="assets/icons/icon-256.png" alt="LightCreator icon" width="128"></p>
 
+<p align="center">
+  <a href="SUPPORT.md">
+    <img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=%E2%98%95&slug=michalsarna&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" alt="Buy me a coffee" height="48">
+  </a>
+</p>
+
 # LightCreator
 
-See [FEATURES.md](FEATURES.md) for what the app can do, [INSTALL.md](INSTALL.md) for how to run it from source and [VERSIONS.md](VERSIONS.md) for the change log.
+See [FEATURES.md](FEATURES.md) for what the app can do, [SUPPORT.md](SUPPORT.md) for how to support the project, [INSTALL.md](INSTALL.md) for how to run it from source and [VERSIONS.md](VERSIONS.md) for the change log.
 
 An open-source alternative to [LightBurn](https://lightburnsoftware.com/) for CNC laser engravers and cutters,
 written in Rust. The interface follows the look of [VectorCraft](https://github.com/storytold/vectorcraft)
