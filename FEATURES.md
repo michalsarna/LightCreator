@@ -44,6 +44,8 @@
   white in the light ones, or your own) and the thickness of the drawn lines.
 
 **Files**
+* **Open recent** (File menu, under Open): the last 10 projects and SVG files you opened or saved, newest first, kept
+  between sessions; "Clear list" empties it and a file that no longer exists is dropped when picked.
 * **Import** submenu: SVG (curves are kept as Béziers; colours map to layers), bitmaps (PNG, JPEG, BMP, GIF,
   WebP) and Adobe Illustrator / PDF (first page, vector paths; Illustrator files saved with PDF compatibility).
 * **Export** submenu: SVG, G-code, and HPGL (`.plt`) / DXF. Native `.lcr` projects embed images.
@@ -65,7 +67,7 @@
   shows the colour of the selected object's layer.
 * **Preview window:** the whole job with each burn operation (layer, fill, line, offset, image, pass) in its own
   colour or in the layer colour, per-operation switches, optional travel moves with the laser off, the machine
-  zero marked at its real corner, and smooth time-based playback (the totals are shown under the picture) (15 s fit, real time, ×10 to ×200) with a scrub slider.
+  zero marked at its real corner, and smooth time-based playback (the totals are shown under the picture) (15 s fit, real time, ×10 to ×200) with a scrub slider. The view opens zoomed to the objects to burn; the "Fit all objects" and "Fit work area" buttons switch between that and the whole work area.
 
 **Devices and controllers**
 * Start window to choose the device (machine profile) you work with; profiles are remembered.
@@ -90,14 +92,18 @@
   can float inside the application, open as a separate operating-system window that can leave the application
   (and sit on another screen) or be docked as a tab of the side panel, and the picture can be rotated by 90°,
   180° or 270°. The rotation is a device setting (Camera rotation in the device configuration) and is saved
-  with the other device options.
+  with the other device options. The picture can be zoomed in and out (+ / − buttons or the mouse wheel, up to 8×),
+  dragged around when zoomed, and returned to the whole picture with "Default zoom" (or a double-click).
 * The camera overlay on the work area can be switched on and off at any time: the "Overlay" button in the
   control bar and View > Show camera overlay work even when no camera window is open.
 * **GRBL** and **Marlin** (laser feature, inline power) stream over a serial port or TCP: connect, jog, home, unlock,
   pause / resume, stop, framing, progress.
 * **Ruida** and **Trocen** jobs are exported as HPGL / DXF with one pen or layer per colour, to be opened in the
   controller's own software (for example RDWorks). Fill is exported as hatch lines, raster images are skipped.
-* Per-device display units: millimetres or inches (stored geometry stays in millimetres).
+* Per-device display units: millimetres or inches (stored geometry stays in millimetres) and, separately, speeds
+  per second or per minute (mm/s, mm/min, in/s, in/min). This applies to layer speed, travel speed, jog feed and the
+  material list; values are converted automatically and the G-code always carries the mm/min feed that GRBL and Marlin
+  expect after `G21`.
 * The editor cannot be opened until at least one device profile exists.
 
 **Clipart gallery**

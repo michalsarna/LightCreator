@@ -636,3 +636,25 @@ fn heart_shape_fills_its_box() {
     let cx: f64 = c.flatten(0.01).pts.iter().map(|p| p.x).sum::<f64>() / c.flatten(0.01).pts.len() as f64;
     assert!((cx - 20.0).abs() < 1.0, "centroid x {cx}");
 }
+
+#[test]
+fn speed_units_convert_between_display_and_stored_values() {
+    use crate::{SpeedUnit::*, Units::*};
+    // Layers are stored in mm/s, travel and jog in mm/min.
+    assert_eq!(PerSecond.factor(Mm, false), 1.0);
+    assert_eq!(PerMinute.factor(Mm, false), 1.0 / 60.0);
+    assert_eq!(PerSecond.factor(Mm, true), 60.0);
+    assert_eq!(PerMinute.factor(Mm, true), 1.0);
+    // 10 in/s is 254 mm/s; 60 in/min is 1524 mm/min; 1 mm/s shown per minute is 60.
+    assert!((254.0 / PerSecond.factor(Inch, false) - 10.0).abs() < 1e-9);
+    assert!((1524.0 / PerMinute.factor(Inch, true) - 60.0).abs() < 1e-9);
+    assert!((1.0 / PerMinute.factor(Mm, false) - 60.0).abs() < 1e-9);
+    // The G-code feed is mm/min whatever the display: a 20 mm/s layer burns at F1200.
+    let mut doc = Document::default();
+    doc.device.speed_unit = PerMinute;
+    doc.device.units = Inch;
+    doc.layers[0].speed = 20.0;
+    let id = doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::IDENTITY);
+    let _ = id;
+    assert!(crate::gcode::generate(&doc).gcode.contains("F1200"));
+}

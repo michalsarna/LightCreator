@@ -2,7 +2,7 @@
 use crate::app::App;
 use crate::i18n::{tr, trf};
 use crate::theme;
-use crate::units_ui::fmt_speed_s;
+use crate::units_ui::fmt_speed;
 use eframe::egui::{self, RichText};
 use lc_core::materials::{builtin, Preset};
 use lc_core::LaserKind;
@@ -67,7 +67,7 @@ impl App {
                         ui.label(tr_op(&p.operation));
                         ui.label(p.laser.label());
                         ui.label(tr(p.mode.label()));
-                        ui.label(fmt_speed_s(units, p.speed));
+                        ui.label(fmt_speed(units, self.doc.device.speed_unit, false, p.speed));
                         ui.label(format!("{:.0} %", p.power));
                         ui.label(p.passes.to_string());
                         ui.end_row();

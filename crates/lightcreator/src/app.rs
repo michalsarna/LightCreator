@@ -105,6 +105,8 @@ pub struct App {
     pub pen_pts: Vec<Pt>,
     pub clipboard: Vec<Shape>,
     pub path: Option<PathBuf>,
+    /// Most recently opened or saved project files, newest first (at most `MAX_RECENT`).
+    pub recent: Vec<PathBuf>,
     pub status: String,
     pub revision: u64,
     pub show_grid: bool,
@@ -158,6 +160,9 @@ pub struct App {
     pub tab_seen: bool,
     /// Rotation the current stream texture was made with.
     pub stream_rot: u8,
+    /// Magnification of the camera picture in its window (1 = fitted) and its shift in pixels.
+    pub stream_zoom: f32,
+    pub stream_pan: egui::Vec2,
     pub stream: Option<(String, crate::camera_stream::StreamWorker)>,
     pub stream_tex: Option<egui::TextureHandle>,
     pub stream_err: String,
@@ -239,6 +244,7 @@ impl App {
             pen_pts: vec![],
             clipboard: vec![],
             path: None,
+            recent: saved("recent_files").and_then(|j| serde_json::from_str::<Vec<PathBuf>>(&j).ok()).unwrap_or_default().into_iter().take(crate::menu::MAX_RECENT).collect(),
             status: tr("Ready").into(),
             revision: 0,
             show_grid,
@@ -286,6 +292,8 @@ impl App {
             stream_mode: crate::stream_ui::StreamMode::Floating,
             tab_seen: false,
             stream_rot: 0,
+            stream_zoom: 1.0,
+            stream_pan: egui::Vec2::ZERO,
             stream: None,
             stream_tex: None,
             stream_err: String::new(),
@@ -524,10 +532,19 @@ impl App {
             self.open_path(p);
         }
     }
+    /// Put a file at the top of the recent list (without duplicates, at most `MAX_RECENT`).
+    pub fn add_recent(&mut self, p: &std::path::Path) {
+        let p = std::fs::canonicalize(p).unwrap_or_else(|_| p.to_path_buf());
+        self.recent.retain(|r| *r != p);
+        self.recent.insert(0, p);
+        self.recent.truncate(crate::menu::MAX_RECENT);
+    }
     pub fn open_path(&mut self, p: PathBuf) {
         let is_svg = p.extension().is_some_and(|e| e.eq_ignore_ascii_case("svg"));
         if is_svg {
-            self.import_svg_path(p);
+            if self.import_svg_path(p.clone()) {
+                self.add_recent(&p);
+            }
             return;
         }
         match std::fs::read_to_string(&p).map_err(|e| e.to_string()).and_then(|s| Document::from_json(&s)) {
@@ -540,6 +557,7 @@ impl App {
                 self.redo.clear();
                 self.sel.clear();
                 self.status = trf("Opened {}", &[&p.display()]);
+                self.add_recent(&p);
                 self.path = Some(p);
                 self.touch();
                 self.view.need_fit = true;
@@ -557,6 +575,7 @@ impl App {
             match std::fs::write(&p, self.doc.to_json()) {
                 Ok(_) => {
                     self.status = trf("Saved {}", &[&p.display()]);
+                    self.add_recent(&p);
                     self.path = Some(p);
                 }
                 Err(e) => self.status = trf("Save failed: {}", &[&e]),
@@ -568,7 +587,7 @@ impl App {
             self.import_svg_path(p);
         }
     }
-    pub fn import_svg_path(&mut self, p: PathBuf) {
+    pub fn import_svg_path(&mut self, p: PathBuf) -> bool {
         match std::fs::read(&p).map_err(|e| e.to_string()).and_then(|d| {
             self.checkpoint();
             svg::import(&d, &mut self.doc, None)
@@ -576,8 +595,12 @@ impl App {
             Ok(ids) => {
                 self.status = trf("Imported {} paths from {}", &[&ids.len(), &p.display()]);
                 self.sel = ids;
+                true
             }
-            Err(e) => self.status = trf("Import failed: {}", &[&e]),
+            Err(e) => {
+                self.status = trf("Import failed: {}", &[&e]);
+                false
+            }
         }
     }
     pub fn export_svg(&mut self) {
@@ -630,7 +653,14 @@ impl App {
         self.push_console(ConsoleLine::info(trf("Starting job: {} lines, ~{}", &[&lines.len(), &fmt_time(job.est_seconds)])));
         self.link.send(Cmd::Job(lines));
     }
+    /// A job is being streamed to the laser.
+    pub fn job_running(&self) -> bool {
+        self.progress.1 > 0 && self.progress.0 < self.progress.1
+    }
     pub fn frame(&mut self) {
+        if self.job_running() {
+            return;
+        }
         let b = self.sel_bounds().or_else(|| self.doc.bounds_of(&self.doc.shapes.iter().map(|s| s.id).collect::<Vec<_>>()));
         let Some(b) = b else { return };
         if !self.connected {
@@ -810,6 +840,7 @@ impl App {
         match a {
             Act::Undo => !self.undo.is_empty(),
             Act::Redo => !self.redo.is_empty(),
+            Act::ClearRecent => !self.recent.is_empty(),
             Act::ToggleOverlay => self.overlay.is_some(),
             _ => true,
         }
@@ -823,6 +854,17 @@ impl App {
         match a {
             Act::New => self.new_doc(),
             Act::Open => self.open(),
+            Act::OpenRecent(i) => {
+                if let Some(p) = self.recent.get(i as usize).cloned() {
+                    if p.is_file() {
+                        self.open_path(p);
+                    } else {
+                        self.status = trf("Open failed: {}", &[&format!("{} {}", p.display(), tr("no longer exists"))]);
+                        self.recent.retain(|r| *r != p);
+                    }
+                }
+            }
+            Act::ClearRecent => self.recent.clear(),
             Act::Save => self.save(false),
             Act::SaveAs => self.save(true),
             Act::ImportSvg => self.import_svg(),
@@ -940,6 +982,31 @@ impl App {
                     let ink = theme::text();
                     ui.menu_button((crate::icons::slot(crate::icons::submenu_icon(title), ink), tr(title)), |ui| self.menu_entries(ui, children, pending));
                 }
+                Entry::Recent => {
+                    let ink = theme::text();
+                    let recent = self.recent.clone();
+                    ui.menu_button((crate::icons::slot(Some("history"), ink), tr("Open recent")), |ui| {
+                        if recent.is_empty() {
+                            ui.add_enabled(false, egui::Button::new(tr("(empty)")));
+                        }
+                        for (i, p) in recent.iter().enumerate() {
+                            let name = p.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_else(|| p.display().to_string());
+                            let btn = egui::Button::image_and_text(crate::icons::slot(Some("file"), ink), name);
+                            if ui.add(btn).on_hover_text(p.display().to_string()).clicked() {
+                                *pending = Some(Act::OpenRecent(i as u8));
+                                ui.close();
+                            }
+                        }
+                        if !recent.is_empty() {
+                            ui.separator();
+                            let btn = egui::Button::image_and_text(crate::icons::slot(Some("trash"), ink), tr("Clear list"));
+                            if ui.add(btn).clicked() {
+                                *pending = Some(Act::ClearRecent);
+                                ui.close();
+                            }
+                        }
+                    });
+                }
                 Entry::Item(act, label, accel) => {
                     let enabled = self.act_enabled(*act);
                     let ink = if enabled { theme::text() } else { theme::text().gamma_multiply(0.4) };
@@ -976,7 +1043,7 @@ impl App {
         for a in nm.take_actions() {
             self.do_act(ctx, a);
         }
-        nm.sync(|a| self.act_checked(a), |a| self.act_enabled(a));
+        nm.sync(|a| self.act_checked(a), |a| self.act_enabled(a), &self.recent);
         self.native_menu = Some(nm);
     }
 
@@ -1026,11 +1093,20 @@ impl App {
             }
 
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                let go = egui::Button::new(RichText::new(format!("   {}   ", tr("Start"))).color(Color32::WHITE).strong()).fill(theme::accent());
-                if ui.add(go).on_hover_text(tr("Stream the job to the connected laser")).clicked() {
-                    self.send_job();
+                let running = self.job_running();
+                if running {
+                    let stop = egui::Button::new(RichText::new(format!("   {}   ", tr("STOP"))).color(Color32::WHITE).strong())
+                        .fill(Color32::from_rgb(0xc0, 0x30, 0x30));
+                    if ui.add(stop).on_hover_text(tr("Abort the running job")).clicked() {
+                        self.link.send(Cmd::Abort);
+                    }
+                } else {
+                    let go = egui::Button::new(RichText::new(format!("   {}   ", tr("Start"))).color(Color32::WHITE).strong()).fill(theme::accent());
+                    if ui.add(go).on_hover_text(tr("Stream the job to the connected laser")).clicked() {
+                        self.send_job();
+                    }
                 }
-                if ui.button(tr("Frame")).on_hover_text(tr("Trace the bounding box")).clicked() {
+                if ui.add_enabled(!running, egui::Button::new(tr("Frame"))).on_hover_text(tr("Trace the bounding box")).clicked() {
                     self.frame();
                 }
                 if ui.button(tr("Save G-code")).clicked() {
@@ -1302,6 +1378,9 @@ impl eframe::App for App {
             storage.set_string("profiles", j);
         }
         storage.set_string("active_profile", self.active.to_string());
+        if let Ok(j) = serde_json::to_string(&self.recent) {
+            storage.set_string("recent_files", j);
+        }
         if let Ok(j) = serde_json::to_string(&self.grid_prefs) {
             storage.set_string("grid_prefs", j);
         }
@@ -1464,5 +1543,45 @@ mod tests {
         assert!((z - 4.0).abs() < 1e-6, "{z}");
         // The region's centre lands in the middle of the area.
         assert!(((200.0f32 * z + pan.x) - 450.0).abs() < 1e-3 && ((100.0f32 * z + pan.y) - 350.0).abs() < 1e-3);
+    }
+}
+
+#[cfg(test)]
+mod recent_tests {
+    use super::*;
+
+    #[test]
+    fn recent_files_are_unique_newest_first_and_capped() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        let dir = std::env::temp_dir().join(format!("lc-recent-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let files: Vec<PathBuf> = (0..12)
+            .map(|i| {
+                let f = dir.join(format!("f{i}.lcr"));
+                std::fs::write(&f, Document::default().to_json()).unwrap();
+                f
+            })
+            .collect();
+        for f in &files {
+            a.open_path(f.clone());
+        }
+        assert_eq!(a.recent.len(), crate::menu::MAX_RECENT);
+        assert_eq!(a.recent[0], std::fs::canonicalize(&files[11]).unwrap());
+        // Opening an older one again moves it to the top without a duplicate.
+        a.open_path(files[5].clone());
+        assert_eq!(a.recent[0], std::fs::canonicalize(&files[5]).unwrap());
+        assert_eq!(a.recent.len(), crate::menu::MAX_RECENT);
+        assert_eq!(a.recent.iter().filter(|r| **r == a.recent[0]).count(), 1);
+        // The menu action opens entry n; a file that vanished is dropped from the list.
+        std::fs::remove_file(&files[11]).unwrap();
+        let gone = std::fs::canonicalize(&files[10]).unwrap();
+        let idx = a.recent.iter().position(|r| *r == gone).unwrap() as u8;
+        a.screen = Screen::Editor;
+        a.do_act(&ctx, Act::OpenRecent(idx));
+        assert_eq!(a.recent[0], gone);
+        a.do_act(&ctx, Act::ClearRecent);
+        assert!(a.recent.is_empty());
+        let _ = std::fs::remove_dir_all(&dir);
     }
 }

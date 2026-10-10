@@ -1,5 +1,5 @@
 use crate::app::{App, SideTab};
-use crate::units_ui::{drag_len, drag_speed_s};
+use crate::units_ui::{drag_len, drag_speed};
 use crate::i18n::{tr, trf};
 use crate::laser::{Cmd, ConsoleLine, Dir};
 use crate::theme;
@@ -247,7 +247,7 @@ impl App {
     }
 
     fn layers_panel(&mut self, ui: &mut egui::Ui) {
-        let units = self.doc.device.units;
+        let (units, su) = (self.doc.device.units, self.doc.device.speed_unit);
         let before = self.doc.layers.clone();
         let used: Vec<bool> = (0..30).map(|i| self.doc.shapes.iter().any(|s| s.layer == i)).collect();
         ui.checkbox(&mut self.show_all_layers, tr("Show all 30 layers"));
@@ -288,7 +288,7 @@ impl App {
                         ui.selectable_value(&mut l.mode, m, tr(m.label()));
                     }
                 });
-                drag_speed_s(ui, units, &mut l.speed, 0.5, Some((0.5, 1000.0)));
+                drag_speed(ui, units, su, false, &mut l.speed, 0.5, Some((0.5, 1000.0)));
                 ui.add(egui::DragValue::new(&mut l.power).range(0.0..=100.0).suffix(" %"));
                 ui.checkbox(&mut l.output, "").on_hover_text(tr("Output (burn this layer)"));
                 ui.checkbox(&mut l.visible, "").on_hover_text(tr("Visible"));
@@ -303,7 +303,7 @@ impl App {
         let l = &mut self.doc.layers[self.active_layer];
         ui.label(RichText::new(trf("Cut settings — {}", &[&l.name])).strong());
         let panel_scope = format!("panel-{}", self.active_layer);
-        layer_settings_ui(ui, units, l, panel_scope.as_str());
+        layer_settings_ui(ui, (units, su), l, panel_scope.as_str());
         let now = ui.input(|i| i.time);
         self.commit_layer_edit(now, before);
     }
@@ -326,7 +326,7 @@ impl App {
     pub fn layer_dialog(&mut self, ctx: &egui::Context) {
         let Some(i) = self.layer_dlg else { return };
         let before = self.doc.layers.clone();
-        let units = self.doc.device.units;
+        let (units, su) = (self.doc.device.units, self.doc.device.speed_unit);
         let mut open = true;
         let title = trf("Layer options — {}", &[&self.doc.layers[i].name]);
         egui::Window::new(title).id(egui::Id::new("layer_dialog")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
@@ -348,7 +348,7 @@ impl App {
                 ui.end_row();
             });
             ui.separator();
-            layer_settings_ui(ui, units, l, "dialog");
+            layer_settings_ui(ui, (units, su), l, "dialog");
         });
         let now = ctx.input(|i| i.time);
         self.commit_layer_edit(now, before);
@@ -397,7 +397,7 @@ impl App {
 
 /// The cut settings of one layer: mode, speed, power, passes, fill options and image options.
 /// `id_scope` keeps the widget ids apart when the same settings are shown in the panel and in the dialog.
-pub fn layer_settings_ui(ui: &mut egui::Ui, units: lc_core::Units, l: &mut lc_core::Layer, id_scope: &str) {
+pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_core::SpeedUnit), l: &mut lc_core::Layer, id_scope: &str) {
     egui::Grid::new(("cut", id_scope)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
         ui.label(tr("Mode"));
         egui::ComboBox::from_id_salt(("cm", id_scope)).selected_text(tr(l.mode.label())).show_ui(ui, |ui| {
@@ -407,7 +407,7 @@ pub fn layer_settings_ui(ui: &mut egui::Ui, units: lc_core::Units, l: &mut lc_co
         });
         ui.end_row();
         ui.label(tr("Speed"));
-        drag_speed_s(ui, units, &mut l.speed, 0.5, Some((0.5, 1000.0)));
+        drag_speed(ui, units, su, false, &mut l.speed, 0.5, Some((0.5, 1000.0)));
         ui.end_row();
         ui.label(tr("Power (%)"));
         ui.add(egui::Slider::new(&mut l.power, 0.0..=100.0));

@@ -242,6 +242,44 @@ pub enum Origin {
     BackLeft,
 }
 
+/// Time basis in which speeds are shown and entered. Stored speeds stay in mm/s (layers) and mm/min (travel, jog)
+/// and the G-code always carries mm/min after `G21`, whatever is chosen here.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum SpeedUnit {
+    #[default]
+    PerSecond,
+    PerMinute,
+}
+
+impl SpeedUnit {
+    pub const ALL: [SpeedUnit; 2] = [SpeedUnit::PerSecond, SpeedUnit::PerMinute];
+    /// English label with the units of length filled in (translated in the UI).
+    pub fn label(self) -> &'static str {
+        match self {
+            SpeedUnit::PerSecond => "Per second (mm/s, in/s)",
+            SpeedUnit::PerMinute => "Per minute (mm/min, in/min)",
+        }
+    }
+    /// Suffix for a speed, with a leading space.
+    pub fn suffix(self, u: Units) -> &'static str {
+        match (u, self) {
+            (Units::Mm, SpeedUnit::PerSecond) => " mm/s",
+            (Units::Mm, SpeedUnit::PerMinute) => " mm/min",
+            (Units::Inch, SpeedUnit::PerSecond) => " in/s",
+            (Units::Inch, SpeedUnit::PerMinute) => " in/min",
+        }
+    }
+    /// How many of the stored units (mm per second, or mm per minute when `stored_per_min`) make one displayed unit.
+    pub fn factor(self, u: Units, stored_per_min: bool) -> f64 {
+        let time = match (self, stored_per_min) {
+            (SpeedUnit::PerSecond, false) | (SpeedUnit::PerMinute, true) => 1.0,
+            (SpeedUnit::PerSecond, true) => 60.0,
+            (SpeedUnit::PerMinute, false) => 1.0 / 60.0,
+        };
+        u.to_mm(1.0) * time
+    }
+}
+
 /// Unit system used to show and enter lengths in the interface. All stored geometry is in millimetres.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Units {
@@ -396,6 +434,9 @@ pub struct Device {
     /// Display units; profiles saved before this existed load as millimetres.
     #[serde(default)]
     pub units: Units,
+    /// Whether speeds are shown per second or per minute.
+    #[serde(default)]
+    pub speed_unit: SpeedUnit,
     #[serde(default)]
     pub controller: Controller,
     #[serde(default)]
@@ -472,6 +513,7 @@ impl Default for Device {
         Device {
             name: "GRBL 1.1 (diode / CO2)".into(),
             units: Units::Mm,
+            speed_unit: SpeedUnit::default(),
             controller: Controller::Grbl,
             laser: LaserKind::Diode,
             bed_w: 400.0,

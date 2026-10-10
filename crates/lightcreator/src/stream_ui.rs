@@ -7,6 +7,8 @@ use crate::i18n::{tr, trf};
 use crate::theme;
 use eframe::egui::{self, RichText};
 
+const MAX_ZOOM: f32 = 8.0;
+
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum StreamMode {
     /// A window inside the application.
@@ -96,12 +98,41 @@ impl App {
             }
         });
         ui.label(RichText::new(&url).monospace().color(theme::text_dim()));
+        ui.horizontal(|ui| {
+            if ui.button("+").on_hover_text(tr("Zoom in")).clicked() {
+                self.stream_zoom = (self.stream_zoom * 1.25).min(MAX_ZOOM);
+            }
+            if ui.button("−").on_hover_text(tr("Zoom out")).clicked() {
+                self.stream_zoom = (self.stream_zoom / 1.25).max(1.0);
+            }
+            if ui.button(tr("Default zoom")).on_hover_text(tr("Back to the whole picture")).clicked() {
+                self.stream_zoom = 1.0;
+            }
+            ui.label(RichText::new(format!("{:.0} %", self.stream_zoom * 100.0)).color(theme::text_dim()));
+        });
         let avail = ui.available_width().min(1400.0);
-        match &self.stream_tex {
+        match self.stream_tex.clone() {
             Some(t) => {
                 let sz = t.size_vec2();
                 let k = (avail / sz.x).min((ui.available_height() - 70.0).max(160.0) / sz.y).min(2.0);
-                ui.image((t.id(), sz * k));
+                let (resp, painter) = ui.allocate_painter(sz * k, egui::Sense::drag());
+                if resp.hovered() {
+                    let scroll = ui.input(|i| i.smooth_scroll_delta.y);
+                    if scroll != 0.0 {
+                        self.stream_zoom = (self.stream_zoom * (scroll * 0.0015).exp()).clamp(1.0, MAX_ZOOM);
+                    }
+                }
+                if resp.dragged() {
+                    self.stream_pan += resp.drag_delta();
+                }
+                if resp.double_clicked() {
+                    self.stream_zoom = 1.0;
+                }
+                // The picture cannot be pushed out of its frame.
+                let room = resp.rect.size() * (self.stream_zoom - 1.0) / 2.0;
+                self.stream_pan = self.stream_pan.clamp(-room, room);
+                let img = egui::Rect::from_center_size(resp.rect.center() + self.stream_pan, resp.rect.size() * self.stream_zoom);
+                painter.with_clip_rect(resp.rect).image(t.id(), img, egui::Rect::from_min_max(egui::pos2(0.0, 0.0), egui::pos2(1.0, 1.0)), egui::Color32::WHITE);
             }
             None => {
                 ui.add_space(30.0);

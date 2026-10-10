@@ -6,9 +6,9 @@ use crate::i18n::{tr, trf, Lang};
 use crate::menu::Act;
 use crate::theme::{self, Scheme};
 use eframe::egui::{self, Align, Color32, Layout, RichText};
-use crate::units_ui::{drag_len, drag_speed_min, fmt_len, fmt_speed_min};
+use crate::units_ui::{drag_len, drag_speed, fmt_len, fmt_speed};
 use lc_core::controller::Action;
-use lc_core::{Controller, Device, LaserKind, LinkKind, Origin, Units};
+use lc_core::{Controller, Device, LaserKind, LinkKind, Origin, SpeedUnit, Units};
 
 /// An in-progress "read settings from the device" request.
 pub struct ReadCfg {
@@ -216,7 +216,14 @@ impl App {
                         }
                     });
                     ui.end_row();
-                    let u = d.units;
+                    ui.label(tr("Speed units"));
+                    egui::ComboBox::from_id_salt("speed_units").selected_text(tr(d.speed_unit.label())).show_ui(ui, |ui| {
+                        for k in SpeedUnit::ALL {
+                            ui.selectable_value(&mut d.speed_unit, k, tr(k.label()));
+                        }
+                    });
+                    ui.end_row();
+                    let (u, su) = (d.units, d.speed_unit);
                     ui.label(tr("Work area X"));
                     drag_len(ui, u, &mut d.bed_w, 1.0, Some((10.0, 5000.0)));
                     ui.end_row();
@@ -238,7 +245,7 @@ impl App {
                     ui.checkbox(&mut d.dynamic_power, "");
                     ui.end_row();
                     ui.label(tr("Travel speed"));
-                    drag_speed_min(ui, u, &mut d.travel_speed, 50.0, Some((100.0, 60000.0)));
+                    drag_speed(ui, u, su, true, &mut d.travel_speed, 50.0, Some((100.0, 60000.0)));
                     ui.end_row();
                     ui.label(tr("Return to origin"));
                     ui.checkbox(&mut d.return_home, "");
@@ -247,7 +254,7 @@ impl App {
                     drag_len(ui, u, &mut d.jog_step, 0.1, Some((0.1, 200.0)));
                     ui.end_row();
                     ui.label(tr("Jog feed"));
-                    drag_speed_min(ui, u, &mut d.jog_feed, 10.0, Some((10.0, 20000.0)));
+                    drag_speed(ui, u, su, true, &mut d.jog_feed, 10.0, Some((10.0, 20000.0)));
                     ui.end_row();
                     ui.label(tr("Frame power"));
                     ui.add(egui::DragValue::new(&mut d.frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
@@ -439,11 +446,12 @@ impl App {
             row(tr("Controller"), dev.controller.label().to_string());
             row(tr("Laser type"), dev.laser.label().to_string());
             row(tr("Units"), tr(dev.units.label()).to_string());
+            row(tr("Speed units"), tr(dev.speed_unit.label()).to_string());
             row(tr("Work area"), format!("{} × {}", fmt_len(units, dev.bed_w, 0), fmt_len(units, dev.bed_h, 0)));
             row(tr("Machine zero (0,0)"), if dev.origin == Origin::FrontLeft { tr("Front-left (GRBL default)") } else { tr("Back-left") }.to_string());
             row(tr("S-value max ($30)"), format!("{}", dev.s_max));
             row(tr("Dynamic power (M4)"), yes_no(dev.dynamic_power).to_string());
-            row(tr("Travel speed"), fmt_speed_min(units, dev.travel_speed));
+            row(tr("Travel speed"), fmt_speed(units, dev.speed_unit, true, dev.travel_speed));
             row(tr("Return to origin"), yes_no(dev.return_home).to_string());
             if dev.controller.is_serial() {
                 row(tr("Connection type"), tr(dev.link.label()).to_string());
@@ -509,7 +517,7 @@ impl App {
                 ui.label(tr("Jog step"));
                 drag_len(ui, units, &mut self.doc.device.jog_step, 0.1, Some((0.1, 200.0)));
                 ui.label(tr("Jog feed"));
-                drag_speed_min(ui, units, &mut self.doc.device.jog_feed, 10.0, Some((10.0, 20000.0)));
+                drag_speed(ui, units, self.doc.device.speed_unit, true, &mut self.doc.device.jog_feed, 10.0, Some((10.0, 20000.0)));
             });
             let (s, f) = (self.doc.device.jog_step, self.doc.device.jog_feed);
             egui::Grid::new("jog").spacing([4.0, 4.0]).show(ui, |ui| {

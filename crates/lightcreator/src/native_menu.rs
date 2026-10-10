@@ -4,6 +4,7 @@ use crate::i18n::{lang, tr};
 use crate::menu::{menus, Act, Entry};
 use eframe::egui;
 use muda::{accelerator::Accelerator, CheckMenuItem, IconMenuItem, Menu, MenuEvent, MenuItem, PredefinedMenuItem, Submenu};
+use std::path::PathBuf;
 use std::sync::Mutex;
 
 static QUEUE: Mutex<Vec<String>> = Mutex::new(Vec::new());
@@ -18,6 +19,10 @@ pub struct NativeMenu {
     _menu: Menu,
     items: Vec<(Act, Handle)>,
     built_for: crate::i18n::Lang,
+    /// The "Open recent" submenu, its current children and the files they stand for.
+    recent_sub: Option<Submenu>,
+    recent_items: Vec<Box<dyn muda::IsMenuItem>>,
+    recent_shown: Option<Vec<PathBuf>>,
 }
 
 fn id(a: Act) -> String {
@@ -59,7 +64,7 @@ fn rasterize(name: &str) -> Option<muda::Icon> {
     muda::Icon::from_rgba(rgba, px, px).ok()
 }
 
-fn append(sub: &Submenu, entries: &[Entry], items: &mut Vec<(Act, Handle)>) {
+fn append(sub: &Submenu, entries: &[Entry], items: &mut Vec<(Act, Handle)>, recent_sub: &mut Option<Submenu>) {
     for e in entries {
         match e {
             Entry::Sep => {
@@ -67,8 +72,13 @@ fn append(sub: &Submenu, entries: &[Entry], items: &mut Vec<(Act, Handle)>) {
             }
             Entry::Sub(title, children) => {
                 let s = Submenu::new(tr(title), true);
-                append(&s, children, items);
+                append(&s, children, items, recent_sub);
                 let _ = sub.append(&s);
+            }
+            Entry::Recent => {
+                let s = Submenu::new(tr("Open recent"), true);
+                let _ = sub.append(&s);
+                *recent_sub = Some(s);
             }
             Entry::Item(act, label, accel) => {
                 let accel: Option<Accelerator> = if owns_shortcut(*act) { accel.and_then(|(a, _)| a.parse().ok()) } else { None };
@@ -119,9 +129,10 @@ impl NativeMenu {
         let _ = app.append(&PredefinedMenuItem::separator());
         let _ = app.append(&PredefinedMenuItem::quit(None));
         let _ = menu.append(&app);
+        let mut recent_sub = None;
         for (title, entries) in menus() {
             let sub = Submenu::new(tr(title), true);
-            append(&sub, &entries, &mut items);
+            append(&sub, &entries, &mut items, &mut recent_sub);
             let _ = menu.append(&sub);
         }
         let window = Submenu::new("Window", true);
@@ -130,19 +141,56 @@ impl NativeMenu {
         let _ = menu.append(&window);
         menu.init_for_nsapp();
         window.set_as_windows_menu_for_nsapp();
-        NativeMenu { _menu: menu, items, built_for: lang() }
+        NativeMenu { _menu: menu, items, built_for: lang(), recent_sub, recent_items: vec![], recent_shown: None }
+    }
+
+    /// Replace the children of "Open recent" with the current list of files.
+    fn fill_recent(&mut self, recent: &[PathBuf]) {
+        let Some(sub) = &self.recent_sub else { return };
+        for it in self.recent_items.drain(..) {
+            let _ = sub.remove(it.as_ref());
+        }
+        let add = |it: Box<dyn muda::IsMenuItem>, items: &mut Vec<Box<dyn muda::IsMenuItem>>| {
+            let _ = sub.append(it.as_ref());
+            items.push(it);
+        };
+        let mut kept = vec![];
+        if recent.is_empty() {
+            add(Box::new(MenuItem::new(tr("(empty)"), false, None)), &mut kept);
+        }
+        for (i, p) in recent.iter().enumerate() {
+            let name = p.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_else(|| p.display().to_string());
+            add(Box::new(MenuItem::with_id(id(Act::OpenRecent(i as u8)), name, true, None)), &mut kept);
+        }
+        if !recent.is_empty() {
+            add(Box::new(PredefinedMenuItem::separator()), &mut kept);
+            add(Box::new(MenuItem::with_id(id(Act::ClearRecent), tr("Clear list"), true, None)), &mut kept);
+        }
+        self.recent_items = kept;
+        self.recent_shown = Some(recent.to_vec());
     }
 
     /// Actions the user picked in the menu since the last call.
     pub fn take_actions(&self) -> Vec<Act> {
         let ids: Vec<String> = QUEUE.lock().map(|mut q| std::mem::take(&mut *q)).unwrap_or_default();
-        ids.iter().filter_map(|i| self.items.iter().find(|(a, _)| &id(*a) == i).map(|(a, _)| *a)).collect()
+        ids.iter()
+            .filter_map(|i| {
+                self.items
+                    .iter()
+                    .find(|(a, _)| &id(*a) == i)
+                    .map(|(a, _)| *a)
+                    .or_else(|| (0..crate::menu::MAX_RECENT as u8).map(Act::OpenRecent).chain([Act::ClearRecent]).find(|a| &id(*a) == i))
+            })
+            .collect()
     }
 
     /// Rebuild after a language change and mirror check marks / enabled state from the app.
-    pub fn sync(&mut self, checked: impl Fn(Act) -> Option<bool>, enabled: impl Fn(Act) -> bool) {
+    pub fn sync(&mut self, checked: impl Fn(Act) -> Option<bool>, enabled: impl Fn(Act) -> bool, recent: &[PathBuf]) {
         if self.built_for != lang() {
             *self = Self::build();
+        }
+        if self.recent_shown.as_deref() != Some(recent) {
+            self.fill_recent(recent);
         }
         for (act, h) in &self.items {
             match h {

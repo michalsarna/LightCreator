@@ -57,6 +57,8 @@ pub struct PreviewState {
     pub progress: f32,
     pub playing: bool,
     pub hidden: Vec<usize>,
+    /// Fit the view to the burned objects (true) or to the whole work area (false).
+    pub fit_objects: bool,
     pub job: Option<(u64, gcode::Job)>,
 }
 
@@ -71,6 +73,7 @@ impl Default for PreviewState {
             progress: 1.0,
             playing: false,
             hidden: vec![],
+            fit_objects: true,
             job: None,
         }
     }
@@ -149,9 +152,12 @@ impl App {
                         ui.selectable_value(&mut self.pv.speed, s, tr(s.label()));
                     }
                 });
-                if ui.button(tr("Fit")).clicked() {
-                    self.pv.view.need_fit = true;
-                    self.pv.view.auto_fit = true;
+                for (objects, label) in [(false, "Fit work area"), (true, "Fit all objects")] {
+                    if ui.button(tr(label)).clicked() {
+                        self.pv.fit_objects = objects;
+                        self.pv.view.need_fit = true;
+                        self.pv.view.auto_fit = true;
+                    }
                 }
             });
             ui.separator();
@@ -210,7 +216,21 @@ impl App {
                 let rect = resp.rect;
                 painter.rect_filled(rect, 0.0, theme::workspace());
                 if (self.pv.view.need_fit || self.pv.view.auto_fit) && rect.width() > 50.0 {
-                    let (z, pan) = crate::canvas::fit_view((rect.width(), rect.height()), (bw, bh), 20.0);
+                    let mut bounds: Option<(f64, f64, f64, f64)> = None;
+                    if self.pv.fit_objects {
+                        for m in job.moves.iter().filter(|m| m.laser) {
+                            for p in [m.a, m.b] {
+                                let b = bounds.get_or_insert((p.x, p.y, p.x, p.y));
+                                *b = (b.0.min(p.x), b.1.min(p.y), b.2.max(p.x), b.3.max(p.y));
+                            }
+                        }
+                    }
+                    let (z, pan) = match bounds {
+                        Some((x0, y0, x1, y1)) => {
+                            crate::canvas::fit_region((rect.width(), rect.height()), (x0, y0), ((x1 - x0).max(1.0), (y1 - y0).max(1.0)), 20.0)
+                        }
+                        None => crate::canvas::fit_view((rect.width(), rect.height()), (bw, bh), 20.0),
+                    };
                     self.pv.view.zoom = z;
                     self.pv.view.pan = pan;
                     self.pv.view.need_fit = false;

@@ -16,37 +16,10 @@ written in Rust. The interface follows the look of [VectorCraft](https://github.
 
 ## Screenshots
 
-| | |
-|---|---|
-| ![Start window](docs/screenshots/01-start.png) | ![Properties tab](docs/screenshots/02-editor-properties.png) |
-| Start window: pick the device to work with | Editor, Properties tab, toolpath preview on |
-| ![Cuts / Layers tab](docs/screenshots/03-layers.png) | ![Console tab](docs/screenshots/04-console.png) |
-| Cuts / Layers tab | Console tab: live view of the serial traffic |
-| ![Device configuration](docs/screenshots/05-device-config.png) | ![Light scheme, Polish](docs/screenshots/06-light-polish.png) |
-| Device configuration (controller, units, work area, port, jog) | Light colour scheme with the Polish interface |
-| ![Node editing](docs/screenshots/07-nodes.png) | ![Text tool](docs/screenshots/08-text.png) |
-| Bézier node editing with its floating toolbar | Text tool and text properties |
-| ![Image engraving](docs/screenshots/09-image.png) | ![Camera overlay](docs/screenshots/10-camera-overlay.png) |
-| Raster image engraving, dithered toolpath preview | Camera overlay aligned with four corners |
-| ![Material library](docs/screenshots/11-materials.png) | ![Preview window](docs/screenshots/12-preview.png) |
-| Material library | Preview window: every burn operation in its own colour, with travel moves |
-| ![Import image](docs/screenshots/13-image-import.png) | ![Trace image](docs/screenshots/14-trace.png) |
-| Image import with rotate, flip, brightness, contrast and gamma | Trace an image into curves |
-| ![Grid options](docs/screenshots/15-grid-layers.png) | ![Automatic shapes](docs/screenshots/16-shapes.png) |
-| Main and secondary grid options, layers in burn order | Triangle, star and polygon tools with the sides popup |
-| ![Camera view as a tab](docs/screenshots/17-camera-tab.png) | ![Share over network](docs/screenshots/18-ser2net.png) |
-| Camera view docked as a side tab, rotated 90° | Sharing the laser's serial port with ser2net (Linux) |
-| ![Layer options and locking](docs/screenshots/19-layers-lock.png) | ![Chinese interface](docs/screenshots/20-chinese.png) |
-| Layer names in the strip, layer options window, locked object, light work area in a dark scheme | Chinese interface, fonts and icons from the assets folder |
-| ![Hindi interface](docs/screenshots/21-hindi.png) | ![Quick guide and round corners](docs/screenshots/22-round-help.png) |
-| Hindi interface | Built-in quick guide (F1) and the round corners window |
-| ![Rounded shapes](docs/screenshots/23-rounded-shapes.png) | ![Clipart gallery](docs/screenshots/24-clipart.png) |
-| Rounded rectangle and triangle | Clipart gallery: blue dots ship with the program, green dots are yours |
-| ![Online clipart](docs/screenshots/25-clipart-online.png) | ![Node editing of a gallery picture](docs/screenshots/26-clipart-nodes.png) |
-| Searching open icon collections and saving into a category | A gallery picture opened in the node tool |
+![Editor, Properties tab, toolpath preview on](docs/screenshots/02-editor-properties.png)
 
-The pictures are rendered headlessly from the real UI; regenerate them with
-`cargo test -p lightcreator --release render_screenshots -- --ignored`.
+More pictures (start window, layers, device configuration, node editing, preview, clipart gallery, other languages
+and more) are on the [screenshots page](docs/SCREENSHOTS.md).
 
 ## Settings and configuration files
 
@@ -89,7 +62,7 @@ A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
 ### What has and has not been verified
 
 All geometry, boolean, offset, raster, G-code, export and translation logic is covered by unit tests, and the
-screenshots below are rendered from the real UI. Nothing has been run against real hardware yet: GRBL and
+screenshots are rendered from the real UI. Nothing has been run against real hardware yet: GRBL and
 Marlin streaming, the Ruida / Trocen import path and the live camera still need testing on actual machines.
 GRBL streaming is exercised end to end against the real GRBL 1.1h firmware running in a simulator, see
 [docs/grbl-sim.md](docs/grbl-sim.md).

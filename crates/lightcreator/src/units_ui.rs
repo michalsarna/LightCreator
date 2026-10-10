@@ -1,6 +1,6 @@
 //! Drag-value widgets that store millimetres but show and edit the profile's display units.
 use eframe::egui::{self, Response};
-use lc_core::Units;
+use lc_core::{SpeedUnit, Units};
 
 fn drag(ui: &mut egui::Ui, v: &mut f64, k: f64, suffix: &str, decimals: usize, speed_mm: f64, range: Option<(f64, f64)>) -> Response {
     let mut d = *v / k;
@@ -20,14 +20,9 @@ pub fn drag_len(ui: &mut egui::Ui, u: Units, v: &mut f64, speed_mm: f64, range: 
     drag(ui, v, u.to_mm(1.0), u.suffix(), u.decimals(), speed_mm, range)
 }
 
-/// A speed stored in mm/s.
-pub fn drag_speed_s(ui: &mut egui::Ui, u: Units, v: &mut f64, speed_mm: f64, range: Option<(f64, f64)>) -> Response {
-    drag(ui, v, u.to_mm(1.0), u.speed_s_suffix(), u.decimals(), speed_mm, range)
-}
-
-/// A speed stored in mm/min.
-pub fn drag_speed_min(ui: &mut egui::Ui, u: Units, v: &mut f64, speed_mm: f64, range: Option<(f64, f64)>) -> Response {
-    drag(ui, v, u.to_mm(1.0), u.speed_min_suffix(), u.decimals(), speed_mm, range)
+/// A speed stored in mm/s (`per_min` false) or mm/min, shown in the device's length and time units.
+pub fn drag_speed(ui: &mut egui::Ui, u: Units, su: SpeedUnit, per_min: bool, v: &mut f64, speed: f64, range: Option<(f64, f64)>) -> Response {
+    drag(ui, v, su.factor(u, per_min), su.suffix(u), u.decimals(), speed, range)
 }
 
 /// Format a length given in millimetres.
@@ -38,12 +33,11 @@ pub fn fmt_len(u: Units, mm: f64, decimals_mm: usize) -> String {
     }
 }
 
-/// Format a speed given in mm/min.
-pub fn fmt_speed_min(u: Units, mm_min: f64) -> String {
-    format!("{:.0}{}", u.from_mm(mm_min), u.speed_min_suffix())
-}
-
-/// Format a speed given in mm/s.
-pub fn fmt_speed_s(u: Units, mm_s: f64) -> String {
-    format!("{:.1}{}", u.from_mm(mm_s), u.speed_s_suffix())
+/// Format a speed stored in mm/s (`per_min` false) or mm/min.
+pub fn fmt_speed(u: Units, su: SpeedUnit, per_min: bool, v: f64) -> String {
+    let d = v / su.factor(u, per_min);
+    match (su, u) {
+        (SpeedUnit::PerMinute, Units::Mm) => format!("{:.0}{}", d, su.suffix(u)),
+        _ => format!("{:.1}{}", d, su.suffix(u)),
+    }
 }
