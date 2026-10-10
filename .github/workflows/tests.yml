@@ -34,8 +34,6 @@ jobs:
           key: grbl-sim-${{ runner.os }}-${{ hashFiles('tools/grbl-sim/build.sh') }}
       - name: Build grbl-sim
         run: tools/grbl-sim/build.sh
-      - name: DEBUG probe
-        run: python3 tools/grbl-sim/debug-probe.py
       - name: GRBL simulator tests
         run: |
           set -o pipefail

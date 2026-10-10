@@ -113,11 +113,11 @@ impl Session {
         self.seen.mark = self.seen.rx.len();
     }
 
-    /// Fast machine settings so jobs run in a few seconds of (roughly real) simulated time, laser mode on. Few steps
-    /// per mm: grbl-sim simulates every step, and 500 mm/s at the default 250 steps/mm is more than a CI runner keeps
-    /// up with.
+    /// Fast machine settings so jobs run in a few seconds of (roughly real) simulated time, laser mode on. Steps per
+    /// mm stay at GRBL's default: with very few (e.g. `$100=20`) grbl-sim slowed to a crawl on GitHub's runners
+    /// while being polled with `?`.
     fn fast_machine(&mut self) {
-        let lines = ["$100=20", "$101=20", "$110=30000", "$111=30000", "$120=5000", "$121=5000", "$32=1"];
+        let lines = ["$110=30000", "$111=30000", "$120=5000", "$121=5000", "$32=1"];
         let before = self.ok_count();
         for l in lines {
             self.link.send(Cmd::Line(l.into()));
@@ -198,7 +198,6 @@ fn grbl_sim_long_job_keeps_character_counting_in_sync() {
     s.fast_machine();
     let job = sample_job(0.1);
     assert!(job.len() > 500, "{}", job.len());
-    let _ = std::fs::write(repo_root().join("target/grbl-sim-long-job.nc"), job.join("\n")); // DEBUG: CI dump
     s.run_job(job, 240.0);
     s.wait_idle_at(0.0, 0.0, 60.0);
     assert!(s.errors().is_empty(), "GRBL rejected lines: {:?}", s.errors());
