@@ -630,6 +630,7 @@ const TABLE: &[[&str; 7]] = &[
     ["Fit all objects (Ctrl+9)", "Dopasuj do wszystkich obiektów (Ctrl+9)", "Alle Objekte einpassen (Strg+9)", "Adatta a tutti gli oggetti (Ctrl+9)", "Sovita kaikki kohteet (Ctrl+9)", "适应所有对象 (Ctrl+9)", "सभी ऑब्जेक्ट फ़िट करें (Ctrl+9)"],
     ["Zoom in", "Powiększ", "Vergrößern", "Ingrandisci", "Lähennä", "放大", "ज़ूम इन"],
     ["Zoom out", "Pomniejsz", "Verkleinern", "Riduci", "Loitonna", "缩小", "ज़ूम आउट"],
+    ["Fit work area", "Dopasuj obszar roboczy", "Arbeitsbereich einpassen", "Adatta l'area di lavoro", "Sovita työalue", "适应工作区域", "कार्य क्षेत्र फ़िट करें"],
     ["Fit all objects", "Dopasuj do wszystkich obiektów", "Alle Objekte einpassen", "Adatta a tutti gli oggetti", "Sovita kaikki kohteet", "适应所有对象", "सभी ऑब्जेक्ट फ़िट करें"],
     // ---- node editing entry points ----
     ["Edit nodes", "Edytuj węzły", "Knoten bearbeiten", "Modifica nodi", "Muokkaa solmuja", "编辑节点", "नोड संपादित करें"],
