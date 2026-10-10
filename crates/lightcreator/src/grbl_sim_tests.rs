@@ -161,6 +161,21 @@ fn sample_job(fill_interval: f64) -> Vec<String> {
 
 #[test]
 #[ignore = "needs grbl-sim: tools/grbl-sim/build.sh"]
+fn grbl_sim_keeps_up_with_real_time() {
+    // The other tests assume the simulator runs at roughly real speed; this one says so plainly when it does not.
+    let mut s = Session::connect();
+    s.wait_banner();
+    // 10 mm at GRBL's defaults (500 mm/min, 10 mm/s²): 0.83 s up, 0.37 s cruise, 0.83 s down = 2.0 s.
+    let t = Instant::now();
+    s.run_job(["G21", "G90", "G1 X10 F600"].iter().map(|l| l.to_string()).collect(), 20.0);
+    s.wait_idle_at(10.0, 0.0, 60.0);
+    let secs = t.elapsed().as_secs_f32();
+    eprintln!("grbl-sim: a 2.0 s move took {secs:.1} s");
+    assert!(secs < 5.0, "grbl-sim runs {:.1}x slower than real time", secs / 2.0);
+}
+
+#[test]
+#[ignore = "needs grbl-sim: tools/grbl-sim/build.sh"]
 fn grbl_sim_streams_a_generated_job() {
     let mut s = Session::connect();
     s.wait_banner();

@@ -29,8 +29,12 @@ fi
 # grbl-sim checks for input with select() on the file descriptor but reads it with buffered getchar(): the rest of a
 # line then waits in stdio's buffer, unseen by select(), until more bytes arrive, so every reply comes one line late
 # and a character-counting sender stalls. Read the byte straight from the descriptor instead.
+# It also switches the terminal mode (tcgetattr + 2x tcsetattr) around every poll, i.e. every simulated byte time:
+# tens of thousands of syscalls per simulated second, enough to make it fall behind real time on a CI runner.
+# serve.py (or socat ... raw) already hands it a raw terminal, so those calls are dropped.
 for f in "$sim"/platform_LINUX.c "$sim"/platform_OSX.c; do
-    sed -i.orig 's/char_in = getchar();/{ unsigned char c; if (read(STDIN_FILENO, \&c, 1) == 1) char_in = c; }/' "$f"
+    sed -i.orig -e 's/char_in = getchar();/{ unsigned char c; if (read(STDIN_FILENO, \&c, 1) == 1) char_in = c; }/' \
+        -e '/^ *enable_kbhit([01]);$/d' "$f"
 done
 
 case "$(uname -s)" in
