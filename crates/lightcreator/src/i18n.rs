@@ -260,6 +260,7 @@ const TABLE: &[[&str; 7]] = &[
     ["Feed", "Posuw", "Vorschub", "Avanzamento", "Syöttö", "进给", "फ़ीड"],
     ["Up", "Góra", "Hoch", "Su", "Ylös", "上", "ऊपर"],
     ["Down", "Dół", "Runter", "Giù", "Alas", "下", "नीचे"],
+    ["Abort the running job", "Przerwij wykonywaną pracę", "Laufenden Auftrag abbrechen", "Interrompi il lavoro in corso", "Keskeytä käynnissä oleva työ", "中止正在运行的作业", "चल रहे जॉब को रोकें"],
     ["Stop", "Stop", "Stopp", "Stop", "Pysäytä", "停止", "रुकें"],
     ["Cancel jog", "Anuluj przesuw", "Jog abbrechen", "Annulla jog", "Peruuta ajo", "取消点动", "जॉग रद्द करें"],
     ["Home", "Bazuj", "Referenzfahrt", "Home", "Kotiutus", "回零", "होम"],

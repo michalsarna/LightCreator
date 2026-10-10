@@ -630,7 +630,14 @@ impl App {
         self.push_console(ConsoleLine::info(trf("Starting job: {} lines, ~{}", &[&lines.len(), &fmt_time(job.est_seconds)])));
         self.link.send(Cmd::Job(lines));
     }
+    /// A job is being streamed to the laser.
+    pub fn job_running(&self) -> bool {
+        self.progress.1 > 0 && self.progress.0 < self.progress.1
+    }
     pub fn frame(&mut self) {
+        if self.job_running() {
+            return;
+        }
         let b = self.sel_bounds().or_else(|| self.doc.bounds_of(&self.doc.shapes.iter().map(|s| s.id).collect::<Vec<_>>()));
         let Some(b) = b else { return };
         if !self.connected {
@@ -1026,11 +1033,20 @@ impl App {
             }
 
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                let go = egui::Button::new(RichText::new(format!("   {}   ", tr("Start"))).color(Color32::WHITE).strong()).fill(theme::accent());
-                if ui.add(go).on_hover_text(tr("Stream the job to the connected laser")).clicked() {
-                    self.send_job();
+                let running = self.job_running();
+                if running {
+                    let stop = egui::Button::new(RichText::new(format!("   {}   ", tr("STOP"))).color(Color32::WHITE).strong())
+                        .fill(Color32::from_rgb(0xc0, 0x30, 0x30));
+                    if ui.add(stop).on_hover_text(tr("Abort the running job")).clicked() {
+                        self.link.send(Cmd::Abort);
+                    }
+                } else {
+                    let go = egui::Button::new(RichText::new(format!("   {}   ", tr("Start"))).color(Color32::WHITE).strong()).fill(theme::accent());
+                    if ui.add(go).on_hover_text(tr("Stream the job to the connected laser")).clicked() {
+                        self.send_job();
+                    }
                 }
-                if ui.button(tr("Frame")).on_hover_text(tr("Trace the bounding box")).clicked() {
+                if ui.add_enabled(!running, egui::Button::new(tr("Frame"))).on_hover_text(tr("Trace the bounding box")).clicked() {
                     self.frame();
                 }
                 if ui.button(tr("Save G-code")).clicked() {
