@@ -19,9 +19,9 @@ const EN: &[Section] = &[
     Section {
         title: "Drawing and editing",
         lines: &[
-            "Tool bar (left): select (V), node edit (N), rectangle (R), ellipse (E), triangle (Y), star (S), polygon (G, asks for the number of sides, 3 to 360), line (L), polyline (P), text (T), pan (H), zoom (Z). Drag to draw; Shift keeps shapes square. Press Escape twice to return to the select tool.",
+            "Tool bar (left): select (V), node edit (N), rectangle (R), ellipse (E), triangle (Y), star (S), polygon (G, asks for the number of sides, 3 to 360), heart (K), line (L), polyline (P) and text (T). Drag to draw; Shift keeps shapes square. Press Escape twice to return to the select tool.",
             "Selection: click, Shift+click to add. Drag a rectangle from left to right to select what is wholly inside, from right to left to select everything the rectangle touches. Ctrl+A selects all.",
-            "Node edit: drag nodes and Bézier handles, double-click a segment to add a node, Delete removes nodes. The bar on the canvas switches nodes between corner and smooth, makes segments straight or curved, adds or deletes nodes, opens or closes a path and rounds the selected corners.",
+            "Node edit: open it with the tool bar button (N), Arrange > Edit nodes or by double-clicking a shape; pictures from the gallery can be edited too. Text must be converted to curves first. Drag nodes and Bézier handles, double-click a segment to add a node, Delete removes nodes. The bar on the canvas switches nodes between corner and smooth, makes segments straight or curved, adds or deletes nodes, opens or closes a path and rounds the selected corners.",
             "Arrange menu: align, centre on bed, flip, rotate, order, group (Ctrl+G), lock (Ctrl+L), convert to path or curves, union / intersection / subtract / exclusive or, offset shape and round corners. Right-click opens the same commands as a context menu.",
             "Round corners: replaces sharp straight corners with arcs of the radius you give. With two straight lines selected it joins them with a rounded corner instead. Too large a radius is limited to what fits.",
             "Locked objects cannot be moved, edited or deleted, but they can be selected and copied; a copy is not locked.",
@@ -40,6 +40,15 @@ const EN: &[Section] = &[
             "Every object belongs to one of 30 colour layers. Click a colour in the strip at the bottom to make it active (selected objects move to it); double-click a layer name for all its options.",
             "A layer has a mode (Line, Fill, Fill + Line, Offset fill), speed, power, passes, interval, scan angle, overscan and, for pictures, a dithering method and minimum power. The Layers tab lists layers in burn order; use the arrows to change it.",
             "Material library (Laser menu) holds starting values for common materials; apply one to the active layer or save your own. Always test on scrap.",
+        ],
+    },
+    Section {
+        title: "Clipart gallery",
+        lines: &[
+            "The Clipart tab holds ready-made pictures in categories. A blue dot marks pictures that come with the program, a green dot those you saved or downloaded. Click a picture to place it on the active layer, in the middle of the work area, at the size set in the tab. A picture with several parts is grouped.",
+            "Online… searches open icon collections on the internet (Iconify). Click a result to see its collection, licence and author, give it a name and a category (an existing one or a new one) and save it. The file is stored on your disk and shows up in the gallery with a green dot. Orange dots mark pictures whose licence asks you to credit the author. You can also download a picture from a web address, or add SVG files from your computer with Add file….",
+            "Right-click a picture of yours to rename it, move it to another category, see its details (source, licence, author) or delete it. Right-click a shipped picture to save a copy in your own category.",
+            "Only save pictures you are allowed to use and check the licence of the source before you sell what you make.",
         ],
     },
     Section {
@@ -64,7 +73,7 @@ const EN: &[Section] = &[
             "Ctrl+N new, Ctrl+O open, Ctrl+S save, Ctrl+Shift+S save as, Ctrl+I import SVG, Ctrl+Z undo, Ctrl+Y redo.",
             "Ctrl+C copy, Ctrl+V paste, Ctrl+D duplicate, Delete delete, Ctrl+A select all, Arrow keys nudge (Shift = 10 ×).",
             "Ctrl+G group, Ctrl+Shift+G ungroup, Ctrl+L lock, Ctrl+Shift+L unlock, F1 this guide.",
-            "Mouse wheel zooms, middle button drags the view; the work area is fitted to the window until you zoom by hand (View > Fit bed to window turns it on again).",
+            "Navigation: the group under the tools holds pan (H), zoom in (Z), zoom out (X) and two fit buttons, fit work area (Ctrl+0) and fit all objects (Ctrl+9). Hold Space to pan with any tool and release it to go back. Mouse wheel zooms, middle button drags the view; the work area is fitted to the window until you zoom by hand (Fit work area turns it on again).",
         ],
     },
 ];
@@ -81,9 +90,9 @@ const PL: &[Section] = &[
     Section {
         title: "Rysowanie i edycja",
         lines: &[
-            "Pasek narzędzi (po lewej): zaznaczanie (V), edycja węzłów (N), prostokąt (R), elipsa (E), trójkąt (Y), gwiazda (S), wielokąt (G, pyta o liczbę boków od 3 do 360), linia (L), łamana (P), tekst (T), przesuwanie widoku (H), zoom (Z). Rysuj przeciągając; Shift utrzymuje proporcje. Dwa razy Escape wracają do zaznaczania.",
+            "Pasek narzędzi (po lewej): zaznaczanie (V), edycja węzłów (N), prostokąt (R), elipsa (E), trójkąt (Y), gwiazda (S), wielokąt (G, pyta o liczbę boków od 3 do 360), serce (K), linia (L), łamana (P) i tekst (T). Rysuj przeciągając; Shift utrzymuje proporcje. Dwa razy Escape wracają do zaznaczania.",
             "Zaznaczanie: kliknięcie, Shift+kliknięcie dodaje. Ramka od lewej do prawej zaznacza tylko to, co jest w niej w całości; od prawej do lewej także to, czego dotyka. Ctrl+A zaznacza wszystko.",
-            "Edycja węzłów: przeciągaj węzły i uchwyty Béziera, dwukrotne kliknięcie odcinka dodaje węzeł, Delete usuwa węzły. Pasek na płótnie przełącza węzły między narożnikiem a gładkim, robi odcinki prostymi lub krzywymi, dodaje i usuwa węzły, otwiera lub zamyka ścieżkę i zaokrągla zaznaczone rogi.",
+            "Edycja węzłów: otwierasz ją przyciskiem na pasku narzędzi (N), przez Arrange > Edit nodes albo dwukrotnym kliknięciem kształtu; cliparty z galerii też można edytować. Tekst trzeba najpierw zamienić na krzywe. Przeciągaj węzły i uchwyty Béziera, dwukrotne kliknięcie odcinka dodaje węzeł, Delete usuwa węzły. Pasek na płótnie przełącza węzły między narożnikiem a gładkim, robi odcinki prostymi lub krzywymi, dodaje i usuwa węzły, otwiera lub zamyka ścieżkę i zaokrągla zaznaczone rogi.",
             "Menu Arrange: wyrównanie, środek stołu, odbicia, obroty, kolejność, grupowanie (Ctrl+G), blokowanie (Ctrl+L), zamiana na ścieżkę lub krzywe, suma / część wspólna / odejmowanie / różnica symetryczna, offset kształtu i zaokrąglanie rogów. Prawy klawisz myszy otwiera te same polecenia jako menu kontekstowe.",
             "Zaokrąglanie rogów: zamienia ostre proste narożniki na łuki o podanym promieniu. Przy zaznaczonych dwóch prostych łączy je zaokrąglonym narożnikiem. Zbyt duży promień jest ograniczany do tego, co się mieści.",
             "Zablokowanych obiektów nie można przesuwać, edytować ani usuwać, ale można je zaznaczać i kopiować; kopia nie jest zablokowana.",
@@ -102,6 +111,15 @@ const PL: &[Section] = &[
             "Każdy obiekt należy do jednej z 30 kolorowych warstw. Kliknij kolor na dolnym pasku, aby uczynić warstwę aktywną (zaznaczone obiekty przechodzą na nią); dwukrotne kliknięcie nazwy otwiera wszystkie opcje warstwy.",
             "Warstwa ma tryb (Line, Fill, Fill + Line, Offset fill), prędkość, moc, przejścia, odstęp, kąt, overscan, a dla obrazów rastrowanie i moc minimalną. Zakładka Layers pokazuje warstwy w kolejności wypalania; strzałkami zmieniasz ją.",
             "Biblioteka materiałów (menu Laser) zawiera wartości startowe dla typowych materiałów; zastosuj je do aktywnej warstwy lub zapisz własne. Zawsze testuj na ścinku.",
+        ],
+    },
+    Section {
+        title: "Galeria clipartów",
+        lines: &[
+            "Zakładka Clipart zawiera gotowe obrazki w kategoriach. Niebieska kropka oznacza obrazki dostarczone z programem, zielona obrazki zapisane lub pobrane przez Ciebie. Kliknij obrazek, aby umieścić go na aktywnej warstwie, na środku obszaru roboczego, w rozmiarze ustawionym w zakładce. Obrazek z wieloma częściami jest grupowany.",
+            "Online… przeszukuje otwarte kolekcje ikon w internecie (Iconify). Kliknij wynik, aby zobaczyć kolekcję, licencję i autora, nadaj mu nazwę i kategorię (istniejącą lub nową) i zapisz. Plik trafia na Twój dysk i pojawia się w galerii z zieloną kropką. Pomarańczowa kropka oznacza obrazki, których licencja wymaga podania autora. Możesz też pobrać obrazek spod adresu internetowego albo dodać pliki SVG z komputera przyciskiem Add file….",
+            "Kliknij prawym przyciskiem własny obrazek, aby zmienić jego nazwę, przenieść do innej kategorii, zobaczyć szczegóły (źródło, licencję, autora) lub go usunąć. Prawy przycisk na obrazku z zestawu zapisuje jego kopię w Twojej kategorii.",
+            "Zapisuj tylko obrazki, z których wolno Ci korzystać, i sprawdź licencję źródła, zanim zaczniesz sprzedawać wykonane prace.",
         ],
     },
     Section {
@@ -126,7 +144,7 @@ const PL: &[Section] = &[
             "Ctrl+N nowy, Ctrl+O otwórz, Ctrl+S zapisz, Ctrl+Shift+S zapisz jako, Ctrl+I import SVG, Ctrl+Z cofnij, Ctrl+Y ponów.",
             "Ctrl+C kopiuj, Ctrl+V wklej, Ctrl+D powiel, Delete usuń, Ctrl+A zaznacz wszystko, strzałki przesuwają (Shift = 10 ×).",
             "Ctrl+G grupuj, Ctrl+Shift+G rozgrupuj, Ctrl+L zablokuj, Ctrl+Shift+L odblokuj, F1 ten przewodnik.",
-            "Kółko myszy zbliża, środkowy przycisk przesuwa widok; obszar roboczy jest dopasowany do okna, dopóki nie zmienisz zbliżenia ręcznie (View > Fit bed to window włącza to z powrotem).",
+            "Nawigacja: osobna grupa pod narzędziami zawiera przesuwanie widoku (H), powiększanie (Z), pomniejszanie (X) oraz dwa przyciski dopasowania: do obszaru roboczego (Ctrl+0) i do wszystkich obiektów (Ctrl+9). Przytrzymaj spację, aby przesuwać widok dowolnym narzędziem; po puszczeniu wraca poprzednie. Kółko myszy zbliża, środkowy przycisk przesuwa widok; obszar roboczy jest dopasowany do okna, dopóki nie zmienisz zbliżenia ręcznie (przycisk dopasowania do obszaru włącza to z powrotem).",
         ],
     },
 ];

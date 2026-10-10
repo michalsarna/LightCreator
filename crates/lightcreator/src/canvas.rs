@@ -33,6 +33,13 @@ pub fn fit_view(avail: (f32, f32), bed: (f64, f64), margin: f32) -> (f32, egui::
     (z, egui::vec2((avail.0 - bed.0 as f32 * z) / 2.0, (avail.1 - bed.1 as f32 * z) / 2.0))
 }
 
+/// Zoom and pan that centre the region `min` / `size` (mm) in an area of `avail` pixels with `margin` around it.
+pub fn fit_region(avail: (f32, f32), min: (f64, f64), size: (f64, f64), margin: f32) -> (f32, egui::Vec2) {
+    let z = ((avail.0 - 2.0 * margin) / size.0 as f32).min((avail.1 - 2.0 * margin) / size.1 as f32).clamp(0.05, 200.0);
+    let (cx, cy) = (min.0 as f32 + size.0 as f32 / 2.0, min.1 as f32 + size.1 as f32 / 2.0);
+    (z, egui::vec2(avail.0 / 2.0 - cx * z, avail.1 / 2.0 - cy * z))
+}
+
 fn nice_step(min_mm: f64) -> f64 {
     for m in [1.0, 2.0, 5.0] .iter().cycle().zip(0..).map(|(m, i)| m * 10f64.powi(i / 3 - 2)) {
         if m >= min_mm {
@@ -193,6 +200,7 @@ impl App {
             Tool::Triangle => Some(lc_core::Contour::triangle(w, h)),
             Tool::Star => Some(lc_core::Contour::star(5, 0.382, w, h)),
             Tool::Polygon => Some(lc_core::Contour::polygon(self.polygon_sides, w, h)),
+            Tool::Heart => Some(lc_core::Contour::heart(w, h)),
             _ => None,
         }
     }
@@ -214,6 +222,21 @@ impl App {
         let o = rect.min;
         let (bw, bh) = (self.doc.device.bed_w, self.doc.device.bed_h);
 
+        self.canvas_avail = (rect.width(), rect.height());
+        // Fit everything on the page once, on request.
+        if self.fit_all_req && rect.width() > 50.0 {
+            self.fit_all_req = false;
+            let all: Vec<u64> = self.doc.shapes.iter().filter(|s| self.doc.layers[s.layer].visible).map(|s| s.id).collect();
+            let (min, size) = match self.doc.bounds_of(&all) {
+                Some(b) => ((b.min.x, b.min.y), (b.width().max(1.0), b.height().max(1.0))),
+                None => ((0.0, 0.0), (bw, bh)),
+            };
+            let (z, pan) = fit_region((rect.width(), rect.height()), min, size, 50.0);
+            self.view.zoom = z;
+            self.view.pan = pan;
+            self.view.need_fit = false;
+            self.view.auto_fit = false;
+        }
         // Fit on request, and keep fitting while the window or the panels are resized.
         if (self.view.need_fit || self.view.auto_fit) && rect.width() > 50.0 {
             let (z, pan) = fit_view((rect.width(), rect.height()), (bw, bh), 50.0);
@@ -450,7 +473,7 @@ impl App {
                 }
             }
         }
-        if !matches!(self.tool, Tool::Pen | Tool::Pan | Tool::Zoom) && !self.overlay_edit {
+        if !matches!(self.tool, Tool::Pen | Tool::Pan | Tool::Zoom | Tool::ZoomOut) && !self.overlay_edit {
             let mut act: Option<Act> = None;
             resp.context_menu(|ui| act = self.context_menu(ui));
             if let Some(a) = act {
@@ -462,6 +485,19 @@ impl App {
         if !overlay_busy {
         match self.tool {
             Tool::Select => {
+                // Double-clicking a shape opens it in the node tool (text and pictures excluded).
+                if resp.double_clicked() {
+                    if let Some(m) = hpos {
+                        if let Some(id) = self.hit_shape(self.s2w(o, m)) {
+                            let editable = self.doc.shape(id).is_some_and(|s| !s.locked && !matches!(s.kind, Kind::Text(_) | Kind::Image(_)));
+                            if editable {
+                                self.sel = self.doc.group_of(id);
+                                self.node_sel.clear();
+                                self.tool = Tool::Node;
+                            }
+                        }
+                    }
+                }
                 if let Some(m) = mouse {
                     if let Some(h) = self.hit_handle(o, m) {
                         ui.ctx().set_cursor_icon(match h {
@@ -598,7 +634,7 @@ impl App {
                     }
                 }
             }
-            Tool::Rect | Tool::Ellipse | Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Line => {
+            Tool::Rect | Tool::Ellipse | Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart | Tool::Line => {
                 ui.ctx().set_cursor_icon(CursorIcon::Crosshair);
                 if resp.drag_started_by(PointerButton::Primary) {
                     if let Some(m) = press {
@@ -627,11 +663,13 @@ impl App {
                     self.finish_pen(false);
                 }
             }
-            Tool::Zoom => {
-                ui.ctx().set_cursor_icon(CursorIcon::ZoomIn);
+            Tool::Zoom | Tool::ZoomOut => {
+                // Zoom in clicks in, zoom out clicks out; Shift swaps them.
+                let out = (self.tool == Tool::ZoomOut) != shift;
+                ui.ctx().set_cursor_icon(if out { CursorIcon::ZoomOut } else { CursorIcon::ZoomIn });
                 if resp.clicked() {
                     if let Some(m) = hpos {
-                        let f = if shift { 0.5 } else { 2.0 };
+                        let f = if out { 0.5 } else { 2.0 };
                         let before = self.s2w(o, m);
                         self.view.zoom = (self.view.zoom * f).clamp(0.05, 200.0);
                         let after = self.w2s(o, before);
@@ -745,7 +783,7 @@ impl App {
                                     .collect();
                                 painter.add(egui::Shape::closed_line(pts, st));
                             }
-                            Tool::Triangle | Tool::Star | Tool::Polygon => {
+                            Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart => {
                                 let r = egui::Rect::from_two_pos(a, b);
                                 let (wm, hm) = ((r.width() / self.view.zoom) as f64, (r.height() / self.view.zoom) as f64);
                                 if let Some(ct) = self.auto_contour(wm, hm) {
@@ -796,7 +834,7 @@ impl App {
                     }
                     Drag::Create { start } => {
                         let mut end = self.snapped(w);
-                        if shift && matches!(self.tool, Tool::Rect | Tool::Ellipse | Tool::Triangle | Tool::Star | Tool::Polygon) {
+                        if shift && matches!(self.tool, Tool::Rect | Tool::Ellipse | Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart) {
                             let s = (end.x - start.x).abs().max((end.y - start.y).abs());
                             end = Pt::new(start.x + s * (end.x - start.x).signum(), start.y + s * (end.y - start.y).signum());
                         }
@@ -807,7 +845,7 @@ impl App {
                             let id = match self.tool {
                                 Tool::Rect => self.doc.add(layer, Kind::Rect { w: r.width(), h: r.height() }, Xf::translate(r.min.x, r.min.y)),
                                 Tool::Ellipse => self.doc.add(layer, Kind::Ellipse { w: r.width(), h: r.height() }, Xf::translate(r.min.x, r.min.y)),
-                                Tool::Triangle | Tool::Star | Tool::Polygon => match self.auto_contour(r.width(), r.height()) {
+                                Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart => match self.auto_contour(r.width(), r.height()) {
                                     Some(ct) => self.doc.add(layer, Kind::Bezier(vec![ct]), Xf::translate(r.min.x, r.min.y)),
                                     None => 0,
                                 },
@@ -836,10 +874,16 @@ impl App {
 
         self.rulers(&painter, rect);
 
-        // Floating node-editing toolbar.
-        if self.tool == Tool::Node {
+        // Floating node-editing toolbar: it goes away when you click another window, such as the preview, and comes
+        // back when you click the work area again.
+        if self.tool != Tool::Node {
+            self.node_bar_active = true;
+        } else if let Some(p) = ui.input(|i| if i.pointer.any_pressed() { i.pointer.interact_pos() } else { None }) {
+            self.node_bar_active = ui.ctx().layer_id_at(p).map_or(true, |l| l.order == egui::Order::Background || l.id == egui::Id::new("node_bar"));
+        }
+        if self.tool == Tool::Node && self.node_bar_active {
             let ctx = ui.ctx().clone();
-            egui::Area::new(egui::Id::new("node_bar")).order(egui::Order::Foreground).fixed_pos(rect.min + egui::vec2(28.0, 26.0)).show(&ctx, |ui| {
+            egui::Area::new(egui::Id::new("node_bar")).order(egui::Order::Middle).fixed_pos(rect.min + egui::vec2(28.0, 26.0)).show(&ctx, |ui| {
                 egui::Frame::popup(ui.style()).show(ui, |ui| {
                     ui.horizontal(|ui| self.node_bar(ui));
                 });

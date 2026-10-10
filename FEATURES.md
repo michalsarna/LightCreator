@@ -2,11 +2,14 @@
 
 **Design**
 * Rectangle, ellipse, line, polyline and text tools; select, move and resize with handles.
-* **Automatic shapes:** triangle (Y), five-pointed star (S) and regular polygon (G). The polygon tool opens a
+* **Automatic shapes:** triangle (Y), five-pointed star (S), regular polygon (G) and heart (K). The polygon tool opens a
   popup to choose the number of sides, 3 to 360. Shapes are drawn by dragging a box (Shift keeps it square)
   and are ordinary editable Bézier shapes.
 * **Node editing (N):** drag nodes and Bézier handles, corner / smooth nodes, insert (double-click a segment) and
   delete nodes, turn segments into lines or curves, open and close paths. Any shape converts to curves.
+  Open it with the second tool on the tool bar (N), Arrange > Edit nodes, the right-click menu, or by
+  double-clicking a shape. Pictures placed from the clipart gallery are ordinary editable shapes and open the same
+  way, all parts of a grouped picture at once. Text is not converted behind your back: use Convert to curves first.
 * **Text tool (T):** live text from system fonts (family search, bold, italic, size, letter and line spacing,
   alignment), convertible to curves. Complex scripts such as Devanagari and Arabic are not shaped.
 * **Round corners:** Arrange > "Round corners…" replaces sharp straight corners of the selected shapes with
@@ -25,6 +28,14 @@
 * **Right-click context menu** (with small icons for flips, rotations, order, alignment) with the common commands (copy, paste, group, arrange, shape operations,
   adjust and trace for images).
 * Undo / redo, snap to grid, rulers, zoom and pan, drag and drop of files.
+* **Tool bar groups:** selecting and node editing, then the tools that insert new objects (shapes, line,
+  polyline, text), then view navigation, each group set apart by a separator.
+* The node-editing bar on the canvas hides when you click another window such as the preview, and comes back when
+  you click the work area again.
+* **Navigation:** pan, zoom in and zoom out sit in their own group under the drawing tools, together with two
+  fit buttons, "Fit work area" (Ctrl+0) and "Fit all objects" (Ctrl+9). Holding Space switches to panning with any
+  tool and returns to the previous tool on release (not while typing in a text field). Ctrl++ and Ctrl+- zoom
+  around the middle of the view; the mouse wheel and the middle button still work everywhere.
 * **Auto-fit:** the work area is fitted to the window and refitted whenever the window or the side panels are
   resized. Zooming or panning by hand switches it off; View > "Fit bed to window" turns it back on (and
   "Auto-fit work area to window" toggles it). The preview window behaves the same way.
@@ -88,6 +99,17 @@
   controller's own software (for example RDWorks). Fill is exported as hatch lines, raster images are skipped.
 * Per-device display units: millimetres or inches (stored geometry stays in millimetres).
 * The editor cannot be opened until at least one device profile exists.
+
+**Clipart gallery**
+* A side-panel tab with 310 ready-made single-colour pictures in 9 categories (animals, nature, celebrations,
+  symbols, shapes, tools, food, objects, music and fun) shipped with the program, searchable by name. Click one
+  to place it on the active layer at a size you set; multi-part pictures are grouped.
+* **Dots:** blue for pictures that come with the program, green for pictures you saved or downloaded.
+* **Online:** search the open icon collections of Iconify from inside the program, see the collection, licence
+  and author of each result (orange dot when the licence asks for credit), and save a picture on your disk under a
+  category of your choice, existing or new. Pictures can also be downloaded from a web address, or added from files.
+  Saved pictures keep their source, licence and author and can be renamed, moved to another category, inspected
+  or deleted from the right-click menu. They live in the application's data folder next to `app.ron`, in the `clipart` folder (the location per system is in the README).
 
 **Helpers**
 * **Material library:** starting settings for common materials and operations for diode and CO2 lasers,

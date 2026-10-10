@@ -16,11 +16,17 @@ impl App {
             .copied()
             .filter(|id| {
                 self.doc.shape(*id).is_some_and(|s| {
-                    let editable = !s.locked && !matches!(s.kind, Kind::Image { .. });
+                    // Text stays live text until you convert it to curves yourself.
+                    let editable = !s.locked && !matches!(s.kind, Kind::Image { .. } | Kind::Text(_));
                     editable && (!matches!(s.kind, Kind::Bezier(_)) || s.xf != Xf::IDENTITY)
                 })
             })
             .collect();
+        let only_text_or_image = !self.sel.is_empty()
+            && self.sel.iter().all(|id| self.doc.shape(*id).is_some_and(|s| matches!(s.kind, Kind::Text(_) | Kind::Image { .. })));
+        if only_text_or_image && self.status != tr("Convert text to curves, or trace the image, to edit its nodes.") {
+            self.status = tr("Convert text to curves, or trace the image, to edit its nodes.").to_string();
+        }
         if todo.is_empty() {
             return;
         }
@@ -31,6 +37,16 @@ impl App {
             }
         }
         self.node_sel.clear();
+    }
+
+    /// Switch to the node tool for the selected shapes.
+    pub fn start_node_edit(&mut self) {
+        if self.sel.is_empty() {
+            self.status = tr("Select a shape first, then edit its nodes.").to_string();
+            return;
+        }
+        self.tool = crate::app::Tool::Node;
+        self.pen_pts.clear();
     }
 
     pub fn contour_mut(&mut self, id: u64, ci: usize) -> Option<&mut Contour> {
@@ -263,5 +279,60 @@ mod tests {
         assert_eq!(a.doc.shapes.len(), 2);
         let b = a.doc.shape(a.sel[0]).unwrap().bounds().unwrap();
         assert!((b.width() - 8.0).abs() < 0.05, "{}", b.width());
+    }
+
+    #[test]
+    fn gallery_pictures_can_be_edited_node_by_node() {
+        let mut a = app();
+        let svg = crate::clipart_ui::BUILTIN_CLIPART.iter().find(|c| c.1 == "cat").map(|c| c.2).expect("cat clipart");
+        a.place_clip(svg, "cat");
+        let ids = a.sel.clone();
+        assert!(!ids.is_empty());
+        let before = a.doc.bounds_of(&ids).unwrap();
+        // Entering the node tool bakes the placement scale into the nodes without moving anything.
+        a.tool = crate::app::Tool::Node;
+        a.nodes_prepare();
+        for id in &ids {
+            let s = a.doc.shape(*id).unwrap();
+            assert!(matches!(s.kind, Kind::Bezier(_)) && s.xf == Xf::IDENTITY);
+        }
+        let after = a.doc.bounds_of(&ids).unwrap();
+        assert!((before.width() - after.width()).abs() < 1e-6 && (before.min.x - after.min.x).abs() < 1e-6);
+        // Move a node, delete a node, undo.
+        let id = ids[0];
+        let n0 = a.node_at((id, 0, 0)).unwrap();
+        a.contour_mut(id, 0).unwrap().nodes[0].translate(3.0, 0.0);
+        assert!((a.node_at((id, 0, 0)).unwrap().p.x - n0.p.x - 3.0).abs() < 1e-9);
+        let count = |a: &App| match &a.doc.shape(id).unwrap().kind {
+            Kind::Bezier(cs) => cs[0].nodes.len(),
+            _ => 0,
+        };
+        let n = count(&a);
+        assert!(n > 3);
+        a.node_sel = vec![(id, 0, 1)];
+        a.delete_nodes();
+        assert_eq!(count(&a), n - 1);
+        a.do_undo();
+        assert_eq!(count(&a), n);
+        // The picture's parts still form one group.
+        assert_eq!(a.doc.group_of(id).len(), ids.len());
+    }
+
+    #[test]
+    fn edit_nodes_command_switches_tool_and_text_is_never_converted_silently() {
+        let mut a = app();
+        a.start_node_edit();
+        assert_eq!(a.tool, crate::app::Tool::Select, "needs a selection first");
+        let t = a.doc.add(0, Kind::Text(lc_core::TextData::default()), Xf::IDENTITY);
+        a.sel = vec![t];
+        a.start_node_edit();
+        assert_eq!(a.tool, crate::app::Tool::Node);
+        a.nodes_prepare();
+        assert!(matches!(a.doc.shape(t).unwrap().kind, Kind::Text(_)), "text stays text");
+        assert!(a.status.contains("Convert text to curves"));
+        // After converting it, nodes are editable.
+        a.to_curves();
+        a.nodes_prepare();
+        assert!(matches!(a.doc.shape(t).unwrap().kind, Kind::Bezier(_)));
     }
 }

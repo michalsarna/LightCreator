@@ -1,6 +1,8 @@
 mod app;
 mod camera;
 mod camera_stream;
+mod clip_net;
+mod clipart_ui;
 mod canvas;
 mod device_ui;
 mod fonts;

@@ -2,6 +2,33 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.0.5
+
+From this release the tag is `v` plus the version in `Cargo.toml` (`v0.0.5`), as the release workflow requires.
+
+**Clipart gallery**
+* Side-panel tab with 310 bundled single-colour pictures in 9 categories, searchable, placed on the active layer
+  at a chosen size (multi-part pictures are grouped). Blue dot: shipped with the program; green dot: saved or
+  downloaded by you.
+* Online search of open icon collections (Iconify) with licence and author shown, saving to your disk under a
+  category of your choice, downloading from a web address, adding SVG files; rename, move and delete your pictures.
+* Gallery pictures are ordinary shapes and can be edited node by node.
+
+**Navigation**
+* Hold Space to pan with any tool. Pan, zoom in and zoom out are a separate group on the tool bar, together
+  with "Fit work area" (Ctrl+0) and "Fit all objects" (Ctrl+9); Ctrl++ and Ctrl+- zoom.
+
+**Editing**
+* Heart added to the automatic shapes. The tool bar is split into selecting / node editing, insert tools and
+  navigation.
+* Edit nodes from the Arrange menu, the context menu or by double-clicking a shape; text is no longer converted
+  to curves behind your back.
+* The node-editing bar hides when another window such as the preview is clicked.
+
+**Project**
+* SUPPORT.md and a Buy me a coffee banner; interface icons are collected from `assets/ui-icons` by the build
+  script, with a test that every requested icon exists.
+
 ## v0.04
 
 **Devices and connections**

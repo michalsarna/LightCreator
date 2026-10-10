@@ -1,8 +1,14 @@
 <p align="center"><img src="assets/icons/icon-256.png" alt="LightCreator icon" width="128"></p>
 
+<p align="center">
+  <a href="SUPPORT.md">
+    <img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=%E2%98%95&slug=michalsarna&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" alt="Buy me a coffee" height="48">
+  </a>
+</p>
+
 # LightCreator
 
-See [FEATURES.md](FEATURES.md) for what the app can do, [INSTALL.md](INSTALL.md) for how to run it from source and [VERSIONS.md](VERSIONS.md) for the change log.
+See [FEATURES.md](FEATURES.md) for what the app can do, [SUPPORT.md](SUPPORT.md) for how to support the project, [INSTALL.md](INSTALL.md) for how to run it from source and [VERSIONS.md](VERSIONS.md) for the change log.
 
 An open-source alternative to [LightBurn](https://lightburnsoftware.com/) for CNC laser engravers and cutters,
 written in Rust. The interface follows the look of [VectorCraft](https://github.com/storytold/vectorcraft)
@@ -34,8 +40,10 @@ written in Rust. The interface follows the look of [VectorCraft](https://github.
 | Layer names in the strip, layer options window, locked object, light work area in a dark scheme | Chinese interface, fonts and icons from the assets folder |
 | ![Hindi interface](docs/screenshots/21-hindi.png) | ![Quick guide and round corners](docs/screenshots/22-round-help.png) |
 | Hindi interface | Built-in quick guide (F1) and the round corners window |
-| ![Rounded shapes](docs/screenshots/23-rounded-shapes.png) | |
-| Rounded rectangle and triangle | |
+| ![Rounded shapes](docs/screenshots/23-rounded-shapes.png) | ![Clipart gallery](docs/screenshots/24-clipart.png) |
+| Rounded rectangle and triangle | Clipart gallery: blue dots ship with the program, green dots are yours |
+| ![Online clipart](docs/screenshots/25-clipart-online.png) | ![Node editing of a gallery picture](docs/screenshots/26-clipart-nodes.png) |
+| Searching open icon collections and saving into a category | A gallery picture opened in the node tool |
 
 The pictures are rendered headlessly from the real UI; regenerate them with
 `cargo test -p lightcreator --release render_screenshots -- --ignored`.
@@ -50,6 +58,9 @@ presets, the last used profile and the window size are stored by the application
 | macOS | `~/Library/Application Support/lightcreator/app.ron` |
 | Windows | `%APPDATA%\lightcreator\data\app.ron` (usually `C:\Users\<you>\AppData\Roaming\lightcreator\data\app.ron`) |
 | Linux | `$XDG_DATA_HOME/lightcreator/app.ron`, by default `~/.local/share/lightcreator/app.ron` |
+
+Pictures you saved or downloaded for the clipart gallery are kept in the `clipart` folder next to it, together with an
+`index.json` that records each picture's name, category, source, licence and author.
 
 The file is written when the application closes. Delete it to reset everything to the defaults (the start
 window then asks for a device profile again). Projects (`.lcr`), SVG and G-code files are saved wherever you

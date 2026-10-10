@@ -321,6 +321,7 @@ fn render_screenshots() {
         };
         add(a, lc_core::Contour::triangle(60.0, 52.0), 30.0, 2);
         add(a, lc_core::Contour::star(5, 0.382, 60.0, 57.0), 110.0, 5);
+        add(a, lc_core::Contour::heart(60.0, 54.0), 270.0, 2);
         let id = add(a, lc_core::Contour::polygon(9, 60.0, 60.0), 190.0, 1);
         a.sel = vec![id];
         a.tool = Tool::Polygon;
@@ -438,6 +439,204 @@ fn render_screenshots() {
         a.show_round = false;
     }
     save(&mut h, "23-rounded-shapes.png");
+
+    // Clipart gallery: shipped pictures (blue) mixed with saved ones (green), and the online search.
+    {
+        let a = app(&mut h);
+        a.show_guide = false;
+        a.show_round = false;
+        a.doc.shapes.clear();
+        let dir = std::env::temp_dir().join(format!("lc-shot-clip-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        a.clip = crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(dir));
+        let pick = |cat: &str, name: &str| crate::clipart_ui::BUILTIN_CLIPART.iter().find(|c| c.0 == cat && c.1 == name).map(|c| String::from_utf8_lossy(c.2).to_string()).unwrap();
+        for (cat, n, new_name) in [("Animals", "owl", "Wise owl"), ("Animals", "penguin", "Penguin"), ("Nature", "leaf", "Autumn leaf"), ("Celebrations", "gift", "Gift box")] {
+            let _ = a.clip.lib.add(&pick(cat, n), new_name, cat, "https://icon-sets.iconify.design/tabler/x/", "MIT", "Tabler");
+        }
+        let _ = a.clip.lib.add(&pick("Tools", "hammer"), "Hammer", "Workshop", "https://api.iconify.design/ph/hammer.svg", "MIT", "Phosphor");
+        a.clip.reload();
+        a.clip.category = Some("Animals".to_string());
+        a.side_tab = SideTab::Clipart;
+        a.status = "Ready".into();
+    }
+    save(&mut h, "24-clipart.png");
+    {
+        let a = app(&mut h);
+        a.clip.category = None;
+        let ctx2 = ctx.clone();
+        let mut o = crate::clipart_ui::OnlineDlg::new(&ctx2, "http://127.0.0.1:9");
+        o.query = "cat".into();
+        let names = [("cat", "mdi", "Material Design Icons", "Apache-2.0", "Apache 2.0"), ("cat-outline", "mdi", "Material Design Icons", "Apache-2.0", "Apache 2.0"), ("dog", "ph", "Phosphor", "MIT", "MIT"), ("paw", "tabler", "Tabler Icons", "MIT", "MIT"), ("bird", "fa6-solid", "Font Awesome 6 Solid", "CC-BY-4.0", "CC BY 4.0"), ("fish", "mdi", "Material Design Icons", "Apache-2.0", "Apache 2.0")];
+        for (n, prefix, set, spdx, title) in names {
+            let key = format!("{prefix}:{n}");
+            let src = crate::clipart_ui::BUILTIN_CLIPART.iter().find(|c| c.1 == n.replace('-', " ")).or_else(|| crate::clipart_ui::BUILTIN_CLIPART.iter().find(|c| c.1 == "cat"));
+            if let Some(c) = src {
+                o.thumbs.insert(key, std::sync::Arc::from(c.2.to_vec().into_boxed_slice()));
+            }
+            o.hits.push(lc_core::clipart::iconify::Hit { prefix: prefix.into(), name: n.into(), set_name: set.into(), license_title: title.into(), license_spdx: spdx.into(), license_url: "https://www.apache.org/licenses/LICENSE-2.0".into(), author: "Pictogrammers".into() });
+        }
+        o.sel = Some(0);
+        o.name = "cat".into();
+        o.status = "6 pictures found".into();
+        a.clip.online = Some(o);
+    }
+    save(&mut h, "25-clipart-online.png");
+}
+
+/// The node-editing bar disappears when another window (the preview) is clicked and returns on a click in the canvas.
+#[test]
+fn node_bar_hides_when_another_window_is_clicked() {
+    use eframe::egui::{Event, Modifiers, PointerButton};
+    let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.cfg = None;
+        a.enter_editor(0);
+        a.doc.add(0, Kind::Rect { w: 40.0, h: 30.0 }, Xf::translate(60.0, 60.0));
+        a.tool = Tool::Node;
+        a.sel = vec![a.doc.shapes[0].id];
+        a.show_preview = true;
+    }
+    h.run_steps(4);
+    let ctx = h.ctx.clone();
+    let press = |h: &Shot, x: f32, y: f32| {
+        let pos = eframe::egui::pos2(x, y);
+        h.event(Event::PointerMoved(pos));
+        h.event(Event::PointerButton { pos, button: PointerButton::Primary, pressed: true, modifiers: Modifiers::NONE });
+        h.event(Event::PointerButton { pos, button: PointerButton::Primary, pressed: false, modifiers: Modifiers::NONE });
+    };
+    assert!(app(&mut h).node_bar_active, "shown while editing nodes");
+    // A click inside the preview window hides the bar.
+    press(&h, 800.0, 400.0);
+    h.run_steps(3);
+    assert!(!app(&mut h).node_bar_active, "the bar goes away");
+    assert_ne!(ctx.layer_id_at(eframe::egui::pos2(150.0, 122.0)).map(|l| l.id), Some(eframe::egui::Id::new("node_bar")));
+    // A click on the work area brings it back.
+    press(&h, 150.0, 400.0);
+    h.run_steps(3);
+    assert!(app(&mut h).node_bar_active, "and returns");
+    // Leaving the node tool resets it for the next time.
+    app(&mut h).tool = Tool::Select;
+    app(&mut h).node_bar_active = false;
+    h.run_steps(2);
+    assert!(app(&mut h).node_bar_active);
+}
+
+/// A picture from the gallery placed on the work area and opened in the node tool.
+#[test]
+#[ignore = "writes docs/screenshots; run explicitly"]
+fn render_clipart_node_editing() {
+    let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    let ctx = h.ctx.clone();
+    theme::apply(&ctx, Scheme::LightDark);
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.cfg = None;
+        a.enter_editor(0);
+        a.clip = crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(std::env::temp_dir().join(format!("lc-shot-node-{}", std::process::id()))));
+        let svg = crate::clipart_ui::BUILTIN_CLIPART.iter().find(|c| c.1 == "owl").map(|c| c.2).unwrap();
+        a.clip.size_mm = 160.0;
+        a.place_clip(svg, "owl");
+        a.view.need_fit = true;
+        a.start_node_edit();
+        a.side_tab = SideTab::Properties;
+        a.status = "Ready".into();
+    }
+    h.run_steps(4);
+    {
+        let a = app(&mut h);
+        let id = a.sel[0];
+        let n = match &a.doc.shape(id).unwrap().kind {
+            Kind::Bezier(cs) => cs[0].nodes.len().min(4),
+            _ => 0,
+        };
+        a.node_sel = (0..n).map(|k| (id, 0, k)).collect();
+    }
+    h.run_steps(3);
+    let img = h.render().expect("render");
+    let p = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../docs/screenshots/26-clipart-nodes.png");
+    img.save(&p).expect("write png");
+}
+
+/// "Fit all objects" frames everything that is on the page, wherever it is.
+#[test]
+fn fit_all_objects_shows_every_shape() {
+    let mut h: Shot = Harness::builder().with_size([1200.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.enter_editor(0);
+        // Two small shapes in opposite corners of a big bed.
+        a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(20.0, 20.0));
+        a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(120.0, 90.0));
+    }
+    h.run_steps(3);
+    let before = app(&mut h).view.zoom;
+    let ctx = h.ctx.clone();
+    app(&mut h).do_act(&ctx, crate::menu::Act::FitAll);
+    h.run_steps(3);
+    let a = app(&mut h);
+    assert!(a.view.zoom > before * 1.5, "zoomed in on the objects: {before} -> {}", a.view.zoom);
+    assert!(!a.view.auto_fit);
+    let (w, hh) = a.canvas_avail;
+    for p in [(20.0f32, 20.0f32), (130.0, 100.0)] {
+        let (x, y) = (p.0 * a.view.zoom + a.view.pan.x, p.1 * a.view.zoom + a.view.pan.y);
+        assert!(x > 0.0 && x < w && y > 0.0 && y < hh, "({x}, {y}) inside {w} x {hh}");
+    }
+    // The work-area button brings the whole bed back and keeps it fitted.
+    app(&mut h).do_act(&ctx, crate::menu::Act::FitBed);
+    h.run_steps(3);
+    let a = app(&mut h);
+    assert!(a.view.auto_fit && (a.view.zoom - before).abs() < 0.01 * before.max(1.0));
+}
+
+/// The Space key really switches to the hand tool while it is held down.
+#[test]
+fn space_key_pans_while_held() {
+    let mut h: Shot = Harness::builder().with_size([1000.0, 700.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.enter_editor(0);
+        a.tool = Tool::Rect;
+    }
+    h.run_steps(2);
+    h.key_down(eframe::egui::Key::Space);
+    h.run_steps(2);
+    assert_eq!(app(&mut h).tool, Tool::Pan, "hand tool while Space is held");
+    h.key_up(eframe::egui::Key::Space);
+    h.run_steps(2);
+    assert_eq!(app(&mut h).tool, Tool::Rect, "back to the rectangle tool");
 }
 
 /// Renders every embedded icon (`target/menu-icons.png`) so the whole set can be checked by eye.

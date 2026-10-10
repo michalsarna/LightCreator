@@ -16,15 +16,17 @@ pub enum Tool {
     Triangle,
     Star,
     Polygon,
+    Heart,
     Line,
     Pen,
     Text,
     Pan,
     Zoom,
+    ZoomOut,
 }
 
 impl Tool {
-    pub const ALL: [(Tool, &'static str, Key); 12] = [
+    pub const ALL: [(Tool, &'static str, Key); 14] = [
         (Tool::Select, "Select (V)", Key::V),
         (Tool::Node, "Node edit (N)", Key::N),
         (Tool::Rect, "Rectangle (R)", Key::R),
@@ -32,16 +34,28 @@ impl Tool {
         (Tool::Triangle, "Triangle (Y)", Key::Y),
         (Tool::Star, "Star (S)", Key::S),
         (Tool::Polygon, "Polygon (G)", Key::G),
+        (Tool::Heart, "Heart (K)", Key::K),
         (Tool::Line, "Line (L)", Key::L),
         (Tool::Pen, "Polyline / pen (P)", Key::P),
         (Tool::Text, "Text (T)", Key::T),
         (Tool::Pan, "Pan (H)", Key::H),
-        (Tool::Zoom, "Zoom (Z)", Key::Z),
+        (Tool::Zoom, "Zoom in (Z)", Key::Z),
+        (Tool::ZoomOut, "Zoom out (X)", Key::X),
     ];
+
+    /// Selecting and editing tools, kept apart from the tools that insert new objects.
+    pub fn is_edit(self) -> bool {
+        matches!(self, Tool::Select | Tool::Node)
+    }
+
+    /// View navigation tools, kept apart from the drawing and editing tools.
+    pub fn is_nav(self) -> bool {
+        matches!(self, Tool::Pan | Tool::Zoom | Tool::ZoomOut)
+    }
 }
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.04";
+pub const APP_VERSION: &str = "v0.0.5";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -50,16 +64,18 @@ pub enum SideTab {
     Layers,
     Device,
     Console,
+    Clipart,
     /// The camera picture; only listed while the stream is shown as a tab.
     Camera,
 }
 
 impl SideTab {
-    pub const ALL: [(SideTab, &'static str); 4] = [
+    pub const ALL: [(SideTab, &'static str); 5] = [
         (SideTab::Properties, "Properties"),
         (SideTab::Layers, "Layers"),
         (SideTab::Device, "Device"),
         (SideTab::Console, "Console"),
+        (SideTab::Clipart, "Clipart"),
     ];
 }
 
@@ -121,6 +137,15 @@ pub struct App {
     pub show_offset: bool,
     pub show_materials: bool,
     pub show_prefs: bool,
+    /// The node-editing bar is shown while the canvas, the bar or the tool bars were the last thing clicked.
+    pub node_bar_active: bool,
+    /// The tool to return to when Space (temporary pan) is released.
+    pub space_prev: Option<Tool>,
+    /// Size in pixels of the canvas as last drawn.
+    pub canvas_avail: (f32, f32),
+    /// Fit the view to all objects on the next frame.
+    pub fit_all_req: bool,
+    pub clip: crate::clipart_ui::ClipState,
     pub show_guide: bool,
     pub guide_filter: String,
     pub show_round: bool,
@@ -245,6 +270,11 @@ impl App {
             show_offset: false,
             show_materials: false,
             show_prefs: false,
+            node_bar_active: true,
+            space_prev: None,
+            canvas_avail: (900.0, 600.0),
+            fit_all_req: false,
+            clip: crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(eframe::storage_dir("lightcreator").unwrap_or_else(std::env::temp_dir).join("clipart"))),
             show_guide: false,
             guide_filter: String::new(),
             show_round: false,
@@ -678,6 +708,20 @@ impl App {
         } else if cmd(Key::G) {
             self.group_selection();
         }
+        if cmd(Key::Num0) {
+            self.view.need_fit = true;
+            self.view.auto_fit = true;
+        }
+        if cmd(Key::Num9) {
+            self.view.auto_fit = false;
+            self.fit_all_req = true;
+        }
+        if cmd(Key::Equals) || cmd(Key::Plus) {
+            self.zoom_about_centre(1.5);
+        }
+        if cmd(Key::Minus) {
+            self.zoom_about_centre(1.0 / 1.5);
+        }
         if ctx.input_mut(|i| i.consume_key(Modifiers::NONE, Key::F1)) {
             self.show_guide = true;
         }
@@ -803,11 +847,16 @@ impl App {
             Act::ToBack => self.reorder(false),
             Act::ToPath => self.to_path(),
             Act::ToCurves => self.to_curves(),
+            Act::EditNodes => self.start_node_edit(),
             Act::Group => self.group_selection(),
             Act::Lock => self.lock_selection(true),
             Act::Unlock => self.lock_selection(false),
             Act::Ungroup => self.ungroup_selection(),
             Act::ImportAi => self.import_ai(),
+            Act::OnlineClipart => {
+                self.side_tab = SideTab::Clipart;
+                self.open_online_clipart(ctx);
+            }
             Act::TraceImage => self.open_trace(),
             Act::AdjustImage => self.open_adjust(),
             Act::BoolUnion => self.bool_op(lc_core::ops::BoolOp::Union),
@@ -849,6 +898,12 @@ impl App {
                 self.view.need_fit = true;
                 self.view.auto_fit = true;
             }
+            Act::FitAll => {
+                self.view.auto_fit = false;
+                self.fit_all_req = true;
+            }
+            Act::ZoomIn => self.zoom_about_centre(1.5),
+            Act::ZoomOut => self.zoom_about_centre(1.0 / 1.5),
             Act::ToggleAutoFit => {
                 self.view.auto_fit = !self.view.auto_fit;
                 if self.view.auto_fit {
@@ -990,28 +1045,93 @@ impl App {
         });
     }
 
+    /// Space held down: pan with the hand tool, and go back to the previous tool when it is released.
+    pub fn update_space(&mut self, down: bool) {
+        if down && self.space_prev.is_none() {
+            if self.tool != Tool::Pan {
+                self.space_prev = Some(self.tool);
+                self.tool = Tool::Pan;
+                self.pen_pts.clear();
+            }
+        } else if !down {
+            if let Some(t) = self.space_prev.take() {
+                if self.tool == Tool::Pan {
+                    self.tool = t;
+                }
+            }
+        }
+    }
+
+    /// Zoom by `f` around the middle of the canvas.
+    pub fn zoom_about_centre(&mut self, f: f32) {
+        let (w, h) = self.canvas_avail;
+        let mid = egui::vec2(w / 2.0, h / 2.0);
+        let before = (mid - self.view.pan) / self.view.zoom;
+        self.view.zoom = (self.view.zoom * f).clamp(0.05, 200.0);
+        self.view.pan = mid - before * self.view.zoom;
+        self.view.auto_fit = false;
+    }
+
     fn tool_bar(&mut self, ui: &mut egui::Ui) {
         ui.add_space(6.0);
         egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| ui.vertical_centered(|ui| {
-            for (t, tip, _) in Tool::ALL {
+            // Selecting and node editing.
+            for (t, tip, _) in Tool::ALL.into_iter().filter(|t| t.0.is_edit()) {
+                self.tool_button(ui, t, tip);
+            }
+            // Tools that insert new objects.
+            ui.add_space(4.0);
+            ui.separator();
+            ui.add_space(4.0);
+            for (t, tip, _) in Tool::ALL.into_iter().filter(|t| !t.0.is_edit() && !t.0.is_nav()) {
+                self.tool_button(ui, t, tip);
+            }
+            // View navigation, apart from the rest.
+            ui.add_space(4.0);
+            ui.separator();
+            ui.add_space(4.0);
+            for (t, tip, _) in Tool::ALL.into_iter().filter(|t| t.0.is_nav()) {
+                self.tool_button(ui, t, tip);
+            }
+            let ink = theme::text();
+            let mut act = None;
+            for (a, icon, tip) in [(Act::FitBed, "scan", "Fit work area (Ctrl+0)"), (Act::FitAll, "expand", "Fit all objects (Ctrl+9)")] {
                 let (rect, resp) = ui.allocate_exact_size(egui::vec2(36.0, 36.0), egui::Sense::click());
-                let on = self.tool == t;
-                if on {
-                    ui.painter().rect_filled(rect, 6.0, theme::accent());
-                } else if resp.hovered() {
+                if resp.hovered() {
                     ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
                 }
-                crate::icons::paint(ui, rect.shrink(7.0), crate::icons::tool_icon(t), if on { Color32::WHITE } else { theme::text() });
+                let on = a == Act::FitBed && self.view.auto_fit;
+                crate::icons::paint(ui, rect.shrink(7.0), icon, if on { theme::accent() } else { ink });
                 if resp.on_hover_text(tr(tip)).clicked() {
-                    self.tool = t;
-                    self.pen_pts.clear();
-                    if t == Tool::Polygon {
-                        self.show_polygon = true;
-                    }
+                    act = Some(a);
                 }
                 ui.add_space(2.0);
             }
+            if let Some(a) = act {
+                let ctx = ui.ctx().clone();
+                self.do_act(&ctx, a);
+            }
         }));
+    }
+
+    fn tool_button(&mut self, ui: &mut egui::Ui, t: Tool, tip: &'static str) {
+        let (rect, resp) = ui.allocate_exact_size(egui::vec2(36.0, 36.0), egui::Sense::click());
+        let on = self.tool == t;
+        if on {
+            ui.painter().rect_filled(rect, 6.0, theme::accent());
+        } else if resp.hovered() {
+            ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
+        }
+        crate::icons::paint(ui, rect.shrink(7.0), crate::icons::tool_icon(t), if on { Color32::WHITE } else { theme::text() });
+        if resp.on_hover_text(tr(tip)).clicked() {
+            self.tool = t;
+            self.space_prev = None;
+            self.pen_pts.clear();
+            if t == Tool::Polygon {
+                self.show_polygon = true;
+            }
+        }
+        ui.add_space(2.0);
     }
 
     fn swatches(&mut self, ui: &mut egui::Ui) {
@@ -1156,6 +1276,8 @@ impl App {
         self.config_window(ctx);
         self.layer_dialog(ctx);
         self.guide_window(ctx);
+        self.clip_dialogs(ctx);
+        self.online_clipart_window(ctx);
         self.round_window(ctx);
         self.materials_window(ctx);
         self.overlay_window(ctx);
@@ -1211,6 +1333,14 @@ impl App {
             return;
         }
         self.handle_drops(&ctx);
+        // Space held (and not typing): the hand tool, until it is released.
+        let typing = ctx.egui_wants_keyboard_input();
+        let space = self.screen == Screen::Editor && !typing && ctx.input(|i| i.key_down(Key::Space) && i.focused);
+        if space {
+            // Keep a focused button from reacting to the same key.
+            ctx.input_mut(|i| i.consume_key(Modifiers::NONE, Key::Space));
+        }
+        self.update_space(space);
         self.read_tick(&ctx);
         self.overlay_poll_camera(&ctx);
         self.shortcuts(&ctx);
@@ -1281,5 +1411,58 @@ mod tests {
         assert!(!a.view.auto_fit);
         a.do_act(&ctx, crate::menu::Act::FitBed);
         assert!(a.view.auto_fit && a.view.need_fit);
+    }
+
+    #[test]
+    fn navigation_tools_are_a_separate_group() {
+        let nav: Vec<Tool> = Tool::ALL.iter().map(|t| t.0).filter(|t| t.is_nav()).collect();
+        assert_eq!(nav, vec![Tool::Pan, Tool::Zoom, Tool::ZoomOut]);
+        assert!(Tool::ALL.iter().filter(|t| !t.0.is_nav()).all(|t| !matches!(t.0, Tool::Pan | Tool::Zoom | Tool::ZoomOut)));
+    }
+
+    #[test]
+    fn holding_space_pans_and_releasing_restores_the_tool() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.tool = Tool::Rect;
+        a.update_space(true);
+        assert_eq!(a.tool, Tool::Pan);
+        a.update_space(true); // key repeat changes nothing
+        assert_eq!(a.tool, Tool::Pan);
+        a.update_space(false);
+        assert_eq!(a.tool, Tool::Rect);
+        // Already on the hand tool: nothing to restore, the tool stays.
+        a.tool = Tool::Pan;
+        a.update_space(true);
+        a.update_space(false);
+        assert_eq!(a.tool, Tool::Pan);
+        // Choosing another tool while Space is held wins over the restore.
+        a.tool = Tool::Star;
+        a.update_space(true);
+        a.tool = Tool::Ellipse;
+        a.update_space(false);
+        assert_eq!(a.tool, Tool::Ellipse);
+    }
+
+    #[test]
+    fn zoom_buttons_keep_the_middle_of_the_canvas_fixed() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.canvas_avail = (800.0, 600.0);
+        a.view.zoom = 2.0;
+        a.view.pan = egui::vec2(100.0, 50.0);
+        let mid = egui::vec2(400.0, 300.0);
+        let world = (mid - a.view.pan) / a.view.zoom;
+        a.zoom_about_centre(1.5);
+        assert!((a.view.zoom - 3.0).abs() < 1e-6);
+        let again = (mid - a.view.pan) / a.view.zoom;
+        assert!((again - world).length() < 1e-4);
+        assert!(!a.view.auto_fit);
+        a.zoom_about_centre(1.0 / 1.5);
+        assert!((a.view.zoom - 2.0).abs() < 1e-6);
+        let (z, pan) = crate::canvas::fit_region((900.0, 700.0), (100.0, 50.0), (200.0, 100.0), 50.0);
+        assert!((z - 4.0).abs() < 1e-6, "{z}");
+        // The region's centre lands in the middle of the area.
+        assert!(((200.0f32 * z + pan.x) - 450.0).abs() < 1e-3 && ((100.0f32 * z + pan.y) - 350.0).abs() < 1e-3);
     }
 }
