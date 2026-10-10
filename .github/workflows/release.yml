@@ -76,6 +76,9 @@ jobs:
         run: |
           cargo install cargo-bundle --locked
           (cd crates/lightcreator && cargo bundle --release)
+          # Apple silicon refuses to run code without a valid signature; sign ad hoc (no developer account needed)
+          codesign --force --deep --sign - target/release/bundle/osx/LightCreator.app
+          codesign --verify --deep --strict --verbose=2 target/release/bundle/osx/LightCreator.app
           mkdir dmg && cp -R target/release/bundle/osx/LightCreator.app dmg/ && ln -s /Applications dmg/Applications
           hdiutil create -volname LightCreator -srcfolder dmg -ov -format UDZO "lightcreator-${TAG}-${{ matrix.name }}.dmg"
 
