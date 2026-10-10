@@ -948,9 +948,8 @@ impl App {
                             };
                             self.sel = vec![id];
                             if matches!(self.tool, Tool::Polygon | Tool::Spiral) {
-                                // The small window goes away; it comes back with the next shape and edits this one.
+                                // The small window stays while the tool is active; its number now edits this shape.
                                 self.last_param = Some((self.tool, id, r.width(), r.height()));
-                                self.show_shape_popup = false;
                             }
                         }
                     }

@@ -1471,7 +1471,7 @@ impl App {
 
     /// Small window of the polygon and spiral tools: how many sides / turns. It sits in the corner of the work
     /// area (not over the bars), looks like the preview window and has no OK button: a change applies at once, to
-    /// the shape drawn last as well as to the next ones. It disappears when a shape has been placed.
+    /// the shape drawn last as well as to the next ones. It stays while the tool is active.
     fn shape_popup(&mut self, ctx: &egui::Context) {
         let tool = self.tool;
         if !self.show_shape_popup || !matches!(tool, Tool::Polygon | Tool::Spiral) {
@@ -1484,22 +1484,28 @@ impl App {
         let pos = self.canvas_origin + egui::vec2(12.0, 12.0);
         egui::Window::new("shape_popup").title_bar(false).frame(frame).default_pos(pos).resizable(false).show(ctx, |ui| {
             crate::window_ui::mini_title(ui, &tr(if polygon { "Polygon" } else { "Spiral" }), &mut open, |_| {});
-            let (value, range, presets, label): (&mut u32, std::ops::RangeInclusive<u32>, &[u32], &str) = if polygon {
-                (&mut self.polygon_sides, 3..=360, &[3, 4, 5, 6, 8, 12, 24, 360], "Number of sides")
+            let (value, range, label): (&mut u32, std::ops::RangeInclusive<u32>, &str) = if polygon {
+                (&mut self.polygon_sides, 3..=360, "Number of sides")
             } else {
-                (&mut self.spiral_turns, 1..=30, &[1, 2, 3, 5, 8, 12], "Number of turns")
+                (&mut self.spiral_turns, 1..=30, "Number of turns")
             };
             ui.horizontal(|ui| {
                 ui.label(tr(label));
                 ui.add(egui::DragValue::new(value).range(range.clone()));
             });
-            ui.horizontal_wrapped(|ui| {
-                for n in presets {
-                    if ui.selectable_label(*value == *n, n.to_string()).clicked() {
-                        *value = *n;
+            if polygon {
+                // The usual choice runs from 5 to 36; the number box above takes anything from 3 to 360.
+                ui.spacing_mut().slider_width = 200.0;
+                ui.add(egui::Slider::new(value, 5..=36).clamping(egui::SliderClamping::Never).show_value(false));
+            } else {
+                ui.horizontal_wrapped(|ui| {
+                    for n in [1u32, 2, 3, 5, 8, 12] {
+                        if ui.selectable_label(*value == n, n.to_string()).clicked() {
+                            *value = n;
+                        }
                     }
-                }
-            });
+                });
+            }
             ui.label(RichText::new(tr("Drag on the work area to draw it.")).color(theme::text_dim()));
         });
         self.polygon_sides = self.polygon_sides.clamp(3, 360);

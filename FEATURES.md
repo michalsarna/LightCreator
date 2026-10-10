@@ -4,8 +4,9 @@
 * Rectangle, ellipse, line, polyline and text tools; select, move and resize with handles.
 * **Automatic shapes:** triangle (Y), five-pointed star (S), regular polygon (G), heart (K) and spiral (I). The polygon
   tool opens a small window to choose the number of sides, 3 to 360, and the spiral tool one for the number of turns
-  (3 by default). The window sits in the corner of the work area, has no OK button, goes away when a shape has been
-  placed and returns with the next one; a change in it also applies to the shape drawn last. Shapes are drawn by dragging a box (Shift keeps it square)
+  (3 by default). The window sits in the corner of the work area, has no OK button and stays while the tool is
+  active; the polygon offers a slider from 5 to 36 sides next to the number box (3 to 360), and a change also
+  applies to the shape drawn last. Shapes are drawn by dragging a box (Shift keeps it square)
   and are ordinary editable Bézier shapes.
 * **Node editing (N):** drag nodes and Bézier handles, corner / smooth nodes, insert (double-click a segment) and
   delete nodes, turn segments into lines or curves, open and close paths. Any shape converts to curves.
