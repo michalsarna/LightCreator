@@ -21,8 +21,8 @@ jobs:
         run: |
           set -o pipefail
           cargo test --workspace 2>&1 | tee unit-tests.log || {
-            # Show each failure as an annotation on the pull request.
-            grep -E -A3 "^---- .* stdout ----" unit-tests.log | grep -v "^--$" | grep -v "^note:" | sed 's/^/::error title=unit tests::/'
+            # One annotation per failed test (test name and panic message) on the pull request.
+            awk '/^---- .* stdout ----$/ { t=$2; getline; getline; print "::error title=unit tests::" t ": " $0 }' unit-tests.log
             exit 1
           }
 
@@ -38,7 +38,7 @@ jobs:
         run: |
           set -o pipefail
           cargo test -p lightcreator grbl_sim -- --ignored --test-threads=1 2>&1 | tee grbl-sim-tests.log || {
-            # Show each failure as an annotation on the pull request.
-            grep -E -A3 "^---- .* stdout ----" grbl-sim-tests.log | grep -v "^--$" | grep -v "^note:" | sed 's/^/::error title=grbl-sim::/'
+            # One annotation per failed test (test name and panic message) on the pull request.
+            awk '/^---- .* stdout ----$/ { t=$2; getline; getline; print "::error title=grbl-sim::" t ": " $0 }' grbl-sim-tests.log
             exit 1
           }

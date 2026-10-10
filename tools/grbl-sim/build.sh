@@ -26,6 +26,13 @@ if [ ! -d "$sim/.git" ]; then
     git -C "$sim" -c advice.detachedHead=false checkout --quiet "$SIM_REF"
 fi
 
+# grbl-sim checks for input with select() on the file descriptor but reads it with buffered getchar(): the rest of a
+# line then waits in stdio's buffer, unseen by select(), until more bytes arrive, so every reply comes one line late
+# and a character-counting sender stalls. Read the byte straight from the descriptor instead.
+for f in "$sim"/platform_LINUX.c "$sim"/platform_OSX.c; do
+    sed -i.orig 's/char_in = getchar();/{ unsigned char c; if (read(STDIN_FILENO, \&c, 1) == 1) char_in = c; }/' "$f"
+done
+
 case "$(uname -s)" in
     Darwin) platform=OSX ;;
     *) platform=LINUX ;;
