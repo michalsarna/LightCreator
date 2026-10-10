@@ -142,6 +142,14 @@ pub fn workspace() -> Color32 {
 pub fn text() -> Color32 {
     pal().text
 }
+/// Background of the console output: near black in the dark schemes, a warm paper tone in the light ones.
+pub fn console_bg() -> Color32 {
+    if CURRENT.load(Ordering::Relaxed) <= 1 {
+        rgb(0x0f, 0x13, 0x1b)
+    } else {
+        rgb(0xfb, 0xf7, 0xe9)
+    }
+}
 pub fn text_dim() -> Color32 {
     pal().text_dim
 }
@@ -157,6 +165,8 @@ pub fn apply(ctx: &egui::Context, scheme: Scheme) {
     v.faint_bg_color = p.panel_dark;
     v.override_text_color = Some(p.text);
     v.window_stroke = Stroke::new(1.0, p.border);
+    v.window_corner_radius = CornerRadius::ZERO;
+    v.menu_corner_radius = CornerRadius::ZERO;
     v.selection.bg_fill = accent.gamma_multiply(0.35);
     v.selection.stroke = Stroke::new(1.0, accent);
     v.hyperlink_color = accent;
@@ -179,5 +189,7 @@ pub fn apply(ctx: &egui::Context, scheme: Scheme) {
         s.spacing.item_spacing = egui::vec2(6.0, 5.0);
         s.spacing.button_padding = egui::vec2(8.0, 3.0);
         s.spacing.interact_size.y = 22.0;
+        // Wide enough that menu entries are not cut short with an ellipsis.
+        s.spacing.menu_width = 280.0;
     });
 }

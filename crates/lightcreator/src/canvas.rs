@@ -15,6 +15,23 @@ pub enum Drag {
     NodeMarquee { start: Pt },
 }
 
+fn luminance(c: Color32) -> f32 {
+    (0.299 * c.r() as f32 + 0.587 * c.g() as f32 + 0.114 * c.b() as f32) / 255.0
+}
+
+/// `c` made dark (on a light sheet) or light (on a dark one) enough to be seen against `bg`.
+fn contrasting(c: Color32, bg: Color32) -> Color32 {
+    let (lc, lb) = (luminance(c), luminance(bg));
+    if (lc - lb).abs() >= 0.4 {
+        return c;
+    }
+    let k = if lb > 0.5 { 0.0 } else { 255.0 };
+    // Blend towards black or white until the difference is large enough.
+    let t = ((0.4 - (lc - lb).abs()) / 0.6 + 0.15).clamp(0.0, 0.85);
+    let mix = |a: u8| (a as f32 * (1.0 - t) + k * t).round() as u8;
+    Color32::from_rgb(mix(c.r()), mix(c.g()), mix(c.b()))
+}
+
 fn col(i: usize) -> Color32 {
     let c = PALETTE[i.min(29)];
     Color32::from_rgb(c[0], c[1], c[2])
@@ -384,12 +401,17 @@ impl App {
         if preview {
             if let Some((_, job)) = &self.preview {
                 let skip_travel = job.moves.len() > 150_000;
+                let bed_c = self.bed_fill();
                 let mut shapes = Vec::with_capacity(job.moves.len());
                 for m in &job.moves {
                     if !m.laser && skip_travel {
                         continue;
                     }
-                    let st = if m.laser { Stroke::new(self.grid_prefs.line_width * 0.8, col(self.doc.layers[m.layer].color)) } else { Stroke::new(0.5, Color32::from_rgb(0xb0, 0xb0, 0xc0)) };
+                    let st = if m.laser {
+                        Stroke::new(self.grid_prefs.line_width.max(1.2), contrasting(col(self.doc.layers[m.layer].color), bed_c))
+                    } else {
+                        Stroke::new(0.6, contrasting(Color32::from_rgb(0x90, 0x90, 0xa0), bed_c))
+                    };
                     shapes.push(egui::Shape::line_segment([self.w2s(o, m.a), self.w2s(o, m.b)], st));
                 }
                 painter.extend(shapes);

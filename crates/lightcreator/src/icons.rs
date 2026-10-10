@@ -45,7 +45,7 @@ pub fn paint(ui: &Ui, rect: Rect, name: &str, color: Color32) {
 pub fn tool_icon(t: Tool) -> &'static str {
     match t {
         Tool::Select => "mouse-pointer-2",
-        Tool::Node => "spline",
+        Tool::Node => "node-edit",
         Tool::Rect => "square",
         Tool::Ellipse => "circle",
         Tool::Triangle => "triangle",
@@ -114,6 +114,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::Align(4) => "align-center-horizontal",
         Act::Align(_) => "align-end-horizontal",
         Act::CenterOnBed => "focus",
+        Act::CenterEachOther => "target",
         Act::FlipH => "flip-horizontal",
         Act::FlipV => "flip-vertical",
         Act::RotCw => "rotate-cw",
@@ -152,7 +153,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::ShareSer2net => "wifi",
         Act::GridOptions => "sliders-horizontal",
         Act::About => "info",
-        Act::TraceImage => "spline",
+        Act::TraceImage => "portrait",
         Act::AdjustImage => "sliders-horizontal",
         Act::SetLang(_) | Act::SetScheme(_) => return None,
     })

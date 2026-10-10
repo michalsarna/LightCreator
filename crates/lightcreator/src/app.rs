@@ -55,7 +55,7 @@ impl Tool {
 }
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.0.5";
+pub const APP_VERSION: &str = "v0.0.7";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -455,6 +455,33 @@ impl App {
             }
         }
     }
+    /// Move the selected objects so that their centres coincide, at the centre of the whole selection. A group
+    /// counts as one object. With the small shape inside the large one, the large one stays where it is.
+    pub fn center_on_each_other(&mut self) {
+        let Some(all) = self.sel_bounds() else { return };
+        let target = all.center();
+        // Objects are single shapes or whole groups.
+        let mut units: Vec<Vec<u64>> = vec![];
+        for id in self.sel.clone() {
+            if units.iter().any(|u| u.contains(&id)) {
+                continue;
+            }
+            units.push(self.doc.group_of(id));
+        }
+        if units.len() < 2 {
+            return;
+        }
+        self.checkpoint();
+        for unit in units {
+            let Some(b) = self.doc.bounds_of(&unit) else { continue };
+            let t = Xf::translate(target.x - b.center().x, target.y - b.center().y);
+            for id in unit {
+                if let Some(s) = self.doc.unlocked_mut(id) {
+                    s.xf = s.xf.then(t);
+                }
+            }
+        }
+    }
     pub fn flip(&mut self, horizontal: bool) {
         if let Some(b) = self.sel_bounds() {
             self.checkpoint();
@@ -516,10 +543,18 @@ impl App {
     }
 
     // ---------- file operations ----------
+    /// Give every layer the default speed that the device profile keeps for it.
+    pub fn apply_layer_speeds(&mut self) {
+        for (i, l) in self.doc.layers.iter_mut().enumerate() {
+            l.speed = self.doc.device.layer_speed_mm_s(i);
+        }
+    }
+
     pub fn new_doc(&mut self) {
         let device = self.doc.device.clone();
         self.doc = Document::default();
         self.doc.device = device;
+        self.apply_layer_speeds();
         self.undo.clear();
         self.redo.clear();
         self.sel.clear();
@@ -652,6 +687,30 @@ impl App {
         let lines = laser::clean_gcode(&job.gcode);
         self.push_console(ConsoleLine::info(trf("Starting job: {} lines, ~{}", &[&lines.len(), &fmt_time(job.est_seconds)])));
         self.link.send(Cmd::Job(lines));
+    }
+    /// Start can be pressed: a streaming controller needs a connected laser, the file-based ones (Ruida, Trocen)
+    /// just export the job.
+    pub fn can_start(&self) -> bool {
+        !self.doc.device.controller.is_serial() || self.connected
+    }
+    /// (shown, available) for the Overlay buttons.
+    pub fn overlay_state(&self) -> (bool, bool) {
+        (self.overlay.is_some() && self.overlay_visible, self.overlay.is_some() || self.show_stream)
+    }
+    /// The overlay is fed from the live camera while its window is open, otherwise it is the saved photo.
+    pub fn toggle_overlay_button(&mut self) {
+        let (on, _) = self.overlay_state();
+        if self.show_stream {
+            if on && self.stream_overlay {
+                self.stream_overlay = false;
+                self.overlay_visible = false;
+            } else {
+                self.stream_overlay = true;
+                self.overlay_visible = true;
+            }
+        } else {
+            self.overlay_visible = !self.overlay_visible;
+        }
     }
     /// A job is being streamed to the laser.
     pub fn job_running(&self) -> bool {
@@ -841,6 +900,9 @@ impl App {
             Act::Undo => !self.undo.is_empty(),
             Act::Redo => !self.redo.is_empty(),
             Act::ClearRecent => !self.recent.is_empty(),
+            Act::Frame => self.connected && !self.job_running(),
+            Act::StartJob => self.can_start() && !self.job_running(),
+            Act::CenterEachOther => self.sel.len() >= 2,
             Act::ToggleOverlay => self.overlay.is_some(),
             _ => true,
         }
@@ -881,6 +943,7 @@ impl App {
             Act::SelectAll => self.select_all(),
             Act::Align(m) => self.align(m),
             Act::CenterOnBed => self.center_on_bed(),
+            Act::CenterEachOther => self.center_on_each_other(),
             Act::FlipH => self.flip(true),
             Act::FlipV => self.flip(false),
             Act::RotCw => self.rotate_sel(90.0),
@@ -1067,46 +1130,71 @@ impl App {
 
     fn control_bar(&mut self, ui: &mut egui::Ui) {
         ui.horizontal_centered(|ui| {
+            // Name of the current tool in a box of fixed width, so the bar does not jump around.
             let name = Tool::ALL.iter().find(|t| t.0 == self.tool).map(|t| t.1).unwrap_or("");
-            ui.label(RichText::new(tr(name).split(" (").next().unwrap_or("")).strong());
+            ui.allocate_ui_with_layout(egui::vec2(96.0, 22.0), egui::Layout::left_to_right(egui::Align::Center), |ui| {
+                // The box keeps its width whatever the name is: it grows to the minimum and never past the maximum.
+                ui.set_min_size(egui::vec2(96.0, 22.0));
+                ui.set_max_width(96.0);
+                ui.add(egui::Label::new(RichText::new(tr(name).split(" (").next().unwrap_or("")).strong()).truncate());
+            });
+            // Where the box ends, for the test that checks it does not move.
+            ui.ctx().data_mut(|d| d.insert_temp(egui::Id::new("tool_name_right"), ui.cursor().left()));
             ui.separator();
-            let c = lc_core::PALETTE[self.active_layer];
-            let (r, _) = ui.allocate_exact_size(egui::vec2(16.0, 16.0), egui::Sense::hover());
-            ui.painter().rect_filled(r, 3.0, Color32::from_rgb(c[0], c[1], c[2]));
-            ui.label(trf("Layer {}", &[&self.doc.layers[self.active_layer].name]));
+            let ctx = ui.ctx().clone();
+            for (act, icon, tip) in [(Act::New, "file-plus", "New"), (Act::Open, "folder-open", "Open…"), (Act::Save, "save", "Save")] {
+                if icon_button(ui, icon, &tr(tip), true, 28.0) {
+                    self.do_act(&ctx, act);
+                }
+            }
             ui.separator();
-            ui.checkbox(&mut self.show_grid, tr("Grid"));
-            ui.checkbox(&mut self.snap, tr("Snap"));
-            drag_len(ui, self.doc.device.units, &mut self.grid, 0.5, Some((0.5, 100.0)));
+            let minor = self.grid_prefs.minor_on;
+            if toggle_icon(ui, "grid-2x2", &tr("Show or hide the grid"), self.show_grid) {
+                self.show_grid = !self.show_grid;
+            }
+            if toggle_icon(ui, "grid-3x3", &tr("Show or hide the secondary grid"), minor) {
+                self.grid_prefs.minor_on = !minor;
+            }
+            if toggle_icon(ui, "magnet", &tr("Snap to grid"), self.snap) {
+                self.snap = !self.snap;
+            }
             ui.separator();
-            if ui.selectable_label(self.preview_on, tr("Toolpaths")).on_hover_text(tr("Show the toolpaths on the work area")).clicked() {
+            // Green while the toolpaths are shown, grey otherwise.
+            let on = self.preview_on;
+            let (fill, ink) = if on { (Color32::from_rgb(0x2e, 0xa0, 0x4f), Color32::WHITE) } else { (theme::panel_dark(), theme::text_dim()) };
+            let btn = egui::Button::image_and_text(crate::icons::slot(Some("route"), ink), RichText::new(tr("Toolpaths")).color(ink)).fill(fill);
+            if ui.add(btn).on_hover_text(tr("Show the toolpaths on the work area")).clicked() {
                 self.preview_on = !self.preview_on;
             }
-            if ui.button(tr("Preview…")).on_hover_text(tr("Open the preview window")).clicked() {
-                self.show_preview = true;
+            if window_toggle(ui, &tr("Preview…"), &tr("Open the preview window"), self.show_preview, true) {
+                self.show_preview = !self.show_preview;
             }
-            if self.overlay.is_some() && ui.selectable_label(self.overlay_visible, tr("Overlay")).on_hover_text(tr("Show or hide the camera overlay on the work area")).clicked() {
-                self.overlay_visible = !self.overlay_visible;
-            }
-            if !self.doc.device.camera_url.trim().is_empty() && ui.button(tr("Camera view")).on_hover_text(tr("Show the live camera picture of this machine")).clicked() {
+            let has_camera = !self.doc.device.camera_url.trim().is_empty();
+            if has_camera && window_toggle(ui, &tr("Camera view"), &tr("Show the live camera picture of this machine"), self.show_stream, true) {
                 self.show_stream = !self.show_stream;
+            }
+            let (overlay_on, can_overlay) = self.overlay_state();
+            if window_toggle(ui, &tr("Overlay"), &tr("Show or hide the camera overlay on the work area"), overlay_on, can_overlay) {
+                self.toggle_overlay_button();
             }
 
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                 let running = self.job_running();
                 if running {
-                    let stop = egui::Button::new(RichText::new(format!("   {}   ", tr("STOP"))).color(Color32::WHITE).strong())
+                    let stop = egui::Button::new(RichText::new(format!("   {}   ", tr("STOP").to_uppercase())).color(Color32::WHITE).strong())
                         .fill(Color32::from_rgb(0xc0, 0x30, 0x30));
                     if ui.add(stop).on_hover_text(tr("Abort the running job")).clicked() {
                         self.link.send(Cmd::Abort);
                     }
                 } else {
-                    let go = egui::Button::new(RichText::new(format!("   {}   ", tr("Start"))).color(Color32::WHITE).strong()).fill(theme::accent());
-                    if ui.add(go).on_hover_text(tr("Stream the job to the connected laser")).clicked() {
+                    let go = egui::Button::new(RichText::new(format!("   {}   ", tr("Start").to_uppercase())).color(Color32::WHITE).strong()).fill(theme::accent());
+                    let tip = if self.can_start() { tr("Stream the job to the connected laser") } else { tr("Connect to a laser first (Laser panel)") };
+                    if ui.add_enabled(self.can_start(), go).on_hover_text(tip).clicked() {
                         self.send_job();
                     }
                 }
-                if ui.add_enabled(!running, egui::Button::new(tr("Frame"))).on_hover_text(tr("Trace the bounding box")).clicked() {
+                let tip = if self.connected { tr("Trace the bounding box") } else { tr("Connect to a laser first (Laser panel)") };
+                if ui.add_enabled(self.connected && !running, egui::Button::new(tr("Frame"))).on_hover_text(tip).clicked() {
                     self.frame();
                 }
                 if ui.button(tr("Save G-code")).clicked() {
@@ -1150,7 +1238,7 @@ impl App {
 
     fn tool_bar(&mut self, ui: &mut egui::Ui) {
         ui.add_space(6.0);
-        egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| ui.vertical_centered(|ui| {
+        let out = egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| ui.vertical_centered(|ui| {
             // Selecting and node editing.
             for (t, tip, _) in Tool::ALL.into_iter().filter(|t| t.0.is_edit()) {
                 self.tool_button(ui, t, tip);
@@ -1161,6 +1249,26 @@ impl App {
             ui.add_space(4.0);
             for (t, tip, _) in Tool::ALL.into_iter().filter(|t| !t.0.is_edit() && !t.0.is_nav()) {
                 self.tool_button(ui, t, tip);
+            }
+            // Shape operations on the selected objects.
+            ui.add_space(4.0);
+            ui.separator();
+            ui.add_space(4.0);
+            let multi = self.sel.len() >= 2;
+            let mut op = None;
+            for (a, icon, tip) in [
+                (Act::BoolUnion, "squares-unite", "Union"),
+                (Act::BoolIntersect, "squares-intersect", "Intersection"),
+                (Act::BoolSubtract, "squares-subtract", "Subtract"),
+                (Act::BoolXor, "squares-exclude", "Exclusive or"),
+            ] {
+                if icon_button(ui, icon, &tr(tip), multi, 36.0) {
+                    op = Some(a);
+                }
+            }
+            if let Some(a) = op {
+                let ctx = ui.ctx().clone();
+                self.do_act(&ctx, a);
             }
             // View navigation, apart from the rest.
             ui.add_space(4.0);
@@ -1176,8 +1284,7 @@ impl App {
                 if resp.hovered() {
                     ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
                 }
-                let on = a == Act::FitBed && self.view.auto_fit;
-                crate::icons::paint(ui, rect.shrink(7.0), icon, if on { theme::accent() } else { ink });
+                crate::icons::paint(ui, rect.shrink(7.0), icon, ink);
                 if resp.on_hover_text(tr(tip)).clicked() {
                     act = Some(a);
                 }
@@ -1188,6 +1295,67 @@ impl App {
                 self.do_act(&ctx, a);
             }
         }));
+        scroll_hints(ui, &out);
+    }
+
+    /// Narrow strip between the work area and the side panel: align, turn, mirror and group the selection.
+    fn arrange_bar(&mut self, ui: &mut egui::Ui) {
+        let has_sel = !self.sel.is_empty();
+        let any_unlocked = self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| !s.locked));
+        let any_locked = self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.locked));
+        let grouped = self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.group.is_some()));
+        let multi = self.sel.len() >= 2;
+        let _ = has_sel;
+        let sections: [Vec<(Act, bool, &str)>; 4] = [
+            vec![
+                (Act::Align(0), any_unlocked, "Align left"),
+                (Act::Align(1), any_unlocked, "Align centre (H)"),
+                (Act::Align(2), any_unlocked, "Align right"),
+                (Act::Align(3), any_unlocked, "Align top"),
+                (Act::Align(4), any_unlocked, "Align centre (V)"),
+                (Act::Align(5), any_unlocked, "Align bottom"),
+                (Act::CenterOnBed, any_unlocked, "Centre on bed"),
+                (Act::CenterEachOther, multi, "Centre on each other"),
+            ],
+            vec![
+                (Act::RotCcw, any_unlocked, "Rotate 90° CCW"),
+                (Act::RotCw, any_unlocked, "Rotate 90° CW"),
+                (Act::FlipH, any_unlocked, "Flip horizontal"),
+                (Act::FlipV, any_unlocked, "Flip vertical"),
+            ],
+            vec![
+                (Act::Group, multi, "Group"),
+                (Act::Ungroup, grouped, "Ungroup"),
+                (Act::Lock, any_unlocked, "Lock"),
+                (Act::Unlock, any_locked, "Unlock"),
+            ],
+            vec![(Act::ToFront, any_unlocked, "Bring to front"), (Act::ToBack, any_unlocked, "Send to back")],
+        ];
+        let mut chosen = None;
+        let out = egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
+            ui.add_space(6.0);
+            for (i, section) in sections.iter().enumerate() {
+                if i > 0 {
+                    ui.add_space(2.0);
+                    ui.separator();
+                    ui.add_space(2.0);
+                }
+                ui.vertical_centered(|ui| {
+                    ui.spacing_mut().item_spacing = egui::vec2(2.0, 2.0);
+                    for (act, on, tip) in section {
+                        let icon = crate::icons::act_icon(*act).unwrap_or("shapes");
+                        if icon_button(ui, icon, &tr(tip), *on, 28.0) {
+                            chosen = Some(*act);
+                        }
+                    }
+                });
+            }
+        });
+        scroll_hints(ui, &out);
+        if let Some(a) = chosen {
+            let ctx = ui.ctx().clone();
+            self.do_act(&ctx, a);
+        }
     }
 
     fn tool_button(&mut self, ui: &mut egui::Ui, t: Tool, tip: &'static str) {
@@ -1396,6 +1564,62 @@ impl eframe::App for App {
     }
 }
 
+/// Double chevrons at the top and / or bottom edge of a scrolled icon strip when more icons lie beyond it.
+fn scroll_hints<R>(ui: &egui::Ui, out: &egui::scroll_area::ScrollAreaOutput<R>) {
+    let view = out.inner_rect;
+    let (up, down) = (out.state.offset.y > 1.0, out.state.offset.y + view.height() < out.content_size.y - 1.0);
+    for (show, name, top) in [(up, "chevrons-up", true), (down, "chevrons-down", false)] {
+        if !show {
+            continue;
+        }
+        let h = 16.0;
+        let rect = if top {
+            egui::Rect::from_min_size(view.left_top(), egui::vec2(view.width(), h))
+        } else {
+            egui::Rect::from_min_size(egui::pos2(view.left(), view.bottom() - h), egui::vec2(view.width(), h))
+        };
+        let painter = ui.painter().with_clip_rect(view);
+        painter.rect_filled(rect, 0.0, theme::panel().gamma_multiply(0.92));
+        crate::icons::paint(ui, egui::Rect::from_center_size(rect.center(), egui::vec2(h - 2.0, h - 2.0)), name, theme::accent());
+    }
+}
+
+/// Text button for a window that can be open or closed: light blue while it is open.
+pub fn window_toggle(ui: &mut egui::Ui, text: &str, tip: &str, open: bool, enabled: bool) -> bool {
+    let btn = if open {
+        egui::Button::new(RichText::new(text).color(Color32::WHITE)).fill(Color32::from_rgb(0x3f, 0xa9, 0xf5))
+    } else {
+        egui::Button::new(text)
+    };
+    ui.add_enabled(enabled, btn).on_hover_text(tip).clicked()
+}
+
+/// An icon button that stays highlighted while `on`.
+pub fn toggle_icon(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool) -> bool {
+    let (rect, resp) = ui.allocate_exact_size(egui::vec2(28.0, 28.0), egui::Sense::click());
+    if on {
+        ui.painter().rect_filled(rect, 6.0, theme::accent().gamma_multiply(0.3));
+    } else if resp.hovered() {
+        ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
+    }
+    crate::icons::paint(ui, rect.shrink(5.6), icon, if on { theme::accent() } else { theme::text() });
+    resp.on_hover_text(tip).clicked()
+}
+
+/// A square icon-only button with a tooltip; greyed out and inert when `on` is false.
+pub fn icon_button(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool, size: f32) -> bool {
+    let sense = if on { egui::Sense::click() } else { egui::Sense::hover() };
+    let (rect, resp) = ui.allocate_exact_size(egui::vec2(size, size), sense);
+    if on && resp.hovered() {
+        ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
+    }
+    let ink = if on { theme::text() } else { theme::text().gamma_multiply(0.35) };
+    crate::icons::paint(ui, rect.shrink(size * 0.2), icon, ink);
+    let resp = resp.on_hover_text(tip);
+    ui.add_space(2.0);
+    on && resp.clicked()
+}
+
 impl App {
     /// Draw one frame of the whole application into `ui`.
     pub fn draw(&mut self, ui: &mut egui::Ui) {
@@ -1406,6 +1630,10 @@ impl App {
         }
         #[cfg(target_os = "macos")]
         self.native_menu_frame(&ctx);
+        self.title_bar(ui);
+        self.window_edges(&ctx);
+        #[cfg(target_os = "macos")]
+        self.window_edge_drag(&ctx);
         if self.screen == Screen::Start {
             self.start_screen(ui);
             self.dialogs(&ctx);
@@ -1436,7 +1664,8 @@ impl App {
         egui::Panel::bottom("status").frame(chrome).exact_size(26.0).show(ui, |ui| self.status_bar(ui));
         egui::Panel::bottom("swatches").frame(chrome).exact_size(36.0).show(ui, |ui| self.swatches(ui));
         egui::Panel::left("tools").frame(chrome).exact_size(52.0).resizable(false).show(ui, |ui| self.tool_bar(ui));
-        egui::Panel::right("side").frame(chrome.inner_margin(egui::Margin::same(8))).default_size(330.0).show(ui, |ui| self.side_panel(ui));
+        egui::Panel::right("side").frame(chrome.inner_margin(egui::Margin::same(8))).default_size(410.0).show(ui, |ui| self.side_panel(ui));
+        egui::Panel::right("arrange_bar").frame(chrome.inner_margin(egui::Margin::symmetric(2, 4))).exact_size(40.0).resizable(false).show(ui, |ui| self.arrange_bar(ui));
         egui::CentralPanel::no_frame().show(ui, |ui| self.canvas(ui));
         self.dialogs(&ctx);
         if self.connected || self.progress.0 < self.progress.1 {
@@ -1583,5 +1812,107 @@ mod recent_tests {
         a.do_act(&ctx, Act::ClearRecent);
         assert!(a.recent.is_empty());
         let _ = std::fs::remove_dir_all(&dir);
+    }
+}
+
+#[cfg(test)]
+mod version_tests {
+    /// The version shown in About, the Cargo version, the newest VERSIONS.md section and the supported
+    /// version in SECURITY.md must all name the same release.
+    #[test]
+    fn version_is_the_same_everywhere() {
+        let cargo = env!("CARGO_PKG_VERSION");
+        assert_eq!(super::APP_VERSION, format!("v{cargo}"), "APP_VERSION in app.rs vs Cargo.toml");
+        let versions = include_str!("../../../VERSIONS.md");
+        let top = versions.lines().find_map(|l| l.strip_prefix("## ")).expect("a section in VERSIONS.md");
+        assert_eq!(top.trim(), super::APP_VERSION, "newest section of VERSIONS.md");
+        let security = include_str!("../../../SECURITY.md");
+        let latest = security.lines().find(|l| l.contains("(latest)")).expect("a (latest) row in SECURITY.md");
+        assert!(latest.contains(super::APP_VERSION), "SECURITY.md latest row: {latest}");
+    }
+}
+
+#[cfg(test)]
+mod centre_tests {
+    use super::*;
+
+    #[test]
+    fn objects_are_centred_on_each_other_and_groups_stay_together() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.screen = Screen::Editor;
+        let big = a.doc.add(0, lc_core::Kind::Rect { w: 100.0, h: 60.0 }, Xf::translate(10.0, 10.0));
+        let small = a.doc.add(0, lc_core::Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(20.0, 15.0));
+        a.sel = vec![big, small];
+        a.do_act(&ctx, Act::CenterEachOther);
+        let (cb, cs) = (a.doc.shape(big).unwrap().bounds().unwrap().center(), a.doc.shape(small).unwrap().bounds().unwrap().center());
+        assert!((cb.x - 60.0).abs() < 1e-6 && (cb.y - 40.0).abs() < 1e-6, "the large one stays: {cb:?}");
+        assert!((cs.x - cb.x).abs() < 1e-6 && (cs.y - cb.y).abs() < 1e-6, "{cs:?} vs {cb:?}");
+        // A group of two shapes moves as one object and keeps its inner layout.
+        let g1 = a.doc.add(0, lc_core::Kind::Rect { w: 4.0, h: 4.0 }, Xf::translate(200.0, 200.0));
+        let g2 = a.doc.add(0, lc_core::Kind::Rect { w: 4.0, h: 4.0 }, Xf::translate(210.0, 200.0));
+        let gid = a.doc.new_group_id();
+        for id in [g1, g2] {
+            a.doc.shape_mut(id).unwrap().group = Some(gid);
+        }
+        a.sel = vec![big, g1, g2];
+        let gap = a.doc.shape(g2).unwrap().bounds().unwrap().min.x - a.doc.shape(g1).unwrap().bounds().unwrap().min.x;
+        a.do_act(&ctx, Act::CenterEachOther);
+        let gb = a.doc.bounds_of(&[g1, g2]).unwrap().center();
+        let bb = a.doc.shape(big).unwrap().bounds().unwrap().center();
+        assert!((gb.x - bb.x).abs() < 1e-6 && (gb.y - bb.y).abs() < 1e-6);
+        let gap2 = a.doc.shape(g2).unwrap().bounds().unwrap().min.x - a.doc.shape(g1).unwrap().bounds().unwrap().min.x;
+        assert!((gap - gap2).abs() < 1e-9);
+        // One object alone is not enough.
+        a.sel = vec![big];
+        assert!(!a.act_enabled(Act::CenterEachOther));
+    }
+}
+
+#[cfg(test)]
+mod layer_speed_tests {
+    use super::*;
+
+    #[test]
+    fn layer_speeds_follow_the_device_profile() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.profiles = vec![lc_core::Device::default()];
+        a.enter_editor(0);
+        assert!((a.doc.layers[2].speed - 1000.0 / 60.0).abs() < 1e-9);
+        // An edit in the layer panel is stored in the profile.
+        let before = a.doc.layers.clone();
+        a.doc.layers[2].speed = 30.0;
+        a.commit_layer_edit(10.0, before);
+        assert_eq!(a.profiles[0].layer_speeds[2], 1800.0);
+        // A new document starts with those speeds.
+        a.new_doc();
+        assert_eq!(a.doc.layers[2].speed, 30.0);
+        assert!((a.doc.layers[3].speed - 1000.0 / 60.0).abs() < 1e-9);
+    }
+}
+
+#[cfg(test)]
+mod tool_name_tests {
+    use super::*;
+
+    /// The control bar must not move when the tool changes: the box with the tool name has one width.
+    #[test]
+    fn tool_name_box_has_a_fixed_width() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.screen = Screen::Editor;
+        let mut xs = vec![];
+        for tool in [Tool::Select, Tool::Node, Tool::Polygon, Tool::Text] {
+            a.tool = tool;
+            let mut x = 0.0;
+            let _ = ctx.run_ui(egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1400.0, 900.0))), ..Default::default() }, |ui| {
+                a.draw(ui);
+                x = ctx.data(|d| d.get_temp::<f32>(egui::Id::new("tool_name_right"))).unwrap_or(-1.0);
+            });
+            xs.push(x);
+        }
+        assert!(xs.iter().all(|x| *x > 0.0), "{xs:?}");
+        assert!(xs.windows(2).all(|w| (w[0] - w[1]).abs() < 0.01), "{xs:?}");
     }
 }

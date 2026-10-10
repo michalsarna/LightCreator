@@ -11,7 +11,7 @@
 5. **Preview** the job: the preview window shows every operation in its own colour, optional travel moves, and a playback slider with the time estimate.
    ![Preview](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/12-preview.png)
 6. **Frame** the design (Device tab) to check the position without firing the laser (frame power is a device setting).
-7. **Start** the job. Use pause / resume and stop as needed. The **Console** tab shows everything sent and received.
+7. **Start** the job (the button is enabled when the laser is connected and becomes **STOP** while it runs). Use pause / resume as needed. The **Console** tab shows everything sent and received.
 8. **No laser?** Export G-code (*File → Export*) or use the [GRBL Simulator](GRBL-Simulator).
 
 > ⚠️ Always run a first test at low power on scrap material. See [Safety and Limitations](Safety-and-Limitations).

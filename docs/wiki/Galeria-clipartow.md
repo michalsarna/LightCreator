@@ -4,7 +4,7 @@
 
 ![Galeria](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/24-clipart.png)
 
-Zakładka panelu bocznego z **310 jednokolorowymi obrazkami w 9 kategoriach** (zwierzęta, natura, święta, symbole, kształty, narzędzia, jedzenie, przedmioty, muzyka i zabawa), z wyszukiwaniem po nazwie. Kliknięcie umieszcza obrazek na aktywnej warstwie w podanym rozmiarze; obrazki wieloczęściowe są grupowane. To zwykłe kształty, więc można je edytować [węzeł po węźle](Narzedzia-projektowe).
+Zakładka panelu bocznego z **310 jednokolorowymi obrazkami w 9 kategoriach** (zwierzęta, natura, święta, symbole, kształty, narzędzia, jedzenie, przedmioty, muzyka i zabawa), z wyszukiwaniem po nazwie. Kliknięcie umieszcza obrazek na aktywnej warstwie w podanym rozmiarze; obrazki wieloczęściowe są grupowane. To zwykłe kształty, więc można je edytować [węzeł po węźle](Narzedzia-projektowe). Strzałka w linii tytułu kategorii zwija ją do tej linii lub rozwija.
 
 * **Kropki:** niebieska = dołączony do programu, zielona = twój (zapisany lub pobrany), pomarańczowa = wynik online, którego licencja wymaga podania autora.
 * **Online:** przeszukuj otwarte kolekcje ikon [Iconify](https://iconify.design/) z poziomu programu, zobacz kolekcję, licencję i autora, zapisz obrazek w wybranej kategorii (istniejącej lub nowej). Można też pobrać z adresu WWW lub dodać pliki SVG.

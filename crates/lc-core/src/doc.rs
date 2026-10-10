@@ -84,6 +84,13 @@ fn d_min_power() -> f64 {
     0.0
 }
 
+/// Default speed of every layer in mm/min; the device profile keeps its own value for each layer.
+pub const DEFAULT_LAYER_SPEED_MM_MIN: f64 = 1000.0;
+
+fn d_layer_speeds() -> Vec<f64> {
+    vec![DEFAULT_LAYER_SPEED_MM_MIN; 30]
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Layer {
     pub name: String,
@@ -109,6 +116,9 @@ pub struct Layer {
     /// Image engraving: power (percent) for the lightest burnt dot in grayscale mode.
     #[serde(default = "d_min_power")]
     pub min_power: f64,
+    /// Switch the air assist (air pump) on while this layer burns.
+    #[serde(default)]
+    pub air_assist: bool,
 }
 
 impl Layer {
@@ -117,7 +127,7 @@ impl Layer {
             name: format!("C{:02}", color),
             color,
             mode: LayerMode::Line,
-            speed: 1000.0,
+            speed: DEFAULT_LAYER_SPEED_MM_MIN / 60.0,
             power: 100.0,
             passes: 1,
             interval: 0.1,
@@ -128,6 +138,7 @@ impl Layer {
             visible: true,
             dither: Dither::default(),
             min_power: 0.0,
+            air_assist: false,
         }
     }
 }
@@ -480,9 +491,26 @@ pub struct Device {
     /// Quarter turns clockwise applied to the camera picture (0..=3).
     #[serde(default)]
     pub camera_rotation: u8,
+    /// Default speed of each of the 30 layers in mm/min, kept with the device and used for new documents.
+    #[serde(default = "d_layer_speeds")]
+    pub layer_speeds: Vec<f64>,
 }
 
 impl Device {
+    /// Default speed of layer `i` in mm/s.
+    pub fn layer_speed_mm_s(&self, i: usize) -> f64 {
+        self.layer_speeds.get(i).copied().filter(|v| *v > 0.0).unwrap_or(DEFAULT_LAYER_SPEED_MM_MIN) / 60.0
+    }
+    /// Remember `mm_s` as the default speed of layer `i`.
+    pub fn set_layer_speed_mm_s(&mut self, i: usize, mm_s: f64) {
+        if self.layer_speeds.len() < 30 {
+            self.layer_speeds.resize(30, DEFAULT_LAYER_SPEED_MM_MIN);
+        }
+        if let Some(v) = self.layer_speeds.get_mut(i) {
+            *v = mm_s * 60.0;
+        }
+    }
+
     /// Where the machine's zero is, in design coordinates (millimetres, y down). Jobs start and end here.
     pub fn home_point(&self) -> Pt {
         match self.origin {
@@ -534,6 +562,7 @@ impl Default for Device {
             tcp_port: 3333,
             camera_url: String::new(),
             camera_rotation: 0,
+            layer_speeds: d_layer_speeds(),
         }
     }
 }

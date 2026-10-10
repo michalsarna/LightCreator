@@ -266,6 +266,9 @@ pub fn generate(doc: &Document) -> Job {
         let _ = writeln!(w.out, "{} S0", if dev.dynamic_power { "M4" } else { "M3" });
     }
 
+    // Air assist: M8 / M9 for GRBL, the fan commands for Marlin.
+    let (air_on, air_off) = if dev.controller == Controller::Marlin { ("M106 S255", "M107") } else { ("M8", "M9") };
+    let mut air = false;
     for li in doc.layer_order() {
         let layer = &doc.layers[li];
         if !layer.output {
@@ -278,6 +281,10 @@ pub fn generate(doc: &Document) -> Job {
         }
         w.layer = li;
         let _ = writeln!(w.out, "; layer {} ({}) speed {} mm/s power {}%", layer.name, layer.mode.label(), layer.speed, layer.power);
+        if layer.air_assist != air {
+            air = layer.air_assist;
+            let _ = writeln!(w.out, "{} ; air assist {}", if air { air_on } else { air_off }, if air { "on" } else { "off" });
+        }
         for pass in 0..layer.passes.max(1) {
             if layer.passes > 1 {
                 let _ = writeln!(w.out, "; pass {}/{}", pass + 1, layer.passes);
@@ -338,6 +345,9 @@ pub fn generate(doc: &Document) -> Job {
     let _ = writeln!(w.out, "{}", if dev.controller == Controller::Marlin { "M5 I ; laser off" } else { "M5 ; laser off" });
     if dev.return_home {
         w.travel(dev.home_point());
+    }
+    if air {
+        let _ = writeln!(w.out, "{air_off} ; air assist off");
     }
     if dev.controller != Controller::Marlin {
         let _ = writeln!(w.out, "M2");

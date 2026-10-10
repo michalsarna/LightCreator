@@ -4,7 +4,7 @@
 
 ![Gallery](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/24-clipart.png)
 
-A side-panel tab with **310 single-colour pictures in 9 categories** (animals, nature, celebrations, symbols, shapes, tools, food, objects, music and fun), searchable by name. Click one to place it on the active layer at a size you set; multi-part pictures are grouped. Pictures are ordinary shapes, so they can be edited [node by node](Design-Tools).
+A side-panel tab with **310 single-colour pictures in 9 categories** (animals, nature, celebrations, symbols, shapes, tools, food, objects, music and fun), searchable by name. Click one to place it on the active layer at a size you set; multi-part pictures are grouped. Pictures are ordinary shapes, so they can be edited [node by node](Design-Tools). The arrow on a category's title line folds the category up to that line or opens it again.
 
 * **Dots:** blue = ships with the program, green = yours (saved or downloaded), orange = online result whose licence asks for credit.
 * **Online:** search the open icon collections of [Iconify](https://iconify.design/) from inside the program, see collection, licence and author, and save a picture under a category (existing or new). You can also download from a web address or add SVG files.

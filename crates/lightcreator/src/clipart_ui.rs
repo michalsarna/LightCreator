@@ -38,11 +38,13 @@ pub struct ClipState {
     pub size_mm: f64,
     pub dialog: Option<ClipDialog>,
     pub online: Option<OnlineDlg>,
+    /// Categories folded up to their title line.
+    pub collapsed: std::collections::HashSet<String>,
 }
 
 impl ClipState {
     pub fn new(lib: Library) -> ClipState {
-        let mut s = ClipState { lib, user_svgs: HashMap::new(), filter: String::new(), category: None, show_builtin: true, show_user: true, size_mm: 50.0, dialog: None, online: None };
+        let mut s = ClipState { lib, user_svgs: HashMap::new(), filter: String::new(), category: None, show_builtin: true, show_user: true, size_mm: 50.0, dialog: None, online: None, collapsed: Default::default() };
         s.reload();
         s
     }
@@ -177,35 +179,60 @@ impl App {
         tiles.retain(|t| self.clip.category.as_ref().map_or(true, |c| *c == t.category) && (q.is_empty() || t.name.to_lowercase().contains(&q) || tr_owned(&t.category).to_lowercase().contains(&q)));
         tiles.sort_by(|a, b| (tr_owned(&a.category).to_lowercase(), a.name.to_lowercase()).cmp(&(tr_owned(&b.category).to_lowercase(), b.name.to_lowercase())));
         let mut action: Option<Action> = None;
+        let mut collapsed = std::mem::take(&mut self.clip.collapsed);
         egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
             if tiles.is_empty() {
                 ui.label(RichText::new(tr("No pictures here. Use Online… to find some.")).color(theme::text_dim()));
             }
             let mut last_cat = String::new();
             let mut row: Vec<&Tile> = vec![];
-            let flush = |ui: &mut egui::Ui, row: &mut Vec<&Tile>, cat: &str, app: &App, action: &mut Option<Action>| {
+            let flush = |ui: &mut egui::Ui, row: &mut Vec<&Tile>, cat: &str, app: &App, action: &mut Option<Action>, collapsed: &mut std::collections::HashSet<String>| {
                 if row.is_empty() {
                     return;
                 }
                 ui.add_space(4.0);
-                ui.label(RichText::new(format!("{}  ({})", tr_owned(cat), row.len())).strong());
-                ui.horizontal_wrapped(|ui| {
-                    ui.spacing_mut().item_spacing = egui::vec2(5.0, 5.0);
-                    for t in row.iter() {
-                        app.draw_tile(ui, t, action);
+                // Title line with an arrow: click it to fold the category up or open it again.
+                let open = !collapsed.contains(cat);
+                let (rect, resp) = ui.allocate_exact_size(egui::vec2(ui.available_width(), 22.0), egui::Sense::click());
+                if resp.hovered() {
+                    ui.painter().rect_filled(rect, 4.0, theme::panel_dark());
+                }
+                let arrow = egui::Rect::from_center_size(egui::pos2(rect.left() + 11.0, rect.center().y), egui::vec2(14.0, 14.0));
+                crate::icons::paint(ui, arrow, if open { "chevron-down" } else { "chevron-right" }, theme::text());
+                ui.painter().text(
+                    egui::pos2(rect.left() + 24.0, rect.center().y),
+                    egui::Align2::LEFT_CENTER,
+                    format!("{}  ({})", tr_owned(cat), row.len()),
+                    egui::FontId::proportional(13.5),
+                    theme::text(),
+                );
+                if resp.on_hover_text(tr(if open { "Fold up" } else { "Unfold" })).clicked() {
+                    if open {
+                        collapsed.insert(cat.to_string());
+                    } else {
+                        collapsed.remove(cat);
                     }
-                });
+                }
+                if open {
+                    ui.horizontal_wrapped(|ui| {
+                        ui.spacing_mut().item_spacing = egui::vec2(5.0, 5.0);
+                        for t in row.iter() {
+                            app.draw_tile(ui, t, action);
+                        }
+                    });
+                }
                 row.clear();
             };
             for t in &tiles {
                 if t.category != last_cat {
-                    flush(ui, &mut row, &last_cat.clone(), self, &mut action);
+                    flush(ui, &mut row, &last_cat.clone(), self, &mut action, &mut collapsed);
                     last_cat = t.category.clone();
                 }
                 row.push(t);
             }
-            flush(ui, &mut row, &last_cat.clone(), self, &mut action);
+            flush(ui, &mut row, &last_cat.clone(), self, &mut action, &mut collapsed);
         });
+        self.clip.collapsed = collapsed;
         match action {
             Some(Action::Place(bytes, label)) => self.place_clip(&bytes, &label),
             Some(Action::Dialog(d)) => self.clip.dialog = Some(d),

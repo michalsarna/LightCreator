@@ -6,8 +6,10 @@
 
 ## Layers
 * 30 colour layers. Each has a **mode** (Line, Fill, Fill + Line, Offset fill), speed, power, passes, interval, scan angle, overscan, bidirectional scanning, and output / visibility switches.
-* New layers start at 100 % power and 1000 mm/s.
+* New layers start at 100 % power and 1000 mm/min. The speed of each layer is kept in the **device profile**: a speed you set for a layer becomes its default for that device and for new documents. Speeds are shown per second or per minute (device option *Speed units*), in mm or inches.
+* **Air assist:** each layer has an *Air pump on* switch. The G-code turns the pump on (`M8`; on Marlin the fan) when a layer that wants it starts, off when a layer without it starts, and off at the end.
 * The colour strip at the bottom shows layer names. Double-click a name (there or in the **Layers** tab) to open the layer options window.
+* The three switches at the end of each row, headed by icons, are output (burn), visible and air pump. *Image settings* (dithering, minimum power) show only for layers that hold bitmaps.
 * The **Layers** tab lists layers in **burn order**; move them up or down to change it. The Properties tab shows the layer colour of the selection.
 
 ## Modes
@@ -29,5 +31,5 @@ Starting settings for common materials and operations (diode and CO2). Apply the
 ![Materials](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/11-materials.png)
 
 ## Preview window
-The whole job with each operation (layer, fill, line, offset, image, pass) in its own or the layer colour, per-operation switches, optional travel moves, machine zero at its real corner, time-based playback (15 s fit, real time, ×10 to ×200), scrub slider, and totals for time, length, passes and moves.
+Opens zoomed to the objects to burn; two icons in its title line fit the view to the work area or to all objects. The *Preview…* button on the control bar turns light blue while the window is open and closes it when pressed again. The whole job with each operation (layer, fill, line, offset, image, pass) in its own or the layer colour, per-operation switches, optional travel moves, machine zero at its real corner, time-based playback (15 s fit, real time, ×10 to ×200), scrub slider, and totals for time, length, passes and moves.
 ![Preview](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/12-preview.png)

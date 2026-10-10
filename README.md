@@ -1,11 +1,5 @@
 <p align="center"><img src="assets/icons/icon-256.png" alt="LightCreator icon" width="128"></p>
 
-<p align="center">
-  <a href="SUPPORT.md">
-    <img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=%E2%98%95&slug=michalsarna&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" alt="Buy me a coffee" height="48">
-  </a>
-</p>
-
 # LightCreator
 
 See [FEATURES.md](FEATURES.md) for what the app can do, [SUPPORT.md](SUPPORT.md) for how to support the project, [INSTALL.md](INSTALL.md) for how to run it from source and [VERSIONS.md](VERSIONS.md) for the change log.
@@ -56,7 +50,8 @@ A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
   four-corner alignment.
 * **Preview:** separate preview window with every burn operation in its own colour, optional travel moves and a
   simulation slider; layers can be reordered to change the burn order.
-* **Interface:** native menu bar on macOS, in-window menu on Windows and Linux, seven languages
+* **Interface:** flat, square window frame with its own title bar, icon control bar and arrange bar, recent files,
+  native menu bar on macOS, in-window menu on Windows and Linux, seven languages
   (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी) and four colour schemes.
 
 ### What has and has not been verified
@@ -99,3 +94,11 @@ machines whose zero is at the front-left (configurable under *Laser → Device s
 
 > **Safety:** lasers are dangerous. Always test G-code at low power, wear eye protection, never leave a
 > running machine unattended and verify your machine's `$30` (S-max) and `$32` (laser mode) settings.
+
+---
+
+<p align="center">
+  <a href="SUPPORT.md">
+    <img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=%E2%98%95&slug=michalsarna&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" alt="Buy me a coffee" height="48">
+  </a>
+</p>

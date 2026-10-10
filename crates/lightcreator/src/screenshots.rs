@@ -129,6 +129,13 @@ fn render_screenshots() {
     {
         let a = app(&mut h);
         a.cfg = None;
+        a.side_tab = SideTab::Device;
+    }
+    save(&mut h, "27-device-tab.png");
+
+    {
+        let a = app(&mut h);
+        a.cfg = None;
         a.side_tab = SideTab::Properties;
         a.scheme = Scheme::Light;
         a.lang = Lang::Pl;

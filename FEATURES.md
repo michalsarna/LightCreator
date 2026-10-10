@@ -17,7 +17,8 @@
   them with a rounded corner instead. In the node tool the bar rounds just the selected corners.
 * **Boolean operations:** union, intersection, subtract and exclusive or of selected shapes.
 * **Offset shape:** grow or shrink outlines by a distance, keeping or replacing the original.
-* Numeric position and size, rotate, flip, align, centre on bed, grid array, copy / paste / duplicate.
+* Numeric position and size, rotate, flip, align, centre on bed, **centre on each other** (Arrange menu and
+  right-click menu: the centres of the selected objects, groups counting as one, are put on the same point), grid array, copy / paste / duplicate.
 * **Grouping:** group objects so they select and transform together; layers are not changed. Copies get their
   own group.
 * **Locking:** lock objects or groups (Ctrl+L, Ctrl+Shift+L to unlock). Locked objects cannot be moved,
@@ -28,8 +29,19 @@
 * **Right-click context menu** (with small icons for flips, rotations, order, alignment) with the common commands (copy, paste, group, arrange, shape operations,
   adjust and trace for images).
 * Undo / redo, snap to grid, rulers, zoom and pan, drag and drop of files.
+* **Window buttons:** Preview and Camera view buttons turn light blue while their window is open and close it when
+  pressed again. The Overlay button follows Camera view and is always visible; it is greyed out until there is a
+  picture to show (a saved photo, or the live camera while its window is open) and then switches it on the work area.
+  Start / STOP are written in capitals.
+* **Control bar:** name of the current tool in a box of fixed width, New / Open / Save icons, switches for the grid,
+  the secondary grid and snapping (icons, highlighted while on) and the Toolpaths button, green while the toolpaths
+  are shown and grey otherwise. Toolpaths are drawn in layer colours darkened or lightened until they stand out from
+  the work area.
 * **Tool bar groups:** selecting and node editing, then the tools that insert new objects (shapes, line,
-  polyline, text), then view navigation, each group set apart by a separator.
+  polyline, text), then the shape operations (union, intersection, subtract, exclusive or) and finally view
+  navigation, each group set apart by a separator.
+* **Arrange bar:** a narrow icon strip between the work area and the side panel with align, centre, turn, mirror,
+  group / lock and order commands for the selection (hover for the names).
 * The node-editing bar on the canvas hides when you click another window such as the preview, and comes back when
   you click the work area again.
 * **Navigation:** pan, zoom in and zoom out sit in their own group under the drawing tools, together with two
@@ -49,6 +61,13 @@
 * **Import** submenu: SVG (curves are kept as Béziers; colours map to layers), bitmaps (PNG, JPEG, BMP, GIF,
   WebP) and Adobe Illustrator / PDF (first page, vector paths; Illustrator files saved with PDF compatibility).
 * **Export** submenu: SVG, G-code, and HPGL (`.plt`) / DXF. Native `.lcr` projects embed images.
+* **Layer list:** the three switches at the end of each row (output, visible, air pump) have icon headings above
+  the list; the layer colour is shown next to the title of the cut settings.
+* **Side panel layout:** Properties is laid out as a table with sections separated by lines (position and size,
+  rotation, mirroring, alignment, layer) and buttons of one size. Image settings of a layer show only when the layer
+  holds bitmap images. In the Device tab the jog arrows, Home, Unlock, Pause and Resume are equal icon buttons (STOP
+  stays red and plain), and jog step, jog feed and frame power sit together above them. The console output has its
+  own background colour.
 * **Image import dialog:** preview with rotate (90° steps and free angle), flip, brightness, contrast, gamma,
   auto levels, negative and size. The same dialog adjusts an image already on the page.
 * **Trace image:** turn the dark (or light) areas of a bitmap into Bézier outlines with threshold, speckle
@@ -57,12 +76,14 @@
 **Cuts and layers**
 * 30 colour layers with mode Line, Fill, Fill + Line or Offset fill; speed, power, passes, interval, scan
   angle, overscan and bidirectional scanning; output and visibility switches.
+* **Air assist:** each layer has an "Air pump on" switch; the G-code turns the pump on (M8, or the fan on Marlin)
+  when a layer that wants it starts, off when a layer without it starts, and off at the end of the job.
 * **Offset fill:** concentric inward rings at the layer interval.
 * **Raster engraving:** images engrave line by line at the layer interval with threshold, Floyd-Steinberg,
   Jarvis, Stucki, Atkinson, ordered or grayscale power (minimum and maximum power); negative option per image.
 * Inner shapes are cut first, nearest-neighbour ordering, live toolpath preview with time estimate.
 * The layer colour strip at the bottom shows the layer names. Double-clicking a layer name there or in the
-  Layers tab opens the layer options window (name, mode, speed, power, passes, fill and image settings). New layers start at 100 % power and 1000 mm/s.
+  Layers tab opens the layer options window (name, mode, speed, power, passes, fill and image settings). New layers start at 100 % power and 1000 mm/min; the speed of each layer is kept in the device profile (a speed you type for a layer becomes that layer's default for the device and for new documents).
 * The **Layers** tab lists layers in burn order; move them up or down to change the order. The Properties tab
   shows the colour of the selected object's layer.
 * **Preview window:** the whole job with each burn operation (layer, fill, line, offset, image, pass) in its own
@@ -108,7 +129,7 @@
 
 **Clipart gallery**
 * A side-panel tab with 310 ready-made single-colour pictures in 9 categories (animals, nature, celebrations,
-  symbols, shapes, tools, food, objects, music and fun) shipped with the program, searchable by name. Click one
+  symbols, shapes, tools, food, objects, music and fun) shipped with the program, searchable by name. Each category has an arrow on its title line that folds it up or opens it again. Click a picture
   to place it on the active layer at a size you set; multi-part pictures are grouped.
 * **Dots:** blue for pictures that come with the program, green for pictures you saved or downloaded.
 * **Online:** search the open icon collections of Iconify from inside the program, see the collection, licence
@@ -128,8 +149,11 @@
   and Help > Project page on GitHub opens the repository.
 
 **Interface**
-* Side panel with four tabs: Properties, Cuts / Layers, Device and Console (live view of everything sent to and
-  received from the serial port, with status polling hidden by default).
+* Side panel with tabs for Properties, Layers, Device, Console (live view of everything sent to and received from
+  the serial port, with status polling hidden by default), Clipart and, when a camera is set, Camera view.
+* **Own window frame:** no system title bar and no rounded corners. A flat bar at the top shows the icon, the
+  title (with the open file) and modern minimise / maximise / close buttons; drag it to move the window, double-click
+  to maximise, and resize from the window edges.
 * Native macOS menu bar; in-window menu on Windows and Linux.
 * Languages: English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी.
 * Colour schemes: Dark, Light Dark, Medium Light, Light.

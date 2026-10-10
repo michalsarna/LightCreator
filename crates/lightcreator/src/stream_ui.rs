@@ -20,7 +20,6 @@ pub enum StreamMode {
 }
 
 impl StreamMode {
-    pub const ALL: [StreamMode; 3] = [StreamMode::Floating, StreamMode::Detached, StreamMode::Tab];
     pub fn label(self) -> &'static str {
         match self {
             StreamMode::Floating => "Floating window",
@@ -83,12 +82,12 @@ impl App {
 
     /// Picture and controls, shared by the three ways of showing the stream.
     pub fn stream_view(&mut self, ui: &mut egui::Ui) {
-        let url = self.doc.device.camera_url.trim().to_string();
-        ui.horizontal_wrapped(|ui| {
-            ui.label(tr("Show in"));
+        ui.horizontal(|ui| {
             let before = self.stream_mode;
-            for m in StreamMode::ALL {
-                ui.selectable_value(&mut self.stream_mode, m, tr(m.label()));
+            for (m, icon) in [(StreamMode::Floating, "picture-in-picture-2"), (StreamMode::Detached, "square-arrow-out-up-right"), (StreamMode::Tab, "panel-right")] {
+                if crate::app::toggle_icon(ui, icon, &tr(m.label()), self.stream_mode == m) {
+                    self.stream_mode = m;
+                }
             }
             if before != self.stream_mode && self.stream_mode == StreamMode::Tab {
                 self.side_tab = SideTab::Camera;
@@ -96,9 +95,12 @@ impl App {
             if before == StreamMode::Tab && self.stream_mode != StreamMode::Tab && self.side_tab == SideTab::Camera {
                 self.side_tab = SideTab::Properties;
             }
-        });
-        ui.label(RichText::new(&url).monospace().color(theme::text_dim()));
-        ui.horizontal(|ui| {
+            ui.separator();
+            let (on, can) = self.overlay_state();
+            if crate::app::window_toggle(ui, &tr("Overlay"), &tr("Show or hide the camera overlay on the work area"), on, can) {
+                self.toggle_overlay_button();
+            }
+            ui.separator();
             if ui.button("+").on_hover_text(tr("Zoom in")).clicked() {
                 self.stream_zoom = (self.stream_zoom * 1.25).min(MAX_ZOOM);
             }
@@ -141,9 +143,8 @@ impl App {
             }
         }
         if !self.stream_err.is_empty() {
-            ui.label(RichText::new(trf("Stream error: {}", &[&self.stream_err])).color(egui::Color32::from_rgb(0xc0, 0x30, 0x30)));
+            ui.label(RichText::new(trf("Stream error: {}", &[&self.stream_err.replace(self.doc.device.camera_url.trim(), "…")])).color(egui::Color32::from_rgb(0xc0, 0x30, 0x30)));
         }
-        ui.checkbox(&mut self.stream_overlay, tr("Show as overlay on the work area"));
     }
 
     pub fn stream_window(&mut self, ctx: &egui::Context) {
@@ -159,7 +160,10 @@ impl App {
         match self.stream_mode {
             StreamMode::Floating => {
                 let mut open = true;
-                egui::Window::new(tr("Camera view")).open(&mut open).default_size([680.0, 540.0]).resizable(true).show(ctx, |ui| self.stream_view(ui));
+                egui::Window::new("camera_window").title_bar(false).default_size([680.0, 540.0]).resizable(true).show(ctx, |ui| {
+                    crate::window_ui::mini_title(ui, &tr("Camera view"), &mut open, |_| {});
+                    self.stream_view(ui);
+                });
                 if !open {
                     self.stream_closed();
                 }

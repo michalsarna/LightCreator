@@ -11,7 +11,7 @@
 5. **Podejrzyj** zadanie: okno podglądu pokazuje każdą operację innym kolorem, opcjonalnie ruchy jałowe oraz suwak odtwarzania z szacowanym czasem.
    ![Podgląd](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/12-preview.png)
 6. **Obrysuj** projekt (zakładka Device), żeby sprawdzić położenie bez wypalania (moc obrysu to ustawienie urządzenia).
-7. **Uruchom** zadanie. W razie potrzeby użyj pauzy / wznowienia i stopu. Zakładka **Console** pokazuje całą komunikację.
+7. **Uruchom** zadanie (przycisk jest aktywny po podłączeniu lasera, a w trakcie pracy zamienia się w **STOP**). W razie potrzeby użyj pauzy / wznowienia. Zakładka **Console** pokazuje całą komunikację.
 8. **Nie masz lasera?** Wyeksportuj G-code (*File → Export*) albo użyj [Symulatora GRBL](Symulator-GRBL).
 
 > ⚠️ Pierwszy test zawsze przy niskiej mocy na odpadzie. Zobacz [Bezpieczeństwo i ograniczenia](Bezpieczenstwo-i-ograniczenia).
