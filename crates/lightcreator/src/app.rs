@@ -543,10 +543,18 @@ impl App {
     }
 
     // ---------- file operations ----------
+    /// Give every layer the default speed that the device profile keeps for it.
+    pub fn apply_layer_speeds(&mut self) {
+        for (i, l) in self.doc.layers.iter_mut().enumerate() {
+            l.speed = self.doc.device.layer_speed_mm_s(i);
+        }
+    }
+
     pub fn new_doc(&mut self) {
         let device = self.doc.device.clone();
         self.doc = Document::default();
         self.doc.device = device;
+        self.apply_layer_speeds();
         self.undo.clear();
         self.redo.clear();
         self.sel.clear();
@@ -1853,5 +1861,28 @@ mod centre_tests {
         // One object alone is not enough.
         a.sel = vec![big];
         assert!(!a.act_enabled(Act::CenterEachOther));
+    }
+}
+
+#[cfg(test)]
+mod layer_speed_tests {
+    use super::*;
+
+    #[test]
+    fn layer_speeds_follow_the_device_profile() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.profiles = vec![lc_core::Device::default()];
+        a.enter_editor(0);
+        assert!((a.doc.layers[2].speed - 1000.0 / 60.0).abs() < 1e-9);
+        // An edit in the layer panel is stored in the profile.
+        let before = a.doc.layers.clone();
+        a.doc.layers[2].speed = 30.0;
+        a.commit_layer_edit(10.0, before);
+        assert_eq!(a.profiles[0].layer_speeds[2], 1800.0);
+        // A new document starts with those speeds.
+        a.new_doc();
+        assert_eq!(a.doc.layers[2].speed, 30.0);
+        assert!((a.doc.layers[3].speed - 1000.0 / 60.0).abs() < 1e-9);
     }
 }

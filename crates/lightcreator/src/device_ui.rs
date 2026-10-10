@@ -35,6 +35,10 @@ impl App {
         let Some(dev) = self.profiles.get(idx).cloned() else { return false };
         self.active = idx;
         self.doc.device = dev;
+        // An empty new document takes the layer speeds of the device; a loaded one keeps its own.
+        if self.doc.shapes.is_empty() && self.path.is_none() {
+            self.apply_layer_speeds();
+        }
         self.touch();
         self.view.need_fit = true;
         self.screen = Screen::Editor;

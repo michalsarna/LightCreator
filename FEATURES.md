@@ -83,7 +83,7 @@
   Jarvis, Stucki, Atkinson, ordered or grayscale power (minimum and maximum power); negative option per image.
 * Inner shapes are cut first, nearest-neighbour ordering, live toolpath preview with time estimate.
 * The layer colour strip at the bottom shows the layer names. Double-clicking a layer name there or in the
-  Layers tab opens the layer options window (name, mode, speed, power, passes, fill and image settings). New layers start at 100 % power and 1000 mm/s.
+  Layers tab opens the layer options window (name, mode, speed, power, passes, fill and image settings). New layers start at 100 % power and 1000 mm/min; the speed of each layer is kept in the device profile (a speed you type for a layer becomes that layer's default for the device and for new documents).
 * The **Layers** tab lists layers in burn order; move them up or down to change the order. The Properties tab
   shows the colour of the selected object's layer.
 * **Preview window:** the whole job with each burn operation (layer, fill, line, offset, image, pass) in its own
@@ -129,7 +129,7 @@
 
 **Clipart gallery**
 * A side-panel tab with 310 ready-made single-colour pictures in 9 categories (animals, nature, celebrations,
-  symbols, shapes, tools, food, objects, music and fun) shipped with the program, searchable by name. Click one
+  symbols, shapes, tools, food, objects, music and fun) shipped with the program, searchable by name. Each category has an arrow on its title line that folds it up or opens it again. Click a picture
   to place it on the active layer at a size you set; multi-part pictures are grouped.
 * **Dots:** blue for pictures that come with the program, green for pictures you saved or downloaded.
 * **Online:** search the open icon collections of Iconify from inside the program, see the collection, licence

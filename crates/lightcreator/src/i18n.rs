@@ -309,6 +309,8 @@ const TABLE: &[[&str; 7]] = &[
     ["Rotation", "Obrót", "Drehung", "Rotazione", "Kierto", "旋转", "घुमाव"],
     ["Mirror and centre", "Odbicie i środek", "Spiegeln und zentrieren", "Specchio e centro", "Peilaus ja keskitys", "镜像和居中", "प्रतिबिंब और केंद्र"],
     ["Alignment", "Wyrównanie", "Ausrichtung", "Allineamento", "Tasaus", "对齐", "संरेखण"],
+    ["Fold up", "Zwiń", "Zuklappen", "Comprimi", "Pienennä ryhmä", "折叠", "समेटें"],
+    ["Unfold", "Rozwiń", "Aufklappen", "Espandi", "Laajenna", "展开", "फैलाएँ"],
     ["Units", "Jednostki", "Einheiten", "Unità", "Yksiköt", "单位", "इकाइयाँ"],
     ["Millimetres (mm)", "Milimetry (mm)", "Millimeter (mm)", "Millimetri (mm)", "Millimetrit (mm)", "毫米 (mm)", "मिलीमीटर (mm)"],
     ["Inches (in)", "Cale (in)", "Zoll (in)", "Pollici (in)", "Tuumat (in)", "英寸 (in)", "इंच (in)"],

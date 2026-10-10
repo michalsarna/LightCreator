@@ -347,8 +347,16 @@ impl App {
     }
 
     /// Record an undo step (one per editing burst) and refresh when the layers changed.
-    fn commit_layer_edit(&mut self, now: f64, before: Vec<lc_core::Layer>) {
+    pub fn commit_layer_edit(&mut self, now: f64, before: Vec<lc_core::Layer>) {
         if self.doc.layers != before {
+            // A speed typed for a layer becomes that layer's default in the device profile.
+            for i in 0..self.doc.layers.len().min(before.len()) {
+                if self.doc.layers[i].speed != before[i].speed {
+                    let v = self.doc.layers[i].speed;
+                    self.doc.device.set_layer_speed_mm_s(i, v);
+                }
+            }
+            self.sync_profile();
             if now - self.last_layer_undo > 0.8 {
                 let mut snap = self.doc.clone();
                 snap.layers = before;
