@@ -155,7 +155,10 @@ impl App {
         match self.stream_mode {
             StreamMode::Floating => {
                 let mut open = true;
-                egui::Window::new(RichText::new(tr("Camera view")).size(12.0)).open(&mut open).default_size([680.0, 540.0]).resizable(true).show(ctx, |ui| self.stream_view(ui));
+                egui::Window::new("camera_window").title_bar(false).default_size([680.0, 540.0]).resizable(true).show(ctx, |ui| {
+                    crate::window_ui::mini_title(ui, &tr("Camera view"), &mut open);
+                    self.stream_view(ui);
+                });
                 if !open {
                     self.stream_closed();
                 }

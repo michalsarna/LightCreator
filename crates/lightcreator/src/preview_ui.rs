@@ -131,7 +131,8 @@ impl App {
         let line_w = self.grid_prefs.line_width;
         let (bw, bh) = (self.doc.device.bed_w, self.doc.device.bed_h);
         let Some((_, job)) = self.pv.job.take() else { return };
-        egui::Window::new(RichText::new(tr("Preview")).size(12.0)).open(&mut open).default_size([980.0, 640.0]).resizable(true).show(ctx, |ui| {
+        egui::Window::new("preview_window").title_bar(false).default_size([980.0, 640.0]).resizable(true).show(ctx, |ui| {
+            crate::window_ui::mini_title(ui, &tr("Preview"), &mut open);
             ui.horizontal_wrapped(|ui| {
                 ui.label(tr("Colour by"));
                 ui.selectable_value(&mut self.pv.color_by, ColorBy::Operation, tr("Operation"));

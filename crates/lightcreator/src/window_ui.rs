@@ -155,3 +155,22 @@ impl App {
         ctx.send_viewport_cmd(ViewportCommand::InnerSize(egui::vec2(w.max(900.0), h.max(560.0))));
     }
 }
+
+/// A slim title line for floating tool windows (preview, camera): small text and a small close button.
+pub fn mini_title(ui: &mut egui::Ui, title: &str, open: &mut bool) {
+    ui.horizontal(|ui| {
+        ui.spacing_mut().item_spacing.y = 0.0;
+        ui.label(egui::RichText::new(title).size(11.0).strong().color(theme::text_dim()));
+        ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+            let (rect, resp) = ui.allocate_exact_size(egui::vec2(16.0, 16.0), Sense::click());
+            if resp.hovered() {
+                ui.painter().rect_filled(rect, 3.0, theme::text().gamma_multiply(0.15));
+            }
+            crate::icons::paint(ui, rect.shrink(3.0), "x", theme::text());
+            if resp.on_hover_text(crate::i18n::tr("Close")).clicked() {
+                *open = false;
+            }
+        });
+    });
+    ui.separator();
+}
