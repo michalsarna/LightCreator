@@ -21,6 +21,11 @@ This fetches GRBL `v1.1h.20190825` and grbl-sim into `target/grbl-sim/` and prin
 (`target/grbl-sim/grbl/grbl/sim/grbl_sim.exe`; the `.exe` is grbl-sim's own naming). `GRBL_REF` and `SIM_REF`
 select other versions.
 
+The script patches one line of grbl-sim: it reads its input with buffered `getchar()` after polling with
+`select()`, which holds every reply back until more input arrives (each `ok` comes one line late). Real GRBL answers
+at once, and without the patch a character-counting sender like LightCreator crawls along at the pace of its
+status polls.
+
 ## Use it from the app
 
 ```sh
