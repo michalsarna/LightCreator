@@ -496,6 +496,8 @@ const TABLE: &[[&str; 7]] = &[
     ["Camera view", "Widok z kamery", "Kameraansicht", "Vista fotocamera", "Kameran näkymä", "摄像头画面", "कैमरा दृश्य"],
     ["Show the live camera picture of this machine", "Pokaż obraz na żywo z kamery tej maszyny", "Live-Kamerabild dieser Maschine anzeigen", "Mostra l'immagine dal vivo della fotocamera di questa macchina", "Näytä tämän koneen kameran suora kuva", "显示此机器的实时摄像头画面", "इस मशीन का लाइव कैमरा चित्र दिखाएँ"],
     ["Waiting for the picture…", "Oczekiwanie na obraz…", "Warte auf das Bild…", "In attesa dell'immagine…", "Odotetaan kuvaa…", "正在等待画面…", "चित्र की प्रतीक्षा…"],
+    ["Default zoom", "Domyślne powiększenie", "Standardvergrößerung", "Ingrandimento predefinito", "Oletusnäkymä", "默认缩放", "डिफ़ॉल्ट ज़ूम"],
+    ["Back to the whole picture", "Wróć do widoku całego obrazu", "Zurück zum ganzen Bild", "Torna all'immagine intera", "Takaisin koko kuvaan", "返回完整画面", "पूरे चित्र पर लौटें"],
     ["Show as overlay on the work area", "Pokaż jako nakładkę na obszarze roboczym", "Als Überlagerung im Arbeitsbereich zeigen", "Mostra come sovrapposizione sull'area di lavoro", "Näytä peittona työalueella", "在工作区域上显示为叠加", "कार्य क्षेत्र पर ओवरले के रूप में दिखाएँ"],
     ["Stream error: {}", "Błąd strumienia: {}", "Stream-Fehler: {}", "Errore del flusso: {}", "Virhe virrassa: {}", "视频流错误：{}", "स्ट्रीम त्रुटि: {}"],
     ["Fit 15 s", "Dopasuj do 15 s", "Auf 15 s anpassen", "Adatta a 15 s", "Sovita 15 s", "适配 15 秒", "15 सेकंड में फ़िट"],

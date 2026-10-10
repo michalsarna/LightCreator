@@ -158,6 +158,9 @@ pub struct App {
     pub tab_seen: bool,
     /// Rotation the current stream texture was made with.
     pub stream_rot: u8,
+    /// Magnification of the camera picture in its window (1 = fitted) and its shift in pixels.
+    pub stream_zoom: f32,
+    pub stream_pan: egui::Vec2,
     pub stream: Option<(String, crate::camera_stream::StreamWorker)>,
     pub stream_tex: Option<egui::TextureHandle>,
     pub stream_err: String,
@@ -286,6 +289,8 @@ impl App {
             stream_mode: crate::stream_ui::StreamMode::Floating,
             tab_seen: false,
             stream_rot: 0,
+            stream_zoom: 1.0,
+            stream_pan: egui::Vec2::ZERO,
             stream: None,
             stream_tex: None,
             stream_err: String::new(),
