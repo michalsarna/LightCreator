@@ -52,6 +52,7 @@ pub fn tool_icon(t: Tool) -> &'static str {
         Tool::Star => "star",
         Tool::Polygon => "hexagon",
         Tool::Heart => "heart",
+        Tool::Spiral => "spiral",
         Tool::Line => "minus",
         Tool::Pen => "pen-tool",
         Tool::Text => "type",

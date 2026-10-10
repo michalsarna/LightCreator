@@ -222,6 +222,7 @@ impl App {
             Tool::Star => Some(lc_core::Contour::star(5, 0.382, w, h)),
             Tool::Polygon => Some(lc_core::Contour::polygon(self.polygon_sides, w, h)),
             Tool::Heart => Some(lc_core::Contour::heart(w, h)),
+            Tool::Spiral => Some(lc_core::Contour::spiral(self.spiral_turns, w, h)),
             _ => None,
         }
     }
@@ -692,10 +693,12 @@ impl App {
                     }
                 }
             }
-            Tool::Rect | Tool::Ellipse | Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart | Tool::Line => {
+            Tool::Rect | Tool::Ellipse | Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart | Tool::Spiral | Tool::Line => {
                 ui.ctx().set_cursor_icon(CursorIcon::Crosshair);
                 if resp.drag_started_by(PointerButton::Primary) {
                     if let Some(m) = press {
+                        // Starting another polygon or spiral brings the small window back.
+                        self.show_shape_popup = matches!(self.tool, Tool::Polygon | Tool::Spiral);
                         self.drag = Some(Drag::Create { start: self.snapped(self.s2w(o, m)) });
                     }
                 }
@@ -875,12 +878,12 @@ impl App {
                                     .collect();
                                 painter.add(egui::Shape::closed_line(pts, st));
                             }
-                            Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart => {
+                            Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart | Tool::Spiral => {
                                 let r = egui::Rect::from_two_pos(a, b);
                                 let (wm, hm) = ((r.width() / self.view.zoom) as f64, (r.height() / self.view.zoom) as f64);
                                 if let Some(ct) = self.auto_contour(wm, hm) {
                                     let pts: Vec<Pos2> = ct.flatten(0.1).pts.iter().map(|p| r.min + egui::vec2(p.x as f32 * self.view.zoom, p.y as f32 * self.view.zoom)).collect();
-                                    painter.add(egui::Shape::closed_line(pts, st));
+                                    painter.add(if ct.closed { egui::Shape::closed_line(pts, st) } else { egui::Shape::line(pts, st) });
                                 }
                             }
                             _ => {
@@ -926,7 +929,7 @@ impl App {
                     }
                     Drag::Create { start } => {
                         let mut end = self.snapped(w);
-                        if shift && matches!(self.tool, Tool::Rect | Tool::Ellipse | Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart) {
+                        if shift && matches!(self.tool, Tool::Rect | Tool::Ellipse | Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart | Tool::Spiral) {
                             let s = (end.x - start.x).abs().max((end.y - start.y).abs());
                             end = Pt::new(start.x + s * (end.x - start.x).signum(), start.y + s * (end.y - start.y).signum());
                         }
@@ -937,13 +940,18 @@ impl App {
                             let id = match self.tool {
                                 Tool::Rect => self.doc.add(layer, Kind::Rect { w: r.width(), h: r.height() }, Xf::translate(r.min.x, r.min.y)),
                                 Tool::Ellipse => self.doc.add(layer, Kind::Ellipse { w: r.width(), h: r.height() }, Xf::translate(r.min.x, r.min.y)),
-                                Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart => match self.auto_contour(r.width(), r.height()) {
+                                Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart | Tool::Spiral => match self.auto_contour(r.width(), r.height()) {
                                     Some(ct) => self.doc.add(layer, Kind::Bezier(vec![ct]), Xf::translate(r.min.x, r.min.y)),
                                     None => 0,
                                 },
                                 _ => self.doc.add(layer, Kind::Path(vec![Polyline::new(vec![start, end], false)]), Xf::IDENTITY),
                             };
                             self.sel = vec![id];
+                            if matches!(self.tool, Tool::Polygon | Tool::Spiral) {
+                                // The small window goes away; it comes back with the next shape and edits this one.
+                                self.last_param = Some((self.tool, id, r.width(), r.height()));
+                                self.show_shape_popup = false;
+                            }
                         }
                     }
                     _ => {}

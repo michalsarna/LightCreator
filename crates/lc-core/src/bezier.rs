@@ -94,6 +94,33 @@ impl Contour {
         Contour { nodes, closed: true }
     }
 
+    /// Open Archimedean spiral of `turns` turns that fills the ellipse of a `w` x `h` box, starting in its middle.
+    pub fn spiral(turns: u32, w: f64, h: f64) -> Contour {
+        let turns = turns.clamp(1, 60) as f64;
+        let (cx, cy, rx, ry) = (w / 2.0, h / 2.0, w / 2.0, h / 2.0);
+        let total = turns * std::f64::consts::TAU;
+        // About 12 curve pieces per turn keep the spiral smooth.
+        let n = (turns as usize * 12).max(6);
+        let step = total / n as f64;
+        // Position and velocity (per radian) at angle t, with the radius growing linearly to 1.
+        let at = |t: f64| {
+            let r = t / total;
+            let dr = 1.0 / total;
+            let a = t - std::f64::consts::FRAC_PI_2;
+            let p = Pt::new(cx + rx * r * a.cos(), cy + ry * r * a.sin());
+            let v = Pt::new(rx * (dr * a.cos() - r * a.sin()), ry * (dr * a.sin() + r * a.cos()));
+            (p, v)
+        };
+        let nodes = (0..=n)
+            .map(|i| {
+                let (p, v) = at(i as f64 * step);
+                let k = step / 3.0;
+                Node { p, hin: Pt::new(p.x - v.x * k, p.y - v.y * k), hout: Pt::new(p.x + v.x * k, p.y + v.y * k), smooth: true }
+            })
+            .collect();
+        Contour { nodes, closed: false }
+    }
+
     /// Star with `points` tips; the inner corners sit at `inner` (0..1) of the outer radius.
     pub fn star(points: u32, inner: f64, w: f64, h: f64) -> Contour {
         let n = points.clamp(3, 360) as usize;

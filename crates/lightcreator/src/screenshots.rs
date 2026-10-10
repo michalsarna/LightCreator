@@ -340,7 +340,7 @@ fn render_screenshots() {
         a.sel = vec![id];
         a.tool = Tool::Polygon;
         a.polygon_sides = 9;
-        a.show_polygon = true;
+        a.show_shape_popup = true;
     }
     save(&mut h, "16-shapes.png");
 
@@ -348,7 +348,7 @@ fn render_screenshots() {
     {
         let a = app(&mut h);
         a.show_prefs = false;
-        a.show_polygon = false;
+        a.show_shape_popup = false;
         a.grid_prefs = crate::prefs::GridPrefs::default();
         a.grid = 10.0;
         a.tool = Tool::Select;
