@@ -105,6 +105,8 @@ pub struct App {
     pub pen_pts: Vec<Pt>,
     pub clipboard: Vec<Shape>,
     pub path: Option<PathBuf>,
+    /// The selection handles turn and slant (true) instead of resizing (false); a click on a handle swaps them.
+    pub rotate_mode: bool,
     /// Most recently opened or saved project files, newest first (at most `MAX_RECENT`).
     pub recent: Vec<PathBuf>,
     pub status: String,
@@ -145,6 +147,8 @@ pub struct App {
     pub space_prev: Option<Tool>,
     /// Size in pixels of the canvas as last drawn.
     pub canvas_avail: (f32, f32),
+    /// Top-left corner of the work area on screen, for tests and overlays.
+    pub canvas_origin: egui::Pos2,
     /// Fit the view to all objects on the next frame.
     pub fit_all_req: bool,
     pub clip: crate::clipart_ui::ClipState,
@@ -244,6 +248,7 @@ impl App {
             pen_pts: vec![],
             clipboard: vec![],
             path: None,
+            rotate_mode: false,
             recent: saved("recent_files").and_then(|j| serde_json::from_str::<Vec<PathBuf>>(&j).ok()).unwrap_or_default().into_iter().take(crate::menu::MAX_RECENT).collect(),
             status: tr("Ready").into(),
             revision: 0,
@@ -279,6 +284,7 @@ impl App {
             node_bar_active: true,
             space_prev: None,
             canvas_avail: (900.0, 600.0),
+            canvas_origin: egui::Pos2::ZERO,
             fit_all_req: false,
             clip: crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(eframe::storage_dir("lightcreator").unwrap_or_else(std::env::temp_dir).join("clipart"))),
             show_guide: false,

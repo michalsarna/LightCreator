@@ -27,6 +27,8 @@ Tekst na żywo z czcionek systemowych (wyszukiwanie rodziny, pogrubienie, kursyw
 * **Grupowanie** (Ctrl+G) i **blokowanie** (Ctrl+L). Zablokowanych obiektów nie da się przesunąć, edytować ani usunąć, ale można je zaznaczyć i skopiować (kopia jest odblokowana).
 
 ## Zaznaczanie
+Kwadratowe uchwyty wokół zaznaczenia zmieniają rozmiar. **Kliknij uchwyt** (bez przeciągania), a zamienią się w okrągłe uchwyty narożne, które obracają zaznaczenie wokół jego środka (Shift: co 15°), i rombowe uchwyty krawędzi, które pochylają je wzdłuż tej krawędzi; ponowne kliknięcie uchwytu wraca do zmiany rozmiaru.
+
 Ramka z lewej do prawej: tylko obiekty w całości w środku. Z prawej do lewej: wszystko, czego dotyka. Shift+klik dodaje. Dwukrotne Escape wraca do narzędzia zaznaczania. Menu prawego przycisku zawiera najczęstsze polecenia.
 
 ## Widok i nawigacja

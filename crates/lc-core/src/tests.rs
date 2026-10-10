@@ -694,3 +694,17 @@ fn air_assist_is_switched_per_layer_and_off_at_the_end() {
     let n = crate::gcode::generate(&doc).gcode;
     assert!(!n.contains("M8") && !n.contains("M9") && !n.contains("M106"));
 }
+
+#[test]
+fn skew_keeps_the_anchor_line_and_shifts_points_in_proportion() {
+    let o = Pt::new(10.0, 20.0);
+    let sx = Xf::skew_about(0.5, 0.0, o);
+    // Points on the anchor line y = 20 stay; a point 10 above moves left by 5.
+    let p = sx.apply(Pt::new(30.0, 20.0));
+    assert!((p.x - 30.0).abs() < 1e-9 && (p.y - 20.0).abs() < 1e-9);
+    let q = sx.apply(Pt::new(30.0, 10.0));
+    assert!((q.x - 25.0).abs() < 1e-9 && (q.y - 10.0).abs() < 1e-9);
+    let sy = Xf::skew_about(0.0, 0.25, o);
+    let r = sy.apply(Pt::new(14.0, 50.0));
+    assert!((r.x - 14.0).abs() < 1e-9 && (r.y - 51.0).abs() < 1e-9);
+}

@@ -75,6 +75,10 @@ impl Xf {
     pub fn rotate_about(rad: f64, o: Pt) -> Xf {
         Xf::translate(-o.x, -o.y).then(Xf::rotate(rad)).then(Xf::translate(o.x, o.y))
     }
+    /// Shear about a point: `kx` shifts x by `kx` per unit of distance in y, `ky` shifts y per unit of distance in x.
+    pub fn skew_about(kx: f64, ky: f64, o: Pt) -> Xf {
+        Xf::translate(-o.x, -o.y).then(Xf { a: 1.0, b: ky, c: kx, d: 1.0, e: 0.0, f: 0.0 }).then(Xf::translate(o.x, o.y))
+    }
     /// Scale about a point.
     pub fn scale_about(sx: f64, sy: f64, o: Pt) -> Xf {
         Xf::translate(-o.x, -o.y).then(Xf::scale(sx, sy)).then(Xf::translate(o.x, o.y))

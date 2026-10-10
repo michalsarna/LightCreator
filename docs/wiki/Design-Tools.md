@@ -27,6 +27,8 @@ Live text from system fonts (family search, bold, italic, size, letter and line 
 * **Group** (Ctrl+G) and **lock** (Ctrl+L). Locked objects cannot be moved, edited or deleted but can be selected and copied (the copy is unlocked).
 
 ## Selection
+The square handles around a selection resize it. **Click a handle** (without dragging) and they become round corner handles that rotate the selection about its middle (Shift snaps to 15°) and diamond edge handles that slant it along that edge; click a handle again to go back to resizing.
+
 Drag left → right: only objects wholly inside. Right → left: everything touched. Shift+click adds. Escape twice returns to the select tool. The right-click menu holds the common commands.
 
 ## View and navigation

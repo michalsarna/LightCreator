@@ -537,6 +537,86 @@ fn node_bar_hides_when_another_window_is_clicked() {
     assert!(app(&mut h).node_bar_active);
 }
 
+/// Clicking a handle of the selection swaps resizing for turning (corners) and slanting (edges).
+#[test]
+fn clicking_a_handle_switches_between_resize_and_rotate() {
+    use eframe::egui::{pos2, Event, Modifiers, PointerButton};
+    let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.cfg = None;
+        a.enter_editor(0);
+        a.doc.add(0, Kind::Rect { w: 40.0, h: 40.0 }, Xf::translate(100.0, 100.0));
+        a.tool = Tool::Select;
+        a.sel = vec![a.doc.shapes[0].id];
+        a.view.auto_fit = false;
+    }
+    h.run_steps(4);
+    // Screen position of a point of the design.
+    let at = |h: &mut Shot, x: f64, y: f64| {
+        let a = app(h);
+        a.canvas_origin + a.view.pan + eframe::egui::vec2(x as f32 * a.view.zoom, y as f32 * a.view.zoom)
+    };
+    let button = |h: &Shot, pos: eframe::egui::Pos2, pressed: bool| h.event(Event::PointerButton { pos, button: PointerButton::Primary, pressed, modifiers: Modifiers::NONE });
+    // A plain click on the bottom right corner handle turns the handles into rotate / skew handles.
+    let corner = at(&mut h, 140.0, 140.0);
+    h.event(Event::PointerMoved(corner));
+    button(&h, corner, true);
+    button(&h, corner, false);
+    h.run_steps(3);
+    assert!(app(&mut h).rotate_mode, "first click swaps to rotating");
+    // Dragging that corner a quarter turn about the middle rotates the shape.
+    let from = corner;
+    let to = at(&mut h, 100.0, 140.0);
+    h.event(Event::PointerMoved(from));
+    button(&h, from, true);
+    for k in 1..=5 {
+        let t = k as f32 / 5.0;
+        h.event(Event::PointerMoved(pos2(from.x + (to.x - from.x) * t, from.y + (to.y - from.y) * t)));
+        h.run_steps(1);
+    }
+    button(&h, to, false);
+    h.run_steps(3);
+    let xf = app(&mut h).doc.shapes[0].xf;
+    assert!(xf.b.abs() > 0.9 && xf.a.abs() < 0.1, "rotated by about 90 degrees: {xf:?}");
+    // The top edge handle now slants the shape instead of resizing it.
+    let before = app(&mut h).doc.shapes[0].xf;
+    let b = app(&mut h).sel_bounds().unwrap();
+    let top = at(&mut h, b.center().x, b.min.y);
+    let moved = pos2(top.x + 30.0, top.y);
+    h.event(Event::PointerMoved(top));
+    button(&h, top, true);
+    for k in 1..=4 {
+        let t = k as f32 / 4.0;
+        h.event(Event::PointerMoved(pos2(top.x + 30.0 * t, top.y)));
+        h.run_steps(1);
+    }
+    button(&h, moved, false);
+    h.run_steps(3);
+    let after = app(&mut h).doc.shapes[0].xf;
+    let (det0, det1) = (before.det(), after.det());
+    assert!(after != before, "the edge drag changed the shape");
+    assert!((det0.abs() - det1.abs()).abs() < 1e-6, "a slant keeps the area: {det0} {det1}");
+    // Clicking a handle again goes back to resizing.
+    let corner = {
+        let b = app(&mut h).sel_bounds().unwrap();
+        at(&mut h, b.max.x, b.max.y)
+    };
+    h.event(Event::PointerMoved(corner));
+    button(&h, corner, true);
+    button(&h, corner, false);
+    h.run_steps(3);
+    assert!(!app(&mut h).rotate_mode, "second click swaps back");
+}
+
 /// A picture from the gallery placed on the work area and opened in the node tool.
 #[test]
 #[ignore = "writes docs/screenshots; run explicitly"]

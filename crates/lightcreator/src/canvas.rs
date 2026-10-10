@@ -8,6 +8,10 @@ use lc_core::{Kind, Node, Polyline, Pt, Rect, Xf, PALETTE};
 pub enum Drag {
     Move { start: Pt, orig: Vec<(u64, Xf)> },
     Scale { anchor: Pt, grab: Pt, handle: usize, orig: Vec<(u64, Xf)> },
+    /// Turn about the middle of the selection; `from` is the angle of the point that was grabbed.
+    Rotate { centre: Pt, from: f64, orig: Vec<(u64, Xf)> },
+    /// Slant along an edge: `horizontal` shears x by the distance from the opposite edge `anchor`.
+    Skew { horizontal: bool, anchor: Pt, grab: Pt, orig: Vec<(u64, Xf)> },
     Marquee { start: Pt },
     Create { start: Pt },
     NodeMove { start: Pt, orig: Vec<(NodeRef, Node)> },
@@ -240,6 +244,7 @@ impl App {
         let (bw, bh) = (self.doc.device.bed_w, self.doc.device.bed_h);
 
         self.canvas_avail = (rect.width(), rect.height());
+        self.canvas_origin = rect.min;
         // Fit everything on the page once, on request.
         if self.fit_all_req && rect.width() > 50.0 {
             self.fit_all_req = false;
@@ -428,15 +433,30 @@ impl App {
             }
         }
         // ---- selection ----
+        if self.sel.is_empty() || self.tool != Tool::Select {
+            self.rotate_mode = false;
+        }
         if let Some(b) = self.sel_bounds() {
             let sr = egui::Rect::from_min_max(self.w2s(o, b.min), self.w2s(o, b.max));
             painter.rect_stroke(sr, 0.0, Stroke::new(1.0, theme::accent()), egui::StrokeKind::Outside);
             let all_locked = self.sel.iter().filter_map(|id| self.doc.shape(*id)).all(|s| s.locked);
             if self.tool == Tool::Select && !all_locked {
-                for h in handle_pts(&b) {
-                    let r = egui::Rect::from_center_size(self.w2s(o, h), egui::vec2(8.0, 8.0));
-                    painter.rect_filled(r, 1.0, Color32::WHITE);
-                    painter.rect_stroke(r, 1.0, Stroke::new(1.2, theme::accent()), egui::StrokeKind::Middle);
+                for (i, h) in handle_pts(&b).into_iter().enumerate() {
+                    let p = self.w2s(o, h);
+                    if !self.rotate_mode {
+                        let r = egui::Rect::from_center_size(p, egui::vec2(8.0, 8.0));
+                        painter.rect_filled(r, 1.0, Color32::WHITE);
+                        painter.rect_stroke(r, 1.0, Stroke::new(1.2, theme::accent()), egui::StrokeKind::Middle);
+                    } else if i % 2 == 0 {
+                        // Corners turn the selection: round handles.
+                        painter.circle_filled(p, 5.0, Color32::WHITE);
+                        painter.circle_stroke(p, 5.0, Stroke::new(1.4, theme::accent()));
+                    } else {
+                        // Edges slant it: diamond handles.
+                        let d = 5.5;
+                        let pts = vec![p + egui::vec2(0.0, -d), p + egui::vec2(d, 0.0), p + egui::vec2(0.0, d), p + egui::vec2(-d, 0.0)];
+                        painter.add(egui::Shape::convex_polygon(pts, Color32::WHITE, Stroke::new(1.4, theme::accent())));
+                    }
                 }
             }
         }
@@ -522,11 +542,14 @@ impl App {
                 }
                 if let Some(m) = mouse {
                     if let Some(h) = self.hit_handle(o, m) {
-                        ui.ctx().set_cursor_icon(match h {
-                            0 | 4 => CursorIcon::ResizeNwSe,
-                            2 | 6 => CursorIcon::ResizeNeSw,
-                            1 | 5 => CursorIcon::ResizeVertical,
-                            _ => CursorIcon::ResizeHorizontal,
+                        ui.ctx().set_cursor_icon(match (self.rotate_mode, h) {
+                            (true, 0 | 2 | 4 | 6) => CursorIcon::Alias,
+                            (true, 1 | 5) => CursorIcon::ResizeHorizontal,
+                            (true, _) => CursorIcon::ResizeVertical,
+                            (false, 0 | 4) => CursorIcon::ResizeNwSe,
+                            (false, 2 | 6) => CursorIcon::ResizeNeSw,
+                            (false, 1 | 5) => CursorIcon::ResizeVertical,
+                            (false, _) => CursorIcon::ResizeHorizontal,
                         });
                     } else if self.hit_shape(self.s2w(o, m)).is_some() {
                         ui.ctx().set_cursor_icon(CursorIcon::Move);
@@ -540,7 +563,15 @@ impl App {
                             let hp = handle_pts(&b);
                             self.checkpoint();
                             let orig = self.sel.iter().filter_map(|i| self.doc.shape(*i).filter(|s| !s.locked).map(|s| (*i, s.xf))).collect();
-                            self.drag = Some(Drag::Scale { anchor: hp[(h + 4) % 8], grab: hp[h], handle: h, orig });
+                            self.drag = Some(if !self.rotate_mode {
+                                Drag::Scale { anchor: hp[(h + 4) % 8], grab: hp[h], handle: h, orig }
+                            } else if h % 2 == 0 {
+                                let centre = b.center();
+                                Drag::Rotate { centre, from: (hp[h].y - centre.y).atan2(hp[h].x - centre.x), orig }
+                            } else {
+                                // Top and bottom edges slant sideways, left and right edges slant up and down.
+                                Drag::Skew { horizontal: h % 4 == 1, anchor: hp[(h + 4) % 8], grab: hp[h], orig }
+                            });
                         } else if let Some(id) = self.hit_shape(w) {
                             if !self.sel.contains(&id) {
                                 if !shift {
@@ -562,6 +593,9 @@ impl App {
                             self.drag = Some(Drag::Marquee { start: w });
                         }
                     }
+                } else if resp.clicked() && hpos.is_some_and(|m| self.hit_handle(o, m).is_some()) {
+                    // A click on a handle swaps between resizing and turning / slanting.
+                    self.rotate_mode = !self.rotate_mode;
                 } else if resp.clicked() {
                     if let Some(m) = hpos {
                         let hit = self.hit_shape(self.s2w(o, m));
@@ -743,6 +777,40 @@ impl App {
                         for (id, xf) in orig {
                             if let Some(s) = self.doc.unlocked_mut(id) {
                                 s.xf = xf.then(Xf::scale_about(sx, sy, anchor));
+                            }
+                        }
+                        self.touch();
+                    }
+                    Drag::Rotate { centre, from, orig } => {
+                        let (centre, from) = (*centre, *from);
+                        let mut a = (w.y - centre.y).atan2(w.x - centre.x) - from;
+                        if shift {
+                            let step = 15f64.to_radians();
+                            a = (a / step).round() * step;
+                        }
+                        let orig = orig.clone();
+                        for (id, xf) in orig {
+                            if let Some(s) = self.doc.unlocked_mut(id) {
+                                s.xf = xf.then(Xf::rotate_about(a, centre));
+                            }
+                        }
+                        self.touch();
+                    }
+                    Drag::Skew { horizontal, anchor, grab, orig } => {
+                        let (horizontal, anchor, grab) = (*horizontal, *anchor, *grab);
+                        let t = if horizontal {
+                            let span = grab.y - anchor.y;
+                            let k = if span.abs() > 1e-6 { (w.x - grab.x) / span } else { 0.0 };
+                            Xf::skew_about(k.clamp(-4.0, 4.0), 0.0, anchor)
+                        } else {
+                            let span = grab.x - anchor.x;
+                            let k = if span.abs() > 1e-6 { (w.y - grab.y) / span } else { 0.0 };
+                            Xf::skew_about(0.0, k.clamp(-4.0, 4.0), anchor)
+                        };
+                        let orig = orig.clone();
+                        for (id, xf) in orig {
+                            if let Some(s) = self.doc.unlocked_mut(id) {
+                                s.xf = xf.then(t);
                             }
                         }
                         self.touch();
