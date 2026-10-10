@@ -4,4 +4,4 @@ Markdown sources of the LightCreator GitHub wiki, in English and Polish. Each pa
 
 GitHub allows one `_Sidebar` and one `_Footer` per wiki, so `_Sidebar.md` lists both languages.
 
-To publish: enable the wiki in the repository settings, create the first page once in the GitHub UI, then copy every `.md` file here except this README into `LightCreator.wiki.git` and push.
+Published automatically by `.github/workflows/wiki-sync.yml` on every push to `main` that touches this folder (the wiki must be enabled in the repository settings and its first page created once in the GitHub UI). Do not edit pages in the wiki itself: the next sync overwrites them.
