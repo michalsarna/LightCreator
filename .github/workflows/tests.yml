@@ -34,6 +34,8 @@ jobs:
           key: grbl-sim-${{ runner.os }}-${{ hashFiles('tools/grbl-sim/build.sh') }}
       - name: Build grbl-sim
         run: tools/grbl-sim/build.sh
+      - name: DEBUG probe
+        run: python3 tools/grbl-sim/debug-probe.py
       - name: GRBL simulator tests
         run: |
           set -o pipefail
@@ -42,7 +44,3 @@ jobs:
             awk '/^---- .* stdout ----$/ { t=$2 } p { print "::error title=grbl-sim::" t ": " $0; p=0 } /panicked at/ { p=1 }' grbl-sim-tests.log
             exit 1
           }
-      - name: DEBUG dump job
-        if: failure()
-        run: |
-          python3 -c "import urllib.parse,sys; d=open('target/grbl-sim-long-job.nc').read(); [print('::notice title=job%d::'%i + d[i*30000:(i+1)*30000].replace('%','%25').replace('\n','%0A')) for i in range(min(9,len(d)//30000+1))]"
