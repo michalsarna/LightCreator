@@ -116,7 +116,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::RotCcw => "rotate-ccw",
         Act::ToFront => "bring-to-front",
         Act::ToBack => "send-to-back",
-        Act::ToPath | Act::ToCurves => "spline",
+        Act::ToPath | Act::ToCurves | Act::EditNodes => "spline",
         Act::Group => "group",
         Act::Ungroup => "ungroup",
         Act::Lock => "lock",

@@ -622,6 +622,10 @@ const TABLE: &[[&str; 7]] = &[
     ["Zoom in", "Powiększ", "Vergrößern", "Ingrandisci", "Lähennä", "放大", "ज़ूम इन"],
     ["Zoom out", "Pomniejsz", "Verkleinern", "Riduci", "Loitonna", "缩小", "ज़ूम आउट"],
     ["Fit all objects", "Dopasuj do wszystkich obiektów", "Alle Objekte einpassen", "Adatta a tutti gli oggetti", "Sovita kaikki kohteet", "适应所有对象", "सभी ऑब्जेक्ट फ़िट करें"],
+    // ---- node editing entry points ----
+    ["Edit nodes", "Edytuj węzły", "Knoten bearbeiten", "Modifica nodi", "Muokkaa solmuja", "编辑节点", "नोड संपादित करें"],
+    ["Convert text to curves, or trace the image, to edit its nodes.", "Zamień tekst na krzywe albo wektoryzuj obraz, aby edytować jego węzły.", "Text in Kurven umwandeln oder das Bild nachzeichnen, um die Knoten zu bearbeiten.", "Converti il testo in curve o vettorializza l'immagine per modificarne i nodi.", "Muunna teksti käyriksi tai jäljitä kuva muokataksesi sen solmuja.", "将文字转换为曲线或描摹图像后才能编辑其节点。", "नोड संपादित करने के लिए टेक्स्ट को वक्रों में बदलें या छवि को ट्रेस करें।"],
+    ["Select a shape first, then edit its nodes.", "Najpierw zaznacz kształt, potem edytuj jego węzły.", "Zuerst eine Form auswählen, dann ihre Knoten bearbeiten.", "Seleziona prima una forma, poi modifica i suoi nodi.", "Valitse ensin muoto ja muokkaa sitten sen solmuja.", "请先选择形状，再编辑其节点。", "पहले एक आकृति चुनें, फिर उसके नोड संपादित करें।"],
 ];
 #[cfg(test)]
 mod tests {

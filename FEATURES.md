@@ -7,6 +7,9 @@
   and are ordinary editable Bézier shapes.
 * **Node editing (N):** drag nodes and Bézier handles, corner / smooth nodes, insert (double-click a segment) and
   delete nodes, turn segments into lines or curves, open and close paths. Any shape converts to curves.
+  Open it with the second tool on the tool bar (N), Arrange > Edit nodes, the right-click menu, or by
+  double-clicking a shape. Pictures placed from the clipart gallery are ordinary editable shapes and open the same
+  way, all parts of a grouped picture at once. Text is not converted behind your back: use Convert to curves first.
 * **Text tool (T):** live text from system fonts (family search, bold, italic, size, letter and line spacing,
   alignment), convertible to curves. Complex scripts such as Devanagari and Arabic are not shaped.
 * **Round corners:** Arrange > "Round corners…" replaces sharp straight corners of the selected shapes with

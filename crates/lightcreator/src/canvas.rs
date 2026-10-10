@@ -484,6 +484,19 @@ impl App {
         if !overlay_busy {
         match self.tool {
             Tool::Select => {
+                // Double-clicking a shape opens it in the node tool (text and pictures excluded).
+                if resp.double_clicked() {
+                    if let Some(m) = hpos {
+                        if let Some(id) = self.hit_shape(self.s2w(o, m)) {
+                            let editable = self.doc.shape(id).is_some_and(|s| !s.locked && !matches!(s.kind, Kind::Text(_) | Kind::Image(_)));
+                            if editable {
+                                self.sel = self.doc.group_of(id);
+                                self.node_sel.clear();
+                                self.tool = Tool::Node;
+                            }
+                        }
+                    }
+                }
                 if let Some(m) = mouse {
                     if let Some(h) = self.hit_handle(o, m) {
                         ui.ctx().set_cursor_icon(match h {

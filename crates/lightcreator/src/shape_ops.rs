@@ -211,6 +211,7 @@ impl App {
             ui.separator();
             item(ui, has_sel, Act::OffsetShape, "Offset shape…");
             item(ui, any_unlocked, Act::RoundCorners, "Round corners…");
+            item(ui, any_unlocked, Act::EditNodes, "Edit nodes");
             item(ui, any_unlocked, Act::ToCurves, "Convert to curves");
             item(ui, any_unlocked, Act::ToPath, "Convert to path");
         });

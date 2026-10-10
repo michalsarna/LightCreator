@@ -837,6 +837,7 @@ impl App {
             Act::ToBack => self.reorder(false),
             Act::ToPath => self.to_path(),
             Act::ToCurves => self.to_curves(),
+            Act::EditNodes => self.start_node_edit(),
             Act::Group => self.group_selection(),
             Act::Lock => self.lock_selection(true),
             Act::Unlock => self.lock_selection(false),

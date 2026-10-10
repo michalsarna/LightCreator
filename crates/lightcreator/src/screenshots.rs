@@ -482,6 +482,50 @@ fn render_screenshots() {
     save(&mut h, "25-clipart-online.png");
 }
 
+/// A picture from the gallery placed on the work area and opened in the node tool.
+#[test]
+#[ignore = "writes docs/screenshots; run explicitly"]
+fn render_clipart_node_editing() {
+    let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    let ctx = h.ctx.clone();
+    theme::apply(&ctx, Scheme::LightDark);
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.cfg = None;
+        a.enter_editor(0);
+        a.clip = crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(std::env::temp_dir().join(format!("lc-shot-node-{}", std::process::id()))));
+        let svg = crate::clipart_ui::BUILTIN_CLIPART.iter().find(|c| c.1 == "owl").map(|c| c.2).unwrap();
+        a.clip.size_mm = 160.0;
+        a.place_clip(svg, "owl");
+        a.view.need_fit = true;
+        a.start_node_edit();
+        a.side_tab = SideTab::Properties;
+        a.status = "Ready".into();
+    }
+    h.run_steps(4);
+    {
+        let a = app(&mut h);
+        let id = a.sel[0];
+        let n = match &a.doc.shape(id).unwrap().kind {
+            Kind::Bezier(cs) => cs[0].nodes.len().min(4),
+            _ => 0,
+        };
+        a.node_sel = (0..n).map(|k| (id, 0, k)).collect();
+    }
+    h.run_steps(3);
+    let img = h.render().expect("render");
+    let p = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../docs/screenshots/26-clipart-nodes.png");
+    img.save(&p).expect("write png");
+}
+
 /// "Fit all objects" frames everything that is on the page, wherever it is.
 #[test]
 fn fit_all_objects_shows_every_shape() {

@@ -42,8 +42,8 @@ written in Rust. The interface follows the look of [VectorCraft](https://github.
 | Hindi interface | Built-in quick guide (F1) and the round corners window |
 | ![Rounded shapes](docs/screenshots/23-rounded-shapes.png) | ![Clipart gallery](docs/screenshots/24-clipart.png) |
 | Rounded rectangle and triangle | Clipart gallery: blue dots ship with the program, green dots are yours |
-| ![Online clipart](docs/screenshots/25-clipart-online.png) | |
-| Searching open icon collections and saving into a category | |
+| ![Online clipart](docs/screenshots/25-clipart-online.png) | ![Node editing of a gallery picture](docs/screenshots/26-clipart-nodes.png) |
+| Searching open icon collections and saving into a category | A gallery picture opened in the node tool |
 
 The pictures are rendered headlessly from the real UI; regenerate them with
 `cargo test -p lightcreator --release render_screenshots -- --ignored`.
