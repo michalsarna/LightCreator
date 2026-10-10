@@ -177,7 +177,9 @@
   title (with the open file) and modern minimise / maximise / close buttons; drag it to move the window, double-click
   to maximise, and resize from the window edges.
 * Native macOS menu bar; in-window menu on Windows and Linux.
-* Languages: English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी.
+* Languages (30): English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी and 23 more European languages: Български, Català, Hrvatski, Čeština, Dansk, Nederlands, Eesti, Français, Ελληνικά, Magyar, Íslenska, Gaeilge, Latviešu, Lietuvių, Malti, Norsk bokmål, Português, Română, Slovenčina, Slovenščina, Español, Svenska, Українська. The texts of the European languages are in `assets/lang/<code>.txt`, one file per language,
+  and were prepared with machine help: corrections from native speakers are welcome. Russian is not included. The quick
+  guide exists in English and Polish; the other languages show the English text there.
 * Colour schemes: Dark, Light Dark, Medium Light, Light.
 * Application icon in every place the platform supports.
 * All interface icons (tool bar, menus, context menu, buttons) are SVG files and all text fonts (Noto Sans,

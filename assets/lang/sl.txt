@@ -1,0 +1,573 @@
+0|Datoteka
+1|Urejanje
+2|Razporedi
+3|Pogled
+4|Laser
+5|Nastavitve
+6|Pomoč
+7|Novo
+8|Odpri…
+9|Shrani
+10|Shrani kot…
+11|Uvozi SVG…
+12|Izvozi SVG…
+13|Izvozi G-code…
+14|Izhod
+15|Razveljavi
+16|Uveljavi
+17|Kopiraj
+18|Prilepi
+19|Podvoji
+20|Izbriši
+21|Izberi vse
+22|Poravnaj levo
+23|Sredina (V)
+24|Poravnaj desno
+25|Poravnaj zgoraj
+26|Sredina (N)
+27|Poravnaj spodaj
+28|Centriraj drugo na drugo
+29|Centriraj na mizo
+30|Zrcali vodoravno
+31|Zrcali navpično
+32|Zavrti za 90° v desno
+33|Zavrti za 90° v levo
+34|Postavi naprej
+35|Postavi nazaj
+36|Pretvori v pot
+37|Mreža kopij…
+38|Mreža
+39|Pripni na mrežo
+40|Predogled poti
+41|Prilagodi mizo oknu
+42|Nastavitve naprave…
+43|Okvir
+44|Začni delo
+45|O programu
+46|Jezik
+47|Barvna shema
+48|Temna
+49|Svetlo temna
+50|Srednje svetla
+51|Svetla
+52|Izbira (V)
+53|Pravokotnik (R)
+54|Elipsa (E)
+55|Črta (L)
+56|Lomljena črta / pero (P)
+57|Premik pogleda (H)
+58|Povečava (Z)
+59|Izbira
+60|Pravokotnik
+61|Elipsa
+62|Črta
+63|Zapolnitev
+64|Zapolnitev + črta
+65|Sloj {}
+66|Magnet
+67|Predogled
+68|Začni
+69|Pošlje delo na povezani laser
+70|Obhodi obris območja
+71|Shrani G-code
+72|Sloji
+73|{} — kliknite za dodelitev izbora / aktiviranje
+74|Pripravljeno
+75|Odprto: {}
+76|Odpiranje ni uspelo: {}
+77|Shranjeno: {}
+78|Shranjevanje ni uspelo: {}
+79|Uvoženih poti: {} iz {}
+80|Uvoz ni uspel: {}
+81|Izvoženo: {}
+82|Izvoz ni uspel: {}
+83|G-code shranjen: {}
+84|Najprej povežite laser (plošča Laser)
+85|Ni česa gravirati: na izhodnih slojih ni oblik
+86|Začetek dela: {} vrstic, ~{}
+87|Prekinjena povezava
+88|Povezano z {} @ {}
+89|Ni mogoče odpreti {}: {}
+90|Prekinjeno (programska ponastavitev)
+91|Povezava je bila izgubljena
+92|Ocenjeni čas
+93|dolžina reza
+94|Nastavitve naprave
+95|Ime
+96|Delovno območje X
+97|Delovno območje Y
+98|Ničla stroja (0,0)
+99|Spredaj levo (privzeto za GRBL)
+100|Zadaj levo
+101|Vrednost S maks ($30)
+102|Dinamična moč (M4)
+103|Hitrost premika
+104|Vrnitev v izhodišče
+105|Hitrost v bodih
+106|Mreža kopij
+107|Stolpci
+108|Vrstice
+109|Razmik X
+110|Razmik Y
+111|Ustvari mrežo
+112|O programu LightCreator
+113|Različica {}
+114|Odprtokodna programska oprema za načrtovanje in upravljanje laserskih gravirnikov in rezalnikov.
+115|Izvor: napisano v jeziku Rust z egui/eframe.
+116|Navdihnjeno z LightBurn; vmesnik navdihnjen z VectorCraft.
+117|Avtor: Michał Sarna
+118|Licenca MIT.
+119|Lastnosti
+120|Rezi / Sloji
+121|Nič ni izbrano
+122|Zakleni razmerje
+123|Zavrti
+124|Uporabi
+125|Zrcali V
+126|Zrcali N
+127|Sredina
+128|Levo
+129|Sredina V
+130|Desno
+131|Zgoraj
+132|Sredina N
+133|Spodaj
+134|Sredina
+135|Poravnaj na sredino
+136|Sloj
+137|Pokaži vseh 30 slojev
+138|Izhod (graviraj ta sloj)
+139|Viden
+140|Nastavitve reza — {}
+141|Način
+142|Hitrost
+143|Moč (%)
+144|Prehodi
+145|Razmik
+146|Kot skeniranja
+147|Prekoračitev
+148|Dvosmerno
+149|Ni vrat
+150|Osveži
+151|Znova poišči zaporedna vrata
+152|Prekini povezavo
+153|Poveži
+154|Stanje
+155|Korak
+156|Podajanje
+157|Gor
+158|Dol
+159|Prekini delo v teku
+160|Stop
+161|Prekliči premik
+162|Domov
+163|Odkleni
+164|Premor
+165|Nadaljuj
+166|STOP
+167|Moč okvirja
+168|0 % med uokvirjanjem pusti laser ugasnjen; 1–2 % pokaže šibko piko na diodnih laserjih
+169|pošlji G-code / ukaz $
+170|Pošlji
+171|Izbira naprave
+172|Izberite napravo, s katero boste delali.
+173|Za nadaljevanje ustvarite vsaj en profil naprave.
+174|Nadaljuj
+175|Dodaj napravo…
+176|Uredi…
+177|Potrdi brisanje
+178|Prekliči
+179|Konfiguracija naprave
+180|Nova naprava
+181|npr. Moj diodni laser
+182|Ime profila je obvezno.
+183|Zamenjaj napravo…
+184|Naprava: {}
+185|Enote hitrosti
+186|Na sekundo (mm/s, in/s)
+187|Na minuto (mm/min, in/min)
+188|Odpri nedavne
+189|(prazno)
+190|Počisti seznam
+191|ne obstaja več
+192|Zapri
+193|Skrči
+194|Povečaj
+195|Obnovi
+196|Pokaži ali skrij mrežo
+197|Pokaži ali skrij sekundarno mrežo
+198|Zračna pomoč
+199|Zračna črpalka vklopljena
+200|Vklopi zračno črpalko, medtem ko se ta sloj gravira (M8 / M9)
+201|Položaj in velikost
+202|Vrtenje
+203|Zrcaljenje in centriranje
+204|Poravnava
+205|Strni
+206|Razširi
+207|Čas
+208|Datoteka shranjena: {}
+209|Samodejno shranjeno: {}
+210|Shraniti delo pred zaprtjem?
+211|Zasnova ni shranjena v datoteko.
+212|Zavrzi
+213|Možnosti programa…
+214|Možnosti programa
+215|Samodejno shranjevanje
+216|Samodejno shranjuj delo
+217|Samodejno shrani vsakih
+218|Delo brez imena datoteke gre v začasno mapo; datoteka z imenom se shrani na mestu
+219|Spirala
+220|Spirala (I)
+221|Število ovojev
+222|Povlecite po delovnem območju, da jo narišete.
+223|Prenesi varnostno kopijo…
+224|Preveri posodobitve…
+225|Varnostna kopija shranjena: {}
+226|Varnostno kopiranje ni uspelo: {}
+227|Posodobitve
+228|Na voljo je novejša različica: {}
+229|Imate različico {}.
+230|Odpri stran za prenos
+231|Imate najnovejšo različico.
+232|Najnovejša izdaja: {}
+233|Posodobitev ni bilo mogoče preveriti.
+234|Ob zagonu programa poišči novejšo različico
+235|Obnovi iz varnostne kopije…
+236|Obnovi iz varnostne kopije
+237|Vaše trenutne nastavitve in clipart bodo zamenjani z varnostno kopijo. Nadaljujem?
+238|Varnostna kopija obnovljena: {}
+239|Obnovitev ni uspela: {}
+240|Datotek profilov ni bilo najti. Imate varnostno kopijo?
+241|Enote
+242|Milimetri (mm)
+243|Palci (in)
+244|Naprava
+245|Konzola
+246|Poizvedbe o stanju
+247|Samodejno drsenje
+248|Počisti
+249|Krmilnik
+250|Vrsta laserja
+251|Delovno območje
+252|Da
+253|Ne
+254|Povezava
+255|Vrata
+256|Korak premika
+257|Podajanje premika
+258|Ta krmilnik nima neposredne povezave: dela se izvozijo kot datoteke.
+259|Urejanje vozlišč (N)
+260|Besedilo (T)
+261|Kot
+262|Gladko
+263|V črto
+264|V krivuljo
+265|Dodaj vozlišče
+266|Izbriši vozlišče
+267|Odpri / zapri
+268|Izbrana vozlišča spremeni v kotna
+269|Izbrana vozlišča naredi gladka
+270|Odsek za vsakim izbranim vozliščem naredi raven
+271|Odsek za vsakim izbranim vozliščem naredi ukrivljen
+272|Vstavi vozlišče (ali dvakrat kliknite odsek)
+273|Zapri odprto pot ali odpri zaprto pri izbranem vozlišču
+274|Pretvori v krivulje
+275|Pretvori besedilo v obdelovalne Bézierove oblike
+276|Unija
+277|Presek
+278|Odštevanje
+279|Izključujoči ALI
+280|Zamakni obliko…
+281|Zamakni obliko
+282|Razdalja
+283|Pozitivna vrednost poveča obris, negativna ga zmanjša.
+284|Ohrani izvirnik
+285|Ustvari zamik
+286|Izberite vsaj dve obliki (ne slik).
+287|Rezultat je prazen.
+288|Uvozi sliko…
+289|Slika {} uvožena
+290|Besedilo
+291|Pisava
+292|Iskanje
+293|Velikost
+294|Slog
+295|Krepko
+296|Ležeče
+297|Razmik med črkami
+298|Razmik med vrsticami
+299|Poravnava
+300|Slika
+301|Negativ slike
+302|Graviraj svetle dele namesto temnih
+303|Gravura uporablja razmik, hitrost, moč in rasterizacijo sloja.
+304|Nastavitve slike
+305|Slike uporabljajo razmik, hitrost, moč in prekoračitev svojega sloja.
+306|Rasterizacija
+307|Min. moč (%)
+308|Prag
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Urejeno
+314|Sivine
+315|Zapolnitev z zamikom
+316|Izvozi PLT / DXF…
+317|Izvoženo: {}. Preskočenih slik: {} — ta zapis nima rastra.
+318|Izvozite PLT ali DXF in ga odprite v programu samega krmilnika (na primer RDWorks za Ruida), ki nastavi hitrost in moč po barvi sloja.
+319|Knjižnica materialov…
+320|Knjižnica materialov
+321|Vse
+322|Material
+323|Operacija
+324|Moč
+325|Rezanje
+326|Graviranje
+327|Zarezovanje
+328|Začetne vrednosti za tipične diodne laserje 10 W in CO2 laserje 40 W. Vedno preizkusite na odpadku.
+329|Uporabi na sloju {}
+330|{} ({}) uporabljeno na sloju {}
+331|Shrani aktivni sloj kot prednastavitev
+332|Ime materiala
+333|Shrani prednastavitev
+334|Prekrivanje kamere…
+335|Prekrivanje kamere
+336|Pokaže fotografijo ali kamero v živo pod zasnovo, da delo postavite na material.
+337|Naloži sliko…
+338|Odstrani
+339|Kamera v živo
+340|Ta izvedba nima podpore za kamero. Prevedite z: cargo run --release --features camera
+341|Brez kamere
+342|Poišči kamere
+343|Zaženi kamero
+344|Zamrzni sliko
+345|Kamera
+346|Prekrivanje: {}
+347|Pokaži prekrivanje
+348|Neprosojnost
+349|Poravnava: povlecite štiri vogale po delovnem območju
+350|Povlecite vsak vogal na ustrezen vogal materiala ali delovnega območja; perspektiva se popravi.
+351|Ponastavi na delovno območje
+352|Zavrti za 90°
+353|Graviraj prej
+354|Graviraj pozneje
+355|Sloji se gravirajo od zgoraj navzdol.
+356|Možnosti mreže…
+357|Možnosti mreže
+358|Glavna mreža
+359|Sekundarna mreža
+360|Pokaži
+361|Razdalja med črtami
+362|Barva
+363|Sekundarna mreža mora biti finejša od glavne.
+364|Ponastavi mrežo
+365|Poti
+366|Pokaže poti na delovnem območju
+367|Predogled…
+368|Okno predogleda…
+369|Odpri okno predogleda
+370|Obarvaj po
+371|Pokaži prazne premike
+372|Gibi stroja z ugasnjenim laserjem
+373|Predvajaj
+374|Prilagodi
+375|Operacije
+376|Preveč gibov: črte praznih premikov so skrite.
+377|Gibov: {}
+378|Uvoz
+379|Izvoz
+380|Uvozi Adobe Illustrator / PDF…
+381|Združi
+382|Razdruži
+383|Za združevanje izberite vsaj dva predmeta.
+384|Združeno. Predmeti obdržijo svoje sloje.
+385|Operacije z oblikami
+386|Prilagodi sliko…
+387|Vektoriziraj sliko…
+388|Uvoz slike
+389|Prilagodi sliko
+390|Vrtenje in zrcaljenje
+391|Kot
+392|Ton
+393|Svetlost
+394|Kontrast
+395|Gama
+396|Samodejne ravni
+397|Širina
+398|{} × {} px
+399|Ponastavi
+400|Vektorizacija slike
+401|Prezri majhna območja
+402|Poenostavi
+403|Zgladi krivulje
+404|Vektoriziraj svetla območja
+405|Nato izbriši sliko
+406|Obrisov: {}
+407|Vektoriziraj
+408|Vektoriziranih obrisov: {}
+409|Preberi iz naprave
+410|Branje…
+411|Poveže se in iz krmilnika prebere delovno območje, vrednost S maks in hitrost
+412|Branje nastavitev iz naprave…
+413|S napravo se ni bilo mogoče povezati.
+414|Naprava ni sporočila nobenih nastavitev.
+415|Prebranih vrednosti iz naprave: {}
+416|Trikotnik (Y)
+417|Zvezda (S)
+418|Večkotnik (G)
+419|Trikotnik
+420|Zvezda
+421|Večkotnik
+422|Število stranic
+423|Povlecite po delovnem območju, da ga narišete. Največ 360 stranic.
+424|V redu
+425|Vrsta povezave
+426|Serijska vrata
+427|Omrežje (TCP, npr. ser2net)
+428|Gostitelj
+429|Vrata TCP
+430|Povezano z {}
+431|URL kamere
+432|Slika stroja v živo: tok MJPEG ali naslov slike JPEG (http ali https).
+433|Pogled kamere
+434|Pokaže sliko v živo s kamere tega stroja
+435|Čakanje na sliko…
+436|Privzeta povečava
+437|Nazaj na celotno sliko
+438|Pokaži kot prekrivanje na delovnem območju
+439|Napaka toka: {}
+440|Prilagodi na 15 s
+441|Realni čas
+442|Najprej nastavite URL kamere v nastavitvah naprave.
+443|Pokaži v
+444|Plavajoče okno
+445|Ločeno okno
+446|Stranski zavihek
+447|Prekrivanje
+448|Pokaži ali skrij prekrivanje kamere na delovnem območju
+449|Pokaži prekrivanje kamere
+450|Prekrivanja kamere še ni. Naložite sliko ali zaženite pogled kamere.
+451|Deli po omrežju (ser2net)…
+452|Deli po omrežju (ser2net)
+453|ser2net najden: {}
+454|ser2net ni bil najden. Najprej ga namestite, na primer: sudo apt install ser2net
+455|To po omrežju deli serijska vrata laserja na tem računalniku, tako da se lahko LightCreator drugje poveže z vrsto povezave »Omrežje (TCP)«.
+456|Različica ser2net
+457|Poslušaj samo na tem računalniku (za uporabo s tunelom SSH)
+458|Nov odjemalec nadomesti povezanega
+459|Datoteka: {}
+460|Nato se z drugega računalnika povežite na {}:{}
+461|Opozorilo: vsak v omrežju, ki doseže ta vrata, lahko upravlja laser. Uporabite zaupanja vredno omrežje, požarni zid ali možnost samo lokalno s tunelom SSH.
+462|Kopirano.
+463|Namesti in znova zaženi ser2net…
+464|To nadomesti {} (kopija se ohrani) in znova zažene ser2net. Zahtevane so skrbniške pravice.
+465|Potrdi
+466|Čakanje na odobritev skrbnika…
+467|{} nameščen in ser2net znova zagnan.
+468|Konfiguracije ni bilo mogoče namestiti: {}
+469|Ročno: sudo cp <shranjena datoteka> {} && sudo systemctl restart ser2net
+470|Vrtenje kamere
+471|Samodejno prilagodi delovno območje oknu
+472|Zakleni
+473|Zaklenjeno: za urejanje odklenite. Kopije niso zaklenjene.
+474|Zaklenjenih predmetov: {}
+475|Odklenjenih predmetov: {}
+476|Dvakrat kliknite za urejanje možnosti sloja
+477|Možnosti sloja — {}
+478|{} — kliknite za dodelitev izbora / aktiviranje; dvojni klik za možnosti
+479|Možnosti pogleda…
+480|Možnosti pogleda
+481|Barva ozadja
+482|Samodejno
+483|Debelina črt
+484|Prehodov: {}
+485|Hitri vodnik
+486|Stran projekta na GitHubu
+487|Ta vodnik je na voljo v angleščini in poljščini; drugi jeziki prikažejo angleško besedilo.
+488|Zaobli vogale…
+489|Zaobli vogale
+490|Polmer
+491|Zaobli
+492|Polmer zaobljenja
+493|Zaobli izbrane vogale s tem polmerom
+494|Izbrani sta dve ravni črti: povezani bosta z zaobljenim vogalom.
+495|Vsak raven vogal izbranih oblik bo zaobljen.
+496|Teh črt ni mogoče povezati (vzporedni sta ali polmer ne gre).
+497|Obe črti sta povezani z zaobljenim vogalom.
+498|Najprej izberite oblike za zaobljenje.
+499|Ni ravnih vogalov za zaobljenje.
+500|Zaobljenih vogalov: {}
+501|Clipart
+502|Živali
+503|Narava
+504|Praznovanja
+505|Simboli
+506|Oblike
+507|Orodja
+508|Hrana
+509|Predmeti
+510|Glasba in zabava
+511|Moj clipart
+512|Vse kategorije
+513|Vključeno
+514|Moje
+515|Slike, ki so priložene programu
+516|Slike, ki ste jih prenesli ali dodali
+517|Velikost ob vstavitvi
+518|Na spletu…
+519|Dodaj datoteko…
+520|Poiščite več slik na spletu in jih shranite sem
+521|Doda datoteke SVG z vašega računalnika v vaš clipart
+522|Tukaj ni slik. Uporabite Na spletu…, da jih najdete.
+523|je priložena programu
+524|vaša
+525|Kliknite za postavitev na delovno območje
+526|Postavljeno: {}
+527|Preimenuj
+528|Preimenuj…
+529|Spremeni kategorijo
+530|Spremeni kategorijo…
+531|Podrobnosti
+532|Podrobnosti…
+533|Izbriši…
+534|Odstranim to sliko iz vašega cliparta? Datoteka na disku bo izbrisana.
+535|Shrani kopijo v moj clipart
+536|ali nova kategorija
+537|Dodanih slik: {} v {}
+538|Vir
+539|Kategorija
+540|Licenca
+541|Avtor
+542|Zbirka
+543|Clipart na spletu…
+544|Clipart na spletu
+545|Iščite po odprtih zbirkah ikon (Iconify). Slike se shranijo na vaš disk, v kategorijo po vaši izbiri.
+546|npr. mačka, cvet, zobnik
+547|Iskanje…
+548|Nič ni najdeno.
+549|Najdenih slik: {}
+550|Iskanje ni uspelo: {}
+551|Kliknite sliko, da vidite njeno licenco in jo shranite.
+552|navedba avtorja ni potrebna
+553|navedite avtorja
+554|Shrani v moj clipart
+555|{} shranjeno v {}
+556|Prenesi
+557|Prenašanje…
+558|Prenos ni uspel: {}
+559|Ali prenesite sliko z naslova
+560|Shranjujte samo slike, ki jih smete uporabljati. Preverite licenco vira.
+561|Povečaj (Z)
+562|Pomanjšaj (X)
+563|Prilagodi delovnemu območju (Ctrl+0)
+564|Prilagodi vsem predmetom (Ctrl+9)
+565|Povečaj
+566|Pomanjšaj
+567|Prilagodi delovnemu območju
+568|Prilagodi vsem predmetom
+569|Uredi vozlišča
+570|Pretvorite besedilo v krivulje ali vektorizirajte sliko, da lahko urejate njena vozlišča.
+571|Najprej izberite obliko, nato uredite njena vozlišča.
+572|Srce (K)

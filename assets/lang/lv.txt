@@ -1,0 +1,573 @@
+0|Fails
+1|Rediģēt
+2|Izkārtot
+3|Skats
+4|Lāzers
+5|Iestatījumi
+6|Palīdzība
+7|Jauns
+8|Atvērt…
+9|Saglabāt
+10|Saglabāt kā…
+11|Importēt SVG…
+12|Eksportēt SVG…
+13|Eksportēt G-code…
+14|Iziet
+15|Atsaukt
+16|Atkārtot
+17|Kopēt
+18|Ielīmēt
+19|Dublēt
+20|Dzēst
+21|Atlasīt visu
+22|Līdzināt pa kreisi
+23|Centrēt (H)
+24|Līdzināt pa labi
+25|Līdzināt augšā
+26|Centrēt (V)
+27|Līdzināt apakšā
+28|Centrēt vienu pret otru
+29|Centrēt uz galda
+30|Apvērst horizontāli
+31|Apvērst vertikāli
+32|Pagriezt par 90° pulksteņrādītāja virzienā
+33|Pagriezt par 90° pretēji pulksteņrādītājam
+34|Pārvietot uz priekšplānu
+35|Pārvietot uz fonu
+36|Pārvērst par ceļu
+37|Kopiju režģis…
+38|Režģis
+39|Piesaistīt režģim
+40|Trajektoriju priekšskatījums
+41|Pielāgot galdu logam
+42|Ierīces iestatījumi…
+43|Rāmis
+44|Sākt darbu
+45|Par programmu
+46|Valoda
+47|Krāsu shēma
+48|Tumša
+49|Gaiši tumša
+50|Vidēji gaiša
+51|Gaiša
+52|Atlase (V)
+53|Taisnstūris (R)
+54|Elipse (E)
+55|Līnija (L)
+56|Lauzta līnija / pildspalva (P)
+57|Skata pārvietošana (H)
+58|Tālummaiņa (Z)
+59|Atlase
+60|Taisnstūris
+61|Elipse
+62|Līnija
+63|Aizpildījums
+64|Aizpildījums + līnija
+65|Slānis {}
+66|Magnēts
+67|Priekšskatījums
+68|Sākt
+69|Nosūta darbu pievienotajam lāzeram
+70|Apiet apgabala kontūru
+71|Saglabāt G-code
+72|Slāņi
+73|{} — noklikšķiniet, lai piešķirtu atlasi / padarītu aktīvu
+74|Gatavs
+75|Atvērts: {}
+76|Neizdevās atvērt: {}
+77|Saglabāts: {}
+78|Neizdevās saglabāt: {}
+79|Importēti ceļi: {} no {}
+80|Importēšana neizdevās: {}
+81|Eksportēts: {}
+82|Eksportēšana neizdevās: {}
+83|G-code saglabāts: {}
+84|Vispirms pievienojiet lāzeru (panelis Lāzers)
+85|Nav ko gravēt: izvades slāņos nav formu
+86|Sāk darbu: {} rindas, ~{}
+87|Atvienots
+88|Savienots ar {} @ {}
+89|Nevar atvērt {}: {}
+90|Pārtraukts (programmatūras atiestatīšana)
+91|Savienojums pārtrūka
+92|Aptuvenais laiks
+93|griezuma garums
+94|Ierīces iestatījumi
+95|Nosaukums
+96|Darba apgabals X
+97|Darba apgabals Y
+98|Iekārtas nulle (0,0)
+99|Priekšā pa kreisi (GRBL noklusējums)
+100|Aizmugurē pa kreisi
+101|S vērtība maks. ($30)
+102|Dinamiskā jauda (M4)
+103|Pārvietošanās ātrums
+104|Atgriezties sākumpunktā
+105|Pārraides ātrums (baud)
+106|Kopiju režģis
+107|Kolonnas
+108|Rindas
+109|Atstarpe X
+110|Atstarpe Y
+111|Izveidot režģi
+112|Par LightCreator
+113|Versija {}
+114|Atvērtā koda programmatūra lāzera gravēšanas un griešanas iekārtu projektēšanai un vadībai.
+115|Izcelsme: uzrakstīta Rust valodā, izmantojot egui/eframe.
+116|Iedvesmota no LightBurn; saskarni iedvesmojis VectorCraft.
+117|Autors: Michał Sarna
+118|MIT licence.
+119|Īpašības
+120|Griezumi / Slāņi
+121|Nekas nav atlasīts
+122|Bloķēt proporcijas
+123|Pagriezt
+124|Lietot
+125|Apvērst H
+126|Apvērst V
+127|Centrēt
+128|Pa kreisi
+129|Vidus H
+130|Pa labi
+131|Augša
+132|Vidus V
+133|Apakša
+134|Centrēt
+135|Līdzināt pa vidu
+136|Slānis
+137|Rādīt visus 30 slāņus
+138|Izvade (gravēt šo slāni)
+139|Redzams
+140|Griešanas iestatījumi — {}
+141|Režīms
+142|Ātrums
+143|Jauda (%)
+144|Gājieni
+145|Intervāls
+146|Skenēšanas leņķis
+147|Pārsniegums
+148|Divvirzienu
+149|Nav porta
+150|Atsvaidzināt
+151|Atkārtoti meklēt seriālos portus
+152|Atvienot
+153|Savienot
+154|Stāvoklis
+155|Solis
+156|Padeve
+157|Augšup
+158|Lejup
+159|Pārtraukt notiekošo darbu
+160|Stop
+161|Atcelt pārvietošanu
+162|Sākums
+163|Atbloķēt
+164|Pauze
+165|Turpināt
+166|STOP
+167|Rāmja jauda
+168|0 % notur lāzeru izslēgtu rāmja apvilkšanas laikā; 1–2 % rāda vāju punktu diodes lāzeriem
+169|sūtīt G-code / komandu $
+170|Sūtīt
+171|Izvēlieties ierīci
+172|Izvēlieties ierīci, ar kuru strādāsiet.
+173|Lai turpinātu, izveidojiet vismaz vienu ierīces profilu.
+174|Turpināt
+175|Pievienot ierīci…
+176|Rediģēt…
+177|Apstiprināt dzēšanu
+178|Atcelt
+179|Ierīces konfigurācija
+180|Jauna ierīce
+181|piem., Mans diodes lāzers
+182|Nepieciešams profila nosaukums.
+183|Mainīt ierīci…
+184|Ierīce: {}
+185|Ātruma vienības
+186|Sekundē (mm/s, in/s)
+187|Minūtē (mm/min, in/min)
+188|Atvērt nesenos
+189|(tukšs)
+190|Notīrīt sarakstu
+191|vairs neeksistē
+192|Aizvērt
+193|Minimizēt
+194|Maksimizēt
+195|Atjaunot
+196|Rādīt vai slēpt režģi
+197|Rādīt vai slēpt palīgrežģi
+198|Gaisa palīgs
+199|Gaisa sūknis ieslēgts
+200|Ieslēdz gaisa sūkni, kamēr tiek gravēts šis slānis (M8 / M9)
+201|Pozīcija un izmērs
+202|Pagriešana
+203|Spogulis un centrēšana
+204|Līdzināšana
+205|Sakļaut
+206|Izvērst
+207|Laiks
+208|Fails saglabāts: {}
+209|Automātiski saglabāts: {}
+210|Vai saglabāt darbu pirms aizvēršanas?
+211|Dizains nav saglabāts failā.
+212|Atmest
+213|Programmas opcijas…
+214|Programmas opcijas
+215|Automātiskā saglabāšana
+216|Automātiski saglabāt darbu
+217|Automātiski saglabāt ik pēc
+218|Darbs bez faila nosaukuma nonāk pagaidu mapē; fails ar nosaukumu tiek saglabāts uz vietas
+219|Spirāle
+220|Spirāle (I)
+221|Apgriezienu skaits
+222|Velciet darba apgabalā, lai to uzzīmētu.
+223|Lejupielādēt rezerves kopiju…
+224|Meklēt atjauninājumus…
+225|Rezerves kopija saglabāta: {}
+226|Rezerves kopēšana neizdevās: {}
+227|Atjauninājumi
+228|Pieejama jaunāka versija: {}
+229|Jums ir versija {}.
+230|Atvērt lejupielādes lapu
+231|Jums ir jaunākā versija.
+232|Jaunākais izlaidums: {}
+233|Neizdevās pārbaudīt atjauninājumus.
+234|Programmas startēšanas laikā meklēt jaunāku versiju
+235|Atjaunot no rezerves kopijas…
+236|Atjaunot no rezerves kopijas
+237|Jūsu pašreizējie iestatījumi un klipkopa tiks aizstāti ar rezerves kopiju. Vai turpināt?
+238|Rezerves kopija atjaunota: {}
+239|Atjaunošana neizdevās: {}
+240|Profilu faili netika atrasti. Vai jums ir rezerves kopija?
+241|Vienības
+242|Milimetri (mm)
+243|Collas (in)
+244|Ierīce
+245|Konsole
+246|Stāvokļa pieprasījumi
+247|Automātiskā ritināšana
+248|Notīrīt
+249|Kontrolleris
+250|Lāzera veids
+251|Darba apgabals
+252|Jā
+253|Nē
+254|Savienojums
+255|Ports
+256|Pārvietošanas solis
+257|Pārvietošanas padeve
+258|Šim kontrolleram nav tiešā savienojuma: darbi tiek eksportēti kā faili.
+259|Mezglu rediģēšana (N)
+260|Teksts (T)
+261|Stūris
+262|Gluds
+263|Par līniju
+264|Par līkni
+265|Pievienot mezglu
+266|Dzēst mezglu
+267|Atvērt / aizvērt
+268|Padarīt atlasītos mezglus par stūra mezgliem
+269|Padarīt atlasītos mezglus gludus
+270|Padarīt posmu aiz katra atlasītā mezgla taisnu
+271|Padarīt posmu aiz katra atlasītā mezgla izliektu
+272|Ievietot mezglu (vai divreiz noklikšķināt uz posma)
+273|Aizvērt atvērtu ceļu vai atvērt aizvērtu atlasītajā mezglā
+274|Pārvērst par līknēm
+275|Pārvērst tekstu rediģējamās Bezjē formās
+276|Apvienojums
+277|Šķēlums
+278|Atņemšana
+279|Izslēdzošais VAI
+280|Nobīdīt formu…
+281|Nobīdīt formu
+282|Attālums
+283|Pozitīva vērtība palielina kontūru, negatīva samazina.
+284|Saglabāt oriģinālu
+285|Izveidot nobīdi
+286|Atlasiet vismaz divas formas (ne attēlus).
+287|Rezultāts ir tukšs.
+288|Importēt attēlu…
+289|Attēls {} importēts
+290|Teksts
+291|Fonts
+292|Meklēt
+293|Izmērs
+294|Stils
+295|Treknraksts
+296|Kursīvs
+297|Atstarpes starp burtiem
+298|Rindstarpa
+299|Līdzināšana
+300|Attēls
+301|Negatīvs attēls
+302|Gravēt gaišās daļas tumšo vietā
+303|Gravēšana izmanto slāņa intervālu, ātrumu, jaudu un rastrēšanu.
+304|Attēla iestatījumi
+305|Attēli izmanto sava slāņa intervālu, ātrumu, jaudu un pārsniegumu.
+306|Rastrēšana
+307|Min. jauda (%)
+308|Slieksnis
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Sakārtots
+314|Pelēktoņi
+315|Aizpildījums ar nobīdi
+316|Eksportēt PLT / DXF…
+317|Eksportēts: {}. Izlaisti attēli: {} — šim formātam nav rastra.
+318|Eksportējiet PLT vai DXF un atveriet to paša kontrollera programmā (piemēram, RDWorks priekš Ruida), kas iestata ātrumu un jaudu pēc slāņa krāsas.
+319|Materiālu bibliotēka…
+320|Materiālu bibliotēka
+321|Visi
+322|Materiāls
+323|Darbība
+324|Jauda
+325|Griešana
+326|Gravēšana
+327|Iezīmēšana
+328|Sākuma vērtības tipiskiem 10 W diodes un 40 W CO2 lāzeriem. Vienmēr pārbaudiet uz atgriezumiem.
+329|Lietot slānim {}
+330|{} ({}) lietots slānim {}
+331|Saglabāt aktīvo slāni kā sagatavi
+332|Materiāla nosaukums
+333|Saglabāt sagatavi
+334|Kameras pārklājums…
+335|Kameras pārklājums
+336|Rāda fotoattēlu vai tiešraides kameras attēlu zem dizaina, lai novietotu darbu uz materiāla.
+337|Ielādēt attēlu…
+338|Noņemt
+339|Tiešraides kamera
+340|Šajā būvējumā nav kameras atbalsta. Būvējiet ar: cargo run --release --features camera
+341|Nav kameras
+342|Atrast kameras
+343|Startēt kameru
+344|Iesaldēt kadru
+345|Kamera
+346|Pārklājums: {}
+347|Rādīt pārklājumu
+348|Necaurspīdīgums
+349|Līdzināšana: velciet četrus stūrus darba apgabalā
+350|Velciet katru stūri uz atbilstošo materiāla vai darba apgabala stūri; perspektīva tiek labota.
+351|Atiestatīt uz darba apgabalu
+352|Pagriezt par 90°
+353|Gravēt agrāk
+354|Gravēt vēlāk
+355|Slāņi tiek gravēti no augšas uz leju.
+356|Režģa opcijas…
+357|Režģa opcijas
+358|Galvenais režģis
+359|Palīgrežģis
+360|Rādīt
+361|Attālums starp līnijām
+362|Krāsa
+363|Palīgrežģim jābūt smalkākam par galveno režģi.
+364|Atiestatīt režģi
+365|Trajektorijas
+366|Rāda trajektorijas darba apgabalā
+367|Priekšskatījums…
+368|Priekšskatījuma logs…
+369|Atvērt priekšskatījuma logu
+370|Krāsot pēc
+371|Rādīt tukšgaitas pārvietojumus
+372|Iekārtas kustības ar izslēgtu lāzeru
+373|Atskaņot
+374|Pielāgot
+375|Darbības
+376|Pārāk daudz kustību: tukšgaitas līnijas ir paslēptas.
+377|Kustības: {}
+378|Importēt
+379|Eksportēt
+380|Importēt Adobe Illustrator / PDF…
+381|Grupēt
+382|Atgrupēt
+383|Lai grupētu, atlasiet vismaz divus objektus.
+384|Sagrupēts. Objekti saglabā savus slāņus.
+385|Formu darbības
+386|Pielāgot attēlu…
+387|Vektorizēt attēlu…
+388|Attēla imports
+389|Attēla pielāgošana
+390|Pagriešana un apvēršana
+391|Leņķis
+392|Tonis
+393|Spilgtums
+394|Kontrasts
+395|Gamma
+396|Automātiskie līmeņi
+397|Platums
+398|{} × {} px
+399|Atiestatīt
+400|Attēla vektorizēšana
+401|Ignorēt mazus apgabalus
+402|Vienkāršot
+403|Nogludināt līknes
+404|Vektorizēt gaišos apgabalus
+405|Pēc tam dzēst attēlu
+406|Kontūras: {}
+407|Vektorizēt
+408|Vektorizētas kontūras: {}
+409|Nolasīt no ierīces
+410|Lasa…
+411|Savienojas un no kontrollera nolasa darba apgabalu, S vērtību maks. un ātrumu
+412|Lasa iestatījumus no ierīces…
+413|Neizdevās savienoties ar ierīci.
+414|Ierīce nepaziņoja nevienu iestatījumu.
+415|Nolasītas vērtības no ierīces: {}
+416|Trijstūris (Y)
+417|Zvaigzne (S)
+418|Daudzstūris (G)
+419|Trijstūris
+420|Zvaigzne
+421|Daudzstūris
+422|Malu skaits
+423|Velciet darba apgabalā, lai to uzzīmētu. Ne vairāk kā 360 malas.
+424|Labi
+425|Savienojuma veids
+426|Seriālais ports
+427|Tīkls (TCP, piem., ser2net)
+428|Resursdators
+429|TCP ports
+430|Savienots ar {}
+431|Kameras URL
+432|Iekārtas tiešraides attēls: MJPEG straume vai JPEG attēla adrese (http vai https).
+433|Kameras skats
+434|Rāda šīs iekārtas kameras tiešraides attēlu
+435|Gaida attēlu…
+436|Noklusējuma tālummaiņa
+437|Atpakaļ uz visu attēlu
+438|Rādīt kā pārklājumu darba apgabalā
+439|Straumes kļūda: {}
+440|Pielāgot 15 s
+441|Reāllaiks
+442|Vispirms ierīces iestatījumos norādiet kameras URL.
+443|Rādīt
+444|Peldošs logs
+445|Atsevišķs logs
+446|Sānu cilne
+447|Pārklājums
+448|Rādīt vai slēpt kameras pārklājumu darba apgabalā
+449|Rādīt kameras pārklājumu
+450|Kameras pārklājuma vēl nav. Ielādējiet attēlu vai startējiet kameras skatu.
+451|Koplietot tīklā (ser2net)…
+452|Koplietot tīklā (ser2net)
+453|ser2net atrasts: {}
+454|ser2net netika atrasts. Vispirms to instalējiet, piemēram: sudo apt install ser2net
+455|Tas koplieto lāzera seriālo portu šajā datorā tīklā, lai LightCreator citur varētu savienoties ar savienojuma veidu “Tīkls (TCP)”.
+456|ser2net versija
+457|Klausīties tikai šajā datorā (izmantot ar SSH tuneli)
+458|Jauns klients aizstāj savienoto
+459|Fails: {}
+460|Pēc tam savienojieties no cita datora ar {}:{}
+461|Brīdinājums: ikviens tīklā, kas sasniedz šo portu, var vadīt lāzeru. Izmantojiet uzticamu tīklu, ugunsmūri vai opciju tikai lokāli ar SSH tuneli.
+462|Nokopēts.
+463|Instalēt un pārstartēt ser2net…
+464|Tas aizstāj {} (tiek saglabāta kopija) un pārstartē ser2net. Tiek prasītas administratora tiesības.
+465|Apstiprināt
+466|Gaida administratora apstiprinājumu…
+467|{} instalēts un ser2net pārstartēts.
+468|Neizdevās instalēt konfigurāciju: {}
+469|Ar roku: sudo cp <saglabātais fails> {} && sudo systemctl restart ser2net
+470|Kameras pagriešana
+471|Automātiski pielāgot darba apgabalu logam
+472|Bloķēt
+473|Bloķēts: lai rediģētu, atbloķējiet. Kopijas netiek bloķētas.
+474|Bloķēti objekti: {}
+475|Atbloķēti objekti: {}
+476|Veiciet dubultklikšķi, lai rediģētu slāņa opcijas
+477|Slāņa opcijas — {}
+478|{} — noklikšķiniet, lai piešķirtu atlasi / padarītu aktīvu; dubultklikšķis opcijām
+479|Skata opcijas…
+480|Skata opcijas
+481|Fona krāsa
+482|Automātiski
+483|Līniju biezums
+484|Gājieni: {}
+485|Ātrais ceļvedis
+486|Projekta lapa GitHub
+487|Šis ceļvedis ir pieejams angļu un poļu valodā; citās valodās tiek rādīts angļu teksts.
+488|Noapaļot stūrus…
+489|Noapaļot stūrus
+490|Rādiuss
+491|Noapaļot
+492|Noapaļošanas rādiuss
+493|Noapaļo atlasītos stūrus ar šo rādiusu
+494|Atlasītas divas taisnas līnijas: tās tiek savienotas ar noapaļotu stūri.
+495|Katrs atlasīto formu taisnais stūris tiks noapaļots.
+496|Šīs līnijas nevar savienot (paralēlas, vai rādiuss neietilpst).
+497|Abas līnijas savienotas ar noapaļotu stūri.
+498|Vispirms atlasiet formas noapaļošanai.
+499|Nav taisnu stūru, ko noapaļot.
+500|Noapaļoti stūri: {}
+501|Klipkopa
+502|Dzīvnieki
+503|Daba
+504|Svētki
+505|Simboli
+506|Formas
+507|Rīki
+508|Ēdiens
+509|Priekšmeti
+510|Mūzika un izklaide
+511|Mana klipkopa
+512|Visas kategorijas
+513|Iekļautie
+514|Mani
+515|Attēli, kas nāk komplektā ar programmu
+516|Attēli, ko lejupielādējāt vai pievienojāt
+517|Izmērs, novietojot
+518|Tiešsaistē…
+519|Pievienot failu…
+520|Meklējiet vairāk attēlu internetā un saglabājiet tos šeit
+521|Pievieno SVG failus no jūsu datora jūsu klipkopai
+522|Šeit nav attēlu. Izmantojiet Tiešsaistē…, lai tos atrastu.
+523|nāk komplektā ar programmu
+524|jūsu
+525|Noklikšķiniet, lai novietotu darba apgabalā
+526|Novietots: {}
+527|Pārdēvēt
+528|Pārdēvēt…
+529|Mainīt kategoriju
+530|Mainīt kategoriju…
+531|Informācija
+532|Informācija…
+533|Dzēst…
+534|Noņemt šo attēlu no jūsu klipkopas? Fails jūsu diskā tiek izdzēsts.
+535|Saglabāt kopiju manā klipkopā
+536|vai jauna kategorija
+537|Pievienoti attēli: {} uz {}
+538|Avots
+539|Kategorija
+540|Licence
+541|Autors
+542|Kolekcija
+543|Klipkopa tiešsaistē…
+544|Klipkopa tiešsaistē
+545|Meklējiet atvērtās ikonu kolekcijās (Iconify). Attēli tiek saglabāti jūsu diskā jūsu izvēlētā kategorijā.
+546|piem., kaķis, zieds, zobrats
+547|Meklē…
+548|Nekas netika atrasts.
+549|Atrasti attēli: {}
+550|Meklēšana neizdevās: {}
+551|Noklikšķiniet uz attēla, lai redzētu tā licenci un saglabātu to.
+552|autora norādīšana nav nepieciešama
+553|norādiet autoru
+554|Saglabāt manā klipkopā
+555|{} saglabāts kategorijā {}
+556|Lejupielādēt
+557|Lejupielādē…
+558|Lejupielāde neizdevās: {}
+559|Vai lejupielādējiet attēlu no adreses
+560|Saglabājiet tikai tos attēlus, ko drīkstat izmantot. Pārbaudiet avota licenci.
+561|Tuvināt (Z)
+562|Tālināt (X)
+563|Pielāgot darba apgabalam (Ctrl+0)
+564|Pielāgot visiem objektiem (Ctrl+9)
+565|Tuvināt
+566|Tālināt
+567|Pielāgot darba apgabalam
+568|Pielāgot visiem objektiem
+569|Rediģēt mezglus
+570|Pārvērsiet tekstu līknēs vai vektorizējiet attēlu, lai rediģētu tā mezglus.
+571|Vispirms atlasiet formu, pēc tam rediģējiet tās mezglus.
+572|Sirds (K)

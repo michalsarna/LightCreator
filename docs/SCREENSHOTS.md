@@ -34,8 +34,10 @@ All pictures are rendered headlessly from the real UI. Back to the [README](../R
 | Device tab: settings in full width, jog arrows and controls as large equal buttons, STOP across the panel | Click a handle: the red resize selection turns blue, with round corner handles (rotate) and diamond edge handles (slant) |
 | ![Close dialog](screenshots/29-close-dialog.png) | |
 | Closing with unsaved work: Save, Discard or Cancel | |
-| ![About](screenshots/30-about.png) | |
-| The About window, in the style of the preview and camera windows | |
+| ![About](screenshots/30-about.png) | ![Greek interface](screenshots/31-greek.png) |
+| The About window, in the style of the preview and camera windows | Greek interface |
+| ![Ukrainian interface](screenshots/32-ukrainian.png) | |
+| Ukrainian interface (one of the 23 added European languages) | |
 
 Regenerate them with
 `cargo test -p lightcreator --release render_screenshots -- --ignored`.

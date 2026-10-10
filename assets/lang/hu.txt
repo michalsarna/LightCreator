@@ -1,0 +1,573 @@
+0|Fájl
+1|Szerkesztés
+2|Elrendezés
+3|Nézet
+4|Lézer
+5|Beállítások
+6|Súgó
+7|Új
+8|Megnyitás…
+9|Mentés
+10|Mentés másként…
+11|SVG importálása…
+12|SVG exportálása…
+13|G-code exportálása…
+14|Kilépés
+15|Visszavonás
+16|Újra
+17|Másolás
+18|Beillesztés
+19|Kettőzés
+20|Törlés
+21|Összes kijelölése
+22|Balra igazítás
+23|Középre (V)
+24|Jobbra igazítás
+25|Felülre igazítás
+26|Középre (F)
+27|Alulra igazítás
+28|Egymásra középre igazítás
+29|Középre az asztalon
+30|Vízszintes tükrözés
+31|Függőleges tükrözés
+32|Forgatás 90°-kal jobbra
+33|Forgatás 90°-kal balra
+34|Előre hozás
+35|Hátra küldés
+36|Átalakítás útvonallá
+37|Rácsos másolat…
+38|Rács
+39|Illesztés a rácshoz
+40|Pályák előnézete
+41|Asztal illesztése az ablakhoz
+42|Eszközbeállítások…
+43|Keret
+44|Munka indítása
+45|Névjegy
+46|Nyelv
+47|Színséma
+48|Sötét
+49|Világos-sötét
+50|Közepesen világos
+51|Világos
+52|Kijelölés (V)
+53|Téglalap (R)
+54|Ellipszis (E)
+55|Vonal (L)
+56|Töröttvonal / toll (P)
+57|Nézet mozgatása (H)
+58|Nagyítás (Z)
+59|Kijelölés
+60|Téglalap
+61|Ellipszis
+62|Vonal
+63|Kitöltés
+64|Kitöltés + vonal
+65|{}. réteg
+66|Mágnes
+67|Előnézet
+68|Indítás
+69|Elküldi a munkát a csatlakoztatott lézernek
+70|Bejárja a terület körvonalát
+71|G-code mentése
+72|Rétegek
+73|{} — kattintson, hogy a kijelölést ide rendelje / aktívvá tegye
+74|Kész
+75|Megnyitva: {}
+76|A megnyitás nem sikerült: {}
+77|Mentve: {}
+78|A mentés nem sikerült: {}
+79|{} útvonal importálva innen: {}
+80|Az importálás nem sikerült: {}
+81|Exportálva: {}
+82|Az exportálás nem sikerült: {}
+83|G-code mentve: {}
+84|Először csatlakoztasson egy lézert (Lézer panel)
+85|Nincs mit égetni: a kimeneti rétegeken nincsenek alakzatok
+86|A munka indul: {} sor, ~{}
+87|Lecsatlakoztatva
+88|Csatlakozva: {} @ {}
+89|Nem nyitható meg: {}: {}
+90|Megszakítva (szoftveres újraindítás)
+91|A kapcsolat megszakadt
+92|Becsült idő
+93|vágási hossz
+94|Eszközbeállítások
+95|Név
+96|Munkaterület X
+97|Munkaterület Y
+98|Gép nullpontja (0,0)
+99|Bal elöl (GRBL alapértelmezés)
+100|Bal hátul
+101|S-érték max ($30)
+102|Dinamikus teljesítmény (M4)
+103|Mozgási sebesség
+104|Visszatérés az origóba
+105|Baudráta
+106|Rácsos másolat
+107|Oszlopok
+108|Sorok
+109|Térköz X
+110|Térköz Y
+111|Rács létrehozása
+112|A LightCreator névjegye
+113|{} verzió
+114|Nyílt forráskódú tervező- és vezérlőszoftver lézergravírozókhoz és lézervágókhoz.
+115|Eredet: Rust nyelven íródott az egui/eframe használatával.
+116|A LightBurn ihlette; a felületet a VectorCraft ihlette.
+117|Szerző: Michał Sarna
+118|MIT licenc.
+119|Tulajdonságok
+120|Vágások / Rétegek
+121|Nincs kijelölve semmi
+122|Képarány zárolása
+123|Forgatás
+124|Alkalmaz
+125|Tükrözés V
+126|Tükrözés F
+127|Középre
+128|Balra
+129|Közép V
+130|Jobbra
+131|Fent
+132|Közép F
+133|Lent
+134|Középre
+135|Középre igazítás
+136|Réteg
+137|Mind a 30 réteg megjelenítése
+138|Kimenet (ezen réteg égetése)
+139|Látható
+140|Vágási beállítások — {}
+141|Mód
+142|Sebesség
+143|Teljesítmény (%)
+144|Menetek
+145|Térköz
+146|Pásztázási szög
+147|Túlfutás
+148|Kétirányú
+149|Nincs port
+150|Frissítés
+151|Soros portok újrakeresése
+152|Kapcsolat bontása
+153|Csatlakozás
+154|Állapot
+155|Lépés
+156|Előtolás
+157|Fel
+158|Le
+159|A futó munka megszakítása
+160|Stop
+161|Mozgatás megszakítása
+162|Alaphelyzet
+163|Feloldás
+164|Szünet
+165|Folytatás
+166|STOP
+167|Keret teljesítménye
+168|A 0 % a keretezés alatt kikapcsolva tartja a lézert; az 1–2 % halvány pontot mutat a diódás lézereken
+169|G-code / $ parancs küldése
+170|Küldés
+171|Eszköz kiválasztása
+172|Válassza ki az eszközt, amellyel dolgozni fog.
+173|A folytatáshoz hozzon létre legalább egy eszközprofilt.
+174|Tovább
+175|Eszköz hozzáadása…
+176|Szerkesztés…
+177|Törlés megerősítése
+178|Mégse
+179|Eszköz beállítása
+180|Új eszköz
+181|pl. Saját diódás lézerem
+182|Profilnév szükséges.
+183|Eszköz váltása…
+184|Eszköz: {}
+185|Sebességegységek
+186|Másodpercenként (mm/s, in/s)
+187|Percenként (mm/perc, in/perc)
+188|Legutóbbi megnyitása
+189|(üres)
+190|Lista törlése
+191|már nem létezik
+192|Bezárás
+193|Kis méret
+194|Teljes méret
+195|Visszaállítás
+196|Rács megjelenítése vagy elrejtése
+197|Másodlagos rács megjelenítése vagy elrejtése
+198|Légtámogatás
+199|Légpumpa bekapcsolva
+200|Bekapcsolja a légpumpát, amíg ezt a réteget égeti (M8 / M9)
+201|Pozíció és méret
+202|Forgatás
+203|Tükrözés és középre igazítás
+204|Igazítás
+205|Összecsukás
+206|Kibontás
+207|Idő
+208|Fájl mentve: {}
+209|Automatikusan mentve: {}
+210|Menti a munkáját bezárás előtt?
+211|A terv nem lett fájlba mentve.
+212|Elvetés
+213|Programbeállítások…
+214|Programbeállítások
+215|Automatikus mentés
+216|A munka automatikus mentése
+217|Automatikus mentés ennyi időnként
+218|A fájlnév nélküli munka ideiglenes mappába kerül; a nevesített fájl a helyén mentődik
+219|Spirál
+220|Spirál (I)
+221|Fordulatok száma
+222|Húzással rajzolhatja meg a munkaterületen.
+223|Biztonsági mentés letöltése…
+224|Frissítések keresése…
+225|Biztonsági mentés elmentve: {}
+226|A biztonsági mentés nem sikerült: {}
+227|Frissítések
+228|Újabb verzió érhető el: {}
+229|Az Ön verziója: {}.
+230|Letöltési oldal megnyitása
+231|A legújabb verziót használja.
+232|Legújabb kiadás: {}
+233|A frissítések keresése nem sikerült.
+234|Újabb verzió keresése a program indulásakor
+235|Visszaállítás biztonsági mentésből…
+236|Visszaállítás biztonsági mentésből
+237|A jelenlegi beállításait és clipartjait a biztonsági mentés váltja fel. Folytatja?
+238|Biztonsági mentés visszaállítva: {}
+239|A visszaállítás nem sikerült: {}
+240|Nem találhatók profilfájlok. Van biztonsági mentése?
+241|Mértékegységek
+242|Milliméter (mm)
+243|Hüvelyk (in)
+244|Eszköz
+245|Konzol
+246|Állapotlekérdezések
+247|Automatikus görgetés
+248|Törlés
+249|Vezérlő
+250|Lézer típusa
+251|Munkaterület
+252|Igen
+253|Nem
+254|Kapcsolat
+255|Port
+256|Mozgatási lépés
+257|Mozgatási előtolás
+258|Ennek a vezérlőnek nincs közvetlen kapcsolata: a munkák fájlként exportálódnak.
+259|Csomópontok szerkesztése (N)
+260|Szöveg (T)
+261|Sarok
+262|Sima
+263|Vonallá
+264|Görbévé
+265|Csomópont hozzáadása
+266|Csomópont törlése
+267|Nyitás / zárás
+268|A kijelölt csomópontok sarokká alakítása
+269|A kijelölt csomópontok simává alakítása
+270|Minden kijelölt csomópont utáni szakasz egyenessé tétele
+271|Minden kijelölt csomópont utáni szakasz görbévé tétele
+272|Csomópont beszúrása (vagy dupla kattintás egy szakaszra)
+273|Nyitott útvonal zárása, vagy zárt útvonal megnyitása a kijelölt csomópontnál
+274|Átalakítás görbékké
+275|A szöveg átalakítása szerkeszthető Bézier-alakzatokká
+276|Egyesítés
+277|Metszet
+278|Kivonás
+279|Kizáró vagy
+280|Alakzat eltolása…
+281|Alakzat eltolása
+282|Távolság
+283|A pozitív érték növeli a körvonalat, a negatív csökkenti.
+284|Az eredeti megtartása
+285|Eltolás létrehozása
+286|Jelöljön ki legalább két alakzatot (nem képet).
+287|Az eredmény üres.
+288|Kép importálása…
+289|Kép importálva: {}
+290|Szöveg
+291|Betűtípus
+292|Keresés
+293|Méret
+294|Stílus
+295|Félkövér
+296|Dőlt
+297|Betűköz
+298|Sorköz
+299|Igazítás
+300|Kép
+301|Negatív kép
+302|A világos részek gravírozása a sötétek helyett
+303|A gravírozás a réteg térközét, sebességét, teljesítményét és raszterezését használja.
+304|Képbeállítások
+305|A képek a rétegük térközét, sebességét, teljesítményét és túlfutását használják.
+306|Raszterezés
+307|Min. teljesítmény (%)
+308|Küszöb
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Rendezett
+314|Szürkeárnyalat
+315|Eltolásos kitöltés
+316|PLT / DXF exportálása…
+317|Exportálva: {}. Kihagyott képek: {} — ez a formátum nem tud rasztert.
+318|Exportáljon PLT vagy DXF formátumba, és nyissa meg a vezérlő saját szoftverében (például RDWorks a Ruidához), amely rétegszínenként állítja be a sebességet és a teljesítményt.
+319|Anyagkönyvtár…
+320|Anyagkönyvtár
+321|Mind
+322|Anyag
+323|Művelet
+324|Teljesítmény
+325|Vágás
+326|Gravírozás
+327|Karcolás
+328|Kezdőértékek tipikus 10 W-os diódás és 40 W-os CO2 lézerekhez. Mindig hulladékon próbálja ki.
+329|Alkalmazás a(z) {}. rétegre
+330|{} ({}) alkalmazva a(z) {}. rétegre
+331|Az aktív réteg mentése előbeállításként
+332|Anyag neve
+333|Előbeállítás mentése
+334|Kamera-átfedés…
+335|Kamera-átfedés
+336|Fénykép vagy élő kameraképet jelenít meg a terv alatt, hogy a munkát az anyagon pozícionálhassa.
+337|Kép betöltése…
+338|Eltávolítás
+339|Élő kamera
+340|Ez a build nem támogatja a kamerát. Fordítás: cargo run --release --features camera
+341|Nincs kamera
+342|Kamerák keresése
+343|Kamera indítása
+344|Kép befagyasztása
+345|Kamera
+346|Átfedés: {}
+347|Átfedés megjelenítése
+348|Átlátszatlanság
+349|Igazítás: húzza a négy sarkot a munkaterületen
+350|Húzza az egyes sarkokat az anyag vagy a munkaterület megfelelő sarkához; a perspektíva korrigálódik.
+351|Visszaállítás a munkaterületre
+352|Forgatás 90°-kal
+353|Korábban égetni
+354|Később égetni
+355|A rétegek fentről lefelé égnek.
+356|Rácsbeállítások…
+357|Rácsbeállítások
+358|Fő rács
+359|Másodlagos rács
+360|Megjelenítés
+361|Vonalak távolsága
+362|Szín
+363|A másodlagos rácsnak finomabbnak kell lennie a fő rácsnál.
+364|Rács visszaállítása
+365|Pályák
+366|Megjeleníti a pályákat a munkaterületen
+367|Előnézet…
+368|Előnézeti ablak…
+369|Az előnézeti ablak megnyitása
+370|Színezés
+371|Üresjárati mozgások megjelenítése
+372|A gép mozgásai kikapcsolt lézerrel
+373|Lejátszás
+374|Illesztés
+375|Műveletek
+376|Túl sok mozgás: az üresjárati vonalak rejtve vannak.
+377|{} mozgás
+378|Importálás
+379|Exportálás
+380|Adobe Illustrator / PDF importálása…
+381|Csoportosítás
+382|Csoport bontása
+383|A csoportosításhoz jelöljön ki legalább két objektumot.
+384|Csoportosítva. Az objektumok megtartják a rétegeiket.
+385|Alakzatműveletek
+386|Kép beállítása…
+387|Kép vektorizálása…
+388|Kép importálása
+389|Kép beállítása
+390|Forgatás és tükrözés
+391|Szög
+392|Tónus
+393|Fényerő
+394|Kontraszt
+395|Gamma
+396|Automatikus szintek
+397|Szélesség
+398|{} × {} px
+399|Visszaállítás
+400|Kép vektorizálása
+401|Kis területek figyelmen kívül hagyása
+402|Egyszerűsítés
+403|Görbék simítása
+404|A világos területek vektorizálása
+405|A kép törlése utána
+406|{} körvonal
+407|Vektorizálás
+408|{} körvonal vektorizálva
+409|Beolvasás az eszközről
+410|Beolvasás…
+411|Csatlakozik, és beolvassa a vezérlőtől a munkaterületet, az S-érték maximumát és a sebességet
+412|Az eszköz beállításainak beolvasása…
+413|Nem sikerült csatlakozni az eszközhöz.
+414|Az eszköz nem jelentett be beállításokat.
+415|{} érték beolvasva az eszközről
+416|Háromszög (Y)
+417|Csillag (S)
+418|Sokszög (G)
+419|Háromszög
+420|Csillag
+421|Sokszög
+422|Oldalak száma
+423|Húzással rajzolhatja meg a munkaterületen. Legfeljebb 360 oldal.
+424|OK
+425|Kapcsolat típusa
+426|Soros port
+427|Hálózat (TCP, pl. ser2net)
+428|Gazdagép
+429|TCP-port
+430|Csatlakozva: {}
+431|A kamera URL-je
+432|A gép élő képe: MJPEG-adatfolyam vagy JPEG-kép címe (http vagy https).
+433|Kameranézet
+434|Megjeleníti ennek a gépnek az élő kameraképét
+435|Várakozás a képre…
+436|Alapértelmezett nagyítás
+437|Vissza a teljes képre
+438|Megjelenítés átfedésként a munkaterületen
+439|Adatfolyam-hiba: {}
+440|Illesztés 15 mp-re
+441|Valós idő
+442|Először adjon meg egy kamera-URL-t az eszközbeállításokban.
+443|Megjelenítés itt:
+444|Lebegő ablak
+445|Külön ablak
+446|Oldalsó fül
+447|Átfedés
+448|A kamera-átfedés megjelenítése vagy elrejtése a munkaterületen
+449|Kamera-átfedés megjelenítése
+450|Még nincs kamera-átfedés. Töltsön be egy képet, vagy indítsa el a kameranézetet.
+451|Megosztás a hálózaton (ser2net)…
+452|Megosztás a hálózaton (ser2net)
+453|ser2net megtalálva: {}
+454|A ser2net nem található. Először telepítse, például: sudo apt install ser2net
+455|Ez a hálózaton megosztja a lézer soros portját ezen a számítógépen, így a LightCreator máshol is csatlakozhat a „Hálózat (TCP)” kapcsolattípussal.
+456|ser2net verziója
+457|Csak ezen a számítógépen figyeljen (SSH-alagúttal használja)
+458|Az új kliens felváltja a csatlakoztatottat
+459|Fájl: {}
+460|Ezután csatlakozzon a másik számítógépről ide: {}:{}
+461|Figyelem: a hálózaton bárki, aki eléri ezt a portot, vezérelheti a lézert. Használjon megbízható hálózatot, tűzfalat, vagy a csak helyi opciót SSH-alagúttal.
+462|Másolva.
+463|A ser2net telepítése és újraindítása…
+464|Ez felváltja ezt: {} (egy másolat megmarad), és újraindítja a ser2netet. Rendszergazdai jogosultságot kér.
+465|Megerősítés
+466|Várakozás a rendszergazda jóváhagyására…
+467|{} telepítve, a ser2net újraindítva.
+468|A konfigurációt nem sikerült telepíteni: {}
+469|Kézzel: sudo cp <mentett fájl> {} && sudo systemctl restart ser2net
+470|Kamera elforgatása
+471|A munkaterület automatikus illesztése az ablakhoz
+472|Zárolás
+473|Zárolva: szerkesztéshez oldja fel. A másolatok nincsenek zárolva.
+474|{} objektum zárolva.
+475|{} objektum feloldva.
+476|Dupla kattintással szerkesztheti a réteg beállításait
+477|Rétegbeállítások — {}
+478|{} — kattintson, hogy a kijelölést ide rendelje / aktívvá tegye; dupla kattintás a beállításokhoz
+479|Nézetbeállítások…
+480|Nézetbeállítások
+481|Háttérszín
+482|Automatikus
+483|Vonalvastagság
+484|{} menet
+485|Gyorsútmutató
+486|A projekt oldala a GitHubon
+487|Ez az útmutató angolul és lengyelül érhető el; a többi nyelv az angol szöveget mutatja.
+488|Sarkok lekerekítése…
+489|Sarkok lekerekítése
+490|Sugár
+491|Lekerekítés
+492|A lekerekítés sugara
+493|A kijelölt sarkok lekerekítése ezzel a sugárral
+494|Két egyenes van kijelölve: lekerekített sarokkal kapcsolódnak.
+495|A kijelölt alakzatok minden egyenes sarka lekerekítésre kerül.
+496|Ezek a vonalak nem köthetők össze (párhuzamosak, vagy a sugár nem fér el).
+497|A két vonal lekerekített sarokkal összekötve.
+498|Először jelölje ki a lekerekítendő alakzatokat.
+499|Nincsenek lekerekítendő egyenes sarkok.
+500|{} sarok lekerekítve.
+501|Clipart
+502|Állatok
+503|Természet
+504|Ünnepek
+505|Szimbólumok
+506|Alakzatok
+507|Szerszámok
+508|Étel
+509|Tárgyak
+510|Zene és szórakozás
+511|Saját clipartok
+512|Minden kategória
+513|Mellékelt
+514|Sajátok
+515|A programmal érkező képek
+516|Az Ön által letöltött vagy hozzáadott képek
+517|Méret elhelyezéskor
+518|Online…
+519|Fájl hozzáadása…
+520|Keressen további képeket az interneten, és mentse ide őket
+521|SVG-fájlok hozzáadása a számítógépéről a clipartjaihoz
+522|Itt nincsenek képek. Az Online… segítségével találhat néhányat.
+523|a programmal érkezik
+524|az öné
+525|Kattintson a munkaterületre helyezéshez
+526|Elhelyezve: {}
+527|Átnevezés
+528|Átnevezés…
+529|Kategória módosítása
+530|Kategória módosítása…
+531|Részletek
+532|Részletek…
+533|Törlés…
+534|Eltávolítja ezt a képet a clipartjai közül? A lemezen lévő fájl törlődik.
+535|Másolat mentése a saját clipartjaimba
+536|vagy új kategória
+537|{} kép hozzáadva ide: {}
+538|Forrás
+539|Kategória
+540|Licenc
+541|Szerző
+542|Gyűjtemény
+543|Online clipartok…
+544|Online clipartok
+545|Keresés a nyílt ikongyűjteményekben (Iconify). A képek a lemezére kerülnek, az Ön által választott kategóriába.
+546|pl. macska, virág, fogaskerék
+547|Keresés…
+548|Nem található semmi.
+549|{} kép található
+550|A keresés nem sikerült: {}
+551|Kattintson egy képre a licenc megtekintéséhez és a mentéshez.
+552|nem kell megnevezni
+553|nevezze meg a szerzőt
+554|Mentés a saját clipartjaimba
+555|{} mentve ide: {}
+556|Letöltés
+557|Letöltés…
+558|A letöltés nem sikerült: {}
+559|Vagy töltsön le egy képet egy címről
+560|Csak olyan képeket mentsen, amelyeket használhat. Ellenőrizze a forrás licencét.
+561|Nagyítás (Z)
+562|Kicsinyítés (X)
+563|Illesztés a munkaterülethez (Ctrl+0)
+564|Illesztés az összes objektumhoz (Ctrl+9)
+565|Nagyítás
+566|Kicsinyítés
+567|Illesztés a munkaterülethez
+568|Illesztés az összes objektumhoz
+569|Csomópontok szerkesztése
+570|Alakítsa a szöveget görbékké, vagy vektorizálja a képet, hogy szerkeszthesse a csomópontjait.
+571|Először jelöljön ki egy alakzatot, majd szerkessze a csomópontjait.
+572|Szív (K)

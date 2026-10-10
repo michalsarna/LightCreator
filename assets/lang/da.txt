@@ -1,0 +1,573 @@
+0|Filer
+1|Rediger
+2|Arranger
+3|Vis
+4|Laser
+5|Indstillinger
+6|Hjælp
+7|Ny
+8|Åbn…
+9|Gem
+10|Gem som…
+11|Importer SVG…
+12|Eksporter SVG…
+13|Eksporter G-code…
+14|Afslut
+15|Fortryd
+16|Gentag
+17|Kopiér
+18|Sæt ind
+19|Dupliker
+20|Slet
+21|Markér alt
+22|Justér til venstre
+23|Centrér (H)
+24|Justér til højre
+25|Justér til toppen
+26|Centrér (V)
+27|Justér til bunden
+28|Centrér på hinanden
+29|Centrér på bordet
+30|Vend vandret
+31|Vend lodret
+32|Roter 90° med uret
+33|Roter 90° mod uret
+34|Bring forrest
+35|Send bagest
+36|Konvertér til sti
+37|Gitterkopier…
+38|Gitter
+39|Fastgør til gitter
+40|Forhåndsvisning af stier
+41|Tilpas bordet til vinduet
+42|Enhedsindstillinger…
+43|Ramme
+44|Start job
+45|Om
+46|Sprog
+47|Farveskema
+48|Mørk
+49|Lysmørk
+50|Mellemlys
+51|Lys
+52|Markér (V)
+53|Rektangel (R)
+54|Ellipse (E)
+55|Linje (L)
+56|Polylinje / pen (P)
+57|Panorér (H)
+58|Zoom (Z)
+59|Markér
+60|Rektangel
+61|Ellipse
+62|Linje
+63|Fyld
+64|Fyld + linje
+65|Lag {}
+66|Magnet
+67|Forhåndsvisning
+68|Start
+69|Sender jobbet til den tilsluttede laser
+70|Følger områdets omrids
+71|Gem G-code
+72|Lag
+73|{} — klik for at tildele markeringen / gøre aktivt
+74|Klar
+75|{} åbnet
+76|Kunne ikke åbne: {}
+77|{} gemt
+78|Kunne ikke gemme: {}
+79|{} stier importeret fra {}
+80|Importen mislykkedes: {}
+81|{} eksporteret
+82|Eksporten mislykkedes: {}
+83|G-code {} gemt
+84|Tilslut først en laser (panelet Laser)
+85|Intet at brænde: ingen former på uddatalag
+86|Starter job: {} linjer, ~{}
+87|Afbrudt
+88|Forbundet til {} @ {}
+89|Kan ikke åbne {}: {}
+90|Afbrudt (blød nulstilling)
+91|Forbindelsen blev mistet
+92|Anslået tid
+93|skærelængde
+94|Enhedsindstillinger
+95|Navn
+96|Arbejdsområde X
+97|Arbejdsområde Y
+98|Maskinens nulpunkt (0,0)
+99|Forrest til venstre (GRBL-standard)
+100|Bagest til venstre
+101|S-værdi maks ($30)
+102|Dynamisk effekt (M4)
+103|Forflytningshastighed
+104|Vend tilbage til origo
+105|Baudrate
+106|Gitterkopier
+107|Kolonner
+108|Rækker
+109|Afstand X
+110|Afstand Y
+111|Opret gitter
+112|Om LightCreator
+113|Version {}
+114|Open source-software til design og styring af lasergraverere og laserskærere.
+115|Oprindelse: skrevet i Rust med egui/eframe.
+116|Inspireret af LightBurn; grænseflade inspireret af VectorCraft.
+117|Forfatter: Michał Sarna
+118|MIT-licens.
+119|Egenskaber
+120|Skæring / Lag
+121|Intet markeret
+122|Lås proportioner
+123|Roter
+124|Anvend
+125|Vend H
+126|Vend V
+127|Centrér
+128|Venstre
+129|Midt H
+130|Højre
+131|Top
+132|Midt V
+133|Bund
+134|Centrér
+135|Justér i midten
+136|Lag
+137|Vis alle 30 lag
+138|Uddata (brænd dette lag)
+139|Synlig
+140|Skæreindstillinger — {}
+141|Tilstand
+142|Hastighed
+143|Effekt (%)
+144|Gennemløb
+145|Interval
+146|Scanningsvinkel
+147|Overscanning
+148|Tovejs
+149|Ingen port
+150|Opdater
+151|Søg efter serielle porte igen
+152|Afbryd
+153|Forbind
+154|Status
+155|Trin
+156|Fremføring
+157|Op
+158|Ned
+159|Afbryd det igangværende job
+160|Stop
+161|Annullér flytning
+162|Hjem
+163|Lås op
+164|Pause
+165|Genoptag
+166|STOP
+167|Rammens effekt
+168|0 % holder laseren slukket under indramning; 1–2 % viser en svag prik på diodelasere
+169|send G-code / $-kommando
+170|Send
+171|Vælg enhed
+172|Vælg den enhed, du skal arbejde med.
+173|Opret mindst én enhedsprofil for at fortsætte.
+174|Fortsæt
+175|Tilføj enhed…
+176|Rediger…
+177|Bekræft sletning
+178|Annullér
+179|Enhedskonfiguration
+180|Ny enhed
+181|f.eks. Min diodelaser
+182|Et profilnavn er påkrævet.
+183|Skift enhed…
+184|Enhed: {}
+185|Hastighedsenheder
+186|Pr. sekund (mm/s, in/s)
+187|Pr. minut (mm/min, in/min)
+188|Åbn seneste
+189|(tom)
+190|Ryd listen
+191|findes ikke længere
+192|Luk
+193|Minimér
+194|Maksimér
+195|Gendan
+196|Vis eller skjul gitteret
+197|Vis eller skjul det sekundære gitter
+198|Luftassistance
+199|Luftpumpe til
+200|Tænd luftpumpen, mens dette lag brændes (M8 / M9)
+201|Placering og størrelse
+202|Rotation
+203|Spejl og centrering
+204|Justering
+205|Fold sammen
+206|Fold ud
+207|Tid
+208|Fil gemt: {}
+209|Gemt automatisk {}
+210|Gem dit arbejde, før du lukker?
+211|Designet er ikke gemt i en fil.
+212|Kassér
+213|Programindstillinger…
+214|Programindstillinger
+215|Automatisk lagring
+216|Gem arbejdet automatisk
+217|Gem automatisk hver
+218|Arbejde uden filnavn kommer i en midlertidig mappe; en fil med navn gemmes på stedet
+219|Spiral
+220|Spiral (I)
+221|Antal omgange
+222|Træk på arbejdsområdet for at tegne den.
+223|Hent sikkerhedskopi…
+224|Søg efter opdateringer…
+225|Sikkerhedskopi gemt: {}
+226|Sikkerhedskopieringen mislykkedes: {}
+227|Opdateringer
+228|En nyere version er tilgængelig: {}
+229|Du har {}.
+230|Åbn downloadsiden
+231|Du har den nyeste version.
+232|Seneste udgivelse: {}
+233|Kunne ikke søge efter opdateringer.
+234|Søg efter en nyere version, når programmet starter
+235|Gendan fra sikkerhedskopi…
+236|Gendan fra sikkerhedskopi
+237|Dine nuværende indstillinger og clipart erstattes af sikkerhedskopien. Fortsæt?
+238|Sikkerhedskopi gendannet: {}
+239|Gendannelsen mislykkedes: {}
+240|Der blev ikke fundet nogen profilfiler. Har du en sikkerhedskopi?
+241|Enheder
+242|Millimeter (mm)
+243|Tommer (in)
+244|Enhed
+245|Konsol
+246|Statusforespørgsler
+247|Automatisk rulning
+248|Ryd
+249|Controller
+250|Lasertype
+251|Arbejdsområde
+252|Ja
+253|Nej
+254|Forbindelse
+255|Port
+256|Flyttetrin
+257|Flytteføring
+258|Denne controller har ingen direkte forbindelse: job eksporteres som filer.
+259|Redigér knudepunkter (N)
+260|Tekst (T)
+261|Hjørne
+262|Glat
+263|Til linje
+264|Til kurve
+265|Tilføj knudepunkt
+266|Slet knudepunkt
+267|Åbn / luk
+268|Gør de markerede knudepunkter til hjørner
+269|Gør de markerede knudepunkter glatte
+270|Gør segmentet efter hvert markeret knudepunkt lige
+271|Gør segmentet efter hvert markeret knudepunkt buet
+272|Indsæt et knudepunkt (eller dobbeltklik på et segment)
+273|Luk en åben sti, eller åbn en lukket ved det markerede knudepunkt
+274|Konvertér til kurver
+275|Gør teksten til redigerbare Bézier-former
+276|Forening
+277|Fællesmængde
+278|Træk fra
+279|Eksklusiv eller
+280|Forskyd form…
+281|Forskyd form
+282|Afstand
+283|Positiv forstørrer omridset, negativ formindsker det.
+284|Behold originalen
+285|Opret forskydning
+286|Markér mindst to former (ikke billeder).
+287|Resultatet er tomt.
+288|Importer billede…
+289|Billedet {} importeret
+290|Tekst
+291|Skrifttype
+292|Søg
+293|Størrelse
+294|Typografi
+295|Fed
+296|Kursiv
+297|Bogstavafstand
+298|Linjeafstand
+299|Justering
+300|Billede
+301|Negativt billede
+302|Gravér de lyse dele i stedet for de mørke
+303|Graveringen bruger lagets interval, hastighed, effekt og rastrering.
+304|Billedindstillinger
+305|Billeder bruger interval, hastighed, effekt og overscanning fra deres lag.
+306|Rastrering
+307|Min. effekt (%)
+308|Tærskel
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Ordnet
+314|Gråtoner
+315|Forskydningsfyld
+316|Eksporter PLT / DXF…
+317|{} eksporteret. {} billede(r) sprunget over: formatet har ikke raster.
+318|Eksportér PLT eller DXF og åbn filen i controllerens eget program (for eksempel RDWorks til Ruida), som indstiller hastighed og effekt pr. lagfarve.
+319|Materialebibliotek…
+320|Materialebibliotek
+321|Alle
+322|Materiale
+323|Operation
+324|Effekt
+325|Skæring
+326|Gravering
+327|Ridsning
+328|Startværdier til typiske 10 W-diode- og 40 W-CO2-lasere. Test altid på rester.
+329|Anvend på lag {}
+330|{} ({}) anvendt på lag {}
+331|Gem det aktive lag som forudindstilling
+332|Materialenavn
+333|Gem forudindstilling
+334|Kameraoverlay…
+335|Kameraoverlay
+336|Vis et foto eller live-kameraet under designet for at placere arbejdet på materialet.
+337|Indlæs billede…
+338|Fjern
+339|Live-kamera
+340|Denne version har ikke kamerastøtte. Byg med: cargo run --release --features camera
+341|Intet kamera
+342|Find kameraer
+343|Start kamera
+344|Frys billede
+345|Kamera
+346|Overlay: {}
+347|Vis overlay
+348|Opacitet
+349|Justér: træk de fire hjørner på arbejdsområdet
+350|Træk hvert hjørne til det tilsvarende hjørne af materialet eller arbejdsområdet; perspektivet korrigeres.
+351|Nulstil til arbejdsområdet
+352|Roter 90°
+353|Brænd tidligere
+354|Brænd senere
+355|Lag brændes oppefra og ned.
+356|Gitterindstillinger…
+357|Gitterindstillinger
+358|Hovedgitter
+359|Sekundært gitter
+360|Vis
+361|Afstand mellem linjer
+362|Farve
+363|Det sekundære gitter skal være finere end hovedgitteret.
+364|Nulstil gitter
+365|Stier
+366|Viser stierne på arbejdsområdet
+367|Forhåndsvisning…
+368|Forhåndsvisningsvindue…
+369|Åbn forhåndsvisningsvinduet
+370|Farvelæg efter
+371|Vis forflytninger
+372|Maskinens bevægelser med slukket laser
+373|Afspil
+374|Tilpas
+375|Operationer
+376|For mange bevægelser: forflytningslinjer er skjult.
+377|{} bevægelser
+378|Importer
+379|Eksporter
+380|Importer Adobe Illustrator / PDF…
+381|Gruppér
+382|Opløs gruppe
+383|Markér mindst to objekter for at gruppere.
+384|Grupperet. Objekterne beholder deres lag.
+385|Formoperationer
+386|Justér billede…
+387|Vektorisér billede…
+388|Importer billede
+389|Justér billede
+390|Roter og vend
+391|Vinkel
+392|Tone
+393|Lysstyrke
+394|Kontrast
+395|Gamma
+396|Automatiske niveauer
+397|Bredde
+398|{} × {} px
+399|Nulstil
+400|Vektorisér billede
+401|Ignorer små områder
+402|Forenkl
+403|Udjævn kurver
+404|Vektorisér de lyse områder
+405|Slet billedet bagefter
+406|{} omrids
+407|Vektorisér
+408|{} omrids vektoriseret
+409|Læs fra enheden
+410|Læser…
+411|Forbinder og læser arbejdsområde, S-værdi maks og hastighed fra controlleren
+412|Læser indstillingerne fra enheden…
+413|Kunne ikke oprette forbindelse til enheden.
+414|Enheden rapporterede ingen indstillinger.
+415|Læste {} værdier fra enheden
+416|Trekant (Y)
+417|Stjerne (S)
+418|Polygon (G)
+419|Trekant
+420|Stjerne
+421|Polygon
+422|Antal sider
+423|Træk på arbejdsområdet for at tegne den. Højst 360 sider.
+424|OK
+425|Forbindelsestype
+426|Seriel port
+427|Netværk (TCP, f.eks. ser2net)
+428|Vært
+429|TCP-port
+430|Forbundet til {}
+431|Kameraets URL
+432|Livebillede fra maskinen: en MJPEG-strøm eller adressen på et JPEG-billede (http eller https).
+433|Kameravisning
+434|Viser livebilledet fra denne maskines kamera
+435|Venter på billedet…
+436|Standardzoom
+437|Tilbage til hele billedet
+438|Vis som overlay på arbejdsområdet
+439|Strømfejl: {}
+440|Tilpas til 15 s
+441|Realtid
+442|Angiv først en kamera-URL i enhedsindstillingerne.
+443|Vis i
+444|Flydende vindue
+445|Separat vindue
+446|Sidefane
+447|Overlay
+448|Vis eller skjul kameraoverlayet på arbejdsområdet
+449|Vis kameraoverlay
+450|Der er endnu intet kameraoverlay. Indlæs et billede eller start kameravisningen.
+451|Del over netværket (ser2net)…
+452|Del over netværket (ser2net)
+453|ser2net fundet: {}
+454|ser2net blev ikke fundet. Installér det først, for eksempel: sudo apt install ser2net
+455|Dette deler laserens serielle port på denne computer over netværket, så LightCreator et andet sted kan forbinde med forbindelsestypen »Netværk (TCP)«.
+456|ser2net-version
+457|Lyt kun på denne computer (bruges med en SSH-tunnel)
+458|En ny klient erstatter den tilsluttede
+459|Fil: {}
+460|Forbind derefter fra den anden computer til {}:{}
+461|Advarsel: alle på netværket, der når denne port, kan styre laseren. Brug et pålideligt netværk, en firewall eller indstillingen kun lokalt med en SSH-tunnel.
+462|Kopieret.
+463|Installér og genstart ser2net…
+464|Dette erstatter {} (en sikkerhedskopi gemmes) og genstarter ser2net. Der bedes om administratorrettigheder.
+465|Bekræft
+466|Venter på administratorens godkendelse…
+467|{} installeret og ser2net genstartet.
+468|Kunne ikke installere konfigurationen: {}
+469|Manuelt: sudo cp <gemt fil> {} && sudo systemctl restart ser2net
+470|Kameradrejning
+471|Tilpas automatisk arbejdsområdet til vinduet
+472|Lås
+473|Låst: lås op for at redigere. Kopier er ikke låst.
+474|{} objekt(er) låst.
+475|{} objekt(er) låst op.
+476|Dobbeltklik for at redigere lagets indstillinger
+477|Lagindstillinger — {}
+478|{} — klik for at tildele markeringen / gøre aktivt; dobbeltklik for indstillinger
+479|Visningsindstillinger…
+480|Visningsindstillinger
+481|Baggrundsfarve
+482|Automatisk
+483|Linjetykkelse
+484|{} gennemløb
+485|Hurtigguide
+486|Projektside på GitHub
+487|Denne guide findes på engelsk og polsk; andre sprog viser den engelske tekst.
+488|Afrund hjørner…
+489|Afrund hjørner
+490|Radius
+491|Afrund
+492|Radius for afrunding
+493|Afrund de markerede hjørner med denne radius
+494|To rette linjer er markeret: de forbindes med et afrundet hjørne.
+495|Hvert rette hjørne på de markerede former afrundes.
+496|Disse linjer kan ikke forbindes (parallelle, eller radius passer ikke).
+497|De to linjer blev forbundet med et afrundet hjørne.
+498|Markér først de former, der skal afrundes.
+499|Der er ingen rette hjørner at afrunde.
+500|{} hjørne(r) afrundet.
+501|Clipart
+502|Dyr
+503|Natur
+504|Fester
+505|Symboler
+506|Former
+507|Værktøj
+508|Mad
+509|Genstande
+510|Musik og sjov
+511|Min clipart
+512|Alle kategorier
+513|Medfølgende
+514|Mine
+515|Billeder, der følger med programmet
+516|Billeder, du har downloadet eller tilføjet
+517|Størrelse ved placering
+518|Online…
+519|Tilføj fil…
+520|Søg efter flere billeder på internettet og gem dem her
+521|Tilføj SVG-filer fra din computer til din clipart
+522|Ingen billeder her. Brug Online… for at finde nogle.
+523|følger med programmet
+524|dine
+525|Klik for at placere på arbejdsområdet
+526|{} placeret
+527|Omdøb
+528|Omdøb…
+529|Skift kategori
+530|Skift kategori…
+531|Detaljer
+532|Detaljer…
+533|Slet…
+534|Fjern dette billede fra din clipart? Filen på din disk slettes.
+535|Gem en kopi i min clipart
+536|eller en ny kategori
+537|{} billede(r) tilføjet til {}
+538|Kilde
+539|Kategori
+540|Licens
+541|Forfatter
+542|Samling
+543|Clipart online…
+544|Clipart online
+545|Søg i åbne ikonsamlinger (Iconify). Billeder gemmes på din disk i en kategori efter dit valg.
+546|f.eks. kat, blomst, tandhjul
+547|Søger…
+548|Intet fundet.
+549|{} billeder fundet
+550|Søgningen mislykkedes: {}
+551|Klik på et billede for at se dets licens og gemme det.
+552|ingen kreditering nødvendig
+553|krediter forfatteren
+554|Gem i min clipart
+555|{} gemt i {}
+556|Download
+557|Downloader…
+558|Download mislykkedes: {}
+559|Eller download et billede fra en adresse
+560|Gem kun billeder, du må bruge. Tjek kildens licens.
+561|Zoom ind (Z)
+562|Zoom ud (X)
+563|Tilpas til arbejdsområdet (Ctrl+0)
+564|Tilpas til alle objekter (Ctrl+9)
+565|Zoom ind
+566|Zoom ud
+567|Tilpas til arbejdsområdet
+568|Tilpas til alle objekter
+569|Redigér knudepunkter
+570|Konvertér teksten til kurver, eller vektorisér billedet, for at redigere dets knudepunkter.
+571|Markér først en form, og redigér derefter dens knudepunkter.
+572|Hjerte (K)

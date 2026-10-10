@@ -1,0 +1,573 @@
+0|Bestand
+1|Bewerken
+2|Rangschikken
+3|Weergave
+4|Laser
+5|Instellingen
+6|Help
+7|Nieuw
+8|Openen…
+9|Opslaan
+10|Opslaan als…
+11|SVG importeren…
+12|SVG exporteren…
+13|G-code exporteren…
+14|Afsluiten
+15|Ongedaan maken
+16|Opnieuw
+17|Kopiëren
+18|Plakken
+19|Dupliceren
+20|Verwijderen
+21|Alles selecteren
+22|Links uitlijnen
+23|Centreren (H)
+24|Rechts uitlijnen
+25|Boven uitlijnen
+26|Centreren (V)
+27|Onder uitlijnen
+28|Op elkaar centreren
+29|Op de tafel centreren
+30|Horizontaal spiegelen
+31|Verticaal spiegelen
+32|90° rechtsom draaien
+33|90° linksom draaien
+34|Naar voren halen
+35|Naar achteren sturen
+36|Omzetten naar pad
+37|Rasterkopieën…
+38|Raster
+39|Aan raster uitlijnen
+40|Voorbeeld van paden
+41|Tafel in venster passen
+42|Apparaatinstellingen…
+43|Kader
+44|Taak starten
+45|Over
+46|Taal
+47|Kleurenschema
+48|Donker
+49|Lichtdonker
+50|Middellicht
+51|Licht
+52|Selecteren (V)
+53|Rechthoek (R)
+54|Ellips (E)
+55|Lijn (L)
+56|Polylijn / pen (P)
+57|Weergave verschuiven (H)
+58|Zoomen (Z)
+59|Selecteren
+60|Rechthoek
+61|Ellips
+62|Lijn
+63|Vulling
+64|Vulling + lijn
+65|Laag {}
+66|Magneet
+67|Voorbeeld
+68|Start
+69|Stuurt de taak naar de aangesloten laser
+70|Volgt de omtrek van het gebied
+71|G-code opslaan
+72|Lagen
+73|{} — klik om de selectie toe te wijzen / actief te maken
+74|Gereed
+75|{} geopend
+76|Openen mislukt: {}
+77|{} opgeslagen
+78|Opslaan mislukt: {}
+79|{} paden geïmporteerd uit {}
+80|Importeren mislukt: {}
+81|{} geëxporteerd
+82|Exporteren mislukt: {}
+83|G-code {} opgeslagen
+84|Sluit eerst een laser aan (paneel Laser)
+85|Niets om te branden: geen vormen op uitvoerlagen
+86|Taak starten: {} regels, ~{}
+87|Verbinding verbroken
+88|Verbonden met {} @ {}
+89|Kan {} niet openen: {}
+90|Afgebroken (zachte reset)
+91|Verbinding verloren
+92|Geschatte tijd
+93|snijlengte
+94|Apparaatinstellingen
+95|Naam
+96|Werkgebied X
+97|Werkgebied Y
+98|Machinenul (0,0)
+99|Linksvoor (GRBL-standaard)
+100|Linksachter
+101|S-waarde max ($30)
+102|Dynamisch vermogen (M4)
+103|Verplaatsingssnelheid
+104|Terug naar oorsprong
+105|Baudsnelheid
+106|Rasterkopieën
+107|Kolommen
+108|Rijen
+109|Ruimte X
+110|Ruimte Y
+111|Raster maken
+112|Over LightCreator
+113|Versie {}
+114|Opensourcesoftware voor ontwerp en besturing van lasergraveer- en lasersnijmachines.
+115|Herkomst: geschreven in Rust met egui/eframe.
+116|Geïnspireerd door LightBurn; interface geïnspireerd door VectorCraft.
+117|Auteur: Michał Sarna
+118|MIT-licentie.
+119|Eigenschappen
+120|Sneden / Lagen
+121|Niets geselecteerd
+122|Beeldverhouding vergrendelen
+123|Draaien
+124|Toepassen
+125|Spiegel H
+126|Spiegel V
+127|Centreren
+128|Links
+129|Midden H
+130|Rechts
+131|Boven
+132|Midden V
+133|Onder
+134|Centreren
+135|In het midden uitlijnen
+136|Laag
+137|Alle 30 lagen tonen
+138|Uitvoer (deze laag branden)
+139|Zichtbaar
+140|Snij-instellingen — {}
+141|Modus
+142|Snelheid
+143|Vermogen (%)
+144|Doorgangen
+145|Interval
+146|Scanhoek
+147|Overscan
+148|Bidirectioneel
+149|Geen poort
+150|Vernieuwen
+151|Seriële poorten opnieuw zoeken
+152|Verbinding verbreken
+153|Verbinden
+154|Status
+155|Stap
+156|Voeding
+157|Omhoog
+158|Omlaag
+159|Lopende taak afbreken
+160|Stop
+161|Verplaatsing annuleren
+162|Home
+163|Ontgrendelen
+164|Pauze
+165|Hervatten
+166|STOP
+167|Kadervermogen
+168|0 % houdt de laser uit tijdens het kaderen; 1–2 % toont een zwakke stip op diodelasers
+169|G-code / $-opdracht verzenden
+170|Verzenden
+171|Apparaat kiezen
+172|Kies het apparaat waarmee u gaat werken.
+173|Maak minstens één apparaatprofiel aan om door te gaan.
+174|Doorgaan
+175|Apparaat toevoegen…
+176|Bewerken…
+177|Verwijderen bevestigen
+178|Annuleren
+179|Apparaatconfiguratie
+180|Nieuw apparaat
+181|bijv. Mijn diodelaser
+182|Een profielnaam is vereist.
+183|Apparaat wisselen…
+184|Apparaat: {}
+185|Snelheidseenheden
+186|Per seconde (mm/s, in/s)
+187|Per minuut (mm/min, in/min)
+188|Recent openen
+189|(leeg)
+190|Lijst wissen
+191|bestaat niet meer
+192|Sluiten
+193|Minimaliseren
+194|Maximaliseren
+195|Herstellen
+196|Raster tonen of verbergen
+197|Secundair raster tonen of verbergen
+198|Luchtondersteuning
+199|Luchtpomp aan
+200|Zet de luchtpomp aan terwijl deze laag brandt (M8 / M9)
+201|Positie en grootte
+202|Rotatie
+203|Spiegelen en centreren
+204|Uitlijning
+205|Inklappen
+206|Uitklappen
+207|Tijd
+208|Bestand opgeslagen: {}
+209|Automatisch opgeslagen {}
+210|Uw werk opslaan voor het sluiten?
+211|Het ontwerp is niet in een bestand opgeslagen.
+212|Verwerpen
+213|Programma-opties…
+214|Programma-opties
+215|Automatisch opslaan
+216|Het werk automatisch opslaan
+217|Automatisch opslaan elke
+218|Werk zonder bestandsnaam gaat naar een tijdelijke map; een bestand met naam wordt ter plaatse opgeslagen
+219|Spiraal
+220|Spiraal (I)
+221|Aantal windingen
+222|Sleep op het werkgebied om te tekenen.
+223|Back-up downloaden…
+224|Controleren op updates…
+225|Back-up opgeslagen: {}
+226|Back-up mislukt: {}
+227|Updates
+228|Er is een nieuwere versie beschikbaar: {}
+229|U heeft {}.
+230|Downloadpagina openen
+231|U heeft de nieuwste versie.
+232|Nieuwste release: {}
+233|Kon niet controleren op updates.
+234|Bij het starten van het programma naar een nieuwere versie zoeken
+235|Herstellen vanuit back-up…
+236|Herstellen vanuit back-up
+237|Uw huidige instellingen en clipart worden vervangen door de back-up. Doorgaan?
+238|Back-up hersteld: {}
+239|Herstellen mislukt: {}
+240|Geen profielbestanden gevonden. Heeft u een back-up?
+241|Eenheden
+242|Millimeter (mm)
+243|Inch (in)
+244|Apparaat
+245|Console
+246|Statusopvragingen
+247|Automatisch scrollen
+248|Wissen
+249|Controller
+250|Lasertype
+251|Werkgebied
+252|Ja
+253|Nee
+254|Verbinding
+255|Poort
+256|Verplaatsingsstap
+257|Verplaatsingssnelheid
+258|Deze controller heeft geen directe verbinding: taken worden als bestanden geëxporteerd.
+259|Knooppunten bewerken (N)
+260|Tekst (T)
+261|Hoek
+262|Glad
+263|Naar lijn
+264|Naar curve
+265|Knooppunt toevoegen
+266|Knooppunt verwijderen
+267|Openen / sluiten
+268|Geselecteerde knooppunten hoeken maken
+269|Geselecteerde knooppunten glad maken
+270|Het segment na elk geselecteerd knooppunt recht maken
+271|Het segment na elk geselecteerd knooppunt gebogen maken
+272|Een knooppunt invoegen (of dubbelklik op een segment)
+273|Een open pad sluiten, of een gesloten pad openen bij het geselecteerde knooppunt
+274|Omzetten naar curven
+275|De tekst omzetten in bewerkbare Bézier-vormen
+276|Vereniging
+277|Doorsnede
+278|Aftrekken
+279|Exclusieve of
+280|Vorm verschuiven…
+281|Vorm verschuiven
+282|Afstand
+283|Positief vergroot de omtrek, negatief verkleint hem.
+284|Origineel behouden
+285|Verschuiving maken
+286|Selecteer minstens twee vormen (geen afbeeldingen).
+287|Het resultaat is leeg.
+288|Afbeelding importeren…
+289|Afbeelding {} geïmporteerd
+290|Tekst
+291|Lettertype
+292|Zoeken
+293|Grootte
+294|Stijl
+295|Vet
+296|Cursief
+297|Letterspatiëring
+298|Regelafstand
+299|Uitlijning
+300|Afbeelding
+301|Negatieve afbeelding
+302|De lichte delen graveren in plaats van de donkere
+303|Graveren gebruikt het interval, de snelheid, het vermogen en de rastering van de laag.
+304|Afbeeldingsinstellingen
+305|Afbeeldingen gebruiken het interval, de snelheid, het vermogen en de overscan van hun laag.
+306|Rastering
+307|Min. vermogen (%)
+308|Drempel
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Geordend
+314|Grijswaarden
+315|Vulling met verschuiving
+316|PLT / DXF exporteren…
+317|{} geëxporteerd. {} afbeelding(en) overgeslagen: dit formaat heeft geen raster.
+318|Exporteer naar PLT of DXF en open het in de eigen software van de controller (bijvoorbeeld RDWorks voor Ruida), die snelheid en vermogen per laagkleur instelt.
+319|Materiaalbibliotheek…
+320|Materiaalbibliotheek
+321|Alle
+322|Materiaal
+323|Bewerking
+324|Vermogen
+325|Snijden
+326|Graveren
+327|Markeren
+328|Startwaarden voor typische 10 W-diode- en 40 W-CO2-lasers. Test altijd op restmateriaal.
+329|Toepassen op laag {}
+330|{} ({}) toegepast op laag {}
+331|De actieve laag opslaan als voorinstelling
+332|Materiaalnaam
+333|Voorinstelling opslaan
+334|Cameraoverlay…
+335|Cameraoverlay
+336|Toon een foto of de live camera onder het ontwerp om het werk op het materiaal te positioneren.
+337|Afbeelding laden…
+338|Verwijderen
+339|Live camera
+340|Deze build heeft geen camerastandaard. Bouw met: cargo run --release --features camera
+341|Geen camera
+342|Camera's zoeken
+343|Camera starten
+344|Beeld bevriezen
+345|Camera
+346|Overlay: {}
+347|Overlay tonen
+348|Dekking
+349|Uitlijnen: sleep de vier hoeken op het werkgebied
+350|Sleep elke hoek naar de overeenkomstige hoek van het materiaal of werkgebied; perspectief wordt gecorrigeerd.
+351|Terugzetten op werkgebied
+352|90° draaien
+353|Eerder branden
+354|Later branden
+355|Lagen worden van boven naar beneden gebrand.
+356|Rasteropties…
+357|Rasteropties
+358|Hoofdraster
+359|Secundair raster
+360|Tonen
+361|Afstand tussen lijnen
+362|Kleur
+363|Het secundaire raster moet fijner zijn dan het hoofdraster.
+364|Raster terugzetten
+365|Paden
+366|Toont de paden op het werkgebied
+367|Voorbeeld…
+368|Voorbeeldvenster…
+369|Het voorbeeldvenster openen
+370|Kleuren op
+371|Verplaatsingen tonen
+372|Bewegingen van de machine met uitgeschakelde laser
+373|Afspelen
+374|Passen
+375|Bewerkingen
+376|Te veel bewegingen: verplaatsingslijnen zijn verborgen.
+377|{} bewegingen
+378|Importeren
+379|Exporteren
+380|Adobe Illustrator / PDF importeren…
+381|Groeperen
+382|Groep opheffen
+383|Selecteer minstens twee objecten om te groeperen.
+384|Gegroepeerd. De objecten behouden hun lagen.
+385|Vormbewerkingen
+386|Afbeelding aanpassen…
+387|Afbeelding vectoriseren…
+388|Afbeelding importeren
+389|Afbeelding aanpassen
+390|Draaien en spiegelen
+391|Hoek
+392|Toon
+393|Helderheid
+394|Contrast
+395|Gamma
+396|Automatische niveaus
+397|Breedte
+398|{} × {} px
+399|Terugzetten
+400|Afbeelding vectoriseren
+401|Kleine gebieden negeren
+402|Vereenvoudigen
+403|Curven afvlakken
+404|De lichte gebieden vectoriseren
+405|De afbeelding daarna verwijderen
+406|{} omtrekken
+407|Vectoriseren
+408|{} omtrekken gevectoriseerd
+409|Van apparaat lezen
+410|Lezen…
+411|Verbindt en leest werkgebied, S-waarde max en snelheid van de controller
+412|Instellingen van het apparaat lezen…
+413|Kon geen verbinding maken met het apparaat.
+414|Het apparaat meldde geen instellingen.
+415|{} waarden van het apparaat gelezen
+416|Driehoek (Y)
+417|Ster (S)
+418|Veelhoek (G)
+419|Driehoek
+420|Ster
+421|Veelhoek
+422|Aantal zijden
+423|Sleep op het werkgebied om te tekenen. Maximaal 360 zijden.
+424|OK
+425|Verbindingstype
+426|Seriële poort
+427|Netwerk (TCP, bijv. ser2net)
+428|Host
+429|TCP-poort
+430|Verbonden met {}
+431|Camera-URL
+432|Live beeld van de machine: een MJPEG-stream of het adres van een JPEG-afbeelding (http of https).
+433|Cameraweergave
+434|Toont het live camerabeeld van deze machine
+435|Wachten op het beeld…
+436|Standaardzoom
+437|Terug naar het hele beeld
+438|Als overlay op het werkgebied tonen
+439|Streamfout: {}
+440|Passen op 15 s
+441|Realtime
+442|Stel eerst een camera-URL in bij de apparaatinstellingen.
+443|Tonen in
+444|Zwevend venster
+445|Apart venster
+446|Zijtabblad
+447|Overlay
+448|De cameraoverlay op het werkgebied tonen of verbergen
+449|Cameraoverlay tonen
+450|Er is nog geen cameraoverlay. Laad een afbeelding of start de cameraweergave.
+451|Delen via het netwerk (ser2net)…
+452|Delen via het netwerk (ser2net)
+453|ser2net gevonden: {}
+454|ser2net is niet gevonden. Installeer het eerst, bijvoorbeeld: sudo apt install ser2net
+455|Dit deelt de seriële poort van de laser op deze computer via het netwerk, zodat LightCreator elders verbinding kan maken met het verbindingstype ‘Netwerk (TCP)’.
+456|ser2net-versie
+457|Alleen op deze computer luisteren (gebruik met een SSH-tunnel)
+458|Een nieuwe client vervangt de verbonden client
+459|Bestand: {}
+460|Verbind daarna vanaf de andere computer met {}:{}
+461|Waarschuwing: iedereen op het netwerk die deze poort bereikt, kan de laser besturen. Gebruik een vertrouwd netwerk, een firewall, of de optie alleen lokaal met een SSH-tunnel.
+462|Gekopieerd.
+463|ser2net installeren en herstarten…
+464|Dit vervangt {} (een back-up blijft bewaard) en herstart ser2net. Er worden beheerdersrechten gevraagd.
+465|Bevestigen
+466|Wachten op goedkeuring van de beheerder…
+467|{} geïnstalleerd en ser2net herstart.
+468|Kon de configuratie niet installeren: {}
+469|Handmatig: sudo cp <opgeslagen bestand> {} && sudo systemctl restart ser2net
+470|Camerarotatie
+471|Werkgebied automatisch in het venster passen
+472|Vergrendelen
+473|Vergrendeld: ontgrendel om te bewerken. Kopieën zijn niet vergrendeld.
+474|{} object(en) vergrendeld.
+475|{} object(en) ontgrendeld.
+476|Dubbelklik om de laagopties te bewerken
+477|Laagopties — {}
+478|{} — klik om de selectie toe te wijzen / actief te maken; dubbelklik voor opties
+479|Weergaveopties…
+480|Weergaveopties
+481|Achtergrondkleur
+482|Automatisch
+483|Lijndikte
+484|{} doorgangen
+485|Snelgids
+486|Projectpagina op GitHub
+487|Deze gids is beschikbaar in het Engels en Pools; andere talen tonen de Engelse tekst.
+488|Hoeken afronden…
+489|Hoeken afronden
+490|Straal
+491|Afronden
+492|Straal voor afronding
+493|De geselecteerde hoeken afronden met deze straal
+494|Twee rechte lijnen zijn geselecteerd: ze worden verbonden met een afgeronde hoek.
+495|Elke rechte hoek van de geselecteerde vormen wordt afgerond.
+496|Deze lijnen kunnen niet worden verbonden (evenwijdig, of de straal past niet).
+497|De twee lijnen zijn verbonden met een afgeronde hoek.
+498|Selecteer eerst de vormen om af te ronden.
+499|Er zijn geen rechte hoeken om af te ronden.
+500|{} hoek(en) afgerond.
+501|Clipart
+502|Dieren
+503|Natuur
+504|Feesten
+505|Symbolen
+506|Vormen
+507|Gereedschap
+508|Eten
+509|Voorwerpen
+510|Muziek en plezier
+511|Mijn clipart
+512|Alle categorieën
+513|Meegeleverd
+514|Mijn
+515|Afbeeldingen die bij het programma horen
+516|Afbeeldingen die u hebt gedownload of toegevoegd
+517|Grootte bij plaatsen
+518|Online…
+519|Bestand toevoegen…
+520|Zoek op internet naar meer afbeeldingen en sla ze hier op
+521|SVG-bestanden van uw computer aan uw clipart toevoegen
+522|Hier zijn geen afbeeldingen. Gebruik Online… om er te vinden.
+523|wordt met het programma meegeleverd
+524|van u
+525|Klik om op het werkgebied te plaatsen
+526|{} geplaatst
+527|Hernoemen
+528|Hernoemen…
+529|Categorie wijzigen
+530|Categorie wijzigen…
+531|Details
+532|Details…
+533|Verwijderen…
+534|Deze afbeelding uit uw clipart verwijderen? Het bestand op uw schijf wordt verwijderd.
+535|Een kopie opslaan in mijn clipart
+536|of een nieuwe categorie
+537|{} afbeelding(en) toegevoegd aan {}
+538|Bron
+539|Categorie
+540|Licentie
+541|Auteur
+542|Collectie
+543|Online clipart…
+544|Online clipart
+545|Zoek in open pictogramcollecties (Iconify). Afbeeldingen worden op uw schijf opgeslagen, in een categorie naar keuze.
+546|bijv. kat, bloem, tandwiel
+547|Zoeken…
+548|Niets gevonden.
+549|{} afbeeldingen gevonden
+550|Zoeken mislukt: {}
+551|Klik op een afbeelding om de licentie te zien en op te slaan.
+552|geen naamsvermelding nodig
+553|vermeld de auteur
+554|Opslaan in mijn clipart
+555|{} opgeslagen in {}
+556|Downloaden
+557|Downloaden…
+558|Downloaden mislukt: {}
+559|Of download een afbeelding van een adres
+560|Sla alleen afbeeldingen op die u mag gebruiken. Controleer de licentie van de bron.
+561|Inzoomen (Z)
+562|Uitzoomen (X)
+563|Werkgebied passen (Ctrl+0)
+564|Alle objecten passen (Ctrl+9)
+565|Inzoomen
+566|Uitzoomen
+567|Werkgebied passen
+568|Alle objecten passen
+569|Knooppunten bewerken
+570|Zet de tekst om in curven, of vectoriseer de afbeelding, om de knooppunten te bewerken.
+571|Selecteer eerst een vorm en bewerk dan zijn knooppunten.
+572|Hart (K)

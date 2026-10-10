@@ -1,0 +1,573 @@
+0|Fișier
+1|Editare
+2|Aranjare
+3|Vizualizare
+4|Laser
+5|Setări
+6|Ajutor
+7|Nou
+8|Deschide…
+9|Salvează
+10|Salvează ca…
+11|Importă SVG…
+12|Exportă SVG…
+13|Exportă G-code…
+14|Ieșire
+15|Anulează
+16|Refă
+17|Copiază
+18|Lipește
+19|Duplică
+20|Șterge
+21|Selectează tot
+22|Aliniază la stânga
+23|Centrează (H)
+24|Aliniază la dreapta
+25|Aliniază sus
+26|Centrează (V)
+27|Aliniază jos
+28|Centrează unele pe altele
+29|Centrează pe masă
+30|Oglindește orizontal
+31|Oglindește vertical
+32|Rotește 90° la dreapta
+33|Rotește 90° la stânga
+34|Adu în față
+35|Trimite în spate
+36|Convertește în traseu
+37|Rețea de copii…
+38|Grilă
+39|Fixează pe grilă
+40|Previzualizarea traseelor
+41|Potrivește masa la fereastră
+42|Setările dispozitivului…
+43|Cadru
+44|Pornește lucrarea
+45|Despre
+46|Limbă
+47|Schemă de culori
+48|Întunecat
+49|Gri închis
+50|Gri deschis
+51|Luminos
+52|Selectare (V)
+53|Dreptunghi (R)
+54|Elipsă (E)
+55|Linie (L)
+56|Polilinie / stilou (P)
+57|Deplasare vizualizare (H)
+58|Mărire (Z)
+59|Selectare
+60|Dreptunghi
+61|Elipsă
+62|Linie
+63|Umplere
+64|Umplere + linie
+65|Stratul {}
+66|Magnet
+67|Previzualizare
+68|Start
+69|Trimite lucrarea la laserul conectat
+70|Parcurge conturul zonei
+71|Salvează G-code
+72|Straturi
+73|{} — clic pentru a-i atribui selecția / a-l face activ
+74|Gata
+75|{} deschis
+76|Deschiderea a eșuat: {}
+77|{} salvat
+78|Salvarea a eșuat: {}
+79|{} trasee importate din {}
+80|Importul a eșuat: {}
+81|{} exportat
+82|Exportul a eșuat: {}
+83|G-code {} salvat
+84|Conectați mai întâi un laser (panoul Laser)
+85|Nimic de gravat: nu există forme pe straturile de ieșire
+86|Se pornește lucrarea: {} linii, ~{}
+87|Deconectat
+88|Conectat la {} @ {}
+89|Nu se poate deschide {}: {}
+90|Întrerupt (resetare software)
+91|Conexiunea s-a pierdut
+92|Timp estimat
+93|lungime de tăiere
+94|Setările dispozitivului
+95|Nume
+96|Zona de lucru X
+97|Zona de lucru Y
+98|Zero mașină (0,0)
+99|Stânga față (implicit GRBL)
+100|Stânga spate
+101|Valoare S max ($30)
+102|Putere dinamică (M4)
+103|Viteză de deplasare
+104|Revenire la origine
+105|Viteză în baud
+106|Rețea de copii
+107|Coloane
+108|Rânduri
+109|Spațiu X
+110|Spațiu Y
+111|Creează rețeaua
+112|Despre LightCreator
+113|Versiunea {}
+114|Software open-source pentru proiectarea și controlul gravatoarelor și tăietoarelor laser.
+115|Origine: scris în Rust cu egui/eframe.
+116|Inspirat de LightBurn; interfața este inspirată de VectorCraft.
+117|Autor: Michał Sarna
+118|Licență MIT.
+119|Proprietăți
+120|Tăieri / Straturi
+121|Nimic selectat
+122|Blochează raportul de aspect
+123|Rotește
+124|Aplică
+125|Oglindire H
+126|Oglindire V
+127|Centrează
+128|Stânga
+129|Mijloc H
+130|Dreapta
+131|Sus
+132|Mijloc V
+133|Jos
+134|Centrează
+135|Aliniază la mijloc
+136|Strat
+137|Arată toate cele 30 de straturi
+138|Ieșire (gravează acest strat)
+139|Vizibil
+140|Setări de tăiere — {}
+141|Mod
+142|Viteză
+143|Putere (%)
+144|Treceri
+145|Interval
+146|Unghi de scanare
+147|Depășire
+148|Bidirecțional
+149|Fără port
+150|Reîmprospătează
+151|Caută din nou porturile seriale
+152|Deconectează
+153|Conectează
+154|Stare
+155|Pas
+156|Avans
+157|Sus
+158|Jos
+159|Întrerupe lucrarea în curs
+160|Stop
+161|Anulează deplasarea
+162|Acasă
+163|Deblochează
+164|Pauză
+165|Reia
+166|STOP
+167|Puterea cadrului
+168|0 % ține laserul oprit în timpul încadrării; 1–2 % arată un punct slab la laserele cu diodă
+169|trimite G-code / comandă $
+170|Trimite
+171|Alegeți dispozitivul
+172|Alegeți dispozitivul cu care veți lucra.
+173|Creați cel puțin un profil de dispozitiv pentru a continua.
+174|Continuă
+175|Adaugă dispozitiv…
+176|Editează…
+177|Confirmă ștergerea
+178|Anulează
+179|Configurarea dispozitivului
+180|Dispozitiv nou
+181|de ex. Laserul meu cu diodă
+182|Este necesar un nume de profil.
+183|Schimbă dispozitivul…
+184|Dispozitiv: {}
+185|Unități de viteză
+186|Pe secundă (mm/s, in/s)
+187|Pe minut (mm/min, in/min)
+188|Deschide recente
+189|(gol)
+190|Golește lista
+191|nu mai există
+192|Închide
+193|Minimizează
+194|Maximizează
+195|Restaurează
+196|Arată sau ascunde grila
+197|Arată sau ascunde grila secundară
+198|Asistență cu aer
+199|Pompă de aer pornită
+200|Pornește pompa de aer cât timp se gravează acest strat (M8 / M9)
+201|Poziție și dimensiune
+202|Rotație
+203|Oglindire și centrare
+204|Aliniere
+205|Restrânge
+206|Extinde
+207|Timp
+208|Fișier salvat: {}
+209|Salvat automat {}
+210|Salvați lucrarea înainte de a închide?
+211|Designul nu a fost salvat într-un fișier.
+212|Renunță
+213|Opțiunile programului…
+214|Opțiunile programului
+215|Salvare automată
+216|Salvează lucrarea automat
+217|Salvează automat la fiecare
+218|Lucrarea fără nume de fișier ajunge într-un dosar temporar; un fișier cu nume se salvează pe loc
+219|Spirală
+220|Spirală (I)
+221|Număr de spire
+222|Trageți pe zona de lucru pentru a o desena.
+223|Descarcă o copie de rezervă…
+224|Caută actualizări…
+225|Copie de rezervă salvată: {}
+226|Copierea de rezervă a eșuat: {}
+227|Actualizări
+228|Este disponibilă o versiune mai nouă: {}
+229|Aveți versiunea {}.
+230|Deschide pagina de descărcare
+231|Aveți cea mai nouă versiune.
+232|Cea mai nouă versiune: {}
+233|Nu s-au putut căuta actualizări.
+234|Caută o versiune mai nouă la pornirea programului
+235|Restaurează dintr-o copie de rezervă…
+236|Restaurează dintr-o copie de rezervă
+237|Setările și clipart-urile curente vor fi înlocuite de copia de rezervă. Continuați?
+238|Copie de rezervă restaurată: {}
+239|Restaurarea a eșuat: {}
+240|Nu s-au găsit fișiere de profil. Aveți o copie de rezervă?
+241|Unități
+242|Milimetri (mm)
+243|Inci (in)
+244|Dispozitiv
+245|Consolă
+246|Interogări de stare
+247|Derulare automată
+248|Golește
+249|Controler
+250|Tip de laser
+251|Zona de lucru
+252|Da
+253|Nu
+254|Conexiune
+255|Port
+256|Pas de deplasare
+257|Avans de deplasare
+258|Acest controler nu are conexiune directă: lucrările se exportă ca fișiere.
+259|Editare noduri (N)
+260|Text (T)
+261|Colț
+262|Neted
+263|La linie
+264|La curbă
+265|Adaugă nod
+266|Șterge nodul
+267|Deschide / închide
+268|Transformă nodurile selectate în colțuri
+269|Face netede nodurile selectate
+270|Face drept segmentul de după fiecare nod selectat
+271|Face curb segmentul de după fiecare nod selectat
+272|Inserează un nod (sau dublu clic pe un segment)
+273|Închide un traseu deschis, sau deschide unul închis la nodul selectat
+274|Convertește în curbe
+275|Transformă textul în forme Bézier editabile
+276|Reuniune
+277|Intersecție
+278|Scădere
+279|SAU exclusiv
+280|Decalează forma…
+281|Decalează forma
+282|Distanță
+283|Valoarea pozitivă mărește conturul, cea negativă îl micșorează.
+284|Păstrează originalul
+285|Creează decalajul
+286|Selectați cel puțin două forme (nu imagini).
+287|Rezultatul este gol.
+288|Importă imagine…
+289|Imaginea {} importată
+290|Text
+291|Font
+292|Căutare
+293|Dimensiune
+294|Stil
+295|Aldin
+296|Cursiv
+297|Spațiere litere
+298|Spațiere rânduri
+299|Aliniere
+300|Imagine
+301|Imagine negativă
+302|Gravează părțile deschise în loc de cele închise
+303|Gravarea folosește intervalul, viteza, puterea și tramarea stratului.
+304|Setările imaginii
+305|Imaginile folosesc intervalul, viteza, puterea și depășirea stratului lor.
+306|Tramare
+307|Putere min. (%)
+308|Prag
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Ordonată
+314|Tonuri de gri
+315|Umplere prin decalare
+316|Exportă PLT / DXF…
+317|{} exportat. {} imagine(i) omise: acest format nu are raster.
+318|Exportați PLT sau DXF și deschideți-l în software-ul controlerului (de exemplu RDWorks pentru Ruida), care setează viteza și puterea după culoarea stratului.
+319|Biblioteca de materiale…
+320|Biblioteca de materiale
+321|Toate
+322|Material
+323|Operație
+324|Putere
+325|Tăiere
+326|Gravare
+327|Marcare
+328|Valori inițiale pentru laserele tipice cu diodă de 10 W și CO2 de 40 W. Testați întotdeauna pe resturi.
+329|Aplică la stratul {}
+330|{} ({}) aplicat la stratul {}
+331|Salvează stratul activ ca presetare
+332|Numele materialului
+333|Salvează presetarea
+334|Suprapunere cameră…
+335|Suprapunere cameră
+336|Arată o fotografie sau camera live sub design, pentru a poziționa lucrarea pe material.
+337|Încarcă imagine…
+338|Elimină
+339|Cameră live
+340|Această versiune nu are suport pentru cameră. Compilați cu: cargo run --release --features camera
+341|Fără cameră
+342|Caută camere
+343|Pornește camera
+344|Îngheață imaginea
+345|Cameră
+346|Suprapunere: {}
+347|Arată suprapunerea
+348|Opacitate
+349|Aliniere: trageți cele patru colțuri pe zona de lucru
+350|Trageți fiecare colț în colțul corespunzător al materialului sau al zonei de lucru; perspectiva este corectată.
+351|Resetează la zona de lucru
+352|Rotește 90°
+353|Gravează mai devreme
+354|Gravează mai târziu
+355|Straturile se gravează de sus în jos.
+356|Opțiunile grilei…
+357|Opțiunile grilei
+358|Grila principală
+359|Grila secundară
+360|Arată
+361|Distanța dintre linii
+362|Culoare
+363|Grila secundară trebuie să fie mai fină decât cea principală.
+364|Resetează grila
+365|Trasee
+366|Arată traseele pe zona de lucru
+367|Previzualizare…
+368|Fereastra de previzualizare…
+369|Deschide fereastra de previzualizare
+370|Colorează după
+371|Arată deplasările în gol
+372|Mișcările mașinii cu laserul oprit
+373|Redare
+374|Potrivește
+375|Operații
+376|Prea multe mișcări: liniile de deplasare sunt ascunse.
+377|{} mișcări
+378|Importă
+379|Exportă
+380|Importă Adobe Illustrator / PDF…
+381|Grupează
+382|Degrupează
+383|Selectați cel puțin două obiecte pentru a grupa.
+384|Grupat. Obiectele își păstrează straturile.
+385|Operații cu forme
+386|Ajustează imaginea…
+387|Vectorizează imaginea…
+388|Importă imagine
+389|Ajustează imaginea
+390|Rotire și oglindire
+391|Unghi
+392|Ton
+393|Luminozitate
+394|Contrast
+395|Gamma
+396|Niveluri automate
+397|Lățime
+398|{} × {} px
+399|Resetează
+400|Vectorizează imaginea
+401|Ignoră zonele mici
+402|Simplifică
+403|Netezește curbele
+404|Vectorizează zonele deschise
+405|Șterge imaginea după aceea
+406|{} contururi
+407|Vectorizează
+408|{} contururi vectorizate
+409|Citește de pe dispozitiv
+410|Se citește…
+411|Se conectează și citește de la controler zona de lucru, valoarea S max și viteza
+412|Se citesc setările de pe dispozitiv…
+413|Nu s-a putut conecta la dispozitiv.
+414|Dispozitivul nu a raportat nicio setare.
+415|S-au citit {} valori de pe dispozitiv
+416|Triunghi (Y)
+417|Stea (S)
+418|Poligon (G)
+419|Triunghi
+420|Stea
+421|Poligon
+422|Număr de laturi
+423|Trageți pe zona de lucru pentru a-l desena. Cel mult 360 de laturi.
+424|OK
+425|Tip de conexiune
+426|Port serial
+427|Rețea (TCP, de ex. ser2net)
+428|Gazdă
+429|Port TCP
+430|Conectat la {}
+431|URL-ul camerei
+432|Imagine live de la mașină: un flux MJPEG sau adresa unei imagini JPEG (http sau https).
+433|Vizualizare cameră
+434|Arată imaginea live de la camera acestei mașini
+435|Se așteaptă imaginea…
+436|Mărire implicită
+437|Înapoi la imaginea întreagă
+438|Arată ca suprapunere pe zona de lucru
+439|Eroare de flux: {}
+440|Potrivește la 15 s
+441|Timp real
+442|Setați mai întâi un URL de cameră în setările dispozitivului.
+443|Arată în
+444|Fereastră plutitoare
+445|Fereastră separată
+446|Filă laterală
+447|Suprapunere
+448|Arată sau ascunde suprapunerea camerei pe zona de lucru
+449|Arată suprapunerea camerei
+450|Nu există încă o suprapunere a camerei. Încărcați o imagine sau porniți vizualizarea camerei.
+451|Partajează în rețea (ser2net)…
+452|Partajează în rețea (ser2net)
+453|ser2net găsit: {}
+454|ser2net nu a fost găsit. Instalați-l mai întâi, de exemplu: sudo apt install ser2net
+455|Aceasta partajează în rețea portul serial al laserului de pe acest computer, astfel încât LightCreator de pe alt computer să se poată conecta cu tipul de conexiune „Rețea (TCP)”.
+456|Versiunea ser2net
+457|Ascultă doar pe acest computer (de folosit cu un tunel SSH)
+458|Un client nou îl înlocuiește pe cel conectat
+459|Fișier: {}
+460|Apoi conectați-vă de pe celălalt computer la {}:{}
+461|Atenție: oricine din rețea care ajunge la acest port poate controla laserul. Folosiți o rețea de încredere, un firewall sau opțiunea doar local cu un tunel SSH.
+462|Copiat.
+463|Instalează și repornește ser2net…
+464|Aceasta înlocuiește {} (se păstrează o copie) și repornește ser2net. Se cer drepturi de administrator.
+465|Confirmă
+466|Se așteaptă aprobarea administratorului…
+467|{} instalat și ser2net repornit.
+468|Nu s-a putut instala configurația: {}
+469|Manual: sudo cp <fișierul salvat> {} && sudo systemctl restart ser2net
+470|Rotirea camerei
+471|Potrivește automat zona de lucru la fereastră
+472|Blochează
+473|Blocat: deblocați pentru a edita. Copiile nu sunt blocate.
+474|{} obiect(e) blocat(e).
+475|{} obiect(e) deblocat(e).
+476|Dublu clic pentru a edita opțiunile stratului
+477|Opțiunile stratului — {}
+478|{} — clic pentru a-i atribui selecția / a-l face activ; dublu clic pentru opțiuni
+479|Opțiuni de vizualizare…
+480|Opțiuni de vizualizare
+481|Culoarea fundalului
+482|Automat
+483|Grosimea liniilor
+484|{} treceri
+485|Ghid rapid
+486|Pagina proiectului pe GitHub
+487|Acest ghid este disponibil în engleză și poloneză; celelalte limbi arată textul în engleză.
+488|Rotunjește colțurile…
+489|Rotunjește colțurile
+490|Rază
+491|Rotunjește
+492|Raza de rotunjire
+493|Rotunjește colțurile selectate cu această rază
+494|Sunt selectate două linii drepte: se unesc cu un colț rotunjit.
+495|Fiecare colț drept al formelor selectate este rotunjit.
+496|Aceste linii nu pot fi unite (sunt paralele, sau raza nu încape).
+497|Cele două linii au fost unite cu un colț rotunjit.
+498|Selectați mai întâi formele de rotunjit.
+499|Nu există colțuri drepte de rotunjit.
+500|{} colț(uri) rotunjit(e).
+501|Clipart
+502|Animale
+503|Natură
+504|Sărbători
+505|Simboluri
+506|Forme
+507|Unelte
+508|Mâncare
+509|Obiecte
+510|Muzică și distracție
+511|Clipart-urile mele
+512|Toate categoriile
+513|Incluse
+514|Ale mele
+515|Imagini care vin cu programul
+516|Imagini pe care le-ați descărcat sau adăugat
+517|Dimensiune la plasare
+518|Online…
+519|Adaugă fișier…
+520|Căutați mai multe imagini pe internet și salvați-le aici
+521|Adaugă fișiere SVG de pe computer în clipart-urile dvs.
+522|Nicio imagine aici. Folosiți Online… pentru a găsi.
+523|vine cu programul
+524|ale dvs.
+525|Clic pentru a plasa pe zona de lucru
+526|{} plasat
+527|Redenumește
+528|Redenumește…
+529|Schimbă categoria
+530|Schimbă categoria…
+531|Detalii
+532|Detalii…
+533|Șterge…
+534|Eliminați această imagine din clipart-urile dvs.? Fișierul de pe disc este șters.
+535|Salvează o copie în clipart-urile mele
+536|sau o categorie nouă
+537|{} imagine(i) adăugată(e) la {}
+538|Sursă
+539|Categorie
+540|Licență
+541|Autor
+542|Colecție
+543|Clipart online…
+544|Clipart online
+545|Căutați în colecții deschise de pictograme (Iconify). Imaginile se salvează pe discul dvs., într-o categorie la alegere.
+546|de ex. pisică, floare, roată dințată
+547|Se caută…
+548|Nu s-a găsit nimic.
+549|{} imagini găsite
+550|Căutarea a eșuat: {}
+551|Faceți clic pe o imagine pentru a-i vedea licența și a o salva.
+552|nu e nevoie de atribuire
+553|menționați autorul
+554|Salvează în clipart-urile mele
+555|{} salvat în {}
+556|Descarcă
+557|Se descarcă…
+558|Descărcarea a eșuat: {}
+559|Sau descărcați o imagine de la o adresă
+560|Salvați doar imagini pe care aveți voie să le folosiți. Verificați licența sursei.
+561|Mărește (Z)
+562|Micșorează (X)
+563|Potrivește la zona de lucru (Ctrl+0)
+564|Potrivește la toate obiectele (Ctrl+9)
+565|Mărește
+566|Micșorează
+567|Potrivește la zona de lucru
+568|Potrivește la toate obiectele
+569|Editează nodurile
+570|Convertiți textul în curbe, sau vectorizați imaginea, pentru a-i edita nodurile.
+571|Selectați mai întâi o formă, apoi editați-i nodurile.
+572|Inimă (K)

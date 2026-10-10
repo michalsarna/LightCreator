@@ -1,0 +1,573 @@
+0|Fajl
+1|Editja
+2|Irranġa
+3|Dehra
+4|Lejżer
+5|Issettjar
+6|Għajnuna
+7|Ġdid
+8|Iftaħ…
+9|Salva
+10|Salva bħala…
+11|Importa SVG…
+12|Esporta SVG…
+13|Esporta G-code…
+14|Oħroġ
+15|Ħassar
+16|Erġa' agħmel
+17|Ikkopja
+18|Waħħal
+19|Iddubbla
+20|Neħħi
+21|Agħżel kollox
+22|Allinja fix-xellug
+23|Iċċentra (O)
+24|Allinja fuq il-lemin
+25|Allinja fil-quċċata
+26|Iċċentra (V)
+27|Allinja fil-qiegħ
+28|Iċċentra fuq xulxin
+29|Iċċentra fuq il-mejda
+30|Aqleb orizzontalment
+31|Aqleb vertikalment
+32|Dawwar 90° fl-istess direzzjoni tal-arloġġ
+33|Dawwar 90° kontra d-direzzjoni tal-arloġġ
+34|Ġib 'il quddiem
+35|Ibgħat lura
+36|Ikkonverti f'passaġġ
+37|Griglja ta' kopji…
+38|Griglja
+39|Aqbad mal-griglja
+40|Previżjoni tal-passaġġi
+41|Adatta l-mejda mat-tieqa
+42|Issettjar tat-tagħmir…
+43|Qafas
+44|Ibda x-xogħol
+45|Dwar
+46|Lingwa
+47|Skema tal-kuluri
+48|Skur
+49|Ċar-skur
+50|Ċar moderat
+51|Ċar
+52|Agħżel (V)
+53|Rettangolu (R)
+54|Elliss (E)
+55|Linja (L)
+56|Poliliena / pinna (P)
+57|Mexxi l-vista (H)
+58|Zoom (Z)
+59|Agħżel
+60|Rettangolu
+61|Elliss
+62|Linja
+63|Mili
+64|Mili + linja
+65|Saff {}
+66|Manjetu
+67|Previżjoni
+68|Ibda
+69|Jibgħat ix-xogħol lejn il-lejżer imqabbad
+70|Isegwi l-kontorn taż-żona
+71|Salva l-G-code
+72|Saffi
+73|{} — ikklikkja biex tassenja l-għażla / tagħmlu attiv
+74|Lest
+75|Miftuħ: {}
+76|L-ftuħ falla: {}
+77|Salvat: {}
+78|Il-ħażna fallet: {}
+79|Passaġġi importati: {} minn {}
+80|L-importazzjoni fallet: {}
+81|Esportat: {}
+82|L-esportazzjoni fallet: {}
+83|G-code salvat: {}
+84|Qabbad lejżer l-ewwel (pannell Lejżer)
+85|M'hemm xejn x'tinċiża: m'hemm l-ebda forma fis-saffi tal-output
+86|Qed jinbeda x-xogħol: {} linji, ~{}
+87|Skonnettjat
+88|Imqabbad ma' {} @ {}
+89|Ma jistax jinfetaħ {}: {}
+90|Interrott (reset tas-softwer)
+91|Il-konnessjoni ntilfet
+92|Ħin stmat
+93|tul tal-qtugħ
+94|Issettjar tat-tagħmir
+95|Isem
+96|Żona tax-xogħol X
+97|Żona tax-xogħol Y
+98|Żero tal-magna (0,0)
+99|Quddiem fix-xellug (default tal-GRBL)
+100|Wara fix-xellug
+101|Valur S massimu ($30)
+102|Qawwa dinamika (M4)
+103|Veloċità tal-ivvjaġġar
+104|Irritorna għall-oriġini
+105|Veloċità baud
+106|Griglja ta' kopji
+107|Kolonni
+108|Ringieli
+109|Spazju X
+110|Spazju Y
+111|Oħloq il-griglja
+112|Dwar LightCreator
+113|Verżjoni {}
+114|Softwer b'sors miftuħ għad-disinn u l-kontroll ta' magni tal-inċiżjoni u tal-qtugħ bil-lejżer.
+115|Oriġini: miktub bir-Rust bl-użu ta' egui/eframe.
+116|Ispirat minn LightBurn; l-interface ispirata minn VectorCraft.
+117|Awtur: Michał Sarna
+118|Liċenzja MIT.
+119|Proprjetajiet
+120|Qtugħ / Saffi
+121|Xejn magħżul
+122|Illokkja l-proporzjonijiet
+123|Dawwar
+124|Applika
+125|Aqleb O
+126|Aqleb V
+127|Iċċentra
+128|Xellug
+129|Nofs O
+130|Lemin
+131|Fuq
+132|Nofs V
+133|Isfel
+134|Iċċentra
+135|Allinja fin-nofs
+136|Saff
+137|Uri t-30 saff kollha
+138|Output (inċiżjoni ta' dan is-saff)
+139|Viżibbli
+140|Issettjar tal-qtugħ — {}
+141|Modalità
+142|Veloċità
+143|Qawwa (%)
+144|Passaġġi
+145|Intervall
+146|Angolu tal-iskannjar
+147|Overscan
+148|Bidirezzjonali
+149|L-ebda port
+150|Aġġorna
+151|Fittex mill-ġdid il-portijiet seriali
+152|Skonnettja
+153|Qabbad
+154|Stat
+155|Pass
+156|Feed
+157|'Il fuq
+158|'L isfel
+159|Waqqaf ix-xogħol li għaddej
+160|Waqqaf
+161|Ikkanċella l-moviment
+162|Dar
+163|Iftaħ
+164|Waqfa
+165|Kompli
+166|WAQQAF
+167|Qawwa tal-qafas
+168|0 % iżomm il-lejżer mitfi waqt l-immarkar tal-qafas; 1–2 % juri tikka dgħajfa fuq lejżers tad-diodi
+169|ibgħat G-code / kmand $
+170|Ibgħat
+171|Agħżel it-tagħmir
+172|Agħżel it-tagħmir li se taħdem miegħu.
+173|Oħloq mill-inqas profil wieħed tat-tagħmir biex tkompli.
+174|Kompli
+175|Żid tagħmir…
+176|Editja…
+177|Ikkonferma t-tħassir
+178|Ikkanċella
+179|Konfigurazzjoni tat-tagħmir
+180|Tagħmir ġdid
+181|eż. Il-lejżer tad-diodi tiegħi
+182|Huwa meħtieġ isem tal-profil.
+183|Biddel it-tagħmir…
+184|Tagħmir: {}
+185|Unitajiet tal-veloċità
+186|Fis-sekonda (mm/s, in/s)
+187|Fil-minuta (mm/min, in/min)
+188|Iftaħ riċenti
+189|(vojt)
+190|Ikkanċella l-lista
+191|m'għadux jeżisti
+192|Agħlaq
+193|Minimizza
+194|Massimizza
+195|Irrestawra
+196|Uri jew aħbi l-griglja
+197|Uri jew aħbi l-griglja sekondarja
+198|Assistenza tal-arja
+199|Pompa tal-arja mixgħula
+200|Jixgħel il-pompa tal-arja waqt li jiġi inċiż dan is-saff (M8 / M9)
+201|Pożizzjoni u daqs
+202|Rotazzjoni
+203|Mera u ċentraġġ
+204|Allinjament
+205|Ikkollassa
+206|Espandi
+207|Ħin
+208|Fajl salvat: {}
+209|Salvat awtomatikament: {}
+210|Tissejvja x-xogħol qabel tagħlaq?
+211|Id-disinn ma ġiex salvat f'fajl.
+212|Skarta
+213|Għażliet tal-programm…
+214|Għażliet tal-programm
+215|Ħażna awtomatika
+216|Salva x-xogħol awtomatikament
+217|Salva awtomatikament kull
+218|Xogħol mingħajr isem tal-fajl imur f'folder temporanju; fajl b'isem jiġi salvat fil-post
+219|Spiral
+220|Spiral (I)
+221|Għadd ta' dawriet
+222|Kaxkar fiż-żona tax-xogħol biex tiddisinjah.
+223|Niżżel backup…
+224|Iċċekkja għal aġġornamenti…
+225|Backup salvat: {}
+226|Il-backup falla: {}
+227|Aġġornamenti
+228|Hemm verżjoni aktar ġdida disponibbli: {}
+229|Għandek il-verżjoni {}.
+230|Iftaħ il-paġna tat-tniżżil
+231|Għandek l-aħħar verżjoni.
+232|L-aħħar rilaxx: {}
+233|Ma setgħux jiġu ċċekkjati l-aġġornamenti.
+234|Fittex verżjoni aktar ġdida meta jinbeda l-programm
+235|Irrestawra minn backup…
+236|Irrestawra minn backup
+237|L-issettjar u l-clipart attwali tiegħek se jiġu mibdula bil-backup. Tkompli?
+238|Backup irrestawrat: {}
+239|Ir-restawr falla: {}
+240|Ma nstabu l-ebda fajls tal-profil. Għandek backup?
+241|Unitajiet
+242|Millimetri (mm)
+243|Pulzieri (in)
+244|Tagħmir
+245|Konsola
+246|Mistoqsijiet tal-istat
+247|Skrolljar awtomatiku
+248|Nadvi
+249|Kontrollur
+250|Tip ta' lejżer
+251|Żona tax-xogħol
+252|Iva
+253|Le
+254|Konnessjoni
+255|Port
+256|Pass tal-moviment
+257|Feed tal-moviment
+258|Dan il-kontrollur m'għandux konnessjoni diretta: ix-xogħlijiet jiġu esportati bħala fajls.
+259|Editjar tan-nodi (N)
+260|Test (T)
+261|Kantuniera
+262|Bla xkiel
+263|Għal linja
+264|Għal kurva
+265|Żid nodu
+266|Ħassar in-nodu
+267|Iftaħ / agħlaq
+268|Agħmel kantunieri min-nodi magħżula
+269|Agħmel bla xkiel in-nodi magħżula
+270|Agħmel dritt is-segment wara kull nodu magħżul
+271|Agħmel mgħawweġ is-segment wara kull nodu magħżul
+272|Daħħal nodu (jew ikklikkja darbtejn fuq segment)
+273|Agħlaq passaġġ miftuħ, jew iftaħ wieħed magħluq fin-nodu magħżul
+274|Ikkonverti f'kurvi
+275|Ibdel it-test f'forom ta' Bézier editjabbli
+276|Għaqda
+277|Intersezzjoni
+278|Tnaqqis
+279|JEW esklussiv
+280|Ċaqlaq il-forma…
+281|Ċaqlaq il-forma
+282|Distanza
+283|Valur pożittiv ikabbar il-kontorn, wieħed negattiv inaqqsu.
+284|Żomm l-oriġinal
+285|Oħloq l-offset
+286|Agħżel mill-inqas żewġ forom (mhux stampi).
+287|Ir-riżultat huwa vojt.
+288|Importa stampa…
+289|Stampa {} importata
+290|Test
+291|Font
+292|Fittex
+293|Daqs
+294|Stil
+295|Boldjat
+296|Korsiv
+297|Spazjar tal-ittri
+298|Spazjar tal-linji
+299|Allinjament
+300|Stampa
+301|Stampa negattiva
+302|Inċiżjoni tal-partijiet ċari minflok dawk skuri
+303|L-inċiżjoni tuża l-intervall, il-veloċità, il-qawwa u r-rasterizzazzjoni tas-saff.
+304|Issettjar tal-istampa
+305|L-istampi jużaw l-intervall, il-veloċità, il-qawwa u l-overscan tas-saff tagħhom.
+306|Rasterizzazzjoni
+307|Qawwa min. (%)
+308|Limitu
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Ordnat
+314|Skala tal-griż
+315|Mili b'offset
+316|Esporta PLT / DXF…
+317|Esportat: {}. Stampi maqbuża: {} — dan il-format m'għandux raster.
+318|Esporta PLT jew DXF u fetaħ fis-softwer tal-kontrollur stess (pereżempju RDWorks għal Ruida), li jistabbilixxi l-veloċità u l-qawwa skont il-kulur tas-saff.
+319|Librerija tal-materjali…
+320|Librerija tal-materjali
+321|Kollha
+322|Materjal
+323|Operazzjoni
+324|Qawwa
+325|Qtugħ
+326|Inċiżjoni
+327|Immarkar
+328|Valuri inizjali għal lejżers tipiċi tad-diodi ta' 10 W u tas-CO2 ta' 40 W. Ittestja dejjem fuq fdalijiet.
+329|Applika għas-saff {}
+330|{} ({}) applikat għas-saff {}
+331|Salva s-saff attiv bħala preset
+332|Isem il-materjal
+333|Salva l-preset
+334|Overlay tal-kamera…
+335|Overlay tal-kamera
+336|Juri ritratt jew il-kamera ħajja taħt id-disinn biex tpoġġi x-xogħol fuq il-materjal.
+337|Illoddja stampa…
+338|Neħħi
+339|Kamera ħajja
+340|Din il-bini m'għandux appoġġ tal-kamera. Ibni b'dan: cargo run --release --features camera
+341|L-ebda kamera
+342|Sib kameras
+343|Ibda l-kamera
+344|Iffriża l-frejm
+345|Kamera
+346|Overlay: {}
+347|Uri l-overlay
+348|Opaċità
+349|Allinjament: kaxkar l-erba' kantunieri fiż-żona tax-xogħol
+350|Kaxkar kull kantuniera għall-kantuniera korrispondenti tal-materjal jew taż-żona tax-xogħol; il-perspettiva tiġi kkorreġuta.
+351|Irrisettja għaż-żona tax-xogħol
+352|Dawwar 90°
+353|Inċiżjoni aktar kmieni
+354|Inċiżjoni aktar tard
+355|Is-saffi jiġu inċiżi minn fuq 'l isfel.
+356|Għażliet tal-griglja…
+357|Għażliet tal-griglja
+358|Griglja prinċipali
+359|Griglja sekondarja
+360|Uri
+361|Distanza bejn il-linji
+362|Kulur
+363|Il-griglja sekondarja trid tkun aktar fina mill-prinċipali.
+364|Irrisettja l-griglja
+365|Passaġġi
+366|Juri l-passaġġi fiż-żona tax-xogħol
+367|Previżjoni…
+368|Tieqa tal-previżjoni…
+369|Iftaħ it-tieqa tal-previżjoni
+370|Kulur skont
+371|Uri l-movimenti vojta
+372|Movimenti tal-magna bil-lejżer mitfi
+373|Uża
+374|Adatta
+375|Operazzjonijiet
+376|Wisq movimenti: il-linji tal-movimenti vojta huma moħbija.
+377|Movimenti: {}
+378|Importa
+379|Esporta
+380|Importa Adobe Illustrator / PDF…
+381|Igruppa
+382|Neħħi l-grupp
+383|Agħżel mill-inqas żewġ oġġetti biex tigruppa.
+384|Grupp magħmul. L-oġġetti jżommu s-saffi tagħhom.
+385|Operazzjonijiet tal-forom
+386|Aġġusta l-istampa…
+387|Vettorizza l-istampa…
+388|Importazzjoni tal-istampa
+389|Aġġusta l-istampa
+390|Rotazzjoni u qlib
+391|Angolu
+392|Ton
+393|Luminożità
+394|Kuntrast
+395|Gamma
+396|Livelli awtomatiċi
+397|Wisa'
+398|{} × {} px
+399|Irrisettja
+400|Vettorizzazzjoni tal-istampa
+401|Injora żoni żgħar
+402|Issimplifika
+403|Illixxa l-kurvi
+404|Vettorizza ż-żoni ċari
+405|Ħassar l-istampa wara
+406|Kontorni: {}
+407|Vettorizza
+408|Kontorni vettorizzati: {}
+409|Aqra mit-tagħmir
+410|Qed taqra…
+411|Jqabbad u jaqra mill-kontrollur iż-żona tax-xogħol, il-valur S massimu u l-veloċità
+412|Qed jinqraw l-issettjar mit-tagħmir…
+413|Ma setax jitqabbad mat-tagħmir.
+414|It-tagħmir ma rrapporta l-ebda issettjar.
+415|Valuri mqrija mit-tagħmir: {}
+416|Trijangolu (Y)
+417|Stilla (S)
+418|Poligonu (G)
+419|Trijangolu
+420|Stilla
+421|Poligonu
+422|Numru ta' ġnub
+423|Kaxkar fiż-żona tax-xogħol biex tiddisinjah. Massimu ta' 360 ġenb.
+424|OK
+425|Tip ta' konnessjoni
+426|Port serjali
+427|Netwerk (TCP, eż. ser2net)
+428|Host
+429|Port TCP
+430|Imqabbad ma' {}
+431|URL tal-kamera
+432|Stampa ħajja tal-magna: fluss MJPEG jew l-indirizz ta' stampa JPEG (http jew https).
+433|Vista tal-kamera
+434|Juri l-istampa ħajja mill-kamera ta' din il-magna
+435|Qed tistenna l-istampa…
+436|Zoom awtomatiku
+437|Lura għall-istampa sħiħa
+438|Uri bħala overlay fiż-żona tax-xogħol
+439|Żball fil-fluss: {}
+440|Adatta għal 15 s
+441|Ħin reali
+442|Issettja l-ewwel URL tal-kamera fl-issettjar tat-tagħmir.
+443|Uri f'
+444|Tieqa mobbli
+445|Tieqa separata
+446|Tab fuq il-ġenb
+447|Overlay
+448|Uri jew aħbi l-overlay tal-kamera fiż-żona tax-xogħol
+449|Uri l-overlay tal-kamera
+450|Għad m'hemm l-ebda overlay tal-kamera. Illoddja stampa jew ibda l-vista tal-kamera.
+451|Aqsam fin-netwerk (ser2net)…
+452|Aqsam fin-netwerk (ser2net)
+453|ser2net instab: {}
+454|ser2net ma nstabx. Installah l-ewwel, pereżempju: sudo apt install ser2net
+455|Dan jaqsam il-port serjali tal-lejżer ta' dan il-kompjuter fin-netwerk, sabiex LightCreator x'imkien ieħor ikun jista' jitqabbad bit-tip ta' konnessjoni “Netwerk (TCP)”.
+456|Verżjoni ta' ser2net
+457|Isma' biss fuq dan il-kompjuter (użah ma' mina SSH)
+458|Klijent ġdid jissostitwixxi dak imqabbad
+459|Fajl: {}
+460|Imbagħad qabbad mill-kompjuter l-ieħor ma' {}:{}
+461|Twissija: kull min fin-netwerk li jilħaq dan il-port jista' jikkontrolla l-lejżer. Uża netwerk fdat, firewall, jew l-għażla lokali biss ma' mina SSH.
+462|Ikkupjat.
+463|Installa u erġa' ibda ser2net…
+464|Dan jissostitwixxi {} (jinżamm backup) u jerġa' jibda ser2net. Jintalbu d-drittijiet tal-amministratur.
+465|Ikkonferma
+466|Qed tistenna l-approvazzjoni tal-amministratur…
+467|{} installat u ser2net reġa' beda.
+468|Ma setgħetx tiġi installata l-konfigurazzjoni: {}
+469|Bl-idejn: sudo cp <fajl salvat> {} && sudo systemctl restart ser2net
+470|Rotazzjoni tal-kamera
+471|Adatta awtomatikament iż-żona tax-xogħol mat-tieqa
+472|Illokkja
+473|Illokkjat: iftaħ biex teditja. Il-kopji mhumiex illokkjati.
+474|Oġġetti llokkjati: {}
+475|Oġġetti mhux illokkjati: {}
+476|Ikklikkja darbtejn biex teditja l-għażliet tas-saff
+477|Għażliet tas-saff — {}
+478|{} — ikklikkja biex tassenja l-għażla / tagħmlu attiv; ikklikkja darbtejn għall-għażliet
+479|Għażliet tad-dehra…
+480|Għażliet tad-dehra
+481|Kulur tal-isfond
+482|Awtomatiku
+483|Ħxuna tal-linji
+484|Passaġġi: {}
+485|Gwida mgħaġġla
+486|Paġna tal-proġett fuq GitHub
+487|Din il-gwida hija disponibbli bl-Ingliż u bil-Polonż; lingwi oħra juru t-test bl-Ingliż.
+488|Dawwar il-kantunieri…
+489|Dawwar il-kantunieri
+490|Raġġ
+491|Dawwar
+492|Raġġ tad-dawwir
+493|Idawwar il-kantunieri magħżula b'dan ir-raġġ
+494|Żewġ linji dritti huma magħżula: jinġabru b'kantuniera mdawra.
+495|Kull kantuniera dritta tal-forom magħżula tiġi mdawra.
+496|Dawn il-linji ma jistgħux jinġabru (paralleli, jew ir-raġġ ma jidħolx).
+497|Iż-żewġ linji ngħaqdu b'kantuniera mdawra.
+498|Agħżel l-ewwel il-forom li għandhom jiġu mdawra.
+499|M'hemm l-ebda kantunieri dritti x'tidawwar.
+500|Kantunieri mdawra: {}
+501|Clipart
+502|Annimali
+503|In-natura
+504|Ċelebrazzjonijiet
+505|Simboli
+506|Forom
+507|Għodod
+508|Ikel
+509|Oġġetti
+510|Mużika u divertiment
+511|Il-clipart tiegħi
+512|Il-kategoriji kollha
+513|Inklużi
+514|Tiegħi
+515|Stampi li jiġu mal-programm
+516|Stampi li niżżilt jew żidt
+517|Daqs meta jitqiegħed
+518|Online…
+519|Żid fajl…
+520|Fittex aktar stampi fuq l-internet u salvahom hawn
+521|Iżid fajls SVG mill-kompjuter tiegħek mal-clipart tiegħek
+522|M'hemm l-ebda stampi hawn. Uża Online… biex issib xi wħud.
+523|jiġi mal-programm
+524|tiegħek
+525|Ikklikkja biex tpoġġi fiż-żona tax-xogħol
+526|Imqiegħed: {}
+527|Semmi mill-ġdid
+528|Semmi mill-ġdid…
+529|Biddel il-kategorija
+530|Biddel il-kategorija…
+531|Dettalji
+532|Dettalji…
+533|Ħassar…
+534|Tneħħi din l-istampa mill-clipart tiegħek? Il-fajl fuq id-disk tiegħek jitħassar.
+535|Salva kopja fil-clipart tiegħi
+536|jew kategorija ġdida
+537|Stampi miżjuda: {} għal {}
+538|Sors
+539|Kategorija
+540|Liċenzja
+541|Awtur
+542|Kollezzjoni
+543|Clipart online…
+544|Clipart online
+545|Fittex f'kollezzjonijiet miftuħa ta' ikoni (Iconify). L-istampi jiġu salvati fuq id-disk tiegħek, f'kategorija li tagħżel.
+546|eż. qattus, fjura, ingranaġġ
+547|Qed ifittex…
+548|Ma nstab xejn.
+549|Stampi misjuba: {}
+550|Is-search falla: {}
+551|Ikklikkja fuq stampa biex tara l-liċenzja tagħha u tissejvjaha.
+552|m'hemmx bżonn tikkreditah
+553|ikkreditah l-awtur
+554|Salva fil-clipart tiegħi
+555|{} salvat f'{}
+556|Niżżel
+557|Qed jitniżżel…
+558|It-tniżżil falla: {}
+559|Jew niżżel stampa minn indirizz
+560|Salva biss stampi li tista' tuża. Iċċekkja l-liċenzja tas-sors.
+561|Żid (Z)
+562|Naqqas (X)
+563|Adatta maż-żona tax-xogħol (Ctrl+0)
+564|Adatta mal-oġġetti kollha (Ctrl+9)
+565|Żid
+566|Naqqas
+567|Adatta maż-żona tax-xogħol
+568|Adatta mal-oġġetti kollha
+569|Editja n-nodi
+570|Ikkonverti t-test f'kurvi, jew vettorizza l-istampa, biex teditja n-nodi tagħha.
+571|Agħżel l-ewwel forma, imbagħad editja n-nodi tagħha.
+572|Qalb (K)
