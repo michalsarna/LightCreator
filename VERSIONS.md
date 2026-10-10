@@ -14,7 +14,8 @@ Each release gets the next version number and a branch with the same name. Newes
 * The About window has the slim look of the preview and camera windows.
 
 **Release packages**
-* macOS: fixed the app bundle metadata (the v0.0.8 macOS build failed, so v0.0.8 has no macOS packages).
+* macOS: fixed the app bundle metadata. The macOS build of v0.0.8 failed, so v0.0.8 was never published as a release;
+  v0.0.9 contains everything of v0.0.8 and builds for all systems.
 
 ## v0.0.8
 
