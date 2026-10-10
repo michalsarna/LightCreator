@@ -2,6 +2,20 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.0.9
+
+**Backup and updates**
+* **Help > Download backup…** saves a zip with your settings (device profiles, language, colour scheme, material
+  presets, recent files) and the whole clipart folder.
+* **Help > Restore from backup…** reads such a file back (after a confirmation); the start window offers it with a green
+  button when no profile files are found.
+* The program looks for a newer release on GitHub when it starts (switch off in Settings > Program options…);
+  **Help > Check for updates…** does it by hand. A newer version opens the page with the packages.
+* The About window has the slim look of the preview and camera windows.
+
+**Release packages**
+* macOS: fixed the app bundle metadata (the v0.0.8 macOS build failed, so v0.0.8 has no macOS packages).
+
 ## v0.0.8
 
 **Editor**
