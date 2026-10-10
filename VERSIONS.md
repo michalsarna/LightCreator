@@ -2,6 +2,11 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.0.6
+
+**Release packages**
+* Releases now also include Linux ARM64 (`.tar.gz`, `.deb`) and macOS Intel (`.dmg`) builds.
+
 ## v0.0.5
 
 From this release the tag is `v` plus the version in `Cargo.toml` (`v0.0.5`), as the release workflow requires.
