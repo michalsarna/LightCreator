@@ -198,6 +198,7 @@ fn grbl_sim_long_job_keeps_character_counting_in_sync() {
     s.fast_machine();
     let job = sample_job(0.1);
     assert!(job.len() > 500, "{}", job.len());
+    let _ = std::fs::write(repo_root().join("target/grbl-sim-long-job.nc"), job.join("\n")); // DEBUG: CI dump
     s.run_job(job, 240.0);
     s.wait_idle_at(0.0, 0.0, 60.0);
     assert!(s.errors().is_empty(), "GRBL rejected lines: {:?}", s.errors());
