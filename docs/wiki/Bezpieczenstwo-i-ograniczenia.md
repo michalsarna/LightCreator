@@ -8,7 +8,7 @@
 Cała logika geometrii, operacji logicznych, offsetów, rastra, G-code, eksportu i tłumaczeń jest pokryta testami jednostkowymi, a zrzuty ekranu pochodzą z prawdziwego interfejsu. Strumieniowanie GRBL jest sprawdzane od początku do końca na prawdziwym firmware GRBL 1.1h w [symulatorze](Symulator-GRBL).
 
 ## Czego nie sprawdzono
-**Nic nie zostało jeszcze uruchomione na prawdziwym sprzęcie.** Nadal bez testów na maszynach: strumieniowanie GRBL i Marlin, ścieżka Ruida / Trocen, kamera na żywo, odczyt ustawień z urządzenia i import Illustratora (tylko pliki zgodne z PDF). Wartości materiałów to ogólne punkty wyjścia; testuj na odpadzie.
+**Nic nie zostało jeszcze uruchomione na prawdziwym sprzęcie.** Nadal bez testów na maszynach: strumieniowanie GRBL i Marlin, zero w czterech narożnikach, odwrócone osie i obrócony panel, limity programowe i kontrola zadania, ostrzeżenia po połączeniu ($32 / $30), ścieżka Ruida / Trocen, kamera na żywo, odczyt ustawień z urządzenia i import Illustratora (tylko pliki zgodne z PDF). Wartości materiałów to ogólne punkty wyjścia; testuj na odpadzie.
 
 ## Jeszcze niezaimplementowane
 Bezpośrednie protokoły binarne Ruida / Trocen, kąty skanowania obrazów, kerning i kształtowanie pism złożonych (Devanagari, arabski) w tekście, korekcja zniekształceń obiektywu kamery. Kamery RTSP nie są obsługiwane (użyj MJPEG).
