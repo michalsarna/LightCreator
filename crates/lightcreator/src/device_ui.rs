@@ -389,6 +389,7 @@ impl App {
         let mut fw_acts: Vec<crate::firmware_ui::FwAct> = vec![];
         let mut cfg_head = cfg.head;
         let mut maint_reset: Option<usize> = None;
+        let mut test_cam: Option<lc_core::CameraSource> = None;
         crate::window_ui::popup(ctx, "device_cfg", &title, [720.0, 500.0], &mut cfg_open, |ui| {
             if must_create {
                 ui.label(RichText::new(tr("Create at least one device profile to continue.")).color(theme::text_dim()));
@@ -803,6 +804,13 @@ impl App {
                                                 }
                                             }
                                         }
+                                        let testable = match &c.kind {
+                                            lc_core::CameraKind::Url(u) => lc_core::camimg::valid_url(u),
+                                            lc_core::CameraKind::Local(_) => crate::camera::SUPPORTED,
+                                        };
+                                        if ui.add_enabled(testable, egui::Button::new(tr("Test"))).on_hover_text(tr("Opens the picture of this camera as set here, without saving")).clicked() {
+                                            test_cam = Some(c.clone());
+                                        }
                                         ui.horizontal(|ui| {
                                             ui.label(tr("Camera rotation"));
                                             for q in 0..4u8 {
@@ -1128,6 +1136,9 @@ impl App {
                 }
             });
         });
+        if let Some(cam) = test_cam {
+            self.start_cam_test(ctx, cam);
+        }
         if !cfg_open && !must_create {
             cancel = true;
         }

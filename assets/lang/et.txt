@@ -997,3 +997,6 @@
 996|Printida pole midagi.
 997|{} objekti ulatub tööalast välja; paberil lõigatakse need serva kohalt ära.
 998|{} objekti ulatub tööalast välja; need prinditakse siiski.
+999|Kaamera test: {}
+1000|Avab selle kaamera pildi siin määratud seadetega, salvestamata
+1001|Testi

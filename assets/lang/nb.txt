@@ -997,3 +997,6 @@
 996|Det er ingenting å skrive ut.
 997|{} objekt(er) rager utenfor arbeidsområdet; på papiret kuttes de ved kanten.
 998|{} objekt(er) rager utenfor arbeidsområdet; de skrives ut likevel.
+999|Kameratest: {}
+1000|Åpner bildet fra dette kameraet med innstillingene her, uten å lagre
+1001|Test

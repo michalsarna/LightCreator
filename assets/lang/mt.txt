@@ -997,3 +997,6 @@
 996|M'hemm xejn x'tistampa.
 997|{} oġġett(i) joħorġu barra mill-erja tax-xogħol; fuq il-karta jinqatgħu fit-tarf tagħha.
 998|{} oġġett(i) joħorġu barra mill-erja tax-xogħol; jiġu stampati xorta.
+999|Test tal-kamera: {}
+1000|Jiftaħ ix-xbieha ta' din il-kamera bl-issettjar hawn, mingħajr ma jissejvja
+1001|Ittesta

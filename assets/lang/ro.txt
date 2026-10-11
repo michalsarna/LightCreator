@@ -997,3 +997,6 @@
 996|Nu e nimic de tipărit.
 997|{} obiect(e) ies din zona de lucru; pe hârtie sunt tăiate la margine.
 998|{} obiect(e) ies din zona de lucru; sunt tipărite oricum.
+999|Test cameră: {}
+1000|Deschide imaginea acestei camere cu setările de aici, fără salvare
+1001|Testează

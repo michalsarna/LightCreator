@@ -997,3 +997,6 @@
 996|Nincs mit nyomtatni.
 997|{} objektum túlnyúlik a munkaterületen; a papíron a szélénél levágódik.
 998|{} objektum túlnyúlik a munkaterületen; ettől még kinyomtatódik.
+999|Kamerateszt: {}
+1000|Megnyitja a kamera képét az itt megadott beállításokkal, mentés nélkül
+1001|Teszt

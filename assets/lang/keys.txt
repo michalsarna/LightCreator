@@ -997,3 +997,6 @@
 996	There is nothing to print.
 997	{} object(s) reach outside the work area; on the paper they are cut off at its edge.
 998	{} object(s) reach outside the work area; they are printed anyway.
+999	Camera test: {}
+1000	Opens the picture of this camera as set here, without saving
+1001	Test

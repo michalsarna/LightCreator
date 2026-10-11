@@ -997,3 +997,6 @@
 996|No hi ha res per imprimir.
 997|{} objecte(s) surten de l'àrea de treball; al paper es tallen a la vora.
 998|{} objecte(s) surten de l'àrea de treball; s'imprimeixen igualment.
+999|Prova de la càmera: {}
+1000|Obre la imatge d'aquesta càmera amb els valors indicats aquí, sense desar
+1001|Prova

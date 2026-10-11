@@ -997,3 +997,6 @@
 996|Nav ko drukāt.
 997|{} objekti iziet ārpus darba zonas; uz papīra tie tiek nogriezti pie malas.
 998|{} objekti iziet ārpus darba zonas; tie tomēr tiek izdrukāti.
+999|Kameras tests: {}
+1000|Atver šīs kameras attēlu ar šeit norādītajiem iestatījumiem, nesaglabājot
+1001|Pārbaudīt

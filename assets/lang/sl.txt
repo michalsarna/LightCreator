@@ -997,3 +997,6 @@
 996|Ničesar ni za tiskanje.
 997|{} predmet(ov) sega zunaj delovnega območja; na papirju so odrezani na robu.
 998|{} predmet(ov) sega zunaj delovnega območja; vseeno se natisnejo.
+999|Preizkus kamere: {}
+1000|Odpre sliko te kamere z nastavitvami tukaj, brez shranjevanja
+1001|Preizkusi

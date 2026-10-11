@@ -997,3 +997,6 @@
 996|Ekkert er til að prenta.
 997|{} hlutur(ir) ná út fyrir vinnusvæðið; á pappírnum eru þeir skornir af við jaðarinn.
 998|{} hlutur(ir) ná út fyrir vinnusvæðið; þeir eru samt prentaðir.
+999|Prófun myndavélar: {}
+1000|Opnar mynd þessarar myndavélar með stillingunum hér, án þess að vista
+1001|Prófa

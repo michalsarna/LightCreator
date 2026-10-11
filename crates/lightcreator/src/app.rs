@@ -227,6 +227,7 @@ pub struct App {
     pub show_stream: bool,
     pub ser2net: Option<crate::ser2net_ui::Ser2NetDlg>,
     pub print: Option<crate::print_ui::PrintDlg>,
+    pub cam_test: Option<crate::cam_test_ui::CamTest>,
     pub stream_mode: crate::stream_ui::StreamMode,
     pub tab_seen: bool,
     /// Rotation the current stream texture was made with.
@@ -456,6 +457,7 @@ impl App {
             show_stream: false,
             ser2net: None,
             print: None,
+            cam_test: None,
             stream_mode: crate::stream_ui::StreamMode::Floating,
             tab_seen: false,
             stream_rot: 0,
@@ -1941,6 +1943,7 @@ impl App {
         self.stream_window(ctx);
         self.ser2net_window(ctx);
         self.print_window(ctx);
+        self.cam_test_window(ctx);
     }
 }
 

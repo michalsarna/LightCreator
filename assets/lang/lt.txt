@@ -997,3 +997,6 @@
 996|Nėra ką spausdinti.
 997|{} objektų išeina už darbo srities ribų; ant popieriaus jie nupjaunami prie krašto.
 998|{} objektų išeina už darbo srities ribų; jie vis tiek atspausdinami.
+999|Kameros bandymas: {}
+1000|Atidaro šios kameros vaizdą su čia nustatytomis reikšmėmis, neįrašant
+1001|Išbandyti

@@ -1280,6 +1280,10 @@ const TABLE: &[[&str; 7]] = &[
     ["There is nothing to print.", "Nie ma nic do wydrukowania.", "Es gibt nichts zu drucken.", "Non c'è nulla da stampare.", "Ei mitään tulostettavaa.", "没有可打印的内容。", "छापने के लिए कुछ नहीं है।"],
     ["{} object(s) reach outside the work area; on the paper they are cut off at its edge.", "Obiektów wychodzących poza pole robocze: {}; na papierze są obcięte na jego krawędzi.", "{} Objekt(e) ragen über den Arbeitsbereich hinaus; auf dem Papier werden sie am Rand abgeschnitten.", "{} oggetto/i escono dall'area di lavoro; sulla carta vengono tagliati al bordo.", "{} objektia ulottuu työalueen ulkopuolelle; paperilla ne leikkautuvat reunasta.", "有 {} 个对象超出工作区；打印在纸上时会在其边缘被截断。", "{} ऑब्जेक्ट कार्य क्षेत्र से बाहर जाते हैं; कागज़ पर वे उसके किनारे पर कट जाते हैं।"],
     ["{} object(s) reach outside the work area; they are printed anyway.", "Obiektów wychodzących poza pole robocze: {}; i tak zostaną wydrukowane.", "{} Objekt(e) ragen über den Arbeitsbereich hinaus; sie werden trotzdem gedruckt.", "{} oggetto/i escono dall'area di lavoro; vengono stampati comunque.", "{} objektia ulottuu työalueen ulkopuolelle; ne tulostetaan silti.", "有 {} 个对象超出工作区；它们仍会被打印。", "{} ऑब्जेक्ट कार्य क्षेत्र से बाहर जाते हैं; फिर भी वे छापे जाएँगे।"],
+    // ---- camera test ----
+    ["Camera test: {}", "Test kamery: {}", "Kameratest: {}", "Test della telecamera: {}", "Kameran testi: {}", "摄像头测试：{}", "कैमरा परीक्षण: {}"],
+    ["Opens the picture of this camera as set here, without saving", "Otwiera obraz tej kamery z ustawieniami podanymi tutaj, bez zapisywania", "Öffnet das Bild dieser Kamera mit den hier eingestellten Werten, ohne zu speichern", "Apre l'immagine di questa telecamera come impostata qui, senza salvare", "Avaa tämän kameran kuvan tässä asetetuilla arvoilla tallentamatta", "按此处的设置打开此摄像头的画面，不保存", "इस कैमरे का चित्र यहाँ दी गई सेटिंग के साथ खोलता है, सहेजे बिना"],
+    ["Test", "Testuj", "Testen", "Prova", "Testaa", "测试", "परीक्षण करें"],
 ];
 #[cfg(test)]
 mod tests {

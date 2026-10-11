@@ -997,3 +997,6 @@
 996|Nie je čo tlačiť.
 997|{} objekt(ov) presahuje pracovnú plochu; na papieri sú orezané na jej okraji.
 998|{} objekt(ov) presahuje pracovnú plochu; vytlačia sa napriek tomu.
+999|Test kamery: {}
+1000|Otvorí obraz tejto kamery s nastaveniami tu, bez uloženia
+1001|Testovať

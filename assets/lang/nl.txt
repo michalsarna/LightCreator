@@ -997,3 +997,6 @@
 996|Er is niets om af te drukken.
 997|{} object(en) reiken buiten het werkgebied; op papier worden ze bij de rand afgesneden.
 998|{} object(en) reiken buiten het werkgebied; ze worden toch afgedrukt.
+999|Cameratest: {}
+1000|Opent het beeld van deze camera met de instellingen hier, zonder op te slaan
+1001|Testen

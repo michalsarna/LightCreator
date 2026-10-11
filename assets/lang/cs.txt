@@ -997,3 +997,6 @@
 996|Není co tisknout.
 997|{} objekt(ů) přesahuje pracovní plochu; na papíře jsou oříznuty na jejím okraji.
 998|{} objekt(ů) přesahuje pracovní plochu; vytisknou se přesto.
+999|Test kamery: {}
+1000|Otevře obraz této kamery s nastavením zde, bez uložení
+1001|Testovat

@@ -997,3 +997,6 @@
 996|Níl aon rud le priontáil.
 997|Sroicheann {} réad lasmuigh den limistéar oibre; ar an bpáipéar gearrtar iad ag a imeall.
 998|Sroicheann {} réad lasmuigh den limistéar oibre; priontáiltear iad ar aon nós.
+999|Tástáil ceamara: {}
+1000|Osclaíonn sé pictiúr an cheamara seo leis na socruithe anseo, gan sábháil
+1001|Tástáil

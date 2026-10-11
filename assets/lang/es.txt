@@ -997,3 +997,6 @@
 996|No hay nada que imprimir.
 997|{} objeto(s) salen del área de trabajo; en el papel se cortan en su borde.
 998|{} objeto(s) salen del área de trabajo; se imprimen de todos modos.
+999|Prueba de la cámara: {}
+1000|Abre la imagen de esta cámara con los ajustes de aquí, sin guardar
+1001|Probar

@@ -997,3 +997,6 @@
 996|Il n'y a rien à imprimer.
 997|{} objet(s) dépassent de la zone de travail ; sur le papier ils sont coupés au bord.
 998|{} objet(s) dépassent de la zone de travail ; ils sont imprimés quand même.
+999|Test de la caméra : {}
+1000|Ouvre l'image de cette caméra avec les réglages d'ici, sans enregistrer
+1001|Tester

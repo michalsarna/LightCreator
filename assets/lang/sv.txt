@@ -997,3 +997,6 @@
 996|Det finns inget att skriva ut.
 997|{} objekt sticker ut utanför arbetsytan; på papperet skärs de av vid kanten.
 998|{} objekt sticker ut utanför arbetsytan; de skrivs ut ändå.
+999|Kameratest: {}
+1000|Öppnar bilden från den här kameran med inställningarna här, utan att spara
+1001|Testa

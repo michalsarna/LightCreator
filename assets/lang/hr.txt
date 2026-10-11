@@ -997,3 +997,6 @@
 996|Nema ničega za ispis.
 997|{} objekt(a) izlazi izvan radnog područja; na papiru se režu na njegovom rubu.
 998|{} objekt(a) izlazi izvan radnog područja; ipak se ispisuju.
+999|Test kamere: {}
+1000|Otvara sliku ove kamere s ovdje zadanim postavkama, bez spremanja
+1001|Testiraj
