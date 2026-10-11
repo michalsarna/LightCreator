@@ -813,3 +813,8 @@
 812|bijv. Blauwe diode
 813|Laserkop
 814|Het interval is kleiner dan het straalpunt ({}): naburige lijnen overlappen.
+815|FOCUSSTRAAL AAN: druk om uit te schakelen
+816|Focus
+817|Schakelt een zwakke, constante straal in om de focushoogte mee in te stellen
+818|Focusstraal aan
+819|Focusstraal uit

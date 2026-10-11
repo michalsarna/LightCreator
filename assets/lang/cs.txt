@@ -813,3 +813,8 @@
 812|např. Modrá dioda
 813|Laserová hlava
 814|Rozteč je menší než stopa paprsku ({}): sousední čáry se překrývají.
+815|ZAOSTŘOVACÍ PAPRSEK ZAPNUT: stiskem vypnete
+816|Zaostřit
+817|Zapne slabý stálý paprsek k nastavení výšky zaostření
+818|Zaostřovací paprsek zapnut
+819|Zaostřovací paprsek vypnut

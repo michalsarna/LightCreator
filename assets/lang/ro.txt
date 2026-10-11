@@ -813,3 +813,8 @@
 812|ex. Diodă albastră
 813|Cap laser
 814|Intervalul este mai mic decât punctul fasciculului ({}): liniile vecine se suprapun.
+815|FASCICULUL DE FOCALIZARE ESTE PORNIT: apăsați pentru a opri
+816|Focalizare
+817|Pornește un fascicul slab și constant pentru reglarea înălțimii focalizării
+818|Fascicul de focalizare pornit
+819|Fascicul de focalizare oprit

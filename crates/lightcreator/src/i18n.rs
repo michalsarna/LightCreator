@@ -1080,6 +1080,12 @@ const TABLE: &[[&str; 7]] = &[
     // ---- layer head ----
     ["Laser head", "Głowica lasera", "Laserkopf", "Testa laser", "Laserpää", "激光头", "लेज़र हेड"],
     ["The interval is smaller than the beam spot ({}): neighbouring lines overlap.", "Interwał jest mniejszy niż plamka wiązki ({}): sąsiednie linie nakładają się.", "Der Abstand ist kleiner als der Strahlfleck ({}): benachbarte Linien überlappen.", "L'intervallo è inferiore al punto del fascio ({}): le linee vicine si sovrappongono.", "Väli on pienempi kuin säteen piste ({}): viereiset viivat menevät päällekkäin.", "间距小于光斑（{}）：相邻线条会重叠。", "अंतराल किरण के धब्बे ({}) से छोटा है: पास की रेखाएँ ढक जाती हैं।"],
+    // ---- focus mode ----
+    ["FOCUS BEAM ON: press to switch off", "WIĄZKA OGNISKOWANIA WŁĄCZONA: naciśnij, aby wyłączyć", "FOKUSSTRAHL AN: zum Ausschalten drücken", "FASCIO DI MESSA A FUOCO ACCESO: premi per spegnere", "TARKENNUSSÄDE PÄÄLLÄ: sammuta painamalla", "对焦光束已开启：点击关闭", "फ़ोकस किरण चालू: बंद करने के लिए दबाएँ"],
+    ["Focus", "Ogniskuj", "Fokus", "Fuoco", "Tarkenna", "对焦", "फ़ोकस"],
+    ["Switch on a weak steady beam to set the focus height by", "Włącza słabą, stałą wiązkę do ustawienia wysokości ogniska", "Schaltet einen schwachen, stetigen Strahl zum Einstellen der Fokushöhe ein", "Accende un fascio debole e costante per regolare l'altezza del fuoco", "Kytkee heikon tasaisen säteen tarkennuskorkeuden asettamiseen", "打开一束弱而稳定的光束来调整对焦高度", "फ़ोकस ऊँचाई तय करने के लिए हल्की स्थिर किरण चालू करें"],
+    ["Focus beam on", "Wiązka ogniskowania włączona", "Fokusstrahl an", "Fascio di messa a fuoco acceso", "Tarkennussäde päällä", "对焦光束已开启", "फ़ोकस किरण चालू"],
+    ["Focus beam off", "Wiązka ogniskowania wyłączona", "Fokusstrahl aus", "Fascio di messa a fuoco spento", "Tarkennussäde pois", "对焦光束已关闭", "फ़ोकस किरण बंद"],
 ];
 #[cfg(test)]
 mod tests {

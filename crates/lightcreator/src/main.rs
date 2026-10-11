@@ -7,6 +7,7 @@ mod clipart_ui;
 mod canvas;
 mod device_ui;
 mod firmware_ui;
+mod focus_ui;
 mod fonts;
 #[cfg(test)]
 mod grbl_sim_tests;

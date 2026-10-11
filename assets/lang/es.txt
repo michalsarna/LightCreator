@@ -813,3 +813,8 @@
 812|p. ej. Diodo azul
 813|Cabezal láser
 814|El intervalo es menor que el punto del haz ({}): las líneas vecinas se solapan.
+815|HAZ DE ENFOQUE ENCENDIDO: pulse para apagar
+816|Enfoque
+817|Enciende un haz débil y constante para ajustar la altura de enfoque
+818|Haz de enfoque encendido
+819|Haz de enfoque apagado

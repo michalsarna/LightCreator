@@ -813,3 +813,8 @@
 812|f.eks. Blå diode
 813|Laserhode
 814|Intervallet er mindre enn strålepunktet ({}): nabolinjer overlapper.
+815|FOKUSSTRÅLE PÅ: trykk for å slå av
+816|Fokus
+817|Slår på en svak, jevn stråle for å stille inn fokushøyden
+818|Fokusstråle på
+819|Fokusstråle av

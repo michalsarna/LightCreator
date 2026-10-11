@@ -813,3 +813,8 @@
 812|t.ex. Blå diod
 813|Laserhuvud
 814|Intervallet är mindre än strålpunkten ({}): grannlinjer överlappar.
+815|FOKUSSTRÅLE PÅ: tryck för att stänga av
+816|Fokus
+817|Slår på en svag, jämn stråle för att ställa in fokushöjden
+818|Fokusstråle på
+819|Fokusstråle av

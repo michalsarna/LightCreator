@@ -335,3 +335,31 @@ fn grbl_sim_settings_can_be_read_changed_backed_up_and_restored() {
     assert!(gs::same_value(&restored[&110], &old), "{} vs {old}", restored[&110]);
     assert!(s.errors().is_empty(), "{:?}", s.errors());
 }
+
+#[test]
+#[ignore = "needs grbl-sim: tools/grbl-sim/build.sh"]
+fn grbl_sim_focus_beam_switches_on_with_m3_and_off_with_m5() {
+    let mut s = Session::connect();
+    s.wait_banner();
+    // Laser mode on, as the focus beam is meant for it.
+    s.link.send(Cmd::Line("$32=1".into()));
+    let mut dev = lc_core::Device::default();
+    dev.heads[0].focus_power = 1.5;
+    let on = gcode::focus_gcode(&dev, true).expect("focus lines");
+    let off = gcode::focus_gcode(&dev, false).expect("off lines");
+    let parser_state = |s: &mut Session| {
+        let from = s.seen.rx.len();
+        s.link.send(Cmd::Line("$G".into()));
+        s.wait("parser state", 5.0, |v| v.rx[from..].iter().any(|l| l == "ok"));
+        s.seen.rx[from..].iter().find(|l| l.starts_with("[GC:")).cloned().unwrap_or_default()
+    };
+    for l in &on {
+        s.link.send(Cmd::Line(l.clone()));
+    }
+    assert!(parser_state(&mut s).contains("M3"), "the beam is on");
+    for l in &off {
+        s.link.send(Cmd::Line(l.clone()));
+    }
+    assert!(parser_state(&mut s).contains("M5"), "the beam is off");
+    assert!(s.errors().is_empty(), "{:?}", s.errors());
+}

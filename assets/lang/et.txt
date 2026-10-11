@@ -813,3 +813,8 @@
 812|nt Sinine diood
 813|Laserpea
 814|Vahe on väiksem kui kiire täpp ({}): naaberjooned kattuvad.
+815|FOOKUSKIIR SEES: vajuta väljalülitamiseks
+816|Fookus
+817|Lülitab sisse nõrga ühtlase kiire fookuskõrguse seadmiseks
+818|Fookuskiir sees
+819|Fookuskiir väljas

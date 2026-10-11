@@ -73,7 +73,7 @@ impl App {
             });
         });
         if stop {
-            self.link.send(crate::laser::Cmd::Abort);
+            self.abort_job();
         }
         if stop || close || !open {
             self.stall = None;

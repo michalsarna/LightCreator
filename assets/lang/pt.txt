@@ -813,3 +813,8 @@
 812|p. ex. Díodo azul
 813|Cabeçote laser
 814|O intervalo é menor que o ponto do feixe ({}): as linhas vizinhas sobrepõem-se.
+815|FEIXE DE FOCO LIGADO: prima para desligar
+816|Foco
+817|Liga um feixe fraco e constante para acertar a altura do foco
+818|Feixe de foco ligado
+819|Feixe de foco desligado

@@ -813,3 +813,8 @@
 812|p. ex. Diode bleue
 813|Tête laser
 814|L'intervalle est plus petit que le point du faisceau ({}) : les lignes voisines se chevauchent.
+815|FAISCEAU DE MISE AU POINT ALLUMÉ : appuyez pour l'éteindre
+816|Mise au point
+817|Allume un faisceau faible et constant pour régler la hauteur de mise au point
+818|Faisceau de mise au point allumé
+819|Faisceau de mise au point éteint

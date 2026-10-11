@@ -813,3 +813,8 @@
 812|pl. Kék dióda
 813|Lézerfej
 814|A köz kisebb, mint a sugárfolt ({}): a szomszédos vonalak átfedik egymást.
+815|FÓKUSZSUGÁR BEKAPCSOLVA: kikapcsoláshoz nyomja meg
+816|Fókusz
+817|Bekapcsol egy gyenge, állandó sugarat a fókuszmagasság beállításához
+818|Fókuszsugár bekapcsolva
+819|Fókuszsugár kikapcsolva

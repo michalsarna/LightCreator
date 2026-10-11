@@ -813,3 +813,8 @@
 812|t.d. Blá díóða
 813|Leysihaus
 814|Bilið er minna en geislabletturinn ({}): nálægar línur skarast.
+815|FÓKUSGEISLI KVEIKTUR: ýttu til að slökkva
+816|Fókus
+817|Kveikir á veikum stöðugum geisla til að stilla fókushæðina
+818|Fókusgeisli kveiktur
+819|Fókusgeisli slökktur

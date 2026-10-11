@@ -813,3 +813,8 @@
 812|eż. Dijodu blu
 813|Ras tal-laser
 814|L-intervall huwa iżgħar mit-tikka tar-raġġ ({}): il-linji ġirien jikkoinċidu.
+815|IR-RAĠĠ TAL-FOKUS MIXGĦUL: agħfas biex tqffel
+816|Fokus
+817|Iqabbad raġġ dgħajjef kostanti biex tissettja l-għoli tal-fokus
+818|Raġġ tal-fokus mixgħul
+819|Raġġ tal-fokus mitfi

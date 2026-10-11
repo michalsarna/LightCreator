@@ -813,3 +813,8 @@
 812|pvz. Mėlynas diodas
 813|Lazerio galvutė
 814|Intervalas mažesnis už spindulio dėmę ({}): gretimos linijos persidengia.
+815|FOKUSAVIMO SPINDULYS ĮJUNGTAS: paspauskite, kad išjungtumėte
+816|Fokusas
+817|Įjungia silpną pastovų spindulį fokusavimo aukščiui nustatyti
+818|Fokusavimo spindulys įjungtas
+819|Fokusavimo spindulys išjungtas

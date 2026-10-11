@@ -813,3 +813,8 @@
 812|npr. Modra dioda
 813|Laserska glava
 814|Razmik je manjši od pege žarka ({}): sosednje črte se prekrivajo.
+815|OSTRILNI ŽAREK VKLOPLJEN: pritisnite za izklop
+816|Ostrenje
+817|Vklopi šibek stalen žarek za nastavitev višine ostrenja
+818|Ostrilni žarek vklopljen
+819|Ostrilni žarek izklopljen

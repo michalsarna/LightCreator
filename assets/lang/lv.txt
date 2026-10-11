@@ -813,3 +813,8 @@
 812|piem. Zila diode
 813|Lāzera galviņa
 814|Intervāls ir mazāks par stara plankumu ({}): blakus līnijas pārklājas.
+815|FOKUSA STARS IESLĒGTS: nospiediet, lai izslēgtu
+816|Fokuss
+817|Ieslēdz vāju vienmērīgu staru fokusa augstuma iestatīšanai
+818|Fokusa stars ieslēgts
+819|Fokusa stars izslēgts

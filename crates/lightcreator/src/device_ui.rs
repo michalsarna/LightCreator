@@ -1007,8 +1007,10 @@ impl App {
             });
             ui.add_space(6.0);
             if ui.add_sized([ui.available_width(), 40.0], egui::Button::new(RichText::new(tr("STOP")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0xc0, 0x30, 0x30))).clicked() {
-                self.link.send(Cmd::Abort);
+                self.abort_job();
             }
+            ui.add_space(4.0);
+            self.focus_button(ui, true);
         });
         if let Some(a) = act {
             self.run_action(a);

@@ -308,6 +308,8 @@ pub struct App {
     pub single_axis_homing: bool,
     /// The Firmware ($$) page.
     pub fw: crate::firmware_ui::FwUi,
+    /// The focus beam is on.
+    pub focus_on: bool,
     pub connected: bool,
     pub machine: (String, f64, f64),
     pub progress: (usize, usize),
@@ -489,6 +491,7 @@ impl App {
             connect_actions_at: None,
             single_axis_homing: false,
             fw: Default::default(),
+            focus_on: false,
             connected: false,
             machine: (tr("Disconnected").into(), 0.0, 0.0),
             progress: (0, 0),
@@ -871,6 +874,7 @@ impl App {
         }
     }
     pub fn send_job_now(&mut self) {
+        self.focus_off();
         let job = gcode::generate(&self.doc);
         if job.moves.is_empty() {
             self.status = tr("Nothing to burn: no shapes on output layers").into();
@@ -963,6 +967,7 @@ impl App {
                         self.machine.0 = tr("Disconnected").into();
                         self.fw_warn = None;
                         self.stall = None;
+                        self.focus_on = false;
                     }
                 }
                 Evt::Status { state, x, y } => self.machine = (state, x, y),
@@ -1406,7 +1411,7 @@ impl App {
                     let stop = egui::Button::new(RichText::new(format!("   {}   ", tr("STOP").to_uppercase())).color(Color32::WHITE).strong())
                         .fill(Color32::from_rgb(0xc0, 0x30, 0x30));
                     if ui.add(stop).on_hover_text(tr("Abort the running job")).clicked() {
-                        self.link.send(Cmd::Abort);
+                        self.abort_job();
                     }
                 } else {
                     let go = egui::Button::new(RichText::new(format!("   {}   ", tr("Start").to_uppercase())).color(Color32::WHITE).strong()).fill(theme::accent());
@@ -1419,6 +1424,7 @@ impl App {
                 if ui.add_enabled(self.connected && !running, egui::Button::new(tr("Frame"))).on_hover_text(tip).clicked() {
                     self.frame();
                 }
+                self.focus_button(ui, false);
                 if ui.button(tr("Save G-code")).clicked() {
                     self.export_gcode();
                 }
@@ -1804,6 +1810,14 @@ pub fn fmt_time(s: f64) -> String {
 }
 
 impl eframe::App for App {
+    fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
+        // The focus beam must not stay on when the program goes away; give the link thread a moment to send the line.
+        if self.focus_on {
+            self.focus_off();
+            std::thread::sleep(std::time::Duration::from_millis(200));
+        }
+    }
+
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
         for (k, v) in self.settings_pairs() {
             storage.set_string(k, v);

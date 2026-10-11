@@ -813,3 +813,8 @@
 812	e.g. Blue diode
 813	Laser head
 814	The interval is smaller than the beam spot ({}): neighbouring lines overlap.
+815	FOCUS BEAM ON: press to switch off
+816	Focus
+817	Switch on a weak steady beam to set the focus height by
+818	Focus beam on
+819	Focus beam off

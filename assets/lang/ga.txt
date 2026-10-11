@@ -813,3 +813,8 @@
 812|m.sh. Dé-óid ghorm
 813|Ceann léasair
 814|Tá an t-eatramh níos lú ná spota an bhíoma ({}): tá línte comharsanacha ag forluí.
+815|BÍOMA FÓCAIS AIR: brúigh chun múchadh
+816|Fócas
+817|Lasann sé bíoma lag seasmhach chun airde an fhócais a shocrú
+818|Bíoma fócais air
+819|Bíoma fócais as

@@ -813,3 +813,8 @@
 812|p. ex. Díode blau
 813|Capçal làser
 814|L'interval és menor que el punt del feix ({}): les línies veïnes se solapen.
+815|FEIX DE FOCUS ENCÈS: premeu per apagar
+816|Focus
+817|Encén un feix feble i constant per ajustar l'alçada del focus
+818|Feix de focus encès
+819|Feix de focus apagat

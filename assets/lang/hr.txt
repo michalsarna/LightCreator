@@ -813,3 +813,8 @@
 812|npr. Plava dioda
 813|Laserska glava
 814|Razmak je manji od točke snopa ({}): susjedne linije se preklapaju.
+815|FOKUSNI SNOP UKLJUČEN: pritisnite za isključivanje
+816|Fokus
+817|Uključuje slab stalan snop za namještanje visine fokusa
+818|Fokusni snop uključen
+819|Fokusni snop isključen

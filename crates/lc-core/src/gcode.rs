@@ -521,3 +521,20 @@ pub fn frame_gcode(bounds: Rect, dev: &Device, power: f64, speed_mm_s: f64) -> S
     let _ = writeln!(w.out, "{}", if dev.dialect() == Dialect::Marlin { "M5 I" } else { "M5" });
     w.out
 }
+
+/// The lines that switch the focus beam (a weak steady spot to set the height by) on or off, for the first head.
+/// `None` when the head has no focus power.
+pub fn focus_gcode(dev: &Device, on: bool) -> Option<Vec<String>> {
+    let h = dev.head(0);
+    if h.focus_power <= 0.0 {
+        return None;
+    }
+    if !on {
+        return Some(vec!["M5".to_string()]);
+    }
+    let raw = h.focus_power / 100.0 * h.s_max;
+    // Smoothieware takes a fraction, the others whole numbers.
+    let s = if dev.dialect() == Dialect::Smoothieware { format!("{}", (raw * 1000.0).round() / 1000.0) } else { format!("{}", raw.round() as i64) };
+    // Constant power (M3), not the dynamic mode: in that one the laser is dark while the head stands still.
+    Some(vec![format!("M3 S{s}")])
+}

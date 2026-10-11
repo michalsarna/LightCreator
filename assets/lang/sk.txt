@@ -813,3 +813,8 @@
 812|napr. Modrá dióda
 813|Laserová hlava
 814|Rozstup je menší než stopa lúča ({}): susedné čiary sa prekrývajú.
+815|ZAOSTROVACÍ LÚČ ZAPNUTÝ: stlačením vypnete
+816|Zaostriť
+817|Zapne slabý stály lúč na nastavenie výšky zaostrenia
+818|Zaostrovací lúč zapnutý
+819|Zaostrovací lúč vypnutý
