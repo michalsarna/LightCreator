@@ -61,7 +61,7 @@ Okno startowe wybiera **profil urządzenia** i go zapamiętuje. Profil zawiera s
 | **Ruida**, **Trocen** | eksport HPGL / DXF z jednym piórem lub warstwą na kolor, do otwarcia w programie producenta (np. RDWorks). Wypełnienie staje się liniami kreskowania; obrazy rastrowe są pomijane. Bezpośrednie protokoły binarne nie są zaimplementowane |
 
 ## Zakładka Device i pasek sterowania
-* **Start** jest aktywny, gdy laser jest podłączony (Ruida i Trocen eksportują plik), a podczas pracy zamienia się w czerwony **STOP**; **Frame** wymaga połączenia i jest wyłączony w trakcie pracy.
+* **Start** jest aktywny, gdy laser jest podłączony (Ruida i Trocen eksportują plik), a podczas pracy zamienia się w czerwony **STOP**; **Frame** wymaga połączenia i jest wyłączony w trakcie pracy. Ikona **Home** między *Save G-code* a *Frame* robi to samo co Home w zakładce Device i jest wyłączona w tych samych przypadkach (brak połączenia albo trwa zadanie).
 * W zakładce Device strzałki ręcznego przesuwania, Home, Unlock, Pause i Resume to duże przyciski-ikony jednej wielkości (pomarańczowy kwadrat anuluje ruch); STOP to szeroki czerwony przycisk pod nimi. Krok, posuw i moc obrysu są razem nad nimi.
 
 ![Zakładka Device](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/27-device-tab.png)

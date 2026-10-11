@@ -1523,6 +1523,7 @@ impl App {
                     self.frame();
                 }
                 self.focus_button(ui, false);
+                self.home_button(ui);
                 if ui.button(tr("Save G-code")).clicked() {
                     self.export_gcode();
                 }
@@ -1533,6 +1534,28 @@ impl App {
                 }
             });
         });
+    }
+
+    /// Homing needs a live link and no running job (framing counts as a job).
+    pub fn can_home(&self) -> bool {
+        self.connected && !self.job_running()
+    }
+
+    /// The Home button of the control bar: the same as the one in the Device tab, off when there is no link or a job runs.
+    pub fn home_button(&mut self, ui: &mut egui::Ui) {
+        let on = self.can_home();
+        let (rect, resp) = ui.allocate_exact_size(egui::vec2(28.0, 24.0), egui::Sense::click());
+        let hovered = resp.hovered() && on;
+        let fill = if hovered { theme::panel_dark() } else { ui.visuals().widgets.inactive.weak_bg_fill };
+        ui.painter().rect_filled(rect, 4.0, fill);
+        ui.painter().rect_stroke(rect, 4.0, egui::Stroke::new(1.0, theme::border()), egui::StrokeKind::Inside);
+        let ink = if on { theme::text() } else { theme::text().gamma_multiply(0.4) };
+        crate::icons::paint(ui, rect.shrink(4.0), "house", ink);
+        let tip = if self.connected { tr("Home") } else { tr("Connect to a laser first (Laser panel)") };
+        if resp.on_hover_text(tip).clicked() && on {
+            let ctrl = self.doc.device.controller;
+            self.run_action(ctrl.home());
+        }
     }
 
     /// Space held down: pan with the hand tool, and go back to the previous tool when it is released.
@@ -2209,6 +2232,23 @@ mod recent_tests {
         a.do_act(&ctx, Act::ClearRecent);
         assert!(a.recent.is_empty());
         let _ = std::fs::remove_dir_all(&dir);
+    }
+}
+
+#[cfg(test)]
+mod home_button_tests {
+    use super::*;
+
+    #[test]
+    fn home_is_off_without_a_link_and_while_a_job_runs() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.connected = false;
+        assert!(!a.can_home());
+        a.connected = true;
+        assert!(a.can_home());
+        a.progress = (1, 10);
+        assert!(!a.can_home(), "running");
     }
 }
 
