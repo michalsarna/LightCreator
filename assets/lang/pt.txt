@@ -664,3 +664,6 @@
 663|Nova etiqueta
 664|Adicionar ou remover as etiquetas oferecidas para as camadas de um material
 665|Adicionar
+666|Geral
+667|Hardware
+668|G-code

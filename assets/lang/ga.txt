@@ -664,3 +664,6 @@
 663|Lipéad nua
 664|Cuir lipéid do shraitheanna ábhair leis nó bain iad
 665|Cuir leis
+666|Ginearálta
+667|Crua-earraí
+668|G-code

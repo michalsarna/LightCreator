@@ -664,3 +664,6 @@
 663|Nieuw label
 664|Labels voor de lagen van een materiaal toevoegen of verwijderen
 665|Toevoegen
+666|Algemeen
+667|Hardware
+668|G-code

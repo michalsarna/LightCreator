@@ -664,3 +664,6 @@
 663	New label
 664	Add or remove the labels offered for the layers of a material
 665	Add
+666	General
+667	Hardware
+668	G-code

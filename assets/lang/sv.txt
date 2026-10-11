@@ -664,3 +664,6 @@
 663|Ny etikett
 664|Lägg till eller ta bort etiketter för ett materials lager
 665|Lägg till
+666|Allmänt
+667|Hårdvara
+668|G-kod

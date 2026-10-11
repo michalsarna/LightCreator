@@ -27,6 +27,42 @@ pub struct CfgEdit {
     /// `None` while creating a new profile.
     pub idx: Option<usize>,
     pub draft: Device,
+    pub page: CfgPage,
+}
+
+/// The pages of the device configuration window.
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
+pub enum CfgPage {
+    #[default]
+    General,
+    Hardware,
+    Laser,
+    Gcode,
+    Connection,
+    Camera,
+}
+
+impl CfgPage {
+    pub fn label(self) -> &'static str {
+        match self {
+            CfgPage::General => "General",
+            CfgPage::Hardware => "Hardware",
+            CfgPage::Laser => "Laser",
+            CfgPage::Gcode => "G-code",
+            CfgPage::Connection => "Connection",
+            CfgPage::Camera => "Camera",
+        }
+    }
+
+    /// The pages offered for a controller: the connection page only exists for the ones with a live link.
+    pub fn visible(controller: Controller) -> Vec<CfgPage> {
+        let mut v = vec![CfgPage::General, CfgPage::Hardware, CfgPage::Laser, CfgPage::Gcode];
+        if controller.is_serial() {
+            v.push(CfgPage::Connection);
+        }
+        v.push(CfgPage::Camera);
+        v
+    }
 }
 
 impl App {
@@ -49,12 +85,12 @@ impl App {
     pub fn open_cfg_new(&mut self) {
         let mut draft = Device::default();
         draft.name = String::new();
-        self.cfg = Some(CfgEdit { idx: None, draft });
+        self.cfg = Some(CfgEdit { idx: None, draft, page: CfgPage::General });
     }
 
     pub fn open_cfg_edit(&mut self, idx: usize) {
         if let Some(d) = self.profiles.get(idx) {
-            self.cfg = Some(CfgEdit { idx: Some(idx), draft: d.clone() });
+            self.cfg = Some(CfgEdit { idx: Some(idx), draft: d.clone(), page: CfgPage::General });
         }
     }
 
@@ -188,154 +224,171 @@ impl App {
         let mut read_clicked = false;
         let reading = self.read_cfg.is_some();
         let mut cfg_open = true;
-        crate::window_ui::popup(ctx, "device_cfg", &title, [520.0, 560.0], &mut cfg_open, |ui| {
+        crate::window_ui::popup(ctx, "device_cfg", &title, [720.0, 500.0], &mut cfg_open, |ui| {
             if must_create {
                 ui.label(RichText::new(tr("Create at least one device profile to continue.")).color(theme::text_dim()));
                 ui.add_space(4.0);
             }
-            let max_h = (ui.ctx().content_rect().height() - 300.0).max(240.0);
+            let body_h = (ui.ctx().content_rect().height() - 230.0).clamp(200.0, 440.0);
+            let pages = CfgPage::visible(cfg.draft.controller);
+            let mut page = if pages.contains(&cfg.page) { cfg.page } else { CfgPage::General };
             let d = &mut cfg.draft;
-            let section = |ui: &mut egui::Ui, title: &str, add: &mut dyn FnMut(&mut egui::Ui)| {
-                ui.label(RichText::new(title).strong());
-                egui::Frame::group(ui.style()).inner_margin(egui::Margin::symmetric(10, 8)).show(ui, |ui| {
-                    ui.set_width(430.0);
-                    add(ui);
+            ui.horizontal_top(|ui| {
+                ui.vertical(|ui| {
+                    ui.set_width(120.0);
+                    for p in &pages {
+                        if ui.selectable_label(page == *p, tr(p.label())).clicked() {
+                            page = *p;
+                        }
+                    }
                 });
-                ui.add_space(4.0);
-            };
-            egui::ScrollArea::vertical().max_height(max_h).auto_shrink([true, true]).show(ui, |ui| {
-            // ---- the machine ----
-            section(ui, tr("Device"), &mut |ui| {
-                egui::Grid::new("dev_machine").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
-                    ui.label(tr("Name"));
-                    ui.add(egui::TextEdit::singleline(&mut d.name).hint_text(tr("e.g. My diode laser")));
-                    ui.end_row();
-                    ui.label(tr("Controller"));
-                    egui::ComboBox::from_id_salt("controller").selected_text(d.controller.label()).show_ui(ui, |ui| {
-                        for c in Controller::ALL {
-                            ui.selectable_value(&mut d.controller, c, c.label());
-                        }
-                    });
-                    ui.end_row();
-                    ui.label(tr("Laser type"));
-                    egui::ComboBox::from_id_salt("laser_kind").selected_text(d.laser().label()).show_ui(ui, |ui| {
-                        for k in LaserKind::ALL {
-                            ui.selectable_value(&mut d.heads[0].laser, k, k.label());
-                        }
-                    });
-                    ui.end_row();
-                    ui.label(tr("Units"));
-                    egui::ComboBox::from_id_salt("units").selected_text(tr(d.units.label())).show_ui(ui, |ui| {
-                        for u in Units::ALL {
-                            ui.selectable_value(&mut d.units, u, tr(u.label()));
-                        }
-                    });
-                    ui.end_row();
-                    ui.label(tr("Speed units"));
-                    egui::ComboBox::from_id_salt("speed_units").selected_text(tr(d.speed_unit.label())).show_ui(ui, |ui| {
-                        for k in SpeedUnit::ALL {
-                            ui.selectable_value(&mut d.speed_unit, k, tr(k.label()));
-                        }
-                    });
-                    ui.end_row();
-                    let (u, su) = (d.units, d.speed_unit);
-                    ui.label(tr("Work area X"));
-                    drag_len(ui, u, &mut d.area.bed_w, 1.0, Some((10.0, 5000.0)));
-                    ui.end_row();
-                    ui.label(tr("Work area Y"));
-                    drag_len(ui, u, &mut d.area.bed_h, 1.0, Some((10.0, 5000.0)));
-                    ui.end_row();
-                    ui.label(tr("Machine zero (0,0)"));
-                    egui::ComboBox::from_id_salt("origin")
-                        .selected_text(if d.axes.origin == Origin::FrontLeft { tr("Front-left (GRBL default)") } else { tr("Back-left") })
-                        .show_ui(ui, |ui| {
-                            ui.selectable_value(&mut d.axes.origin, Origin::FrontLeft, tr("Front-left (GRBL default)"));
-                            ui.selectable_value(&mut d.axes.origin, Origin::BackLeft, tr("Back-left"));
-                        });
-                    ui.end_row();
-                    ui.label(tr("S-value max ($30)"));
-                    ui.add(egui::DragValue::new(&mut d.heads[0].s_max).range(1.0..=100000.0));
-                    ui.end_row();
-                    ui.label(tr("Dynamic power (M4)"));
-                    ui.checkbox(&mut d.gcode.dynamic_power, "");
-                    ui.end_row();
-                    ui.label(tr("Travel speed"));
-                    drag_speed(ui, u, su, true, &mut d.speeds.travel_speed, 50.0, Some((100.0, 60000.0)));
-                    ui.end_row();
-                    ui.label(tr("Return to origin"));
-                    ui.checkbox(&mut d.gcode.return_home, "");
-                    ui.end_row();
-                    ui.label(tr("Jog step"));
-                    drag_len(ui, u, &mut d.jog_step, 0.1, Some((0.1, 200.0)));
-                    ui.end_row();
-                    ui.label(tr("Jog feed"));
-                    drag_speed(ui, u, su, true, &mut d.jog_feed, 10.0, Some((10.0, 20000.0)));
-                    ui.end_row();
-                    ui.label(tr("Frame power"));
-                    ui.add(egui::DragValue::new(&mut d.heads[0].frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
-                    ui.end_row();
-                });
-            });
-            // ---- the link to the controller ----
-            if d.controller.is_serial() {
-                section(ui, tr("Connection"), &mut |ui| {
-                    egui::Grid::new("dev_link").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
-                        ui.label(tr("Connection type"));
-                        egui::ComboBox::from_id_salt("link_kind").width(230.0).selected_text(tr(d.connection.link.label())).show_ui(ui, |ui| {
-                            for k in LinkKind::ALL {
-                                ui.selectable_value(&mut d.connection.link, k, tr(k.label()));
-                            }
-                        });
-                        ui.end_row();
-                        if d.connection.link == LinkKind::Serial {
-                            ui.label(tr("Port"));
-                            ui.horizontal_wrapped(|ui| {
-                                egui::ComboBox::from_id_salt("cfg_port").width(170.0).selected_text(if d.connection.port.is_empty() { tr("No port") } else { d.connection.port.as_str() }).show_ui(ui, |ui| {
-                                    for p in &self.ports {
-                                        ui.selectable_value(&mut d.connection.port, p.clone(), p);
-                                    }
+                ui.add_space(10.0);
+                ui.vertical(|ui| {
+                    egui::ScrollArea::vertical().max_height(body_h).auto_shrink([false, false]).show(ui, |ui| {
+                        let (u, su) = (d.units, d.speed_unit);
+                        match page {
+                            CfgPage::General => {
+                                egui::Grid::new("dev_general").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                                    ui.label(tr("Name"));
+                                    ui.add(egui::TextEdit::singleline(&mut d.name).hint_text(tr("e.g. My diode laser")));
+                                    ui.end_row();
+                                    ui.label(tr("Controller"));
+                                    egui::ComboBox::from_id_salt("controller").selected_text(d.controller.label()).show_ui(ui, |ui| {
+                                        for c in Controller::ALL {
+                                            ui.selectable_value(&mut d.controller, c, c.label());
+                                        }
+                                    });
+                                    ui.end_row();
+                                    ui.label(tr("Units"));
+                                    egui::ComboBox::from_id_salt("units").selected_text(tr(d.units.label())).show_ui(ui, |ui| {
+                                        for u in Units::ALL {
+                                            ui.selectable_value(&mut d.units, u, tr(u.label()));
+                                        }
+                                    });
+                                    ui.end_row();
+                                    ui.label(tr("Speed units"));
+                                    egui::ComboBox::from_id_salt("speed_units").selected_text(tr(d.speed_unit.label())).show_ui(ui, |ui| {
+                                        for k in SpeedUnit::ALL {
+                                            ui.selectable_value(&mut d.speed_unit, k, tr(k.label()));
+                                        }
+                                    });
+                                    ui.end_row();
+                                    ui.label(tr("Travel speed"));
+                                    drag_speed(ui, u, su, true, &mut d.speeds.travel_speed, 50.0, Some((100.0, 60000.0)));
+                                    ui.end_row();
+                                    ui.label(tr("Jog step"));
+                                    drag_len(ui, u, &mut d.jog_step, 0.1, Some((0.1, 200.0)));
+                                    ui.end_row();
+                                    ui.label(tr("Jog feed"));
+                                    drag_speed(ui, u, su, true, &mut d.jog_feed, 10.0, Some((10.0, 20000.0)));
+                                    ui.end_row();
                                 });
-                                if ui.button(tr("Refresh")).clicked() {
-                                    self.ports = laser::list_ports();
-                                }
-                            });
-                            ui.end_row();
-                            ui.label(tr("Baud rate"));
-                            ui.add(egui::DragValue::new(&mut d.connection.baud).range(1200..=1_000_000));
-                            ui.end_row();
-                        } else {
-                            ui.label(tr("Host"));
-                            ui.add(egui::TextEdit::singleline(&mut d.connection.host).hint_text("raspberrypi.local").desired_width(200.0));
-                            ui.end_row();
-                            ui.label(tr("TCP port"));
-                            ui.add(egui::DragValue::new(&mut d.connection.tcp_port).range(1..=65535));
-                            ui.end_row();
+                            }
+                            CfgPage::Hardware => {
+                                egui::Grid::new("dev_hardware").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                                    ui.label(tr("Work area X"));
+                                    drag_len(ui, u, &mut d.area.bed_w, 1.0, Some((10.0, 5000.0)));
+                                    ui.end_row();
+                                    ui.label(tr("Work area Y"));
+                                    drag_len(ui, u, &mut d.area.bed_h, 1.0, Some((10.0, 5000.0)));
+                                    ui.end_row();
+                                    ui.label(tr("Machine zero (0,0)"));
+                                    egui::ComboBox::from_id_salt("origin")
+                                        .selected_text(if d.axes.origin == Origin::FrontLeft { tr("Front-left (GRBL default)") } else { tr("Back-left") })
+                                        .show_ui(ui, |ui| {
+                                            ui.selectable_value(&mut d.axes.origin, Origin::FrontLeft, tr("Front-left (GRBL default)"));
+                                            ui.selectable_value(&mut d.axes.origin, Origin::BackLeft, tr("Back-left"));
+                                        });
+                                    ui.end_row();
+                                });
+                            }
+                            CfgPage::Laser => {
+                                egui::Grid::new("dev_laser").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                                    ui.label(tr("Laser type"));
+                                    egui::ComboBox::from_id_salt("laser_kind").selected_text(d.heads[0].laser.label()).show_ui(ui, |ui| {
+                                        for k in LaserKind::ALL {
+                                            ui.selectable_value(&mut d.heads[0].laser, k, k.label());
+                                        }
+                                    });
+                                    ui.end_row();
+                                    ui.label(tr("S-value max ($30)"));
+                                    ui.add(egui::DragValue::new(&mut d.heads[0].s_max).range(1.0..=100000.0));
+                                    ui.end_row();
+                                    ui.label(tr("Frame power"));
+                                    ui.add(egui::DragValue::new(&mut d.heads[0].frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
+                                    ui.end_row();
+                                });
+                            }
+                            CfgPage::Gcode => {
+                                egui::Grid::new("dev_gcode").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                                    ui.label(tr("Dynamic power (M4)"));
+                                    ui.checkbox(&mut d.gcode.dynamic_power, "");
+                                    ui.end_row();
+                                    ui.label(tr("Return to origin"));
+                                    ui.checkbox(&mut d.gcode.return_home, "");
+                                    ui.end_row();
+                                });
+                            }
+                            CfgPage::Connection => {
+                                egui::Grid::new("dev_link").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                                    ui.label(tr("Connection type"));
+                                    egui::ComboBox::from_id_salt("link_kind").width(230.0).selected_text(tr(d.connection.link.label())).show_ui(ui, |ui| {
+                                        for k in LinkKind::ALL {
+                                            ui.selectable_value(&mut d.connection.link, k, tr(k.label()));
+                                        }
+                                    });
+                                    ui.end_row();
+                                    if d.connection.link == LinkKind::Serial {
+                                        ui.label(tr("Port"));
+                                        ui.horizontal_wrapped(|ui| {
+                                            egui::ComboBox::from_id_salt("cfg_port").width(170.0).selected_text(if d.connection.port.is_empty() { tr("No port") } else { d.connection.port.as_str() }).show_ui(ui, |ui| {
+                                                for p in &self.ports {
+                                                    ui.selectable_value(&mut d.connection.port, p.clone(), p);
+                                                }
+                                            });
+                                            if ui.button(tr("Refresh")).clicked() {
+                                                self.ports = laser::list_ports();
+                                            }
+                                        });
+                                        ui.end_row();
+                                        ui.label(tr("Baud rate"));
+                                        ui.add(egui::DragValue::new(&mut d.connection.baud).range(1200..=1_000_000));
+                                        ui.end_row();
+                                    } else {
+                                        ui.label(tr("Host"));
+                                        ui.add(egui::TextEdit::singleline(&mut d.connection.host).hint_text("raspberrypi.local").desired_width(200.0));
+                                        ui.end_row();
+                                        ui.label(tr("TCP port"));
+                                        ui.add(egui::DragValue::new(&mut d.connection.tcp_port).range(1..=65535));
+                                        ui.end_row();
+                                    }
+                                    ui.label("");
+                                    let label = if reading { tr("Reading…") } else { tr("Read from device") };
+                                    if ui.add_enabled(!reading && d.has_target(), egui::Button::new(label)).on_hover_text(tr("Connect and read work area, S-value max and speed from the controller")).clicked() {
+                                        read_clicked = true;
+                                    }
+                                    ui.end_row();
+                                });
+                            }
+                            CfgPage::Camera => {
+                                egui::Grid::new("dev_camera").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                                    ui.label(tr("Camera URL"));
+                                    ui.add(egui::TextEdit::singleline(&mut d.camera_url).hint_text("http://raspberrypi.local:8080/stream.mjpg").desired_width(260.0)).on_hover_text(tr("Live picture of the machine: an MJPEG stream or a JPEG snapshot address (http or https)."));
+                                    ui.end_row();
+                                    ui.label(tr("Camera rotation"));
+                                    ui.horizontal(|ui| {
+                                        for q in 0..4u8 {
+                                            ui.selectable_value(&mut d.camera_rotation, q, format!("{}°", q as u32 * 90));
+                                        }
+                                    });
+                                    ui.end_row();
+                                });
+                            }
                         }
-                        ui.label("");
-                        let label = if reading { tr("Reading…") } else { tr("Read from device") };
-                        if ui.add_enabled(!reading && d.has_target(), egui::Button::new(label)).on_hover_text(tr("Connect and read work area, S-value max and speed from the controller")).clicked() {
-                            read_clicked = true;
-                        }
-                        ui.end_row();
                     });
                 });
-            }
-            // ---- the camera ----
-            section(ui, tr("Camera"), &mut |ui| {
-                egui::Grid::new("dev_camera").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
-                    ui.label(tr("Camera URL"));
-                    ui.add(egui::TextEdit::singleline(&mut d.camera_url).hint_text("http://raspberrypi.local:8080/stream.mjpg").desired_width(260.0)).on_hover_text(tr("Live picture of the machine: an MJPEG stream or a JPEG snapshot address (http or https)."));
-                    ui.end_row();
-                    ui.label(tr("Camera rotation"));
-                    ui.horizontal(|ui| {
-                        for q in 0..4u8 {
-                            ui.selectable_value(&mut d.camera_rotation, q, format!("{}°", q as u32 * 90));
-                        }
-                    });
-                    ui.end_row();
-                });
             });
-            });
+            cfg.page = page;
             ui.add_space(8.0);
             let valid = !cfg.draft.name.trim().is_empty();
             if !cfg.draft.controller.is_serial() {

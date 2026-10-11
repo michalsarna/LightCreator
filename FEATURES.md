@@ -107,8 +107,8 @@
 * Start window to choose the device (machine profile) you work with; profiles are remembered.
 * A profile holds the controller (GRBL, Marlin, Ruida, Trocen), laser type (diode or CO2), units, work area,
   machine zero, S-value max, travel speed, baud rate, serial port, jog step and feed, frame power and the
-  camera alignment. The device configuration window groups the options into Device, Connection (serial port or TCP) and
-  Camera; the Device tab selects a device and shows all its settings.
+  camera alignment. The device configuration window is a resizable window with pages: General, Hardware, Laser, G-code, Connection (serial port or TCP) and Camera.
+  The Device tab selects a device and shows all its settings.
 * **While a job runs** the Device tab locks jog, cancel jog, home, unlock and the jog options; pause, resume and STOP
   stay. Connect is green and Disconnect purple.
 * **Read from device:** the device configuration window can connect and read work area, S-value max, travel

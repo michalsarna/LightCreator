@@ -664,3 +664,6 @@
 663|Jauna etiķete
 664|Pievienot vai noņemt materiāla slāņiem piedāvātās etiķetes
 665|Pievienot
+666|Vispārīgi
+667|Aparatūra
+668|G-kods

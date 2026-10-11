@@ -664,3 +664,6 @@
 663|Nauja žyma
 664|Pridėti arba pašalinti medžiagos sluoksniams siūlomas žymas
 665|Pridėti
+666|Bendra
+667|Aparatinė įranga
+668|G-kodas

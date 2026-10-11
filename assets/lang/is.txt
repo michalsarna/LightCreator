@@ -664,3 +664,6 @@
 663|Ný merking
 664|Bæta við eða fjarlægja merkingar fyrir lög efnis
 665|Bæta við
+666|Almennt
+667|Vélbúnaður
+668|G-kóði

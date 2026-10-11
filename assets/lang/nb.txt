@@ -664,3 +664,6 @@
 663|Ny etikett
 664|Legg til eller fjern etiketter for lagene i et materiale
 665|Legg til
+666|Generelt
+667|Maskinvare
+668|G-kode

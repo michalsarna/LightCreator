@@ -664,3 +664,6 @@
 663|Nova oznaka
 664|Dodaj ali odstrani oznake, ponujene za plasti materiala
 665|Dodaj
+666|Splošno
+667|Strojna oprema
+668|G-koda

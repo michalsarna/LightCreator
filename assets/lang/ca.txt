@@ -664,3 +664,6 @@
 663|Nova etiqueta
 664|Afegeix o elimina les etiquetes per a les capes d'un material
 665|Afegeix
+666|General
+667|Maquinari
+668|G-code

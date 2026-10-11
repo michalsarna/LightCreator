@@ -664,3 +664,6 @@
 663|Tikketta ġdida
 664|Żid jew neħħi t-tikketti offruti għas-saffi ta' materjal
 665|Żid
+666|Ġenerali
+667|Hardware
+668|G-code

@@ -664,3 +664,6 @@
 663|Ny etiket
 664|Tilføj eller fjern etiketter til et materiales lag
 665|Tilføj
+666|Generelt
+667|Hardware
+668|G-kode

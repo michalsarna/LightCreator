@@ -915,6 +915,10 @@ const TABLE: &[[&str; 7]] = &[
     ["New label", "Nowa etykieta", "Neue Bezeichnung", "Nuova etichetta", "Uusi nimike", "新标签", "नया लेबल"],
     ["Add or remove the labels offered for the layers of a material", "Dodaj lub usuń etykiety do wyboru dla warstw materiału", "Bezeichnungen für die Ebenen eines Materials hinzufügen oder entfernen", "Aggiungi o rimuovi le etichette disponibili per i livelli di un materiale", "Lisää tai poista materiaalin tasoille tarjottavia nimikkeitä", "添加或删除可用于材料图层的标签", "सामग्री की परतों के लिए चुनने योग्य लेबल जोड़ें या हटाएँ"],
     ["Add", "Dodaj", "Hinzufügen", "Aggiungi", "Lisää", "添加", "जोड़ें"],
+    // ---- device configuration pages ----
+    ["General", "Ogólne", "Allgemein", "Generale", "Yleiset", "常规", "सामान्य"],
+    ["Hardware", "Sprzęt", "Hardware", "Hardware", "Laitteisto", "硬件", "हार्डवेयर"],
+    ["G-code", "G-code", "G-Code", "G-code", "G-koodi", "G 代码", "G-कोड"],
 ];
 #[cfg(test)]
 mod tests {

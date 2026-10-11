@@ -664,3 +664,6 @@
 663|Nueva etiqueta
 664|Añadir o quitar las etiquetas disponibles para las capas de un material
 665|Añadir
+666|General
+667|Hardware
+668|G-code

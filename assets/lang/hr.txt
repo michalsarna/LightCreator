@@ -664,3 +664,6 @@
 663|Nova oznaka
 664|Dodaj ili ukloni oznake koje se nude za slojeve materijala
 665|Dodaj
+666|Općenito
+667|Hardver
+668|G-kod

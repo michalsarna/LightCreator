@@ -664,3 +664,6 @@
 663|Új címke
 664|Az anyag rétegeihez felkínált címkék hozzáadása vagy törlése
 665|Hozzáadás
+666|Általános
+667|Hardver
+668|G-kód

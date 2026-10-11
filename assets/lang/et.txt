@@ -664,3 +664,6 @@
 663|Uus silt
 664|Lisa või eemalda materjali kihtidele pakutavaid silte
 665|Lisa
+666|Üldine
+667|Riistvara
+668|G-kood

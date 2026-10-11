@@ -664,3 +664,6 @@
 663|Nový štítok
 664|Pridať alebo odstrániť štítky ponúkané pre vrstvy materiálu
 665|Pridať
+666|Všeobecné
+667|Hardvér
+668|G-kód

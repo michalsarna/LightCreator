@@ -664,3 +664,6 @@
 663|Nouvelle étiquette
 664|Ajouter ou retirer les étiquettes proposées pour les calques d'un matériau
 665|Ajouter
+666|Général
+667|Matériel
+668|G-code

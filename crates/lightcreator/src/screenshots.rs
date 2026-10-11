@@ -6,6 +6,7 @@ use crate::app::{App, Screen, SideTab, Tool};
 use crate::i18n::{self, Lang};
 use crate::laser::{ConsoleLine, Dir};
 use crate::theme::{self, Scheme};
+use egui_kittest::kittest::Queryable;
 use egui_kittest::Harness;
 use lc_core::{Device, ImageData, Kind, Origin, TextData, Units, Xf};
 use std::path::PathBuf;
@@ -929,4 +930,53 @@ fn no_tab_widens_the_side_panel() {
     }
     i18n::set_lang(Lang::En);
     assert!(bad.is_empty(), "the side panel changes its width:\n{}", bad.join("\n"));
+}
+
+fn editor_harness() -> Shot {
+    let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.enter_editor(0);
+    }
+    h
+}
+
+/// Every page of the device window draws, and what was changed on them is saved with the profile.
+#[test]
+fn device_window_pages_open_and_save() {
+    use crate::device_ui::CfgPage;
+    let mut h = editor_harness();
+    app(&mut h).open_cfg_edit(0);
+    for p in CfgPage::visible(lc_core::Controller::Grbl) {
+        app(&mut h).cfg.as_mut().unwrap().page = p;
+        h.run_steps(3);
+    }
+    {
+        let c = app(&mut h).cfg.as_mut().unwrap();
+        c.draft.area.bed_w = 123.0;
+        c.draft.heads[0].s_max = 500.0;
+        c.page = CfgPage::Laser;
+    }
+    h.run_steps(3);
+    h.get_by_label("Save").click();
+    h.run_steps(4);
+    let a = app(&mut h);
+    assert!(a.cfg.is_none(), "the window closes after Save");
+    assert_eq!((a.profiles[0].area.bed_w, a.profiles[0].heads[0].s_max), (123.0, 500.0));
+    assert_eq!(a.doc.device.area.bed_w, 123.0);
+}
+
+#[test]
+fn connection_page_only_for_controllers_with_a_link() {
+    use crate::device_ui::CfgPage;
+    assert!(CfgPage::visible(lc_core::Controller::Grbl).contains(&CfgPage::Connection));
+    assert!(!CfgPage::visible(lc_core::Controller::Ruida).contains(&CfgPage::Connection));
 }

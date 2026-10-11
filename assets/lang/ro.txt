@@ -664,3 +664,6 @@
 663|Etichetă nouă
 664|Adaugă sau elimină etichetele oferite pentru straturile unui material
 665|Adaugă
+666|General
+667|Hardware
+668|Cod G
