@@ -183,43 +183,6 @@ impl App {
         }
     }
 
-    /// The window that offers the starting points for a new device.
-    pub fn template_window(&mut self, ctx: &egui::Context) {
-        if !self.show_templates {
-            return;
-        }
-        let mut open = true;
-        let mut pick: Option<Option<&'static str>> = None;
-        crate::window_ui::popup(ctx, "device_templates", &tr("Add a device"), [480.0, 360.0], &mut open, |ui| {
-            ui.label(RichText::new(tr("Starting points: general machines with typical numbers. Check them against your machine's documentation.")).color(theme::text_dim()));
-            ui.add_space(4.0);
-            for t in lc_core::profiles::TEMPLATES {
-                let r = ui.add_sized([ui.available_width(), 38.0], egui::Button::new(RichText::new(tr(t.name)).strong()));
-                if r.clicked() {
-                    pick = Some(Some(t.id));
-                }
-                ui.label(RichText::new(tr(t.desc)).small().color(theme::text_dim()));
-            }
-            ui.add_space(4.0);
-            if ui.button(tr("A blank profile")).clicked() {
-                pick = Some(None);
-            }
-        });
-        if let Some(p) = pick {
-            let mut dev = match p {
-                Some(id) => lc_core::profiles::template(id),
-                None => Device::default(),
-            };
-            if p.is_none() {
-                dev.name = String::new();
-            }
-            self.open_cfg_with(dev);
-            self.show_templates = false;
-        } else if !open {
-            self.show_templates = false;
-        }
-    }
-
     pub fn open_cfg_new(&mut self) {
         let mut draft = Device::default();
         draft.name = String::new();
@@ -330,7 +293,7 @@ impl App {
                 go = true;
             }
             if ui.button(tr("Add device…")).clicked() {
-                self.show_templates = true;
+                self.start_wizard();
             }
             if ui.add_enabled(has, egui::Button::new(tr("Edit…"))).clicked() {
                 self.open_cfg_edit(self.start_sel);

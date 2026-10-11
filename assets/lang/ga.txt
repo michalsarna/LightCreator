@@ -1030,3 +1030,7 @@
 1029|Cuir an freastalaí gréasáin agus an API ar siúl
 1030|Níorbh fhéidir an freastalaí a thosú: {}
 1031|Freastalaí gréasáin agus API
+1032|Cuir gléas leis
+1033|Tuilleadh socruithe…
+1034|Osclaíonn sé fuinneog iomlán an ghléis leis an méid a cuireadh isteach anseo
+1035|Pointe tosaigh

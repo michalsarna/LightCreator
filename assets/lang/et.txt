@@ -1030,3 +1030,7 @@
 1029|Lülita sisse veebiserver ja API
 1030|Serverit ei õnnestunud käivitada: {}
 1031|Veebiserver ja API
+1032|Lisa seade
+1033|Veel seadeid…
+1034|Avab kogu seadme akna siin sisestatuga
+1035|Lähtepunkt

@@ -1030,3 +1030,7 @@
 1029|Slå på webserveren og API-et
 1030|Serveren kunne ikke starte: {}
 1031|Webserver og API
+1032|Legg til enhet
+1033|Flere innstillinger…
+1034|Åpner hele enhetsvinduet med det som er skrevet inn her
+1035|Utgangspunkt

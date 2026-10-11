@@ -1030,3 +1030,7 @@
 1029|Activar el servidor web y la API
 1030|No se pudo iniciar el servidor: {}
 1031|Servidor web y API
+1032|Añadir dispositivo
+1033|Más ajustes…
+1034|Abre la ventana completa del dispositivo con lo introducido aquí
+1035|Punto de partida

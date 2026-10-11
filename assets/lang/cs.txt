@@ -1030,3 +1030,7 @@
 1029|Zapnout webový server a API
 1030|Server se nepodařilo spustit: {}
 1031|Webový server a API
+1032|Přidat zařízení
+1033|Další nastavení…
+1034|Otevře celé okno zařízení s tím, co je zde zadáno
+1035|Výchozí bod

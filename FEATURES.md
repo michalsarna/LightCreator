@@ -153,7 +153,7 @@
   local-only option is offered for use with an SSH tunnel, with a warning that the port is otherwise open to the
   network.
 * **Device templates and profiles:** generic templates (GRBL diode, GRBL CO2, K40 conversion, Marlin diode), a
-  first-run setup with an optional read from the controller, duplicate, export and import of a profile (format
+  one window for adding a device (starting point and the basic settings, optional read from the controller), duplicate, export and import of a profile (format
   version, strict validation, no port from the file).
 * **Maintenance and notes:** working time and own counters with limits (counted from the time jobs really run) and
   per-device notes in Markdown with a preview.

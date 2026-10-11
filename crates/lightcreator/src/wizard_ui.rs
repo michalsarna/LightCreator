@@ -2,13 +2,9 @@
 //! controller), the connection, a name and units, and a summary with the things worth checking.
 use crate::app::App;
 use crate::device_ui::CfgEdit;
-use crate::i18n::{tr, trf};
-use crate::theme;
-use crate::units_ui::fmt_len;
+use crate::i18n::tr;
 use eframe::egui::{self, Color32, RichText};
 use lc_core::{profiles, Controller, Device, LinkKind, Units};
-
-pub const STEPS: usize = 4;
 
 impl App {
     /// Start the first-run setup on a profile made from the default template.
@@ -33,13 +29,17 @@ impl App {
         w
     }
 
+    /// The one window for adding a device: a starting point, the basic settings collected from the device window, the
+    /// connection (with a read from the controller) and the things worth checking. "More settings…" opens the full
+    /// device window with what is entered here.
     pub fn wizard_window(&mut self, ctx: &egui::Context) {
-        let Some(step) = self.wizard else { return };
+        if self.wizard.is_none() {
+            return;
+        }
         let Some(mut cfg) = self.cfg.take() else {
             self.wizard = None;
             return;
         };
-        let mut next = step;
         let mut finish = false;
         let mut by_hand = false;
         let mut read = false;
@@ -47,35 +47,78 @@ impl App {
         let was_read = self.wizard_read;
         let mut open = true;
         let mut close = false;
-        crate::window_ui::popup(ctx, "first_setup", &trf("Set up your machine ({}/{})", &[&(step + 1), &STEPS]), [540.0, 460.0], &mut open, |ui| {
+        crate::window_ui::popup(ctx, "first_setup", &tr("Add a device"), [520.0, 560.0], &mut open, |ui| {
             let d = &mut cfg.draft;
-            match step {
-                0 => {
-                    ui.label(RichText::new(tr("What machine do you have?")).strong());
-                    ui.label(RichText::new(tr("Pick the closest starting point. You can change everything later.")).color(theme::text_dim()));
-                    for t in profiles::TEMPLATES {
-                        let selected = d.name == t.name;
-                        if ui.add_sized([ui.available_width(), 34.0], egui::Button::selectable(selected, tr(t.name))).clicked() {
-                            *d = profiles::template(t.id);
-                        }
-                        ui.label(RichText::new(tr(t.desc)).small().color(theme::text_dim()));
-                    }
-                }
-                1 => {
-                    ui.label(RichText::new(tr("Connection (optional)")).strong());
-                    ui.label(RichText::new(tr("If the machine is connected now, its work area and speed can be read from the controller.")).color(theme::text_dim()));
-                    ui.horizontal(|ui| {
-                        ui.label(tr("Connection type"));
-                        egui::ComboBox::from_id_salt("wiz_link").selected_text(tr(d.connection.link.label())).show_ui(ui, |ui| {
-                            for k in LinkKind::ALL {
-                                ui.selectable_value(&mut d.connection.link, k, tr(k.label()));
+            egui::ScrollArea::vertical().max_height((ui.ctx().content_rect().height() - 190.0).clamp(200.0, 520.0)).auto_shrink([false, true]).show(ui, |ui| {
+                egui::Grid::new("add_dev").num_columns(2).min_col_width(140.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                    ui.label(tr("Starting point"));
+                    let current = profiles::TEMPLATES.iter().find(|t| d.template_notes == tr(t.desc) || d.name == t.name).map(|t| tr(t.name).to_string());
+                    egui::ComboBox::from_id_salt("add_template").width(260.0).selected_text(current.unwrap_or_else(|| tr("A blank profile").to_string())).show_ui(ui, |ui| {
+                        for t in profiles::TEMPLATES {
+                            if ui.selectable_label(false, tr(t.name)).on_hover_text(tr(t.desc)).clicked() {
+                                // The name that was typed stays.
+                                let typed = d.name.clone();
+                                let keep = !typed.trim().is_empty() && !profiles::TEMPLATES.iter().any(|x| x.name == typed);
+                                *d = profiles::template(t.id);
+                                if keep {
+                                    d.name = typed;
+                                }
                             }
-                        });
+                        }
                     });
+                    ui.end_row();
+                    ui.label(tr("Name"));
+                    ui.add(egui::TextEdit::singleline(&mut d.name).hint_text(tr("e.g. My diode laser")));
+                    ui.end_row();
+                    ui.label(tr("Controller"));
+                    egui::ComboBox::from_id_salt("add_controller").selected_text(d.controller.label()).show_ui(ui, |ui| {
+                        for c in lc_core::Controller::ALL {
+                            ui.selectable_value(&mut d.controller, c, c.label());
+                        }
+                    });
+                    ui.end_row();
+                    ui.label(tr("Laser type"));
+                    egui::ComboBox::from_id_salt("add_laser").selected_text(tr(d.heads[0].laser.label())).show_ui(ui, |ui| {
+                        for k in lc_core::LaserKind::ALL {
+                            ui.selectable_value(&mut d.heads[0].laser, k, tr(k.label()));
+                        }
+                    });
+                    ui.end_row();
+                    ui.label(tr("Units"));
+                    egui::ComboBox::from_id_salt("add_units").selected_text(tr(d.units.label())).show_ui(ui, |ui| {
+                        for u in Units::ALL {
+                            ui.selectable_value(&mut d.units, u, tr(u.label()));
+                        }
+                    });
+                    ui.end_row();
+                    let u = d.units;
+                    ui.label(tr("Work area X"));
+                    crate::units_ui::drag_len(ui, u, &mut d.area.bed_w, 1.0, Some((10.0, 5000.0)));
+                    ui.end_row();
+                    ui.label(tr("Work area Y"));
+                    crate::units_ui::drag_len(ui, u, &mut d.area.bed_h, 1.0, Some((10.0, 5000.0)));
+                    ui.end_row();
+                    ui.label(tr("Machine zero (0,0)"));
+                    egui::ComboBox::from_id_salt("add_origin").selected_text(tr(d.axes.origin.label())).show_ui(ui, |ui| {
+                        for o in lc_core::Origin::ALL {
+                            ui.selectable_value(&mut d.axes.origin, o, tr(o.label()));
+                        }
+                    });
+                    ui.end_row();
+                    ui.label(tr("S-value max ($30)"));
+                    ui.add(egui::DragValue::new(&mut d.heads[0].s_max).range(1.0..=100000.0));
+                    ui.end_row();
+                    ui.label(tr("Connection type"));
+                    egui::ComboBox::from_id_salt("add_link").selected_text(tr(d.connection.link.label())).show_ui(ui, |ui| {
+                        for k in LinkKind::ALL {
+                            ui.selectable_value(&mut d.connection.link, k, tr(k.label()));
+                        }
+                    });
+                    ui.end_row();
                     if d.connection.link == LinkKind::Serial {
+                        ui.label(tr("Port"));
                         ui.horizontal(|ui| {
-                            ui.label(tr("Port"));
-                            egui::ComboBox::from_id_salt("wiz_port").width(240.0).selected_text(if d.connection.port.is_empty() { tr("No port") } else { d.connection.port.as_str() }).show_ui(ui, |ui| {
+                            egui::ComboBox::from_id_salt("add_port").width(220.0).selected_text(if d.connection.port.is_empty() { tr("No port") } else { d.connection.port.as_str() }).show_ui(ui, |ui| {
                                 for p in &self.port_info {
                                     ui.selectable_value(&mut d.connection.port, p.name.clone(), p.label());
                                 }
@@ -85,82 +128,39 @@ impl App {
                                 self.ports = self.port_info.iter().map(|p| p.name.clone()).collect();
                             }
                         });
+                        ui.end_row();
                     } else {
+                        ui.label(tr("Host"));
                         ui.horizontal(|ui| {
-                            ui.label(tr("Host"));
-                            ui.add(egui::TextEdit::singleline(&mut d.connection.host).hint_text("raspberrypi.local").desired_width(200.0));
+                            ui.add(egui::TextEdit::singleline(&mut d.connection.host).hint_text("raspberrypi.local").desired_width(160.0));
                             ui.label(tr("TCP port"));
                             ui.add(egui::DragValue::new(&mut d.connection.tcp_port).range(1..=65535));
                         });
+                        ui.end_row();
                     }
+                    ui.label("");
                     let label = if reading { tr("Reading…") } else { tr("Read from device") };
-                    if ui.add_enabled(!reading && d.has_target() && d.controller.settings_request().is_some(), egui::Button::new(label)).clicked() {
+                    if ui.add_enabled(!reading && d.has_target() && d.controller.settings_request().is_some(), egui::Button::new(label)).on_hover_text(tr("If the machine is connected now, its work area and speed can be read from the controller.")).clicked() {
                         read = true;
                     }
-                    if was_read {
-                        ui.label(RichText::new(tr("The settings were read from the controller.")).color(Color32::from_rgb(0x2e, 0xa0, 0x4f)));
-                    }
-                    ui.label(RichText::new(self.status.as_str()).small().color(theme::text_dim()));
+                    ui.end_row();
+                });
+                if was_read {
+                    ui.label(RichText::new(tr("The settings were read from the controller.")).color(Color32::from_rgb(0x2e, 0xa0, 0x4f)));
                 }
-                2 => {
-                    ui.label(RichText::new(tr("Name and units")).strong());
-                    egui::Grid::new("wiz_name").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
-                        ui.label(tr("Name"));
-                        ui.add(egui::TextEdit::singleline(&mut d.name).hint_text(tr("e.g. My diode laser")));
-                        ui.end_row();
-                        ui.label(tr("Units"));
-                        egui::ComboBox::from_id_salt("wiz_units").selected_text(tr(d.units.label())).show_ui(ui, |ui| {
-                            for u in Units::ALL {
-                                ui.selectable_value(&mut d.units, u, tr(u.label()));
-                            }
-                        });
-                        ui.end_row();
-                    });
+                ui.add_space(6.0);
+                ui.label(RichText::new(tr("Worth checking")).strong());
+                for w in Self::wizard_warnings(d, was_read) {
+                    ui.label(RichText::new(format!("• {w}")).small().color(Color32::from_rgb(0xe8, 0x8a, 0x1f)));
                 }
-                _ => {
-                    ui.label(RichText::new(tr("Summary")).strong());
-                    egui::Grid::new("wiz_sum").num_columns(2).spacing([12.0, 4.0]).show(ui, |ui| {
-                        for (k, v) in [
-                            (tr("Name"), d.name.clone()),
-                            (tr("Controller"), d.controller.label().to_string()),
-                            (tr("Laser type"), d.heads[0].laser.label().to_string()),
-                            (tr("Work area"), format!("{} × {}", fmt_len(d.units, d.area.bed_w, 0), fmt_len(d.units, d.area.bed_h, 0))),
-                            (tr("Machine zero (0,0)"), tr(d.axes.origin.label()).to_string()),
-                            (tr("S-value max ($30)"), format!("{}", d.heads[0].s_max)),
-                            (tr("Connection"), if d.has_target() { d.target_label() } else { tr("not set").to_string() }),
-                        ] {
-                            ui.label(k);
-                            ui.label(RichText::new(v).strong());
-                            ui.end_row();
-                        }
-                    });
-                    ui.add_space(6.0);
-                    ui.label(RichText::new(tr("Worth checking")).strong());
-                    for w in Self::wizard_warnings(d, was_read) {
-                        ui.label(RichText::new(format!("• {w}")).color(Color32::from_rgb(0xe8, 0x8a, 0x1f)));
-                    }
-                }
-            }
-            ui.add_space(10.0);
+            });
+            ui.add_space(8.0);
             ui.horizontal(|ui| {
-                if step > 0 && ui.button(tr("Back")).clicked() {
-                    next = step - 1;
+                let go = egui::Button::new(RichText::new(tr("Add device")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f));
+                if ui.add_enabled(!d.name.trim().is_empty(), go).clicked() {
+                    finish = true;
                 }
-                if step + 1 < STEPS {
-                    let go = egui::Button::new(RichText::new(tr("Next")).color(Color32::WHITE).strong()).fill(theme::accent());
-                    if ui.add_enabled(step != 2 || !d.name.trim().is_empty(), go).clicked() {
-                        next = step + 1;
-                    }
-                    if step == 1 && ui.button(tr("Skip")).clicked() {
-                        next = step + 1;
-                    }
-                } else {
-                    let go = egui::Button::new(RichText::new(tr("Finish")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f));
-                    if ui.add_enabled(!d.name.trim().is_empty(), go).clicked() {
-                        finish = true;
-                    }
-                }
-                if ui.button(tr("Set up by hand…")).on_hover_text(tr("Skip these steps and open the device settings")).clicked() {
+                if ui.button(tr("More settings…")).on_hover_text(tr("Open the whole device window with what is entered here")).clicked() {
                     by_hand = true;
                 }
                 if ui.button(tr("Cancel")).clicked() {
@@ -194,13 +194,15 @@ impl App {
             return;
         }
         if close || !open {
-            // Closing the setup leaves the start screen without a profile: the plain device window comes back.
             self.wizard = None;
-            self.wizard_skipped = true;
-            self.cfg = Some(cfg);
+            self.wizard_read = false;
+            if self.profiles.is_empty() {
+                // Without any profile the program cannot start: the plain device window comes back.
+                self.wizard_skipped = true;
+                self.cfg = Some(cfg);
+            }
             return;
         }
-        self.wizard = Some(next);
         self.cfg = Some(cfg);
     }
 }
@@ -244,5 +246,22 @@ mod tests {
         a.wizard = None;
         a.wizard_skipped = true;
         assert!(a.cfg.is_some() && a.wizard.is_none());
+    }
+
+    #[test]
+    fn adding_a_device_opens_one_window_and_cancelling_it_keeps_the_profiles() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.profiles = vec![Device::default()];
+        a.start_wizard();
+        assert_eq!(a.wizard, Some(0));
+        let mut out = ctx.run_ui(egui::RawInput::default(), |_| {});
+        a.wizard_window(&ctx);
+        out.textures_delta.clear();
+        assert!(a.wizard.is_some() && a.cfg.is_some(), "one window, on the draft");
+        // The draft carries what the device window has: controller, laser type, work area, zero, S max, connection.
+        let d = &a.cfg.as_ref().unwrap().draft;
+        assert!(d.area.bed_w > 0.0 && d.heads[0].s_max > 0.0 && !d.name.is_empty());
+        assert_eq!(a.profiles.len(), 1);
     }
 }

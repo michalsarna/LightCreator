@@ -331,7 +331,6 @@ pub struct App {
     /// The Firmware ($$) page.
     pub fw: crate::firmware_ui::FwUi,
     /// The window with the templates for a new device is open.
-    pub show_templates: bool,
     /// The first-run setup is open at this step.
     pub wizard: Option<usize>,
     /// The wizard read the controller.
@@ -548,7 +547,6 @@ impl App {
             connect_actions_at: None,
             single_axis_homing: false,
             fw: Default::default(),
-            show_templates: false,
             wizard: None,
             wizard_read: false,
             wizard_read_done: false,
@@ -1953,7 +1951,6 @@ impl App {
         self.fw_window(ctx);
         self.stall_window(ctx);
         self.fw_windows(ctx);
-        self.template_window(ctx);
         self.wizard_window(ctx);
         self.material_edit_window(ctx);
         self.labels_window(ctx);

@@ -1030,3 +1030,7 @@
 1029|Ieslēgt tīmekļa serveri un API
 1030|Serveri neizdevās palaist: {}
 1031|Tīmekļa serveris un API
+1032|Pievienot ierīci
+1033|Vairāk iestatījumu…
+1034|Atver visu ierīces logu ar šeit ievadīto
+1035|Sākumpunkts

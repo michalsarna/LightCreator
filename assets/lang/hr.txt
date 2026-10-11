@@ -1030,3 +1030,7 @@
 1029|Uključi web-poslužitelj i API
 1030|Poslužitelj se nije mogao pokrenuti: {}
 1031|Web-poslužitelj i API
+1032|Dodaj uređaj
+1033|Više postavki…
+1034|Otvara cijeli prozor uređaja s onim što je ovdje uneseno
+1035|Početna točka

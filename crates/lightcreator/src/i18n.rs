@@ -1318,6 +1318,11 @@ const TABLE: &[[&str; 7]] = &[
     ["Switch on the web server and the API", "Włącz serwer WWW i API", "Webserver und API einschalten", "Attiva il server web e l'API", "Ota käyttöön verkkopalvelin ja API", "启用 Web 服务器和 API", "वेब सर्वर और API चालू करें"],
     ["The server could not start: {}", "Serwer nie mógł się uruchomić: {}", "Der Server konnte nicht gestartet werden: {}", "Impossibile avviare il server: {}", "Palvelinta ei voitu käynnistää: {}", "服务器无法启动：{}", "सर्वर शुरू नहीं हो सका: {}"],
     ["Web server and API", "Serwer WWW i API", "Webserver und API", "Server web e API", "Verkkopalvelin ja API", "Web 服务器和 API", "वेब सर्वर और API"],
+    // ---- add device window ----
+    ["Add device", "Dodaj urządzenie", "Gerät hinzufügen", "Aggiungi dispositivo", "Lisää laite", "添加设备", "डिवाइस जोड़ें"],
+    ["More settings…", "Więcej ustawień…", "Weitere Einstellungen…", "Altre impostazioni…", "Lisää asetuksia…", "更多设置…", "और सेटिंग…"],
+    ["Open the whole device window with what is entered here", "Otwiera całe okno urządzenia z tym, co tu wpisano", "Öffnet das ganze Geräte-Fenster mit dem hier Eingegebenen", "Apre l'intera finestra del dispositivo con quanto inserito qui", "Avaa koko laiteikkunan tähän syötetyillä tiedoilla", "用这里填写的内容打开完整的设备窗口", "यहाँ दर्ज जानकारी के साथ पूरी डिवाइस विंडो खोलता है"],
+    ["Starting point", "Punkt wyjścia", "Ausgangspunkt", "Punto di partenza", "Lähtökohta", "起点", "शुरुआती बिंदु"],
 ];
 #[cfg(test)]
 mod tests {

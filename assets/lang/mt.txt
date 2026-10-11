@@ -1030,3 +1030,7 @@
 1029|Ixgħel is-server tal-web u l-API
 1030|Is-server ma setax jibda: {}
 1031|Server tal-web u API
+1032|Żid apparat
+1033|Aktar settings…
+1034|Jiftaħ it-tieqa sħiħa tal-apparat b'dak li ddaħħal hawn
+1035|Punt tat-tluq

@@ -1030,3 +1030,7 @@
 1029|Kveikja á vefþjóni og API
 1030|Ekki tókst að ræsa netþjóninn: {}
 1031|Vefþjónn og API
+1032|Bæta við tæki
+1033|Fleiri stillingar…
+1034|Opnar allan tækjagluggann með því sem slegið er inn hér
+1035|Upphafspunktur

@@ -1030,3 +1030,7 @@
 1029|Webserver en API inschakelen
 1030|De server kon niet starten: {}
 1031|Webserver en API
+1032|Apparaat toevoegen
+1033|Meer instellingen…
+1034|Opent het hele apparaatvenster met wat hier is ingevuld
+1035|Uitgangspunt

@@ -1030,3 +1030,7 @@
 1029|Activer le serveur web et l'API
 1030|Le serveur n'a pas pu démarrer : {}
 1031|Serveur web et API
+1032|Ajouter l'appareil
+1033|Plus de réglages…
+1034|Ouvre la fenêtre complète de l'appareil avec ce qui est saisi ici
+1035|Point de départ

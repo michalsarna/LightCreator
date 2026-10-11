@@ -1030,3 +1030,7 @@
 1029|Vklopi spletni strežnik in API
 1030|Strežnika ni bilo mogoče zagnati: {}
 1031|Spletni strežnik in API
+1032|Dodaj napravo
+1033|Več nastavitev…
+1034|Odpre celotno okno naprave s tem, kar je vneseno tukaj
+1035|Izhodišče

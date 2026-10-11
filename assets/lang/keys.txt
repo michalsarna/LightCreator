@@ -1030,3 +1030,7 @@
 1029	Switch on the web server and the API
 1030	The server could not start: {}
 1031	Web server and API
+1032	Add device
+1033	More settings…
+1034	Open the whole device window with what is entered here
+1035	Starting point

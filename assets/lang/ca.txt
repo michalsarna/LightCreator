@@ -1030,3 +1030,7 @@
 1029|Activa el servidor web i l'API
 1030|No s'ha pogut iniciar el servidor: {}
 1031|Servidor web i API
+1032|Afegeix un dispositiu
+1033|Més opcions…
+1034|Obre tota la finestra del dispositiu amb el que s'ha introduït aquí
+1035|Punt de partida

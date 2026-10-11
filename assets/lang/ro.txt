@@ -1030,3 +1030,7 @@
 1029|Pornește serverul web și API-ul
 1030|Serverul nu a putut porni: {}
 1031|Server web și API
+1032|Adaugă dispozitiv
+1033|Mai multe setări…
+1034|Deschide fereastra completă a dispozitivului cu ce s-a introdus aici
+1035|Punct de plecare
