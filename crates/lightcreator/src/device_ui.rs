@@ -42,6 +42,7 @@ pub enum CfgPage {
     Gcode,
     Connection,
     Camera,
+    Advanced,
 }
 
 impl CfgPage {
@@ -53,6 +54,7 @@ impl CfgPage {
             CfgPage::Gcode => "G-code",
             CfgPage::Connection => "Connection",
             CfgPage::Camera => "Camera",
+            CfgPage::Advanced => "Advanced",
         }
     }
 
@@ -63,6 +65,7 @@ impl CfgPage {
             v.push(CfgPage::Connection);
         }
         v.push(CfgPage::Camera);
+        v.push(CfgPage::Advanced);
         v
     }
 }
@@ -445,13 +448,47 @@ impl App {
                                     ui.end_row();
                                 });
                             }
+                            CfgPage::Advanced => {
+                                egui::Frame::new().fill(Color32::from_rgba_unmultiplied(0xc0, 0x30, 0x30, 40)).stroke(egui::Stroke::new(1.0, Color32::from_rgb(0xc0, 0x30, 0x30))).inner_margin(8.0).corner_radius(4.0).show(ui, |ui| {
+                                    ui.label(RichText::new(tr("Wrong G-code can fire the laser, drive the head into the end stops or ruin the material. Test with the laser off or at the lowest power.")).strong());
+                                });
+                                ui.add_space(6.0);
+                                let mono = |ui: &mut egui::Ui, text: &mut String, hint: &str, rows: usize| {
+                                    ui.add(egui::TextEdit::multiline(text).font(egui::TextStyle::Monospace).hint_text(hint).desired_rows(rows).desired_width(f32::INFINITY));
+                                };
+                                ui.label(RichText::new(tr("Start of the job")).strong());
+                                mono(ui, &mut d.gcode.preamble, "G21 / G90 / G17 / M4 S0", 4);
+                                ui.label(RichText::new(tr("Replaces the units, absolute mode, plane and laser mode lines. Empty = built in.")).color(theme::text_dim()));
+                                ui.add_space(4.0);
+                                ui.label(RichText::new(tr("End of the job")).strong());
+                                mono(ui, &mut d.gcode.postscript, "M2", 3);
+                                ui.label(RichText::new(tr("Replaces the closing M2. The laser is always switched off and the head sent home (when set) before it. Empty = built in.")).color(theme::text_dim()));
+                                ui.add_space(4.0);
+                                ui.label(RichText::new(tr("Air assist commands")).strong());
+                                egui::Grid::new("dev_air").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
+                                    ui.label(tr("On"));
+                                    ui.add(egui::TextEdit::singleline(&mut d.gcode.air_on).font(egui::TextStyle::Monospace).hint_text("M8"));
+                                    ui.end_row();
+                                    ui.label(tr("Off"));
+                                    ui.add(egui::TextEdit::singleline(&mut d.gcode.air_off).font(egui::TextStyle::Monospace).hint_text("M9"));
+                                    ui.end_row();
+                                });
+                                ui.add_space(6.0);
+                                if ui.button(tr("Restore defaults")).clicked() {
+                                    d.gcode.reset_custom();
+                                }
+                            }
                         }
                     });
                 });
             });
             cfg.page = page;
             ui.add_space(8.0);
-            let valid = !cfg.draft.name.trim().is_empty();
+            let bad_gcode = !cfg.draft.gcode.invalid_fields().is_empty();
+            let valid = !cfg.draft.name.trim().is_empty() && !bad_gcode;
+            if bad_gcode {
+                ui.label(RichText::new(tr("A G-code field on the Advanced page has a control character or is too long.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
+            }
             if !cfg.draft.controller.is_serial() {
                 ui.label(RichText::new(tr("This controller has no live connection: jobs are exported as files.")).color(theme::text_dim()));
             }

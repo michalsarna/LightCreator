@@ -708,3 +708,14 @@
 707|G-code-dialect
 708|Smoothieware: S wordt geschreven als fractie van het volle vermogen (zet S-max op 1). Streamen werkt zoals bij GRBL; niets hiervan is op echte hardware geprobeerd.
 709|Gebruikt als het dialect automatisch is; een gekozen GRBL-dialect beslist zelf tussen M3 en M4.
+710|Geavanceerd
+711|Een G-codeveld op de pagina Geavanceerd bevat een stuurteken of is te lang.
+712|Air-assistopdrachten
+713|Einde van de opdracht
+714|Uit
+715|Aan
+716|Vervangt de afsluitende M2. De laser wordt daarvoor altijd uitgeschakeld en de kop (indien ingesteld) naar huis gestuurd. Leeg = ingebouwd.
+717|Vervangt de regels voor eenheden, absolute modus, vlak en lasermodus. Leeg = ingebouwd.
+718|Standaardwaarden herstellen
+719|Begin van de opdracht
+720|Foute G-code kan de laser afvuren, de kop tegen de eindstops laten rijden of het materiaal verpesten. Test met de laser uit of op het laagste vermogen.

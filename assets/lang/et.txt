@@ -708,3 +708,14 @@
 707|G-koodi murre
 708|Smoothieware: S kirjutatakse täisvõimsuse murdosana (määra S-väärtuse maks 1). Voogedastus töötab nagu GRBL-is; midagi sellest pole päris riistvaral proovitud.
 709|Kasutatakse, kui murre on automaatne; valitud GRBL-i murre otsustab M3 ja M4 vahel ise.
+710|Täpsemad
+711|Lehe „Täpsemad“ G-koodi väli sisaldab juhtmärki või on liiga pikk.
+712|Õhuabi käsud
+713|Töö lõpp
+714|Väljas
+715|Sees
+716|Asendab lõpu M2. Laser lülitatakse alati enne välja ja pea saadetakse (kui seatud) koju. Tühi = sisseehitatud.
+717|Asendab ühikute, absoluutrežiimi, tasandi ja lasterežiimi read. Tühi = sisseehitatud.
+718|Taasta vaikeväärtused
+719|Töö algus
+720|Vale G-kood võib lasteri süüdata, juhtida pea piirikutesse või materjali rikkuda. Testi välja lülitatud laseriga või väikseima võimsusega.

@@ -256,23 +256,39 @@ pub fn generate(doc: &Document) -> Job {
     let dev = &doc.device;
     let mut w = Writer::new(dev);
     let _ = writeln!(w.out, "; LightCreator job — {}", dev.name);
-    let _ = writeln!(w.out, "G21 ; mm\nG90 ; absolute\nG17");
     let dialect = dev.dialect();
-    match dialect {
-        // Marlin laser feature: inline power, S on each G1 sets the power.
-        Dialect::Marlin => {
-            let _ = writeln!(w.out, "M3 I S0");
+    match GcodeCfg::custom(&dev.gcode.preamble) {
+        Some(lines) => {
+            let _ = writeln!(w.out, "; own start of the job");
+            for l in lines {
+                let _ = writeln!(w.out, "{l}");
+            }
         }
-        Dialect::GrblDynamic => {
-            let _ = writeln!(w.out, "M4 S0");
-        }
-        Dialect::Grbl | Dialect::Smoothieware => {
-            let _ = writeln!(w.out, "M3 S0");
+        None => {
+            let _ = writeln!(w.out, "G21 ; mm\nG90 ; absolute\nG17");
+            match dialect {
+                // Marlin laser feature: inline power, S on each G1 sets the power.
+                Dialect::Marlin => {
+                    let _ = writeln!(w.out, "M3 I S0");
+                }
+                Dialect::GrblDynamic => {
+                    let _ = writeln!(w.out, "M4 S0");
+                }
+                Dialect::Grbl | Dialect::Smoothieware => {
+                    let _ = writeln!(w.out, "M3 S0");
+                }
+            }
         }
     }
 
-    // Air assist: M8 / M9 for GRBL, the fan commands for Marlin and Smoothieware.
-    let (air_on, air_off) = if dialect.is_grbl() { ("M8", "M9") } else { ("M106 S255", "M107") };
+    // Air assist: M8 / M9 for GRBL, the fan commands for Marlin and Smoothieware, or the device's own commands.
+    let (def_on, def_off) = if dialect.is_grbl() { ("M8", "M9") } else { ("M106 S255", "M107") };
+    let own = |text: &str, def: &str| match GcodeCfg::custom(text) {
+        Some(l) => l.iter().map(|s| s.trim()).filter(|s| !s.is_empty()).collect::<Vec<_>>().join("\n"),
+        None => def.to_string(),
+    };
+    let (air_on, air_off) = (own(&dev.gcode.air_on, def_on), own(&dev.gcode.air_off, def_off));
+    let (air_on, air_off) = (air_on.as_str(), air_off.as_str());
     let mut air = false;
     for li in doc.layer_order() {
         let layer = &doc.layers[li];
@@ -354,8 +370,17 @@ pub fn generate(doc: &Document) -> Job {
     if air {
         let _ = writeln!(w.out, "{air_off} ; air assist off");
     }
-    if dialect.is_grbl() {
-        let _ = writeln!(w.out, "M2");
+    match GcodeCfg::custom(&dev.gcode.postscript) {
+        Some(lines) => {
+            let _ = writeln!(w.out, "; own end of the job");
+            for l in lines {
+                let _ = writeln!(w.out, "{l}");
+            }
+        }
+        None if dialect.is_grbl() => {
+            let _ = writeln!(w.out, "M2");
+        }
+        None => {}
     }
     let est = timing(&mut w.moves, dev, w.seconds);
     Job { ops: w.ops, gcode: w.out, moves: w.moves, est_seconds: est, cut_length: w.cut_len }

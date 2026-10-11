@@ -708,3 +708,14 @@
 707|Dialekt G-kódu
 708|Smoothieware: S se zapisuje jako zlomek plného výkonu (nastavte S max na 1). Streamování funguje jako u GRBL; nic z toho nebylo vyzkoušeno na skutečném hardwaru.
 709|Používá se při automatickém dialektu; zvolený dialekt GRBL si mezi M3 a M4 rozhodne sám.
+710|Pokročilé
+711|Pole G-kódu na stránce Pokročilé obsahuje řídicí znak nebo je příliš dlouhé.
+712|Příkazy pro air assist
+713|Konec úlohy
+714|Vyp.
+715|Zap.
+716|Nahrazuje závěrečné M2. Laser se před ním vždy vypne a hlava se (je-li nastaveno) vrátí do nuly. Prázdné = vestavěné.
+717|Nahrazuje řádky jednotek, absolutního režimu, roviny a laserového režimu. Prázdné = vestavěné.
+718|Obnovit výchozí
+719|Začátek úlohy
+720|Chybný G-kód může zapálit laser, najet hlavou na koncové dorazy nebo zničit materiál. Testujte s vypnutým laserem nebo na nejmenší výkon.

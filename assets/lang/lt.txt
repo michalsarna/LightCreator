@@ -708,3 +708,14 @@
 707|G kodo tarmė
 708|Smoothieware: S rašomas kaip dalis pilnos galios (S maks. nustatykite į 1). Srautinis siuntimas veikia kaip GRBL; nieko iš to nebuvo išbandyta su tikra įranga.
 709|Naudojama, kai tarmė automatinė; pasirinkta GRBL tarmė pati nusprendžia tarp M3 ir M4.
+710|Papildoma
+711|G kodo laukas puslapyje Papildoma turi valdymo simbolį arba per ilgas.
+712|Oro pagalbos komandos
+713|Darbo pabaiga
+714|Išjungta
+715|Įjungta
+716|Pakeičia baigiamąjį M2. Lazeris prieš tai visada išjungiamas, o galvutė (jei nustatyta) grąžinama į nulį. Tuščia = įtaisyta.
+717|Pakeičia vienetų, absoliutaus režimo, plokštumos ir lazerio režimo eilutes. Tuščia = įtaisyta.
+718|Atkurti numatytuosius
+719|Darbo pradžia
+720|Klaidingas G kodas gali įjungti lazerį, trenkti galvutę į ribotuvus arba sugadinti medžiagą. Išbandykite išjungę lazerį arba mažiausia galia.

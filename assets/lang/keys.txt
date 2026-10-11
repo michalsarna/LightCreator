@@ -708,3 +708,14 @@
 707	G-code dialect
 708	Smoothieware: S is written as a fraction of the full power (set S-value max to 1). Streaming works like GRBL's; none of this has been tried on real hardware.
 709	Used when the dialect is automatic; a chosen GRBL dialect decides between M3 and M4 itself.
+710	Advanced
+711	A G-code field on the Advanced page has a control character or is too long.
+712	Air assist commands
+713	End of the job
+714	Off
+715	On
+716	Replaces the closing M2. The laser is always switched off and the head sent home (when set) before it. Empty = built in.
+717	Replaces the units, absolute mode, plane and laser mode lines. Empty = built in.
+718	Restore defaults
+719	Start of the job
+720	Wrong G-code can fire the laser, drive the head into the end stops or ruin the material. Test with the laser off or at the lowest power.

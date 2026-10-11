@@ -708,3 +708,14 @@
 707|G-kód nyelvjárás
 708|Smoothieware: az S a teljes teljesítmény törtrészeként íródik (állítsa az S max értéket 1-re). A streamelés úgy működik, mint a GRBL-nél; ebből semmit sem próbáltak ki valódi hardveren.
 709|Automatikus nyelvjárásnál használatos; a kiválasztott GRBL nyelvjárás maga dönt az M3 és M4 között.
+710|Speciális
+711|A Speciális oldal egyik G-kód mezője vezérlőkaraktert tartalmaz vagy túl hosszú.
+712|Légsegéd parancsok
+713|A munka vége
+714|Ki
+715|Be
+716|Lecseréli a záró M2-t. A lézert előtte mindig kikapcsolja, a fejet pedig (ha be van állítva) hazaküldi. Üres = beépített.
+717|Lecseréli a mértékegység, az abszolút mód, a sík és a lézer mód sorait. Üres = beépített.
+718|Alapértékek visszaállítása
+719|A munka eleje
+720|A hibás G-kód begyújthatja a lézert, a végálláskapcsolóknak ütközhet a fej, vagy tönkreteheti az anyagot. Kikapcsolt lézerrel vagy a legkisebb teljesítménnyel tesztelje.

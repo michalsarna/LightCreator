@@ -708,3 +708,14 @@
 707|Djalett tal-G-code
 708|Smoothieware: S jinkiteb bħala frazzjoni tal-qawwa sħiħa (issettja S max fuq 1). L-istreaming jaħdem bħal dak ta' GRBL; xejn minn dan ma ġie ppruvat fuq hardware reali.
 709|Jintuża meta d-djalett ikun awtomatiku; djalett GRBL magħżul jiddeċiedi waħdu bejn M3 u M4.
+710|Avvanzat
+711|Qasam tal-G-code fuq il-paġna Avvanzat fih karattru ta' kontroll jew huwa twil wisq.
+712|Kmandi tal-air assist
+713|Tmiem ix-xogħol
+714|Mitfi
+715|Mixgħul
+716|Jissostitwixxi l-M2 aħħari. Il-laser dejjem jintefa u r-ras tintbagħat id-dar (jekk issettjat) qabel. Vojt = integrat.
+717|Jissostitwixxi l-linji tal-unitajiet, il-modalità assoluta, il-pjan u l-modalità tal-laser. Vojt = integrat.
+718|Irrestawra l-valuri awtomatiċi
+719|Bidu tax-xogħol
+720|G-code ħażin jista' jaqbad il-laser, jibgħat ir-ras kontra l-limiti jew jeqred il-materjal. Ittestja bil-laser mitfi jew bl-inqas qawwa.

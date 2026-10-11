@@ -107,3 +107,37 @@ fn smoothieware_and_forced_dialects() {
     forced.gcode.dialect = Some(Dialect::Grbl);
     check("grbl_forced_m3", &gcode_for(rect_doc(LayerMode::Line), forced));
 }
+
+#[test]
+fn own_start_end_and_air_commands() {
+    let mut dev = device(&[]);
+    dev.gcode.preamble = "G21\nG90\n; own start\nM3 S0".into();
+    dev.gcode.postscript = "M5\nM30".into();
+    dev.gcode.air_on = "M7".into();
+    dev.gcode.air_off = "M9\nM8".into();
+    check("own_start_end_air", &gcode_for(layers_doc(), dev));
+}
+
+#[test]
+fn unfit_own_gcode_falls_back_to_the_built_in() {
+    let mut dev = device(&[]);
+    dev.gcode.preamble = "G21\u{7}".into();
+    dev.gcode.postscript = "M5\u{1b}[2J".into();
+    assert_eq!(dev.gcode.invalid_fields(), vec!["preamble", "postscript"]);
+    let out = gcode_for(rect_doc(LayerMode::Line), dev);
+    assert_eq!(out, std::fs::read_to_string(format!("{}/tests/golden/grbl_m4_line.gcode", env!("CARGO_MANIFEST_DIR"))).unwrap());
+}
+
+#[test]
+fn snippet_limits() {
+    assert!(snippet_ok("") && snippet_ok("G21\n\n; comment\nM3 S0\n"));
+    assert!(!snippet_ok("G1\tX1")); // tabs are control characters too
+    assert!(!snippet_ok(&"G0 X1\n".repeat(61)));
+    assert!(!snippet_ok(&"X".repeat(201)));
+    assert!(!snippet_ok(&format!("{}\n", "G1 ; ".repeat(500))));
+    let mut c = GcodeCfg::default();
+    c.air_on = "M7".into();
+    assert!(c.invalid_fields().is_empty());
+    c.reset_custom();
+    assert!(c.air_on.is_empty());
+}

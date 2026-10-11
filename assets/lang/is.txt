@@ -708,3 +708,14 @@
 707|G-kóða mállýska
 708|Smoothieware: S er skrifað sem brot af fullu afli (stilltu S-gildi hámark á 1). Straumun virkar eins og í GRBL; ekkert af þessu hefur verið prófað á raunverulegum vélbúnaði.
 709|Notað þegar mállýskan er sjálfvirk; valin GRBL-mállýska ákveður sjálf milli M3 og M4.
+710|Ítarlegt
+711|G-kóða reitur á síðunni Ítarlegt inniheldur stýristaf eða er of langur.
+712|Skipanir loftaðstoðar
+713|Lok verksins
+714|Af
+715|Á
+716|Kemur í stað lokaskipunarinnar M2. Leysirinn er alltaf slökktur og hausinn sendur heim (ef stillt) á undan. Autt = innbyggt.
+717|Kemur í stað lína fyrir einingar, algera stillingu, plan og leysiham. Autt = innbyggt.
+718|Endurheimta sjálfgefið
+719|Upphaf verksins
+720|Rangur G-kóði getur kveikt á leysinum, ekið hausnum í endastopp eða eyðilagt efnið. Prófaðu með slökktan leysi eða minnsta afl.

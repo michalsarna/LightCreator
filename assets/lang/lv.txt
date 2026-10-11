@@ -708,3 +708,14 @@
 707|G koda dialekts
 708|Smoothieware: S tiek rakstīts kā pilnas jaudas daļa (iestatiet S maks. uz 1). Straumēšana darbojas kā GRBL; nekas no šī nav izmēģināts uz īstas aparatūras.
 709|Izmanto, kad dialekts ir automātisks; izvēlētais GRBL dialekts pats izlemj starp M3 un M4.
+710|Papildu
+711|G koda lauks lapā Papildu satur vadības rakstzīmi vai ir pārāk garš.
+712|Gaisa palīdzības komandas
+713|Darba beigas
+714|Izslēgts
+715|Ieslēgts
+716|Aizstāj noslēdzošo M2. Lāzers pirms tam vienmēr tiek izslēgts un galviņa (ja iestatīts) nosūtīta uz sākumu. Tukšs = iebūvēts.
+717|Aizstāj vienību, absolūtā režīma, plaknes un lāzera režīma rindas. Tukšs = iebūvēts.
+718|Atjaunot noklusējumus
+719|Darba sākums
+720|Nepareizs G kods var iedegt lāzeru, ietriekt galviņu gala slēdžos vai sabojāt materiālu. Pārbaudiet ar izslēgtu lāzeru vai mazāko jaudu.

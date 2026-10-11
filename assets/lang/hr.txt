@@ -708,3 +708,14 @@
 707|Dijalekt G-koda
 708|Smoothieware: S se zapisuje kao razlomak pune snage (postavite S maks. na 1). Strujanje radi kao kod GRBL-a; ništa od ovoga nije isprobano na stvarnom hardveru.
 709|Koristi se kad je dijalekt automatski; odabrani GRBL dijalekt sam odlučuje između M3 i M4.
+710|Napredno
+711|Polje G-koda na stranici Napredno sadrži kontrolni znak ili je predugo.
+712|Naredbe za air assist
+713|Kraj posla
+714|Isključeno
+715|Uključeno
+716|Zamjenjuje završni M2. Laser se prije toga uvijek isključuje, a glava šalje na nulu (ako je postavljeno). Prazno = ugrađeno.
+717|Zamjenjuje retke jedinica, apsolutnog načina, ravnine i laserskog načina. Prazno = ugrađeno.
+718|Vrati zadano
+719|Početak posla
+720|Pogrešan G-kod može upaliti laser, zabiti glavu u krajnje prekidače ili uništiti materijal. Testirajte s isključenim laserom ili na najmanjoj snazi.

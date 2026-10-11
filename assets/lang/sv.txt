@@ -708,3 +708,14 @@
 707|G-kodsdialekt
 708|Smoothieware: S skrivs som en bråkdel av full effekt (sätt S-värde max till 1). Strömning fungerar som i GRBL; inget av detta har provats på riktig hårdvara.
 709|Används när dialekten är automatisk; en vald GRBL-dialekt avgör själv mellan M3 och M4.
+710|Avancerat
+711|Ett G-kodsfält på sidan Avancerat har ett styrtecken eller är för långt.
+712|Air assist-kommandon
+713|Slut på jobbet
+714|Av
+715|På
+716|Ersätter den avslutande M2. Lasern stängs alltid av och huvudet skickas hem (om inställt) före den. Tomt = inbyggt.
+717|Ersätter raderna för enheter, absolut läge, plan och laserläge. Tomt = inbyggt.
+718|Återställ standard
+719|Start på jobbet
+720|Felaktig G-kod kan avfyra lasern, köra huvudet in i ändlägena eller förstöra materialet. Testa med lasern avstängd eller på lägsta effekt.

@@ -708,3 +708,14 @@
 707|Dialecte de G-code
 708|Smoothieware: S s'escriu com a fracció de la potència plena (poseu S màx. a 1). La transmissió funciona com la de GRBL; res d'això s'ha provat en maquinari real.
 709|S'usa quan el dialecte és automàtic; un dialecte GRBL triat decideix ell mateix entre M3 i M4.
+710|Avançat
+711|Un camp de G-code a la pàgina Avançat conté un caràcter de control o és massa llarg.
+712|Ordres de l'air assist
+713|Final de la feina
+714|Apagat
+715|Encès
+716|Substitueix l'M2 final. El làser sempre s'apaga i el capçal es porta a l'origen (si està activat) abans. Buit = integrat.
+717|Substitueix les línies d'unitats, mode absolut, pla i mode làser. Buit = integrat.
+718|Restaura els valors per defecte
+719|Inici de la feina
+720|Un G-code erroni pot disparar el làser, fer topar el capçal amb els finals de cursa o malmetre el material. Proveu amb el làser apagat o a la potència mínima.

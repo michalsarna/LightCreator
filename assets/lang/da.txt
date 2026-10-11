@@ -708,3 +708,14 @@
 707|G-kodedialekt
 708|Smoothieware: S skrives som en brøkdel af fuld effekt (sæt S-værdi maks. til 1). Streaming fungerer som i GRBL; intet af dette er prøvet på ægte hardware.
 709|Bruges når dialekten er automatisk; en valgt GRBL-dialekt afgør selv mellem M3 og M4.
+710|Avanceret
+711|Et G-kodefelt på siden Avanceret har et kontroltegn eller er for langt.
+712|Air assist-kommandoer
+713|Slut på opgaven
+714|Fra
+715|Til
+716|Erstatter den afsluttende M2. Laseren slukkes altid, og hovedet sendes hjem (hvis sat) før den. Tom = indbygget.
+717|Erstatter linjerne for enheder, absolut tilstand, plan og lasertilstand. Tom = indbygget.
+718|Gendan standard
+719|Start på opgaven
+720|Forkert G-kode kan affyre laseren, køre hovedet ind i endestoppene eller ødelægge materialet. Test med laseren slukket eller på laveste effekt.

@@ -611,11 +611,62 @@ pub struct GcodeCfg {
     /// The flavour of G-code; `None` follows the controller (and `dynamic_power` for GRBL).
     #[serde(default)]
     pub dialect: Option<Dialect>,
+    /// Lines that replace the start of the job (units, absolute mode, plane and the laser mode); empty = built in.
+    #[serde(default)]
+    pub preamble: String,
+    /// Lines that replace the end of the program (`M2` for GRBL); empty = built in. The laser is always switched
+    /// off and the head sent home (when set) before these.
+    #[serde(default)]
+    pub postscript: String,
+    /// Command that switches the air assist on / off; empty = built in (`M8` / `M9`, `M106 S255` / `M107`).
+    #[serde(default)]
+    pub air_on: String,
+    #[serde(default)]
+    pub air_off: String,
 }
 
 impl Default for GcodeCfg {
     fn default() -> Self {
-        GcodeCfg { dynamic_power: true, return_home: true, dialect: None }
+        GcodeCfg { dynamic_power: true, return_home: true, dialect: None, preamble: String::new(), postscript: String::new(), air_on: String::new(), air_off: String::new() }
+    }
+}
+
+/// Longest text and line, and most lines, of an own piece of G-code.
+pub const SNIPPET_MAX_LEN: usize = 2000;
+pub const SNIPPET_MAX_LINE: usize = 200;
+pub const SNIPPET_MAX_LINES: usize = 60;
+
+/// Is `text` fit to be written into a job? Blank lines and comments are fine; control characters and absurd sizes
+/// are not.
+pub fn snippet_ok(text: &str) -> bool {
+    text.len() <= SNIPPET_MAX_LEN
+        && text.lines().count() <= SNIPPET_MAX_LINES
+        && text.lines().all(|l| l.chars().count() <= SNIPPET_MAX_LINE)
+        && !text.chars().any(|c| c.is_control() && c != '\n')
+}
+
+impl GcodeCfg {
+    /// The names of the own G-code fields that are not fit to be used.
+    pub fn invalid_fields(&self) -> Vec<&'static str> {
+        [("preamble", &self.preamble), ("postscript", &self.postscript), ("air on", &self.air_on), ("air off", &self.air_off)]
+            .into_iter()
+            .filter(|(_, t)| !snippet_ok(t))
+            .map(|(n, _)| n)
+            .collect()
+    }
+
+    /// Back to the built-in start, end and air commands.
+    pub fn reset_custom(&mut self) {
+        self.preamble.clear();
+        self.postscript.clear();
+        self.air_on.clear();
+        self.air_off.clear();
+    }
+
+    /// The lines of an own piece of G-code, or `None` when it is empty or not fit to be used.
+    pub fn custom<'a>(text: &'a str) -> Option<Vec<&'a str>> {
+        let lines: Vec<&str> = text.lines().map(str::trim_end).collect();
+        (snippet_ok(text) && lines.iter().any(|l| !l.trim().is_empty())).then_some(lines)
     }
 }
 
@@ -760,7 +811,7 @@ impl From<DeviceWire> for Device {
         let axes = w.axes.unwrap_or(Axes { origin: w.origin.unwrap_or(d.axes.origin), ..Axes::default() });
         let area = w.area.unwrap_or(Area { bed_w: w.bed_w.unwrap_or(d.area.bed_w), bed_h: w.bed_h.unwrap_or(d.area.bed_h), ..Area::default() });
         let speeds = w.speeds.unwrap_or(Speeds { travel_speed: w.travel_speed.unwrap_or(d.speeds.travel_speed), ..Speeds::default() });
-        let gcode = w.gcode.unwrap_or(GcodeCfg { dynamic_power: w.dynamic_power.unwrap_or(true), return_home: w.return_home.unwrap_or(true), dialect: None });
+        let gcode = w.gcode.unwrap_or(GcodeCfg { dynamic_power: w.dynamic_power.unwrap_or(true), return_home: w.return_home.unwrap_or(true), ..GcodeCfg::default() });
         let connection = w.connection.unwrap_or(Connection {
             link: w.link.unwrap_or_default(),
             host: w.host.unwrap_or_default(),

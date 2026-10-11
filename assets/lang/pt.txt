@@ -708,3 +708,14 @@
 707|Dialeto de G-code
 708|Smoothieware: S é escrito como fração da potência total (defina S máx. como 1). A transmissão funciona como a do GRBL; nada disto foi testado em hardware real.
 709|Usado quando o dialeto é automático; um dialeto GRBL escolhido decide por si entre M3 e M4.
+710|Avançado
+711|Um campo de G-code na página Avançado tem um caractere de controlo ou é demasiado longo.
+712|Comandos do air assist
+713|Fim do trabalho
+714|Desligado
+715|Ligado
+716|Substitui o M2 final. O laser é sempre desligado e o cabeçote enviado à origem (se definido) antes. Vazio = incorporado.
+717|Substitui as linhas de unidades, modo absoluto, plano e modo laser. Vazio = incorporado.
+718|Repor predefinições
+719|Início do trabalho
+720|Um G-code errado pode disparar o laser, levar o cabeçote contra os fins de curso ou arruinar o material. Teste com o laser desligado ou à potência mínima.

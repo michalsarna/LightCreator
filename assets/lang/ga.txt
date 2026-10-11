@@ -708,3 +708,14 @@
 707|Canúint G-code
 708|Smoothieware: scríobhtar S mar chodán den chumhacht iomlán (socraigh uasluach S ar 1). Oibríonn sruthú mar a dhéanann GRBL; níor triaileadh aon cheann de seo ar fheabhsmhaoin fhíor.
 709|Úsáidtear nuair atá an chanúint uathoibríoch; cinneann canúint GRBL roghnaithe idir M3 agus M4 í féin.
+710|Casta
+711|Tá carachtar rialaithe i réimse G-code ar an leathanach Casta nó tá sé rófhada.
+712|Orduithe air assist
+713|Deireadh na hoibre
+714|As
+715|Air
+716|Cuireann sé an M2 deiridh ina áit. Múchtar an léasair i gcónaí agus seoltar an ceann abhaile (más socraithe) roimhe. Folamh = ionsuite.
+717|Cuireann sé línte aonad, mód absalóideach, plána agus mód léasair ina n-áit. Folamh = ionsuite.
+718|Athchóirigh na réamhshocruithe
+719|Tús na hoibre
+720|Is féidir le G-code mícheart an léasair a lasadh, an ceann a thiomáint isteach sna stopanna ceann scríbe nó an t-ábhar a mhilleadh. Triail leis an léasair múchta nó ag an gcumhacht is ísle.

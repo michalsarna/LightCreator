@@ -708,3 +708,14 @@
 707|Narečje G-kode
 708|Smoothieware: S se zapiše kot delež polne moči (nastavite največji S na 1). Pretakanje deluje kot pri GRBL; nič od tega ni bilo preizkušeno na pravi strojni opremi.
 709|Uporablja se pri samodejnem narečju; izbrano narečje GRBL samo odloči med M3 in M4.
+710|Napredno
+711|Polje G-kode na strani Napredno vsebuje kontrolni znak ali je predolgo.
+712|Ukazi za air assist
+713|Konec dela
+714|Izklop
+715|Vklop
+716|Zamenja zaključni M2. Laser se pred tem vedno izklopi in glava (če je nastavljeno) pošlje domov. Prazno = vgrajeno.
+717|Zamenja vrstice enot, absolutnega načina, ravnine in laserskega načina. Prazno = vgrajeno.
+718|Obnovi privzeto
+719|Začetek dela
+720|Napačna G-koda lahko prižge laser, zapelje glavo v končna stikala ali uniči material. Preizkusite z izklopljenim laserjem ali z najmanjšo močjo.

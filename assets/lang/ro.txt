@@ -708,3 +708,14 @@
 707|Dialect G-code
 708|Smoothieware: S se scrie ca fracție din puterea maximă (setați S max la 1). Transmisia funcționează ca la GRBL; nimic din asta nu a fost încercat pe hardware real.
 709|Folosit când dialectul este automat; un dialect GRBL ales decide singur între M3 și M4.
+710|Avansat
+711|Un câmp G-code din pagina Avansat conține un caracter de control sau este prea lung.
+712|Comenzi air assist
+713|Sfârșitul lucrării
+714|Oprit
+715|Pornit
+716|Înlocuiește M2 final. Laserul este întotdeauna oprit și capul trimis acasă (dacă e setat) înainte. Gol = încorporat.
+717|Înlocuiește liniile de unități, mod absolut, plan și mod laser. Gol = încorporat.
+718|Restaurează valorile implicite
+719|Începutul lucrării
+720|Un G-code greșit poate declanșa laserul, lovi capul de limitatoare sau strica materialul. Testați cu laserul oprit sau la puterea minimă.

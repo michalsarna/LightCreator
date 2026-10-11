@@ -708,3 +708,14 @@
 707|Dialecto de G-code
 708|Smoothieware: S se escribe como fracción de la potencia total (ponga S máx. a 1). La transmisión funciona como la de GRBL; nada de esto se ha probado en hardware real.
 709|Se usa cuando el dialecto es automático; un dialecto GRBL elegido decide por sí mismo entre M3 y M4.
+710|Avanzado
+711|Un campo de G-code de la página Avanzado tiene un carácter de control o es demasiado largo.
+712|Comandos del air assist
+713|Final del trabajo
+714|Apagado
+715|Encendido
+716|Sustituye el M2 final. El láser siempre se apaga y el cabezal vuelve al origen (si está activado) antes. Vacío = integrado.
+717|Sustituye las líneas de unidades, modo absoluto, plano y modo láser. Vacío = integrado.
+718|Restaurar valores por defecto
+719|Inicio del trabajo
+720|Un G-code erróneo puede disparar el láser, llevar el cabezal contra los finales de carrera o arruinar el material. Pruebe con el láser apagado o a la potencia mínima.
