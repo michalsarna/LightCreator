@@ -1054,3 +1054,5 @@
 1053|Serveur web : erreur
 1054|Bleu (sombre)
 1055|Bleu (clair)
+1056|Vert (sombre)
+1057|Vert (clair)

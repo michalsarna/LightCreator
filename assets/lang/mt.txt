@@ -1054,3 +1054,5 @@
 1053|Server tal-web: żball
 1054|Blu (skur)
 1055|Blu (ċar)
+1056|Aħdar (skur)
+1057|Aħdar (ċar)

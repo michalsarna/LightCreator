@@ -1054,3 +1054,5 @@
 1053|Tīmekļa serveris: kļūda
 1054|Zila (tumša)
 1055|Zila (gaiša)
+1056|Zaļa (tumša)
+1057|Zaļa (gaiša)

@@ -1054,3 +1054,5 @@
 1053|Webserver: fejl
 1054|Blå (mørk)
 1055|Blå (lys)
+1056|Grøn (mørk)
+1057|Grøn (lys)

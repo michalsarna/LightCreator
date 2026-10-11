@@ -1054,3 +1054,5 @@
 1053|Web poslužitelj: greška
 1054|Plava (tamna)
 1055|Plava (svijetla)
+1056|Zelena (tamna)
+1057|Zelena (svijetla)

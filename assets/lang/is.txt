@@ -1054,3 +1054,5 @@
 1053|Vefþjónn: villa
 1054|Blátt (dökkt)
 1055|Blátt (ljóst)
+1056|Grænt (dökkt)
+1057|Grænt (ljóst)

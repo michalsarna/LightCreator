@@ -1054,3 +1054,5 @@
 1053|Veebiserver: viga
 1054|Sinine (tume)
 1055|Sinine (hele)
+1056|Roheline (tume)
+1057|Roheline (hele)

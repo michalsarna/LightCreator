@@ -1054,3 +1054,5 @@
 1053|Webbserver: fel
 1054|Blå (mörk)
 1055|Blå (ljus)
+1056|Grön (mörk)
+1057|Grön (ljus)

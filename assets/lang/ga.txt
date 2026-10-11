@@ -1054,3 +1054,5 @@
 1053|Freastalaí gréasáin: earráid
 1054|Gorm (dorcha)
 1055|Gorm (éadrom)
+1056|Glas (dorcha)
+1057|Glas (éadrom)

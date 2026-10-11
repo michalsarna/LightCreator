@@ -1054,3 +1054,5 @@
 1053|Spletni strežnik: napaka
 1054|Modra (temna)
 1055|Modra (svetla)
+1056|Zelena (temna)
+1057|Zelena (svetla)

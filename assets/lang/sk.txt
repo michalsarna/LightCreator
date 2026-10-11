@@ -1054,3 +1054,5 @@
 1053|Webový server: chyba
 1054|Modrý (tmavý)
 1055|Modrý (svetlý)
+1056|Zelený (tmavý)
+1057|Zelený (svetlý)

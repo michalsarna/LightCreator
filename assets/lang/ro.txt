@@ -1054,3 +1054,5 @@
 1053|Server web: eroare
 1054|Albastru (închis)
 1055|Albastru (deschis)
+1056|Verde (închis)
+1057|Verde (deschis)

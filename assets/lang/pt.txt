@@ -1054,3 +1054,5 @@
 1053|Servidor web: erro
 1054|Azul (escuro)
 1055|Azul (claro)
+1056|Verde (escuro)
+1057|Verde (claro)

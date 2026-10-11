@@ -1054,3 +1054,5 @@
 1053|Žiniatinklio serveris: klaida
 1054|Mėlyna (tamsi)
 1055|Mėlyna (šviesi)
+1056|Žalia (tamsi)
+1057|Žalia (šviesi)
