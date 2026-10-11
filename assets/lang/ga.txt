@@ -940,3 +940,8 @@
 939|An dtosóidh tú an comhaire "{}" arís ó nialas?
 940|Iomlán an ama oibre: {}
 941|Cothabháil
+942|As an teimpléad
+943|Tá na nótaí níos faide ná {} carachtar agus ní féidir iad a shábháil.
+944|Do chuid nótaí (Markdown)
+945|m.sh. Socruithe a d'oibrigh: air assist 20 %, fócas 12 mm
+946|Nótaí

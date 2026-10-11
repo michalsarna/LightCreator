@@ -940,3 +940,8 @@
 939|Újrakezdi nulláról a(z) „{}” számlálót?
 940|Teljes üzemidő: {}
 941|Karbantartás
+942|A sablonból
+943|A jegyzetek hosszabbak {} karakternél, és nem menthetők.
+944|Saját jegyzetei (Markdown)
+945|pl. Bevált beállítások: légsegéd 20 %, fókusz 12 mm
+946|Jegyzetek

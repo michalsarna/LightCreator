@@ -940,3 +940,8 @@
 939|Byrja teljarann „{}“ aftur frá núlli?
 940|Heildarvinnutími: {}
 941|Viðhald
+942|Úr sniðmátinu
+943|Athugasemdirnar eru lengri en {} stafir og er ekki hægt að vista.
+944|Þínar athugasemdir (Markdown)
+945|t.d. Stillingar sem virkuðu: loftaðstoð 20 %, fókus 12 mm
+946|Athugasemdir

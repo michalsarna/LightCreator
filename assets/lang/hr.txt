@@ -940,3 +940,8 @@
 939|Pokrenuti brojač „{}” ponovno od nule?
 940|Ukupno vrijeme rada: {}
 941|Održavanje
+942|Iz predloška
+943|Bilješke su dulje od {} znakova i ne mogu se spremiti.
+944|Vaše bilješke (Markdown)
+945|npr. Postavke koje su radile: air assist 20 %, fokus 12 mm
+946|Bilješke

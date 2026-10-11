@@ -1084,6 +1084,8 @@ pub struct Device {
     pub template_notes: String,
     /// How long the machine has worked, and the counters of the user (a tube, a lens, a belt).
     pub maintenance: Maintenance,
+    /// The user's own notes about the machine, in Markdown.
+    pub notes: String,
 }
 
 /// A counter of working time that can be reset, with an optional limit after which it asks for attention.
@@ -1300,6 +1302,8 @@ struct DeviceWire {
     template_notes: String,
     #[serde(default)]
     maintenance: Maintenance,
+    #[serde(default)]
+    notes: String,
     // Flat fields of profiles saved before the groups existed.
     origin: Option<Origin>,
     bed_w: Option<f64>,
@@ -1365,6 +1369,7 @@ impl From<DeviceWire> for Device {
             rotary: w.rotary,
             template_notes: w.template_notes,
             maintenance: w.maintenance,
+            notes: w.notes,
         }
     }
 }
@@ -1567,6 +1572,7 @@ impl Default for Device {
             rotary: Rotary::default(),
             template_notes: String::new(),
             maintenance: Maintenance::default(),
+            notes: String::new(),
         }
     }
 }

@@ -940,3 +940,8 @@
 939|Pradėti skaitiklį „{}“ iš naujo nuo nulio?
 940|Bendras darbo laikas: {}
 941|Techninė priežiūra
+942|Iš šablono
+943|Pastabos ilgesnės nei {} simbolių ir negali būti išsaugotos.
+944|Jūsų pastabos (Markdown)
+945|pvz. Veikusios nuostatos: oro pagalba 20 %, fokusas 12 mm
+946|Pastabos

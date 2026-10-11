@@ -940,3 +940,8 @@
 939|Starte telleren «{}» på nytt fra null?
 940|Total arbeidstid: {}
 941|Vedlikehold
+942|Fra malen
+943|Notatene er lengre enn {} tegn og kan ikke lagres.
+944|Dine notater (Markdown)
+945|f.eks. Innstillinger som virket: air assist 20 %, fokus 12 mm
+946|Notater

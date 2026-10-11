@@ -940,3 +940,8 @@
 939|Terġa' tibda l-kontatur "{}" minn żero?
 940|Ħin totali tax-xogħol: {}
 941|Manutenzjoni
+942|Mit-template
+943|In-noti huma itwal minn {} karattru u ma jistgħux jinħażnu.
+944|In-noti tiegħek (Markdown)
+945|eż. Issettjar li ħadem: air assist 20 %, fokus 12 mm
+946|Noti

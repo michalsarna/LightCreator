@@ -940,3 +940,8 @@
 939|Börja räknaren "{}" om från noll?
 940|Total arbetstid: {}
 941|Underhåll
+942|Från mallen
+943|Anteckningarna är längre än {} tecken och kan inte sparas.
+944|Dina anteckningar (Markdown)
+945|t.ex. Inställningar som fungerade: air assist 20 %, fokus 12 mm
+946|Anteckningar

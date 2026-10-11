@@ -940,3 +940,8 @@
 939|Start tælleren "{}" forfra fra nul?
 940|Samlet driftstid: {}
 941|Vedligeholdelse
+942|Fra skabelonen
+943|Noterne er længere end {} tegn og kan ikke gemmes.
+944|Dine noter (Markdown)
+945|f.eks. Indstillinger der virkede: air assist 20 %, fokus 12 mm
+946|Noter

@@ -1808,3 +1808,19 @@ fn maintenance_counts_resets_and_is_cleared_for_imports() {
     let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
     assert_eq!(old.maintenance, Maintenance::default());
 }
+
+#[test]
+fn notes_live_in_the_profile_and_are_limited_in_imported_files() {
+    let mut d = Device::default();
+    d.notes = "# Tube\n- replaced in 2026".into();
+    let back: Device = serde_json::from_str(&serde_json::to_string(&d).unwrap()).unwrap();
+    assert_eq!(back.notes, d.notes);
+    let imported = profiles::import_profile(&profiles::export_profile(&d, "v0.0.11")).unwrap();
+    assert_eq!(imported.notes, d.notes);
+    d.notes = "x".repeat(profiles::MAX_NOTES + 1);
+    assert!(profiles::validate(&d).unwrap_err().contains("notes"));
+    d.notes = "a\u{7}b".into();
+    assert!(profiles::validate(&d).is_err());
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert!(old.notes.is_empty());
+}

@@ -940,3 +940,8 @@
 939|Kas alustada loendurit „{}“ uuesti nullist?
 940|Kogu tööaeg: {}
 941|Hooldus
+942|Mallist
+943|Märkmed on pikemad kui {} märki ja neid ei saa salvestada.
+944|Sinu märkmed (Markdown)
+945|nt Toiminud seaded: õhuabi 20 %, fookus 12 mm
+946|Märkmed

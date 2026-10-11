@@ -940,3 +940,8 @@
 939	Start the counter "{}" again from zero?
 940	Total working time: {}
 941	Maintenance
+942	From the template
+943	The notes are longer than {} characters and cannot be saved.
+944	Your notes (Markdown)
+945	e.g. Settings that worked: air assist 20 %, focus 12 mm
+946	Notes

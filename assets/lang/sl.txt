@@ -940,3 +940,8 @@
 939|Znova začeti števec »{}« od nič?
 940|Skupni delovni čas: {}
 941|Vzdrževanje
+942|Iz predloge
+943|Opombe so daljše od {} znakov in jih ni mogoče shraniti.
+944|Vaše opombe (Markdown)
+945|npr. Nastavitve, ki so delovale: air assist 20 %, ostrenje 12 mm
+946|Opombe

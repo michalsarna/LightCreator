@@ -940,3 +940,8 @@
 939|De teller "{}" opnieuw vanaf nul laten beginnen?
 940|Totale werktijd: {}
 941|Onderhoud
+942|Uit de sjabloon
+943|De notities zijn langer dan {} tekens en kunnen niet worden opgeslagen.
+944|Je notities (Markdown)
+945|bijv. Instellingen die werkten: air assist 20 %, focus 12 mm
+946|Notities

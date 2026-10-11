@@ -940,3 +940,8 @@
 939|Sākt skaitītāju „{}” no jauna no nulles?
 940|Kopējais darba laiks: {}
 941|Apkope
+942|No sagataves
+943|Piezīmes ir garākas par {} rakstzīmēm un nevar tikt saglabātas.
+944|Jūsu piezīmes (Markdown)
+945|piem. Iestatījumi, kas darbojās: gaisa palīdzība 20 %, fokuss 12 mm
+946|Piezīmes

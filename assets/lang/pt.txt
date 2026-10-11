@@ -940,3 +940,8 @@
 939|Recomeçar do zero o contador "{}"?
 940|Tempo total de trabalho: {}
 941|Manutenção
+942|Do modelo
+943|As notas têm mais de {} caracteres e não podem ser guardadas.
+944|As suas notas (Markdown)
+945|p. ex. Definições que funcionaram: air assist 20 %, foco 12 mm
+946|Notas

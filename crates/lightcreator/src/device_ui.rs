@@ -68,6 +68,7 @@ pub enum CfgPage {
     Rotary,
     Zones,
     Maintenance,
+    Notes,
     Advanced,
     Firmware,
 }
@@ -84,6 +85,7 @@ impl CfgPage {
             CfgPage::Rotary => "Rotary",
             CfgPage::Zones => "No-go zones",
             CfgPage::Maintenance => "Maintenance",
+            CfgPage::Notes => "Notes",
             CfgPage::Advanced => "Advanced",
             CfgPage::Firmware => "Firmware ($$)",
         }
@@ -99,6 +101,7 @@ impl CfgPage {
         v.push(CfgPage::Rotary);
         v.push(CfgPage::Zones);
         v.push(CfgPage::Maintenance);
+        v.push(CfgPage::Notes);
         v.push(CfgPage::Advanced);
         if matches!(controller, Controller::Grbl | Controller::Marlin) {
             v.push(CfgPage::Firmware);
@@ -813,6 +816,21 @@ impl App {
                                 ui.add_space(4.0);
                                 ui.label(RichText::new(tr("Layers marked as rotary are burnt on the attachment. The model is simple: a chuck turns by the workpiece diameter, rollers move the surface like their own; a real machine needs testing.")).color(theme::text_dim()));
                             }
+                            CfgPage::Notes => {
+                                if !d.template_notes.trim().is_empty() {
+                                    ui.label(RichText::new(tr("From the template")).strong());
+                                    egui::Frame::group(ui.style()).show(ui, |ui| crate::markdown_ui::show(ui, &d.template_notes));
+                                    ui.add_space(6.0);
+                                }
+                                ui.label(RichText::new(tr("Your notes (Markdown)")).strong());
+                                ui.add(egui::TextEdit::multiline(&mut d.notes).font(egui::TextStyle::Monospace).desired_rows(8).desired_width(f32::INFINITY).hint_text(tr("e.g. Settings that worked: air assist 20 %, focus 12 mm")));
+                                if d.notes.chars().count() > lc_core::profiles::MAX_NOTES {
+                                    ui.label(RichText::new(trf("The notes are longer than {} characters and cannot be saved.", &[&lc_core::profiles::MAX_NOTES])).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
+                                }
+                                ui.add_space(4.0);
+                                ui.label(RichText::new(tr("Preview")).strong());
+                                egui::Frame::group(ui.style()).show(ui, |ui| crate::markdown_ui::show(ui, &d.notes));
+                            }
                             CfgPage::Maintenance => {
                                 ui.label(RichText::new(trf("Total working time: {}", &[&crate::app::fmt_time(d.maintenance.total_secs)])).strong());
                                 ui.label(RichText::new(tr("Counted from the time jobs really run (from start to the end or Stop), not from estimates. The total cannot be reset.")).color(theme::text_dim()));
@@ -995,7 +1013,8 @@ impl App {
                 ui.label(RichText::new(trf("Macro {}: {}", &[name, why])).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
             }
             let dup_tools = cfg.draft.has_duplicate_tools();
-            let valid = !cfg.draft.name.trim().is_empty() && !bad_gcode && !dup_tools && hook_problem.is_none() && macro_problem.is_none();
+            let notes_long = cfg.draft.notes.chars().count() > lc_core::profiles::MAX_NOTES;
+            let valid = !cfg.draft.name.trim().is_empty() && !notes_long && !bad_gcode && !dup_tools && hook_problem.is_none() && macro_problem.is_none();
             if dup_tools {
                 ui.label(RichText::new(tr("Two laser heads have the same tool number.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
             }

@@ -940,3 +940,8 @@
 939|¿Empezar de nuevo desde cero el contador «{}»?
 940|Tiempo total de trabajo: {}
 941|Mantenimiento
+942|De la plantilla
+943|Las notas son más largas de {} caracteres y no se pueden guardar.
+944|Sus notas (Markdown)
+945|p. ej. Ajustes que funcionaron: air assist 20 %, enfoque 12 mm
+946|Notas

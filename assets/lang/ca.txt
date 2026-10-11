@@ -940,3 +940,8 @@
 939|Voleu tornar a començar el comptador «{}» de zero?
 940|Temps de treball total: {}
 941|Manteniment
+942|De la plantilla
+943|Les notes són més llargues de {} caràcters i no es poden desar.
+944|Les vostres notes (Markdown)
+945|p. ex. Configuracions que han funcionat: air assist 20 %, focus 12 mm
+946|Notes

@@ -940,3 +940,8 @@
 939|Začít počítadlo „{}“ znovu od nuly?
 940|Celková doba provozu: {}
 941|Údržba
+942|Ze šablony
+943|Poznámky jsou delší než {} znaků a nelze je uložit.
+944|Vaše poznámky (Markdown)
+945|např. Nastavení, která fungovala: air assist 20 %, ostření 12 mm
+946|Poznámky

@@ -1218,6 +1218,12 @@ const TABLE: &[[&str; 7]] = &[
     ["Start the counter \"{}\" again from zero?", "Zacząć licznik „{}” od zera?", "Den Zähler „{}“ wieder bei null beginnen?", "Ricominciare da zero il contatore \"{}\"?", "Aloitetaanko laskuri \"{}\" alusta?", "把计数器“{}”重新从零开始吗？", "काउंटर \"{}\" को फिर शून्य से शुरू करें?"],
     ["Total working time: {}", "Łączny czas pracy: {}", "Gesamtbetriebszeit: {}", "Tempo di lavoro totale: {}", "Kokonaistyöaika: {}", "总工作时间：{}", "कुल कार्य समय: {}"],
     ["Maintenance", "Konserwacja", "Wartung", "Manutenzione", "Huolto", "维护", "रखरखाव"],
+    // ---- notes ----
+    ["From the template", "Z szablonu", "Aus der Vorlage", "Dal modello", "Mallista", "来自模板", "टेम्पलेट से"],
+    ["The notes are longer than {} characters and cannot be saved.", "Notatki są dłuższe niż {} znaków i nie można ich zapisać.", "Die Notizen sind länger als {} Zeichen und können nicht gespeichert werden.", "Le note sono più lunghe di {} caratteri e non si possono salvare.", "Muistiinpanot ovat yli {} merkkiä pitkät eikä niitä voi tallentaa.", "笔记超过 {} 个字符，无法保存。", "नोट {} अक्षरों से लंबे हैं और सहेजे नहीं जा सकते।"],
+    ["Your notes (Markdown)", "Twoje notatki (Markdown)", "Ihre Notizen (Markdown)", "Le tue note (Markdown)", "Omat muistiinpanosi (Markdown)", "你的笔记（Markdown）", "आपके नोट (Markdown)"],
+    ["e.g. Settings that worked: air assist 20 %, focus 12 mm", "np. Ustawienia, które działały: air assist 20 %, ostrość 12 mm", "z. B. Bewährte Einstellungen: Air Assist 20 %, Fokus 12 mm", "es. Impostazioni che hanno funzionato: air assist 20 %, fuoco 12 mm", "esim. Toimivat asetukset: ilma-apu 20 %, tarkennus 12 mm", "例如：有效的设置：空气辅助 20 %，焦距 12 毫米", "जैसे: जो सेटिंग चलीं: एयर असिस्ट 20 %, फ़ोकस 12 मिमी"],
+    ["Notes", "Notatki", "Notizen", "Note", "Muistiinpanot", "笔记", "नोट"],
 ];
 #[cfg(test)]
 mod tests {

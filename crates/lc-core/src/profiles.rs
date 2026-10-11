@@ -64,6 +64,9 @@ pub fn copy_name(name: &str, taken: &[String]) -> String {
     (2..).map(|n| format!("{base} (copy {n})")).find(|c| !taken.contains(c)).unwrap_or(first)
 }
 
+/// The most characters of the notes of a profile.
+pub const MAX_NOTES: usize = 20_000;
+
 /// The version of the file format written now.
 pub const PROFILE_FORMAT: u32 = 1;
 /// The biggest file read.
@@ -149,6 +152,9 @@ pub fn validate(d: &Device) -> Result<(), String> {
     }
     if d.maintenance.counters.len() > 50 || !d.maintenance.counters.iter().all(|c| text_ok(&c.name, 80) && between(c.secs, 0.0, 1e10) && c.threshold_hours.map_or(true, |h| between(h, 0.0, 1e7))) || !between(d.maintenance.total_secs, 0.0, 1e10) {
         return bad("a maintenance counter");
+    }
+    if !text_ok(&d.notes, MAX_NOTES) {
+        return Err("the notes are too long or have control characters".into());
     }
     if !text_ok(&d.template_notes, 5000) || !between(d.rotary.diameter, 0.0, 5000.0) || !between(d.rotary.roller_diameter, 0.0, 5000.0) || !between(d.rotary.microsteps_per_rev, 0.0, 10_000_000.0) {
         return bad("a note or the rotary");

@@ -940,3 +940,8 @@
 939|Reîncepeți contorul „{}” de la zero?
 940|Timp total de funcționare: {}
 941|Întreținere
+942|Din șablon
+943|Notele sunt mai lungi de {} caractere și nu pot fi salvate.
+944|Notele dumneavoastră (Markdown)
+945|ex. Setări care au mers: air assist 20 %, focalizare 12 mm
+946|Note
