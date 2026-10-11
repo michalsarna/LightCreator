@@ -994,3 +994,53 @@ fn connection_page_only_for_controllers_with_a_link() {
     assert!(CfgPage::visible(lc_core::Controller::Grbl).contains(&CfgPage::Connection));
     assert!(!CfgPage::visible(lc_core::Controller::Ruida).contains(&CfgPage::Connection));
 }
+
+#[cfg(test)]
+mod resize_tests {
+    use super::*;
+    use eframe::egui::{self, Event, Id, PointerButton, Pos2};
+
+    fn about_rect(h: &Shot) -> eframe::egui::Rect {
+        h.ctx.memory(|m| m.area_rect(Id::new(Some("about_window")))).unwrap_or_else(|| panic!("about window shown; areas: {:?}", h.ctx.memory(|m| m.areas().visible_layer_ids())))
+    }
+
+    fn drag(h: &mut Shot, from: Pos2, to: Pos2) {
+        let m = egui::Modifiers::NONE;
+        h.event(Event::PointerMoved(from));
+        h.run_steps(2);
+        h.event(Event::PointerButton { pos: from, button: PointerButton::Primary, pressed: true, modifiers: m });
+        h.run_steps(2);
+        for k in 1..=5 {
+            h.event(Event::PointerMoved(from + (to - from) * (k as f32 / 5.0)));
+            h.run_steps(1);
+        }
+        h.event(Event::PointerButton { pos: to, button: PointerButton::Primary, pressed: false, modifiers: m });
+        h.run_steps(3);
+    }
+
+    #[test]
+    fn about_window_can_be_resized_both_ways() {
+        let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+            |ui, state: &mut Option<App>| {
+                let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+                a.draw(ui);
+            },
+            None,
+        );
+        h.run_steps(2);
+        app(&mut h).enter_editor(0);
+        app(&mut h).wizard = None;
+        h.run_steps(2);
+        app(&mut h).show_about = true;
+        h.run_steps(4);
+        let r0 = about_rect(&h);
+        // Grow from the bottom-right corner.
+        drag(&mut h, r0.right_bottom() - egui::vec2(1.0, 1.0), r0.right_bottom() + egui::vec2(120.0, 90.0));
+        let r1 = about_rect(&h);
+        assert!(r1.width() > r0.width() + 80.0 && r1.height() > r0.height() + 60.0, "grow: {r0:?} -> {r1:?}");
+        // Shrink it again.
+        drag(&mut h, r1.right_bottom() - egui::vec2(1.0, 1.0), r1.right_bottom() - egui::vec2(100.0, 70.0));
+        let r2 = about_rect(&h);
+        assert!(r2.width() < r1.width() - 60.0, "shrink: {r1:?} -> {r2:?}");
+    }
+}

@@ -195,7 +195,10 @@ pub fn popup<R>(ctx: &egui::Context, id: &str, title: &str, size: [f32; 2], open
         .resizable(true)
         .show(ctx, |ui| {
             mini_title(ui, title, &mut keep, |_| {});
-            add(ui)
+            let r = add(ui);
+            // Take the rest of the size the window was given, so it keeps a height taller than its content.
+            ui.allocate_space(ui.available_size_before_wrap().max(egui::Vec2::ZERO));
+            r
         });
     if !keep {
         *open = false;
