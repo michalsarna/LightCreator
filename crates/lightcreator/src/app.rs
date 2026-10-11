@@ -312,6 +312,13 @@ pub struct App {
     pub fw: crate::firmware_ui::FwUi,
     /// The window with the templates for a new device is open.
     pub show_templates: bool,
+    /// The first-run setup is open at this step.
+    pub wizard: Option<usize>,
+    /// The wizard read the controller.
+    pub wizard_read: bool,
+    pub wizard_read_done: bool,
+    /// The user left the first-run setup: do not start it again this session.
+    pub wizard_skipped: bool,
     /// The focus beam is on.
     pub focus_on: bool,
     /// The warning about macros has been answered in this session.
@@ -503,6 +510,10 @@ impl App {
             single_axis_homing: false,
             fw: Default::default(),
             show_templates: false,
+            wizard: None,
+            wizard_read: false,
+            wizard_read_done: false,
+            wizard_skipped: false,
             focus_on: false,
             macros_ok: false,
             pointer_align: false,
@@ -1840,6 +1851,7 @@ impl App {
         self.stall_window(ctx);
         self.fw_windows(ctx);
         self.template_window(ctx);
+        self.wizard_window(ctx);
         self.material_edit_window(ctx);
         self.labels_window(ctx);
         self.merge_dialog(ctx);

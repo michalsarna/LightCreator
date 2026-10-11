@@ -908,3 +908,24 @@
 907|GRBL 1.1 CO2 laser na stolu 300 × 200 mm, nula sprijeda lijevo.
 908|K40 CO2 laser s GRBL pločom: 300 × 200 mm, nula u stražnjem lijevom (gornjem lijevom) kutu.
 909|Diodni laser s Marlin firmwareom (laserska funkcija, S 0–255) na stolu 400 × 400 mm.
+910|Natrag
+911|Veza (neobavezno)
+912|Završi
+913|Ako je stroj sada spojen, njegovo radno područje i brzina mogu se pročitati iz upravljača.
+914|Laserski način ($32) i najveća S vrijednost ($30) upravljača nisu pročitani: provjeravaju se pri spajanju.
+915|Naziv i jedinice
+916|Dalje
+917|Nisu postavljene margine ni softverska ograničenja: cijeli hod osi je radno područje. Postavite ih na stranici Hardver ako smeta stega ili okvir.
+918|Port ili poslužitelj još nisu postavljeni: odaberite ga u postavkama uređaja prije spajanja.
+919|Ništa ovdje nije isprobano na vašem stroju: napravite prvi test s isključenim laserom ili na najmanjoj snazi.
+920|Odaberite najbliže polazište. Sve se može promijeniti poslije.
+921|Postavi ručno…
+922|Postavite svoj stroj ({}/{})
+923|Preskoči
+924|Preskoči ove korake i otvori postavke uređaja
+925|Sažetak
+926|Uređaj je dodan. Pritisnite Nastavi za početak.
+927|Postavke su pročitane iz upravljača.
+928|Koji stroj imate?
+929|Vrijedi provjeriti
+930|nije postavljeno

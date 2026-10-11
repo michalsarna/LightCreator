@@ -908,3 +908,24 @@
 907|GRBL 1.1 CO2 leysir á 300 × 200 mm borði, núll fremst til vinstri.
 908|K40 CO2 leysir með GRBL stjórnborði: 300 × 200 mm, núll í aftara vinstra (efra vinstra) horni.
 909|Díóðuleysir með Marlin fastbúnaði (leysieiginleiki, S 0–255) á 400 × 400 mm borði.
+910|Til baka
+911|Tenging (valfrjáls)
+912|Ljúka
+913|Ef vélin er tengd núna má lesa vinnusvæði hennar og hraða úr stýringunni.
+914|Leysihamur ($32) og hæsta S-gildi ($30) stýringarinnar voru ekki lesin: þau eru athuguð við tengingu.
+915|Nafn og einingar
+916|Áfram
+917|Engar spássíur eða hugbúnaðarmörk eru stillt: allt ásasviðið er vinnusvæðið. Stilltu þau á síðunni Vélbúnaður ef klemma eða rammi er fyrir.
+918|Tengi eða hýsill er ekki stillt enn: veldu það í tækisstillingum áður en þú tengir.
+919|Ekkert hér hefur verið prófað á vélinni þinni: gerðu fyrstu prófun með slökktan leysi eða minnsta afl.
+920|Veldu næsta upphafspunkt. Öllu má breyta síðar.
+921|Stilla í höndunum…
+922|Stilltu vélina þína ({}/{})
+923|Sleppa
+924|Sleppa þessum skrefum og opna tækisstillingar
+925|Samantekt
+926|Tækinu var bætt við. Ýttu á Halda áfram til að byrja.
+927|Stillingarnar voru lesnar úr stýringunni.
+928|Hvaða vél áttu?
+929|Vert að athuga
+930|ekki stillt

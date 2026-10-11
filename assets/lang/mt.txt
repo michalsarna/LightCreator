@@ -908,3 +908,24 @@
 907|Laser CO2 GRBL 1.1 fuq mejda ta' 300 × 200 mm, żero quddiem fix-xellug.
 908|Laser CO2 K40 b'bord GRBL: 300 × 200 mm, żero fil-kantuniera ta' wara fix-xellug (fuq fix-xellug).
 909|Laser dijodu b'firmware Marlin (funzjoni laser, S 0–255) fuq mejda ta' 400 × 400 mm.
+910|Lura
+911|Konnessjoni (mhux obbligatorja)
+912|Spiċċa
+913|Jekk il-magna hija konnessa issa, iż-żona tax-xogħol u l-veloċità tagħha jistgħu jinqraw mill-kontrollur.
+914|Il-modalità tal-laser ($32) u l-valur massimu S ($30) tal-kontrollur ma nqrawx: jiġu ċċekkjati meta tikkonnettja.
+915|Isem u unitajiet
+916|Li jmiss
+917|Ma hemm l-ebda marġni jew limiti tas-software: il-medda sħiħa tal-assi hija ż-żona tax-xogħol. Issettjahom fil-paġna Hardware jekk clamp jew qafas ikun fil-mogħdija.
+918|Għad ma hemmx port jew host: agħżlu fl-issettjar tal-apparat qabel tikkonnettja.
+919|Xejn hawnhekk ma ġie ppruvat fuq il-magna tiegħek: agħmel l-ewwel test bil-laser mitfi jew bl-inqas qawwa.
+920|Agħżel l-eqreb punt tat-tluq. Kollox jista' jinbidel aktar tard.
+921|Issettja bl-idejn…
+922|Issettja l-magna tiegħek ({}/{})
+923|Aqbeż
+924|Aqbeż dawn il-passi u fetaħ l-issettjar tal-apparat
+925|Sommarju
+926|L-apparat ġie miżjud. Agħfas Kompli biex tibda.
+927|L-issettjar inqara mill-kontrollur.
+928|X'magna għandek?
+929|Ta' min jiċċekkja
+930|mhux issettjat

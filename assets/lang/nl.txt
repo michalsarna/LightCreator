@@ -908,3 +908,24 @@
 907|Een GRBL 1.1-CO2-laser op een bed van 300 × 200 mm, nul vooraan links.
 908|Een K40-CO2-laser met GRBL-bord: 300 × 200 mm, nul in de linkerachterhoek (linksboven).
 909|Een diodelaser met Marlin-firmware (laserfunctie, S 0–255) op een bed van 400 × 400 mm.
+910|Terug
+911|Verbinding (optioneel)
+912|Voltooien
+913|Als de machine nu is aangesloten, kunnen het werkgebied en de snelheid uit de besturing worden gelezen.
+914|De lasermodus ($32) en de maximale S-waarde ($30) van de besturing zijn niet gelezen: ze worden gecontroleerd bij het verbinden.
+915|Naam en eenheden
+916|Volgende
+917|Er zijn geen marges of softwarematige grenzen ingesteld: het hele asbereik is het werkgebied. Stel ze in op de pagina Hardware als een klem of frame in de weg zit.
+918|Er is nog geen poort of host ingesteld: kies die in de apparaatinstellingen vóór het verbinden.
+919|Niets hier is op je machine geprobeerd: doe een eerste test met de laser uit of op het laagste vermogen.
+920|Kies het dichtstbijzijnde beginpunt. Alles kan later worden gewijzigd.
+921|Handmatig instellen…
+922|Stel je machine in ({}/{})
+923|Overslaan
+924|Deze stappen overslaan en de apparaatinstellingen openen
+925|Samenvatting
+926|Het apparaat is toegevoegd. Druk op Doorgaan om te beginnen.
+927|De instellingen zijn uit de besturing gelezen.
+928|Welke machine heb je?
+929|Het controleren waard
+930|niet ingesteld

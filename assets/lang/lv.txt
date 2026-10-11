@@ -908,3 +908,24 @@
 907|GRBL 1.1 CO2 lāzers uz 300 × 200 mm galda, nulle priekšā pa kreisi.
 908|K40 CO2 lāzers ar GRBL plati: 300 × 200 mm, nulle aizmugures kreisajā (augšējā kreisajā) stūrī.
 909|Diožu lāzers ar Marlin programmaparatūru (lāzera funkcija, S 0–255) uz 400 × 400 mm galda.
+910|Atpakaļ
+911|Savienojums (pēc izvēles)
+912|Pabeigt
+913|Ja iekārta tagad ir pievienota, tās darba zonu un ātrumu var nolasīt no kontroliera.
+914|Kontroliera lāzera režīms ($32) un lielākā S vērtība ($30) netika nolasīti: tie tiek pārbaudīti savienojoties.
+915|Nosaukums un vienības
+916|Tālāk
+917|Nav iestatītas malas vai programmatūras ierobežojumi: visa asu gājiena zona ir darba zona. Iestatiet tos lapā Aparatūra, ja traucē skava vai rāmis.
+918|Ports vai resursdators vēl nav iestatīts: izvēlieties to ierīces iestatījumos pirms savienošanas.
+919|Nekas šeit nav izmēģināts uz jūsu iekārtas: veiciet pirmo pārbaudi ar izslēgtu lāzeru vai mazāko jaudu.
+920|Izvēlieties tuvāko sākumpunktu. Visu var mainīt vēlāk.
+921|Iestatīt ar roku…
+922|Iestatiet savu iekārtu ({}/{})
+923|Izlaist
+924|Izlaist šos soļus un atvērt ierīces iestatījumus
+925|Kopsavilkums
+926|Ierīce pievienota. Nospiediet Turpināt, lai sāktu.
+927|Iestatījumi nolasīti no kontroliera.
+928|Kāda iekārta jums ir?
+929|Vērts pārbaudīt
+930|nav iestatīts

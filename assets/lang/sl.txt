@@ -908,3 +908,24 @@
 907|Laser CO2 GRBL 1.1 na mizi 300 × 200 mm, ničla spredaj levo.
 908|Laser CO2 K40 s ploščo GRBL: 300 × 200 mm, ničla v zadnjem levem (zgornjem levem) kotu.
 909|Diodni laser s strojno programsko opremo Marlin (laserska funkcija, S 0–255) na mizi 400 × 400 mm.
+910|Nazaj
+911|Povezava (neobvezno)
+912|Končaj
+913|Če je stroj zdaj povezan, je mogoče delovno območje in hitrost prebrati iz krmilnika.
+914|Laserski način ($32) in največja vrednost S ($30) krmilnika nista bila prebrana: preverita se ob povezavi.
+915|Ime in enote
+916|Naprej
+917|Ni nastavljenih robov ali programskih omejitev: celoten hod osi je delovno območje. Nastavite jih na strani Strojna oprema, če ovira spenjalo ali okvir.
+918|Vrata ali gostitelj še nista nastavljena: izberite ju v nastavitvah naprave pred povezavo.
+919|Nič od tega ni bilo preizkušeno na vašem stroju: opravite prvi preizkus z izklopljenim laserjem ali z najmanjšo močjo.
+920|Izberite najbližje izhodišče. Vse je mogoče pozneje spremeniti.
+921|Nastavi ročno…
+922|Nastavite svoj stroj ({}/{})
+923|Preskoči
+924|Preskoči te korake in odpri nastavitve naprave
+925|Povzetek
+926|Naprava je dodana. Pritisnite Nadaljuj za začetek.
+927|Nastavitve so bile prebrane iz krmilnika.
+928|Kakšen stroj imate?
+929|Vredno preveriti
+930|ni nastavljeno

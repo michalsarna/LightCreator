@@ -111,6 +111,8 @@ impl App {
         self.active = idx;
         self.doc.device = dev;
         self.pointer_align = false;
+        // The first-run setup belongs to the start screen.
+        self.wizard = None;
         self.seed_device_library();
         // An empty new document takes the layer speeds of the device; a loaded one keeps its own.
         if self.doc.shapes.is_empty() && self.path.is_none() {
@@ -227,9 +229,13 @@ impl App {
     }
 
     pub fn start_screen(&mut self, ui: &mut egui::Ui) {
-        // No profile yet: the user must create one before anything else.
+        // No profile yet: the user must create one before anything else. The first run goes through a short setup.
         if self.profiles.is_empty() && self.cfg.is_none() {
-            self.open_cfg_new();
+            if self.wizard_skipped {
+                self.open_cfg_new();
+            } else {
+                self.start_wizard();
+            }
         }
         let ctx = ui.ctx().clone();
         egui::CentralPanel::default().show(ui, |ui| {
@@ -356,6 +362,10 @@ impl App {
             if self.cfg.is_none() {
                 self.open_cfg_edit(self.active);
             }
+        }
+        // The first-run setup has its own window on the same draft.
+        if self.wizard.is_some() {
+            return;
         }
         let Some(mut cfg) = self.cfg.take() else { return };
         let must_create = self.profiles.is_empty();
@@ -1552,6 +1562,9 @@ impl App {
             if let Some(v) = reading.dynamic_power {
                 d.gcode.dynamic_power = v;
             }
+        }
+        if self.wizard.is_some() {
+            self.wizard_read_done = true;
         }
         self.status = trf("Read {} values from the device", &[&n]);
     }

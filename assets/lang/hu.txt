@@ -908,3 +908,24 @@
 907|GRBL 1.1 CO2 lézer 300 × 200 mm-es asztalon, nulla elöl balra.
 908|K40 CO2 lézer GRBL vezérlőpanellel: 300 × 200 mm, nulla a bal hátsó (bal felső) sarokban.
 909|Marlin firmware-es diódalézer (lézer funkció, S 0–255) 400 × 400 mm-es asztalon.
+910|Vissza
+911|Kapcsolat (nem kötelező)
+912|Kész
+913|Ha a gép most csatlakoztatva van, a munkaterülete és sebessége kiolvasható a vezérlőből.
+914|A vezérlő lézer módját ($32) és legnagyobb S értékét ($30) nem olvastuk ki: csatlakozáskor ellenőrizzük.
+915|Név és mértékegységek
+916|Tovább
+917|Nincs margó vagy szoftveres korlát beállítva: a teljes tengelytartomány a munkaterület. Állítsa be a Hardver oldalon, ha szorító vagy keret zavar.
+918|Még nincs port vagy gazda beállítva: csatlakozás előtt válassza ki az eszközbeállításokban.
+919|Itt semmit sem próbáltak ki az Ön gépén: az első tesztet kikapcsolt lézerrel vagy a legkisebb teljesítménnyel végezze.
+920|Válassza a legközelebbi kiindulási pontot. Mindent később is megváltoztathat.
+921|Beállítás kézzel…
+922|Állítsa be a gépét ({}/{})
+923|Kihagyás
+924|Lépések kihagyása és az eszközbeállítások megnyitása
+925|Összegzés
+926|Az eszköz hozzáadva. A kezdéshez nyomja meg a Folytatás gombot.
+927|A beállításokat kiolvastuk a vezérlőből.
+928|Milyen gépe van?
+929|Érdemes ellenőrizni
+930|nincs beállítva

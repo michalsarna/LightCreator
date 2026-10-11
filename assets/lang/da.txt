@@ -908,3 +908,24 @@
 907|En GRBL 1.1-CO2-laser på et 300 × 200 mm bord, nul foran til venstre.
 908|En K40 CO2-laser med GRBL-kontrolkort: 300 × 200 mm, nul i det bageste venstre (øverste venstre) hjørne.
 909|En diodelaser med Marlin-firmware (laserfunktion, S 0–255) på et 400 × 400 mm bord.
+910|Tilbage
+911|Forbindelse (valgfri)
+912|Færdig
+913|Hvis maskinen er tilsluttet nu, kan dens arbejdsflade og hastighed læses fra styringen.
+914|Styringens lasertilstand ($32) og maksimale S-værdi ($30) blev ikke læst: de tjekkes, når du opretter forbindelse.
+915|Navn og enheder
+916|Næste
+917|Der er ikke sat margener eller softwaregrænser: hele akseområdet er arbejdsfladen. Sæt dem på siden Hardware, hvis en klemme eller ramme er i vejen.
+918|Der er endnu ikke sat en port eller vært: vælg den i enhedsindstillingerne, før du forbinder.
+919|Intet her er prøvet på din maskine: lav en første test med laseren slukket eller på laveste effekt.
+920|Vælg det nærmeste udgangspunkt. Alt kan ændres senere.
+921|Opsæt i hånden…
+922|Opsæt din maskine ({}/{})
+923|Spring over
+924|Spring disse trin over og åbn enhedsindstillingerne
+925|Oversigt
+926|Enheden blev tilføjet. Tryk på Fortsæt for at starte.
+927|Indstillingerne blev læst fra styringen.
+928|Hvilken maskine har du?
+929|Værd at tjekke
+930|ikke sat

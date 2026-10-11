@@ -908,3 +908,24 @@
 907|Un làser CO2 GRBL 1.1 en una taula de 300 × 200 mm, zero davant a l'esquerra.
 908|Un làser CO2 K40 amb placa GRBL: 300 × 200 mm, zero a la cantonada del darrere a l'esquerra (a dalt a l'esquerra).
 909|Un làser de díode amb microprogramari Marlin (funció làser, S 0–255) en una taula de 400 × 400 mm.
+910|Enrere
+911|Connexió (opcional)
+912|Acaba
+913|Si la màquina és connectada ara, es poden llegir del controlador l'àrea de treball i la velocitat.
+914|El mode làser ($32) i el valor S màxim ($30) del controlador no s'han llegit: es comproven en connectar.
+915|Nom i unitats
+916|Següent
+917|No hi ha marges ni límits de programari: tot el recorregut dels eixos és l'àrea de treball. Definiu-los a la pàgina Maquinari si hi molesta una pinça o un marc.
+918|Encara no hi ha port ni amfitrió: trieu-lo a la configuració del dispositiu abans de connectar.
+919|Res d'això s'ha provat a la vostra màquina: feu una primera prova amb el làser apagat o a la potència mínima.
+920|Trieu el punt de partida més proper. Tot es pot canviar després.
+921|Configura a mà…
+922|Configureu la màquina ({}/{})
+923|Omet
+924|Omet aquests passos i obre la configuració del dispositiu
+925|Resum
+926|S'ha afegit el dispositiu. Premeu Continua per començar.
+927|La configuració s'ha llegit del controlador.
+928|Quina màquina teniu?
+929|Val la pena comprovar
+930|no definit

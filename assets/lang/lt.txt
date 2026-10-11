@@ -908,3 +908,24 @@
 907|GRBL 1.1 CO2 lazeris ant 300 × 200 mm stalo, nulis priekyje kairėje.
 908|K40 CO2 lazeris su GRBL plokšte: 300 × 200 mm, nulis galiniame kairiajame (viršutiniame kairiajame) kampe.
 909|Diodinis lazeris su Marlin programine įranga (lazerio funkcija, S 0–255) ant 400 × 400 mm stalo.
+910|Atgal
+911|Ryšys (neprivaloma)
+912|Baigti
+913|Jei staklės dabar prijungtos, jų darbo sritį ir greitį galima nuskaityti iš valdiklio.
+914|Valdiklio lazerio režimas ($32) ir didžiausia S vertė ($30) nebuvo nuskaityti: jie patikrinami prisijungus.
+915|Pavadinimas ir vienetai
+916|Toliau
+917|Nenustatytos paraštės ar programiniai apribojimai: visa ašių eiga yra darbo sritis. Nustatykite juos puslapyje Aparatinė įranga, jei trukdo spaustukas ar rėmas.
+918|Prievadas ar mazgas dar nenustatytas: pasirinkite jį įrenginio nustatymuose prieš jungiantis.
+919|Čia niekas nebuvo išbandyta jūsų staklėse: atlikite pirmąjį bandymą išjungę lazerį arba mažiausia galia.
+920|Pasirinkite artimiausią pradžios tašką. Viską galima vėliau keisti.
+921|Nustatyti rankiniu būdu…
+922|Nustatykite savo stakles ({}/{})
+923|Praleisti
+924|Praleisti šiuos žingsnius ir atidaryti įrenginio nustatymus
+925|Santrauka
+926|Įrenginys pridėtas. Paspauskite Tęsti, kad pradėtumėte.
+927|Nustatymai nuskaityti iš valdiklio.
+928|Kokias stakles turite?
+929|Verta patikrinti
+930|nenustatyta

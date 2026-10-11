@@ -908,3 +908,24 @@
 907|Laser CO2 GRBL 1.1 na stole 300 × 200 mm, nula vpredu vľavo.
 908|Laser CO2 K40 s riadiacou doskou GRBL: 300 × 200 mm, nula v ľavom zadnom (ľavom hornom) rohu.
 909|Diódový laser s firmvérom Marlin (funkcia laseru, S 0–255) na stole 400 × 400 mm.
+910|Späť
+911|Pripojenie (voliteľné)
+912|Dokončiť
+913|Ak je stroj práve pripojený, jeho pracovnú plochu a rýchlosť možno prečítať z riadiacej jednotky.
+914|Laserový režim ($32) a maximálna hodnota S ($30) riadiacej jednotky neboli prečítané: skontrolujú sa pri pripojení.
+915|Názov a jednotky
+916|Ďalej
+917|Nie sú nastavené okraje ani softvérové limity: celý rozsah osí je pracovná plocha. Nastavte ich na stránke Hardware, ak prekáža svorka alebo rám.
+918|Zatiaľ nie je nastavený port ani hostiteľ: vyberte ho v nastaveniach zariadenia pred pripojením.
+919|Nič z toho nebolo vyskúšané na vašom stroji: urobte prvý test s vypnutým laserom alebo na najmenší výkon.
+920|Vyberte najbližší východiskový bod. Všetko možno neskôr zmeniť.
+921|Nastaviť ručne…
+922|Nastavte svoj stroj ({}/{})
+923|Preskočiť
+924|Preskočiť tieto kroky a otvoriť nastavenia zariadenia
+925|Súhrn
+926|Zariadenie bolo pridané. Stlačte Pokračovať.
+927|Nastavenia boli prečítané z riadiacej jednotky.
+928|Aký máte stroj?
+929|Stojí za kontrolu
+930|nenastavené

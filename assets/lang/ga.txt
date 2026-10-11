@@ -908,3 +908,24 @@
 907|Léasair CO2 GRBL 1.1 ar leaba 300 × 200 mm, nialas ag an tosach ar chlé.
 908|Léasair CO2 K40 le bord GRBL: 300 × 200 mm, nialas sa chúinne cúil ar chlé (barr ar chlé).
 909|Léasair dé-óid le dochtearraí Marlin (gné léasair, S 0–255) ar leaba 400 × 400 mm.
+910|Ar ais
+911|Nasc (roghnach)
+912|Críochnaigh
+913|Má tá an meaisín ceangailte anois, is féidir a limistéar oibre agus a luas a léamh ón rialaitheoir.
+914|Níor léadh mód léasair ($32) agus uasluach S ($30) an rialaitheora: seiceáiltear iad nuair a cheanglaíonn tú.
+915|Ainm agus aonaid
+916|Ar aghaidh
+917|Níl imill ná teorainneacha bogearraí socraithe: is é raon iomlán na n-aiseanna an limistéar oibre. Socraigh iad ar an leathanach Crua-earraí má tá clampa nó fráma sa bhealach.
+918|Níl port ná óstach socraithe fós: roghnaigh é i socruithe an ghléis sula gceanglaíonn tú.
+919|Níor triaileadh aon rud anseo ar do mheaisín: déan céad tástáil le léasair múchta nó ag an gcumhacht is ísle.
+920|Roghnaigh an pointe tosaigh is gaire. Is féidir gach rud a athrú ina dhiaidh.
+921|Socraigh de láimh…
+922|Socraigh do mheaisín ({}/{})
+923|Scipeáil
+924|Scipeáil na céimeanna seo agus oscail socruithe an ghléis
+925|Achoimre
+926|Cuireadh an gléas leis. Brúigh Lean ar aghaidh chun tosú.
+927|Léadh na socruithe ón rialaitheoir.
+928|Cén meaisín atá agat?
+929|Fiú a sheiceáil
+930|gan socrú

@@ -908,3 +908,24 @@
 907	A GRBL 1.1 CO2 laser on a 300 × 200 mm bed, front-left zero.
 908	A K40 CO2 laser with a GRBL controller board: 300 × 200 mm, zero at the back-left (top-left) corner.
 909	A Marlin firmware diode laser (laser feature, S 0–255) on a 400 × 400 mm bed.
+910	Back
+911	Connection (optional)
+912	Finish
+913	If the machine is connected now, its work area and speed can be read from the controller.
+914	Laser mode ($32) and the maximum S value ($30) of the controller were not read: they are checked when you connect.
+915	Name and units
+916	Next
+917	No margins or software limits are set: the whole axis range is the work area. Set them in the Hardware page if a clamp or a frame is in the way.
+918	No port or host is set yet: choose it in the device settings before connecting.
+919	Nothing here has been tried on your machine: run a first test with the laser off or at the lowest power.
+920	Pick the closest starting point. You can change everything later.
+921	Set up by hand…
+922	Set up your machine ({}/{})
+923	Skip
+924	Skip these steps and open the device settings
+925	Summary
+926	The device was added. Press Continue to start.
+927	The settings were read from the controller.
+928	What machine do you have?
+929	Worth checking
+930	not set

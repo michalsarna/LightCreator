@@ -908,3 +908,24 @@
 907|Un laser CO2 GRBL 1.1 sur un plateau de 300 × 200 mm, zéro à l'avant gauche.
 908|Un laser CO2 K40 avec une carte GRBL : 300 × 200 mm, zéro dans le coin arrière gauche (en haut à gauche).
 909|Un laser à diode avec micrologiciel Marlin (fonction laser, S 0–255) sur un plateau de 400 × 400 mm.
+910|Retour
+911|Connexion (facultative)
+912|Terminer
+913|Si la machine est connectée maintenant, sa zone de travail et sa vitesse peuvent être lues depuis le contrôleur.
+914|Le mode laser ($32) et la valeur S maximale ($30) du contrôleur n'ont pas été lus : ils sont vérifiés à la connexion.
+915|Nom et unités
+916|Suivant
+917|Aucune marge ni limite logicielle n'est définie : toute la course des axes est la zone de travail. Définissez-les dans la page Matériel si une bride ou un cadre gêne.
+918|Aucun port ni hôte n'est encore défini : choisissez-le dans les réglages de l'appareil avant de vous connecter.
+919|Rien ici n'a été essayé sur votre machine : faites un premier essai laser éteint ou à la puissance minimale.
+920|Choisissez le point de départ le plus proche. Tout peut être changé plus tard.
+921|Configurer à la main…
+922|Configurez votre machine ({}/{})
+923|Passer
+924|Passer ces étapes et ouvrir les réglages de l'appareil
+925|Résumé
+926|L'appareil a été ajouté. Appuyez sur Continuer pour commencer.
+927|Les réglages ont été lus depuis le contrôleur.
+928|Quelle machine avez-vous ?
+929|À vérifier
+930|non défini

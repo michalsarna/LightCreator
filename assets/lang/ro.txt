@@ -908,3 +908,24 @@
 907|Un laser CO2 GRBL 1.1 pe o masă de 300 × 200 mm, zero în față stânga.
 908|Un laser CO2 K40 cu placă GRBL: 300 × 200 mm, zero în colțul din spate stânga (sus stânga).
 909|Un laser cu diodă cu firmware Marlin (funcție laser, S 0–255) pe o masă de 400 × 400 mm.
+910|Înapoi
+911|Conexiune (opțional)
+912|Terminat
+913|Dacă mașina este conectată acum, zona ei de lucru și viteza pot fi citite din controler.
+914|Modul laser ($32) și valoarea S maximă ($30) a controlerului nu au fost citite: se verifică la conectare.
+915|Nume și unități
+916|Înainte
+917|Nu sunt setate margini sau limite software: întreaga cursă a axelor este zona de lucru. Setați-le în pagina Hardware dacă o clemă sau un cadru stă în cale.
+918|Nu este încă setat un port sau o gazdă: alegeți-l în setările dispozitivului înainte de conectare.
+919|Nimic de aici nu a fost încercat pe mașina dumneavoastră: faceți un prim test cu laserul oprit sau la puterea minimă.
+920|Alegeți cel mai apropiat punct de plecare. Totul se poate schimba mai târziu.
+921|Configurează manual…
+922|Configurați-vă mașina ({}/{})
+923|Omite
+924|Omite acești pași și deschide setările dispozitivului
+925|Rezumat
+926|Dispozitivul a fost adăugat. Apăsați Continuă pentru a începe.
+927|Setările au fost citite din controler.
+928|Ce mașină aveți?
+929|Merită verificat
+930|nesetat

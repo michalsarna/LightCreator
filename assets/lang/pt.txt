@@ -908,3 +908,24 @@
 907|Um laser CO2 GRBL 1.1 numa mesa de 300 × 200 mm, zero à frente à esquerda.
 908|Um laser CO2 K40 com placa GRBL: 300 × 200 mm, zero no canto traseiro esquerdo (superior esquerdo).
 909|Um laser de díodo com firmware Marlin (função laser, S 0–255) numa mesa de 400 × 400 mm.
+910|Voltar
+911|Ligação (opcional)
+912|Concluir
+913|Se a máquina está ligada agora, a sua área de trabalho e velocidade podem ser lidas do controlador.
+914|O modo laser ($32) e o valor S máximo ($30) do controlador não foram lidos: são verificados ao ligar.
+915|Nome e unidades
+916|Seguinte
+917|Não há margens nem limites de software: todo o curso dos eixos é a área de trabalho. Defina-os na página Hardware se uma garra ou moldura estorvar.
+918|Ainda não há porta nem anfitrião: escolha-o nas definições do dispositivo antes de ligar.
+919|Nada disto foi testado na sua máquina: faça um primeiro teste com o laser desligado ou à potência mínima.
+920|Escolha o ponto de partida mais próximo. Tudo pode ser alterado depois.
+921|Configurar à mão…
+922|Configure a sua máquina ({}/{})
+923|Ignorar
+924|Ignorar estes passos e abrir as definições do dispositivo
+925|Resumo
+926|O dispositivo foi adicionado. Prima Continuar para começar.
+927|As definições foram lidas do controlador.
+928|Que máquina tem?
+929|Vale a pena verificar
+930|não definido

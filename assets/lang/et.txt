@@ -908,3 +908,24 @@
 907|GRBL 1.1 CO2-laser 300 × 200 mm laual, null ees vasakul.
 908|K40 CO2-laser GRBL-i juhtplaadiga: 300 × 200 mm, null tagumises vasakus (vasakul ülal) nurgas.
 909|Marlini püsivaraga dioodlaser (lasrifunktsioon, S 0–255) 400 × 400 mm laual.
+910|Tagasi
+911|Ühendus (valikuline)
+912|Valmis
+913|Kui masin on praegu ühendatud, saab selle tööala ja kiiruse kontrollerist lugeda.
+914|Kontrolleri lasterežiimi ($32) ja suurimat S-väärtust ($30) ei loetud: need kontrollitakse ühendamisel.
+915|Nimi ja ühikud
+916|Edasi
+917|Veeriseid ega tarkvarapiire pole seatud: kogu telgede ulatus on tööala. Sea need lehel Riistvara, kui klamber või raam segab.
+918|Porti ega hosti pole veel seatud: vali see enne ühendamist seadme seadetes.
+919|Midagi siin pole sinu masinal proovitud: tee esimene test välja lülitatud laseri või väikseima võimsusega.
+920|Vali lähim lähtepunkt. Kõike saab hiljem muuta.
+921|Sea käsitsi…
+922|Seadista oma masin ({}/{})
+923|Jäta vahele
+924|Jäta need sammud vahele ja ava seadme seaded
+925|Kokkuvõte
+926|Seade lisati. Alustamiseks vajuta Jätka.
+927|Seaded loeti kontrollerist.
+928|Mis masin sul on?
+929|Tasub kontrollida
+930|pole seatud
