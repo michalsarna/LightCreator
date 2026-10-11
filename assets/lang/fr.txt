@@ -889,3 +889,22 @@
 888|Écrire $101 dans le contrôleur…
 889|Comme une boîte ou un cylindre posé sur la table : les déplacements au-dessus ou au-dessous de la plage sont libres.
 890|Seulement à ces hauteurs (Z)
+891|Un profil vide
+892|Une copie de ce profil
+893|Ajouter un appareil
+894|Copié vers {}
+895|Exporter…
+896|Profil {} importé
+897|Importer…
+898|Lire un profil depuis un fichier
+899|Enregistrer ce profil dans un fichier
+900|Profil enregistré dans {}
+901|Points de départ : machines générales avec des chiffres typiques. Vérifiez-les avec la documentation de votre machine.
+902|Laser à diode GRBL 400 × 400
+903|Laser CO2 GRBL 300 × 200
+904|Conversion K40 (GRBL) 300 × 200
+905|Laser à diode Marlin 400 × 400
+906|Un laser à diode GRBL 1.1 sur un plateau de 400 × 400 mm, zéro à l'avant gauche, puissance dynamique.
+907|Un laser CO2 GRBL 1.1 sur un plateau de 300 × 200 mm, zéro à l'avant gauche.
+908|Un laser CO2 K40 avec une carte GRBL : 300 × 200 mm, zéro dans le coin arrière gauche (en haut à gauche).
+909|Un laser à diode avec micrologiciel Marlin (fonction laser, S 0–255) sur un plateau de 400 × 400 mm.

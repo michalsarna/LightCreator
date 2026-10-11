@@ -889,3 +889,22 @@
 888|Scríobh $101 chuig an rialaitheoir…
 889|Cosúil le bosca nó sorcóir ina sheasamh ar an mbord: tá gluaiseachtaí os cionn nó faoi bhun an raoin saor.
 890|Ag na hairde seo amháin (Z)
+891|Próifíl folamh
+892|Cóip den phróifíl seo
+893|Cuir gléas leis
+894|Cóipeáilte chuig {}
+895|Onnmhairigh…
+896|Iompórtáladh an phróifíl {}
+897|Iompórtáil…
+898|Léigh próifíl ó chomhad
+899|Sábháil an phróifíl seo i gcomhad
+900|Próifíl sábháilte i {}
+901|Pointí tosaigh: meaisíní ginearálta le huimhreacha tipiciúla. Seiceáil iad le doiciméadú do mheaisín.
+902|Léasair dé-óid GRBL 400 × 400
+903|Léasair CO2 GRBL 300 × 200
+904|Tiontú K40 (GRBL) 300 × 200
+905|Léasair dé-óid Marlin 400 × 400
+906|Léasair dé-óid GRBL 1.1 ar leaba 400 × 400 mm, nialas ag an tosach ar chlé, cumhacht dhinimiciúil.
+907|Léasair CO2 GRBL 1.1 ar leaba 300 × 200 mm, nialas ag an tosach ar chlé.
+908|Léasair CO2 K40 le bord GRBL: 300 × 200 mm, nialas sa chúinne cúil ar chlé (barr ar chlé).
+909|Léasair dé-óid le dochtearraí Marlin (gné léasair, S 0–255) ar leaba 400 × 400 mm.

@@ -889,3 +889,22 @@
 888|Skrifa $101 í stýringuna…
 889|Eins og kassi eða sívalningur á borðinu: hreyfingar yfir eða undir bilinu eru frjálsar.
 890|Aðeins í þessum hæðum (Z)
+891|Autt snið
+892|Afrit af þessu sniði
+893|Bæta við tæki
+894|Afritað í {}
+895|Flytja út…
+896|Sniðið {} flutt inn
+897|Flytja inn…
+898|Lesa snið úr skrá
+899|Vista þetta snið í skrá
+900|Snið vistað í {}
+901|Upphafspunktar: almennar vélar með dæmigerðum tölum. Berðu þá saman við gögn vélarinnar þinnar.
+902|GRBL díóðuleysir 400 × 400
+903|GRBL CO2 leysir 300 × 200
+904|K40 breyting (GRBL) 300 × 200
+905|Marlin díóðuleysir 400 × 400
+906|GRBL 1.1 díóðuleysir á 400 × 400 mm borði, núll fremst til vinstri, breytilegt afl.
+907|GRBL 1.1 CO2 leysir á 300 × 200 mm borði, núll fremst til vinstri.
+908|K40 CO2 leysir með GRBL stjórnborði: 300 × 200 mm, núll í aftara vinstra (efra vinstra) horni.
+909|Díóðuleysir með Marlin fastbúnaði (leysieiginleiki, S 0–255) á 400 × 400 mm borði.

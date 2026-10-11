@@ -889,3 +889,22 @@
 888|$101 beírása a vezérlőbe…
 889|Mint az asztalon álló doboz vagy henger: a tartomány feletti vagy alatti mozgások szabadok.
 890|Csak ezeken a magasságokon (Z)
+891|Üres profil
+892|Ennek a profilnak a másolata
+893|Eszköz hozzáadása
+894|Átmásolva ide: {}
+895|Exportálás…
+896|A(z) {} profil importálva
+897|Importálás…
+898|Profil beolvasása fájlból
+899|A profil mentése fájlba
+900|A profil mentve ide: {}
+901|Kiindulási pontok: általános gépek tipikus számokkal. Ellenőrizze őket a gép dokumentációjával.
+902|GRBL diódalézer 400 × 400
+903|GRBL CO2 lézer 300 × 200
+904|K40 átalakítás (GRBL) 300 × 200
+905|Marlin diódalézer 400 × 400
+906|GRBL 1.1 diódalézer 400 × 400 mm-es asztalon, nulla elöl balra, dinamikus teljesítmény.
+907|GRBL 1.1 CO2 lézer 300 × 200 mm-es asztalon, nulla elöl balra.
+908|K40 CO2 lézer GRBL vezérlőpanellel: 300 × 200 mm, nulla a bal hátsó (bal felső) sarokban.
+909|Marlin firmware-es diódalézer (lézer funkció, S 0–255) 400 × 400 mm-es asztalon.

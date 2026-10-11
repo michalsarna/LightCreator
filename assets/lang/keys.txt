@@ -889,3 +889,22 @@
 888	Write $101 to the controller…
 889	Like a box or a cylinder standing on the table: moves above or below the range are free.
 890	Only at these heights (Z)
+891	A blank profile
+892	A copy of this profile
+893	Add a device
+894	Copied to {}
+895	Export…
+896	Imported the profile {}
+897	Import…
+898	Read a profile from a file
+899	Save this profile to a file
+900	Saved the profile to {}
+901	Starting points: general machines with typical numbers. Check them against your machine's documentation.
+902	GRBL diode laser 400 × 400
+903	GRBL CO2 laser 300 × 200
+904	K40 conversion (GRBL) 300 × 200
+905	Marlin diode laser 400 × 400
+906	A GRBL 1.1 diode laser on a 400 × 400 mm bed, front-left zero, dynamic power.
+907	A GRBL 1.1 CO2 laser on a 300 × 200 mm bed, front-left zero.
+908	A K40 CO2 laser with a GRBL controller board: 300 × 200 mm, zero at the back-left (top-left) corner.
+909	A Marlin firmware diode laser (laser feature, S 0–255) on a 400 × 400 mm bed.

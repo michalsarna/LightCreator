@@ -889,3 +889,22 @@
 888|Ikteb $101 fil-kontrollur…
 889|Bħal kaxxa jew ċilindru fuq il-mejda: il-movimenti 'l fuq jew 'l isfel mill-medda huma ħielsa.
 890|Biss f'dawn l-għoli (Z)
+891|Profil vojt
+892|Kopja ta' dan il-profil
+893|Żid apparat
+894|Ikkupjat fi {}
+895|Esporta…
+896|Il-profil {} ġie importat
+897|Importa…
+898|Aqra profil minn fajl
+899|Aħżen dan il-profil f'fajl
+900|Profil maħżun f'{}
+901|Punti tat-tluq: magni ġenerali b'numri tipiċi. Iċċekkjahom mad-dokumentazzjoni tal-magna tiegħek.
+902|Laser dijodu GRBL 400 × 400
+903|Laser CO2 GRBL 300 × 200
+904|Konverżjoni K40 (GRBL) 300 × 200
+905|Laser dijodu Marlin 400 × 400
+906|Laser dijodu GRBL 1.1 fuq mejda ta' 400 × 400 mm, żero quddiem fix-xellug, qawwa dinamika.
+907|Laser CO2 GRBL 1.1 fuq mejda ta' 300 × 200 mm, żero quddiem fix-xellug.
+908|Laser CO2 K40 b'bord GRBL: 300 × 200 mm, żero fil-kantuniera ta' wara fix-xellug (fuq fix-xellug).
+909|Laser dijodu b'firmware Marlin (funzjoni laser, S 0–255) fuq mejda ta' 400 × 400 mm.

@@ -1080,6 +1080,8 @@ pub struct Device {
     pub zones: Vec<Zone>,
     /// A rotary attachment (chuck or roller) that turns the work.
     pub rotary: Rotary,
+    /// Notes that came with the template the profile was made from (shown, not edited).
+    pub template_notes: String,
 }
 
 /// How the rotation is written into the G-code.
@@ -1240,6 +1242,8 @@ struct DeviceWire {
     zones: Vec<Zone>,
     #[serde(default)]
     rotary: Rotary,
+    #[serde(default)]
+    template_notes: String,
     // Flat fields of profiles saved before the groups existed.
     origin: Option<Origin>,
     bed_w: Option<f64>,
@@ -1303,6 +1307,7 @@ impl From<DeviceWire> for Device {
             macros: w.macros,
             zones: w.zones,
             rotary: w.rotary,
+            template_notes: w.template_notes,
         }
     }
 }
@@ -1503,6 +1508,7 @@ impl Default for Device {
             macros: vec![],
             zones: vec![],
             rotary: Rotary::default(),
+            template_notes: String::new(),
         }
     }
 }

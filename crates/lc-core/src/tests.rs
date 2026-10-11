@@ -1695,3 +1695,92 @@ fn a_zone_with_a_height_range_only_stops_moves_at_those_heights_and_only_with_a_
     let no_range: Zone = serde_json::from_str(r#"{"name":"x","shape":{"Rect":{"x":0.0,"y":0.0,"w":1.0,"h":1.0}}}"#).unwrap();
     assert!(no_range.enabled && no_range.z_range.is_none());
 }
+
+#[test]
+fn every_template_makes_a_valid_profile_with_its_own_numbers() {
+    for t in profiles::TEMPLATES {
+        let d = profiles::template(t.id);
+        assert_eq!(profiles::validate(&d), Ok(()), "{}", t.id);
+        assert!(d.name.contains(&t.name[..4]) || !d.name.is_empty());
+    }
+    let co2 = profiles::template("grbl-co2-300x200");
+    assert_eq!((co2.area.bed_w, co2.area.bed_h, co2.laser()), (300.0, 200.0, LaserKind::Co2));
+    let k40 = profiles::template("grbl-k40-300x200");
+    assert_eq!((k40.axes.origin, k40.laser()), (Origin::BackLeft, LaserKind::Co2));
+    assert!(k40.template_notes.contains("top-left"));
+    let marlin = profiles::template("marlin-diode");
+    assert_eq!((marlin.controller, marlin.s_max()), (Controller::Marlin, 255.0));
+    // An unknown id is the plain GRBL diode machine.
+    assert_eq!(profiles::template("nope").controller, Controller::Grbl);
+    // Names are distinct, so the list can be told apart.
+    let mut names: Vec<&str> = profiles::TEMPLATES.iter().map(|t| t.name).collect();
+    names.dedup();
+    assert_eq!(names.len(), profiles::TEMPLATES.len());
+}
+
+#[test]
+fn copies_get_a_free_name() {
+    let taken = vec!["Laser".to_string(), "Laser (copy)".to_string()];
+    assert_eq!(profiles::copy_name("Laser", &[]), "Laser (copy)");
+    assert_eq!(profiles::copy_name("Laser", &taken), "Laser (copy 2)");
+    assert_eq!(profiles::copy_name(" Laser ", &taken), "Laser (copy 2)");
+}
+
+#[test]
+fn a_profile_file_round_trips_without_the_port_and_old_files_are_read() {
+    let mut d = profiles::template("grbl-k40-300x200");
+    d.connection.port = "/dev/tty.usbserial-1410".into();
+    d.connection.usb_id = "1a86:7523".into();
+    d.macros = vec![Macro { name: "Park".into(), code: "G0 X0 Y0".into() }];
+    d.zones = vec![Zone { name: "Clamp".into(), enabled: true, shape: ZoneShape::Circle { x: 10.0, y: 10.0, r: 5.0 }, z_range: None }];
+    let text = profiles::export_profile(&d, "v0.0.11");
+    assert!(text.contains("\"format\": 1") && !text.contains("usbserial"), "the port stays at home");
+    let back = profiles::import_profile(&text).unwrap();
+    d.connection.port.clear();
+    assert_eq!(back, d);
+    // A bare profile, as the program keeps it, is accepted too (older exports).
+    let bare = profiles::import_profile(&serde_json::to_string(&d).unwrap()).unwrap();
+    assert_eq!(bare, d);
+    // An even older flat profile.
+    let flat = profiles::import_profile(OLD_PROFILE).unwrap();
+    assert_eq!(flat.area.bed_w, 300.0);
+}
+
+#[test]
+fn a_bad_profile_file_gives_a_clear_message_and_never_a_panic() {
+    let ok = profiles::export_profile(&Device::default(), "v0.0.11");
+    let err = |t: &str| profiles::import_profile(t).unwrap_err();
+    assert!(err("hello").contains("not a profile file"));
+    assert!(err("").contains("not a profile file"));
+    assert!(err("{\"profile\": 5}").contains("cannot be read"));
+    assert!(err(&"x".repeat(profiles::MAX_PROFILE_FILE + 1)).contains("larger"));
+    // A newer format is refused with the reason.
+    let newer = ok.replace("\"format\": 1", "\"format\": 9");
+    assert!(err(&newer).contains("newer version"));
+    // Values out of range.
+    let edit = |f: &dyn Fn(&mut serde_json::Value)| -> String {
+        let mut v: serde_json::Value = serde_json::from_str(&ok).unwrap();
+        f(&mut v);
+        profiles::import_profile(&v.to_string()).unwrap_err()
+    };
+    assert!(edit(&|v| v["profile"]["area"]["bed_w"] = 1e9.into()).contains("work area"));
+    assert!(edit(&|v| v["profile"]["area"]["bed_h"] = (-5.0).into()).contains("work area"));
+    assert!(edit(&|v| v["profile"]["name"] = "".into()).contains("name"));
+    assert!(edit(&|v| v["profile"]["name"] = "x".repeat(200).into()).contains("name"));
+    assert!(edit(&|v| v["profile"]["name"] = "a\u{7}b".into()).contains("name"));
+    assert!(edit(&|v| v["profile"]["heads"][0]["s_max"] = 0.0.into()).contains("laser head"));
+    assert!(edit(&|v| v["profile"]["connection"]["baud"] = 5.into()).contains("connection"));
+    assert!(edit(&|v| v["profile"]["connection"]["usb_id"] = "nonsense".into()).contains("connection"));
+    assert!(edit(&|v| v["profile"]["gcode"]["preamble"] = "G21\u{1b}[2J".into()).contains("G-code"));
+    assert!(edit(&|v| v["profile"]["gcode"]["hooks"]["layer_start"] = serde_json::json!({"enabled": true, "code": "M117 {nope}"})).contains("hook"));
+    assert!(edit(&|v| v["profile"]["macros"] = serde_json::json!([{"name": "A", "code": "@include(A)"}])).contains("macro"));
+    assert!(edit(&|v| v["profile"]["zones"] = serde_json::json!([{"name": "z", "shape": {"Circle": {"x": 0.0, "y": 0.0, "r": 1e12}}}])).contains("zone"));
+    assert!(edit(&|v| v["profile"]["jog_step"] = 0.0.into()).contains("jog"));
+    // Unknown fields are ignored, and a name with a path is just a name.
+    let mut v: serde_json::Value = serde_json::from_str(&ok).unwrap();
+    v["profile"]["something_new"] = "from a later version".into();
+    v["profile"]["name"] = "../../etc/passwd".into();
+    v["profile"]["connection"]["port"] = "/etc/passwd".into();
+    let d = profiles::import_profile(&v.to_string()).unwrap();
+    assert!(d.connection.port.is_empty(), "no path from the file reaches a port");
+}

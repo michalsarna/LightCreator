@@ -889,3 +889,22 @@
 888|Escriu $101 al controlador…
 889|Com una caixa o un cilindre sobre la taula: els moviments per sobre o per sota de l'interval són lliures.
 890|Només a aquestes altures (Z)
+891|Un perfil en blanc
+892|Una còpia d'aquest perfil
+893|Afegeix un dispositiu
+894|Copiat a {}
+895|Exporta…
+896|S'ha importat el perfil {}
+897|Importa…
+898|Llegeix un perfil d'un fitxer
+899|Desa aquest perfil en un fitxer
+900|Perfil desat a {}
+901|Punts de partida: màquines generals amb números típics. Comproveu-los amb la documentació de la vostra màquina.
+902|Làser de díode GRBL 400 × 400
+903|Làser CO2 GRBL 300 × 200
+904|Conversió K40 (GRBL) 300 × 200
+905|Làser de díode Marlin 400 × 400
+906|Un làser de díode GRBL 1.1 en una taula de 400 × 400 mm, zero davant a l'esquerra, potència dinàmica.
+907|Un làser CO2 GRBL 1.1 en una taula de 300 × 200 mm, zero davant a l'esquerra.
+908|Un làser CO2 K40 amb placa GRBL: 300 × 200 mm, zero a la cantonada del darrere a l'esquerra (a dalt a l'esquerra).
+909|Un làser de díode amb microprogramari Marlin (funció làser, S 0–255) en una taula de 400 × 400 mm.

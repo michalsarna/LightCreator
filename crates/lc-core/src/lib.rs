@@ -15,6 +15,7 @@ pub mod grbl_settings;
 pub mod materials;
 pub mod ops;
 pub mod pdf;
+pub mod profiles;
 pub mod raster;
 pub mod ser2net;
 pub mod svg;

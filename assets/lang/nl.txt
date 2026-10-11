@@ -889,3 +889,22 @@
 888|$101 naar de besturing schrijven…
 889|Als een doos of cilinder op de tafel: bewegingen boven of onder het bereik zijn vrij.
 890|Alleen op deze hoogten (Z)
+891|Een leeg profiel
+892|Een kopie van dit profiel
+893|Apparaat toevoegen
+894|Gekopieerd naar {}
+895|Exporteren…
+896|Profiel {} geïmporteerd
+897|Importeren…
+898|Een profiel uit een bestand lezen
+899|Dit profiel in een bestand opslaan
+900|Profiel opgeslagen in {}
+901|Beginpunten: algemene machines met typische getallen. Controleer ze aan de hand van de documentatie van je machine.
+902|GRBL-diodelaser 400 × 400
+903|GRBL-CO2-laser 300 × 200
+904|K40-ombouw (GRBL) 300 × 200
+905|Marlin-diodelaser 400 × 400
+906|Een GRBL 1.1-diodelaser op een bed van 400 × 400 mm, nul vooraan links, dynamisch vermogen.
+907|Een GRBL 1.1-CO2-laser op een bed van 300 × 200 mm, nul vooraan links.
+908|Een K40-CO2-laser met GRBL-bord: 300 × 200 mm, nul in de linkerachterhoek (linksboven).
+909|Een diodelaser met Marlin-firmware (laserfunctie, S 0–255) op een bed van 400 × 400 mm.

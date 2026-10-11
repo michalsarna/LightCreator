@@ -889,3 +889,22 @@
 888|Scrie $101 în controler…
 889|Ca o cutie sau un cilindru pe masă: mișcările deasupra sau sub interval sunt libere.
 890|Doar la aceste înălțimi (Z)
+891|Un profil gol
+892|O copie a acestui profil
+893|Adaugă un dispozitiv
+894|Copiat în {}
+895|Exportă…
+896|Profilul {} a fost importat
+897|Importă…
+898|Citește un profil dintr-un fișier
+899|Salvează acest profil într-un fișier
+900|Profil salvat în {}
+901|Puncte de plecare: mașini generale cu numere tipice. Verificați-le cu documentația mașinii dumneavoastră.
+902|Laser cu diodă GRBL 400 × 400
+903|Laser CO2 GRBL 300 × 200
+904|Conversie K40 (GRBL) 300 × 200
+905|Laser cu diodă Marlin 400 × 400
+906|Un laser cu diodă GRBL 1.1 pe o masă de 400 × 400 mm, zero în față stânga, putere dinamică.
+907|Un laser CO2 GRBL 1.1 pe o masă de 300 × 200 mm, zero în față stânga.
+908|Un laser CO2 K40 cu placă GRBL: 300 × 200 mm, zero în colțul din spate stânga (sus stânga).
+909|Un laser cu diodă cu firmware Marlin (funcție laser, S 0–255) pe o masă de 400 × 400 mm.

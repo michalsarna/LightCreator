@@ -889,3 +889,22 @@
 888|Zapiši $101 v krmilnik…
 889|Kot škatla ali valj na mizi: premiki nad ali pod razponom so prosti.
 890|Samo na teh višinah (Z)
+891|Prazen profil
+892|Kopija tega profila
+893|Dodaj napravo
+894|Kopirano v {}
+895|Izvozi…
+896|Profil {} uvožen
+897|Uvozi…
+898|Preberi profil iz datoteke
+899|Shrani ta profil v datoteko
+900|Profil shranjen v {}
+901|Izhodišča: splošni stroji s tipičnimi števili. Preverite jih z dokumentacijo svojega stroja.
+902|Diodni laser GRBL 400 × 400
+903|Laser CO2 GRBL 300 × 200
+904|Predelava K40 (GRBL) 300 × 200
+905|Diodni laser Marlin 400 × 400
+906|Diodni laser GRBL 1.1 na mizi 400 × 400 mm, ničla spredaj levo, dinamična moč.
+907|Laser CO2 GRBL 1.1 na mizi 300 × 200 mm, ničla spredaj levo.
+908|Laser CO2 K40 s ploščo GRBL: 300 × 200 mm, ničla v zadnjem levem (zgornjem levem) kotu.
+909|Diodni laser s strojno programsko opremo Marlin (laserska funkcija, S 0–255) na mizi 400 × 400 mm.

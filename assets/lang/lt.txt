@@ -889,3 +889,22 @@
 888|Įrašyti $101 į valdiklį…
 889|Kaip dėžė ar cilindras ant stalo: judesiai virš ar žemiau intervalo laisvi.
 890|Tik šiuose aukščiuose (Z)
+891|Tuščias profilis
+892|Šio profilio kopija
+893|Pridėti įrenginį
+894|Nukopijuota į {}
+895|Eksportuoti…
+896|Profilis {} importuotas
+897|Importuoti…
+898|Nuskaityti profilį iš failo
+899|Išsaugoti šį profilį faile
+900|Profilis išsaugotas: {}
+901|Pradiniai taškai: bendrosios staklės su tipiniais skaičiais. Patikrinkite juos pagal savo staklių dokumentaciją.
+902|GRBL diodinis lazeris 400 × 400
+903|GRBL CO2 lazeris 300 × 200
+904|K40 pertvarkymas (GRBL) 300 × 200
+905|Marlin diodinis lazeris 400 × 400
+906|GRBL 1.1 diodinis lazeris ant 400 × 400 mm stalo, nulis priekyje kairėje, dinaminė galia.
+907|GRBL 1.1 CO2 lazeris ant 300 × 200 mm stalo, nulis priekyje kairėje.
+908|K40 CO2 lazeris su GRBL plokšte: 300 × 200 mm, nulis galiniame kairiajame (viršutiniame kairiajame) kampe.
+909|Diodinis lazeris su Marlin programine įranga (lazerio funkcija, S 0–255) ant 400 × 400 mm stalo.

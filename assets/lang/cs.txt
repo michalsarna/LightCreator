@@ -889,3 +889,22 @@
 888|Zapsat $101 do řídicí jednotky…
 889|Jako krabice nebo válec stojící na stole: pohyby nad rozsahem nebo pod ním jsou volné.
 890|Jen v těchto výškách (Z)
+891|Prázdný profil
+892|Kopie tohoto profilu
+893|Přidat zařízení
+894|Zkopírováno do {}
+895|Exportovat…
+896|Profil {} importován
+897|Importovat…
+898|Načíst profil ze souboru
+899|Uložit tento profil do souboru
+900|Profil uložen do {}
+901|Výchozí body: obecné stroje s typickými čísly. Ověřte je v dokumentaci svého stroje.
+902|Diodový laser GRBL 400 × 400
+903|Laser CO2 GRBL 300 × 200
+904|Přestavba K40 (GRBL) 300 × 200
+905|Diodový laser Marlin 400 × 400
+906|Diodový laser GRBL 1.1 na stole 400 × 400 mm, nula vpředu vlevo, dynamický výkon.
+907|Laser CO2 GRBL 1.1 na stole 300 × 200 mm, nula vpředu vlevo.
+908|Laser CO2 K40 s řídicí deskou GRBL: 300 × 200 mm, nula v levém zadním (levém horním) rohu.
+909|Diodový laser s firmwarem Marlin (funkce laseru, S 0–255) na stole 400 × 400 mm.

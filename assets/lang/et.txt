@@ -889,3 +889,22 @@
 888|Kirjuta $101 kontrollerisse…
 889|Nagu laual seisev kast või silinder: liikumised vahemikust kõrgemal või madalamal on vabad.
 890|Ainult nendel kõrgustel (Z)
+891|Tühi profiil
+892|Selle profiili koopia
+893|Lisa seade
+894|Kopeeritud: {}
+895|Ekspordi…
+896|Profiil {} imporditud
+897|Impordi…
+898|Loe profiil failist
+899|Salvesta see profiil faili
+900|Profiil salvestatud: {}
+901|Lähtepunktid: üldised masinad tüüpiliste arvudega. Kontrolli neid oma masina dokumentatsiooniga.
+902|GRBL-i dioodlaser 400 × 400
+903|GRBL-i CO2-laser 300 × 200
+904|K40 ümberehitus (GRBL) 300 × 200
+905|Marlini dioodlaser 400 × 400
+906|GRBL 1.1 dioodlaser 400 × 400 mm laual, null ees vasakul, dünaamiline võimsus.
+907|GRBL 1.1 CO2-laser 300 × 200 mm laual, null ees vasakul.
+908|K40 CO2-laser GRBL-i juhtplaadiga: 300 × 200 mm, null tagumises vasakus (vasakul ülal) nurgas.
+909|Marlini püsivaraga dioodlaser (lasrifunktsioon, S 0–255) 400 × 400 mm laual.

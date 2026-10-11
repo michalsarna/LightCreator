@@ -889,3 +889,22 @@
 888|Ierakstīt $101 kontrolierī…
 889|Kā kaste vai cilindrs uz galda: kustības virs vai zem diapazona ir brīvas.
 890|Tikai šajos augstumos (Z)
+891|Tukšs profils
+892|Šī profila kopija
+893|Pievienot ierīci
+894|Nokopēts uz {}
+895|Eksportēt…
+896|Profils {} importēts
+897|Importēt…
+898|Nolasīt profilu no faila
+899|Saglabāt šo profilu failā
+900|Profils saglabāts: {}
+901|Sākumpunkti: vispārīgas iekārtas ar tipiskiem skaitļiem. Pārbaudiet tos pēc savas iekārtas dokumentācijas.
+902|GRBL diožu lāzers 400 × 400
+903|GRBL CO2 lāzers 300 × 200
+904|K40 pārbūve (GRBL) 300 × 200
+905|Marlin diožu lāzers 400 × 400
+906|GRBL 1.1 diožu lāzers uz 400 × 400 mm galda, nulle priekšā pa kreisi, dinamiska jauda.
+907|GRBL 1.1 CO2 lāzers uz 300 × 200 mm galda, nulle priekšā pa kreisi.
+908|K40 CO2 lāzers ar GRBL plati: 300 × 200 mm, nulle aizmugures kreisajā (augšējā kreisajā) stūrī.
+909|Diožu lāzers ar Marlin programmaparatūru (lāzera funkcija, S 0–255) uz 400 × 400 mm galda.

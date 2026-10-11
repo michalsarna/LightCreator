@@ -310,6 +310,8 @@ pub struct App {
     pub single_axis_homing: bool,
     /// The Firmware ($$) page.
     pub fw: crate::firmware_ui::FwUi,
+    /// The window with the templates for a new device is open.
+    pub show_templates: bool,
     /// The focus beam is on.
     pub focus_on: bool,
     /// The warning about macros has been answered in this session.
@@ -500,6 +502,7 @@ impl App {
             connect_actions_at: None,
             single_axis_homing: false,
             fw: Default::default(),
+            show_templates: false,
             focus_on: false,
             macros_ok: false,
             pointer_align: false,
@@ -1836,6 +1839,7 @@ impl App {
         self.fw_window(ctx);
         self.stall_window(ctx);
         self.fw_windows(ctx);
+        self.template_window(ctx);
         self.material_edit_window(ctx);
         self.labels_window(ctx);
         self.merge_dialog(ctx);

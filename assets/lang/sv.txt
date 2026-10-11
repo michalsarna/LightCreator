@@ -889,3 +889,22 @@
 888|Skriv $101 till styrenheten…
 889|Som en låda eller en cylinder på bordet: rörelser ovanför eller under intervallet är fria.
 890|Bara på dessa höjder (Z)
+891|En tom profil
+892|En kopia av den här profilen
+893|Lägg till en enhet
+894|Kopierad till {}
+895|Exportera…
+896|Profilen {} importerad
+897|Importera…
+898|Läs en profil från en fil
+899|Spara den här profilen i en fil
+900|Profilen sparad i {}
+901|Utgångspunkter: allmänna maskiner med typiska tal. Kontrollera dem mot din maskins dokumentation.
+902|GRBL-diodlaser 400 × 400
+903|GRBL-CO2-laser 300 × 200
+904|K40-ombyggnad (GRBL) 300 × 200
+905|Marlin-diodlaser 400 × 400
+906|En GRBL 1.1-diodlaser på ett 400 × 400 mm bord, noll fram till vänster, dynamisk effekt.
+907|En GRBL 1.1-CO2-laser på ett 300 × 200 mm bord, noll fram till vänster.
+908|En K40 CO2-laser med GRBL-kort: 300 × 200 mm, noll i det bakre vänstra (övre vänstra) hörnet.
+909|En diodlaser med Marlin-firmware (laserfunktion, S 0–255) på ett 400 × 400 mm bord.

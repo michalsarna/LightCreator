@@ -122,6 +122,98 @@ impl App {
         true
     }
 
+    /// Open the configuration window on a new profile made from `draft`.
+    pub fn open_cfg_with(&mut self, draft: Device) {
+        self.cfg = Some(CfgEdit { idx: None, draft, page: CfgPage::General, head: 0 });
+    }
+
+    /// A copy of a profile, under a free name, selected.
+    pub fn duplicate_profile(&mut self, idx: usize) {
+        let Some(src) = self.profiles.get(idx).cloned() else { return };
+        let taken: Vec<String> = self.profiles.iter().map(|p| p.name.clone()).collect();
+        let mut copy = src;
+        copy.name = lc_core::profiles::copy_name(&copy.name, &taken);
+        self.status = trf("Copied to {}", &[&copy.name]);
+        self.profiles.push(copy);
+        self.start_sel = self.profiles.len() - 1;
+    }
+
+    /// Save one profile to a file of its own.
+    pub fn export_profile_dialog(&mut self, idx: usize) {
+        let Some(p) = self.profiles.get(idx) else { return };
+        let stem: String = p.name.chars().map(|c| if c.is_alphanumeric() { c } else { '-' }).collect::<String>().trim_matches('-').to_string();
+        let name = format!("{}.json", if stem.is_empty() { "device".to_string() } else { stem });
+        let Some(path) = rfd::FileDialog::new().add_filter("LightCreator device", &["json"]).set_file_name(&name).save_file() else { return };
+        let text = lc_core::profiles::export_profile(p, APP_VERSION);
+        self.status = match std::fs::write(&path, text) {
+            Ok(_) => trf("Saved the profile to {}", &[&path.display()]),
+            Err(e) => trf("Export failed: {}", &[&e]),
+        };
+    }
+
+    /// Read a profile from a file chosen by the user; it is checked strictly first.
+    pub fn import_profile_dialog(&mut self) {
+        let Some(path) = rfd::FileDialog::new().add_filter("LightCreator device", &["json"]).pick_file() else { return };
+        self.import_profile_from(&path);
+    }
+
+    pub fn import_profile_from(&mut self, path: &std::path::Path) {
+        let read = match std::fs::metadata(path) {
+            Ok(m) if m.len() as usize > lc_core::profiles::MAX_PROFILE_FILE => Err(format!("the file is larger than {} KB", lc_core::profiles::MAX_PROFILE_FILE / 1000)),
+            Ok(_) => std::fs::read_to_string(path).map_err(|e| e.to_string()),
+            Err(e) => Err(e.to_string()),
+        };
+        match read.and_then(|t| lc_core::profiles::import_profile(&t)) {
+            Ok(mut dev) => {
+                let taken: Vec<String> = self.profiles.iter().map(|p| p.name.clone()).collect();
+                if taken.contains(&dev.name) {
+                    dev.name = lc_core::profiles::copy_name(&dev.name, &taken);
+                }
+                self.status = trf("Imported the profile {}", &[&dev.name]);
+                self.profiles.push(dev);
+                self.start_sel = self.profiles.len() - 1;
+            }
+            Err(e) => self.status = trf("Cannot use the file: {}", &[&e]),
+        }
+    }
+
+    /// The window that offers the starting points for a new device.
+    pub fn template_window(&mut self, ctx: &egui::Context) {
+        if !self.show_templates {
+            return;
+        }
+        let mut open = true;
+        let mut pick: Option<Option<&'static str>> = None;
+        crate::window_ui::popup(ctx, "device_templates", &tr("Add a device"), [480.0, 360.0], &mut open, |ui| {
+            ui.label(RichText::new(tr("Starting points: general machines with typical numbers. Check them against your machine's documentation.")).color(theme::text_dim()));
+            ui.add_space(4.0);
+            for t in lc_core::profiles::TEMPLATES {
+                let r = ui.add_sized([ui.available_width(), 38.0], egui::Button::new(RichText::new(tr(t.name)).strong()));
+                if r.clicked() {
+                    pick = Some(Some(t.id));
+                }
+                ui.label(RichText::new(tr(t.desc)).small().color(theme::text_dim()));
+            }
+            ui.add_space(4.0);
+            if ui.button(tr("A blank profile")).clicked() {
+                pick = Some(None);
+            }
+        });
+        if let Some(p) = pick {
+            let mut dev = match p {
+                Some(id) => lc_core::profiles::template(id),
+                None => Device::default(),
+            };
+            if p.is_none() {
+                dev.name = String::new();
+            }
+            self.open_cfg_with(dev);
+            self.show_templates = false;
+        } else if !open {
+            self.show_templates = false;
+        }
+    }
+
     pub fn open_cfg_new(&mut self) {
         let mut draft = Device::default();
         draft.name = String::new();
@@ -218,16 +310,25 @@ impl App {
         });
         ui.add_space(8.0);
         let has = !self.profiles.is_empty();
-        ui.horizontal(|ui| {
+        ui.horizontal_wrapped(|ui| {
             let cont = egui::Button::new(RichText::new(format!("  {}  ", tr("Continue"))).color(Color32::WHITE).strong()).fill(theme::accent());
             if ui.add_enabled(has, cont).clicked() {
                 go = true;
             }
             if ui.button(tr("Add device…")).clicked() {
-                self.open_cfg_new();
+                self.show_templates = true;
             }
             if ui.add_enabled(has, egui::Button::new(tr("Edit…"))).clicked() {
                 self.open_cfg_edit(self.start_sel);
+            }
+            if ui.add_enabled(has, egui::Button::new(tr("Duplicate"))).on_hover_text(tr("A copy of this profile")).clicked() {
+                self.duplicate_profile(self.start_sel);
+            }
+            if ui.add_enabled(has, egui::Button::new(tr("Export…"))).on_hover_text(tr("Save this profile to a file")).clicked() {
+                self.export_profile_dialog(self.start_sel);
+            }
+            if ui.button(tr("Import…")).on_hover_text(tr("Read a profile from a file")).clicked() {
+                self.import_profile_dialog();
             }
             if self.confirm_delete && has {
                 if ui.button(RichText::new(tr("Confirm delete")).color(Color32::from_rgb(0xc0, 0x30, 0x30))).clicked() {
@@ -1453,5 +1554,55 @@ impl App {
             }
         }
         self.status = trf("Read {} values from the device", &[&n]);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn app() -> App {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.profiles = vec![Device::default()];
+        a
+    }
+
+    #[test]
+    fn a_profile_can_be_copied_exported_and_imported_again() {
+        let mut a = app();
+        a.duplicate_profile(0);
+        a.duplicate_profile(0);
+        let names: Vec<String> = a.profiles.iter().map(|p| p.name.clone()).collect();
+        assert_eq!(names.len(), 3);
+        assert_eq!(names[1], format!("{} (copy)", names[0]));
+        assert_eq!(names[2], format!("{} (copy 2)", names[0]));
+        assert_eq!(a.start_sel, 2);
+        // A file made by the program comes back as a profile under a free name (the first name is taken).
+        let dir = std::env::temp_dir().join(format!("lc-profile-{}-{}", std::process::id(), std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let file = dir.join("p.json");
+        let mut p = a.profiles[0].clone();
+        p.connection.port = "/dev/ttyUSB7".into();
+        std::fs::write(&file, lc_core::profiles::export_profile(&p, APP_VERSION)).unwrap();
+        a.import_profile_from(&file);
+        assert_eq!(a.profiles.len(), 4);
+        assert!(a.profiles[3].connection.port.is_empty(), "the port is not taken from the file");
+        assert!(a.profiles[3].name.contains("(copy"), "{}", a.profiles[3].name);
+        // Garbage and missing files change nothing and say why.
+        std::fs::write(&file, "not json").unwrap();
+        a.import_profile_from(&file);
+        assert_eq!(a.profiles.len(), 4);
+        a.import_profile_from(&dir.join("missing.json"));
+        assert_eq!(a.profiles.len(), 4);
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn the_template_window_opens_the_configuration_with_the_chosen_machine() {
+        let mut a = app();
+        a.open_cfg_with(lc_core::profiles::template("marlin-diode"));
+        let c = a.cfg.as_ref().unwrap();
+        assert_eq!((c.idx, c.draft.controller), (None, Controller::Marlin));
     }
 }
