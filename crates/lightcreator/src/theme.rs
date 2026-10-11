@@ -250,6 +250,23 @@ pub fn text_dim() -> Color32 {
     pal().text_dim
 }
 
+/// The colour schemes for the web page: id, name and the colours it needs, as `#rrggbb`.
+pub fn web_themes() -> serde_json::Value {
+    let hex = |c: Color32| format!("#{:02x}{:02x}{:02x}", c.r(), c.g(), c.b());
+    Scheme::ALL
+        .iter()
+        .map(|s| {
+            let p = s.palette();
+            serde_json::json!({
+                "id": s.id(), "label": s.label(), "dark": s.is_dark(),
+                "panel": hex(p.panel), "panel_dark": hex(p.panel_dark), "border": hex(p.border), "workspace": hex(p.workspace),
+                "text": hex(p.text), "text_dim": hex(p.text_dim), "widget": hex(p.widget), "widget_hover": hex(p.widget_hover),
+                "input": hex(p.input), "accent": hex(p.accent),
+            })
+        })
+        .collect()
+}
+
 pub fn apply(ctx: &egui::Context, scheme: Scheme) {
     CURRENT.store(scheme.index(), Ordering::Relaxed);
     let p = pal();
@@ -302,6 +319,20 @@ mod tests {
             for b in &Scheme::ALL[i + 1..] {
                 assert!(a.id() != b.id() && a.label() != b.label());
             }
+        }
+    }
+
+    #[test]
+    fn the_web_page_gets_every_scheme_with_valid_colours() {
+        let v = web_themes();
+        let list = v.as_array().unwrap();
+        assert_eq!(list.len(), Scheme::ALL.len());
+        for t in list {
+            for k in ["panel", "panel_dark", "border", "workspace", "text", "text_dim", "widget", "widget_hover", "input", "accent"] {
+                let c = t[k].as_str().unwrap();
+                assert!(c.len() == 7 && c.starts_with('#') && c[1..].chars().all(|d| d.is_ascii_hexdigit()), "{k}: {c}");
+            }
+            assert!(Scheme::from_id(t["id"].as_str().unwrap()).is_some());
         }
     }
 

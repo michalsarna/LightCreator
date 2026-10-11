@@ -69,6 +69,8 @@ pub struct Shared {
     /// The project as SVG, with the revision it was made for.
     pub svg: Mutex<(u64, Arc<String>)>,
     pub cameras: Mutex<Value>,
+    /// The colour schemes of the program, for the page.
+    pub themes: Mutex<Value>,
     /// The latest picture of the camera view in the program: width, height, RGB.
     pub frame: Mutex<Option<(u32, u32, Arc<Vec<u8>>)>>,
     pub commands: Mutex<VecDeque<Command>>,
@@ -290,6 +292,10 @@ fn route(s: &mut TcpStream, req: &Request, sh: &Shared) -> std::io::Result<()> {
             let svg = sh.svg.lock().map(|v| v.1.clone()).unwrap_or_default();
             respond(s, 200, "image/svg+xml; charset=utf-8", svg.as_bytes())
         }
+        ("/api/themes", true, _) => {
+            let v = sh.themes.lock().map(|v| v.clone()).unwrap_or(Value::Null);
+            json(s, 200, &v)
+        }
         ("/api/cameras", true, _) => {
             let v = sh.cameras.lock().map(|v| v.clone()).unwrap_or(Value::Null);
             json(s, 200, &v)
@@ -343,68 +349,8 @@ pub fn encode_jpeg(w: u32, h: u32, rgb: &[u8]) -> Option<Vec<u8>> {
     Some(out)
 }
 
-/// The page of the web server: status, the project, the camera and the commands.
-const PAGE: &str = r##"<!doctype html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LightCreator</title>
-<style>
-body{font-family:system-ui,sans-serif;margin:0;background:#1d1f23;color:#e6e6e6}
-header{padding:8px 14px;background:#2a2d33;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
-main{display:flex;flex-wrap:wrap;gap:14px;padding:14px}
-section{background:#2a2d33;border-radius:8px;padding:10px;flex:1 1 360px}
-h2{margin:0 0 8px;font-size:14px;color:#aab}
-img.p{width:100%;background:#fff;border-radius:4px}
-button{font-size:15px;padding:10px 14px;border:0;border-radius:6px;background:#3d4350;color:#fff;cursor:pointer}
-button:hover{background:#4d5568}
-button.stop{background:#c03030;font-weight:bold}
-.pad{display:grid;grid-template-columns:repeat(3,56px);gap:6px;justify-content:center;margin:8px 0}
-.pad button{padding:12px 0}
-#state{font-weight:bold}
-select{font-size:15px;padding:6px}
-.warn{color:#e0a030;font-size:12px}
-.bar{background:#3d4350;border-radius:4px;height:10px;overflow:hidden}
-.bar i{display:block;height:100%;background:#2ea04f;width:0}
-</style></head><body>
-<header><b>LightCreator</b><span id="dev"></span><span id="state"></span><span id="pos"></span><span id="time"></span></header>
-<main>
-<section><h2>Project</h2><img class="p" id="proj" alt="project"><div class="bar"><i id="bar"></i></div></section>
-<section><h2>Camera</h2><select id="cam"></select><div id="camview" style="margin-top:8px"></div></section>
-<section><h2>Control</h2>
-<button class="stop" onclick="cmd('stop')">STOP</button> <button onclick="cmd('home')">Home</button> <button onclick="cmd('cancel-jog')">Cancel jog</button>
-<div class="pad" id="pad"></div>
-<div class="warn">No password or encryption: use only on a network you trust.</div></section>
-</main>
-<script>
-const dirs=[["up-left","↖"],["up","↑"],["up-right","↗"],["left","←"],["","■"],["right","→"],["down-left","↙"],["down","↓"],["down-right","↘"]];
-const pad=document.getElementById('pad');
-for(const [d,t] of dirs){const b=document.createElement('button');b.textContent=t;if(d)b.onclick=()=>fetch('/api/jog?dir='+d,{method:'POST'});else b.onclick=()=>cmd('cancel-jog');pad.appendChild(b);}
-function cmd(c){fetch('/api/'+c,{method:'POST'});}
-const f=s=>{s=Math.max(0,Math.floor(s||0));const p=n=>String(n).padStart(2,'0');return p(Math.floor(s/3600))+':'+p(Math.floor(s/60)%60)+':'+p(s%60)};
-let rev=-1,camsig='';
-async function tick(){
- try{
-  const st=await (await fetch('/api/status')).json();
-  document.getElementById('dev').textContent=(st.device&&st.device.name)||'';
-  document.getElementById('state').textContent=st.device?(st.device.connected?st.device.state:'not connected'):'';
-  document.getElementById('pos').textContent=st.device&&st.device.connected?('X '+st.device.x.toFixed(2)+'  Y '+st.device.y.toFixed(2)):'';
-  document.getElementById('time').textContent=st.job?(f(st.job.elapsed_s)+' / '+f(st.job.estimate_s)):'';
-  document.getElementById('bar').style.width=st.job&&st.job.total?Math.round(100*st.job.done/st.job.total)+'%':'0';
-  if(st.project&&st.project.revision!==rev){rev=st.project.revision;document.getElementById('proj').src='/api/project.svg?r='+rev;}
-  const cams=await (await fetch('/api/cameras')).json();
-  const sig=JSON.stringify(cams);
-  if(sig!==camsig){camsig=sig;const sel=document.getElementById('cam');sel.innerHTML='';
-   (cams.cameras||[]).forEach(c=>{const o=document.createElement('option');o.value=c.index;o.textContent=c.name+(c.enabled?'':' (off)');if(c.active)o.selected=true;sel.appendChild(o);});
-   sel.onchange=()=>fetch('/api/camera/select?index='+sel.value,{method:'POST'});
-   const v=document.getElementById('camview');const a=(cams.cameras||[]).find(c=>c.active);
-   v.innerHTML='';
-   if(a&&a.url){const i=document.createElement('img');i.className='p';i.src=a.url;v.appendChild(i);}
-   else if(a){const i=document.createElement('img');i.className='p';i.id='snap';v.appendChild(i);}
-  }
-  const snap=document.getElementById('snap');if(snap)snap.src='/api/camera.jpg?t='+Date.now();
- }catch(e){document.getElementById('state').textContent='no connection to the program';}
-}
-tick();setInterval(tick,1000);
-</script></body></html>"##;
+/// The page of the web server: status, the camera, the project and the commands.
+const PAGE: &str = include_str!("web_page.html");
 
 #[cfg(test)]
 mod tests {
@@ -504,6 +450,12 @@ mod tests {
         assert!(get(srv.addr, "/api/cameras").1.contains("http://a/x"));
         let (c, page) = get(srv.addr, "/");
         assert!(c == 200 && page.contains("LightCreator") && page.contains("STOP"));
+        for marker in ["grid-template-areas", "@media (max-width:800px)", "dblclick", "resetView", "No camera", "/api/themes", "lc-theme"] {
+            assert!(page.contains(marker), "the page lacks {marker}");
+        }
+        assert!(page.find("id=\"cam\"").unwrap() < page.find("id=\"ctl\"").unwrap() && page.find("id=\"ctl\"").unwrap() < page.find("id=\"prev\"").unwrap());
+        *srv.shared.themes.lock().unwrap() = serde_json::json!([{"id": "dark"}]);
+        assert!(get(srv.addr, "/api/themes").1.contains("\"dark\""));
         assert_eq!(get(srv.addr, "/nope").0, 404);
         assert_eq!(get(srv.addr, "/api/camera.jpg").0, 503, "no picture yet");
     }
