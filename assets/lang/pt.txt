@@ -818,3 +818,9 @@
 817|Liga um feixe fraco e constante para acertar a altura do foco
 818|Feixe de foco ligado
 819|Feixe de foco desligado
+820|Alinhar com o ponteiro
+821|Ensaio a seco com o ponteiro
+822|Ensaio a seco com o ponteiro: {} linhas, laser desligado
+823|Nada a executar: não há formas nas camadas de saída
+824|Percorre o trajeto do trabalho deslocado pelo desvio do ponteiro com o laser desligado, para ver para onde iria.
+825|Só nesta sessão: a moldura e o ensaio a seco recuam pelo desvio do ponto vermelho do ponteiro, para que o ponto caia onde cairia o feixe. Os trabalhos e o movimento manual nunca são deslocados.

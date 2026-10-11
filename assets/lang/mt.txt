@@ -818,3 +818,9 @@
 817|Iqabbad raġġ dgħajjef kostanti biex tissettja l-għoli tal-fokus
 818|Raġġ tal-fokus mixgħul
 819|Raġġ tal-fokus mitfi
+820|Allinja mal-indikatur
+821|Tmexxija niexfa bl-indikatur
+822|Tmexxija niexfa bl-indikatur: {} linji, laser mitfi
+823|Xejn x'jitmexxa: l-ebda forma fuq is-saffi tal-output
+824|Tgħaddi mill-mogħdija tax-xogħol imċaqlqa bl-ispostament tal-indikatur bil-laser mitfi, biex tara fejn tmur.
+825|Għal din is-sessjoni biss: il-qafas u t-tmexxija niexfa jmorru lura bl-ispostament tat-tikka ħamra tal-indikatur, biex it-tikka tinżel fejn tinżel ir-raġġ. Ix-xogħlijiet u t-tħarrik manwali qatt ma jiċċaqalqu.

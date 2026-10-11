@@ -818,3 +818,9 @@
 817|Slår på en svak, jevn stråle for å stille inn fokushøyden
 818|Fokusstråle på
 819|Fokusstråle av
+820|Juster etter pekeren
+821|Tørrkjøring med pekeren
+822|Tørrkjøring med pekeren: {} linjer, laser av
+823|Ingenting å kjøre: ingen former på utgangslagene
+824|Kjører jobbens bane forskjøvet med pekerens forskyvning med laseren av, for å se hvor den ville gå.
+825|Kun i denne økten: rammen og tørrkjøringen flyttes tilbake med forskyvningen til den røde pekerprikken, slik at prikken lander der strålen ville gjort det. Jobber og manuell kjøring flyttes aldri.

@@ -147,4 +147,60 @@ mod tests {
         a.focus_set(false);
         assert!(!a.focus_on, "disconnect");
     }
+
+    fn pointer_app() -> App {
+        let mut a = app(1.0);
+        a.doc.device.heads[0].pointer_dx = 10.0;
+        a.doc.device.heads[0].pointer_dy = -5.0;
+        a.doc.device.area.bed_w = 200.0;
+        a.doc.device.area.bed_h = 200.0;
+        a.doc.layers[0].mode = lc_core::LayerMode::Line;
+        a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(50.0, 60.0));
+        a
+    }
+
+    #[test]
+    fn aiming_moves_the_frame_back_by_the_pointer_offset_only_when_asked() {
+        let mut a = pointer_app();
+        let r = lc_core::Rect { min: lc_core::Pt::new(50.0, 60.0), max: lc_core::Pt::new(70.0, 70.0) };
+        assert_eq!(a.aim(r), r, "off by default");
+        a.pointer_align = true;
+        let m = a.aim(r);
+        // The dot is 10 mm right of and 5 mm above the beam: the beam goes 10 mm left and 5 mm down of the target.
+        assert_eq!((m.min.x, m.min.y, m.max.x, m.max.y), (40.0, 65.0, 60.0, 75.0));
+        // Without an offset nothing moves, whatever the switch says.
+        a.doc.device.heads[0].pointer_dx = 0.0;
+        a.doc.device.heads[0].pointer_dy = 0.0;
+        assert_eq!(a.aim(r), r);
+    }
+
+    #[test]
+    fn the_job_is_the_same_with_the_alignment_on_or_off() {
+        let mut a = pointer_app();
+        let off = lc_core::gcode::generate(&a.doc).gcode;
+        a.pointer_align = true;
+        assert_eq!(lc_core::gcode::generate(&a.doc).gcode, off);
+    }
+
+    #[test]
+    fn the_dry_run_follows_the_shifted_path_with_the_laser_off() {
+        let a = pointer_app();
+        let normal = lc_core::gcode::generate(&a.doc).gcode;
+        let lines = a.dry_run_lines().expect("inside the area");
+        assert!(lines.iter().filter(|l| l.starts_with("G1")).all(|l| !l.split_whitespace().any(|w| w.starts_with('S') && w != "S0")), "{lines:?}");
+        assert!(normal.contains(" S1000"), "the real job burns");
+        // The shifted path differs from the real one by the offset (10 mm in X, -5 mm in Y: machine Y is the other way).
+        let first = |text: &str| text.lines().find(|l| l.starts_with("G0 X")).map(|l| l.to_string()).unwrap();
+        let (n, d) = (first(&normal), first(&lines.join("\n")));
+        let xy = |l: &str| -> (f64, f64) {
+            let w = |c: char| l.split_whitespace().find_map(|t| t.strip_prefix(c)).and_then(|v| v.parse::<f64>().ok()).unwrap();
+            (w('X'), w('Y'))
+        };
+        let ((nx, ny), (dx, dy)) = (xy(&n), xy(&d));
+        assert!((dx - (nx - 10.0)).abs() < 1e-6 && (dy - (ny - 5.0)).abs() < 1e-6, "{n} vs {d}");
+        // Going out of the area is an error, not a run.
+        let mut edge = pointer_app();
+        edge.doc.shapes[0].xf = lc_core::Xf::translate(5.0, 60.0);
+        assert!(edge.dry_run_lines().is_err());
+    }
 }

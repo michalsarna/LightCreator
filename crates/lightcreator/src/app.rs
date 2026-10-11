@@ -310,6 +310,8 @@ pub struct App {
     pub fw: crate::firmware_ui::FwUi,
     /// The focus beam is on.
     pub focus_on: bool,
+    /// For this session only: aim with the pointer dot (the frame and the dry run move back by its offset).
+    pub pointer_align: bool,
     pub connected: bool,
     pub machine: (String, f64, f64),
     pub progress: (usize, usize),
@@ -492,6 +494,7 @@ impl App {
             single_axis_homing: false,
             fw: Default::default(),
             focus_on: false,
+            pointer_align: false,
             connected: false,
             machine: (tr("Disconnected").into(), 0.0, 0.0),
             progress: (0, 0),
@@ -875,6 +878,7 @@ impl App {
     }
     pub fn send_job_now(&mut self) {
         self.focus_off();
+        // The job is written for the design as it is: the pointer alignment never moves it.
         let job = gcode::generate(&self.doc);
         if job.moves.is_empty() {
             self.status = tr("Nothing to burn: no shapes on output layers").into();
@@ -922,15 +926,28 @@ impl App {
             self.status = tr("Connect to a laser first (Laser panel)").into();
             return;
         }
+        let b = self.aim(b);
         if self.guard(crate::check_ui::Pending::Frame, Some(b)) {
             self.frame_bounds = Some(b);
             self.frame_now();
         }
     }
+
+    /// Where the head has to go for the pointer dot to land on `r`: with the pointer alignment on, the box is moved
+    /// back by the offset of the dot from the beam. Jobs and ordinary jogging are never moved.
+    pub fn aim(&self, r: lc_core::Rect) -> lc_core::Rect {
+        let h = self.doc.device.head(0);
+        if !self.pointer_align || !h.has_pointer_offset() {
+            return r;
+        }
+        let (dx, dy) = (-h.pointer_dx, -h.pointer_dy);
+        lc_core::Rect { min: Pt::new(r.min.x + dx, r.min.y + dy), max: Pt::new(r.max.x + dx, r.max.y + dy) }
+    }
     /// Trace the box that was checked (or that is being framed again after the window of issues).
     pub fn frame_now(&mut self) {
         let Some(b) = self.frame_bounds else { return };
-        let g = gcode::frame_gcode(b, &self.doc.device, self.doc.device.heads[0].frame_power, 40.0);
+        let h = self.doc.device.head(0);
+        let g = gcode::frame_gcode(b, &self.doc.device, h.frame_power, h.frame_speed);
         for l in laser::clean_gcode(&g) {
             self.link.send(Cmd::Line(l));
         }

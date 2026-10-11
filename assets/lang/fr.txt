@@ -818,3 +818,9 @@
 817|Allume un faisceau faible et constant pour régler la hauteur de mise au point
 818|Faisceau de mise au point allumé
 819|Faisceau de mise au point éteint
+820|Aligner sur le pointeur
+821|Essai à blanc avec le pointeur
+822|Essai à blanc avec le pointeur : {} lignes, laser éteint
+823|Rien à exécuter : aucune forme sur les calques de sortie
+824|Parcourt le tracé du travail décalé du décalage du pointeur, laser éteint, pour voir où il irait.
+825|Pour cette session seulement : le cadre et l'essai à blanc reculent du décalage du point rouge du pointeur, si bien que le point tombe là où tomberait le faisceau. Les travaux et le déplacement manuel ne sont jamais décalés.

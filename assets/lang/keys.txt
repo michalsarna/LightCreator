@@ -818,3 +818,9 @@
 817	Switch on a weak steady beam to set the focus height by
 818	Focus beam on
 819	Focus beam off
+820	Align to the pointer
+821	Dry run with the pointer
+822	Dry run with the pointer: {} lines, laser off
+823	Nothing to run: no shapes on output layers
+824	Runs the path of the job shifted by the pointer offset with the laser off, to see where it would go.
+825	This session only: the frame and the dry run move back by the offset of the red pointer dot, so the dot lands where the beam would. Jobs and jogging are never moved.

@@ -1401,3 +1401,16 @@ fn laser_heads_keep_their_settings_and_old_profiles_get_defaults() {
     // A head the profile does not have falls back to the first.
     assert_eq!(dev.head(7).name, "Blue");
 }
+
+#[test]
+fn without_power_keeps_the_path_and_zeroes_every_s_of_a_move() {
+    let g = "; job\nM4 S0\nG0 X1.000 Y2.000\nG1 X5.000 Y2.000 S600 F1200 ; cut\nG2 X6.000 Y3.000 I0.500 J0.500 S300\nG1 X9.000\nM5\n";
+    let off = gcode::without_power(g);
+    assert_eq!(off, "; job\nM4 S0\nG0 X1.000 Y2.000\nG1 X5.000 Y2.000 S0 F1200 ; cut\nG2 X6.000 Y3.000 I0.500 J0.500 S0\nG1 X9.000\nM5\n");
+    // Moves and everything else are untouched; the shifted copy moves every shape.
+    let mut d = Document::default();
+    d.add(0, Kind::Rect { w: 4.0, h: 4.0 }, Xf::translate(10.0, 10.0));
+    let s = gcode::shifted(&d, -3.0, 2.0);
+    assert_eq!(s.shapes[0].bounds().unwrap().min, Pt::new(7.0, 12.0));
+    assert_eq!(d.shapes[0].bounds().unwrap().min, Pt::new(10.0, 10.0));
+}

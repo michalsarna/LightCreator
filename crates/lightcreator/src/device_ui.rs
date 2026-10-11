@@ -104,6 +104,7 @@ impl App {
         let Some(dev) = self.profiles.get(idx).cloned() else { return false };
         self.active = idx;
         self.doc.device = dev;
+        self.pointer_align = false;
         self.seed_device_library();
         // An empty new document takes the layer speeds of the device; a loaded one keeps its own.
         if self.doc.shapes.is_empty() && self.path.is_none() {
@@ -718,6 +719,37 @@ impl App {
         }
     }
 
+    /// The path of the job, shifted so the red pointer dot follows it, with the laser off. Errors (the shifted path
+    /// leaves the allowed area) come back as issues.
+    pub fn dry_run_lines(&self) -> Result<Vec<String>, Vec<lc_core::check::Issue>> {
+        let h = self.doc.device.head(0);
+        let moved = lc_core::gcode::shifted(&self.doc, -h.pointer_dx, -h.pointer_dy);
+        let errors: Vec<_> = lc_core::check::job_check(&moved).into_iter().filter(|i| i.level == lc_core::check::Level::Error).collect();
+        if !errors.is_empty() {
+            return Err(errors);
+        }
+        let job = lc_core::gcode::generate(&moved);
+        Ok(laser::clean_gcode(&lc_core::gcode::without_power(&job.gcode)))
+    }
+
+    /// Run the job's path with the laser off, shifted by the pointer offset.
+    pub fn pointer_dry_run(&mut self) {
+        if !self.connected || self.job_running() {
+            return;
+        }
+        match self.dry_run_lines() {
+            Ok(lines) if lines.len() > 1 => {
+                self.focus_off();
+                self.push_console(crate::laser::ConsoleLine::info(trf("Dry run with the pointer: {} lines, laser off", &[&lines.len()])));
+                self.link.send(Cmd::Job(lines));
+            }
+            Ok(_) => self.status = tr("Nothing to run: no shapes on output layers").to_string(),
+            Err(issues) => {
+                self.check_dlg = Some(crate::check_ui::CheckDlg { issues, pending: crate::check_ui::Pending::DryRun });
+            }
+        }
+    }
+
     /// Rescan the serial ports.
     pub fn refresh_ports(&mut self) {
         self.port_info = laser::list_port_info();
@@ -1011,6 +1043,13 @@ impl App {
             }
             ui.add_space(4.0);
             self.focus_button(ui, true);
+            if self.doc.device.head(0).has_pointer_offset() {
+                ui.add_space(4.0);
+                ui.checkbox(&mut self.pointer_align, tr("Align to the pointer")).on_hover_text(tr("This session only: the frame and the dry run move back by the offset of the red pointer dot, so the dot lands where the beam would. Jobs and jogging are never moved."));
+                if ui.add_enabled(self.connected && !running, egui::Button::new(tr("Dry run with the pointer"))).on_hover_text(tr("Runs the path of the job shifted by the pointer offset with the laser off, to see where it would go.")).clicked() {
+                    self.pointer_dry_run();
+                }
+            }
         });
         if let Some(a) = act {
             self.run_action(a);

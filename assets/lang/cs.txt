@@ -818,3 +818,9 @@
 817|Zapne slabý stálý paprsek k nastavení výšky zaostření
 818|Zaostřovací paprsek zapnut
 819|Zaostřovací paprsek vypnut
+820|Zarovnat podle ukazatele
+821|Zkušební chod s ukazatelem
+822|Zkušební chod s ukazatelem: {} řádků, laser vypnut
+823|Není co spustit: na výstupních vrstvách nejsou tvary
+824|Projde dráhu úlohy posunutou o posun ukazatele s vypnutým laserem, aby bylo vidět, kam by šla.
+825|Jen v této relaci: rámeček a zkušební chod se posunou zpět o posun červené tečky ukazatele, takže tečka dopadne tam, kam by dopadl paprsek. Úlohy a ruční pojezd se nikdy neposouvají.

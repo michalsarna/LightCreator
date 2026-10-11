@@ -818,3 +818,9 @@
 817|Encén un feix feble i constant per ajustar l'alçada del focus
 818|Feix de focus encès
 819|Feix de focus apagat
+820|Alinea amb el punter
+821|Prova en sec amb el punter
+822|Prova en sec amb el punter: {} línies, làser apagat
+823|Res a executar: no hi ha formes a les capes de sortida
+824|Recorre el camí de la feina desplaçat pel desplaçament del punter amb el làser apagat, per veure on aniria.
+825|Només en aquesta sessió: el marc i la prova en sec es desplacen enrere pel desplaçament del punt vermell del punter, de manera que el punt cau on cauria el feix. Les feines i el moviment manual mai es desplacen.

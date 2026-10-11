@@ -818,3 +818,9 @@
 817|Uključuje slab stalan snop za namještanje visine fokusa
 818|Fokusni snop uključen
 819|Fokusni snop isključen
+820|Poravnaj prema pokazivaču
+821|Suhi hod s pokazivačem
+822|Suhi hod s pokazivačem: {} redaka, laser isključen
+823|Nema što pokrenuti: nema oblika na izlaznim slojevima
+824|Prolazi putanju posla pomaknutu za pomak pokazivača s isključenim laserom da se vidi kamo bi išla.
+825|Samo u ovoj sesiji: okvir i suhi hod pomiču se unatrag za pomak crvene točke pokazivača pa točka pada tamo gdje bi pao snop. Poslovi i ručno pomicanje nikad se ne pomiču.

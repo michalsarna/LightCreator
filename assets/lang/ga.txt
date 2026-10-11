@@ -818,3 +818,9 @@
 817|Lasann sé bíoma lag seasmhach chun airde an fhócais a shocrú
 818|Bíoma fócais air
 819|Bíoma fócais as
+820|Ailínigh leis an bpointeoir
+821|Rith tirim leis an bpointeoir
+822|Rith tirim leis an bpointeoir: {} líne, léasair múchta
+823|Níl aon rud le rith: níl cruthanna ar na sraitheanna aschuir
+824|Ritheann sé cosán na hoibre aistrithe de réir fhritháireamh an phointeora agus an léasair múchta, chun a fheiceáil cá rachadh sé.
+825|Don seisiún seo amháin: bogann an fráma agus an rith tirim ar ais de réir fhritháireamh an phoint dheirg pointeora, ionas go dtiteann an ponc san áit a dtitfeadh an bíoma. Ní bhogtar oibreacha ná gluaiseacht láimhe riamh.

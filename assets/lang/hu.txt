@@ -818,3 +818,9 @@
 817|Bekapcsol egy gyenge, állandó sugarat a fókuszmagasság beállításához
 818|Fókuszsugár bekapcsolva
 819|Fókuszsugár kikapcsolva
+820|Igazítás a mutatóhoz
+821|Szárazfutás a mutatóval
+822|Szárazfutás a mutatóval: {} sor, lézer kikapcsolva
+823|Nincs mit futtatni: nincs alakzat a kimeneti rétegeken
+824|Végigfuttatja a munka útvonalát a mutató eltolásával eltolva, kikapcsolt lézerrel, hogy lássa, hová menne.
+825|Csak ebben a munkamenetben: a keret és a szárazfutás visszalép a piros mutatópont eltolásával, így a pont ott ér földet, ahol a sugár. A munkákat és a kézi mozgatást soha nem tolja el.

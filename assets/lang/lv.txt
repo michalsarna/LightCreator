@@ -818,3 +818,9 @@
 817|Ieslēdz vāju vienmērīgu staru fokusa augstuma iestatīšanai
 818|Fokusa stars ieslēgts
 819|Fokusa stars izslēgts
+820|Izlīdzināt pēc rādītāja
+821|Sausā darbināšana ar rādītāju
+822|Sausā darbināšana ar rādītāju: {} rindas, lāzers izslēgts
+823|Nav ko palaist: izvades slāņos nav formu
+824|Izskrien darba trajektoriju, pārbīdītu par rādītāja nobīdi, ar izslēgtu lāzeru, lai redzētu, kur tā ietu.
+825|Tikai šajā sesijā: rāmis un sausā darbināšana atkāpjas par sarkanā rādītāja punkta nobīdi, lai punkts nokristu tur, kur nokristu stars. Darbi un manuālā virzīšana netiek pārbīdīti nekad.

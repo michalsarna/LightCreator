@@ -818,3 +818,9 @@
 817|Zapne slabý stály lúč na nastavenie výšky zaostrenia
 818|Zaostrovací lúč zapnutý
 819|Zaostrovací lúč vypnutý
+820|Zarovnať podľa ukazovateľa
+821|Skúšobný chod s ukazovateľom
+822|Skúšobný chod s ukazovateľom: {} riadkov, laser vypnutý
+823|Nie je čo spustiť: na výstupných vrstvách nie sú tvary
+824|Prejde dráhu úlohy posunutú o posun ukazovateľa s vypnutým laserom, aby bolo vidieť, kam by išla.
+825|Len v tejto relácii: rámik a skúšobný chod sa posunú späť o posun červeného bodu ukazovateľa, takže bod dopadne tam, kam by dopadol lúč. Úlohy a ručný pojazd sa nikdy neposúvajú.

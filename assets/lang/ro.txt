@@ -818,3 +818,9 @@
 817|Pornește un fascicul slab și constant pentru reglarea înălțimii focalizării
 818|Fascicul de focalizare pornit
 819|Fascicul de focalizare oprit
+820|Aliniază după indicator
+821|Rulare uscată cu indicatorul
+822|Rulare uscată cu indicatorul: {} linii, laser oprit
+823|Nimic de rulat: nu există forme pe straturile de ieșire
+824|Parcurge traseul lucrării decalat cu decalajul indicatorului, cu laserul oprit, ca să se vadă unde ar merge.
+825|Doar în această sesiune: cadrul și rularea uscată se mută înapoi cu decalajul punctului roșu al indicatorului, astfel încât punctul să cadă unde ar cădea fasciculul. Lucrările și mișcarea manuală nu sunt mutate niciodată.

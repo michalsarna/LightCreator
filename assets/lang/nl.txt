@@ -818,3 +818,9 @@
 817|Schakelt een zwakke, constante straal in om de focushoogte mee in te stellen
 818|Focusstraal aan
 819|Focusstraal uit
+820|Uitlijnen op de aanwijzer
+821|Proefrun met de aanwijzer
+822|Proefrun met de aanwijzer: {} regels, laser uit
+823|Niets om uit te voeren: geen vormen op uitvoerlagen
+824|Doorloopt het pad van de opdracht, verschoven met de aanwijzerverschuiving, met de laser uit, om te zien waar het heen zou gaan.
+825|Alleen in deze sessie: het kader en de proefrun schuiven terug met de verschuiving van de rode aanwijzerstip, zodat de stip landt waar de straal zou landen. Opdrachten en handmatig verplaatsen worden nooit verschoven.

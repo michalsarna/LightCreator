@@ -818,3 +818,9 @@
 817|Slår på en svag, jämn stråle för att ställa in fokushöjden
 818|Fokusstråle på
 819|Fokusstråle av
+820|Rikta in efter pekaren
+821|Torrkörning med pekaren
+822|Torrkörning med pekaren: {} rader, laser av
+823|Inget att köra: inga former på utdatalagren
+824|Kör jobbets bana förskjuten med pekarens förskjutning med lasern av, för att se var den skulle gå.
+825|Endast i den här sessionen: ramen och torrkörningen flyttas tillbaka med förskjutningen av den röda pekarpunkten, så att punkten landar där strålen skulle landa. Jobb och manuell körning flyttas aldrig.

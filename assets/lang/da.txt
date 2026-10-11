@@ -818,3 +818,9 @@
 817|Tænder en svag, jævn stråle til at indstille fokushøjden
 818|Fokusstråle tændt
 819|Fokusstråle slukket
+820|Ret ind efter pegepunktet
+821|Tørkørsel med pegepunktet
+822|Tørkørsel med pegepunktet: {} linjer, laser slukket
+823|Intet at køre: ingen former på udlagene
+824|Kører jobbets sti forskudt med pegepunktets forskydning med laseren slukket for at se, hvor den ville gå hen.
+825|Kun i denne session: rammen og tørkørslen flyttes tilbage med den røde prikkens forskydning, så prikken lander, hvor strålen ville. Job og manuel kørsel flyttes aldrig.

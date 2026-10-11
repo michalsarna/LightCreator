@@ -818,3 +818,9 @@
 817|Vklopi šibek stalen žarek za nastavitev višine ostrenja
 818|Ostrilni žarek vklopljen
 819|Ostrilni žarek izklopljen
+820|Poravnaj po kazalcu
+821|Suhi tek s kazalcem
+822|Suhi tek s kazalcem: {} vrstic, laser izklopljen
+823|Ničesar ni za zagnati: na izhodnih plasteh ni oblik
+824|Prevozi pot dela, premaknjeno za odmik kazalca, z izklopljenim laserjem, da se vidi, kam bi šla.
+825|Samo v tej seji: okvir in suhi tek se premakneta nazaj za odmik rdeče pike kazalca, tako da pika pade tja, kamor bi padel žarek. Delo in ročno premikanje se nikoli ne premakneta.

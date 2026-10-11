@@ -12,6 +12,8 @@ pub enum Pending {
     Frame,
     ExportGcode,
     ExportCam,
+    /// The dry run with the pointer: only errors are ever shown, so there is nothing to confirm.
+    DryRun,
 }
 
 pub struct CheckDlg {
@@ -181,6 +183,7 @@ impl App {
                     Pending::Frame => self.frame_now(),
                     Pending::ExportGcode => self.export_gcode_now(),
                     Pending::ExportCam => self.export_cam_now(),
+                    Pending::DryRun => {}
                 }
             }
         } else if !open || close {

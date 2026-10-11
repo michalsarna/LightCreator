@@ -818,3 +818,9 @@
 817|Enciende un haz débil y constante para ajustar la altura de enfoque
 818|Haz de enfoque encendido
 819|Haz de enfoque apagado
+820|Alinear con el puntero
+821|Ensayo en seco con el puntero
+822|Ensayo en seco con el puntero: {} líneas, láser apagado
+823|Nada que ejecutar: no hay formas en las capas de salida
+824|Recorre la trayectoria del trabajo desplazada por el desfase del puntero con el láser apagado, para ver adónde iría.
+825|Solo en esta sesión: el marco y el ensayo en seco se desplazan hacia atrás por el desfase del punto rojo del puntero, de modo que el punto cae donde caería el haz. Los trabajos y el movimiento manual nunca se desplazan.

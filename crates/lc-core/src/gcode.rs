@@ -538,3 +538,37 @@ pub fn focus_gcode(dev: &Device, on: bool) -> Option<Vec<String>> {
     // Constant power (M3), not the dynamic mode: in that one the laser is dark while the head stands still.
     Some(vec![format!("M3 S{s}")])
 }
+
+/// The G-code of a job with the laser kept off: every `S` word of a move is written as `S0`. The path is the same,
+/// for a dry run.
+pub fn without_power(gcode: &str) -> String {
+    let mut out = String::with_capacity(gcode.len());
+    for line in gcode.lines() {
+        let (code, comment) = match line.split_once(';') {
+            Some((c, r)) => (c, Some(r)),
+            None => (line, None),
+        };
+        let is_move = code.starts_with("G1 ") || code.starts_with("G2 ") || code.starts_with("G3 ");
+        if is_move {
+            let words: Vec<String> = code.split_whitespace().map(|w| if w.starts_with('S') && w[1..].parse::<f64>().is_ok() { "S0".to_string() } else { w.to_string() }).collect();
+            out.push_str(&words.join(" "));
+            if let Some(c) = comment {
+                out.push_str(" ;");
+                out.push_str(c);
+            }
+        } else {
+            out.push_str(line);
+        }
+        out.push('\n');
+    }
+    out
+}
+
+/// A copy of the document with everything moved by `(dx, dy)` design millimetres.
+pub fn shifted(doc: &Document, dx: f64, dy: f64) -> Document {
+    let mut d = doc.clone();
+    for s in &mut d.shapes {
+        s.xf = s.xf.then(Xf::translate(dx, dy));
+    }
+    d
+}

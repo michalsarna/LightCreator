@@ -818,3 +818,9 @@
 817|Kveikir á veikum stöðugum geisla til að stilla fókushæðina
 818|Fókusgeisli kveiktur
 819|Fókusgeisli slökktur
+820|Stilla eftir bendlinum
+821|Þurrkeyrsla með bendlinum
+822|Þurrkeyrsla með bendlinum: {} línur, slökkt á leysi
+823|Ekkert til að keyra: engin form á úttakslögum
+824|Keyrir braut verksins færða um færslu bendilsins með slökktum leysi til að sjá hvert hún færi.
+825|Aðeins í þessari lotu: ramminn og þurrkeyrslan færast til baka um færslu rauða bendilspunktsins svo punkturinn lendir þar sem geislinn myndi lenda. Verk og handfærsla eru aldrei færð.

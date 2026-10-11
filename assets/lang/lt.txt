@@ -818,3 +818,9 @@
 817|Įjungia silpną pastovų spindulį fokusavimo aukščiui nustatyti
 818|Fokusavimo spindulys įjungtas
 819|Fokusavimo spindulys išjungtas
+820|Lygiuoti pagal rodyklę
+821|Sausas paleidimas su rodykle
+822|Sausas paleidimas su rodykle: {} eilučių, lazeris išjungtas
+823|Nėra ką paleisti: išvesties sluoksniuose nėra figūrų
+824|Pereina darbo trajektoriją, pastumtą rodyklės poslinkiu, išjungus lazerį, kad būtų matyti, kur ji eitų.
+825|Tik šioje sesijoje: rėmelis ir sausas paleidimas pasislenka atgal raudono rodyklės taško poslinkiu, todėl taškas nukrenta ten, kur kristų spindulys. Darbai ir rankinis judinimas niekada nestumiami.

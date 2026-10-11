@@ -818,3 +818,9 @@
 817|Lülitab sisse nõrga ühtlase kiire fookuskõrguse seadmiseks
 818|Fookuskiir sees
 819|Fookuskiir väljas
+820|Joonda osutiga
+821|Kuivkäitus osutiga
+822|Kuivkäitus osutiga: {} rida, laser väljas
+823|Pole midagi käivitada: väljundkihtidel pole kujundeid
+824|Käib läbi töö raja, nihutatud osuti nihke võrra, laser väljas, et näha, kuhu see läheks.
+825|Ainult selles seansis: raam ja kuivkäitus nihkuvad tagasi punase osutipunkti nihke võrra, nii et punkt langeb sinna, kuhu kiir langeks. Töid ja käsiliigutust ei nihutata kunagi.
