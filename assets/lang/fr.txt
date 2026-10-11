@@ -1056,3 +1056,5 @@
 1055|Bleu (clair)
 1056|Vert (sombre)
 1057|Vert (clair)
+1058|Violet (sombre)
+1059|Violet (clair)

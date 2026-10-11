@@ -1056,3 +1056,5 @@
 1055|Blátt (ljóst)
 1056|Grænt (dökkt)
 1057|Grænt (ljóst)
+1058|Fjólublátt (dökkt)
+1059|Fjólublátt (ljóst)

@@ -1056,3 +1056,5 @@
 1055|Albastru (deschis)
 1056|Verde (închis)
 1057|Verde (deschis)
+1058|Violet (închis)
+1059|Violet (deschis)

@@ -1056,3 +1056,5 @@
 1055|Blå (lys)
 1056|Grøn (mørk)
 1057|Grøn (lys)
+1058|Lilla (mørk)
+1059|Lilla (lys)

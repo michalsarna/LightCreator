@@ -1056,3 +1056,5 @@
 1055|Kék (világos)
 1056|Zöld (sötét)
 1057|Zöld (világos)
+1058|Lila (sötét)
+1059|Lila (világos)

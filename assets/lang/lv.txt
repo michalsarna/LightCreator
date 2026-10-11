@@ -1056,3 +1056,5 @@
 1055|Zila (gaiša)
 1056|Zaļa (tumša)
 1057|Zaļa (gaiša)
+1058|Violeta (tumša)
+1059|Violeta (gaiša)

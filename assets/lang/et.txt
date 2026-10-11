@@ -1056,3 +1056,5 @@
 1055|Sinine (hele)
 1056|Roheline (tume)
 1057|Roheline (hele)
+1058|Lilla (tume)
+1059|Lilla (hele)

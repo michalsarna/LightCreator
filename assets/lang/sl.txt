@@ -1056,3 +1056,5 @@
 1055|Modra (svetla)
 1056|Zelena (temna)
 1057|Zelena (svetla)
+1058|Vijolična (temna)
+1059|Vijolična (svetla)

@@ -1056,3 +1056,5 @@
 1055|Blauw (licht)
 1056|Groen (donker)
 1057|Groen (licht)
+1058|Paars (donker)
+1059|Paars (licht)

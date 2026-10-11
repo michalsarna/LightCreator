@@ -1056,3 +1056,5 @@
 1055|Gorm (éadrom)
 1056|Glas (dorcha)
 1057|Glas (éadrom)
+1058|Corcra (dorcha)
+1059|Corcra (éadrom)

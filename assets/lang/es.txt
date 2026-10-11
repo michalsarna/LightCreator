@@ -1056,3 +1056,5 @@
 1055|Azul (claro)
 1056|Verde (oscuro)
 1057|Verde (claro)
+1058|Morado (oscuro)
+1059|Morado (claro)

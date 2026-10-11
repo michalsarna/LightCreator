@@ -1056,3 +1056,5 @@
 1055|Plava (svijetla)
 1056|Zelena (tamna)
 1057|Zelena (svijetla)
+1058|Ljubičasta (tamna)
+1059|Ljubičasta (svijetla)
