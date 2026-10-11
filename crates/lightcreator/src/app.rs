@@ -248,6 +248,8 @@ pub struct App {
     /// Labels the user added for the layers of materials (besides Cut, Engrave and Score).
     pub layer_labels: Vec<String>,
     pub show_labels: bool,
+    /// Height of the list in the Materials tab; the border to the editor can be dragged.
+    pub mat_list_h: f32,
     pub label_new: String,
     pub mat_dev_filter: String,
     pub mat_dev_sel: Option<usize>,
@@ -426,6 +428,7 @@ impl App {
             global_materials,
             layer_labels,
             show_labels: false,
+            mat_list_h: 260.0,
             label_new: String::new(),
             mat_dev_filter: String::new(),
             mat_dev_sel: None,

@@ -777,7 +777,7 @@ impl App {
             ui.add_space(6.0);
             ui.label(RichText::new(tr("This library is empty. Add materials from the built-in library or save your layers as a material.")).color(theme::text_dim()));
         }
-        scroll_list(ui, "dev_materials", 260.0, |ui| {
+        scroll_list(ui, "dev_materials", self.mat_list_h, |ui| {
             let mut cats: Vec<String> = shown.iter().map(|i| lib[*i].category()).collect();
             cats.sort_by_key(|c| cat_label(c).to_lowercase());
             cats.dedup_by(|a, b| a.eq_ignore_ascii_case(b));
@@ -793,7 +793,16 @@ impl App {
                 });
             }
         });
-        ui.separator();
+        // The border between the list and the editor: drag it to give either more room.
+        let (grip, resp) = ui.allocate_exact_size(egui::vec2(ui.available_width(), 8.0), egui::Sense::drag());
+        let hot = resp.hovered() || resp.dragged();
+        ui.painter().line_segment([grip.left_center(), grip.right_center()], egui::Stroke::new(if hot { 2.0 } else { 1.0 }, if hot { theme::accent() } else { theme::border() }));
+        if hot {
+            ui.ctx().set_cursor_icon(egui::CursorIcon::ResizeVertical);
+        }
+        if resp.dragged() {
+            self.mat_list_h = (self.mat_list_h + resp.drag_delta().y).clamp(60.0, 700.0);
+        }
         if let Some(i) = self.mat_dev_sel.filter(|i| *i < lib.len()) {
             let mut m = lib[i].clone();
             let mut apply = false;
