@@ -155,6 +155,8 @@ pub struct App {
     /// A short message (text, until when) such as "file saved".
     pub toast: Option<(String, std::time::Instant)>,
     pub show_close_dlg: bool,
+    /// A question waiting for Yes / No, drawn by the application so it is in the chosen language.
+    pub confirm: Option<crate::session_ui::Confirm>,
     pub allow_close: bool,
     pub show_options: bool,
     /// Look for a newer release on GitHub when the program starts.
@@ -243,6 +245,10 @@ pub struct App {
     pub cam_worker: Option<crate::camera::Worker>,
     /// Materials added to the program by the user, available for every device (on top of the built-in ones).
     pub global_materials: Vec<lc_core::materials::Material>,
+    /// Labels the user added for the layers of materials (besides Cut, Engrave and Score).
+    pub layer_labels: Vec<String>,
+    pub show_labels: bool,
+    pub label_new: String,
     pub mat_dev_filter: String,
     pub mat_dev_sel: Option<usize>,
     pub mat_add_layer: usize,
@@ -309,6 +315,7 @@ impl App {
         let profiles: Vec<lc_core::Device> = saved("profiles").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let active = saved("active_profile").and_then(|v| v.parse::<usize>().ok()).filter(|i| *i < profiles.len()).unwrap_or(0);
         let global_materials = crate::materials_ui::load_global(&|k| saved(k));
+        let layer_labels: Vec<String> = saved("layer_labels").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let grid_prefs: crate::prefs::GridPrefs = saved("grid_prefs").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let show_grid = saved("grid_main_on").map(|v| v == "1").unwrap_or(true);
         let grid = saved("grid_main_mm").and_then(|v| v.parse::<f64>().ok()).filter(|g| *g >= 0.1).unwrap_or(10.0);
@@ -340,6 +347,7 @@ impl App {
             last_autosave: std::time::Instant::now(),
             toast: None,
             show_close_dlg: false,
+            confirm: None,
             allow_close: false,
             show_options: false,
             check_updates: saved("check_updates").map(|v| v != "0").unwrap_or(true),
@@ -416,6 +424,9 @@ impl App {
             cam_error: String::new(),
             cam_worker: None,
             global_materials,
+            layer_labels,
+            show_labels: false,
+            label_new: String::new(),
             mat_dev_filter: String::new(),
             mat_dev_sel: None,
             mat_add_layer: 0,
@@ -1626,7 +1637,7 @@ impl App {
 
         let mut open = self.show_offset;
         let mut apply = false;
-        egui::Window::new(tr("Offset shape")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+        crate::window_ui::popup(ctx, "offset_window", &tr("Offset shape"), [300.0, 190.0], &mut open, |ui| {
             egui::Grid::new("offs").num_columns(2).show(ui, |ui| {
                 ui.label(tr("Distance"));
                 drag_len(ui, self.doc.device.units, &mut self.offset_dist, 0.1, Some((-500.0, 500.0)));
@@ -1644,7 +1655,7 @@ impl App {
 
         let mut open = self.show_array;
         let mut apply = false;
-        egui::Window::new(tr("Grid array")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+        crate::window_ui::popup(ctx, "array_window", &tr("Grid array"), [260.0, 220.0], &mut open, |ui| {
             egui::Grid::new("arr").num_columns(2).show(ui, |ui| {
                 ui.label(tr("Columns"));
                 ui.add(egui::DragValue::new(&mut self.array.0).range(1..=100));
@@ -1669,9 +1680,7 @@ impl App {
 
         let mut open = self.show_about;
         if open {
-            let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 10, right: 10, top: 6, bottom: 8 });
-            egui::Window::new("about_window").title_bar(false).frame(frame).collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {
-                crate::window_ui::mini_title(ui, &tr("About LightCreator"), &mut open, |_| {});
+            crate::window_ui::popup(ctx, "about_window", &tr("About LightCreator"), [380.0, 300.0], &mut open, |ui| {
                 ui.horizontal(|ui| {
                     if let Some(logo) = &self.logo {
                         ui.image((logo.id(), egui::vec2(72.0, 72.0)));
@@ -1699,6 +1708,7 @@ impl App {
         self.round_window(ctx);
         self.materials_window(ctx);
         self.material_edit_window(ctx);
+        self.labels_window(ctx);
         self.merge_dialog(ctx);
         self.library_dialog(ctx);
         self.overlay_window(ctx);
@@ -1802,6 +1812,9 @@ impl App {
         }
         v.push(("grid_main_on", if self.show_grid { "1" } else { "0" }.into()));
         v.push(("grid_main_mm", self.grid.to_string()));
+        if let Ok(j) = serde_json::to_string(&self.layer_labels) {
+            v.push(("layer_labels", j));
+        }
         if let Ok(j) = serde_json::to_string(&self.global_materials) {
             v.push(("global_materials", j));
         }

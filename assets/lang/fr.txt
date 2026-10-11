@@ -658,3 +658,9 @@
 657|Supprimer tous les matériaux
 658|Supprimer tous les matériaux de cet appareil ? Ceux de la bibliothèque principale s'affichent à la place ; si vous en modifiez un, une copie est conservée pour cet appareil.
 659|La bibliothèque de cet appareil affiche maintenant la bibliothèque principale.
+660|Étiquettes des calques
+661|Étiquettes des calques…
+662|Étiquettes proposées pour les calques d'un matériau. Cut, Engrave et Score sont toujours présentes.
+663|Nouvelle étiquette
+664|Ajouter ou retirer les étiquettes proposées pour les calques d'un matériau
+665|Ajouter

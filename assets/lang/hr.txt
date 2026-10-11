@@ -658,3 +658,9 @@
 657|Izbriši sve materijale
 658|Izbrisati sve materijale ovog uređaja? Umjesto njih prikazuju se materijali glavne biblioteke; kad jedan promijenite, za ovaj uređaj čuva se njegova kopija.
 659|Biblioteka ovog uređaja sada prikazuje glavnu biblioteku.
+660|Oznake slojeva
+661|Oznake slojeva…
+662|Oznake koje se nude za slojeve materijala. Cut, Engrave i Score uvijek postoje.
+663|Nova oznaka
+664|Dodaj ili ukloni oznake koje se nude za slojeve materijala
+665|Dodaj

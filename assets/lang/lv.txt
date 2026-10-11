@@ -658,3 +658,9 @@
 657|Dzēst visus materiālus
 658|Vai dzēst visus šīs ierīces materiālus? To vietā tiks rādīti galvenās bibliotēkas materiāli; mainot kādu, šai ierīcei tiek saglabāta tā kopija.
 659|Šīs ierīces bibliotēka tagad rāda galveno bibliotēku.
+660|Slāņu etiķetes
+661|Slāņu etiķetes…
+662|Materiāla slāņiem piedāvātās etiķetes. Cut, Engrave un Score ir vienmēr.
+663|Jauna etiķete
+664|Pievienot vai noņemt materiāla slāņiem piedāvātās etiķetes
+665|Pievienot

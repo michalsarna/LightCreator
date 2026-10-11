@@ -176,3 +176,26 @@ pub fn mini_title(ui: &mut egui::Ui, title: &str, open: &mut bool, extra: impl F
     });
     ui.separator();
 }
+
+/// A pop-up window in the common style: slim title line, close button, movable and resizable both ways.
+/// `size` is the starting size; `open` is cleared by the close button.
+pub fn popup<R>(ctx: &egui::Context, id: &str, title: &str, size: [f32; 2], open: &mut bool, add: impl FnOnce(&mut egui::Ui) -> R) -> Option<R> {
+    let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 10, right: 10, top: 6, bottom: 8 });
+    let pos = ctx.content_rect().center() - egui::vec2(size[0], size[1]) / 2.0;
+    let mut keep = true;
+    let r = egui::Window::new(id)
+        .title_bar(false)
+        .frame(frame)
+        .collapsible(false)
+        .default_size(size)
+        .default_pos(pos)
+        .resizable(true)
+        .show(ctx, |ui| {
+            mini_title(ui, title, &mut keep, |_| {});
+            add(ui)
+        });
+    if !keep {
+        *open = false;
+    }
+    r.and_then(|r| r.inner)
+}

@@ -187,7 +187,8 @@ impl App {
         let mut cancel = false;
         let mut read_clicked = false;
         let reading = self.read_cfg.is_some();
-        egui::Window::new(title).collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {
+        let mut cfg_open = true;
+        crate::window_ui::popup(ctx, "device_cfg", &title, [520.0, 560.0], &mut cfg_open, |ui| {
             if must_create {
                 ui.label(RichText::new(tr("Create at least one device profile to continue.")).color(theme::text_dim()));
                 ui.add_space(4.0);
@@ -352,6 +353,9 @@ impl App {
                 }
             });
         });
+        if !cfg_open && !must_create {
+            cancel = true;
+        }
         if read_clicked {
             self.start_read(&cfg.draft);
         }

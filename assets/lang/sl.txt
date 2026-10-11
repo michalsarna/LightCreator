@@ -658,3 +658,9 @@
 657|Izbriši vse materiale
 658|Izbrišem vse materiale te naprave? Namesto njih se prikažejo materiali glavne knjižnice; ko enega spremenite, se zanj za to napravo ohrani kopija.
 659|Knjižnica te naprave zdaj prikazuje glavno knjižnico.
+660|Oznake plasti
+661|Oznake plasti…
+662|Oznake, ponujene za plasti materiala. Cut, Engrave in Score so vedno na voljo.
+663|Nova oznaka
+664|Dodaj ali odstrani oznake, ponujene za plasti materiala
+665|Dodaj

@@ -658,3 +658,9 @@
 657|Scrios gach ábhar
 658|An scriosfar gach ábhar den fheiste seo? Taispeánfar ábhair na príomhleabharlainne ina n-áit; nuair a athraíonn tú ceann, coimeádtar cóip don fheiste seo.
 659|Taispeánann leabharlann na feiste seo an phríomhleabharlann anois.
+660|Lipéid sraitheanna
+661|Lipéid sraitheanna…
+662|Lipéid le roghnú do shraitheanna ábhair. Bíonn Cut, Engrave agus Score ann i gcónaí.
+663|Lipéad nua
+664|Cuir lipéid do shraitheanna ábhair leis nó bain iad
+665|Cuir leis

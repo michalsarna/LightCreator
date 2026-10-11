@@ -102,7 +102,7 @@ impl App {
         }
         let mut open = true;
         let mut changed = false;
-        egui::Window::new(tr("Camera overlay")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+        crate::window_ui::popup(ctx, "w_overlay_3", &tr("Camera overlay"), [340.0, 220.0], &mut open, |ui| {
             ui.label(RichText::new(tr("Show a photo or the live camera under the design to position work on the material.")).color(theme::text_dim()));
             ui.horizontal(|ui| {
                 if ui.button(tr("Load picture…")).clicked() {

@@ -658,3 +658,9 @@
 657|Slett alle materialer
 658|Slette alle materialer på denne enheten? Hovedbibliotekets materialer vises i stedet; når du endrer ett, lagres en kopi for denne enheten.
 659|Biblioteket til denne enheten viser nå hovedbiblioteket.
+660|Lagetiketter
+661|Lagetiketter…
+662|Etiketter som tilbys for lagene i et materiale. Cut, Engrave og Score er alltid der.
+663|Ny etikett
+664|Legg til eller fjern etiketter for lagene i et materiale
+665|Legg til

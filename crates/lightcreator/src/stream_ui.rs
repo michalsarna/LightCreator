@@ -34,6 +34,7 @@ impl App {
     pub fn stream_closed(&mut self) {
         self.show_stream = false;
         self.stream = None;
+        self.tab_seen = false;
         if self.stream_overlay {
             self.stream_overlay = false;
             self.overlay_visible = false;
@@ -116,7 +117,8 @@ impl App {
         match self.stream_tex.clone() {
             Some(t) => {
                 let sz = t.size_vec2();
-                let k = (avail / sz.x).min((ui.available_height() - 70.0).max(160.0) / sz.y).min(2.0);
+                let reserve = if self.stream_err.is_empty() { 4.0 } else { 26.0 };
+                let k = (avail / sz.x).min((ui.available_height() - reserve).max(120.0) / sz.y).min(2.0);
                 let (resp, painter) = ui.allocate_painter(sz * k, egui::Sense::drag());
                 if resp.hovered() {
                     let scroll = ui.input(|i| i.smooth_scroll_delta.y);
@@ -154,6 +156,7 @@ impl App {
                 self.stream_closed();
             }
             self.stream = None;
+            self.tab_seen = false;
             return;
         }
         self.stream_poll(ctx, &url);
@@ -241,6 +244,23 @@ mod tests {
         a.side_tab = SideTab::Camera;
         a.stream_closed();
         assert_eq!(a.side_tab, SideTab::Properties);
+    }
+
+    #[test]
+    fn camera_tab_is_selected_again_after_the_view_was_switched_off_and_on() {
+        let (mut a, ctx) = app_with_overlay();
+        a.doc.device.camera_url = "http://127.0.0.1:9/none.mjpg".into();
+        a.stream_mode = StreamMode::Tab;
+        a.show_stream = true;
+        a.stream_window(&ctx);
+        assert_eq!(a.side_tab, SideTab::Camera);
+        a.side_tab = SideTab::Properties;
+        a.show_stream = false;
+        a.stream_window(&ctx);
+        a.show_stream = true;
+        a.stream_window(&ctx);
+        assert_eq!(a.side_tab, SideTab::Camera);
+        a.stream = None;
     }
 
     #[test]

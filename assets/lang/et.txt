@@ -658,3 +658,9 @@
 657|Kustuta kõik materjalid
 658|Kas kustutada selle seadme kõik materjalid? Selle asemel näidatakse põhiraamatukogu materjale; kui muudad ühte, jäetakse sellest koopia sellele seadmele.
 659|Selle seadme raamatukogu näitab nüüd põhiraamatukogu.
+660|Kihi siltid
+661|Kihi siltid…
+662|Materjali kihtidele pakutavad sildid. Cut, Engrave ja Score on alati olemas.
+663|Uus silt
+664|Lisa või eemalda materjali kihtidele pakutavaid silte
+665|Lisa

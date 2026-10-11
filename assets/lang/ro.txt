@@ -658,3 +658,9 @@
 657|Șterge toate materialele
 658|Ștergeți toate materialele acestui dispozitiv? În loc vor fi afișate cele din biblioteca principală; dacă schimbați unul, se păstrează o copie pentru acest dispozitiv.
 659|Biblioteca acestui dispozitiv afișează acum biblioteca principală.
+660|Etichetele straturilor
+661|Etichetele straturilor…
+662|Etichete oferite pentru straturile unui material. Cut, Engrave și Score sunt mereu prezente.
+663|Etichetă nouă
+664|Adaugă sau elimină etichetele oferite pentru straturile unui material
+665|Adaugă

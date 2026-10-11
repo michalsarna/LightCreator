@@ -658,3 +658,9 @@
 657|Ištrinti visas medžiagas
 658|Ištrinti visas šio įrenginio medžiagas? Vietoj jų rodomos pagrindinės bibliotekos medžiagos; pakeitus vieną, šiam įrenginiui paliekama jos kopija.
 659|Šio įrenginio biblioteka dabar rodo pagrindinę biblioteką.
+660|Sluoksnių žymos
+661|Sluoksnių žymos…
+662|Medžiagos sluoksniams siūlomos žymos. Cut, Engrave ir Score yra visada.
+663|Nauja žyma
+664|Pridėti arba pašalinti medžiagos sluoksniams siūlomas žymas
+665|Pridėti

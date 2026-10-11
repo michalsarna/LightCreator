@@ -325,7 +325,7 @@ impl App {
         let mut apply = false;
         let pair = self.selected_line_pair().is_some();
         let units = self.doc.device.units;
-        egui::Window::new(tr("Round corners")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+        crate::window_ui::popup(ctx, "round_window", &tr("Round corners"), [300.0, 200.0], &mut open, |ui| {
             egui::Grid::new("round").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
                 ui.label(tr("Radius"));
                 crate::units_ui::drag_len(ui, units, &mut self.fillet_radius, 0.1, Some((0.05, 500.0)));

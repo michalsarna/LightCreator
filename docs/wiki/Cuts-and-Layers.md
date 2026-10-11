@@ -39,7 +39,7 @@ A material is **one entry for both laser types**: diode and CO2 keep their own s
 
 ![Editing a material](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/36-material-edit.png)
 
-Each layer of a material also keeps its **colour** and a **label** (its purpose, e.g. *Cut*); applying a material sets the settings, colour and name of its layers. Materials have a **category** (Wood, Metal, Plastic, Paper and leather, Stone and glass, Other, or one you add) and the list in the Materials tab can be filtered by it. Every entry shows its layers with colour and main settings.
+Each layer of a material also keeps its **colour** and a **label** (its purpose, e.g. *Cut*); applying a material sets the settings, colour and name of its layers. Materials have a **category** (Wood, Metal, Plastic, Paper and leather, Stone and glass, Other, or one you add) and the list in the Materials tab can be filtered by it. Lists show each material's name and tags in rows with alternating backgrounds, and small arrows at the edge when the list scrolls. A layer's label is chosen from a list; the **Layer labels…** button of the Material library window adds your own.
 
 **Export library… / Import library…** (in the Material library window and the Materials tab) write and read one `.lcb` file with your global materials and your devices with their libraries. A window lets you tick exactly what goes into the file or is taken from it; materials that differ open the window of differences. The tabs of the side panel can be dragged to change their order.
 

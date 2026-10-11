@@ -658,3 +658,9 @@
 657|Eliminar todos os materiais
 658|Eliminar todos os materiais deste dispositivo? Em vez deles são mostrados os da biblioteca principal; ao alterar um, fica guardada uma cópia para este dispositivo.
 659|A biblioteca deste dispositivo mostra agora a biblioteca principal.
+660|Etiquetas das camadas
+661|Etiquetas das camadas…
+662|Etiquetas oferecidas para as camadas de um material. Cut, Engrave e Score estão sempre presentes.
+663|Nova etiqueta
+664|Adicionar ou remover as etiquetas oferecidas para as camadas de um material
+665|Adicionar

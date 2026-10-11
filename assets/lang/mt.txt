@@ -658,3 +658,9 @@
 657|Ħassar il-materjali kollha
 658|Tħassar il-materjali kollha ta' dan l-apparat? Minflok jintwerew il-materjali tal-librerija ewlenija; meta tbiddel wieħed, tinżamm kopja għal dan l-apparat.
 659|Il-librerija ta' dan l-apparat issa turi l-librerija ewlenija.
+660|Tikketti tas-saffi
+661|Tikketti tas-saffi…
+662|Tikketti offruti għas-saffi ta' materjal. Cut, Engrave u Score dejjem jinsabu hemm.
+663|Tikketta ġdida
+664|Żid jew neħħi t-tikketti offruti għas-saffi ta' materjal
+665|Żid

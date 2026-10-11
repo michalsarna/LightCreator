@@ -658,3 +658,9 @@
 657|Odstrániť všetky materiály
 658|Odstrániť všetky materiály tohto zariadenia? Namiesto nich sa zobrazia materiály z hlavnej knižnice; keď niektorý zmeníte, uchová sa jeho kópia pre toto zariadenie.
 659|Knižnica tohto zariadenia teraz zobrazuje hlavnú knižnicu.
+660|Štítky vrstiev
+661|Štítky vrstiev…
+662|Štítky ponúkané pre vrstvy materiálu. Cut, Engrave a Score sú vždy k dispozícii.
+663|Nový štítok
+664|Pridať alebo odstrániť štítky ponúkané pre vrstvy materiálu
+665|Pridať

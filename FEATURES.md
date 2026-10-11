@@ -163,6 +163,7 @@
     built-in and global materials that suit its laser type. In the tab you edit all the settings of every layer of a
     material, add or remove layers, rename, delete, apply a material to the layers of the design and save the layers of
     the design as a material; all of that is kept in the device library.
+  * Lists show name and tags in alternating rows with scroll arrows; a layer's label is picked from a list that the **Layer labels…** button of the library window extends. Questions (restore, delete all materials) are asked in the program's own language; pop-up windows share one style and resize both ways.
   * The device library is saved in the device profile (and so in backups) and inside every saved project. When a
     project file is opened, its library is merged into the library of the active device: new materials are added at
     once, materials that differ open a window where, value by value, you choose to keep your own or take the one from

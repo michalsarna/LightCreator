@@ -416,7 +416,7 @@ impl App {
         let has_images = self.doc.shapes.iter().any(|s| s.layer == i && s.is_image());
         let mut open = true;
         let title = trf("Layer options — {}", &[&self.doc.layers[i].name]);
-        egui::Window::new(title).id(egui::Id::new("layer_dialog")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+        crate::window_ui::popup(ctx, "layer_dialog", &title, [340.0, 220.0], &mut open, |ui| {
             let l = &mut self.doc.layers[i];
             egui::Grid::new("layer_head").num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
                 ui.label(tr("Name"));

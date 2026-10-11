@@ -147,7 +147,7 @@ fn swatch(ui: &mut egui::Ui, c: Color32) {
 /// A drop-down of the layer colours.
 fn colour_picker(ui: &mut egui::Ui, id: impl std::hash::Hash + std::fmt::Debug, colour: &mut usize, fallback: usize) {
     let shown = if *colour == NO_COLOUR { fallback } else { *colour };
-    egui::ComboBox::from_id_salt(id).width(46.0).selected_text(RichText::new("■■").color(colour32(shown))).show_ui(ui, |ui| {
+    egui::ComboBox::from_id_salt(id).width(58.0).selected_text(RichText::new("■").size(17.0).color(colour32(shown))).show_ui(ui, |ui| {
         egui::Grid::new("colour_grid").spacing([3.0, 3.0]).show(ui, |ui| {
             for i in 0..PALETTE.len() {
                 let (rect, r) = ui.allocate_exact_size(egui::vec2(18.0, 18.0), egui::Sense::click());
@@ -315,6 +315,8 @@ pub struct EditCx<'a> {
     pub add_layer: &'a mut usize,
     /// Tags in use anywhere, to suggest while typing.
     pub tags: Vec<String>,
+    /// The labels a layer can have (Cut, Engrave, Score and the ones the user added).
+    pub labels: Vec<String>,
 }
 
 /// Everything about one material: name, thickness, category, tags, note and the settings of each layer.
@@ -344,12 +346,12 @@ pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, salt: &str, cx: &mut
     // The tags are typed as one line; the text is kept between frames so that a comma can be typed.
     let tags_id = ui.make_persistent_id((salt, "tags", m.key(), m.laser as u8));
     let mut text: String = ui.data_mut(|d| d.get_temp::<String>(tags_id)).unwrap_or_else(|| m.tags.iter().map(|t| tr_tag(t)).collect::<Vec<_>>().join(", "));
-    ui.horizontal(|ui| {
-        ui.label(tr("Tags"));
+    ui.label(tr("Tags"));
+    {
         if ui.add(egui::TextEdit::singleline(&mut text).hint_text(tr("Tags, separated by commas")).desired_width(ui.available_width() - 4.0)).changed() {
             m.tags = parse_tags(&text);
         }
-    });
+    }
     // Tags that exist already, narrowed down by what is being typed after the last comma.
     let used: Vec<String> = m.tags.iter().map(|t| tr_tag(t).to_lowercase()).collect();
     let mut fragment = text.rsplit(',').next().unwrap_or("").trim().to_lowercase();
@@ -386,15 +388,28 @@ pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, salt: &str, cx: &mut
         })
         .body(|ui| {
             layer_spec_ui(ui, (salt, 0, li), &mut ml.spec, cx.units, cx.su);
-            ui.horizontal_wrapped(|ui| {
+            ui.horizontal(|ui| {
                 ui.label(tr("Colour"));
                 colour_picker(ui, (salt, "colour", li), &mut ml.spec.colour, ml.index);
-                ui.label(tr("Label"));
-                ui.add(egui::TextEdit::singleline(&mut ml.label).desired_width(90.0));
-                if ui.small_button(tr("Remove layer")).clicked() {
-                    remove = Some(li);
-                }
             });
+            ui.horizontal(|ui| {
+                ui.label(tr("Label"));
+                let mut options = cx.labels.clone();
+                if !options.iter().any(|o| o.eq_ignore_ascii_case(&ml.label)) {
+                    options.push(ml.label.clone());
+                }
+                egui::ComboBox::from_id_salt((salt, "label", li)).width(150.0).selected_text(tr_tag(&ml.label)).show_ui(ui, |ui| {
+                    for o in options {
+                        if ui.selectable_label(o.eq_ignore_ascii_case(&ml.label), tr_tag(&o)).clicked() {
+                            ml.label = o;
+                        }
+                    }
+                });
+            });
+            let del = egui::Button::new(RichText::new(tr("Remove layer")).color(Color32::WHITE)).fill(Color32::from_rgb(0xc0, 0x30, 0x30));
+            if ui.add(del).clicked() {
+                remove = Some(li);
+            }
         });
     }
     if let Some(li) = remove {
@@ -426,9 +441,30 @@ pub struct MatEdit {
     pub m: Material,
 }
 
-/// One entry of a list of materials: name and category, then every layer with its colour, label and main settings.
-fn material_card(ui: &mut egui::Ui, m: &Material, selected: bool, units: Units, su: SpeedUnit, lasers: Option<&str>) -> egui::Response {
-    let fill = if selected { theme::accent().gamma_multiply(0.18) } else { Color32::TRANSPARENT };
+/// A scrolling list that shows small arrows at its top and bottom edge while there is more to see that way.
+fn scroll_list(ui: &mut egui::Ui, id: &str, max_h: f32, add: impl FnOnce(&mut egui::Ui)) {
+    let out = egui::ScrollArea::vertical().id_salt(id).max_height(max_h).auto_shrink([false, true]).show(ui, add);
+    let (view, off, total) = (out.inner_rect, out.state.offset.y, out.content_size.y);
+    let ink = theme::text_dim();
+    let top = egui::Rect::from_center_size(egui::pos2(view.right() - 14.0, view.top() + 9.0), egui::vec2(14.0, 14.0));
+    let bottom = egui::Rect::from_center_size(egui::pos2(view.right() - 14.0, view.bottom() - 9.0), egui::vec2(14.0, 14.0));
+    if off > 1.0 {
+        crate::icons::paint(ui, top, "chevron-up", ink);
+    }
+    if off + view.height() < total - 1.0 {
+        crate::icons::paint(ui, bottom, "chevron-down", ink);
+    }
+}
+
+/// One entry of a list of materials: name and tags on a row whose background alternates with `row`.
+fn material_card(ui: &mut egui::Ui, m: &Material, selected: bool, row: usize, units: Units, lasers: Option<&str>) -> egui::Response {
+    let fill = if selected {
+        theme::accent().gamma_multiply(0.25)
+    } else if row % 2 == 0 {
+        theme::panel_dark()
+    } else {
+        theme::panel()
+    };
     // The frame adds its margin to the inner width, so leave room for it or the panel grows with every frame.
     let inner = (ui.available_width() - 8.0).max(40.0);
     let out = egui::Frame::new().fill(fill).corner_radius(3).inner_margin(egui::Margin::symmetric(4, 3)).show(ui, |ui| {
@@ -439,18 +475,10 @@ fn material_card(ui: &mut egui::Ui, m: &Material, selected: bool, units: Units, 
                 ui.label(RichText::new(l).small().color(theme::text_dim()));
             }
         });
-        if !m.tags.is_empty() || !m.note.trim().is_empty() {
+        if !m.tags.is_empty() {
             let tags = m.tags.iter().map(|t| tr_tag(t)).collect::<Vec<_>>().join(", ");
-            ui.label(RichText::new(format!("{}{}{}", tags, if tags.is_empty() || m.note.trim().is_empty() { "" } else { " · " }, m.note.trim())).small().italics().color(theme::text_dim()));
+            ui.add(egui::Label::new(RichText::new(tags).small().italics().color(theme::text_dim())).truncate());
         }
-        ui.horizontal_wrapped(|ui| {
-            ui.spacing_mut().item_spacing.x = 4.0;
-            for l in &m.layers {
-                swatch(ui, layer_colour(l));
-                ui.label(RichText::new(format!("{} · {} · {:.0} % · {}×", l.label, fmt_speed(units, su, false, l.spec.speed), l.spec.power, l.spec.passes)).small().color(theme::text_dim()));
-                ui.add_space(6.0);
-            }
-        });
     });
     let r = ui.interact(out.response.rect, ui.id().with(("material_card", m.key(), m.laser as u8)), egui::Sense::click());
     r.on_hover_cursor(egui::CursorIcon::PointingHand)
@@ -495,6 +523,58 @@ impl App {
         extra.sort_by_key(|t| t.to_lowercase());
         v.extend(extra);
         v
+    }
+
+    /// The labels a layer of a material can have: the three the program knows, then the ones added here.
+    fn all_labels(&self) -> Vec<String> {
+        let mut v: Vec<String> = vec!["Cut".into(), "Engrave".into(), "Score".into()];
+        for l in &self.layer_labels {
+            if !v.iter().any(|x| x.eq_ignore_ascii_case(l)) {
+                v.push(l.clone());
+            }
+        }
+        v
+    }
+
+    /// The small window that adds and removes the labels offered for the layers of materials.
+    pub fn labels_window(&mut self, ctx: &egui::Context) {
+        if !self.show_labels {
+            return;
+        }
+        let mut open = true;
+        let mut remove: Option<usize> = None;
+        let mut add = false;
+        crate::window_ui::popup(ctx, "layer_labels", &tr("Layer labels"), [320.0, 300.0], &mut open, |ui| {
+            ui.label(RichText::new(tr("Labels offered for the layers of a material. Cut, Engrave and Score are always there.")).color(theme::text_dim()));
+            ui.add_space(4.0);
+            for (i, l) in self.layer_labels.iter().enumerate() {
+                ui.horizontal(|ui| {
+                    if ui.small_button("✕").on_hover_text(tr("Delete")).clicked() {
+                        remove = Some(i);
+                    }
+                    ui.label(l);
+                });
+            }
+            ui.separator();
+            ui.horizontal(|ui| {
+                let r = ui.add(egui::TextEdit::singleline(&mut self.label_new).hint_text(tr("New label")).desired_width(160.0));
+                let enter = r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter));
+                if (ui.add_enabled(!self.label_new.trim().is_empty(), egui::Button::new(tr("Add"))).clicked() || enter) && !self.label_new.trim().is_empty() {
+                    add = true;
+                }
+            });
+        });
+        if let Some(i) = remove {
+            self.layer_labels.remove(i);
+        }
+        if add {
+            let l = self.label_new.trim().to_string();
+            if !self.all_labels().iter().any(|x| x.eq_ignore_ascii_case(&l)) {
+                self.layer_labels.push(l);
+            }
+            self.label_new.clear();
+        }
+        self.show_labels = open;
     }
 
     /// The materials a device shows: its own library, or, when it follows the main library, the main
@@ -697,7 +777,7 @@ impl App {
             ui.add_space(6.0);
             ui.label(RichText::new(tr("This library is empty. Add materials from the built-in library or save your layers as a material.")).color(theme::text_dim()));
         }
-        egui::ScrollArea::vertical().id_salt("dev_materials").max_height(260.0).auto_shrink([false, true]).show(ui, |ui| {
+        scroll_list(ui, "dev_materials", 260.0, |ui| {
             let mut cats: Vec<String> = shown.iter().map(|i| lib[*i].category()).collect();
             cats.sort_by_key(|c| cat_label(c).to_lowercase());
             cats.dedup_by(|a, b| a.eq_ignore_ascii_case(b));
@@ -705,8 +785,8 @@ impl App {
                 let mut order: Vec<usize> = shown.iter().copied().filter(|i| lib[*i].category().eq_ignore_ascii_case(&c)).collect();
                 order.sort_by_key(|i| (mat_name(&lib[*i], units).to_lowercase(), lib[*i].thickness as i64));
                 category_section(ui, ("tab_cat", c.clone()), &c, order.len(), |ui| {
-                    for i in order {
-                        if material_card(ui, &lib[i], self.mat_dev_sel == Some(i), units, su, None).clicked() {
+                    for (row, i) in order.into_iter().enumerate() {
+                        if material_card(ui, &lib[i], self.mat_dev_sel == Some(i), row, units, None).clicked() {
                             self.mat_dev_sel = Some(i);
                         }
                     }
@@ -720,7 +800,8 @@ impl App {
             let mut delete = false;
             let cats = categories_of(self.doc.device.materials.iter().chain(&self.global_materials).chain(self.profiles.iter().flat_map(|p| p.materials.iter())));
             let tags = self.all_tags();
-            let mut cx = EditCx { units, su, layers: &self.doc.layers, cats, new_cat: &mut self.mat_new_cat, add_layer: &mut self.mat_add_layer, tags };
+            let labels = self.all_labels();
+            let mut cx = EditCx { units, su, layers: &self.doc.layers, cats, new_cat: &mut self.mat_new_cat, add_layer: &mut self.mat_add_layer, tags, labels };
             material_editor(ui, &mut m, "tab_edit", &mut cx);
             ui.add_space(4.0);
             ui.horizontal(|ui| {
@@ -790,15 +871,11 @@ impl App {
                 self.start_library_import();
             }
             if ui.button(tr("Delete all materials")).on_hover_text(tr("Delete all materials of this device? The materials of the main library are shown instead; when you change one, a copy is kept for this device.")).clicked() {
-                let sure = rfd::MessageDialog::new()
-                    .set_level(rfd::MessageLevel::Warning)
-                    .set_title(tr("Delete all materials"))
-                    .set_description(tr("Delete all materials of this device? The materials of the main library are shown instead; when you change one, a copy is kept for this device."))
-                    .set_buttons(rfd::MessageButtons::YesNo)
-                    .show();
-                if sure == rfd::MessageDialogResult::Yes {
-                    self.reset_device_library();
-                }
+                self.confirm = Some(crate::session_ui::Confirm {
+                    title: tr("Delete all materials").to_string(),
+                    text: tr("Delete all materials of this device? The materials of the main library are shown instead; when you change one, a copy is kept for this device.").to_string(),
+                    act: crate::session_ui::ConfirmAct::DeleteAllMaterials,
+                });
             }
         });
     }
@@ -842,7 +919,7 @@ impl App {
         let mut save_global: Option<Material> = None;
         let mut export = false;
         let mut import = false;
-        let (units, su) = (self.doc.device.units, self.doc.device.speed_unit);
+        let (units, _su) = (self.doc.device.units, self.doc.device.speed_unit);
         let device_laser = self.doc.device.laser;
         let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 10, right: 10, top: 6, bottom: 8 });
         egui::Window::new("material_library").title_bar(false).frame(frame).default_size([640.0, 540.0]).resizable(true).show(ctx, |ui| {
@@ -878,7 +955,7 @@ impl App {
                         && cat.as_ref().map_or(true, |c| m.category().eq_ignore_ascii_case(c))
                 })
                 .collect();
-            egui::ScrollArea::vertical().max_height(320.0).auto_shrink([false, false]).show(ui, |ui| {
+            scroll_list(ui, "win_materials", 320.0, |ui| {
                 let mut cats: Vec<String> = shown.iter().map(|e| e.pick(want, device_laser).category()).collect();
                 cats.sort_by_key(|c| cat_label(c).to_lowercase());
                 cats.dedup_by(|a, b| a.eq_ignore_ascii_case(b));
@@ -889,9 +966,9 @@ impl App {
                         (mat_name(m, units).to_lowercase(), m.thickness as i64)
                     });
                     category_section(ui, ("win_cat", c.clone()), &c, group.len(), |ui| {
-                        for e in group {
+                        for (row, e) in group.into_iter().enumerate() {
                             let m = e.pick(want, device_laser);
-                            let r = material_card(ui, m, self.mat_sel.as_deref() == Some(e.key.as_str()), units, su, Some(&e.lasers()));
+                            let r = material_card(ui, m, self.mat_sel.as_deref() == Some(e.key.as_str()), row, units, Some(&e.lasers()));
                             if r.clicked() {
                                 self.mat_sel = Some(e.key.clone());
                             }
@@ -939,6 +1016,9 @@ impl App {
             });
             ui.add_space(4.0);
             ui.horizontal(|ui| {
+                if ui.button(tr("Layer labels…")).on_hover_text(tr("Add or remove the labels offered for the layers of a material")).clicked() {
+                    self.show_labels = true;
+                }
                 if ui.button(tr("Export library…")).clicked() {
                     export = true;
                 }
@@ -1023,7 +1103,8 @@ impl App {
             });
             ui.separator();
             egui::ScrollArea::vertical().max_height((ui.available_height() - 52.0).max(120.0)).auto_shrink([false, false]).show(ui, |ui| {
-                let mut cx = EditCx { units, su, layers: &self.doc.layers, cats, new_cat: &mut self.mat_new_cat, add_layer: &mut self.mat_add_layer, tags };
+                let labels = self.all_labels();
+            let mut cx = EditCx { units, su, layers: &self.doc.layers, cats, new_cat: &mut self.mat_new_cat, add_layer: &mut self.mat_add_layer, tags, labels };
                 material_editor(ui, &mut ed.m, "main_edit", &mut cx);
             });
             ui.separator();

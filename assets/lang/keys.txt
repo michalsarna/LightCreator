@@ -658,3 +658,9 @@
 657	Delete all materials
 658	Delete all materials of this device? The materials of the main library are shown instead; when you change one, a copy is kept for this device.
 659	The library of this device now shows the main library.
+660	Layer labels
+661	Layer labels…
+662	Labels offered for the layers of a material. Cut, Engrave and Score are always there.
+663	New label
+664	Add or remove the labels offered for the layers of a material
+665	Add

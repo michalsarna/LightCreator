@@ -658,3 +658,9 @@
 657|Összes anyag törlése
 658|Törli az eszköz összes anyagát? Helyettük a fő könyvtár anyagai látszanak; ha egyet módosít, másolata megmarad ehhez az eszközhöz.
 659|Az eszköz könyvtára most a fő könyvtárat mutatja.
+660|Rétegcímkék
+661|Rétegcímkék…
+662|Az anyag rétegeihez felkínált címkék. A Cut, Engrave és Score mindig elérhető.
+663|Új címke
+664|Az anyag rétegeihez felkínált címkék hozzáadása vagy törlése
+665|Hozzáadás

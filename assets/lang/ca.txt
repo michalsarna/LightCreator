@@ -658,3 +658,9 @@
 657|Elimina tots els materials
 658|Voleu eliminar tots els materials d'aquest dispositiu? Es mostraran els de la biblioteca principal; quan en canvieu un, se'n conservarà una còpia per a aquest dispositiu.
 659|La biblioteca d'aquest dispositiu ara mostra la biblioteca principal.
+660|Etiquetes de les capes
+661|Etiquetes de les capes…
+662|Etiquetes per triar per a les capes d'un material. Cut, Engrave i Score sempre hi són.
+663|Nova etiqueta
+664|Afegeix o elimina les etiquetes per a les capes d'un material
+665|Afegeix

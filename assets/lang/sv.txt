@@ -658,3 +658,9 @@
 657|Ta bort alla material
 658|Ta bort alla material på den här enheten? Huvudbibliotekets material visas i stället; när du ändrar ett sparas en kopia för den här enheten.
 659|Den här enhetens bibliotek visar nu huvudbiblioteket.
+660|Lageretiketter
+661|Lageretiketter…
+662|Etiketter som erbjuds för ett materials lager. Cut, Engrave och Score finns alltid.
+663|Ny etikett
+664|Lägg till eller ta bort etiketter för ett materials lager
+665|Lägg till

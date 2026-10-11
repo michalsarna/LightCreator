@@ -56,17 +56,19 @@ impl App {
     pub fn restore_backup_dialog(&mut self, ctx: &eframe::egui::Context, confirm: bool) {
         let Some(src) = rfd::FileDialog::new().add_filter("Zip", &["zip"]).pick_file() else { return };
         if confirm {
-            let sure = rfd::MessageDialog::new()
-                .set_level(rfd::MessageLevel::Warning)
-                .set_title(crate::i18n::tr("Restore from backup"))
-                .set_description(crate::i18n::tr("Your current settings and clipart will be replaced by the backup. Continue?"))
-                .set_buttons(rfd::MessageButtons::YesNo)
-                .show();
-            if sure != rfd::MessageDialogResult::Yes {
-                return;
-            }
+            self.confirm = Some(crate::session_ui::Confirm {
+                title: crate::i18n::tr("Restore from backup").to_string(),
+                text: crate::i18n::tr("Your current settings and clipart will be replaced by the backup. Continue?").to_string(),
+                act: crate::session_ui::ConfirmAct::RestoreBackup(src),
+            });
+            return;
         }
-        match self.restore_backup(ctx, &src) {
+        self.restore_backup_from(ctx, &src);
+    }
+
+    /// Restore from `src` and report the result.
+    pub fn restore_backup_from(&mut self, ctx: &eframe::egui::Context, src: &std::path::Path) {
+        match self.restore_backup(ctx, src) {
             Ok(n) => {
                 self.status = trf("Backup restored: {}", &[&src.display()]);
                 self.toast(trf("Backup restored: {}", &[&src.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default()]));
@@ -152,6 +154,9 @@ impl App {
         }
         if get("global_materials").is_some() || get("user_materials").is_some() {
             self.global_materials = crate::materials_ui::load_global(&|k| m.get(k).cloned());
+        }
+        if let Some(l) = get("layer_labels").and_then(|j| serde_json::from_str(&j).ok()) {
+            self.layer_labels = l;
         }
         if let Some(o) = get("tab_order") {
             self.tab_order = crate::app::SideTab::arranged(o);

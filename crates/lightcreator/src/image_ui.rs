@@ -104,7 +104,7 @@ impl App {
         let mut open = true;
         let (mut accept, mut cancel) = (false, false);
         let title = if d.target.is_some() { tr("Adjust image") } else { tr("Import image") };
-        egui::Window::new(title).open(&mut open).collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {
+        crate::window_ui::popup(ctx, "w_image_ui_6", &title, [340.0, 220.0], &mut open, |ui| {
             ui.horizontal_top(|ui| {
                 // Preview on a checkerboard-free white sheet, as it will look on the material.
                 let (rect, _) = ui.allocate_exact_size(egui::vec2(PREVIEW_PX as f32 * 0.78, PREVIEW_PX as f32 * 0.78), egui::Sense::hover());
@@ -211,7 +211,7 @@ impl App {
         }
         let mut open = true;
         let (mut accept, mut cancel) = (false, false);
-        egui::Window::new(tr("Trace image")).open(&mut open).collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {
+        crate::window_ui::popup(ctx, "w_image_ui_7", &tr("Trace image"), [340.0, 220.0], &mut open, |ui| {
             ui.horizontal_top(|ui| {
                 let sz = egui::vec2(430.0, 430.0);
                 let (rect, _) = ui.allocate_exact_size(sz, egui::Sense::hover());

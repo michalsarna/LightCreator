@@ -39,7 +39,7 @@ Materiał jest **jedną pozycją dla obu rodzajów laserów**: dioda i CO2 mają
 
 ![Edycja materiału](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/36-material-edit.png)
 
-Każda warstwa materiału pamięta też swój **kolor** i **etykietę** (przeznaczenie, np. *Cut*); zastosowanie materiału ustawia parametry, kolor i nazwę jego warstw. Materiały mają **kategorię** (Drewno, Metal, Tworzywa, Papier i skóra, Kamień i szkło, Inne albo własną), a listę w zakładce Materials można po niej filtrować. Każda pozycja pokazuje swoje warstwy z kolorem i głównymi ustawieniami.
+Każda warstwa materiału pamięta też swój **kolor** i **etykietę** (przeznaczenie, np. *Cut*); zastosowanie materiału ustawia parametry, kolor i nazwę jego warstw. Materiały mają **kategorię** (Drewno, Metal, Tworzywa, Papier i skóra, Kamień i szkło, Inne albo własną), a listę w zakładce Materials można po niej filtrować. Listy pokazują nazwę i tagi materiału w wierszach o naprzemiennym tle, a strzałki na brzegu oznaczają, że listę można przewinąć. Etykietę warstwy wybiera się z listy; przycisk **Layer labels…** w oknie Material library dodaje własne.
 
 **Export library… / Import library…** (w oknie Material library i w zakładce Materials) zapisują i wczytują jeden plik `.lcb` z materiałami globalnymi i urządzeniami wraz z ich bibliotekami. Okno pozwala zaznaczyć dokładnie, co trafia do pliku lub co jest z niego brane; materiały, które się różnią, otwierają okno różnic. Zakładki panelu bocznego można przeciągać, aby zmienić ich kolejność.
 

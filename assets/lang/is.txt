@@ -658,3 +658,9 @@
 657|Eyða öllum efnum
 658|Eyða öllum efnum þessa tækis? Efni aðalsafnsins birtast í staðinn; þegar þú breytir einu er afrit þess geymt fyrir þetta tæki.
 659|Safn þessa tækis sýnir nú aðalsafnið.
+660|Merkingar laga
+661|Merkingar laga…
+662|Merkingar sem bjóðast fyrir lög efnis. Cut, Engrave og Score eru alltaf til staðar.
+663|Ný merking
+664|Bæta við eða fjarlægja merkingar fyrir lög efnis
+665|Bæta við

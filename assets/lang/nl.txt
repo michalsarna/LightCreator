@@ -658,3 +658,9 @@
 657|Alle materialen verwijderen
 658|Alle materialen van dit apparaat verwijderen? In plaats daarvan worden de materialen van de hoofdbibliotheek getoond; als u er een wijzigt, wordt een kopie voor dit apparaat bewaard.
 659|De bibliotheek van dit apparaat toont nu de hoofdbibliotheek.
+660|Laaglabels
+661|Laaglabels…
+662|Labels die worden aangeboden voor de lagen van een materiaal. Cut, Engrave en Score zijn er altijd.
+663|Nieuw label
+664|Labels voor de lagen van een materiaal toevoegen of verwijderen
+665|Toevoegen
