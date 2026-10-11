@@ -647,6 +647,18 @@ impl App {
                 }
             }
         }
+        // A layer the design starts to use becomes a layer of the material too.
+        let mut used: Vec<usize> = self.doc.shapes.iter().map(|s| s.layer).collect();
+        used.sort_unstable();
+        used.dedup();
+        for li in used {
+            if li < self.doc.layers.len() && m.layer(li).is_none() {
+                let l = &self.doc.layers[li];
+                m.layers.push(MaterialLayer { index: li, label: l.name.clone(), spec: lc_core::materials::LayerSpec::from_layer(l) });
+                changed = true;
+            }
+        }
+        m.layers.sort_by_key(|l| l.index);
         if changed {
             self.doc.material = Some(m);
             self.mat_sync_dirty = true;
@@ -1717,6 +1729,15 @@ mod tests {
         assert!(a.doc.device.materials.iter().any(|e| e.same_key(&m) && e.layers[0].spec.power == 80.0));
         assert_eq!(a.profiles[0].materials.iter().find(|e| e.same_key(&m)).map(|e| e.layers[0].spec.power), Some(80.0));
         assert!(!a.mat_sync_dirty);
+        // A layer the design starts to use is added to the material, and later to the library of the device.
+        assert!(a.doc.material.as_ref().unwrap().layer(5).is_none());
+        a.doc.add(5, lc_core::Kind::Rect { w: 10.0, h: 10.0 }, lc_core::Xf::IDENTITY);
+        a.doc.layers[5].speed = 3.0;
+        a.material_sync_tick();
+        let added = a.doc.material.as_ref().unwrap().layer(5).expect("layer 5 joined the material");
+        assert_eq!(added.spec.speed, 3.0);
+        a.mat_sync_now();
+        assert!(a.doc.device.materials.iter().find(|e| e.same_key(&m)).unwrap().layer(5).is_some());
         // A new document is no longer tied to the material.
         a.new_doc();
         assert!(!a.mat_chosen);
