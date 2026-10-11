@@ -739,3 +739,14 @@
 738|Le contrôleur ne répond pas
 739|Compter le tampon
 740|Simple (attendre chaque ok)
+741|Un nom de port, ou l'identifiant USB du fabricant et du produit (VID:PID, hexadécimal) : le port qui porte ces identifiants est utilisé.
+742|Lier à ce port
+743|Périphérique USB lié
+744|Se reconnecter automatiquement
+745|Reconnexion…
+746|Port ou id USB
+747|Reconnexion
+748|Retient les id USB du port choisi : si son nom change, le port est retrouvé grâce à eux.
+749|Délier
+750|Quand la liaison tombe d'elle-même, réessayer toutes les quelques secondes jusqu'à ce que vous appuyiez sur Déconnecter.
+751|aucun

@@ -739,3 +739,14 @@
 738|Kontrolieris neatbild
 739|Skaitīt buferi
 740|Vienkāršs (gaidīt katru ok)
+741|Porta nosaukums vai USB ražotāja un ražojuma ID (VID:PID, heksadecimāli): tiek izmantots ports ar šiem ID.
+742|Piesaistīt šim portam
+743|Piesaistīta USB ierīce
+744|Automātiski atkal savienoties
+745|Atkal savienojas…
+746|Ports vai USB ID
+747|Atkārtota savienošana
+748|Atcerēties izvēlētā porta USB ID: mainoties nosaukumam, ports tiek atrasts pēc tiem.
+749|Atsaistīt
+750|Kad savienojums pārtrūkst pats, mēģināt ik pēc dažām sekundēm, līdz nospiežat Atvienot.
+751|nav

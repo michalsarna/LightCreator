@@ -739,3 +739,14 @@
 738|Upravljač ne odgovara
 739|Broji međuspremnik
 740|Jednostavno (čekaj svaki ok)
+741|Naziv porta ili USB identifikator proizvođača i proizvoda (VID:PID, heksadecimalno): koristi se port s tim identifikatorima.
+742|Veži uz ovaj port
+743|Vezani USB uređaj
+744|Automatski se ponovno spoji
+745|Ponovno spajanje…
+746|Port ili USB id
+747|Ponovno spajanje
+748|Zapamti USB identifikatore odabranog porta: kad mu se promijeni naziv, port se pronalazi po njima.
+749|Odvezi
+750|Kad veza sama pukne, pokušavaj svakih nekoliko sekundi dok ne pritisnete Odspoji.
+751|nema

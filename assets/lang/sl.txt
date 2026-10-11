@@ -739,3 +739,14 @@
 738|Krmilnik ne odgovarja
 739|Štej medpomnilnik
 740|Preprosto (čakaj vsak ok)
+741|Ime vrat ali USB ID proizvajalca in izdelka (VID:PID, šestnajstiško): uporabljena so vrata s temi ID-ji.
+742|Veži na ta vrata
+743|Vezana naprava USB
+744|Samodejno znova poveži
+745|Ponovno povezovanje…
+746|Vrata ali USB ID
+747|Ponovna povezava
+748|Zapomni si USB ID-je izbranih vrat: ko se ime spremeni, se vrata po njih spet najdejo.
+749|Razveži
+750|Ko povezava sama pade, poskušaj vsakih nekaj sekund, dokler ne pritisnete Prekini.
+751|brez

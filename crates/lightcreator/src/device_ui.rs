@@ -418,13 +418,34 @@ impl App {
                                     if d.connection.link == LinkKind::Serial {
                                         ui.label(tr("Port"));
                                         ui.horizontal_wrapped(|ui| {
-                                            egui::ComboBox::from_id_salt("cfg_port").width(170.0).selected_text(if d.connection.port.is_empty() { tr("No port") } else { d.connection.port.as_str() }).show_ui(ui, |ui| {
-                                                for p in &self.ports {
-                                                    ui.selectable_value(&mut d.connection.port, p.clone(), p);
+                                            egui::ComboBox::from_id_salt("cfg_port").width(220.0).selected_text(if d.connection.port.is_empty() { tr("No port") } else { d.connection.port.as_str() }).show_ui(ui, |ui| {
+                                                for p in &self.port_info {
+                                                    ui.selectable_value(&mut d.connection.port, p.name.clone(), p.label());
                                                 }
                                             });
                                             if ui.button(tr("Refresh")).clicked() {
-                                                self.ports = laser::list_ports();
+                                                self.refresh_ports();
+                                            }
+                                        });
+                                        ui.end_row();
+                                        ui.label(tr("Port or USB id"));
+                                        ui.add(egui::TextEdit::singleline(&mut d.connection.port).hint_text("/dev/ttyUSB0  or  0403:6001").desired_width(220.0)).on_hover_text(tr("A port name, or the USB vendor and product id (VID:PID, hexadecimal): the port that has these ids is used."));
+                                        ui.end_row();
+                                        ui.label(tr("Bound USB device"));
+                                        ui.horizontal(|ui| {
+                                            let ids = self.port_info.iter().find(|p| p.name == d.connection.port).and_then(|p| p.usb);
+                                            if d.connection.usb_id.is_empty() {
+                                                ui.label(RichText::new(tr("none")).color(theme::text_dim()));
+                                            } else {
+                                                ui.label(RichText::new(&d.connection.usb_id).monospace());
+                                            }
+                                            if ui.add_enabled(ids.is_some(), egui::Button::new(tr("Bind to this port"))).on_hover_text(tr("Remember the USB ids of the chosen port: the port is found again by them when its name changes.")).clicked() {
+                                                if let Some((v, p)) = ids {
+                                                    d.connection.usb_id = format!("{v:04x}:{p:04x}");
+                                                }
+                                            }
+                                            if ui.add_enabled(!d.connection.usb_id.is_empty(), egui::Button::new(tr("Unbind"))).clicked() {
+                                                d.connection.usb_id.clear();
                                             }
                                         });
                                         ui.end_row();
@@ -439,6 +460,9 @@ impl App {
                                         ui.add(egui::DragValue::new(&mut d.connection.tcp_port).range(1..=65535));
                                         ui.end_row();
                                     }
+                                    ui.label(tr("Reconnect"));
+                                    ui.checkbox(&mut d.connection.auto_reconnect, tr("Connect again automatically")).on_hover_text(tr("When the link drops by itself, try again every few seconds until you press Disconnect."));
+                                    ui.end_row();
                                     ui.label(tr("Streaming"));
                                     egui::ComboBox::from_id_salt("streaming").selected_text(tr(d.connection.streaming.label())).show_ui(ui, |ui| {
                                         for m in lc_core::Streaming::ALL {
@@ -552,6 +576,35 @@ impl App {
         } else if !cancel {
             self.cfg = Some(cfg);
         }
+    }
+
+    /// Rescan the serial ports.
+    pub fn refresh_ports(&mut self) {
+        self.port_info = laser::list_port_info();
+        self.ports = self.port_info.iter().map(|p| p.name.clone()).collect();
+    }
+
+    /// Open the link of the active device again, now (used after the link was lost).
+    pub fn connect_now(&mut self) {
+        let dev = self.doc.device.clone();
+        if let Some(target) = Target::of(&dev) {
+            self.link.send(Cmd::Connect { target, controller: dev.controller, streaming: dev.connection.streaming });
+        }
+    }
+
+    /// Try again every few seconds after a lost link, while the user has not asked to disconnect.
+    pub fn reconnect_tick(&mut self, ctx: &egui::Context) {
+        let Some(at) = self.reconnect_at else { return };
+        if self.connected || !self.want_link || !self.doc.device.connection.auto_reconnect {
+            self.reconnect_at = None;
+            return;
+        }
+        if std::time::Instant::now() >= at {
+            self.status = tr("Connecting again…").to_string();
+            self.connect_now();
+            self.reconnect_at = Some(std::time::Instant::now() + std::time::Duration::from_secs(4));
+        }
+        ctx.request_repaint_after(std::time::Duration::from_millis(500));
     }
 
     /// A jog step in the design's directions (x right, y down), kept inside the allowed area. `None` when there is no room.
@@ -688,12 +741,12 @@ impl App {
                 ui.label(RichText::new(self.doc.device.target_label()).monospace());
             } else {
                 egui::ComboBox::from_id_salt("port").width(150.0).selected_text(if port.is_empty() { tr("No port") } else { port.as_str() }).show_ui(ui, |ui| {
-                    for p in self.ports.clone() {
-                        ui.selectable_value(&mut port, p.clone(), p);
+                    for p in self.port_info.clone() {
+                        ui.selectable_value(&mut port, p.name.clone(), p.label());
                     }
                 });
                 if ui.button(tr("Refresh")).on_hover_text(tr("Rescan serial ports")).clicked() {
-                    self.ports = laser::list_ports();
+                    self.refresh_ports();
                     if !self.ports.contains(&port) {
                         port = self.ports.first().cloned().unwrap_or_default();
                     }
@@ -702,6 +755,8 @@ impl App {
             if self.connected {
                 let purple = egui::Button::new(RichText::new(tr("Disconnect")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x8e, 0x44, 0xad));
                 if ui.add(purple).clicked() {
+                    self.want_link = false;
+                    self.reconnect_at = None;
                     self.link.send(Cmd::Disconnect);
                 }
             } else {
@@ -710,6 +765,7 @@ impl App {
                 let green = egui::Button::new(RichText::new(tr("Connect")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f));
                 if ui.add_enabled(dev.has_target(), green).clicked() {
                     if let Some(target) = Target::of(&dev) {
+                        self.want_link = true;
                         self.link.send(Cmd::Connect { target, controller: ctrl, streaming: self.doc.device.connection.streaming });
                     }
                 }

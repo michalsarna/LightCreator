@@ -739,3 +739,14 @@
 738	The controller is not answering
 739	Count the buffer
 740	Simple (wait for each ok)
+741	A port name, or the USB vendor and product id (VID:PID, hexadecimal): the port that has these ids is used.
+742	Bind to this port
+743	Bound USB device
+744	Connect again automatically
+745	Connecting again…
+746	Port or USB id
+747	Reconnect
+748	Remember the USB ids of the chosen port: the port is found again by them when its name changes.
+749	Unbind
+750	When the link drops by itself, try again every few seconds until you press Disconnect.
+751	none

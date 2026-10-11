@@ -739,3 +739,14 @@
 738|A vezérlő nem válaszol
 739|Puffer számlálása
 740|Egyszerű (minden ok-ra vár)
+741|Egy portnév, vagy az USB gyártó- és termékazonosító (VID:PID, hexadecimálisan): az ilyen azonosítójú portot használja.
+742|Kötés ehhez a porthoz
+743|Kötött USB-eszköz
+744|Automatikus újracsatlakozás
+745|Újracsatlakozás…
+746|Port vagy USB-azonosító
+747|Újracsatlakozás
+748|Megjegyzi a kiválasztott port USB-azonosítóit: ha a neve megváltozik, ezekkel találja meg újra.
+749|Kötés feloldása
+750|Ha a kapcsolat magától megszakad, néhány másodpercenként újra próbálkozik, amíg a Szétkapcsolást meg nem nyomja.
+751|nincs

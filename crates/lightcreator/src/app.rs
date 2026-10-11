@@ -297,6 +297,11 @@ pub struct App {
     // laser
     pub link: LaserLink,
     pub ports: Vec<String>,
+    /// The serial ports with their USB ids, refreshed together with `ports`.
+    pub port_info: Vec<crate::laser::PortInfo>,
+    /// The user asked for a connection (and has not asked to end it): a lost link may be re-opened by itself.
+    pub want_link: bool,
+    pub reconnect_at: Option<std::time::Instant>,
     pub connected: bool,
     pub machine: (String, f64, f64),
     pub progress: (usize, usize),
@@ -318,7 +323,8 @@ impl App {
 
     /// Build the app without a window: used by `new` and by the screenshot tests.
     pub fn build(ctx: &egui::Context, storage: Option<&dyn eframe::Storage>, native_menu: bool) -> Self {
-        let ports = laser::list_ports();
+        let port_info = laser::list_port_info();
+        let ports: Vec<String> = port_info.iter().map(|p| p.name.clone()).collect();
         let saved = |k: &str| storage.and_then(|st| st.get_string(k));
         let lang = saved("lang").and_then(|c| Lang::from_code(&c)).unwrap_or(Lang::En);
         let scheme = saved("scheme").and_then(|c| Scheme::from_id(&c)).unwrap_or(Scheme::LightDark);
@@ -471,6 +477,9 @@ impl App {
             native_menu: native_menu.then(|| crate::native_menu::NativeMenu::install(ctx)),
             link: LaserLink::spawn(ctx.clone()),
             ports,
+            port_info,
+            want_link: false,
+            reconnect_at: None,
             connected: false,
             machine: (tr("Disconnected").into(), 0.0, 0.0),
             progress: (0, 0),
@@ -931,7 +940,15 @@ impl App {
                     self.push_console(l)
                 }
                 Evt::Connected(c) => {
+                    let lost = self.connected && !c;
                     self.connected = c;
+                    // A link that dropped on its own (not by the user's Disconnect) comes back by itself when asked to.
+                    if lost && self.want_link && self.doc.device.connection.auto_reconnect {
+                        self.reconnect_at = Some(std::time::Instant::now() + std::time::Duration::from_secs(3));
+                    }
+                    if c {
+                        self.reconnect_at = None;
+                    }
                     self.read_on_connected(c);
                     if !c {
                         self.machine.0 = tr("Disconnected").into();
@@ -1903,6 +1920,7 @@ impl App {
         }
         self.update_space(space);
         self.read_tick(&ctx);
+        self.reconnect_tick(&ctx);
         self.overlay_poll_camera(&ctx);
         self.shortcuts(&ctx);
 

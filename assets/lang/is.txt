@@ -739,3 +739,14 @@
 738|Stýringin svarar ekki
 739|Telja biðminnið
 740|Einföld (bíða eftir hverju ok)
+741|Heiti tengis eða USB auðkenni framleiðanda og vöru (VID:PID, sextándakerfi): tengið með þessum auðkennum er notað.
+742|Binda við þetta tengi
+743|Bundið USB-tæki
+744|Tengjast aftur sjálfkrafa
+745|Tengist aftur…
+746|Tengi eða USB auðkenni
+747|Endurtenging
+748|Muna USB auðkenni valda tengisins: tengið finnst aftur með þeim þegar nafni þess er breytt.
+749|Aftengja binding
+750|Þegar tengingin slitnar sjálf, reyna aftur á nokkurra sekúndna fresti þar til þú ýtir á Aftengja.
+751|ekkert

@@ -739,3 +739,14 @@
 738|Il-kontrollur mhux qed iwieġeb
 739|Għodd il-buffer
 740|Sempliċi (stenna kull ok)
+741|Isem ta' port, jew l-ID USB tal-manifattur u tal-prodott (VID:PID, eżadeċimali): jintuża l-port li għandu dawn l-ID.
+742|Qabbad ma' dan il-port
+743|Apparat USB marbut
+744|Qabbad mill-ġdid awtomatikament
+745|Qed jerġa' jikkonnettja…
+746|Port jew ID USB
+747|Rikonnessjoni
+748|Ftakar l-ID USB tal-port magħżul: meta ismu jinbidel, il-port jinstab mill-ġdid bihom.
+749|Ħoll ir-rabta
+750|Meta r-rabta tinqata' waħedha, erġa' pprova kull ftit sekondi sakemm tagħfas Skonnettja.
+751|xejn

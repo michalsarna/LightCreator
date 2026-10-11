@@ -739,3 +739,14 @@
 738|El controlador no responde
 739|Contar el búfer
 740|Simple (esperar cada ok)
+741|Un nombre de puerto, o el id USB de fabricante y producto (VID:PID, hexadecimal): se usa el puerto que tenga estos id.
+742|Vincular a este puerto
+743|Dispositivo USB vinculado
+744|Volver a conectar automáticamente
+745|Conectando de nuevo…
+746|Puerto o id USB
+747|Reconexión
+748|Recuerda los id USB del puerto elegido: si su nombre cambia, el puerto se encuentra de nuevo por ellos.
+749|Desvincular
+750|Cuando la conexión se cae sola, reintenta cada pocos segundos hasta que pulse Desconectar.
+751|ninguno

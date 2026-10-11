@@ -739,3 +739,14 @@
 738|Valdiklis neatsako
 739|Skaičiuoti buferį
 740|Paprastas (laukti kiekvieno ok)
+741|Prievado pavadinimas arba USB gamintojo ir gaminio ID (VID:PID, šešioliktainis): naudojamas prievadas su šiais ID.
+742|Susieti su šiuo prievadu
+743|Susietas USB įrenginys
+744|Automatiškai prisijungti iš naujo
+745|Jungiamasi iš naujo…
+746|Prievadas arba USB ID
+747|Pakartotinis prisijungimas
+748|Įsiminti pasirinkto prievado USB ID: pasikeitus pavadinimui prievadas randamas pagal juos.
+749|Atsieti
+750|Kai ryšys nutrūksta pats, bandyti kas kelias sekundes, kol paspausite Atsijungti.
+751|nėra

@@ -739,3 +739,14 @@
 738|Controlerul nu răspunde
 739|Numără bufferul
 740|Simplu (așteaptă fiecare ok)
+741|Un nume de port, sau id-ul USB de producător și produs (VID:PID, hexazecimal): se folosește portul care are aceste id-uri.
+742|Leagă de acest port
+743|Dispozitiv USB legat
+744|Reconectează automat
+745|Se reconectează…
+746|Port sau id USB
+747|Reconectare
+748|Reține id-urile USB ale portului ales: când numele se schimbă, portul este regăsit prin ele.
+749|Dezleagă
+750|Când legătura cade singură, încearcă din nou la câteva secunde până apăsați Deconectează.
+751|niciunul

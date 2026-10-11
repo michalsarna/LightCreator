@@ -739,3 +739,14 @@
 738|De besturing antwoordt niet
 739|De buffer tellen
 740|Eenvoudig (op elke ok wachten)
+741|Een poortnaam, of het USB-leveranciers- en product-id (VID:PID, hexadecimaal): de poort met deze id's wordt gebruikt.
+742|Aan deze poort binden
+743|Gebonden USB-apparaat
+744|Automatisch opnieuw verbinden
+745|Opnieuw verbinden…
+746|Poort of USB-id
+747|Opnieuw verbinden
+748|Onthoud de USB-id's van de gekozen poort: bij een andere naam wordt de poort daarmee teruggevonden.
+749|Binding opheffen
+750|Als de verbinding vanzelf wegvalt, om de paar seconden opnieuw proberen tot je op Verbinding verbreken drukt.
+751|geen

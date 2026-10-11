@@ -1231,17 +1231,6 @@ fn smoothieware_status_reports_are_read() {
     assert_eq!((state.as_str(), x, y), ("Run", 1.0, 2.0));
 }
 
-fn circle_pts(cx: f64, cy: f64, r: f64, n: usize, closed: bool) -> Vec<Pt> {
-    let mut v: Vec<Pt> = (0..n).map(|i| {
-        let t = i as f64 / n as f64 * std::f64::consts::TAU;
-        Pt::new(cx + r * t.cos(), cy + r * t.sin())
-    }).collect();
-    if closed {
-        v.push(v[0]);
-    }
-    v
-}
-
 #[test]
 fn arc_fit_stays_within_the_tolerance_and_leaves_straight_runs_alone() {
     let tol = 0.01;

@@ -739,3 +739,14 @@
 738|El controlador no respon
 739|Compta el buffer
 740|Simple (espera cada ok)
+741|Un nom de port, o l'identificador USB de fabricant i producte (VID:PID, hexadecimal): s'usa el port que té aquests identificadors.
+742|Vincula a aquest port
+743|Dispositiu USB vinculat
+744|Torna a connectar automàticament
+745|Tornant a connectar…
+746|Port o identificador USB
+747|Reconnexió
+748|Recorda els identificadors USB del port triat: si el nom canvia, el port es troba amb ells.
+749|Desvincula
+750|Quan l'enllaç cau tot sol, torna-ho a provar cada pocs segons fins que premeu Desconnecta.
+751|cap

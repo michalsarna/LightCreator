@@ -21,7 +21,7 @@ impl Target {
             return None;
         }
         Some(match dev.connection.link {
-            lc_core::LinkKind::Serial => Target::Serial { port: dev.connection.port.clone(), baud: dev.connection.baud },
+            lc_core::LinkKind::Serial => Target::Serial { port: resolve_port(&dev.connection.port, &dev.connection.usb_id, &list_port_info()), baud: dev.connection.baud },
             lc_core::LinkKind::Tcp => Target::Tcp { host: dev.connection.host.trim().to_string(), port: dev.connection.tcp_port },
         })
     }
@@ -137,8 +137,56 @@ impl LaserLink {
     }
 }
 
-pub fn list_ports() -> Vec<String> {
-    serialport::available_ports().map(|p| p.into_iter().map(|x| x.port_name).collect()).unwrap_or_default()
+/// A serial port with the USB ids of the device behind it, when it is a USB one.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct PortInfo {
+    pub name: String,
+    pub usb: Option<(u16, u16)>,
+}
+
+impl PortInfo {
+    /// "/dev/ttyUSB0 (1a86:7523)".
+    pub fn label(&self) -> String {
+        match self.usb {
+            Some((v, p)) => format!("{} ({:04x}:{:04x})", self.name, v, p),
+            None => self.name.clone(),
+        }
+    }
+}
+
+pub fn list_port_info() -> Vec<PortInfo> {
+    serialport::available_ports()
+        .map(|p| {
+            p.into_iter()
+                .map(|x| PortInfo {
+                    usb: match &x.port_type {
+                        serialport::SerialPortType::UsbPort(u) => Some((u.vid, u.pid)),
+                        _ => None,
+                    },
+                    name: x.port_name,
+                })
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+/// The port to open: `spec` is a port name, or `VID:PID`; `usb_id` is the USB device the profile is bound to. A bound
+/// profile keeps its port while that still has the right ids, and otherwise follows the ids to the port that has them
+/// now (the name changes after a restart or another socket).
+pub fn resolve_port(spec: &str, usb_id: &str, ports: &[PortInfo]) -> String {
+    let by_id = |id: (u16, u16)| ports.iter().find(|p| p.usb == Some(id)).map(|p| p.name.clone());
+    if let Some(id) = lc_core::parse_usb_id(spec) {
+        return by_id(id).unwrap_or_else(|| spec.to_string());
+    }
+    if let Some(id) = lc_core::parse_usb_id(usb_id) {
+        if ports.iter().any(|p| p.name == spec && p.usb == Some(id)) {
+            return spec.to_string();
+        }
+        if let Some(name) = by_id(id) {
+            return name;
+        }
+    }
+    spec.to_string()
 }
 
 /// Remove comments/blank lines so only real commands get streamed.
@@ -377,6 +425,31 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context, stall_
 mod tests {
     use super::*;
     use std::net::TcpListener;
+
+    fn info(name: &str, usb: Option<(u16, u16)>) -> PortInfo {
+        PortInfo { name: name.into(), usb }
+    }
+
+    #[test]
+    fn ports_are_found_by_usb_id_when_their_names_change() {
+        let ports = vec![info("/dev/ttyUSB1", Some((0x1a86, 0x7523))), info("/dev/ttyACM0", Some((0x0403, 0x6001))), info("/dev/ttyS0", None)];
+        // The port field may itself be a VID:PID.
+        assert_eq!(resolve_port("0403:6001", "", &ports), "/dev/ttyACM0");
+        assert_eq!(resolve_port("1A86:7523", "", &ports), "/dev/ttyUSB1");
+        // A bound profile whose old name is gone (or now belongs to another device) follows the ids.
+        assert_eq!(resolve_port("/dev/ttyUSB0", "1a86:7523", &ports), "/dev/ttyUSB1");
+        assert_eq!(resolve_port("/dev/ttyACM0", "1a86:7523", &ports), "/dev/ttyUSB1");
+        // While the name still has the right ids it stays.
+        assert_eq!(resolve_port("/dev/ttyUSB1", "1a86:7523", &ports), "/dev/ttyUSB1");
+        // Without a binding the name is used as it is, also when it is not there.
+        assert_eq!(resolve_port("/dev/ttyUSB9", "", &ports), "/dev/ttyUSB9");
+        assert_eq!(resolve_port("0403:9999", "", &ports), "0403:9999");
+        // Nonsense ids are not ids.
+        assert_eq!(lc_core::parse_usb_id("zz:12"), None);
+        assert_eq!(lc_core::parse_usb_id("12345:1"), None);
+        assert_eq!(lc_core::parse_usb_id("0403:6001"), Some((0x0403, 0x6001)));
+        assert_eq!(info("COM3", Some((0x1a86, 0x7523))).label(), "COM3 (1a86:7523)");
+    }
 
     /// A stand-in for `ser2net` + GRBL: answers every line with `ok`, every `?` with a status report and a soft reset
     /// with the start-up banner.

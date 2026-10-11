@@ -277,3 +277,43 @@ mod fw_tests {
         assert!(!w.laser_mode_off && w.s_max == Some(255.0));
     }
 }
+
+#[cfg(test)]
+mod reconnect_tests {
+    use super::*;
+
+    fn app() -> App {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.screen = crate::app::Screen::Editor;
+        let mut d = lc_core::Device::default();
+        d.connection.port = "/dev/does-not-exist".into();
+        d.connection.auto_reconnect = true;
+        a.profiles = vec![d];
+        a.enter_editor(0);
+        a
+    }
+
+    #[test]
+    fn a_lost_link_is_opened_again_only_when_asked_for_and_not_after_a_disconnect() {
+        let ctx = egui::Context::default();
+        let mut a = app();
+        a.want_link = true;
+        a.reconnect_at = Some(std::time::Instant::now() - std::time::Duration::from_secs(1));
+        a.reconnect_tick(&ctx);
+        assert!(a.status.contains("Connecting again"), "{}", a.status);
+        let next = a.reconnect_at.expect("another try is scheduled");
+        assert!(next > std::time::Instant::now());
+        // The user pressed Disconnect: nothing more happens.
+        a.want_link = false;
+        a.reconnect_tick(&ctx);
+        assert!(a.reconnect_at.is_none());
+        // The option is off: no tries either.
+        let mut b = app();
+        b.want_link = true;
+        b.doc.device.connection.auto_reconnect = false;
+        b.reconnect_at = Some(std::time::Instant::now() - std::time::Duration::from_secs(1));
+        b.reconnect_tick(&ctx);
+        assert!(b.reconnect_at.is_none());
+    }
+}

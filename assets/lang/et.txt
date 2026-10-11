@@ -739,3 +739,14 @@
 738|Kontroller ei vasta
 739|Loenda puhvrit
 740|Lihtne (oota iga ok-d)
+741|Pordi nimi või USB tootja ja toote tunnus (VID:PID, kuueteistkümnendsüsteemis): kasutatakse porti, millel on need tunnused.
+742|Seo selle pordiga
+743|Seotud USB-seade
+744|Ühenda automaatselt uuesti
+745|Ühendan uuesti…
+746|Port või USB-tunnus
+747|Taasühendus
+748|Jäta meelde valitud pordi USB-tunnused: kui selle nimi muutub, leitakse port nende järgi.
+749|Eemalda sidumine
+750|Kui ühendus katkeb iseenesest, proovi mõne sekundi tagant uuesti, kuni vajutad Katkesta.
+751|puudub

@@ -739,3 +739,14 @@
 738|Níl an rialaitheoir ag freagairt
 739|Comhairigh an maolán
 740|Simplí (fan le gach ok)
+741|Ainm poirt, nó aitheantas USB déantóra agus táirge (VID:PID, heicsidheachúil): úsáidtear an port a bhfuil na haitheantais seo aige.
+742|Ceangail leis an bport seo
+743|Gléas USB ceangailte
+744|Athcheangail go huathoibríoch
+745|Ag athcheangal…
+746|Port nó aitheantas USB
+747|Athcheangal
+748|Cuimhnigh ar aitheantais USB an phoirt roghnaithe: aimsítear an port arís leo nuair a athraíonn a ainm.
+749|Dícheangail
+750|Nuair a thiteann an nasc as féin, triail arís gach cúpla soicind go dtí go mbrúnn tú Dícheangail.
+751|gan aon cheann

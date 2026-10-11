@@ -739,3 +739,14 @@
 738|Styrenheten svarar inte
 739|Räkna bufferten
 740|Enkel (vänta på varje ok)
+741|Ett portnamn, eller USB-tillverkar- och produkt-id (VID:PID, hexadecimalt): porten med dessa id används.
+742|Bind till denna port
+743|Bunden USB-enhet
+744|Anslut igen automatiskt
+745|Ansluter igen…
+746|Port eller USB-id
+747|Återanslutning
+748|Kom ihåg USB-id:na för den valda porten: porten hittas igen med dem när namnet ändras.
+749|Ta bort bindning
+750|När förbindelsen faller av sig själv, försök igen med några sekunders mellanrum tills du trycker på Koppla från.
+751|ingen

@@ -773,12 +773,26 @@ pub struct Connection {
     pub baud: u32,
     #[serde(default)]
     pub streaming: Streaming,
+    /// USB vendor and product id of the controller (`0403:6001`); when set the port is found by it, even after its
+    /// name changed (empty = bound to the port name only).
+    #[serde(default)]
+    pub usb_id: String,
+    /// Connect again by itself, every few seconds, when the link was lost without the user asking for it.
+    #[serde(default)]
+    pub auto_reconnect: bool,
 }
 
 impl Default for Connection {
     fn default() -> Self {
-        Connection { link: LinkKind::Serial, host: String::new(), tcp_port: 3333, port: String::new(), baud: 115_200, streaming: Streaming::Counting }
+        Connection { link: LinkKind::Serial, host: String::new(), tcp_port: 3333, port: String::new(), baud: 115_200, streaming: Streaming::Counting, usb_id: String::new(), auto_reconnect: false }
     }
+}
+
+/// `0403:6001` (hexadecimal vendor and product id) as numbers.
+pub fn parse_usb_id(text: &str) -> Option<(u16, u16)> {
+    let (v, p) = text.trim().split_once(':')?;
+    let hex = |s: &str| (!s.is_empty() && s.len() <= 4 && s.chars().all(|c| c.is_ascii_hexdigit())).then(|| u16::from_str_radix(s, 16).ok()).flatten();
+    Some((hex(v.trim())?, hex(p.trim())?))
 }
 
 /// One laser head of the machine.
@@ -907,6 +921,8 @@ impl From<DeviceWire> for Device {
             port: w.port.unwrap_or_default(),
             baud: w.baud.unwrap_or(115_200),
             streaming: Streaming::Counting,
+            usb_id: String::new(),
+            auto_reconnect: false,
         });
         let mut heads = w.heads.unwrap_or_default();
         if heads.is_empty() {

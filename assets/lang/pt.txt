@@ -739,3 +739,14 @@
 738|O controlador não responde
 739|Contar o buffer
 740|Simples (esperar cada ok)
+741|Um nome de porta, ou o id USB de fabricante e produto (VID:PID, hexadecimal): usa-se a porta que tem estes id.
+742|Associar a esta porta
+743|Dispositivo USB associado
+744|Voltar a ligar automaticamente
+745|A ligar de novo…
+746|Porta ou id USB
+747|Religação
+748|Lembra os id USB da porta escolhida: se o nome mudar, a porta é encontrada de novo por eles.
+749|Desassociar
+750|Quando a ligação cai sozinha, tenta de novo a cada poucos segundos até premir Desligar.
+751|nenhum

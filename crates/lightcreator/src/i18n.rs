@@ -1001,6 +1001,18 @@ const TABLE: &[[&str; 7]] = &[
     ["The controller is not answering", "Sterownik nie odpowiada", "Die Steuerung antwortet nicht", "Il controller non risponde", "Ohjain ei vastaa", "控制器没有应答", "कंट्रोलर जवाब नहीं दे रहा"],
     ["Count the buffer", "Zliczanie bufora", "Puffer zählen", "Conta il buffer", "Laske puskuri", "计数缓冲区", "बफ़र गिनें"],
     ["Simple (wait for each ok)", "Prosty (czekaj na każde ok)", "Einfach (auf jedes ok warten)", "Semplice (attendi ogni ok)", "Yksinkertainen (odota jokaista ok:ta)", "简单（等待每个 ok）", "सरल (हर ok की प्रतीक्षा)"],
+    // ---- usb binding ----
+    ["A port name, or the USB vendor and product id (VID:PID, hexadecimal): the port that has these ids is used.", "Nazwa portu albo identyfikator USB producenta i produktu (VID:PID, szesnastkowo): używany jest port z tymi identyfikatorami.", "Ein Portname oder die USB-Hersteller- und Produkt-ID (VID:PID, hexadezimal): Es wird der Port mit diesen IDs verwendet.", "Il nome di una porta, oppure l'ID USB di produttore e prodotto (VID:PID, esadecimale): si usa la porta con questi ID.", "Portin nimi tai USB-valmistajan ja tuotteen tunnus (VID:PID, heksadesimaalina): käytetään porttia, jolla on nämä tunnukset.", "端口名称，或 USB 厂商与产品 ID（VID:PID，十六进制）：将使用具有这些 ID 的端口。", "पोर्ट का नाम, या USB विक्रेता और उत्पाद आईडी (VID:PID, हेक्साडेसिमल): इन आईडी वाला पोर्ट उपयोग होता है।"],
+    ["Bind to this port", "Powiąż z tym portem", "An diesen Port binden", "Associa a questa porta", "Sido tähän porttiin", "绑定到此端口", "इस पोर्ट से बाँधें"],
+    ["Bound USB device", "Powiązane urządzenie USB", "Gebundenes USB-Gerät", "Dispositivo USB associato", "Sidottu USB-laite", "已绑定的 USB 设备", "बँधा USB डिवाइस"],
+    ["Connect again automatically", "Łącz ponownie automatycznie", "Automatisch erneut verbinden", "Riconnetti automaticamente", "Yhdistä uudelleen automaattisesti", "自动重新连接", "अपने आप दोबारा कनेक्ट करें"],
+    ["Connecting again…", "Łączenie ponownie…", "Verbinde erneut …", "Riconnessione…", "Yhdistetään uudelleen…", "正在重新连接…", "दोबारा कनेक्ट हो रहा है…"],
+    ["Port or USB id", "Port lub identyfikator USB", "Port oder USB-ID", "Porta o ID USB", "Portti tai USB-tunnus", "端口或 USB ID", "पोर्ट या USB आईडी"],
+    ["Reconnect", "Ponowne łączenie", "Neu verbinden", "Riconnessione", "Uudelleenyhdistys", "重新连接", "दोबारा कनेक्ट"],
+    ["Remember the USB ids of the chosen port: the port is found again by them when its name changes.", "Zapamiętaj identyfikatory USB wybranego portu: gdy zmieni się jego nazwa, port zostanie znaleziony po nich.", "Die USB-IDs des gewählten Ports merken: Ändert sich sein Name, wird er über sie wiedergefunden.", "Ricorda gli ID USB della porta scelta: se il suo nome cambia, la porta viene ritrovata tramite essi.", "Muista valitun portin USB-tunnukset: portti löytyy niillä, kun sen nimi muuttuu.", "记住所选端口的 USB ID：端口名称改变时可凭它们重新找到。", "चुने पोर्ट की USB आईडी याद रखें: नाम बदलने पर पोर्ट उनसे फिर मिल जाता है।"],
+    ["Unbind", "Rozłącz powiązanie", "Bindung lösen", "Dissocia", "Pura sidonta", "解除绑定", "बंधन हटाएँ"],
+    ["When the link drops by itself, try again every few seconds until you press Disconnect.", "Gdy połączenie samo się zerwie, próbuj co kilka sekund, aż naciśniesz Rozłącz.", "Reißt die Verbindung von selbst ab, alle paar Sekunden erneut versuchen, bis du auf Trennen drückst.", "Se il collegamento cade da solo, riprova ogni pochi secondi finché non premi Disconnetti.", "Kun yhteys katkeaa itsestään, yritä uudelleen muutaman sekunnin välein, kunnes painat Katkaise.", "连接自行断开时，每隔几秒重试，直到你点击“断开”。", "लिंक अपने आप टूटे तो हर कुछ सेकंड में फिर कोशिश करें, जब तक आप डिस्कनेक्ट न दबाएँ।"],
+    ["none", "brak", "keins", "nessuno", "ei mitään", "无", "कोई नहीं"],
 ];
 #[cfg(test)]
 mod tests {

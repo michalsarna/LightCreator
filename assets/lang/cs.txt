@@ -739,3 +739,14 @@
 738|Řídicí jednotka neodpovídá
 739|Počítat vyrovnávací paměť
 740|Jednoduchý (čekat na každé ok)
+741|Název portu, nebo USB identifikátor výrobce a produktu (VID:PID, hexadecimálně): použije se port s těmito identifikátory.
+742|Svázat s tímto portem
+743|Svázané zařízení USB
+744|Znovu se připojit automaticky
+745|Připojuji znovu…
+746|Port nebo USB id
+747|Opětovné připojení
+748|Zapamatovat USB identifikátory zvoleného portu: při změně jeho názvu se port podle nich znovu najde.
+749|Zrušit vazbu
+750|Když spojení samo spadne, zkoušet to každých pár sekund, dokud nestisknete Odpojit.
+751|žádné

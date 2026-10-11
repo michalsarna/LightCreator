@@ -739,3 +739,14 @@
 738|Styringen svarer ikke
 739|Tæl bufferen
 740|Enkel (vent på hvert ok)
+741|Et portnavn eller USB-leverandør- og produkt-id (VID:PID, hexadecimalt): porten med disse id'er bruges.
+742|Bind til denne port
+743|Bundet USB-enhed
+744|Opret forbindelse igen automatisk
+745|Forbinder igen…
+746|Port eller USB-id
+747|Gentilslut
+748|Husk USB-id'erne for den valgte port: porten findes igen med dem, når navnet ændres.
+749|Fjern binding
+750|Når forbindelsen falder af sig selv, prøv igen hvert par sekunder, til du trykker Afbryd.
+751|ingen
