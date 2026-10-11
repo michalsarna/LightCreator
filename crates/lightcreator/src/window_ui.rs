@@ -177,6 +177,24 @@ pub fn mini_title(ui: &mut egui::Ui, title: &str, open: &mut bool, extra: impl F
     ui.separator();
 }
 
+/// The red used for everything that deletes.
+pub const DELETE_RED: egui::Color32 = egui::Color32::from_rgb(0xc0, 0x30, 0x30);
+
+/// A "Delete" button: a bin icon and the text, both red.
+pub fn delete_button(ui: &mut egui::Ui, text: &str) -> egui::Response {
+    delete_button_enabled(ui, true, text)
+}
+
+pub fn delete_button_enabled(ui: &mut egui::Ui, enabled: bool, text: &str) -> egui::Response {
+    let ink = if enabled { DELETE_RED } else { DELETE_RED.gamma_multiply(0.4) };
+    ui.add_enabled(enabled, egui::Button::image_and_text(crate::icons::slot(Some("trash"), ink), egui::RichText::new(text).color(ink)))
+}
+
+/// A small red button with only the bin icon, for lists; `tip` says what it deletes.
+pub fn delete_icon(ui: &mut egui::Ui, tip: &str) -> egui::Response {
+    ui.add(egui::Button::image(crate::icons::slot(Some("trash"), egui::Color32::WHITE)).fill(DELETE_RED)).on_hover_text(tip)
+}
+
 /// A pop-up window in the common style: slim title line, close button, movable and resizable both ways.
 /// `size` is the starting size; `open` is cleared by the close button.
 pub fn popup<R>(ctx: &egui::Context, id: &str, title: &str, size: [f32; 2], open: &mut bool, add: impl FnOnce(&mut egui::Ui) -> R) -> Option<R> {

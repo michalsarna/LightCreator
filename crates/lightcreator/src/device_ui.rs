@@ -769,7 +769,7 @@ impl App {
                                             if ui.radio(active, tr("Active")).clicked() {
                                                 d.active_camera = i;
                                             }
-                                            if ui.small_button("✕").on_hover_text(tr("Delete this camera")).clicked() {
+                                            if crate::window_ui::delete_icon(ui, &tr("Delete this camera")).clicked() {
                                                 remove = Some(i);
                                             }
                                         });
@@ -855,7 +855,7 @@ impl App {
                                     d.active_camera = d.active_camera.min(d.cameras.len().saturating_sub(1));
                                 }
                                 if d.cameras.len() < 8 && ui.button(tr("Add a camera")).clicked() {
-                                    d.cameras.push(lc_core::CameraSource { name: trf("Camera {}", &[&(d.cameras.len() + 1)]), enabled: false, kind: lc_core::CameraKind::Url(String::new()), rotation: 0, image: Default::default(), lens: Default::default(), reference: vec![] });
+                                    add_camera(d);
                                 }
                             }
                             CfgPage::Rotary => {
@@ -1750,9 +1750,26 @@ impl App {
     }
 }
 
+/// A new, switched-off camera at the end of the list. It is the one being set up, so it becomes the active one.
+pub fn add_camera(d: &mut lc_core::Device) {
+    d.cameras.push(lc_core::CameraSource { name: trf("Camera {}", &[&(d.cameras.len() + 1)]), enabled: false, kind: lc_core::CameraKind::Url(String::new()), rotation: 0, image: Default::default(), lens: Default::default(), reference: vec![] });
+    d.active_camera = d.cameras.len() - 1;
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_new_camera_becomes_the_active_one() {
+        let mut d = lc_core::Device::default();
+        add_camera(&mut d);
+        assert_eq!((d.cameras.len(), d.active_camera), (1, 0));
+        add_camera(&mut d);
+        add_camera(&mut d);
+        assert_eq!((d.cameras.len(), d.active_camera), (3, 2));
+        assert!(!d.cameras[2].enabled, "it stays off until it has a valid address");
+    }
 
     #[test]
     fn diagonal_jogs_move_both_axes_and_have_icons() {
