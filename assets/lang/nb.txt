@@ -571,3 +571,41 @@
 570|Konverter teksten til kurver, eller vektoriser bildet, for å redigere nodene.
 571|Merk først en form, og rediger deretter nodene.
 572|Hjerte (K)
+573|La til {} materiale(r) fra {}
+574|Forskjeller i materialbiblioteket
+575|{} inneholder materialinnstillinger som avviker fra denne enheten. Velg verdiene som skal beholdes.
+576|{} nye materialer ble lagt til; {} var allerede like.
+577|Behold alle mine
+578|Ta alle fra filen
+579|Lag {}: hele laget
+580|finnes ikke
+581|La biblioteket mitt være som det er
+582|Denne enhetens bibliotek ble oppdatert.
+583|Legg til fra bibliotek…
+584|Kopierer materialer fra det innebygde biblioteket til denne enheten
+585|Bibliotek for enheten {}
+586|Dette biblioteket er tomt. Legg til materialer fra det innebygde biblioteket, eller lagre lagene dine som et materiale.
+587|Notat
+588|Etikett
+589|Fjern lag
+590|Legg til lag
+591|Bruker innstillingene for dette laget i designet
+592|Bruk på lagene
+593|Legger innstillingene for alle lagene inn i designet
+594|{} brukt på {} lag
+595|Lagre designets lag som et materiale
+596|Lagrer innstillingene for lagene som brukes i designet
+597|{} lagret i denne enhetens bibliotek
+598|Materialer som legges til her, er tilgjengelige for alle enheter. En enhets eget bibliotek redigeres i fanen Materialer.
+599|Lagt til av deg
+600|Innebygd
+601|Legg til i denne enheten
+602|Lagre designets lag som et materiale for alle enheter
+603|Lagre i biblioteket
+604|{} finnes allerede i denne enhetens bibliotek
+605|{} lagt til i denne enhetens bibliotek
+606|Et materiale med dette navnet finnes allerede i biblioteket.
+607|{} lagret i materialbiblioteket
+608|Innstilling
+609|Denne enheten
+610|Materialer

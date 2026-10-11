@@ -571,3 +571,41 @@
 570|Convertiu el text en corbes, o vectoritzeu la imatge, per editar-ne els nodes.
 571|Seleccioneu primer una forma i després editeu-ne els nodes.
 572|Cor (K)
+573|S'han afegit {} material(s) de {}
+574|Diferències a la biblioteca de materials
+575|{} conté ajustos de materials diferents d'aquest dispositiu. Trieu els valors que cal conservar.
+576|S'han afegit {} materials nous; {} ja eren iguals.
+577|Conserva tots els meus
+578|Pren-ho tot del fitxer
+579|Capa {}: capa sencera
+580|no hi és
+581|Deixa la meva biblioteca tal com és
+582|S'ha actualitzat la biblioteca d'aquest dispositiu.
+583|Afegeix de la biblioteca…
+584|Copia materials de la biblioteca integrada a aquest dispositiu
+585|Biblioteca del dispositiu {}
+586|Aquesta biblioteca és buida. Afegiu materials de la biblioteca integrada o deseu les vostres capes com a material.
+587|Nota
+588|Etiqueta
+589|Treu la capa
+590|Afegeix una capa
+591|Utilitza els ajustos d'aquesta capa del disseny
+592|Aplica a les capes
+593|Posa al disseny els ajustos de totes les seves capes
+594|{} aplicat a {} capa(es)
+595|Desa les capes del disseny com a material
+596|Desa els ajustos de les capes utilitzades al disseny
+597|{} desat a la biblioteca d'aquest dispositiu
+598|Els materials afegits aquí estan disponibles per a tots els dispositius. La biblioteca pròpia d'un dispositiu s'edita a la pestanya Materials.
+599|Afegit per vós
+600|Integrat
+601|Afegeix a aquest dispositiu
+602|Desa les capes del disseny com a material per a tots els dispositius
+603|Desa a la biblioteca
+604|{} ja és a la biblioteca d'aquest dispositiu
+605|{} afegit a la biblioteca d'aquest dispositiu
+606|Ja existeix un material amb aquest nom a la biblioteca.
+607|{} desat a la biblioteca de materials
+608|Ajust
+609|Aquest dispositiu
+610|Materials

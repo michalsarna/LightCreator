@@ -571,3 +571,41 @@
 570|Convierta el texto en curvas, o vectorice la imagen, para editar sus nodos.
 571|Seleccione primero una forma y luego edite sus nodos.
 572|Corazón (K)
+573|{} material(es) añadido(s) desde {}
+574|Diferencias en la biblioteca de materiales
+575|{} contiene ajustes de materiales distintos de este dispositivo. Elija los valores que conservar.
+576|{} material(es) nuevo(s) añadido(s); {} ya eran iguales.
+577|Conservar todos los míos
+578|Tomar todos del archivo
+579|Capa {}: capa completa
+580|no existe
+581|Dejar mi biblioteca como está
+582|Se actualizó la biblioteca de este dispositivo.
+583|Añadir desde la biblioteca…
+584|Copia materiales de la biblioteca integrada a este dispositivo
+585|Biblioteca del dispositivo {}
+586|Esta biblioteca está vacía. Añada materiales de la biblioteca integrada o guarde sus capas como material.
+587|Nota
+588|Etiqueta
+589|Quitar capa
+590|Añadir capa
+591|Usa los ajustes de esta capa del diseño
+592|Aplicar a las capas
+593|Pone en el diseño los ajustes de todas sus capas
+594|{} aplicado a {} capa(s)
+595|Guardar las capas del diseño como material
+596|Guarda los ajustes de las capas usadas en el diseño
+597|{} guardado en la biblioteca de este dispositivo
+598|Los materiales añadidos aquí están disponibles para todos los dispositivos. La biblioteca propia de un dispositivo se edita en la pestaña Materiales.
+599|Añadido por usted
+600|Integrado
+601|Añadir a este dispositivo
+602|Guardar las capas del diseño como material para todos los dispositivos
+603|Guardar en la biblioteca
+604|{} ya está en la biblioteca de este dispositivo
+605|{} añadido a la biblioteca de este dispositivo
+606|Ya existe un material con este nombre en la biblioteca.
+607|{} guardado en la biblioteca de materiales
+608|Ajuste
+609|Este dispositivo
+610|Materiales

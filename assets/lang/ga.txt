@@ -571,3 +571,41 @@
 570|Tiontaigh an téacs ina chuair, nó veicteoraigh an íomhá, chun a nóid a chur in eagar.
 571|Roghnaigh cruth ar dtús, ansin cuir a nóid in eagar.
 572|Croí (K)
+573|Cuireadh {} ábhar leis ó {}
+574|Difríochtaí i leabharlann na n-ábhar
+575|Tá socruithe ábhar i {} atá difriúil ón ngléas seo. Roghnaigh na luachanna le coinneáil.
+576|Cuireadh {} ábhar nua leis; bhí {} cheana mar a chéile.
+577|Coinnigh mo chuid ar fad
+578|Tóg gach ceann ón gcomhad
+579|Ciseal {}: an ciseal ar fad
+580|níl ann
+581|Fág mo leabharlann mar atá
+582|Nuashonraíodh leabharlann an ghléis seo.
+583|Cuir leis ón leabharlann…
+584|Cóipeálann ábhair ón leabharlann ionsuite chuig an ngléas seo
+585|Leabharlann an ghléis {}
+586|Tá an leabharlann seo folamh. Cuir ábhair leis ón leabharlann ionsuite nó sábháil do chiseail mar ábhar.
+587|Nóta
+588|Lipéad
+589|Bain ciseal
+590|Cuir ciseal leis
+591|Úsáideann socruithe an chiseal seo sa dearadh
+592|Cuir i bhfeidhm ar na ciseail
+593|Cuireann sé socruithe a chiseal go léir isteach sa dearadh
+594|Cuireadh {} i bhfeidhm ar {} ciseal
+595|Sábháil ciseail an deartha mar ábhar
+596|Sábhálann socruithe na gciseal a úsáidtear sa dearadh
+597|{} sábháilte i leabharlann an ghléis seo
+598|Tá ábhair a chuirtear leis anseo ar fáil do gach gléas. Cuirtear leabharlann féin gléis in eagar sa chluaisín Ábhair.
+599|Curtha leis agat
+600|Ionsuite
+601|Cuir leis an ngléas seo
+602|Sábháil ciseail an deartha mar ábhar do gach gléas
+603|Sábháil sa leabharlann
+604|Tá {} i leabharlann an ghléis seo cheana
+605|Cuireadh {} le leabharlann an ghléis seo
+606|Tá ábhar leis an ainm seo sa leabharlann cheana.
+607|{} sábháilte i leabharlann na n-ábhar
+608|Socrú
+609|An gléas seo
+610|Ábhair

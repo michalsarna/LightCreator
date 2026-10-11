@@ -571,3 +571,41 @@
 570|Konvertera texten till kurvor, eller vektorisera bilden, för att redigera dess noder.
 571|Markera först en form och redigera sedan dess noder.
 572|Hjärta (K)
+573|Lade till {} material från {}
+574|Skillnader i materialbiblioteket
+575|{} innehåller materialinställningar som skiljer sig från den här enheten. Välj vilka värden som ska behållas.
+576|{} nya material lades till; {} var redan lika.
+577|Behåll alla mina
+578|Ta alla från filen
+579|Lager {}: hela lagret
+580|saknas
+581|Låt mitt bibliotek vara som det är
+582|Den här enhetens bibliotek uppdaterades.
+583|Lägg till från bibliotek…
+584|Kopierar material från det inbyggda biblioteket till den här enheten
+585|Bibliotek för enheten {}
+586|Det här biblioteket är tomt. Lägg till material från det inbyggda biblioteket eller spara dina lager som ett material.
+587|Anteckning
+588|Etikett
+589|Ta bort lager
+590|Lägg till lager
+591|Använder inställningarna för det här lagret i designen
+592|Använd på lagren
+593|Lägger in inställningarna för alla dess lager i designen
+594|{} användes på {} lager
+595|Spara designens lager som ett material
+596|Sparar inställningarna för de lager som används i designen
+597|{} sparades i den här enhetens bibliotek
+598|Material som läggs till här är tillgängliga för alla enheter. En enhets eget bibliotek redigeras på fliken Material.
+599|Tillagd av dig
+600|Inbyggd
+601|Lägg till i den här enheten
+602|Spara designens lager som ett material för alla enheter
+603|Spara i biblioteket
+604|{} finns redan i den här enhetens bibliotek
+605|{} lades till i den här enhetens bibliotek
+606|Ett material med det här namnet finns redan i biblioteket.
+607|{} sparades i materialbiblioteket
+608|Inställning
+609|Den här enheten
+610|Material

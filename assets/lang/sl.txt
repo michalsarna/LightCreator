@@ -571,3 +571,41 @@
 570|Pretvorite besedilo v krivulje ali vektorizirajte sliko, da lahko urejate njena vozlišča.
 571|Najprej izberite obliko, nato uredite njena vozlišča.
 572|Srce (K)
+573|Dodanih materialov: {} iz {}
+574|Razlike v knjižnici materialov
+575|{} vsebuje nastavitve materialov, ki se razlikujejo od te naprave. Izberite vrednosti, ki jih želite obdržati.
+576|Dodanih novih materialov: {}; že enakih: {}.
+577|Obdrži vse moje
+578|Vzemi vse iz datoteke
+579|Sloj {}: cel sloj
+580|ni
+581|Pusti mojo knjižnico, kakršna je
+582|Knjižnica te naprave je posodobljena.
+583|Dodaj iz knjižnice…
+584|Kopira materiale iz vgrajene knjižnice v to napravo
+585|Knjižnica naprave {}
+586|Ta knjižnica je prazna. Dodajte materiale iz vgrajene knjižnice ali shranite svoje sloje kot material.
+587|Opomba
+588|Oznaka
+589|Odstrani sloj
+590|Dodaj sloj
+591|Uporabi nastavitve tega sloja iz zasnove
+592|Uporabi na slojih
+593|V zasnovo vstavi nastavitve vseh njegovih slojev
+594|{} uporabljeno na slojih: {}
+595|Shrani sloje zasnove kot material
+596|Shrani nastavitve slojev, uporabljenih v zasnovi
+597|{} shranjeno v knjižnico te naprave
+598|Tukaj dodani materiali so na voljo za vsako napravo. Lastno knjižnico naprave urejate na zavihku Materiali.
+599|Dodali ste
+600|Vgrajen
+601|Dodaj tej napravi
+602|Shrani sloje zasnove kot material za vsako napravo
+603|Shrani v knjižnico
+604|{} je že v knjižnici te naprave
+605|{} dodano v knjižnico te naprave
+606|Material s tem imenom v knjižnici že obstaja.
+607|{} shranjeno v knjižnico materialov
+608|Nastavitev
+609|Ta naprava
+610|Materiali

@@ -571,3 +571,41 @@
 570|Pārvērsiet tekstu līknēs vai vektorizējiet attēlu, lai rediģētu tā mezglus.
 571|Vispirms atlasiet formu, pēc tam rediģējiet tās mezglus.
 572|Sirds (K)
+573|Pievienoti materiāli: {} no {}
+574|Atšķirības materiālu bibliotēkā
+575|{} satur materiālu iestatījumus, kas atšķiras no šīs ierīces. Izvēlieties vērtības, ko paturēt.
+576|Pievienoti jauni materiāli: {}; jau vienādi bija: {}.
+577|Paturēt visus manus
+578|Ņemt visus no faila
+579|Slānis {}: viss slānis
+580|nav
+581|Atstāt manu bibliotēku nemainītu
+582|Šīs ierīces bibliotēka atjaunināta.
+583|Pievienot no bibliotēkas…
+584|Kopē materiālus no iebūvētās bibliotēkas uz šo ierīci
+585|Ierīces {} bibliotēka
+586|Šī bibliotēka ir tukša. Pievienojiet materiālus no iebūvētās bibliotēkas vai saglabājiet savus slāņus kā materiālu.
+587|Piezīme
+588|Etiķete
+589|Noņemt slāni
+590|Pievienot slāni
+591|Izmanto šī slāņa iestatījumus dizainā
+592|Lietot slāņiem
+593|Ievieto dizainā visu tā slāņu iestatījumus
+594|{} pielietots {} slāņiem
+595|Saglabāt dizaina slāņus kā materiālu
+596|Saglabā dizainā izmantoto slāņu iestatījumus
+597|{} saglabāts šīs ierīces bibliotēkā
+598|Šeit pievienotie materiāli ir pieejami katrai ierīcei. Ierīces paša bibliotēku rediģē cilnē Materiāli.
+599|Jūsu pievienots
+600|Iebūvēts
+601|Pievienot šai ierīcei
+602|Saglabāt dizaina slāņus kā materiālu katrai ierīcei
+603|Saglabāt bibliotēkā
+604|{} jau ir šīs ierīces bibliotēkā
+605|{} pievienots šīs ierīces bibliotēkai
+606|Materiāls ar šādu nosaukumu bibliotēkā jau ir.
+607|{} saglabāts materiālu bibliotēkā
+608|Iestatījums
+609|Šī ierīce
+610|Materiāli

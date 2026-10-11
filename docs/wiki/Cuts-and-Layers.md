@@ -27,7 +27,16 @@ Images engrave line by line at the layer interval. Choose **threshold**, **Floyd
 ![Image engraving](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/09-image.png)
 
 ## Material library
-Starting settings for common materials and operations (diode and CO2). Apply them to the active layer or save your own presets. Values are generic: **always test on scrap**.
+A **material** holds the settings of every layer it needs: mode, speed, power, passes, interval, scan angle, overscan, dithering, minimum power and air assist. Three levels work together:
+
+* **Built-in library:** starting values for typical 10 W diode and 40 W CO2 lasers. It is the source for the other libraries. Values are generic: **always test on scrap**.
+* **Global materials:** the *Material library…* window (Laser menu) is the only place that extends the built-in library. *Save the layers of the design as a material for every device* adds a material that every device can use.
+* **Device library:** every device has its own library in the **Materials** tab of the side panel. It is filled once from the built-in and global materials for its laser type. In the tab you edit all the settings of every layer, add or remove layers, rename, delete, **apply a material to the layers** of the design and **save the layers of the design as a material**; this goes to the device library only.
+
+The device library is stored in the device profile (so also in backups) and inside every saved project. When you open a project, its library is merged into the library of the active device: new materials are added, and where a material differs a window lets you choose, value by value, to keep yours or take the one from the file.
+
+![Materials tab](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/33-materials-tab.png)
+![Differences](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/34-material-merge.png)
 ![Materials](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/11-materials.png)
 
 ## Preview window

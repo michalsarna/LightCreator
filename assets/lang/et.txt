@@ -571,3 +571,41 @@
 570|Teisendage tekst kõverateks või vektoriseerige pilt, et selle sõlmi redigeerida.
 571|Valige esmalt kuju, seejärel redigeerige selle sõlmi.
 572|Süda (K)
+573|Lisati {} materjali(i) failist {}
+574|Erinevused materjaliteegis
+575|{} sisaldab materjaliseadeid, mis erinevad sellest seadmest. Valige väärtused, mida säilitada.
+576|Lisati {} uut materjali; {} olid juba samasugused.
+577|Säilita kõik minu omad
+578|Võta kõik failist
+579|Kiht {}: terve kiht
+580|puudub
+581|Jäta minu teek muutmata
+582|Selle seadme teek on uuendatud.
+583|Lisa teegist…
+584|Kopeerib materjalid sisseehitatud teegist sellesse seadmesse
+585|Seadme {} teek
+586|See teek on tühi. Lisage materjale sisseehitatud teegist või salvestage oma kihid materjalina.
+587|Märkus
+588|Silt
+589|Eemalda kiht
+590|Lisa kiht
+591|Kasutab selle kihi seadeid kavandis
+592|Rakenda kihtidele
+593|Paneb kavandisse kõigi selle kihtide seaded
+594|{} rakendatud {} kihile
+595|Salvesta kavandi kihid materjalina
+596|Salvestab kavandis kasutatud kihtide seaded
+597|{} salvestatud selle seadme teeki
+598|Siin lisatud materjalid on saadaval igale seadmele. Seadme oma teeki muudetakse vahekaardil Materjalid.
+599|Teie lisatud
+600|Sisseehitatud
+601|Lisa sellele seadmele
+602|Salvesta kavandi kihid materjalina kõigile seadmetele
+603|Salvesta teeki
+604|{} on juba selle seadme teegis
+605|{} lisatud selle seadme teeki
+606|Selle nimega materjal on teegis juba olemas.
+607|{} salvestatud materjaliteeki
+608|Seade
+609|See seade
+610|Materjalid

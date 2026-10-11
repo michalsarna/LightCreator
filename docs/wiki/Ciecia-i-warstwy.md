@@ -27,7 +27,16 @@ Obrazy są grawerowane linia po linii co interwał warstwy. Wybierz **próg**, *
 ![Grawerowanie obrazu](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/09-image.png)
 
 ## Biblioteka materiałów
-Ustawienia startowe dla typowych materiałów i operacji (dioda i CO2). Zastosuj je do aktywnej warstwy lub zapisz własne. Wartości są ogólne: **zawsze testuj na odpadzie**.
+**Materiał** zawiera ustawienia wszystkich potrzebnych mu warstw: tryb, prędkość, moc, przejścia, interwał, kąt skanowania, overscan, rastrowanie, moc minimalną i pompę powietrza. Współpracują trzy poziomy:
+
+* **Biblioteka wbudowana:** wartości startowe dla typowych laserów diodowych 10 W i CO2 40 W. Jest źródłem dla pozostałych bibliotek. Wartości są ogólne: **zawsze testuj na odpadzie**.
+* **Materiały globalne:** okno *Material library…* (menu Laser) jest jedynym miejscem, które rozszerza bibliotekę wbudowaną. *Save the layers of the design as a material for every device* dodaje materiał dostępny dla każdego urządzenia.
+* **Biblioteka urządzenia:** każde urządzenie ma własną bibliotekę w zakładce **Materials** panelu bocznego. Zostaje raz wypełniona materiałami wbudowanymi i globalnymi pasującymi do jego typu lasera. W zakładce edytujesz wszystkie ustawienia każdej warstwy, dodajesz i usuwasz warstwy, zmieniasz nazwy, usuwasz, **stosujesz materiał do warstw** projektu i **zapisujesz warstwy projektu jako materiał**; wszystko trafia tylko do biblioteki urządzenia.
+
+Biblioteka urządzenia jest zapisana w profilu urządzenia (więc także w kopiach zapasowych) i wewnątrz każdego zapisanego projektu. Przy otwarciu projektu jego biblioteka jest scalana z biblioteką aktywnego urządzenia: nowe materiały są dodawane, a przy różnicach okno pozwala wybrać, wartość po wartości, czy zachować swoją, czy wziąć tę z pliku.
+
+![Zakładka Materials](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/33-materials-tab.png)
+![Różnice](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/34-material-merge.png)
 ![Materiały](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/11-materials.png)
 
 ## Okno podglądu

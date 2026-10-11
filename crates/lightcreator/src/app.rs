@@ -67,17 +67,19 @@ pub enum SideTab {
     Device,
     Console,
     Clipart,
+    Materials,
     /// The camera picture; only listed while the stream is shown as a tab.
     Camera,
 }
 
 impl SideTab {
-    pub const ALL: [(SideTab, &'static str); 5] = [
+    pub const ALL: [(SideTab, &'static str); 6] = [
         (SideTab::Properties, "Properties"),
         (SideTab::Layers, "Layers"),
         (SideTab::Device, "Device"),
         (SideTab::Console, "Console"),
         (SideTab::Clipart, "Clipart"),
+        (SideTab::Materials, "Materials"),
     ];
 }
 
@@ -208,12 +210,19 @@ pub struct App {
     pub cam_index: u32,
     pub cam_error: String,
     pub cam_worker: Option<crate::camera::Worker>,
-    pub user_presets: Vec<lc_core::materials::Preset>,
+    /// Materials added to the program by the user, available for every device (on top of the built-in ones).
+    pub global_materials: Vec<lc_core::materials::Material>,
+    pub mat_dev_filter: String,
+    pub mat_dev_sel: Option<usize>,
+    pub mat_add_layer: usize,
+    pub mat_global_name: String,
+    /// The library window was opened to add materials to the device (from the Materials tab).
+    pub mat_add_mode: bool,
+    pub mat_merge: Option<crate::materials_ui::MergeDlg>,
     pub mat_filter: String,
     pub mat_laser: Option<lc_core::LaserKind>,
     pub mat_sel: Option<usize>,
     pub mat_name: String,
-    pub mat_op: String,
     pub offset_dist: f64,
     pub offset_keep: bool,
     pub lang: Lang,
@@ -251,7 +260,7 @@ impl App {
         let scheme = saved("scheme").and_then(|c| Scheme::from_id(&c)).unwrap_or(Scheme::LightDark);
         let profiles: Vec<lc_core::Device> = saved("profiles").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let active = saved("active_profile").and_then(|v| v.parse::<usize>().ok()).filter(|i| *i < profiles.len()).unwrap_or(0);
-        let user_presets: Vec<lc_core::materials::Preset> = saved("user_materials").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
+        let global_materials = crate::materials_ui::load_global(&|k| saved(k));
         let grid_prefs: crate::prefs::GridPrefs = saved("grid_prefs").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let show_grid = saved("grid_main_on").map(|v| v == "1").unwrap_or(true);
         let grid = saved("grid_main_mm").and_then(|v| v.parse::<f64>().ok()).filter(|g| *g >= 0.1).unwrap_or(10.0);
@@ -358,12 +367,17 @@ impl App {
             cam_index: 0,
             cam_error: String::new(),
             cam_worker: None,
-            user_presets,
+            global_materials,
+            mat_dev_filter: String::new(),
+            mat_dev_sel: None,
+            mat_add_layer: 0,
+            mat_global_name: String::new(),
+            mat_add_mode: false,
+            mat_merge: None,
             mat_filter: String::new(),
             mat_laser: None,
             mat_sel: None,
             mat_name: String::new(),
-            mat_op: "Cut".into(),
             offset_dist: -1.0,
             offset_keep: true,
             lang,
@@ -628,7 +642,10 @@ impl App {
         }
         match std::fs::read_to_string(&p).map_err(|e| e.to_string()).and_then(|s| Document::from_json(&s)) {
             Ok(d) => {
+                // The library of the device the file was saved with is merged into the library of this device.
+                let incoming = d.device.materials.clone();
                 self.doc = d;
+                let have_profile = self.profiles.get(self.active).is_some();
                 if let Some(p) = self.profiles.get(self.active) {
                     self.doc.device = p.clone();
                 }
@@ -641,6 +658,10 @@ impl App {
                 self.touch();
                 self.mark_saved();
                 self.view.need_fit = true;
+                if have_profile {
+                    let name = self.path.as_ref().and_then(|p| p.file_name()).map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
+                    self.import_incoming_materials(incoming, &name);
+                }
             }
             Err(e) => self.status = trf("Open failed: {}", &[&e]),
         }
@@ -1046,6 +1067,7 @@ impl App {
             }
             Act::MaterialLibrary => {
                 self.mat_laser = Some(self.doc.device.laser);
+                self.mat_add_mode = false;
                 self.show_materials = true;
             }
             Act::GridArray => self.show_array = true,
@@ -1614,6 +1636,7 @@ impl App {
         self.online_clipart_window(ctx);
         self.round_window(ctx);
         self.materials_window(ctx);
+        self.merge_dialog(ctx);
         self.overlay_window(ctx);
         self.prefs_window(ctx);
         self.preview_window(ctx);
@@ -1715,8 +1738,8 @@ impl App {
         }
         v.push(("grid_main_on", if self.show_grid { "1" } else { "0" }.into()));
         v.push(("grid_main_mm", self.grid.to_string()));
-        if let Ok(j) = serde_json::to_string(&self.user_presets) {
-            v.push(("user_materials", j));
+        if let Ok(j) = serde_json::to_string(&self.global_materials) {
+            v.push(("global_materials", j));
         }
         v
     }

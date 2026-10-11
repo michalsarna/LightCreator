@@ -571,3 +571,41 @@
 570|Converta o texto em curvas, ou vetorize a imagem, para editar os seus nós.
 571|Selecione primeiro uma forma e depois edite os seus nós.
 572|Coração (K)
+573|{} material(is) adicionado(s) de {}
+574|Diferenças na biblioteca de materiais
+575|{} contém definições de materiais diferentes deste dispositivo. Escolha os valores a manter.
+576|{} novo(s) material(is) adicionado(s); {} já eram iguais.
+577|Manter todos os meus
+578|Usar todos do ficheiro
+579|Camada {}: camada inteira
+580|não existe
+581|Deixar a minha biblioteca como está
+582|A biblioteca deste dispositivo foi atualizada.
+583|Adicionar da biblioteca…
+584|Copia materiais da biblioteca integrada para este dispositivo
+585|Biblioteca do dispositivo {}
+586|Esta biblioteca está vazia. Adicione materiais da biblioteca integrada ou guarde as suas camadas como material.
+587|Nota
+588|Etiqueta
+589|Remover camada
+590|Adicionar camada
+591|Usa as definições desta camada do desenho
+592|Aplicar às camadas
+593|Coloca no desenho as definições de todas as suas camadas
+594|{} aplicado a {} camada(s)
+595|Guardar as camadas do desenho como material
+596|Guarda as definições das camadas usadas no desenho
+597|{} guardado na biblioteca deste dispositivo
+598|Os materiais adicionados aqui estão disponíveis para todos os dispositivos. A biblioteca própria de um dispositivo edita-se no separador Materiais.
+599|Adicionado por si
+600|Integrado
+601|Adicionar a este dispositivo
+602|Guardar as camadas do desenho como material para todos os dispositivos
+603|Guardar na biblioteca
+604|{} já está na biblioteca deste dispositivo
+605|{} adicionado à biblioteca deste dispositivo
+606|Já existe um material com este nome na biblioteca.
+607|{} guardado na biblioteca de materiais
+608|Definição
+609|Este dispositivo
+610|Materiais

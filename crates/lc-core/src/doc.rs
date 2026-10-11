@@ -494,6 +494,13 @@ pub struct Device {
     /// Default speed of each of the 30 layers in mm/min, kept with the device and used for new documents.
     #[serde(default = "d_layer_speeds")]
     pub layer_speeds: Vec<f64>,
+    /// The material library of this device: materials with the settings of all their layers. It is stored with
+    /// the profile and with saved projects.
+    #[serde(default)]
+    pub materials: Vec<crate::materials::Material>,
+    /// The library has been filled from the built-in one (once; deleting materials does not refill it).
+    #[serde(default)]
+    pub materials_seeded: bool,
 }
 
 impl Device {
@@ -563,6 +570,8 @@ impl Default for Device {
             camera_url: String::new(),
             camera_rotation: 0,
             layer_speeds: d_layer_speeds(),
+            materials: vec![],
+            materials_seeded: false,
         }
     }
 }

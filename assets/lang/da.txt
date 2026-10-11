@@ -571,3 +571,41 @@
 570|Konvertér teksten til kurver, eller vektorisér billedet, for at redigere dets knudepunkter.
 571|Markér først en form, og redigér derefter dens knudepunkter.
 572|Hjerte (K)
+573|Tilføjede {} materiale(r) fra {}
+574|Forskelle i materialebiblioteket
+575|{} indeholder materialeindstillinger, der afviger fra denne enhed. Vælg de værdier, der skal beholdes.
+576|{} nye materialer blev tilføjet; {} var allerede ens.
+577|Behold alle mine
+578|Tag alle fra filen
+579|Lag {}: hele laget
+580|findes ikke
+581|Lad mit bibliotek være som det er
+582|Denne enheds bibliotek er opdateret.
+583|Tilføj fra bibliotek…
+584|Kopierer materialer fra det indbyggede bibliotek til denne enhed
+585|Bibliotek for enheden {}
+586|Dette bibliotek er tomt. Tilføj materialer fra det indbyggede bibliotek, eller gem dine lag som et materiale.
+587|Note
+588|Etiket
+589|Fjern lag
+590|Tilføj lag
+591|Bruger indstillingerne for dette lag i designet
+592|Anvend på lagene
+593|Lægger indstillingerne for alle dets lag ind i designet
+594|{} anvendt på {} lag
+595|Gem designets lag som et materiale
+596|Gemmer indstillingerne for de lag, der bruges i designet
+597|{} gemt i denne enheds bibliotek
+598|Materialer, der tilføjes her, er tilgængelige for alle enheder. En enheds eget bibliotek redigeres på fanen Materialer.
+599|Tilføjet af dig
+600|Indbygget
+601|Tilføj til denne enhed
+602|Gem designets lag som et materiale for alle enheder
+603|Gem i biblioteket
+604|{} findes allerede i denne enheds bibliotek
+605|{} tilføjet til denne enheds bibliotek
+606|Et materiale med dette navn findes allerede i biblioteket.
+607|{} gemt i materialebiblioteket
+608|Indstilling
+609|Denne enhed
+610|Materialer

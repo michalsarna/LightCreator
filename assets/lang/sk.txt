@@ -571,3 +571,41 @@
 570|Preveďte text na krivky, alebo obrázok vektorizujte, aby ste mohli upravovať jeho uzly.
 571|Najprv vyberte tvar a potom upravte jeho uzly.
 572|Srdce (K)
+573|Pridané materiály: {} zo súboru {}
+574|Rozdiely v knižnici materiálov
+575|{} obsahuje nastavenia materiálov, ktoré sa líšia od tohto zariadenia. Vyberte hodnoty, ktoré chcete ponechať.
+576|Pridané nové materiály: {}; zhodných bolo: {}.
+577|Ponechať všetky moje
+578|Prevziať všetko zo súboru
+579|Vrstva {}: celá vrstva
+580|nie je
+581|Ponechať moju knižnicu bez zmeny
+582|Knižnica tohto zariadenia bola aktualizovaná.
+583|Pridať z knižnice…
+584|Skopíruje materiály z vstavanej knižnice do tohto zariadenia
+585|Knižnica zariadenia {}
+586|Táto knižnica je prázdna. Pridajte materiály z vstavanej knižnice alebo uložte svoje vrstvy ako materiál.
+587|Poznámka
+588|Popisok
+589|Odstrániť vrstvu
+590|Pridať vrstvu
+591|Použije nastavenia tejto vrstvy z návrhu
+592|Použiť na vrstvy
+593|Vloží do návrhu nastavenia všetkých jeho vrstiev
+594|{} použité na vrstvy: {}
+595|Uložiť vrstvy návrhu ako materiál
+596|Uloží nastavenia vrstiev použitých v návrhu
+597|{} uložené do knižnice tohto zariadenia
+598|Materiály pridané tu sú k dispozícii pre každé zariadenie. Vlastnú knižnicu zariadenia upravíte na karte Materiály.
+599|Pridané vami
+600|Vstavaný
+601|Pridať k tomuto zariadeniu
+602|Uložiť vrstvy návrhu ako materiál pre každé zariadenie
+603|Uložiť do knižnice
+604|{} už je v knižnici tohto zariadenia
+605|{} pridané do knižnice tohto zariadenia
+606|Materiál s týmto názvom už v knižnici existuje.
+607|{} uložené do knižnice materiálov
+608|Nastavenie
+609|Toto zariadenie
+610|Materiály

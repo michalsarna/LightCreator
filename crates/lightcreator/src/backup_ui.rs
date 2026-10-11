@@ -150,8 +150,8 @@ impl App {
         if let Some(v) = get("grid_main_mm").and_then(|v| v.parse::<f64>().ok()) {
             self.grid = v;
         }
-        if let Some(p) = get("user_materials").and_then(|j| serde_json::from_str(j).ok()) {
-            self.user_presets = p;
+        if get("global_materials").is_some() || get("user_materials").is_some() {
+            self.global_materials = crate::materials_ui::load_global(&|k| m.get(k).cloned());
         }
         self.cfg = None;
         if self.screen == crate::app::Screen::Editor && !self.profiles.is_empty() {

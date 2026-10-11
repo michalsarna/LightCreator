@@ -571,3 +571,41 @@
 570|Convertiți textul în curbe, sau vectorizați imaginea, pentru a-i edita nodurile.
 571|Selectați mai întâi o formă, apoi editați-i nodurile.
 572|Inimă (K)
+573|S-au adăugat {} material(e) din {}
+574|Diferențe în biblioteca de materiale
+575|{} conține setări de materiale diferite de acest dispozitiv. Alegeți valorile de păstrat.
+576|S-au adăugat {} materiale noi; {} erau deja identice.
+577|Păstrează toate ale mele
+578|Ia toate din fișier
+579|Stratul {}: tot stratul
+580|nu există
+581|Lasă biblioteca mea neschimbată
+582|Biblioteca acestui dispozitiv a fost actualizată.
+583|Adaugă din bibliotecă…
+584|Copiază materiale din biblioteca integrată în acest dispozitiv
+585|Biblioteca dispozitivului {}
+586|Această bibliotecă este goală. Adăugați materiale din biblioteca integrată sau salvați straturile ca material.
+587|Notă
+588|Etichetă
+589|Elimină stratul
+590|Adaugă strat
+591|Folosește setările acestui strat din design
+592|Aplică la straturi
+593|Pune în design setările tuturor straturilor sale
+594|{} aplicat la {} strat(uri)
+595|Salvează straturile designului ca material
+596|Salvează setările straturilor folosite în design
+597|{} salvat în biblioteca acestui dispozitiv
+598|Materialele adăugate aici sunt disponibile pentru orice dispozitiv. Biblioteca proprie a unui dispozitiv se editează în fila Materiale.
+599|Adăugat de dvs.
+600|Integrat
+601|Adaugă la acest dispozitiv
+602|Salvează straturile designului ca material pentru orice dispozitiv
+603|Salvează în bibliotecă
+604|{} este deja în biblioteca acestui dispozitiv
+605|{} adăugat în biblioteca acestui dispozitiv
+606|Un material cu acest nume există deja în bibliotecă.
+607|{} salvat în biblioteca de materiale
+608|Setare
+609|Acest dispozitiv
+610|Materiale

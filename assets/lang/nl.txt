@@ -571,3 +571,41 @@
 570|Zet de tekst om in curven, of vectoriseer de afbeelding, om de knooppunten te bewerken.
 571|Selecteer eerst een vorm en bewerk dan zijn knooppunten.
 572|Hart (K)
+573|{} materia(a)l(en) toegevoegd uit {}
+574|Verschillen in de materiaalbibliotheek
+575|{} bevat materiaalinstellingen die afwijken van dit apparaat. Kies de waarden die u wilt houden.
+576|{} nieuwe materialen toegevoegd; {} waren al gelijk.
+577|Al mijn waarden houden
+578|Alles uit het bestand nemen
+579|Laag {}: hele laag
+580|niet aanwezig
+581|Mijn bibliotheek ongewijzigd laten
+582|De bibliotheek van dit apparaat is bijgewerkt.
+583|Toevoegen uit bibliotheek…
+584|Kopieert materialen uit de ingebouwde bibliotheek naar dit apparaat
+585|Bibliotheek van apparaat {}
+586|Deze bibliotheek is leeg. Voeg materialen toe uit de ingebouwde bibliotheek of sla uw lagen op als materiaal.
+587|Notitie
+588|Label
+589|Laag verwijderen
+590|Laag toevoegen
+591|Gebruikt de instellingen van deze laag in het ontwerp
+592|Toepassen op de lagen
+593|Zet de instellingen van al zijn lagen in het ontwerp
+594|{} toegepast op {} laag/lagen
+595|De lagen van het ontwerp opslaan als materiaal
+596|Slaat de instellingen van de in het ontwerp gebruikte lagen op
+597|{} opgeslagen in de bibliotheek van dit apparaat
+598|Hier toegevoegde materialen zijn beschikbaar voor elk apparaat. De eigen bibliotheek van een apparaat bewerkt u op het tabblad Materialen.
+599|Door u toegevoegd
+600|Ingebouwd
+601|Aan dit apparaat toevoegen
+602|De lagen van het ontwerp opslaan als materiaal voor elk apparaat
+603|Opslaan in de bibliotheek
+604|{} staat al in de bibliotheek van dit apparaat
+605|{} toegevoegd aan de bibliotheek van dit apparaat
+606|Er bestaat al een materiaal met deze naam in de bibliotheek.
+607|{} opgeslagen in de materiaalbibliotheek
+608|Instelling
+609|Dit apparaat
+610|Materialen

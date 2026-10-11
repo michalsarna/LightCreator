@@ -571,3 +571,41 @@
 570	Convert text to curves, or trace the image, to edit its nodes.
 571	Select a shape first, then edit its nodes.
 572	Heart (K)
+573	Added {} material(s) from {}
+574	Material library differences
+575	{} has material settings that differ from this device. Choose the values to keep.
+576	{} new material(s) were added; {} were already the same.
+577	Keep all of mine
+578	Take all from the file
+579	Layer {}: whole layer
+580	not there
+581	Keep my library as it is
+582	The library of this device was updated.
+583	Add from library…
+584	Copy materials from the built-in library into this device
+585	Library of the device {}
+586	This library is empty. Add materials from the built-in library or save your layers as a material.
+587	Note
+588	Label
+589	Remove layer
+590	Add layer
+591	Uses the settings of this layer in the design
+592	Apply to the layers
+593	Puts the settings of all its layers into the design
+594	Applied {} to {} layer(s)
+595	Save the layers of the design as a material
+596	Saves the settings of the layers used in the design
+597	Saved {} in this device's library
+598	Materials added here are available for every device. A device's own library is edited in the Materials tab.
+599	Added by you
+600	Built-in
+601	Add to this device
+602	Save the layers of the design as a material for every device
+603	Save to the library
+604	{} is already in this device's library
+605	Added {} to this device's library
+606	A material with this name already exists in the library.
+607	Saved {} in the material library
+608	Setting
+609	This device
+610	Materials

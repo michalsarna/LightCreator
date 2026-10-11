@@ -750,3 +750,98 @@ fn the_interface_font_covers_every_european_translation() {
     }
     assert!(missing.is_empty(), "characters without a glyph: {missing:?}");
 }
+
+#[test]
+fn builtin_materials_group_the_presets_by_material_and_laser() {
+    let mats = materials::builtin_materials();
+    assert!(mats.len() < materials::builtin().len());
+    let ply = mats.iter().find(|m| m.name == "Plywood 3 mm" && m.laser == LaserKind::Diode).unwrap();
+    assert_eq!(ply.layers.iter().map(|l| (l.index, l.label.as_str())).collect::<Vec<_>>(), vec![(0, "Cut"), (1, "Engrave")]);
+    assert_eq!(ply.layer(0).unwrap().spec.mode, LayerMode::Line);
+    assert_eq!(ply.layer(1).unwrap().spec.mode, LayerMode::Fill);
+    // The same material for another laser is another entry.
+    assert!(mats.iter().any(|m| m.name == "Plywood 3 mm" && m.laser == LaserKind::Co2));
+}
+
+#[test]
+fn a_material_keeps_and_restores_the_settings_of_all_its_layers() {
+    let mut doc = Document::default();
+    doc.layers[0].speed = 5.0;
+    doc.layers[0].air_assist = true;
+    doc.layers[0].passes = 3;
+    doc.layers[2].mode = LayerMode::Offset;
+    doc.layers[2].power = 40.0;
+    let m = materials::Material::from_layers(" Birch ", LaserKind::Diode, &[(2, &doc.layers[2]), (0, &doc.layers[0])]);
+    assert_eq!(m.name, "Birch");
+    assert_eq!(m.layers.iter().map(|l| l.index).collect::<Vec<_>>(), vec![0, 2], "sorted by layer");
+    let mut other = Document::default();
+    assert_eq!(m.apply(&mut other.layers), 2);
+    assert_eq!((other.layers[0].speed, other.layers[0].air_assist, other.layers[0].passes), (5.0, true, 3));
+    assert_eq!((other.layers[2].mode, other.layers[2].power), (LayerMode::Offset, 40.0));
+    // Layers the material does not mention stay as they are.
+    assert_eq!(other.layers[1], Document::default().layers[1]);
+    // It survives JSON like the rest of a device profile.
+    let back: materials::Material = serde_json::from_str(&serde_json::to_string(&m).unwrap()).unwrap();
+    assert_eq!(back, m);
+}
+
+#[test]
+fn old_user_presets_become_materials() {
+    let mk = |mat: &str, op: &str| materials::Preset { material: mat.into(), operation: op.into(), laser: LaserKind::Co2, mode: LayerMode::Line, speed: 9.0, power: 50.0, passes: 1, interval: 0.1, user: true };
+    let mats = materials::materials_from_presets(&[mk("Mine", "Cut"), mk("Mine", "Engrave"), mk("Mine", "Cut"), mk("Other", "Score")]);
+    assert_eq!(mats.len(), 2);
+    let mine = &mats[0];
+    // The second "Cut" does not overwrite the first: it takes the next free layer.
+    assert_eq!(mine.layers.iter().map(|l| l.index).collect::<Vec<_>>(), vec![0, 1, 2]);
+    assert_eq!(mats[1].layers[0].index, 2);
+}
+
+#[test]
+fn merging_a_library_from_a_file_finds_new_equal_and_different_materials() {
+    let base = |name: &str, speed: f64| {
+        let mut l = Layer::new(0);
+        l.speed = speed;
+        materials::Material::from_layers(name, LaserKind::Diode, &[(0, &l)])
+    };
+    let local = vec![base("Same", 5.0), base("Differs", 5.0), base("Only here", 1.0)];
+    let mut incoming_differs = base("differs", 8.0); // names are compared without regard to case
+    let mut extra = Layer::new(1);
+    extra.power = 33.0;
+    incoming_differs.layers.push(materials::MaterialLayer { index: 1, label: "Engrave".into(), spec: materials::LayerSpec::from_layer(&extra) });
+    let incoming = vec![base("Same", 5.0), incoming_differs, base("Brand new", 2.0)];
+    let plan = materials::plan_merge(&local, &incoming);
+    assert_eq!((plan.unchanged, plan.added.len(), plan.conflicts.len()), (1, 1, 1));
+    assert_eq!(plan.added[0].name, "Brand new");
+    let c = &plan.conflicts[0];
+    let fields: Vec<_> = c.rows.iter().map(|r| (r.layer, r.field)).collect();
+    assert_eq!(fields, vec![(0, "Speed"), (1, "")], "one changed setting and one layer the local material lacks");
+    // Take only the speed from the file: the new layer is not added.
+    let mut mine = local[1].clone();
+    materials::apply_rows(&mut mine, c, &[true, false]);
+    assert_eq!(mine.layer(0).unwrap().spec.speed, 8.0);
+    assert!(mine.layer(1).is_none());
+    // Take both.
+    let mut mine = local[1].clone();
+    materials::apply_rows(&mut mine, c, &[true, true]);
+    assert_eq!(mine.layer(1).unwrap().spec.power, 33.0);
+    // Take nothing: unchanged.
+    let mut mine = local[1].clone();
+    materials::apply_rows(&mut mine, c, &[false, false]);
+    assert_eq!(mine, local[1]);
+}
+
+#[test]
+fn a_device_gets_missing_materials_from_a_source_for_its_laser() {
+    let src = materials::builtin_materials();
+    let mut lib = vec![];
+    let n = materials::add_missing(&mut lib, &src, LaserKind::Co2);
+    assert!(n > 5 && lib.iter().all(|m| m.laser == LaserKind::Co2));
+    // Doing it again adds nothing; a deleted one comes back only when asked for.
+    assert_eq!(materials::add_missing(&mut lib, &src, LaserKind::Co2), 0);
+    lib.remove(0);
+    assert_eq!(materials::add_missing(&mut lib, &src, LaserKind::Co2), 1);
+    // Profiles saved before libraries existed load with an empty one.
+    let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
+    let d: Device = serde_json::from_str(old).unwrap();
+    assert!(d.materials.is_empty() && !d.materials_seeded);
+}

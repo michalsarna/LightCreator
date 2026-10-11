@@ -571,3 +571,41 @@
 570|Convertissez le texte en courbes, ou vectorisez l'image, pour modifier ses nœuds.
 571|Sélectionnez d'abord une forme, puis modifiez ses nœuds.
 572|Cœur (K)
+573|{} matériau(x) ajouté(s) depuis {}
+574|Différences dans la bibliothèque de matériaux
+575|{} contient des réglages de matériaux différents de cet appareil. Choisissez les valeurs à conserver.
+576|{} nouveau(x) matériau(x) ajouté(s) ; {} étaient déjà identiques.
+577|Garder tous les miens
+578|Tout prendre du fichier
+579|Calque {} : calque entier
+580|absent
+581|Laisser ma bibliothèque telle quelle
+582|La bibliothèque de cet appareil a été mise à jour.
+583|Ajouter depuis la bibliothèque…
+584|Copie des matériaux de la bibliothèque intégrée vers cet appareil
+585|Bibliothèque de l'appareil {}
+586|Cette bibliothèque est vide. Ajoutez des matériaux de la bibliothèque intégrée ou enregistrez vos calques comme matériau.
+587|Note
+588|Étiquette
+589|Retirer le calque
+590|Ajouter un calque
+591|Utilise les réglages de ce calque dans le dessin
+592|Appliquer aux calques
+593|Place dans le dessin les réglages de tous ses calques
+594|{} appliqué à {} calque(s)
+595|Enregistrer les calques du dessin comme matériau
+596|Enregistre les réglages des calques utilisés dans le dessin
+597|{} enregistré dans la bibliothèque de cet appareil
+598|Les matériaux ajoutés ici sont disponibles pour tous les appareils. La bibliothèque propre à un appareil se modifie dans l'onglet Matériaux.
+599|Ajouté par vous
+600|Intégré
+601|Ajouter à cet appareil
+602|Enregistrer les calques du dessin comme matériau pour tous les appareils
+603|Enregistrer dans la bibliothèque
+604|{} est déjà dans la bibliothèque de cet appareil
+605|{} ajouté à la bibliothèque de cet appareil
+606|Un matériau de ce nom existe déjà dans la bibliothèque.
+607|{} enregistré dans la bibliothèque de matériaux
+608|Réglage
+609|Cet appareil
+610|Matériaux

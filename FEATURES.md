@@ -153,8 +153,19 @@
   or deleted from the right-click menu. They live in the application's data folder next to `app.ron`, in the `clipart` folder (the location per system is in the README).
 
 **Helpers**
-* **Material library:** starting settings for common materials and operations for diode and CO2 lasers,
-  apply to the active layer, save your own presets.
+* **Material libraries:** a material holds the settings of all the layers it needs (mode, speed, power, passes,
+  interval, scan angle, overscan, dithering, minimum power, air assist). There are three levels.
+  * The **built-in library** (starting values for typical 10 W diode and 40 W CO2 lasers) is the source for the rest.
+  * The **Material library…** window of the Laser menu is the only place that extends it: "Save the layers of the
+    design as a material for every device" adds a global material that every device can use. Built-in materials are read-only.
+  * Every device has its **own library**, shown in the **Materials** tab of the side panel and filled once from the
+    built-in and global materials that suit its laser type. In the tab you edit all the settings of every layer of a
+    material, add or remove layers, rename, delete, apply a material to the layers of the design and save the layers of
+    the design as a material; all of that is kept in the device library.
+  * The device library is saved in the device profile (and so in backups) and inside every saved project. When a
+    project file is opened, its library is merged into the library of the active device: new materials are added at
+    once, materials that differ open a window where, value by value, you choose to keep your own or take the one from
+    the file.
 * **Camera overlay:** a photo or the live camera (build with `--features camera`) under the design, aligned
   with four draggable corners (perspective corrected), opacity, flip and rotate; saved per device.
 

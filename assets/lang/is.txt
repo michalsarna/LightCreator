@@ -571,3 +571,41 @@
 570|Breyttu textanum í ferla, eða vigurgerðu myndina, til að breyta hnútum hennar.
 571|Veldu fyrst form og breyttu síðan hnútum þess.
 572|Hjarta (K)
+573|Bætti við {} efni(s) úr {}
+574|Mismunur í efnissafninu
+575|{} inniheldur efnisstillingar sem eru frábrugðnar þessu tæki. Veldu gildin sem á að halda.
+576|{} ný efni bættust við; {} voru þegar eins.
+577|Halda öllum mínum
+578|Taka allt úr skránni
+579|Lag {}: allt lagið
+580|ekki til
+581|Láta safnið mitt vera eins og það er
+582|Safn þessa tækis var uppfært.
+583|Bæta við úr safni…
+584|Afritar efni úr innbyggða safninu í þetta tæki
+585|Safn tækisins {}
+586|Þetta safn er tómt. Bættu við efni úr innbyggða safninu eða vistaðu lögin þín sem efni.
+587|Athugasemd
+588|Merki
+589|Fjarlægja lag
+590|Bæta við lagi
+591|Notar stillingar þessa lags í hönnuninni
+592|Beita á lögin
+593|Setur stillingar allra laga þess í hönnunina
+594|{} beitt á {} lög
+595|Vista lög hönnunarinnar sem efni
+596|Vistar stillingar laganna sem notuð eru í hönnuninni
+597|{} vistað í safni þessa tækis
+598|Efni sem bætt er við hér er í boði fyrir öll tæki. Eigið safn tækis er breytt í flipanum Efni.
+599|Bætt við af þér
+600|Innbyggt
+601|Bæta við þetta tæki
+602|Vista lög hönnunarinnar sem efni fyrir öll tæki
+603|Vista í safnið
+604|{} er þegar í safni þessa tækis
+605|{} bætt við safn þessa tækis
+606|Efni með þessu heiti er þegar til í safninu.
+607|{} vistað í efnissafninu
+608|Stilling
+609|Þetta tæki
+610|Efni

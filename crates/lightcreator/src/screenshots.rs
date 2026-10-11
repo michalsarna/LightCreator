@@ -257,6 +257,25 @@ fn render_screenshots() {
     }
     save(&mut h, "11-materials.png");
 
+    // The Materials tab (library of the device) and the window that settles differences with a file.
+    {
+        let a = app(&mut h);
+        a.show_materials = false;
+        a.side_tab = SideTab::Materials;
+        a.mat_dev_sel = a.doc.device.materials.iter().position(|m| m.name == "Plywood 3 mm");
+    }
+    save(&mut h, "33-materials-tab.png");
+    {
+        let a = app(&mut h);
+        let mut changed = a.doc.device.materials.iter().find(|m| m.name == "Plywood 3 mm").cloned().unwrap();
+        changed.layers[0].spec.speed += 2.0;
+        changed.layers[0].spec.passes += 1;
+        changed.layers[0].spec.air_assist = true;
+        a.import_incoming_materials(vec![changed], "wood-signs.lcr");
+    }
+    save(&mut h, "34-material-merge.png");
+    app(&mut h).mat_merge = None;
+
     // Preview window: several operations, each in its own colour, with travel moves.
     {
         let a = app(&mut h);

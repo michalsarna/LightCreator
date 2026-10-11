@@ -571,3 +571,41 @@
 570|Pretvorite tekst u krivulje ili vektorizirajte sliku da biste uređivali njezine čvorove.
 571|Prvo odaberite oblik, a zatim uredite njegove čvorove.
 572|Srce (K)
+573|Dodano materijala: {} iz {}
+574|Razlike u biblioteci materijala
+575|{} sadrži postavke materijala koje se razlikuju od ovog uređaja. Odaberite vrijednosti koje želite zadržati.
+576|Dodano novih materijala: {}; već jednakih: {}.
+577|Zadrži sve moje
+578|Preuzmi sve iz datoteke
+579|Sloj {}: cijeli sloj
+580|nema
+581|Ostavi moju biblioteku nepromijenjenom
+582|Biblioteka ovog uređaja je ažurirana.
+583|Dodaj iz biblioteke…
+584|Kopira materijale iz ugrađene biblioteke u ovaj uređaj
+585|Biblioteka uređaja {}
+586|Ova je biblioteka prazna. Dodajte materijale iz ugrađene biblioteke ili spremite svoje slojeve kao materijal.
+587|Bilješka
+588|Oznaka
+589|Ukloni sloj
+590|Dodaj sloj
+591|Koristi postavke ovog sloja iz dizajna
+592|Primijeni na slojeve
+593|Stavlja u dizajn postavke svih njegovih slojeva
+594|{} primijenjeno na slojeve: {}
+595|Spremi slojeve dizajna kao materijal
+596|Sprema postavke slojeva korištenih u dizajnu
+597|{} spremljeno u biblioteku ovog uređaja
+598|Materijali dodani ovdje dostupni su za svaki uređaj. Vlastita biblioteka uređaja uređuje se na kartici Materijali.
+599|Dodali ste
+600|Ugrađen
+601|Dodaj ovom uređaju
+602|Spremi slojeve dizajna kao materijal za svaki uređaj
+603|Spremi u biblioteku
+604|{} je već u biblioteci ovog uređaja
+605|{} dodano u biblioteku ovog uređaja
+606|Materijal s ovim nazivom već postoji u biblioteci.
+607|{} spremljeno u biblioteku materijala
+608|Postavka
+609|Ovaj uređaj
+610|Materijali

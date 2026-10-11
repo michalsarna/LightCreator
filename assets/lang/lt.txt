@@ -571,3 +571,41 @@
 570|Konvertuokite tekstą į kreives arba vektorizuokite paveikslėlį, kad galėtumėte redaguoti jo mazgus.
 571|Pirmiausia pasirinkite formą, tada redaguokite jos mazgus.
 572|Širdis (K)
+573|Pridėta medžiagų: {} iš {}
+574|Medžiagų bibliotekos skirtumai
+575|{} turi medžiagų nustatymų, kurie skiriasi nuo šio įrenginio. Pasirinkite reikšmes, kurias palikti.
+576|Pridėta naujų medžiagų: {}; jau vienodų buvo: {}.
+577|Palikti visas mano
+578|Imti visas iš failo
+579|Sluoksnis {}: visas sluoksnis
+580|nėra
+581|Palikti mano biblioteką nepakeistą
+582|Šio įrenginio biblioteka atnaujinta.
+583|Pridėti iš bibliotekos…
+584|Nukopijuoja medžiagas iš įtaisytosios bibliotekos į šį įrenginį
+585|Įrenginio {} biblioteka
+586|Ši biblioteka tuščia. Pridėkite medžiagų iš įtaisytosios bibliotekos arba įrašykite savo sluoksnius kaip medžiagą.
+587|Pastaba
+588|Etiketė
+589|Pašalinti sluoksnį
+590|Pridėti sluoksnį
+591|Naudoja šio sluoksnio nustatymus dizaine
+592|Taikyti sluoksniams
+593|Įdeda į dizainą visų jos sluoksnių nustatymus
+594|{} pritaikyta sluoksniams: {}
+595|Įrašyti dizaino sluoksnius kaip medžiagą
+596|Įrašo dizaine naudojamų sluoksnių nustatymus
+597|{} įrašyta šio įrenginio bibliotekoje
+598|Čia pridėtos medžiagos prieinamos kiekvienam įrenginiui. Paties įrenginio biblioteka redaguojama skirtuke Medžiagos.
+599|Jūsų pridėta
+600|Įtaisytoji
+601|Pridėti prie šio įrenginio
+602|Įrašyti dizaino sluoksnius kaip medžiagą kiekvienam įrenginiui
+603|Įrašyti į biblioteką
+604|{} jau yra šio įrenginio bibliotekoje
+605|{} pridėta prie šio įrenginio bibliotekos
+606|Medžiaga tokiu pavadinimu bibliotekoje jau yra.
+607|{} įrašyta medžiagų bibliotekoje
+608|Nustatymas
+609|Šis įrenginys
+610|Medžiagos

@@ -571,3 +571,41 @@
 570|Alakítsa a szöveget görbékké, vagy vektorizálja a képet, hogy szerkeszthesse a csomópontjait.
 571|Először jelöljön ki egy alakzatot, majd szerkessze a csomópontjait.
 572|Szív (K)
+573|{} anyag hozzáadva innen: {}
+574|Eltérések az anyagkönyvtárban
+575|{} olyan anyagbeállításokat tartalmaz, amelyek eltérnek ettől az eszköztől. Válassza ki a megtartandó értékeket.
+576|{} új anyag hozzáadva; {} már azonos volt.
+577|Az összes saját megtartása
+578|Az összes átvétele a fájlból
+579|{}. réteg: teljes réteg
+580|nincs
+581|A könyvtáram változatlanul hagyása
+582|Az eszköz könyvtára frissítve lett.
+583|Hozzáadás a könyvtárból…
+584|Anyagokat másol a beépített könyvtárból ebbe az eszközbe
+585|{} eszköz könyvtára
+586|Ez a könyvtár üres. Adjon hozzá anyagokat a beépített könyvtárból, vagy mentse a rétegeit anyagként.
+587|Megjegyzés
+588|Címke
+589|Réteg eltávolítása
+590|Réteg hozzáadása
+591|A terv ezen rétegének beállításait használja
+592|Alkalmazás a rétegekre
+593|A terv összes rétegébe beteszi az anyag rétegeinek beállításait
+594|{} alkalmazva {} rétegre
+595|A terv rétegeinek mentése anyagként
+596|Elmenti a tervben használt rétegek beállításait
+597|{} mentve az eszköz könyvtárába
+598|Az itt hozzáadott anyagok minden eszközön elérhetők. Az eszköz saját könyvtárát az Anyagok fülön szerkesztheti.
+599|Ön által hozzáadott
+600|Beépített
+601|Hozzáadás ehhez az eszközhöz
+602|A terv rétegeinek mentése anyagként minden eszközhöz
+603|Mentés a könyvtárba
+604|{} már benne van az eszköz könyvtárában
+605|{} hozzáadva az eszköz könyvtárához
+606|Ilyen nevű anyag már van a könyvtárban.
+607|{} mentve az anyagkönyvtárba
+608|Beállítás
+609|Ez az eszköz
+610|Anyagok
