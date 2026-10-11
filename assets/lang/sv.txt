@@ -1034,3 +1034,11 @@
 1033|Fler inställningar…
 1034|Öppnar hela enhetsfönstret med det som skrivits in här
 1035|Utgångspunkt
+1036|Standardmaterial
+1037|Ta bort det här materialet
+1038|Material: {}
+1039|Namn på det nya materialet
+1040|Nytt material: en kopia av detta
+1041|Nytt namn
+1042|Byt namn på det här materialet
+1043|projekt

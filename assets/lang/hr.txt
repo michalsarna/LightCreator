@@ -1034,3 +1034,11 @@
 1033|Više postavki…
 1034|Otvara cijeli prozor uređaja s onim što je ovdje uneseno
 1035|Početna točka
+1036|Zadani materijal
+1037|Izbriši ovaj materijal
+1038|Materijal: {}
+1039|Naziv novog materijala
+1040|Novi materijal: kopija ovog
+1041|Novi naziv
+1042|Preimenuj ovaj materijal
+1043|projekt

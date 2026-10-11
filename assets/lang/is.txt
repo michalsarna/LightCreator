@@ -1034,3 +1034,11 @@
 1033|Fleiri stillingar…
 1034|Opnar allan tækjagluggann með því sem slegið er inn hér
 1035|Upphafspunktur
+1036|Sjálfgefið efni
+1037|Eyða þessu efni
+1038|Efni: {}
+1039|Nafn nýja efnisins
+1040|Nýtt efni: afrit af þessu
+1041|Nýtt nafn
+1042|Endurnefna þetta efni
+1043|verkefni

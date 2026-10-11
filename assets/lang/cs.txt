@@ -1034,3 +1034,11 @@
 1033|Další nastavení…
 1034|Otevře celé okno zařízení s tím, co je zde zadáno
 1035|Výchozí bod
+1036|Výchozí materiál
+1037|Smazat tento materiál
+1038|Materiál: {}
+1039|Název nového materiálu
+1040|Nový materiál: kopie tohoto
+1041|Nový název
+1042|Přejmenovat tento materiál
+1043|projekt

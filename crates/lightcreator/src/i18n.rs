@@ -1323,6 +1323,15 @@ const TABLE: &[[&str; 7]] = &[
     ["More settings…", "Więcej ustawień…", "Weitere Einstellungen…", "Altre impostazioni…", "Lisää asetuksia…", "更多设置…", "और सेटिंग…"],
     ["Open the whole device window with what is entered here", "Otwiera całe okno urządzenia z tym, co tu wpisano", "Öffnet das ganze Geräte-Fenster mit dem hier Eingegebenen", "Apre l'intera finestra del dispositivo con quanto inserito qui", "Avaa koko laiteikkunan tähän syötetyillä tiedoilla", "用这里填写的内容打开完整的设备窗口", "यहाँ दर्ज जानकारी के साथ पूरी डिवाइस विंडो खोलता है"],
     ["Starting point", "Punkt wyjścia", "Ausgangspunkt", "Punto di partenza", "Lähtökohta", "起点", "शुरुआती बिंदु"],
+    // ---- materials ----
+    ["Default material", "Materiał domyślny", "Standardmaterial", "Materiale predefinito", "Oletusmateriaali", "默认材料", "डिफ़ॉल्ट सामग्री"],
+    ["Delete this material", "Usuń ten materiał", "Dieses Material löschen", "Elimina questo materiale", "Poista tämä materiaali", "删除此材料", "इस सामग्री को हटाएँ"],
+    ["Material: {}", "Materiał: {}", "Material: {}", "Materiale: {}", "Materiaali: {}", "材料：{}", "सामग्री: {}"],
+    ["Name of the new material", "Nazwa nowego materiału", "Name des neuen Materials", "Nome del nuovo materiale", "Uuden materiaalin nimi", "新材料名称", "नई सामग्री का नाम"],
+    ["New material: a copy of this one", "Nowy materiał: kopia tego", "Neues Material: eine Kopie dieses", "Nuovo materiale: una copia di questo", "Uusi materiaali: kopio tästä", "新材料：此材料的副本", "नई सामग्री: इसकी प्रतिलिपि"],
+    ["New name", "Nowa nazwa", "Neuer Name", "Nuovo nome", "Uusi nimi", "新名称", "नया नाम"],
+    ["Rename this material", "Zmień nazwę tego materiału", "Dieses Material umbenennen", "Rinomina questo materiale", "Nimeä tämä materiaali uudelleen", "重命名此材料", "इस सामग्री का नाम बदलें"],
+    ["project", "projekt", "Projekt", "progetto", "projekti", "项目", "प्रोजेक्ट"],
 ];
 #[cfg(test)]
 mod tests {

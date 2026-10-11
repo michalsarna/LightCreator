@@ -1034,3 +1034,11 @@
 1033|Plus de réglages…
 1034|Ouvre la fenêtre complète de l'appareil avec ce qui est saisi ici
 1035|Point de départ
+1036|Matériau par défaut
+1037|Supprimer ce matériau
+1038|Matériau : {}
+1039|Nom du nouveau matériau
+1040|Nouveau matériau : une copie de celui-ci
+1041|Nouveau nom
+1042|Renommer ce matériau
+1043|projet

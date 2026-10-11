@@ -1092,6 +1092,10 @@ pub struct Device {
     /// Legacy: older versions kept a default speed for each of the 30 layers here. The settings of the layers now
     /// belong to the project; this list is read and kept, not used.
     pub layer_speeds: Vec<f64>,
+    /// The materials of this device (at least one) and the selected one: each holds the settings of the layers it
+    /// uses. They travel with the profile and with saved projects.
+    pub materials: Vec<crate::materials::Material>,
+    pub active_material: usize,
     /// Own G-code scripts that are run by hand from the Device tab.
     pub macros: Vec<Macro>,
     /// Parts of the work area the machine must not enter, in design coordinates.
@@ -1312,6 +1316,10 @@ struct DeviceWire {
     #[serde(default = "d_layer_speeds")]
     layer_speeds: Vec<f64>,
     #[serde(default)]
+    materials: Vec<crate::materials::Material>,
+    #[serde(default)]
+    active_material: usize,
+    #[serde(default)]
     macros: Vec<Macro>,
     #[serde(default)]
     zones: Vec<Zone>,
@@ -1363,7 +1371,7 @@ impl From<DeviceWire> for Device {
         if heads.is_empty() {
             heads.push(LaserHead { s_max: w.s_max.unwrap_or(1000.0), frame_power: w.frame_power.unwrap_or(0.0), laser: w.laser.unwrap_or_default(), ..LaserHead::default() });
         }
-        Device {
+        let mut dev = Device {
             name: w.name,
             units: w.units,
             speed_unit: w.speed_unit,
@@ -1381,13 +1389,17 @@ impl From<DeviceWire> for Device {
             active_camera: w.active_camera,
             camera_view: w.camera_view,
             layer_speeds: w.layer_speeds,
+            materials: w.materials,
+            active_material: w.active_material,
             macros: w.macros,
             zones: w.zones,
             rotary: w.rotary,
             template_notes: w.template_notes,
             maintenance: w.maintenance,
             notes: w.notes,
-        }
+        };
+        dev.ensure_materials();
+        dev
     }
 }
 
@@ -1595,6 +1607,8 @@ impl Default for Device {
             active_camera: 0,
             camera_view: Default::default(),
             layer_speeds: d_layer_speeds(),
+            materials: vec![crate::materials::Material::new(crate::materials::DEFAULT_MATERIAL)],
+            active_material: 0,
             macros: vec![],
             zones: vec![],
             rotary: Rotary::default(),

@@ -1034,3 +1034,11 @@
 1033|Veel seadeid…
 1034|Avab kogu seadme akna siin sisestatuga
 1035|Lähtepunkt
+1036|Vaikematerjal
+1037|Kustuta see materjal
+1038|Materjal: {}
+1039|Uue materjali nimi
+1040|Uus materjal: selle koopia
+1041|Uus nimi
+1042|Nimeta see materjal ümber
+1043|projekt

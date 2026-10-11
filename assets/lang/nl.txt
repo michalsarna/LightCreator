@@ -1034,3 +1034,11 @@
 1033|Meer instellingen…
 1034|Opent het hele apparaatvenster met wat hier is ingevuld
 1035|Uitgangspunt
+1036|Standaardmateriaal
+1037|Dit materiaal verwijderen
+1038|Materiaal: {}
+1039|Naam van het nieuwe materiaal
+1040|Nieuw materiaal: een kopie van dit
+1041|Nieuwe naam
+1042|Dit materiaal hernoemen
+1043|project

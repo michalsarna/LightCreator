@@ -84,6 +84,7 @@ impl App {
         }
         self.update_tick(ctx);
         self.api_tick(ctx);
+        self.material_tick();
         self.toast_ui(ctx);
         self.close_dialog(ctx);
         self.confirm_dialog(ctx);

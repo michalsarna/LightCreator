@@ -93,6 +93,22 @@ fn text_ok(s: &str, max: usize) -> bool {
     s.chars().count() <= max && !s.chars().any(|c| c.is_control() && c != '\n')
 }
 
+/// The numbers of a layer of a material that comes from a file.
+fn layer_ok(l: &crate::doc::Layer) -> bool {
+    between(l.speed, 0.0, 100_000.0)
+        && between(l.power, 0.0, 100.0)
+        && between(l.min_power, 0.0, 100.0)
+        && l.passes <= 1000
+        && between(l.interval, 0.0, 100.0)
+        && between(l.angle, -360.0, 360.0)
+        && between(l.overscan, 0.0, 1000.0)
+        && between(l.z_start, -10_000.0, 10_000.0)
+        && between(l.z_step, -10_000.0, 10_000.0)
+        && between(l.kerf, -50.0, 50.0)
+        && l.head < 16
+        && text_ok(&l.name, 100)
+}
+
 fn between(v: f64, lo: f64, hi: f64) -> bool {
     v.is_finite() && v >= lo && v <= hi
 }
@@ -167,6 +183,15 @@ pub fn validate(d: &Device) -> Result<(), String> {
     }
     if d.layer_speeds.len() > 30 || !d.layer_speeds.iter().all(|v| between(*v, 0.0, 100_000.0)) {
         return bad("a layer speed");
+    }
+    if d.materials.is_empty() || d.materials.len() > 200 || d.active_material >= d.materials.len() {
+        return bad("the materials");
+    }
+    for m in &d.materials {
+        let layers_ok = m.layers.len() <= 30 && m.layers.iter().enumerate().all(|(i, l)| l.index < 30 && m.layers.iter().take(i).all(|o| o.index != l.index) && layer_ok(&l.settings));
+        if !text_ok(&m.name, 100) || m.name.trim().is_empty() || !layers_ok {
+            return bad("a material");
+        }
     }
     if d.macros.len() > 50 || d.zones.len() > 100 {
         return Err("too many macros or zones".into());

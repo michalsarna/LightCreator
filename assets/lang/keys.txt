@@ -1034,3 +1034,11 @@
 1033	More settings…
 1034	Open the whole device window with what is entered here
 1035	Starting point
+1036	Default material
+1037	Delete this material
+1038	Material: {}
+1039	Name of the new material
+1040	New material: a copy of this one
+1041	New name
+1042	Rename this material
+1043	project

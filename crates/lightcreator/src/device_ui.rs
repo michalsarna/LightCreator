@@ -120,6 +120,10 @@ impl App {
         // The first-run setup belongs to the start screen.
         self.wizard = None;
         self.load_camera_view();
+        // A new, empty document takes the layers of the device's selected material; a loaded one keeps its own.
+        if self.doc.shapes.is_empty() && self.path.is_none() {
+            self.doc.select_material(self.doc.device.active_material);
+        }
         self.touch();
         self.view.need_fit = true;
         self.screen = Screen::Editor;

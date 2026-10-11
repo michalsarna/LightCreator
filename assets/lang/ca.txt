@@ -1034,3 +1034,11 @@
 1033|Més opcions…
 1034|Obre tota la finestra del dispositiu amb el que s'ha introduït aquí
 1035|Punt de partida
+1036|Material per defecte
+1037|Elimina aquest material
+1038|Material: {}
+1039|Nom del material nou
+1040|Material nou: una còpia d'aquest
+1041|Nom nou
+1042|Canvia el nom d'aquest material
+1043|projecte

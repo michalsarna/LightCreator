@@ -1034,3 +1034,11 @@
 1033|Aktar settings…
 1034|Jiftaħ it-tieqa sħiħa tal-apparat b'dak li ddaħħal hawn
 1035|Punt tat-tluq
+1036|Materjal default
+1037|Neħħi dan il-materjal
+1038|Materjal: {}
+1039|Isem il-materjal il-ġdid
+1040|Materjal ġdid: kopja ta' dan
+1041|Isem ġdid
+1042|Biddel l-isem ta' dan il-materjal
+1043|proġett

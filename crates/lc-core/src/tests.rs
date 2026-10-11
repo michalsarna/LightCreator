@@ -1939,3 +1939,107 @@ fn the_description_is_saved_in_the_project_and_old_projects_have_none() {
     v.as_object_mut().unwrap().remove("description");
     assert_eq!(Document::from_json(&v.to_string()).unwrap().description, "");
 }
+
+#[test]
+fn every_device_has_a_material_and_old_profiles_get_the_default_one() {
+    let d = Device::default();
+    assert_eq!((d.materials.len(), d.active_material, d.materials[0].name.as_str()), (1, 0, materials::DEFAULT_MATERIAL));
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert_eq!(old.materials.len(), 1);
+    // A bad index is brought back, an empty list refilled.
+    let mut x = old.clone();
+    x.materials.clear();
+    x.active_material = 7;
+    x.ensure_materials();
+    assert_eq!((x.materials.len(), x.active_material), (1, 0));
+    // Templates carry one too.
+    for t in profiles::TEMPLATES {
+        assert!(!profiles::template(t.id).materials.is_empty(), "{}", t.id);
+    }
+}
+
+#[test]
+fn the_layers_follow_the_selected_material_and_the_material_follows_the_layers() {
+    let mut d = Document::default();
+    // A layer the design uses joins the material, with the settings it has (the defaults).
+    d.add(2, Kind::Rect { w: 10.0, h: 10.0 }, Xf::IDENTITY);
+    assert!(d.sync_material());
+    assert_eq!(d.device.materials[0].layers.len(), 1);
+    assert!(d.device.materials[0].layer(2).unwrap().settings.same_settings(&Layer::new(2)));
+    assert!(!d.sync_material(), "nothing more to do");
+    // An edit of the layer is written into the material.
+    d.layers[2].speed = 7.0;
+    d.layers[2].power = 55.0;
+    assert!(d.sync_material());
+    assert_eq!(d.device.materials[0].layer(2).unwrap().settings.speed, 7.0);
+    // A layer that is not used joins when it is changed.
+    d.layers[9].passes = 3;
+    d.sync_material();
+    assert_eq!(d.device.materials[0].layer(9).unwrap().settings.passes, 3);
+    // A second material starts as a copy and can be edited on its own.
+    let second = d.add_material("Acrylic");
+    assert_eq!((second, d.device.material().name.as_str()), (1, "Acrylic"));
+    d.layers[2].speed = 20.0;
+    d.sync_material();
+    assert_eq!(d.device.materials[0].layer(2).unwrap().settings.speed, 7.0, "the first one is untouched");
+    assert_eq!(d.device.materials[1].layer(2).unwrap().settings.speed, 20.0);
+    // Choosing the first one puts its settings into the layers.
+    d.select_material(0);
+    assert_eq!((d.layers[2].speed, d.layers[2].power, d.layers[9].passes), (7.0, 55.0, 3));
+    // Names of the layers, their colours and switches are not taken from a material.
+    d.layers[2].name = "Mine".into();
+    d.layers[2].visible = false;
+    d.select_material(1);
+    assert_eq!((d.layers[2].name.as_str(), d.layers[2].visible, d.layers[2].speed), ("Mine", false, 20.0));
+    // A material without a layer that the design uses: the layer is added with the default settings.
+    d.device.materials[1].layers.retain(|l| l.index != 2);
+    d.select_material(1);
+    assert!(d.layers[2].same_settings(&Layer::new(2)), "defaults");
+    assert!(d.device.materials[1].layer(2).is_some());
+    // And a layer that is not used and not in the material goes back to the defaults.
+    assert!(d.layers[9].same_settings(&Layer::new(9)) || d.device.materials[1].layer(9).is_some());
+}
+
+#[test]
+fn materials_are_named_renamed_and_deleted_but_one_stays() {
+    let mut d = Document::default();
+    assert!(!d.delete_material(), "the last one stays");
+    d.add_material("Plywood");
+    d.add_material("Plywood");
+    let names: Vec<&str> = d.device.materials.iter().map(|m| m.name.as_str()).collect();
+    assert_eq!(names, [materials::DEFAULT_MATERIAL, "Plywood", "Plywood (2)"]);
+    d.rename_material("Plywood");
+    assert_eq!(d.device.material().name, "Plywood (2)", "its own name is free, the other one is taken: it keeps a free name");
+    d.rename_material("Leather");
+    assert_eq!(d.device.material().name, "Leather");
+    assert!(d.delete_material());
+    assert_eq!((d.device.materials.len(), d.device.active_material), (2, 1));
+    assert_eq!(materials::free_name(&[], "  "), "Material");
+}
+
+#[test]
+fn materials_travel_with_the_profile_and_with_the_project_and_are_checked_on_import() {
+    let mut d = Document::default();
+    d.add(1, Kind::Rect { w: 5.0, h: 5.0 }, Xf::IDENTITY);
+    d.layers[1].speed = 12.0;
+    d.sync_material();
+    d.add_material("Acrylic");
+    let back = Document::from_json(&d.to_json()).unwrap();
+    assert_eq!(back.device.materials, d.device.materials);
+    assert_eq!(back.device.active_material, 1);
+    let ok = profiles::import_profile(&profiles::export_profile(&d.device, "v0.1.2")).unwrap();
+    assert_eq!(ok.materials, d.device.materials);
+    // A wrong selected material is simply brought back to the first.
+    let mut v: serde_json::Value = serde_json::from_str(&profiles::export_profile(&d.device, "v0.1.2")).unwrap();
+    v["profile"]["active_material"] = 9.into();
+    assert_eq!(profiles::import_profile(&v.to_string()).unwrap().active_material, 0);
+    for mutate in [
+        |v: &mut serde_json::Value| v["profile"]["materials"][0]["name"] = "".into(),
+        |v: &mut serde_json::Value| v["profile"]["materials"][0]["layers"][0]["index"] = 99.into(),
+        |v: &mut serde_json::Value| v["profile"]["materials"][0]["layers"][0]["settings"]["speed"] = (-5.0).into(),
+    ] {
+        let mut v: serde_json::Value = serde_json::from_str(&profiles::export_profile(&d.device, "v0.1.2")).unwrap();
+        mutate(&mut v);
+        assert!(profiles::import_profile(&v.to_string()).is_err());
+    }
+}

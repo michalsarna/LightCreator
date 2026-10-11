@@ -1034,3 +1034,11 @@
 1033|Flere indstillinger…
 1034|Åbner hele enhedsvinduet med det, der er indtastet her
 1035|Udgangspunkt
+1036|Standardmateriale
+1037|Slet dette materiale
+1038|Materiale: {}
+1039|Navn på det nye materiale
+1040|Nyt materiale: en kopi af dette
+1041|Nyt navn
+1042|Omdøb dette materiale
+1043|projekt

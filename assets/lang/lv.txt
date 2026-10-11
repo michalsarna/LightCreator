@@ -1034,3 +1034,11 @@
 1033|Vairāk iestatījumu…
 1034|Atver visu ierīces logu ar šeit ievadīto
 1035|Sākumpunkts
+1036|Noklusējuma materiāls
+1037|Dzēst šo materiālu
+1038|Materiāls: {}
+1039|Jaunā materiāla nosaukums
+1040|Jauns materiāls: šī kopija
+1041|Jauns nosaukums
+1042|Pārdēvēt šo materiālu
+1043|projekts

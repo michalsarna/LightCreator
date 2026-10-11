@@ -1034,3 +1034,11 @@
 1033|Tuilleadh socruithe…
 1034|Osclaíonn sé fuinneog iomlán an ghléis leis an méid a cuireadh isteach anseo
 1035|Pointe tosaigh
+1036|Ábhar réamhshocraithe
+1037|Scrios an t-ábhar seo
+1038|Ábhar: {}
+1039|Ainm an ábhair nua
+1040|Ábhar nua: cóip den cheann seo
+1041|Ainm nua
+1042|Athainmnigh an t-ábhar seo
+1043|tionscadal

@@ -21,6 +21,7 @@ mod icons;
 mod image_ui;
 mod laser;
 mod markdown_ui;
+mod materials_ui;
 mod menu;
 mod nodes;
 #[cfg(target_os = "macos")]

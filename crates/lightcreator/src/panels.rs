@@ -318,6 +318,7 @@ impl App {
         let (units, su) = (self.doc.device.units, self.doc.device.speed_unit);
         let before = self.doc.layers.clone();
         let used: Vec<bool> = (0..30).map(|i| self.doc.shapes.iter().any(|s| s.layer == i)).collect();
+        self.material_header(ui);
         ui.label(RichText::new(tr("Layers are burnt from top to bottom.")).color(theme::text_dim()));
         // Headings of the three switches at the end of each row.
         ui.horizontal(|ui| {

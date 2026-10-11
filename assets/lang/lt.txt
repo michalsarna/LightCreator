@@ -1034,3 +1034,11 @@
 1033|Daugiau nustatymų…
 1034|Atidaro visą įrenginio langą su čia įvestais duomenimis
 1035|Pradinis taškas
+1036|Numatytoji medžiaga
+1037|Ištrinti šią medžiagą
+1038|Medžiaga: {}
+1039|Naujos medžiagos pavadinimas
+1040|Nauja medžiaga: šios kopija
+1041|Naujas pavadinimas
+1042|Pervadinti šią medžiagą
+1043|projektas

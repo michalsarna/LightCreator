@@ -1034,3 +1034,11 @@
 1033|További beállítások…
 1034|Megnyitja a teljes eszközablakot az itt megadottakkal
 1035|Kiindulópont
+1036|Alapértelmezett anyag
+1037|Az anyag törlése
+1038|Anyag: {}
+1039|Az új anyag neve
+1040|Új anyag: ennek másolata
+1041|Új név
+1042|Az anyag átnevezése
+1043|projekt

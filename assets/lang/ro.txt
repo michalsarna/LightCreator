@@ -1034,3 +1034,11 @@
 1033|Mai multe setări…
 1034|Deschide fereastra completă a dispozitivului cu ce s-a introdus aici
 1035|Punct de plecare
+1036|Material implicit
+1037|Șterge acest material
+1038|Material: {}
+1039|Numele noului material
+1040|Material nou: o copie a acestuia
+1041|Nume nou
+1042|Redenumește acest material
+1043|proiect

@@ -152,6 +152,10 @@ pub struct App {
     pub autosaved_revision: u64,
     pub autosave_on: bool,
     /// The web server and API (off by default): switched on, port, and reachable from the network.
+    /// The material header of the Layers tab: adding or renaming.
+    pub mat_edit: Option<crate::materials_ui::MatEdit>,
+    /// The revision the selected material was last compared with the layers at.
+    pub mat_rev: u64,
     pub api_on: bool,
     pub api_port: u16,
     pub api_lan: bool,
@@ -368,6 +372,8 @@ impl App {
             saved_revision: 0,
             autosaved_revision: 0,
             autosave_on: saved("autosave_on").map(|v| v != "0").unwrap_or(true),
+            mat_edit: None,
+            mat_rev: u64::MAX,
             api_on: saved("api_on").map(|v| v == "1").unwrap_or(false),
             api_port: saved("api_port").and_then(|v| v.parse::<u16>().ok()).filter(|p| *p >= 1024).unwrap_or(crate::api_ui::DEFAULT_PORT),
             api_lan: saved("api_lan").map(|v| v == "1").unwrap_or(false),
@@ -709,6 +715,8 @@ impl App {
         let device = self.doc.device.clone();
         self.doc = Document::default();
         self.doc.device = device;
+        self.doc.select_material(self.doc.device.active_material);
+        self.sync_profile();
         self.undo.clear();
         self.redo.clear();
         self.sel.clear();
@@ -739,9 +747,12 @@ impl App {
         }
         match std::fs::read_to_string(&p).map_err(|e| e.to_string()).and_then(|s| Document::from_json(&s)) {
             Ok(d) => {
+                let incoming = d.device.material().clone();
                 self.doc = d;
                 if let Some(p) = self.profiles.get(self.active) {
                     self.doc.device = p.clone();
+                    // The material the project was made with joins the library of the device.
+                    self.adopt_project_material(incoming);
                 }
                 self.undo.clear();
                 self.redo.clear();

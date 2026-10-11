@@ -11,6 +11,7 @@ pub mod export;
 pub mod gcode;
 pub mod hooks;
 pub mod image;
+pub mod materials;
 pub mod print;
 pub mod snap;
 pub mod fillet;
