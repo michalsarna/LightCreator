@@ -945,3 +945,25 @@
 944|Saját jegyzetei (Markdown)
 945|pl. Bevált beállítások: légsegéd 20 %, fókusz 12 mm
 946|Jegyzetek
+947|Aktív
+948|Kamera hozzáadása
+949|Cím
+950|Auto
+951|Kamera neve
+952|Kamera száma
+953|Ennek a számítógépnek a kamerája
+954|{}. kamera
+955|A gépet figyelő kamerák. Az aktív adja az élő képet. Kamera csak érvényes címmel kapcsolható be.
+956|Az objektív torzításának együtthatói (radiális k1–k3, tangenciális p1, p2) a középponttól mért koordinátákra, a kép hosszabb oldalának egységeiben. Mind 0 = nincs korrekció. Kézzel adandók meg: nincs automatikus kalibrálás.
+957|Kamera törlése
+958|Ennek a számítógépnek a kamerájához: kéri a tömörítetlen YUYV formátumot, ha a rendszer engedi.
+959|Formátum
+960|Objektívkorrekció
+961|A gép élő képe: MJPEG-adatfolyam vagy JPEG-pillanatkép címe (http vagy https). Az RTSP nem támogatott.
+962|Zajcsökkentés
+963|Nem http vagy https cím.
+964|Kép
+965|YUYV előnyben
+966|A kamera be- vagy kikapcsolása
+967|A cím érvénytelen: http vagy https cím szükséges
+968|Fehéregyensúly

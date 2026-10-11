@@ -91,7 +91,8 @@ impl App {
             self.cam_worker = None;
         }
         if let Some(fr) = latest {
-            let ci = egui::ColorImage::from_rgb([fr.w as usize, fr.h as usize], &fr.rgb);
+            let rgb = self.cam_process(fr.rgb, fr.w, fr.h);
+            let ci = egui::ColorImage::from_rgb([fr.w as usize, fr.h as usize], &rgb);
             self.overlay_set_image(ctx, ci, &tr("Camera"));
         }
     }
@@ -137,7 +138,7 @@ impl App {
                     if self.cam_worker.is_none() {
                         if ui.add_enabled(!self.cam_list.is_empty(), egui::Button::new(tr("Start camera"))).clicked() {
                             self.cam_error.clear();
-                            self.cam_worker = Some(camera::spawn(self.cam_index, ctx.clone()));
+                            self.cam_worker = Some(camera::spawn(self.cam_index, self.doc.device.cameras.get(self.doc.device.active_camera).is_some_and(|c| c.image.prefer_yuyv), ctx.clone()));
                         }
                     } else if ui.button(tr("Freeze frame")).clicked() {
                         self.cam_worker = None;

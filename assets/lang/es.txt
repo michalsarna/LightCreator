@@ -945,3 +945,25 @@
 944|Sus notas (Markdown)
 945|p. ej. Ajustes que funcionaron: air assist 20 %, enfoque 12 mm
 946|Notas
+947|Activa
+948|Añadir una cámara
+949|Dirección
+950|Auto
+951|Nombre de la cámara
+952|Número de cámara
+953|Cámara de este ordenador
+954|Cámara {}
+955|Cámaras que vigilan la máquina. La activa da la imagen en vivo. Una cámara solo se puede activar con una dirección válida.
+956|Coeficientes de la distorsión de la lente (radial k1–k3, tangencial p1, p2) para coordenadas medidas desde el centro en unidades del lado más largo de la imagen. Todos 0 = sin corrección. Se introducen a mano: no hay calibración automática.
+957|Eliminar esta cámara
+958|Para una cámara de este ordenador: pide el formato YUYV sin comprimir si el sistema lo permite.
+959|Formato
+960|Corrección de la lente
+961|Imagen en vivo de la máquina: un flujo MJPEG o la dirección de una instantánea JPEG (http o https). RTSP no es compatible.
+962|Reducción de ruido
+963|No es una dirección http o https.
+964|Imagen
+965|Preferir YUYV
+966|Activar o desactivar esta cámara
+967|La dirección no es válida: se necesita una dirección http o https
+968|Balance de blancos

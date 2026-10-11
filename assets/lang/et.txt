@@ -945,3 +945,25 @@
 944|Sinu märkmed (Markdown)
 945|nt Toiminud seaded: õhuabi 20 %, fookus 12 mm
 946|Märkmed
+947|Aktiivne
+948|Lisa kaamera
+949|Aadress
+950|Auto
+951|Kaamera nimi
+952|Kaamera number
+953|Selle arvuti kaamera
+954|Kaamera {}
+955|Masinat jälgivad kaamerad. Aktiivne annab reaalajapildi. Kaamera saab sisse lülitada ainult kehtiva aadressiga.
+956|Objektiivi moonutuse koefitsiendid (radiaalne k1–k3, tangentsiaalne p1, p2) keskpunktist mõõdetud koordinaatidele pildi pikema külje ühikutes. Kõik 0 = korrektuuri pole. Sisestatakse käsitsi: automaatset kalibreerimist pole.
+957|Kustuta see kaamera
+958|Selle arvuti kaamera jaoks: küsi pakkimata YUYV-vormingut, kui süsteem lubab.
+959|Vorming
+960|Objektiivi korrektsioon
+961|Masina reaalajapilt: MJPEG-voog või JPEG-hetkepildi aadress (http või https). RTSP-d ei toetata.
+962|Müra vähendamine
+963|See pole http- ega https-aadress.
+964|Pilt
+965|Eelista YUYV-d
+966|Lülita see kaamera sisse või välja
+967|Aadress ei kehti: vaja on http- või https-aadressi
+968|Valge tasakaal

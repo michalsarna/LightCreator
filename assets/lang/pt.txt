@@ -945,3 +945,25 @@
 944|As suas notas (Markdown)
 945|p. ex. Definições que funcionaram: air assist 20 %, foco 12 mm
 946|Notas
+947|Ativa
+948|Adicionar uma câmara
+949|Endereço
+950|Auto
+951|Nome da câmara
+952|Número da câmara
+953|Câmara deste computador
+954|Câmara {}
+955|Câmaras que vigiam a máquina. A ativa dá a imagem em direto. Uma câmara só pode ser ligada com um endereço válido.
+956|Coeficientes da distorção da lente (radial k1–k3, tangencial p1, p2) para coordenadas medidas a partir do centro em unidades do lado maior da imagem. Todos 0 = sem correção. Introduzidos à mão: não há calibração automática.
+957|Eliminar esta câmara
+958|Para uma câmara deste computador: pede o formato YUYV não comprimido quando o sistema permitir.
+959|Formato
+960|Correção da lente
+961|Imagem em direto da máquina: um fluxo MJPEG ou o endereço de um instantâneo JPEG (http ou https). RTSP não é suportado.
+962|Redução de ruído
+963|Não é um endereço http ou https.
+964|Imagem
+965|Preferir YUYV
+966|Ligar ou desligar esta câmara
+967|O endereço não é válido: é preciso um endereço http ou https
+968|Equilíbrio de brancos

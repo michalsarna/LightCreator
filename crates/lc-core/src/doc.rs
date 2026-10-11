@@ -2,6 +2,7 @@
 use crate::bezier::Contour;
 use crate::image::ImageData;
 use crate::text::TextData;
+use crate::camimg::{CameraKind, CameraSource};
 use crate::geom::*;
 use serde::{Deserialize, Serialize};
 
@@ -1061,10 +1062,10 @@ pub struct Device {
     pub jog_feed: f64,
     /// Camera overlay alignment for this machine.
     pub camera: Option<CameraCfg>,
-    /// URL of a live picture of the machine (MJPEG stream or JPEG snapshot). Empty = none.
-    pub camera_url: String,
-    /// Quarter turns clockwise applied to the camera picture (0..=3).
-    pub camera_rotation: u8,
+    /// The cameras that watch the machine.
+    pub cameras: Vec<CameraSource>,
+    /// The camera whose picture is shown (an index into `cameras`).
+    pub active_camera: usize,
     /// Default speed of each of the 30 layers in mm/min, kept with the device and used for new documents.
     pub layer_speeds: Vec<f64>,
     /// The material library of this device: materials with the settings of all their layers. It is stored with
@@ -1280,10 +1281,15 @@ struct DeviceWire {
     jog_feed: f64,
     #[serde(default)]
     camera: Option<CameraCfg>,
+    // The single camera of earlier versions.
     #[serde(default)]
     camera_url: String,
     #[serde(default)]
     camera_rotation: u8,
+    #[serde(default)]
+    cameras: Vec<CameraSource>,
+    #[serde(default)]
+    active_camera: usize,
     #[serde(default = "d_layer_speeds")]
     layer_speeds: Vec<f64>,
     #[serde(default)]
@@ -1358,8 +1364,8 @@ impl From<DeviceWire> for Device {
             jog_step: w.jog_step,
             jog_feed: w.jog_feed,
             camera: w.camera,
-            camera_url: w.camera_url,
-            camera_rotation: w.camera_rotation,
+            cameras: if w.cameras.is_empty() && !w.camera_url.trim().is_empty() { vec![CameraSource::url("Camera 1", w.camera_url.trim(), w.camera_rotation)] } else { w.cameras },
+            active_camera: w.active_camera,
             layer_speeds: w.layer_speeds,
             materials: w.materials,
             materials_seeded: w.materials_seeded,
@@ -1503,6 +1509,19 @@ impl Device {
         }
     }
 
+    /// The camera whose picture is shown: the active one, when it is switched on and valid.
+    pub fn camera_source(&self) -> Option<&CameraSource> {
+        self.cameras.get(self.active_camera).filter(|c| c.enabled && c.is_valid())
+    }
+
+    /// The address of the live picture of the active camera (not for a local camera).
+    pub fn stream_url(&self) -> Option<&str> {
+        match &self.camera_source()?.kind {
+            CameraKind::Url(u) => Some(u.trim()),
+            CameraKind::Local(_) => None,
+        }
+    }
+
     /// Laser head `i`, or the first one when there is no such head.
     pub fn head(&self, i: usize) -> &LaserHead {
         self.heads.get(i).unwrap_or(&self.heads[0])
@@ -1561,8 +1580,8 @@ impl Default for Device {
             jog_step: 5.0,
             jog_feed: 3000.0,
             camera: None,
-            camera_url: String::new(),
-            camera_rotation: 0,
+            cameras: vec![],
+            active_camera: 0,
             layer_speeds: d_layer_speeds(),
             materials: vec![],
             materials_seeded: false,

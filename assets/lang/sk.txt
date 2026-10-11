@@ -945,3 +945,25 @@
 944|Vaše poznámky (Markdown)
 945|napr. Nastavenia, ktoré fungovali: air assist 20 %, zaostrenie 12 mm
 946|Poznámky
+947|Aktívna
+948|Pridať kameru
+949|Adresa
+950|Auto
+951|Názov kamery
+952|Číslo kamery
+953|Kamera tohto počítača
+954|Kamera {}
+955|Kamery sledujúce stroj. Aktívna poskytuje živý obraz. Kameru možno zapnúť len s platnou adresou.
+956|Koeficienty skreslenia objektívu (radiálne k1–k3, tangenciálne p1, p2) pre súradnice od stredu v jednotkách dlhšej strany obrazu. Všetky 0 = bez korekcie. Zadávajú sa ručne: automatická kalibrácia neexistuje.
+957|Odstrániť túto kameru
+958|Pre kameru tohto počítača: požiadať o nekomprimovaný formát YUYV, ak to systém dovolí.
+959|Formát
+960|Korekcia objektívu
+961|Živý obraz stroja: prúd MJPEG alebo adresa snímky JPEG (http alebo https). RTSP nie je podporované.
+962|Potlačenie šumu
+963|Nie je to adresa http ani https.
+964|Obraz
+965|Uprednostniť YUYV
+966|Zapnúť alebo vypnúť túto kameru
+967|Adresa nie je platná: je potrebná adresa http alebo https
+968|Vyváženie bielej

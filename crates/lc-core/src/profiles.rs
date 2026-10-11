@@ -1,5 +1,6 @@
 //! Device profiles: general starting points, copying, and a file format for moving one profile between computers.
 //! A file is data from outside: it is checked strictly and nothing in it is trusted.
+use crate::camimg::CameraKind;
 use crate::doc::*;
 
 /// A starting point for a new device. Only general machines: the numbers are typical, not those of a brand.
@@ -141,8 +142,25 @@ pub fn validate(d: &Device) -> Result<(), String> {
     if d.axes.z_min > d.axes.z_max || !between(d.axes.z_min, -10_000.0, 10_000.0) || !between(d.axes.z_max, -10_000.0, 10_000.0) {
         return bad("the Z travel");
     }
-    if !text_ok(&d.camera_url, 500) || d.camera_rotation > 3 {
-        return bad("a camera setting");
+    if d.cameras.len() > 8 || d.active_camera > 8 {
+        return bad("the number of cameras");
+    }
+    for c in &d.cameras {
+        let kind_ok = match &c.kind {
+            CameraKind::Url(u) => text_ok(u, 500),
+            CameraKind::Local(i) => *i < 64,
+        };
+        let i = c.image.clamped();
+        if !text_ok(&c.name, 60) || !kind_ok || c.rotation > 3 || i != c.image || !c.lens.is_sane() || c.reference.len() > 32 {
+            return bad("a camera setting");
+        }
+        if c.reference.iter().any(|r| ![r.px.0, r.px.1, r.mm.0, r.mm.1].iter().all(|v| between(*v, -1e7, 1e7))) {
+            return bad("a reference point");
+        }
+        // An address that is not usable cannot be switched on.
+        if c.enabled && !c.is_valid() {
+            return Err("a camera is switched on but its address is not valid".into());
+        }
     }
     if d.layer_speeds.len() > 30 || !d.layer_speeds.iter().all(|v| between(*v, 0.0, 100_000.0)) {
         return bad("a layer speed");

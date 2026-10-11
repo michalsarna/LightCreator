@@ -945,3 +945,25 @@
 944|Les vostres notes (Markdown)
 945|p. ex. Configuracions que han funcionat: air assist 20 %, focus 12 mm
 946|Notes
+947|Activa
+948|Afegeix una càmera
+949|Adreça
+950|Auto
+951|Nom de la càmera
+952|Número de la càmera
+953|Càmera d'aquest ordinador
+954|Càmera {}
+955|Càmeres que vigilen la màquina. L'activa dona la imatge en directe. Una càmera només es pot activar amb una adreça vàlida.
+956|Coeficients de la distorsió de la lent (radial k1–k3, tangencial p1, p2) per a coordenades mesurades des del centre en unitats del costat més llarg de la imatge. Tots 0 = sense correcció. S'introdueixen a mà: no hi ha calibratge automàtic.
+957|Elimina aquesta càmera
+958|Per a una càmera d'aquest ordinador: demana el format YUYV sense comprimir si el sistema ho permet.
+959|Format
+960|Correcció de la lent
+961|Imatge en directe de la màquina: un flux MJPEG o l'adreça d'una instantània JPEG (http o https). RTSP no és compatible.
+962|Reducció de soroll
+963|No és una adreça http o https.
+964|Imatge
+965|Prefereix YUYV
+966|Activa o desactiva aquesta càmera
+967|L'adreça no és vàlida: cal una adreça http o https
+968|Balanç de blancs

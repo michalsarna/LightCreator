@@ -1308,7 +1308,7 @@ impl App {
                 }
             }
             Act::CameraView => {
-                if self.doc.device.camera_url.trim().is_empty() {
+                if self.doc.device.stream_url().is_none() {
                     self.status = tr("Set a camera URL in the device settings first.").to_string();
                 } else {
                     self.show_stream = true;
@@ -1494,7 +1494,7 @@ impl App {
             if window_toggle(ui, &tr("Preview…"), &tr("Open the preview window"), self.show_preview, true) {
                 self.show_preview = !self.show_preview;
             }
-            let has_camera = !self.doc.device.camera_url.trim().is_empty();
+            let has_camera = self.doc.device.stream_url().is_some();
             if has_camera && window_toggle(ui, &tr("Camera view"), &tr("Show the live camera picture of this machine"), self.show_stream, true) {
                 self.show_stream = !self.show_stream;
             }

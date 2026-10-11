@@ -945,3 +945,25 @@
 944|Jūsu piezīmes (Markdown)
 945|piem. Iestatījumi, kas darbojās: gaisa palīdzība 20 %, fokuss 12 mm
 946|Piezīmes
+947|Aktīva
+948|Pievienot kameru
+949|Adrese
+950|Auto
+951|Kameras nosaukums
+952|Kameras numurs
+953|Šī datora kamera
+954|Kamera {}
+955|Kameras, kas vēro iekārtu. Aktīvā dod tiešraides attēlu. Kameru var ieslēgt tikai ar derīgu adresi.
+956|Objektīva kropļojuma koeficienti (radiālie k1–k3, tangenciālie p1, p2) koordinātēm no centra attēla garākās malas vienībās. Visi 0 = bez korekcijas. Ievada ar roku: automātiskas kalibrēšanas nav.
+957|Dzēst šo kameru
+958|Šī datora kamerai: pieprasīt nesaspiesto YUYV formātu, ja sistēma atļauj.
+959|Formāts
+960|Objektīva korekcija
+961|Iekārtas tiešraides attēls: MJPEG straume vai JPEG momentuzņēmuma adrese (http vai https). RTSP netiek atbalstīts.
+962|Trokšņu samazināšana
+963|Tā nav http vai https adrese.
+964|Attēls
+965|Dot priekšroku YUYV
+966|Ieslēgt vai izslēgt šo kameru
+967|Adrese nav derīga: nepieciešama http vai https adrese
+968|Baltā balanss

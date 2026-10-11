@@ -945,3 +945,25 @@
 944|In-noti tiegħek (Markdown)
 945|eż. Issettjar li ħadem: air assist 20 %, fokus 12 mm
 946|Noti
+947|Attiva
+948|Żid kamera
+949|Indirizz
+950|Awto
+951|Isem tal-kamera
+952|Numru tal-kamera
+953|Kamera ta' dan il-kompjuter
+954|Kamera {}
+955|Kameras li josservaw il-magna. Dik attiva tagħti x-xbieha dirett. Kamera tista' tinxtegħel biss b'indirizz validu.
+956|Koeffiċjenti tad-distorsjoni tal-lenti (radjali k1–k3, tanġenzjali p1, p2) għal koordinati mil-ċentru f'unitajiet tal-iktar ġenb twil tax-xbieha. Kollha 0 = l-ebda korrezzjoni. Jiddaħħlu bl-idejn: m'hemmx kalibrazzjoni awtomatika.
+957|Neħħi din il-kamera
+958|Għal kamera ta' dan il-kompjuter: itlob il-format YUYV mhux ikkompressat meta s-sistema tippermetti.
+959|Format
+960|Korrezzjoni tal-lenti
+961|Xbieha dirett tal-magna: fluss MJPEG jew indirizz ta' snapshot JPEG (http jew https). RTSP mhuwiex appoġġat.
+962|Tnaqqis tal-istorbju
+963|Mhuwiex indirizz http jew https.
+964|Xbieha
+965|Ippreferi YUYV
+966|Ixgħel jew itfi din il-kamera
+967|L-indirizz mhuwiex validu: meħtieġ indirizz http jew https
+968|Bilanċ tal-abjad

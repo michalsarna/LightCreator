@@ -945,3 +945,25 @@
 944	Your notes (Markdown)
 945	e.g. Settings that worked: air assist 20 %, focus 12 mm
 946	Notes
+947	Active
+948	Add a camera
+949	Address
+950	Auto
+951	Camera name
+952	Camera number
+953	Camera of this computer
+954	Camera {}
+955	Cameras that watch the machine. The active one gives the live picture. A camera can only be switched on when its address is valid.
+956	Coefficients of the lens distortion (radial k1–k3, tangential p1, p2) for coordinates measured from the centre in units of the longer side of the picture. All 0 = no correction. Entered by hand: there is no automatic calibration.
+957	Delete this camera
+958	For a camera of this computer: ask for the uncompressed YUYV format where the system allows it.
+959	Format
+960	Lens correction
+961	Live picture of the machine: an MJPEG stream or a JPEG snapshot address (http or https). RTSP is not supported.
+962	Noise reduction
+963	Not an http or https address.
+964	Picture
+965	Prefer YUYV
+966	Switch this camera on or off
+967	The address is not valid: an http or https address is needed
+968	White balance

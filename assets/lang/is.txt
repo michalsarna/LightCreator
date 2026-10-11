@@ -945,3 +945,25 @@
 944|Þínar athugasemdir (Markdown)
 945|t.d. Stillingar sem virkuðu: loftaðstoð 20 %, fókus 12 mm
 946|Athugasemdir
+947|Virk
+948|Bæta við myndavél
+949|Heimilisfang
+950|Sjálfvirkt
+951|Nafn myndavélar
+952|Númer myndavélar
+953|Myndavél þessarar tölvu
+954|Myndavél {}
+955|Myndavélar sem fylgjast með vélinni. Sú virka sýnir beina mynd. Aðeins er hægt að kveikja á myndavél með gildu heimilisfangi.
+956|Stuðlar linsubjögunar (geislægur k1–k3, snertilægur p1, p2) fyrir hnit frá miðju í einingum lengri hliðar myndarinnar. Allir 0 = engin leiðrétting. Slegið inn handvirkt: engin sjálfvirk kvörðun.
+957|Eyða þessari myndavél
+958|Fyrir myndavél þessarar tölvu: biðja um óþjappað YUYV snið þar sem kerfið leyfir.
+959|Snið
+960|Linsuleiðrétting
+961|Bein mynd af vélinni: MJPEG-straumur eða heimilisfang JPEG-skyndimyndar (http eða https). RTSP er ekki stutt.
+962|Hávaðaminnkun
+963|Ekki http- eða https-heimilisfang.
+964|Mynd
+965|Kjósa YUYV
+966|Kveikja eða slökkva á þessari myndavél
+967|Heimilisfangið er ógilt: http- eða https-heimilisfang þarf
+968|Hvítjöfnun

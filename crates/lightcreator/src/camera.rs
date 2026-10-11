@@ -69,7 +69,7 @@ mod imp {
     use super::*;
     use nokhwa::pixel_format::RgbFormat;
     use std::sync::mpsc::{channel, Sender};
-    use nokhwa::utils::{ApiBackend, CameraIndex, RequestedFormat, RequestedFormatType};
+    use nokhwa::utils::{ApiBackend, CameraIndex, FrameFormat, RequestedFormat, RequestedFormatType};
     use std::sync::atomic::{AtomicBool, Ordering};
     use std::sync::Arc;
     use std::time::Duration;
@@ -101,12 +101,14 @@ mod imp {
     }
 
     /// Stream frames (about 8 per second) from camera `index` until the worker is dropped.
-    pub fn spawn(index: u32, ctx: eframe::egui::Context) -> Worker {
+    pub fn spawn(index: u32, prefer_yuyv: bool, ctx: eframe::egui::Context) -> Worker {
         let (tx, rx): (Sender<Result<Frame, String>>, _) = channel();
         let stop = Arc::new(AtomicBool::new(false));
         let flag = stop.clone();
         std::thread::spawn(move || {
-            let fmt = RequestedFormat::new::<RgbFormat>(RequestedFormatType::AbsoluteHighestResolution);
+            // YUYV is asked for first where the backend can give it; otherwise whatever the camera offers.
+            let preferred = [FrameFormat::YUYV, FrameFormat::MJPEG];
+            let fmt = if prefer_yuyv { RequestedFormat::with_formats(RequestedFormatType::AbsoluteHighestResolution, &preferred) } else { RequestedFormat::new::<RgbFormat>(RequestedFormatType::AbsoluteHighestResolution) };
             let mut cam = match nokhwa::Camera::new(CameraIndex::Index(index), fmt) {
                 Ok(c) => c,
                 Err(e) => {
@@ -155,7 +157,7 @@ mod imp {
         pub rx: Receiver<Result<Frame, String>>,
     }
 
-    pub fn spawn(_index: u32, _ctx: eframe::egui::Context) -> Worker {
+    pub fn spawn(_index: u32, _prefer_yuyv: bool, _ctx: eframe::egui::Context) -> Worker {
         let (_tx, rx) = channel();
         Worker { rx }
     }

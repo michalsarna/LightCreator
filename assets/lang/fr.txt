@@ -945,3 +945,25 @@
 944|Vos notes (Markdown)
 945|p. ex. Réglages qui ont marché : air assist 20 %, mise au point 12 mm
 946|Notes
+947|Active
+948|Ajouter une caméra
+949|Adresse
+950|Auto
+951|Nom de la caméra
+952|Numéro de la caméra
+953|Caméra de cet ordinateur
+954|Caméra {}
+955|Caméras qui surveillent la machine. L'active donne l'image en direct. Une caméra ne peut être activée qu'avec une adresse valide.
+956|Coefficients de la distorsion de l'objectif (radiale k1–k3, tangentielle p1, p2) pour des coordonnées mesurées depuis le centre en unités du plus grand côté de l'image. Tous 0 = aucune correction. Saisis à la main : il n'y a pas d'étalonnage automatique.
+957|Supprimer cette caméra
+958|Pour une caméra de cet ordinateur : demande le format YUYV non compressé si le système le permet.
+959|Format
+960|Correction de l'objectif
+961|Image en direct de la machine : un flux MJPEG ou l'adresse d'un instantané JPEG (http ou https). RTSP n'est pas pris en charge.
+962|Réduction du bruit
+963|Ce n'est pas une adresse http ou https.
+964|Image
+965|Préférer YUYV
+966|Activer ou désactiver cette caméra
+967|L'adresse n'est pas valide : une adresse http ou https est nécessaire
+968|Balance des blancs

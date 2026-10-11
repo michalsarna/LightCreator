@@ -945,3 +945,25 @@
 944|Dina anteckningar (Markdown)
 945|t.ex. Inställningar som fungerade: air assist 20 %, fokus 12 mm
 946|Anteckningar
+947|Aktiv
+948|Lägg till en kamera
+949|Adress
+950|Auto
+951|Kameranamn
+952|Kameranummer
+953|Kameran på den här datorn
+954|Kamera {}
+955|Kameror som övervakar maskinen. Den aktiva ger livebilden. En kamera kan bara slås på med en giltig adress.
+956|Koefficienter för linsdistorsionen (radiell k1–k3, tangentiell p1, p2) för koordinater mätta från mitten i enheter av bildens längsta sida. Alla 0 = ingen korrigering. Anges för hand: det finns ingen automatisk kalibrering.
+957|Ta bort den här kameran
+958|För en kamera på den här datorn: be om det okomprimerade YUYV-formatet där systemet tillåter det.
+959|Format
+960|Linskorrigering
+961|Maskinens livebild: en MJPEG-ström eller adressen till en JPEG-ögonblicksbild (http eller https). RTSP stöds inte.
+962|Brusreducering
+963|Inte en http- eller https-adress.
+964|Bild
+965|Föredra YUYV
+966|Slå på eller av den här kameran
+967|Adressen är ogiltig: en http- eller https-adress behövs
+968|Vitbalans

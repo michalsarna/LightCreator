@@ -945,3 +945,25 @@
 944|Vaše bilješke (Markdown)
 945|npr. Postavke koje su radile: air assist 20 %, fokus 12 mm
 946|Bilješke
+947|Aktivna
+948|Dodaj kameru
+949|Adresa
+950|Auto
+951|Naziv kamere
+952|Broj kamere
+953|Kamera ovog računala
+954|Kamera {}
+955|Kamere koje nadziru stroj. Aktivna daje sliku uživo. Kamera se može uključiti samo s važećom adresom.
+956|Koeficijenti izobličenja leće (radijalni k1–k3, tangencijalni p1, p2) za koordinate od središta u jedinicama duže stranice slike. Svi 0 = bez korekcije. Unose se ručno: nema automatske kalibracije.
+957|Izbriši ovu kameru
+958|Za kameru ovog računala: zatraži nekomprimirani format YUYV ako sustav dopušta.
+959|Format
+960|Korekcija leće
+961|Slika stroja uživo: MJPEG tok ili adresa JPEG snimke (http ili https). RTSP nije podržan.
+962|Smanjenje šuma
+963|Nije http ni https adresa.
+964|Slika
+965|Preferiraj YUYV
+966|Uključi ili isključi ovu kameru
+967|Adresa nije valjana: potrebna je http ili https adresa
+968|Ravnoteža bijele

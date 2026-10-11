@@ -753,18 +753,110 @@ impl App {
                                 });
                             }
                             CfgPage::Camera => {
-                                egui::Grid::new("dev_camera").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
-                                    ui.label(tr("Camera URL"));
-                                    ui.add(egui::TextEdit::singleline(&mut d.camera_url).hint_text("http://raspberrypi.local:8080/stream.mjpg").desired_width(260.0)).on_hover_text(tr("Live picture of the machine: an MJPEG stream or a JPEG snapshot address (http or https)."));
-                                    ui.end_row();
-                                    ui.label(tr("Camera rotation"));
-                                    ui.horizontal(|ui| {
-                                        for q in 0..4u8 {
-                                            ui.selectable_value(&mut d.camera_rotation, q, format!("{}°", q as u32 * 90));
+                                ui.label(RichText::new(tr("Cameras that watch the machine. The active one gives the live picture. A camera can only be switched on when its address is valid.")).color(theme::text_dim()));
+                                let mut remove = None;
+                                let n = d.cameras.len();
+                                for i in 0..n {
+                                    let active = d.active_camera == i;
+                                    let c = &mut d.cameras[i];
+                                    egui::Frame::group(ui.style()).show(ui, |ui| {
+                                        ui.horizontal_wrapped(|ui| {
+                                            let ok = c.is_valid();
+                                            if ui.add_enabled(ok || c.enabled, egui::Checkbox::new(&mut c.enabled, "")).on_hover_text(if ok { tr("Switch this camera on or off") } else { tr("The address is not valid: an http or https address is needed") }).changed() && !ok {
+                                                c.enabled = false;
+                                            }
+                                            ui.add(egui::TextEdit::singleline(&mut c.name).hint_text(tr("Camera name")).desired_width(150.0));
+                                            if ui.radio(active, tr("Active")).clicked() {
+                                                d.active_camera = i;
+                                            }
+                                            if ui.small_button("✕").on_hover_text(tr("Delete this camera")).clicked() {
+                                                remove = Some(i);
+                                            }
+                                        });
+                                        ui.horizontal_wrapped(|ui| {
+                                            let local = matches!(c.kind, lc_core::CameraKind::Local(_));
+                                            let mut want_local = local;
+                                            ui.radio_value(&mut want_local, false, tr("Address"));
+                                            ui.radio_value(&mut want_local, true, tr("Camera of this computer"));
+                                            if want_local != local {
+                                                c.kind = if want_local { lc_core::CameraKind::Local(0) } else { lc_core::CameraKind::Url(String::new()) };
+                                                if !want_local {
+                                                    c.enabled = false;
+                                                }
+                                            }
+                                        });
+                                        match &mut c.kind {
+                                            lc_core::CameraKind::Url(u) => {
+                                                ui.add(egui::TextEdit::singleline(u).hint_text("http://raspberrypi.local:8080/stream.mjpg").desired_width(300.0)).on_hover_text(tr("Live picture of the machine: an MJPEG stream or a JPEG snapshot address (http or https). RTSP is not supported."));
+                                                if !lc_core::camimg::valid_url(u) && !u.trim().is_empty() {
+                                                    ui.label(RichText::new(tr("Not an http or https address.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
+                                                }
+                                            }
+                                            lc_core::CameraKind::Local(i) => {
+                                                if crate::camera::SUPPORTED {
+                                                    ui.horizontal(|ui| {
+                                                        ui.label(tr("Camera number"));
+                                                        ui.add(egui::DragValue::new(i).range(0..=15));
+                                                    });
+                                                } else {
+                                                    ui.label(RichText::new(tr("This build has no camera support. Build with: cargo run --release --features camera")).color(theme::text_dim()));
+                                                }
+                                            }
                                         }
+                                        ui.horizontal(|ui| {
+                                            ui.label(tr("Camera rotation"));
+                                            for q in 0..4u8 {
+                                                ui.selectable_value(&mut c.rotation, q, format!("{}°", q as u32 * 90));
+                                            }
+                                        });
+                                        egui::CollapsingHeader::new(tr("Picture")).id_salt(("cam_img", i)).show(ui, |ui| {
+                                            egui::Grid::new(("cam_img_grid", i)).num_columns(2).spacing([12.0, 4.0]).show(ui, |ui| {
+                                                ui.label(tr("Brightness"));
+                                                ui.add(egui::Slider::new(&mut c.image.brightness, -100..=100));
+                                                ui.end_row();
+                                                ui.label(tr("Contrast"));
+                                                ui.add(egui::Slider::new(&mut c.image.contrast, 0..=100));
+                                                ui.end_row();
+                                                ui.label(tr("White balance"));
+                                                ui.horizontal(|ui| {
+                                                    let mut auto = c.image.white_balance.is_none();
+                                                    if ui.checkbox(&mut auto, tr("Auto")).changed() {
+                                                        c.image.white_balance = if auto { None } else { Some(6500) };
+                                                    }
+                                                    if let Some(k) = &mut c.image.white_balance {
+                                                        ui.add(egui::DragValue::new(k).range(2500..=10_000).speed(50.0).suffix(" K"));
+                                                    }
+                                                });
+                                                ui.end_row();
+                                                ui.label(tr("Noise reduction"));
+                                                ui.add(egui::Slider::new(&mut c.image.denoise, 0.0..=0.95));
+                                                ui.end_row();
+                                                ui.label(tr("Format"));
+                                                ui.checkbox(&mut c.image.prefer_yuyv, tr("Prefer YUYV")).on_hover_text(tr("For a camera of this computer: ask for the uncompressed YUYV format where the system allows it."));
+                                                ui.end_row();
+                                            });
+                                        });
+                                        egui::CollapsingHeader::new(tr("Lens correction")).id_salt(("cam_lens", i)).show(ui, |ui| {
+                                            ui.label(RichText::new(tr("Coefficients of the lens distortion (radial k1–k3, tangential p1, p2) for coordinates measured from the centre in units of the longer side of the picture. All 0 = no correction. Entered by hand: there is no automatic calibration.")).color(theme::text_dim()));
+                                            ui.horizontal_wrapped(|ui| {
+                                                for (name, v) in [("k1", &mut c.lens.k1), ("k2", &mut c.lens.k2), ("k3", &mut c.lens.k3), ("p1", &mut c.lens.p1), ("p2", &mut c.lens.p2)] {
+                                                    ui.label(name);
+                                                    ui.add(egui::DragValue::new(v).speed(0.001).range(-5.0..=5.0).max_decimals(4));
+                                                }
+                                                if ui.small_button(tr("Reset")).clicked() {
+                                                    c.lens = lc_core::Lens::default();
+                                                }
+                                            });
+                                        });
                                     });
-                                    ui.end_row();
-                                });
+                                }
+                                if let Some(i) = remove {
+                                    d.cameras.remove(i);
+                                    d.active_camera = d.active_camera.min(d.cameras.len().saturating_sub(1));
+                                }
+                                if d.cameras.len() < 8 && ui.button(tr("Add a camera")).clicked() {
+                                    d.cameras.push(lc_core::CameraSource { name: trf("Camera {}", &[&(d.cameras.len() + 1)]), enabled: false, kind: lc_core::CameraKind::Url(String::new()), rotation: 0, image: Default::default(), lens: Default::default(), reference: vec![] });
+                                }
                             }
                             CfgPage::Rotary => {
                                 let grbl = d.dialect().is_grbl();
@@ -1299,9 +1391,12 @@ impl App {
                 }
                 row(tr("Port"), if dev.has_target() { dev.target_label() } else { tr("No port").to_string() });
             }
-            if !dev.camera_url.trim().is_empty() {
-                row(tr("Camera URL"), dev.camera_url.clone());
-                row(tr("Camera rotation"), format!("{}°", dev.camera_rotation as u32 % 4 * 90));
+            if let Some(c) = dev.camera_source() {
+                row(tr("Camera"), c.name.clone());
+                if let lc_core::CameraKind::Url(u) = &c.kind {
+                    row(tr("Camera URL"), u.clone());
+                }
+                row(tr("Camera rotation"), format!("{}°", c.rotation as u32 % 4 * 90));
             }
         });
         ui.add_space(6.0);

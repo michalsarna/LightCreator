@@ -945,3 +945,25 @@
 944|Jūsų pastabos (Markdown)
 945|pvz. Veikusios nuostatos: oro pagalba 20 %, fokusas 12 mm
 946|Pastabos
+947|Aktyvi
+948|Pridėti kamerą
+949|Adresas
+950|Auto
+951|Kameros pavadinimas
+952|Kameros numeris
+953|Šio kompiuterio kamera
+954|Kamera {}
+955|Kameros, stebinčios mašiną. Aktyvi duoda gyvą vaizdą. Kamerą galima įjungti tik su tinkamu adresu.
+956|Objektyvo iškraipymo koeficientai (radialiniai k1–k3, tangentiniai p1, p2) koordinatėms nuo centro vaizdo ilgesniosios kraštinės vienetais. Visi 0 = be pataisos. Įvedama ranka: automatinio kalibravimo nėra.
+957|Ištrinti šią kamerą
+958|Šio kompiuterio kamerai: prašyti nesuspausto YUYV formato, jei sistema leidžia.
+959|Formatas
+960|Objektyvo korekcija
+961|Gyvas mašinos vaizdas: MJPEG srautas arba JPEG nuotraukos adresas (http arba https). RTSP nepalaikomas.
+962|Triukšmo mažinimas
+963|Tai nėra http ar https adresas.
+964|Vaizdas
+965|Teikti pirmenybę YUYV
+966|Įjungti arba išjungti šią kamerą
+967|Adresas netinkamas: reikia http arba https adreso
+968|Baltos spalvos balansas

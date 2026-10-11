@@ -1,6 +1,7 @@
 //! LightCreator core: geometry, document model, SVG I/O and G-code generation.
 pub mod arcs;
 pub mod bezier;
+pub mod camimg;
 pub mod check;
 pub mod clipart;
 pub mod controller;
@@ -24,6 +25,7 @@ pub mod trace;
 pub mod zones;
 
 pub use bezier::*;
+pub use camimg::{CameraKind, CameraSource, ImageSettings, Lens, RefPoint};
 pub use doc::*;
 pub use geom::*;
 pub use image::{Adjust, ImageData};

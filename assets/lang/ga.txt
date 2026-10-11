@@ -945,3 +945,25 @@
 944|Do chuid nótaí (Markdown)
 945|m.sh. Socruithe a d'oibrigh: air assist 20 %, fócas 12 mm
 946|Nótaí
+947|Gníomhach
+948|Cuir ceamara leis
+949|Seoladh
+950|Uath
+951|Ainm an cheamara
+952|Uimhir an cheamara
+953|Ceamara an ríomhaire seo
+954|Ceamara {}
+955|Ceamaraí a choimeádann súil ar an meaisín. Tugann an ceann gníomhach an pictiúr beo. Ní féidir ceamara a chur ar siúl ach le seoladh bailí.
+956|Comhéifeachtaí díchumtha an lionsa (gathach k1–k3, tadhlaíoch p1, p2) do chomhordanáidí ón lár in aonaid de thaobh is faide an phictiúir. Gach 0 = gan ceartú. Cuirtear isteach de láimh iad: níl calabrú uathoibríoch ann.
+957|Scrios an ceamara seo
+958|Do cheamara den ríomhaire seo: iarr an fhormáid YUYV neamhchomhbhrúite nuair a cheadaíonn an córas.
+959|Formáid
+960|Ceartú lionsa
+961|Pictiúr beo den mheaisín: sruth MJPEG nó seoladh seat JPEG (http nó https). Ní thacaítear le RTSP.
+962|Laghdú torainn
+963|Ní seoladh http ná https é.
+964|Pictiúr
+965|Roghnaigh YUYV
+966|Cuir an ceamara seo air nó as
+967|Níl an seoladh bailí: tá seoladh http nó https de dhíth
+968|Cothromaíocht bhán

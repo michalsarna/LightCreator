@@ -945,3 +945,25 @@
 944|Notele dumneavoastră (Markdown)
 945|ex. Setări care au mers: air assist 20 %, focalizare 12 mm
 946|Note
+947|Activă
+948|Adaugă o cameră
+949|Adresă
+950|Auto
+951|Numele camerei
+952|Numărul camerei
+953|Camera acestui calculator
+954|Camera {}
+955|Camere care supraveghează mașina. Cea activă dă imaginea live. O cameră poate fi pornită doar cu o adresă validă.
+956|Coeficienți ai distorsiunii obiectivului (radială k1–k3, tangențială p1, p2) pentru coordonate măsurate de la centru în unități ale laturii mai lungi a imaginii. Toți 0 = fără corecție. Se introduc manual: nu există calibrare automată.
+957|Șterge această cameră
+958|Pentru o cameră a acestui calculator: cere formatul YUYV necomprimat dacă sistemul permite.
+959|Format
+960|Corecția obiectivului
+961|Imagine live a mașinii: un flux MJPEG sau adresa unei instantanee JPEG (http sau https). RTSP nu este acceptat.
+962|Reducerea zgomotului
+963|Nu este o adresă http sau https.
+964|Imagine
+965|Preferă YUYV
+966|Pornește sau oprește această cameră
+967|Adresa nu este validă: este nevoie de o adresă http sau https
+968|Balansul de alb

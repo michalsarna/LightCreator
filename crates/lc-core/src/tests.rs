@@ -430,7 +430,7 @@ fn jobs_start_and_end_at_the_machine_origin() {
 fn old_devices_get_link_defaults() {
     let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
     let d: Device = serde_json::from_str(old).unwrap();
-    assert_eq!((d.connection.link, d.connection.tcp_port, d.camera_url.is_empty()), (LinkKind::Serial, 3333, true));
+    assert_eq!((d.connection.link, d.connection.tcp_port, d.cameras.is_empty()), (LinkKind::Serial, 3333, true));
     assert!(!d.has_target());
 }
 
@@ -455,12 +455,12 @@ fn ser2net_configs() {
 #[test]
 fn camera_rotation_is_stored_with_the_device() {
     let mut d = Device::default();
-    d.camera_rotation = 3;
+    d.cameras = vec![CameraSource::url("A", "http://a/x", 3)];
     let back: Device = serde_json::from_str(&serde_json::to_string(&d).unwrap()).unwrap();
-    assert_eq!(back.camera_rotation, 3);
+    assert_eq!(back.cameras[0].rotation, 3);
     assert_eq!(back, d);
     let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
-    assert_eq!(serde_json::from_str::<Device>(old).unwrap().camera_rotation, 0);
+    assert_eq!(serde_json::from_str::<Device>(old).unwrap().cameras.len(), 0);
 }
 
 #[test]
@@ -949,7 +949,7 @@ fn old_flat_profile_is_read_into_the_groups() {
     assert_eq!((d.connection.baud, d.connection.port.as_str(), d.connection.link, d.connection.host.as_str(), d.connection.tcp_port), (250000, "/dev/ttyUSB3", LinkKind::Tcp, "pi.local", 4000));
     assert_eq!(d.heads.len(), 1);
     assert_eq!((d.heads[0].s_max, d.heads[0].frame_power, d.heads[0].laser), (255.0, 1.5, LaserKind::Co2));
-    assert_eq!((d.controller, d.units, d.jog_step, d.camera_rotation, d.materials_seeded), (Controller::Marlin, Units::Inch, 2.5, 2, true));
+    assert_eq!((d.controller, d.units, d.jog_step, d.cameras[0].rotation, d.materials_seeded), (Controller::Marlin, Units::Inch, 2.5, 2, true));
 }
 
 #[test]
@@ -1823,4 +1823,181 @@ fn notes_live_in_the_profile_and_are_limited_in_imported_files() {
     assert!(profiles::validate(&d).is_err());
     let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
     assert!(old.notes.is_empty());
+}
+
+fn gradient_rgb(w: usize, h: usize) -> Vec<u8> {
+    (0..w * h).flat_map(|i| [(i % w * 255 / w.max(1)) as u8, (i / w * 255 / h.max(1)) as u8, 128]).collect()
+}
+
+#[test]
+fn picture_adjustments_change_nothing_by_default_and_do_what_they_say() {
+    let img = gradient_rgb(8, 6);
+    let mut same = img.clone();
+    camimg::adjust(&mut same, 8, 6, &ImageSettings::default());
+    assert_eq!(same, img);
+    // Brightness +100 adds 255, -100 subtracts it.
+    let mut bright = img.clone();
+    camimg::adjust(&mut bright, 8, 6, &ImageSettings { brightness: 20, ..Default::default() });
+    assert_eq!(bright[2], 128 + 51);
+    let mut dark = img.clone();
+    camimg::adjust(&mut dark, 8, 6, &ImageSettings { brightness: -100, ..Default::default() });
+    assert!(dark.iter().all(|v| *v == 0));
+    // Contrast pushes values away from the middle: mid grey stays, lighter gets lighter, darker darker.
+    let mut c = vec![128u8, 128, 128, 200, 200, 200, 60, 60, 60];
+    camimg::adjust(&mut c, 3, 1, &ImageSettings { contrast: 100, ..Default::default() });
+    assert_eq!(&c[0..3], &[128, 128, 128]);
+    assert!(c[3] > 200 && c[6] < 60, "{c:?}");
+    // White balance: a warm (2800 K) light is cooled, so blue gains on red; 6500 K is daylight and changes nothing.
+    let mut warm = vec![200u8, 150, 100];
+    camimg::adjust(&mut warm, 1, 1, &ImageSettings { white_balance: Some(2800), ..Default::default() });
+    assert!(warm[0] < 200 && warm[2] >= 100, "{warm:?}");
+    let mut day = vec![200u8, 150, 100];
+    camimg::adjust(&mut day, 1, 1, &ImageSettings { white_balance: Some(6500), ..Default::default() });
+    assert!(day.iter().zip([200u8, 150, 100]).all(|(a, b)| (*a as i32 - b as i32).abs() <= 4), "{day:?}");
+    // Denoising smooths a lone bright pixel and leaves flat areas alone.
+    let mut dot = vec![0u8; 5 * 5 * 3];
+    dot[(2 * 5 + 2) * 3..(2 * 5 + 2) * 3 + 3].copy_from_slice(&[255, 255, 255]);
+    camimg::adjust(&mut dot, 5, 5, &ImageSettings { denoise: 0.9, ..Default::default() });
+    assert!(dot[(2 * 5 + 2) * 3] < 100 && dot[(2 * 5 + 1) * 3] > 0);
+    let mut flat = vec![90u8; 6 * 6 * 3];
+    camimg::adjust(&mut flat, 6, 6, &ImageSettings { denoise: 0.95, ..Default::default() });
+    assert!(flat.iter().all(|v| *v == 90));
+    // Values outside the ranges are clamped; garbage cannot panic.
+    let wild = ImageSettings { brightness: 9999, contrast: 9999, white_balance: Some(1), denoise: f32::NAN, prefer_yuyv: false }.clamped();
+    assert_eq!((wild.brightness, wild.contrast, wild.white_balance, wild.denoise), (100, 100, Some(2500), 0.0));
+    let mut tiny = vec![1u8, 2, 3];
+    camimg::adjust(&mut tiny, 1, 1, &ImageSettings { denoise: 0.9, brightness: 5, ..Default::default() });
+    camimg::adjust(&mut tiny, 100, 100, &ImageSettings { brightness: 5, ..Default::default() }); // buffer too small: ignored
+}
+
+#[test]
+fn lens_correction_with_zero_coefficients_is_the_identity_and_barrel_distortion_is_undone() {
+    let img = gradient_rgb(40, 30);
+    assert_eq!(camimg::undistort(&img, 40, 30, &Lens::default()), img);
+    // Insane coefficients are ignored, not applied.
+    assert_eq!(camimg::undistort(&img, 40, 30, &Lens { k1: f64::NAN, ..Default::default() }), img);
+    assert_eq!(camimg::undistort(&img, 40, 30, &Lens { k1: 99.0, ..Default::default() }), img);
+    assert_eq!(camimg::undistort(&[], 0, 0, &Lens { k1: 0.1, ..Default::default() }), Vec::<u8>::new());
+    // A stretch of the picture: with k1 > 0 the corner of the result is taken from further out, so it goes black or
+    // changes, while the centre keeps its colour.
+    let lens = Lens { k1: 0.25, ..Default::default() };
+    let out = camimg::undistort(&img, 40, 30, &lens);
+    assert_eq!(out.len(), img.len());
+    let centre = (15 * 40 + 20) * 3;
+    assert!((out[centre] as i32 - img[centre] as i32).abs() <= 8, "the centre stays");
+    assert_ne!(&out[0..3], &img[0..3], "the corner moves");
+    // The mapping in the middle of a side: undistorting a picture made with the same model brings it back.
+    let (w, h) = (60usize, 60usize);
+    let f = w as f64;
+    let src: Vec<u8> = (0..w * h).flat_map(|i| {
+        let (x, y) = ((i % w) as f64, (i / w) as f64);
+        // A smooth pattern, so interpolation is accurate.
+        let v = (128.0 + 100.0 * ((x * 0.15).sin() * (y * 0.12).cos())) as u8;
+        [v, v, v]
+    }).collect();
+    let l = Lens { k1: 0.05, ..Default::default() };
+    let once = camimg::undistort(&src, w, h, &l);
+    // A point of the result samples the source at its distorted place: check one point by hand.
+    let (x, y) = (45usize, 20usize);
+    let (xn, yn) = ((x as f64 + 0.5 - 30.0) / f, (y as f64 + 0.5 - 30.0) / f);
+    let r2 = xn * xn + yn * yn;
+    let (sx, sy) = (xn * (1.0 + l.k1 * r2) * f + 30.0 - 0.5, yn * (1.0 + l.k1 * r2) * f + 30.0 - 0.5);
+    let expect = src[(sy.round() as usize * w + sx.round() as usize) * 3] as i32;
+    assert!((once[(y * w + x) * 3] as i32 - expect).abs() <= 12, "{} vs {expect}", once[(y * w + x) * 3]);
+}
+
+#[test]
+fn homography_from_reference_points_recovers_the_transform() {
+    let mm = |u: f64, v: f64| (u * 0.5 + 10.0, v * 0.5 + 20.0); // a scale and a shift
+    let pts = |list: &[(f64, f64)]| -> Vec<RefPoint> { list.iter().map(|p| RefPoint { px: *p, mm: mm(p.0, p.1) }).collect() };
+    // Three points: an affine map is enough.
+    let h3 = camimg::homography(&pts(&[(0.0, 0.0), (640.0, 0.0), (0.0, 480.0)])).unwrap();
+    let (x, y) = camimg::apply(&h3, (320.0, 240.0)).unwrap();
+    assert!((x - 170.0).abs() < 1e-6 && (y - 140.0).abs() < 1e-6, "{x},{y}");
+    // Four points of a perspective view: the map sends them where they should go and recovers the others.
+    let persp = |u: f64, v: f64| {
+        let w = 1.0 + 0.0008 * u + 0.0005 * v;
+        ((0.3 * u + 0.05 * v + 7.0) / w, (0.02 * u + 0.28 * v + 3.0) / w)
+    };
+    let corners = [(0.0, 0.0), (640.0, 0.0), (640.0, 480.0), (0.0, 480.0)];
+    let four: Vec<RefPoint> = corners.iter().map(|p| RefPoint { px: *p, mm: persp(p.0, p.1) }).collect();
+    let h = camimg::homography(&four).unwrap();
+    for q in [(100.0, 100.0), (320.0, 240.0), (600.0, 50.0)] {
+        let (x, y) = camimg::apply(&h, q).unwrap();
+        let (ex, ey) = persp(q.0, q.1);
+        assert!((x - ex).abs() < 1e-6 && (y - ey).abs() < 1e-6, "{q:?}: {x},{y} vs {ex},{ey}");
+    }
+    // More than four points are fitted in the least-squares sense (a point that is a little off does not break it).
+    let mut five = four.clone();
+    five.push(RefPoint { px: (320.0, 240.0), mm: { let p = persp(320.0, 240.0); (p.0 + 0.05, p.1 - 0.05) } });
+    let h5 = camimg::homography(&five).unwrap();
+    let (x, y) = camimg::apply(&h5, (100.0, 100.0)).unwrap();
+    let (ex, ey) = persp(100.0, 100.0);
+    assert!((x - ex).abs() < 0.2 && (y - ey).abs() < 0.2);
+    // Not enough or degenerate points give nothing.
+    assert!(camimg::homography(&pts(&[(0.0, 0.0), (10.0, 0.0)])).is_none());
+    assert!(camimg::homography(&pts(&[(0.0, 0.0), (10.0, 10.0), (20.0, 20.0)])).is_none(), "three points on a line");
+    assert!(camimg::homography(&[RefPoint { px: (f64::NAN, 0.0), mm: (0.0, 0.0) }; 4]).is_none());
+    // The corners of the overlay from the map, and reference points from the corners, are each other's inverse.
+    let c = camimg::corners(&h, 640.0, 480.0).unwrap();
+    for (p, q) in c.iter().zip(corners.iter().map(|q| persp(q.0, q.1))) {
+        assert!(p.dist(Pt::new(q.0, q.1)) < 1e-6);
+    }
+    let back = camimg::points_from_corners(&c, 640.0, 480.0);
+    let h2 = camimg::homography(&back).unwrap();
+    let (x, y) = camimg::apply(&h2, (250.0, 90.0)).unwrap();
+    let (ex, ey) = persp(250.0, 90.0);
+    assert!((x - ex).abs() < 1e-6 && (y - ey).abs() < 1e-6);
+}
+
+#[test]
+fn cameras_of_a_device_migrate_validate_and_travel_with_the_profile() {
+    // The single camera of an older profile becomes the first camera.
+    let mut v: serde_json::Value = serde_json::from_str(OLD_PROFILE).unwrap();
+    let d: Device = serde_json::from_value(v.clone()).unwrap();
+    assert_eq!(d.cameras.len(), 1);
+    assert_eq!((d.cameras[0].name.as_str(), d.cameras[0].rotation, d.cameras[0].enabled), ("Camera 1", 2, true));
+    assert_eq!(d.stream_url(), Some("http://pi.local:8080/stream"));
+    // No camera in the profile: none.
+    v["camera_url"] = "".into();
+    assert!(serde_json::from_value::<Device>(v).unwrap().cameras.is_empty());
+    // Only the active, enabled and valid camera streams.
+    let mut d = Device::default();
+    d.cameras = vec![CameraSource::url("A", "http://a/x", 0), CameraSource::url("B", "https://b/y.mjpg", 1)];
+    assert_eq!(d.stream_url(), Some("http://a/x"));
+    d.active_camera = 1;
+    assert_eq!((d.stream_url(), d.camera_source().unwrap().rotation), (Some("https://b/y.mjpg"), 1));
+    d.cameras[1].enabled = false;
+    assert_eq!(d.stream_url(), None);
+    d.cameras[1].enabled = true;
+    d.cameras[1].kind = CameraKind::Url("rtsp://b/y".into());
+    assert_eq!(d.stream_url(), None, "RTSP is not supported");
+    d.cameras[1].kind = CameraKind::Local(0);
+    assert!(d.camera_source().is_some() && d.stream_url().is_none(), "a local camera has no address");
+    d.active_camera = 9;
+    assert!(d.camera_source().is_none());
+    // Addresses.
+    for ok in ["http://pi.local:8080/stream.mjpg", "https://h/p?q=1", " http://h "] {
+        assert!(camimg::valid_url(ok), "{ok}");
+    }
+    for bad in ["", "rtsp://h/x", "http://", "http://:80", "ftp://h", "http://a b", "http://h/\u{7}", "javascript:alert(1)", "pi.local"] {
+        assert!(!camimg::valid_url(bad), "{bad}");
+    }
+    // A profile with cameras round-trips and an import refuses a camera that is on with a bad address.
+    d.active_camera = 0;
+    d.cameras[1].kind = CameraKind::Url("http://b/y".into());
+    d.cameras[0].image = ImageSettings { brightness: 10, contrast: 20, white_balance: Some(5000), denoise: 0.5, prefer_yuyv: true };
+    d.cameras[0].lens = Lens { k1: -0.1, p1: 0.001, ..Default::default() };
+    d.cameras[0].reference = vec![RefPoint { px: (1.0, 2.0), mm: (3.0, 4.0) }];
+    let back = profiles::import_profile(&profiles::export_profile(&d, "v0.0.11")).unwrap();
+    assert_eq!(back.cameras, d.cameras);
+    let mut bad = serde_json::to_value(&d).unwrap();
+    bad["cameras"][0]["kind"] = serde_json::json!({"Url": "rtsp://x"});
+    assert!(profiles::import_profile(&serde_json::json!({"format": 1, "profile": bad}).to_string()).unwrap_err().contains("camera"));
+    let mut wild = serde_json::to_value(&d).unwrap();
+    wild["cameras"][0]["image"]["brightness"] = 5000.into();
+    assert!(profiles::import_profile(&serde_json::json!({"format": 1, "profile": wild}).to_string()).unwrap_err().contains("camera"));
+    let mut lens = serde_json::to_value(&d).unwrap();
+    lens["cameras"][0]["lens"]["k1"] = 50.0.into();
+    assert!(profiles::import_profile(&serde_json::json!({"format": 1, "profile": lens}).to_string()).is_err());
 }

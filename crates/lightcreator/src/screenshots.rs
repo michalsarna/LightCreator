@@ -142,7 +142,7 @@ fn render_screenshots() {
             c.draft.connection.link = lc_core::LinkKind::Tcp;
             c.draft.connection.host = "raspberrypi.local".into();
             c.draft.connection.tcp_port = 3333;
-            c.draft.camera_url = "http://raspberrypi.local:8080/stream.mjpg".into();
+            c.draft.cameras = vec![lc_core::CameraSource::url("Camera 1", "http://raspberrypi.local:8080/stream.mjpg", 0)];
         }
     }
     save(&mut h, "05-device-config.png");
@@ -411,8 +411,7 @@ fn render_screenshots() {
         a.grid = 10.0;
         a.tool = Tool::Select;
         a.doc.shapes.clear();
-        a.doc.device.camera_url = "http://127.0.0.1:9/stream.mjpg".into();
-        a.doc.device.camera_rotation = 1;
+        a.doc.device.cameras = vec![lc_core::CameraSource::url("Camera 1", "http://127.0.0.1:9/stream.mjpg", 1)];
         a.stream_mode = crate::stream_ui::StreamMode::Tab;
         a.show_stream = true;
         a.side_tab = SideTab::Camera;

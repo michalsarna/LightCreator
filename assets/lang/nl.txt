@@ -945,3 +945,25 @@
 944|Je notities (Markdown)
 945|bijv. Instellingen die werkten: air assist 20 %, focus 12 mm
 946|Notities
+947|Actief
+948|Camera toevoegen
+949|Adres
+950|Auto
+951|Cameranaam
+952|Cameranummer
+953|Camera van deze computer
+954|Camera {}
+955|Camera's die de machine in de gaten houden. De actieve geeft het live beeld. Een camera kan alleen worden ingeschakeld met een geldig adres.
+956|Coëfficiënten van de lensvervorming (radiaal k1–k3, tangentieel p1, p2) voor coördinaten gemeten vanuit het midden in eenheden van de langste zijde van het beeld. Alle 0 = geen correctie. Met de hand ingevoerd: er is geen automatische kalibratie.
+957|Deze camera verwijderen
+958|Voor een camera van deze computer: vraag om het ongecomprimeerde YUYV-formaat als het systeem dat toestaat.
+959|Formaat
+960|Lenscorrectie
+961|Live beeld van de machine: een MJPEG-stream of het adres van een JPEG-momentopname (http of https). RTSP wordt niet ondersteund.
+962|Ruisonderdrukking
+963|Geen http- of https-adres.
+964|Beeld
+965|YUYV voorkeur
+966|Deze camera in- of uitschakelen
+967|Het adres is ongeldig: een http- of https-adres is nodig
+968|Witbalans

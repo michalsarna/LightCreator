@@ -945,3 +945,25 @@
 944|Dine notater (Markdown)
 945|f.eks. Innstillinger som virket: air assist 20 %, fokus 12 mm
 946|Notater
+947|Aktiv
+948|Legg til et kamera
+949|Adresse
+950|Auto
+951|Kameranavn
+952|Kameranummer
+953|Kamera på denne datamaskinen
+954|Kamera {}
+955|Kameraer som overvåker maskinen. Det aktive gir live-bildet. Et kamera kan bare slås på med en gyldig adresse.
+956|Koeffisienter for linseforvrengning (radiell k1–k3, tangentiell p1, p2) for koordinater målt fra midten i enheter av bildets lengste side. Alle 0 = ingen korreksjon. Legges inn for hånd: det finnes ingen automatisk kalibrering.
+957|Slett dette kameraet
+958|For et kamera på denne datamaskinen: be om det ukomprimerte YUYV-formatet der systemet tillater det.
+959|Format
+960|Linsekorreksjon
+961|Maskinens live-bilde: en MJPEG-strøm eller adressen til et JPEG-øyeblikksbilde (http eller https). RTSP støttes ikke.
+962|Støyreduksjon
+963|Ikke en http- eller https-adresse.
+964|Bilde
+965|Foretrekk YUYV
+966|Slå dette kameraet på eller av
+967|Adressen er ugyldig: det trengs en http- eller https-adresse
+968|Hvitbalanse
