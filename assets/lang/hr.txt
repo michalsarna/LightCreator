@@ -1049,3 +1049,6 @@
 1048|Dodajte materijal, npr. brezova šperploča 3 mm (neobavezno)
 1049|Kamere koje nadziru stroj. Označena daje sliku uživo; označavanje druge isključuje prvu.
 1050|Uključi ovu kameru: daje sliku uživo
+1051|Web poslužitelj: uključen, port {}
+1052|Web poslužitelj: isključen
+1053|Web poslužitelj: greška

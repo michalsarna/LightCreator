@@ -285,7 +285,7 @@ impl App {
             });
         } else {
             resp.context_menu(|ui| {
-                if ui.button(tr("Save a copy in my clipart")).clicked() {
+                if crate::window_ui::save_button(ui, &tr("Save a copy in my clipart")).clicked() {
                     if let Source::Builtin(i) = &t.source {
                         *action = Some(Action::Dialog(ClipDialog::Move { id: format!("builtin:{i}"), choice: DEFAULT_CATEGORY.to_string(), new_cat: String::new() }));
                     }
@@ -581,7 +581,7 @@ impl App {
                     });
                     ui.end_row();
                 });
-                save_hit = ui.add_enabled(o.thumbs.contains_key(&h.key()) && !o.name.trim().is_empty(), egui::Button::new(tr("Save to my clipart"))).clicked();
+                save_hit = crate::window_ui::save_button_enabled(ui, o.thumbs.contains_key(&h.key()) && !o.name.trim().is_empty(), &tr("Save to my clipart")).clicked();
             } else {
                 ui.label(RichText::new(tr("Click a picture to see its licence and save it.")).color(theme::text_dim()));
             }

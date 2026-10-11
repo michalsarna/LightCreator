@@ -1049,3 +1049,6 @@
 1048|Pievienojiet materiālu, piem., bērza saplāksni 3 mm (neobligāti)
 1049|Kameras, kas vēro iekārtu. Atzīmētā dod tiešraides attēlu; atzīmējot citu, pirmā tiek izslēgta.
 1050|Ieslēgt šo kameru: tā dod tiešraides attēlu
+1051|Tīmekļa serveris: ieslēgts, ports {}
+1052|Tīmekļa serveris: izslēgts
+1053|Tīmekļa serveris: kļūda

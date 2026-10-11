@@ -1049,3 +1049,6 @@
 1048|Adj hozzá anyagot, pl. nyírfa rétegelt lemez 3 mm (nem kötelező)
 1049|A gépet figyelő kamerák. A bejelölt adja az élő képet; egy másik bejelölése kikapcsolja az elsőt.
 1050|Kamera bekapcsolása: ez adja az élő képet
+1051|Webszerver: be, port {}
+1052|Webszerver: ki
+1053|Webszerver: hiba

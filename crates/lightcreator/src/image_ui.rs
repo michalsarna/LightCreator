@@ -165,7 +165,7 @@ impl App {
             });
             ui.separator();
             ui.horizontal(|ui| {
-                accept = ui.button(if d.target.is_some() { tr("Apply") } else { tr("Import") }).clicked();
+                accept = if d.target.is_some() { ui.button(tr("Apply")) } else { crate::window_ui::import_button(ui, &tr("Import")) }.clicked();
                 cancel = ui.button(tr("Cancel")).clicked();
             });
         });

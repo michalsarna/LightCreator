@@ -1049,3 +1049,6 @@
 1048|Ajoutez un matériau, par ex. contreplaqué de bouleau 3 mm (facultatif)
 1049|Caméras qui surveillent la machine. Celle qui est cochée donne l'image en direct ; en cocher une autre éteint la première.
 1050|Activer cette caméra : elle donne l'image en direct
+1051|Serveur web : actif, port {}
+1052|Serveur web : éteint
+1053|Serveur web : erreur

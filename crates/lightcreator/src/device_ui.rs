@@ -300,10 +300,10 @@ impl App {
             if ui.add_enabled(has, egui::Button::new(tr("Duplicate"))).on_hover_text(tr("A copy of this profile")).clicked() {
                 self.duplicate_profile(self.start_sel);
             }
-            if ui.add_enabled(has, egui::Button::new(tr("Export…"))).on_hover_text(tr("Save this profile to a file")).clicked() {
+            if crate::window_ui::save_button_enabled(ui, has, &tr("Export…")).on_hover_text(tr("Save this profile to a file")).clicked() {
                 self.export_profile_dialog(self.start_sel);
             }
-            if ui.button(tr("Import…")).on_hover_text(tr("Read a profile from a file")).clicked() {
+            if crate::window_ui::import_button(ui, &tr("Import…")).on_hover_text(tr("Read a profile from a file")).clicked() {
                 self.import_profile_dialog();
             }
             if self.confirm_delete && has {
@@ -1093,7 +1093,7 @@ impl App {
                 ui.label(RichText::new(tr("A profile name is required.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
             }
             ui.horizontal(|ui| {
-                if ui.add_enabled(valid, egui::Button::new(tr("Save"))).clicked() {
+                if crate::window_ui::save_button_enabled(ui, valid, &tr("Save")).clicked() {
                     save = true;
                 }
                 if !must_create && ui.button(tr("Cancel")).clicked() {

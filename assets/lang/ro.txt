@@ -1049,3 +1049,6 @@
 1048|Adaugă un material, de ex. placaj de mesteacăn 3 mm (opțional)
 1049|Camere care supraveghează mașina. Cea bifată dă imaginea live; bifarea alteia o oprește pe prima.
 1050|Pornește această cameră: dă imaginea live
+1051|Server web: pornit, port {}
+1052|Server web: oprit
+1053|Server web: eroare

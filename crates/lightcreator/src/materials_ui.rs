@@ -89,7 +89,7 @@ impl App {
                 ui.horizontal(|ui| {
                     let r = ui.add(egui::TextEdit::singleline(text).hint_text(hint).desired_width((ui.available_width() - 130.0).max(60.0)));
                     let ok = !text.trim().is_empty();
-                    let go = egui::Button::new(RichText::new(tr("Save")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f));
+                    let go = egui::Button::new(RichText::new(tr("Save")).color(Color32::WHITE).strong()).fill(crate::window_ui::SAVE_GREEN);
                     if ui.add_enabled(ok, go).clicked() || (r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) && ok) {
                         commit = true;
                     }

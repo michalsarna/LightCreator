@@ -100,7 +100,7 @@ impl App {
         }
         ctx.request_repaint_after(left);
         egui::Area::new(egui::Id::new("saved_toast")).order(egui::Order::Tooltip).anchor(egui::Align2::CENTER_BOTTOM, [0.0, -48.0]).show(ctx, |ui| {
-            egui::Frame::popup(ui.style()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f)).show(ui, |ui| {
+            egui::Frame::popup(ui.style()).fill(crate::window_ui::SAVE_GREEN).show(ui, |ui| {
                 ui.horizontal(|ui| {
                     ui.add(crate::icons::slot(Some("check"), Color32::WHITE));
                     ui.label(RichText::new(text.as_str()).color(Color32::WHITE).strong());
@@ -123,7 +123,7 @@ impl App {
             ui.add_space(14.0);
             ui.horizontal(|ui| {
                 let size = egui::vec2((ui.available_width() - 2.0 * ui.spacing().item_spacing.x) / 3.0, 38.0);
-                let save = egui::Button::new(RichText::new(tr("Save")).size(15.0).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f));
+                let save = egui::Button::new(RichText::new(tr("Save")).size(15.0).color(Color32::WHITE).strong()).fill(crate::window_ui::SAVE_GREEN);
                 if ui.add_sized(size, save).clicked() {
                     choice = Some(Close::Save);
                 }

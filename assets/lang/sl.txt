@@ -1049,3 +1049,6 @@
 1048|Dodajte material, npr. brezova vezana plošča 3 mm (neobvezno)
 1049|Kamere, ki nadzirajo stroj. Označena daje sliko v živo; označitev druge izklopi prvo.
 1050|Vklopi to kamero: daje sliko v živo
+1051|Spletni strežnik: vklopljen, vrata {}
+1052|Spletni strežnik: izklopljen
+1053|Spletni strežnik: napaka

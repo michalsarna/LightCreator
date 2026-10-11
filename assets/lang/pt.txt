@@ -1049,3 +1049,6 @@
 1048|Adicione um material, p. ex. contraplacado de bétula 3 mm (opcional)
 1049|Câmaras que vigiam a máquina. A assinalada dá a imagem em direto; assinalar outra desliga a primeira.
 1050|Ligar esta câmara: dá a imagem em direto
+1051|Servidor web: ligado, porta {}
+1052|Servidor web: desligado
+1053|Servidor web: erro

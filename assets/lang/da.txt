@@ -1049,3 +1049,6 @@
 1048|Tilføj et materiale, fx birkekrydsfiner 3 mm (valgfrit)
 1049|Kameraer, der overvåger maskinen. Det afkrydsede giver live-billedet; at afkrydse et andet slår det første fra.
 1050|Tænd dette kamera: det giver live-billedet
+1051|Webserver: tændt, port {}
+1052|Webserver: slukket
+1053|Webserver: fejl

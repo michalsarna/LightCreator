@@ -152,7 +152,7 @@ impl App {
                     ctx.copy_text(text.clone());
                     d.message = tr("Copied.").to_string();
                 }
-                if ui.button(tr("Save as…")).clicked() {
+                if crate::window_ui::save_button(ui, &tr("Save as…")).clicked() {
                     if let Some(p) = rfd::FileDialog::new().set_file_name(d.version.file().rsplit('/').next().unwrap_or("ser2net.yaml")).save_file() {
                         d.message = match std::fs::write(&p, &text) {
                             Ok(_) => trf("Saved {}", &[&p.display()]),

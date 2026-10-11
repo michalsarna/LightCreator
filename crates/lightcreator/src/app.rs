@@ -1430,7 +1430,8 @@ impl App {
             ui.separator();
             let ctx = ui.ctx().clone();
             for (act, icon, tip) in [(Act::New, "file-plus", "New"), (Act::Open, "folder-open", "Open…"), (Act::Save, "save", "Save")] {
-                if icon_button(ui, icon, &tr(tip), true, 28.0) {
+                let ink = if act == Act::Save { crate::window_ui::SAVE_GREEN } else { theme::text() };
+                if icon_button_ink(ui, icon, &tr(tip), true, 28.0, ink) {
                     self.do_act(&ctx, act);
                 }
             }
@@ -1489,7 +1490,7 @@ impl App {
                 }
                 self.focus_button(ui, false);
                 self.home_button(ui);
-                if ui.button(tr("Save G-code")).clicked() {
+                if crate::window_ui::save_button(ui, &tr("Save G-code")).clicked() {
                     self.export_gcode();
                 }
                 let (w, h) = self.sel_bounds().map(|b| (b.width(), b.height())).unwrap_or((0.0, 0.0));
@@ -1734,8 +1735,11 @@ impl App {
                     let d = if u == lc_core::Units::Mm { 2 } else { 3 };
                     ui.label(format!("X {:.*}  Y {:.*}{}", d, x, d, y, u.suffix()));
                 }
+                let web = if self.api.server.is_some() { (trf("Web server: on, port {}", &[&self.api.server.as_ref().map(|s| s.addr.port()).unwrap_or(0)]), Color32::from_rgb(0x2e, 0xa0, 0x4f)) } else if self.api_on { (tr("Web server: error").to_string(), Color32::from_rgb(0xc0, 0x30, 0x30)) } else { (tr("Web server: off").to_string(), theme::text_dim()) };
+                ui.label(RichText::new(web.0).color(web.1));
+                ui.separator();
                 let color = if self.connected { Color32::from_rgb(0x2e, 0xa0, 0x4f) } else { theme::text_dim() };
-                ui.label(RichText::new(self.machine.0.clone()).color(color));
+                ui.label(RichText::new(trf("Device: {}", &[&self.machine.0])).color(color));
                 let (r, _) = ui.allocate_exact_size(egui::vec2(10.0, 10.0), egui::Sense::hover());
                 ui.painter().circle_filled(r.center(), 4.0, color);
                 if self.progress.1 > 0 && self.progress.0 < self.progress.1 {
@@ -1963,12 +1967,16 @@ pub fn toggle_icon(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool) -> bool {
 
 /// A square icon-only button with a tooltip; greyed out and inert when `on` is false.
 pub fn icon_button(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool, size: f32) -> bool {
+    icon_button_ink(ui, icon, tip, on, size, theme::text())
+}
+
+pub fn icon_button_ink(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool, size: f32, color: Color32) -> bool {
     let sense = if on { egui::Sense::click() } else { egui::Sense::hover() };
     let (rect, resp) = ui.allocate_exact_size(egui::vec2(size, size), sense);
     if on && resp.hovered() {
         ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
     }
-    let ink = if on { theme::text() } else { theme::text().gamma_multiply(0.35) };
+    let ink = if on { color } else { color.gamma_multiply(0.35) };
     crate::icons::paint(ui, rect.shrink(size * 0.2), icon, ink);
     let resp = resp.on_hover_text(tip);
     ui.add_space(2.0);

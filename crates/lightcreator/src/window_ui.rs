@@ -190,6 +190,27 @@ pub fn delete_button_enabled(ui: &mut egui::Ui, enabled: bool, text: &str) -> eg
     ui.add_enabled(enabled, egui::Button::image_and_text(crate::icons::slot(Some("trash"), ink), egui::RichText::new(text).color(ink)))
 }
 
+pub const SAVE_GREEN: egui::Color32 = egui::Color32::from_rgb(0x2e, 0xa0, 0x4f);
+pub const IMPORT_BLUE: egui::Color32 = egui::Color32::from_rgb(0x2f, 0x6f, 0xc0);
+
+fn filled_button(ui: &mut egui::Ui, enabled: bool, text: egui::RichText, fill: egui::Color32) -> egui::Response {
+    ui.add_enabled(enabled, egui::Button::new(text.color(egui::Color32::WHITE)).fill(fill))
+}
+
+/// A green button: everything that saves.
+pub fn save_button(ui: &mut egui::Ui, text: &str) -> egui::Response {
+    save_button_enabled(ui, true, text)
+}
+
+pub fn save_button_enabled(ui: &mut egui::Ui, enabled: bool, text: &str) -> egui::Response {
+    filled_button(ui, enabled, egui::RichText::new(text), SAVE_GREEN)
+}
+
+/// A blue button: everything that imports or reads from a file.
+pub fn import_button(ui: &mut egui::Ui, text: &str) -> egui::Response {
+    filled_button(ui, true, egui::RichText::new(text), IMPORT_BLUE)
+}
+
 /// A small red button with only the bin icon, for lists; `tip` says what it deletes.
 pub fn delete_icon(ui: &mut egui::Ui, tip: &str) -> egui::Response {
     ui.add(egui::Button::image(crate::icons::slot(Some("trash"), egui::Color32::WHITE)).fill(DELETE_RED)).on_hover_text(tip)

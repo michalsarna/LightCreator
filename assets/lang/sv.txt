@@ -1049,3 +1049,6 @@
 1048|Lägg till ett material, t.ex. björkplywood 3 mm (valfritt)
 1049|Kameror som övervakar maskinen. Den ikryssade ger livebilden; att kryssa i en annan stänger av den första.
 1050|Slå på den här kameran: den ger livebilden
+1051|Webbserver: på, port {}
+1052|Webbserver: av
+1053|Webbserver: fel

@@ -1049,3 +1049,6 @@
 1048|Żid materjal, eż. plywood tal-betula 3 mm (mhux obbligatorju)
 1049|Kameras li josservaw il-magna. Dik immarkata tagħti x-xbieha dirett; li timmarka oħra titfi l-ewwel waħda.
 1050|Ixgħel din il-kamera: tagħti x-xbieha dirett
+1051|Server tal-web: mixgħul, port {}
+1052|Server tal-web: mitfi
+1053|Server tal-web: żball

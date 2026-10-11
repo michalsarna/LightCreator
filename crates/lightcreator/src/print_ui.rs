@@ -114,7 +114,7 @@ impl App {
                 if ui.add_enabled(!nothing, egui::Button::new(tr("Print"))).clicked() {
                     action = 1;
                 }
-                if ui.add_enabled(!nothing, egui::Button::new(tr("Save as PDF…"))).clicked() {
+                if crate::window_ui::save_button_enabled(ui, !nothing, &tr("Save as PDF…")).clicked() {
                     action = 2;
                 }
                 if ui.add_enabled(!nothing, egui::Button::new(tr("Open the PDF"))).on_hover_text(tr("Opens the page in the PDF viewer, which can print it with more options")).clicked() {

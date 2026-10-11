@@ -1049,3 +1049,6 @@
 1048|Pridėkite medžiagą, pvz., beržo faneros 3 mm (neprivaloma)
 1049|Kameros, stebinčios mašiną. Pažymėta duoda gyvą vaizdą; pažymėjus kitą, pirmoji išjungiama.
 1050|Įjungti šią kamerą: ji duoda gyvą vaizdą
+1051|Žiniatinklio serveris: įjungtas, prievadas {}
+1052|Žiniatinklio serveris: išjungtas
+1053|Žiniatinklio serveris: klaida
