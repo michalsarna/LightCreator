@@ -967,3 +967,12 @@
 966|Ieslēgt vai izslēgt šo kameru
 967|Adrese nav derīga: nepieciešama http vai https adrese
 968|Baltā balanss
+969|Pievienot punktu
+970|Līdzināt pēc punktiem
+971|Dzēst šo punktu
+972|Pielāgo attēlu punktiem (mazāko kvadrātu metode) un attiecīgi pārvieto stūrus.
+973|Par maz punktu, vai tie atrodas uz vienas taisnes.
+974|Pāri: punkts attēlā (pikseļi) un tā vieta darba zonā (mm). Vismaz 3, ieteicami 4; tie nosaka līdzinājumu, ieskaitot perspektīvu.
+975|Punkti no pašreizējiem stūriem
+976|Atsauces punkti
+977|Aizstāj punktus ar attēla četriem stūriem un to pašreizējo vietu.

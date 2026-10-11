@@ -967,3 +967,12 @@
 966|Tænd eller sluk dette kamera
 967|Adressen er ugyldig: der skal bruges en http- eller https-adresse
 968|Hvidbalance
+969|Tilføj et punkt
+970|Juster efter punkterne
+971|Slet dette punkt
+972|Tilpasser billedet til punkterne (mindste kvadraters metode) og flytter hjørnerne tilsvarende.
+973|For få punkter, eller de ligger på en linje.
+974|Par af et punkt i billedet (pixels) og dets sted i arbejdsområdet (mm). Mindst 3, 4 anbefales; de fastlægger justeringen inklusive perspektiv.
+975|Punkter fra de nuværende hjørner
+976|Referencepunkter
+977|Erstatter punkterne med billedets fire hjørner og deres nuværende placering.

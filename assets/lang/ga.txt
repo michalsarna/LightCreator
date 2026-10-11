@@ -967,3 +967,12 @@
 966|Cuir an ceamara seo air nó as
 967|Níl an seoladh bailí: tá seoladh http nó https de dhíth
 968|Cothromaíocht bhán
+969|Cuir pointe leis
+970|Ailínigh de réir na bpointí
+971|Scrios an pointe seo
+972|Oiriúnaíonn sé an pictiúr do na pointí (uasmhéid chearnóg is lú) agus bogann sé na coirnéil dá réir.
+973|Pointí easnamhacha, nó tá siad ar líne amháin.
+974|Péirí de phointe sa phictiúr (picteilíní) agus a áit sa limistéar oibre (mm). 3 ar a laghad, moltar 4; socraíonn siad an t-ailíniú, peirspictíocht san áireamh.
+975|Pointí ó na coirnéil reatha
+976|Pointí tagartha
+977|Cuireann sé ceithre choirnéal an phictiúir agus a n-áit anois in ionad na bpointí.

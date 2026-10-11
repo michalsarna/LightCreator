@@ -967,3 +967,12 @@
 966|Ligar ou desligar esta câmara
 967|O endereço não é válido: é preciso um endereço http ou https
 968|Equilíbrio de brancos
+969|Adicionar um ponto
+970|Alinhar pelos pontos
+971|Eliminar este ponto
+972|Ajusta a imagem aos pontos (mínimos quadrados) e move os cantos em conformidade.
+973|Pontos insuficientes, ou estão numa linha.
+974|Pares de um ponto da imagem (pixéis) e o seu lugar na área de trabalho (mm). Pelo menos 3, recomendam-se 4; fixam o alinhamento, perspetiva incluída.
+975|Pontos dos cantos atuais
+976|Pontos de referência
+977|Substitui os pontos pelos quatro cantos da imagem e onde estão agora.

@@ -967,3 +967,12 @@
 966|Activer ou désactiver cette caméra
 967|L'adresse n'est pas valide : une adresse http ou https est nécessaire
 968|Balance des blancs
+969|Ajouter un point
+970|Aligner d'après les points
+971|Supprimer ce point
+972|Ajuste l'image aux points (moindres carrés) et déplace les coins en conséquence.
+973|Pas assez de points, ou ils sont alignés.
+974|Paires d'un point de l'image (pixels) et de sa place dans la zone de travail (mm). Au moins 3, 4 recommandés ; ils fixent l'alignement, perspective comprise.
+975|Points depuis les coins actuels
+976|Points de référence
+977|Remplace les points par les quatre coins de l'image et l'endroit où ils sont maintenant.

@@ -967,3 +967,12 @@
 966|Įjungti arba išjungti šią kamerą
 967|Adresas netinkamas: reikia http arba https adreso
 968|Baltos spalvos balansas
+969|Pridėti tašką
+970|Lygiuoti pagal taškus
+971|Ištrinti šį tašką
+972|Pritaiko vaizdą prie taškų (mažiausių kvadratų metodas) ir atitinkamai perkelia kampus.
+973|Per mažai taškų arba jie yra vienoje tiesėje.
+974|Poros: taškas vaizde (pikseliai) ir jo vieta darbo srityje (mm). Bent 3, rekomenduojami 4; jie nustato lygiavimą, įskaitant perspektyvą.
+975|Taškai iš dabartinių kampų
+976|Atskaitos taškai
+977|Pakeičia taškus keturiais vaizdo kampais ir jų dabartine vieta.

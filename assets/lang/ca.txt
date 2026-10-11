@@ -967,3 +967,12 @@
 966|Activa o desactiva aquesta càmera
 967|L'adreça no és vàlida: cal una adreça http o https
 968|Balanç de blancs
+969|Afegeix un punt
+970|Alinea pels punts
+971|Elimina aquest punt
+972|Ajusta la imatge als punts (mínims quadrats) i mou els cantons en conseqüència.
+973|No hi ha prou punts, o estan en una recta.
+974|Parelles d'un punt de la imatge (píxels) i el lloc que té a l'àrea de treball (mm). Almenys 3, es recomanen 4; fixen l'alineació, perspectiva inclosa.
+975|Punts dels cantons actuals
+976|Punts de referència
+977|Substitueix els punts pels quatre cantons de la imatge i el lloc on són ara.

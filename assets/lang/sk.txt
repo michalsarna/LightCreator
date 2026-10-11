@@ -967,3 +967,12 @@
 966|Zapnúť alebo vypnúť túto kameru
 967|Adresa nie je platná: je potrebná adresa http alebo https
 968|Vyváženie bielej
+969|Pridať bod
+970|Zarovnať podľa bodov
+971|Odstrániť tento bod
+972|Prispôsobí obraz bodom (metóda najmenších štvorcov) a podľa toho posunie rohy.
+973|Málo bodov, alebo ležia na jednej priamke.
+974|Dvojice bodu v obraze (pixely) a jeho miesta v pracovnej oblasti (mm). Aspoň 3, odporúčané 4; určujú zarovnanie vrátane perspektívy.
+975|Body z aktuálnych rohov
+976|Referenčné body
+977|Nahradí body štyrmi rohmi obrazu a miestami, kde teraz ležia.

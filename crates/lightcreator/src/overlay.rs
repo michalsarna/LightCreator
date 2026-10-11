@@ -175,6 +175,52 @@ impl App {
                         changed = true;
                     }
                 });
+                let (pw, ph) = (ov.size.0 as f64, ov.size.1 as f64);
+                let dev = &mut self.doc.device;
+                let active = dev.active_camera;
+                if let Some(cam) = dev.cameras.get_mut(active) {
+                    ui.collapsing(tr("Reference points"), |ui| {
+                        ui.label(RichText::new(tr("Pairs of a point in the picture (pixels) and the place it has in the work area (mm). At least 3, 4 recommended; they fix the alignment, perspective included.")).color(theme::text_dim()));
+                        let before = cam.reference.clone();
+                        let mut del = None;
+                        for (i, r) in cam.reference.iter_mut().enumerate() {
+                            ui.horizontal(|ui| {
+                                ui.label(format!("{}", i + 1));
+                                ui.label("px");
+                                ui.add(egui::DragValue::new(&mut r.px.0).speed(1.0).range(0.0..=pw));
+                                ui.add(egui::DragValue::new(&mut r.px.1).speed(1.0).range(0.0..=ph));
+                                ui.label("mm");
+                                ui.add(egui::DragValue::new(&mut r.mm.0).speed(0.5));
+                                ui.add(egui::DragValue::new(&mut r.mm.1).speed(0.5));
+                                if ui.small_button("✕").on_hover_text(tr("Delete this point")).clicked() {
+                                    del = Some(i);
+                                }
+                            });
+                        }
+                        if let Some(i) = del {
+                            cam.reference.remove(i);
+                        }
+                        ui.horizontal_wrapped(|ui| {
+                            if ui.button(tr("Add a point")).clicked() && cam.reference.len() < 32 {
+                                cam.reference.push(lc_core::RefPoint { px: (pw / 2.0, ph / 2.0), mm: (0.0, 0.0) });
+                            }
+                            if ui.button(tr("Points from the current corners")).on_hover_text(tr("Replaces the points with the four corners of the picture and where they lie now.")).clicked() {
+                                cam.reference = lc_core::camimg::points_from_corners(&ov.corners, pw, ph);
+                            }
+                            let ok = lc_core::camimg::homography(&cam.reference);
+                            if ui.add_enabled(ok.is_some(), egui::Button::new(tr("Align by the points"))).on_hover_text(tr("Fits the picture to the points (least squares) and moves the corners accordingly.")).clicked() {
+                                if let Some(c) = ok.and_then(|h| lc_core::camimg::corners(&h, pw, ph)) {
+                                    ov.corners = c;
+                                }
+                                changed = true;
+                            }
+                        });
+                        if lc_core::camimg::homography(&cam.reference).is_none() {
+                            ui.label(RichText::new(tr("Not enough points, or they lie on one line.")).color(egui::Color32::from_rgb(0xc0, 0x80, 0x20)));
+                        }
+                        changed |= cam.reference != before;
+                    });
+                }
             }
         });
         if changed {

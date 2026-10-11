@@ -967,3 +967,12 @@
 966	Switch this camera on or off
 967	The address is not valid: an http or https address is needed
 968	White balance
+969	Add a point
+970	Align by the points
+971	Delete this point
+972	Fits the picture to the points (least squares) and moves the corners accordingly.
+973	Not enough points, or they lie on one line.
+974	Pairs of a point in the picture (pixels) and the place it has in the work area (mm). At least 3, 4 recommended; they fix the alignment, perspective included.
+975	Points from the current corners
+976	Reference points
+977	Replaces the points with the four corners of the picture and where they lie now.

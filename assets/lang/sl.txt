@@ -967,3 +967,12 @@
 966|Vklopi ali izklopi to kamero
 967|Naslov ni veljaven: potreben je naslov http ali https
 968|Ravnovesje beline
+969|Dodaj točko
+970|Poravnaj po točkah
+971|Izbriši to točko
+972|Prilagodi sliko točkam (najmanjši kvadrati) in ustrezno premakne vogale.
+973|Premalo točk ali ležijo na eni premici.
+974|Pari točke na sliki (pikslov) in njenega mesta v delovnem območju (mm). Vsaj 3, priporočene 4; določajo poravnavo, vključno s perspektivo.
+975|Točke iz trenutnih vogalov
+976|Referenčne točke
+977|Točke zamenja s štirimi vogali slike in mestom, kjer so zdaj.

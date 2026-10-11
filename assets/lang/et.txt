@@ -967,3 +967,12 @@
 966|Lülita see kaamera sisse või välja
 967|Aadress ei kehti: vaja on http- või https-aadressi
 968|Valge tasakaal
+969|Lisa punkt
+970|Joonda punktide järgi
+971|Kustuta see punkt
+972|Sobitab pildi punktidega (vähimruutude meetod) ja nihutab nurki vastavalt.
+973|Punkte on liiga vähe või need asuvad ühel sirgel.
+974|Paarid: punkt pildil (pikslites) ja selle koht tööalas (mm). Vähemalt 3, soovitatav 4; need määravad joonduse koos perspektiiviga.
+975|Punktid praegustest nurkadest
+976|Võrdluspunktid
+977|Asendab punktid pildi nelja nurga ja nende praeguste kohtadega.

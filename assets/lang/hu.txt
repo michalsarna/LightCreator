@@ -967,3 +967,12 @@
 966|A kamera be- vagy kikapcsolása
 967|A cím érvénytelen: http vagy https cím szükséges
 968|Fehéregyensúly
+969|Pont hozzáadása
+970|Igazítás a pontok szerint
+971|Pont törlése
+972|A képet a pontokhoz illeszti (legkisebb négyzetek), és ennek megfelelően mozgatja a sarkokat.
+973|Kevés pont, vagy egy egyenesen vannak.
+974|Párok: egy pont a képen (pixel) és helye a munkaterületen (mm). Legalább 3, 4 ajánlott; ezek határozzák meg az igazítást a perspektívával együtt.
+975|Pontok a jelenlegi sarkokból
+976|Referenciapontok
+977|A pontokat a kép négy sarkával és jelenlegi helyükkel váltja fel.

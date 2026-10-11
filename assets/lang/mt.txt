@@ -967,3 +967,12 @@
 966|Ixgħel jew itfi din il-kamera
 967|L-indirizz mhuwiex validu: meħtieġ indirizz http jew https
 968|Bilanċ tal-abjad
+969|Żid punt
+970|Allinja skont il-punti
+971|Neħħi dan il-punt
+972|Jadatta x-xbieha mal-punti (l-inqas kwadri) u jċaqlaq il-kantunieri skont dan.
+973|Punti mhux biżżejjed, jew jinsabu fuq linja waħda.
+974|Pari ta' punt fix-xbieha (pikseli) u l-post tiegħu fl-erja tax-xogħol (mm). Mill-inqas 3, 4 rakkomandati; jiffissaw l-allinjament, il-prospettiva inkluża.
+975|Punti mill-kantunieri attwali
+976|Punti ta' referenza
+977|Jissostitwixxi l-punti bl-erba' kantunieri tax-xbieha u fejn jinsabu issa.

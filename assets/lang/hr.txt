@@ -967,3 +967,12 @@
 966|Uključi ili isključi ovu kameru
 967|Adresa nije valjana: potrebna je http ili https adresa
 968|Ravnoteža bijele
+969|Dodaj točku
+970|Poravnaj prema točkama
+971|Izbriši ovu točku
+972|Prilagođava sliku točkama (najmanji kvadrati) i pomiče kutove u skladu s tim.
+973|Premalo točaka ili leže na jednom pravcu.
+974|Parovi točke na slici (pikseli) i njezina mjesta u radnom području (mm). Najmanje 3, preporuka 4; određuju poravnanje uključujući perspektivu.
+975|Točke iz trenutnih kutova
+976|Referentne točke
+977|Zamjenjuje točke s četiri kuta slike i mjestom gdje su sada.

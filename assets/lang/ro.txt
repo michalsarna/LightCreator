@@ -967,3 +967,12 @@
 966|Pornește sau oprește această cameră
 967|Adresa nu este validă: este nevoie de o adresă http sau https
 968|Balansul de alb
+969|Adaugă un punct
+970|Aliniază după puncte
+971|Șterge acest punct
+972|Potrivește imaginea la puncte (cele mai mici pătrate) și mută colțurile în consecință.
+973|Prea puține puncte sau sunt pe o singură dreaptă.
+974|Perechi dintr-un punct al imaginii (pixeli) și locul lui în zona de lucru (mm). Cel puțin 3, 4 recomandate; fixează alinierea, inclusiv perspectiva.
+975|Puncte din colțurile curente
+976|Puncte de referință
+977|Înlocuiește punctele cu cele patru colțuri ale imaginii și locul unde sunt acum.

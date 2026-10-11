@@ -967,3 +967,12 @@
 966|Slå på eller av den här kameran
 967|Adressen är ogiltig: en http- eller https-adress behövs
 968|Vitbalans
+969|Lägg till en punkt
+970|Justera efter punkterna
+971|Ta bort den här punkten
+972|Anpassar bilden till punkterna (minsta kvadrat) och flyttar hörnen i enlighet med det.
+973|För få punkter, eller så ligger de på en linje.
+974|Par av en punkt i bilden (pixlar) och dess plats i arbetsytan (mm). Minst 3, 4 rekommenderas; de fastställer justeringen inklusive perspektiv.
+975|Punkter från de nuvarande hörnen
+976|Referenspunkter
+977|Ersätter punkterna med bildens fyra hörn och var de ligger nu.
