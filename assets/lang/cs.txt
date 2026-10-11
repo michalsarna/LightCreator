@@ -648,3 +648,13 @@
 647|Vestavěné hodnoty byly obnoveny.
 648|Tento materiál nemá nastavení pro typ laseru tohoto zařízení
 649|Dvojitým kliknutím na materiál upravíte jeho nastavení. Změny se uchovávají v tomto počítači.
+650|Jen černá nebo bílá, dělení v polovině jasu. Ostré: vhodné pro perokresbu a text.
+651|Rozděluje chybu zaokrouhlení na sousední body. Dobrá univerzální volba pro fotografie.
+652|Rozděluje chybu na větší oblast: jemnější tóny, o něco pomalejší.
+653|Jako Jarvis, s ostřejším detailem.
+654|Udržuje světla čistá a kontrast vysoký; ztrácí část nejtmavších a nejsvětlejších detailů.
+655|Pevný vzor bodů 8×8: pravidelný a rychlý, bez šumu.
+656|Žádné body: každý pixel vypaluje výkonem mezi minimem a výkonem vrstvy.
+657|Smazat všechny materiály
+658|Smazat všechny materiály tohoto zařízení? Místo nich se zobrazí materiály z hlavní knihovny; když některý změníte, uchová se jeho kopie pro toto zařízení.
+659|Knihovna tohoto zařízení nyní zobrazuje hlavní knihovnu.

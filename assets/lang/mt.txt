@@ -648,3 +648,13 @@
 647|Il-valuri integrati ġew irrestawrati.
 648|Dan il-materjal m'għandux settings għat-tip ta' lejżer ta' dan l-apparat
 649|Agħmel double-click fuq materjal biex teditja s-settings tiegħu. Il-bidliet jinżammu fuq dan il-kompjuter.
+650|Iswed jew abjad biss, maqsum f'nofs il-luminożità. Ħarxa: tajba għal disinji bil-linja u test.
+651|Jipproċessa l-iżball tat-tqarrib fuq il-punti ġirien. Għażla ġenerali tajba għar-ritratti.
+652|Jinfirex l-iżball fuq żona usa': ċrieki aktar bil-mod, ftit aktar bil-mod.
+653|Bħal Jarvis, b'dettalji aktar ċari.
+654|Iżomm id-dwal nodfa u l-kuntrast għoli; titlef xi dettalji mill-aktar skuri u mill-aktar ċari.
+655|Mudell fiss ta' punti 8×8: regolari u mgħaġġel, mingħajr storbju.
+656|L-ebda punti: kull pixel jaħraq b'qawwa bejn il-minimu u l-qawwa tas-saff.
+657|Ħassar il-materjali kollha
+658|Tħassar il-materjali kollha ta' dan l-apparat? Minflok jintwerew il-materjali tal-librerija ewlenija; meta tbiddel wieħed, tinżamm kopja għal dan l-apparat.
+659|Il-librerija ta' dan l-apparat issa turi l-librerija ewlenija.

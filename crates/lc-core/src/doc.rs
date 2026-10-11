@@ -78,6 +78,19 @@ impl Dither {
             Dither::Grayscale => "Grayscale",
         }
     }
+
+    /// A short description of what the method does.
+    pub fn hint(self) -> &'static str {
+        match self {
+            Dither::Threshold => "Black or white only, split at half brightness. Sharp: good for line art and text.",
+            Dither::FloydSteinberg => "Spreads the rounding error to the neighbouring dots. A good all-round choice for photos.",
+            Dither::Jarvis => "Spreads the error over a wider area: smoother tones, a little slower.",
+            Dither::Stucki => "Like Jarvis, with crisper detail.",
+            Dither::Atkinson => "Keeps highlights clean and contrast high; loses some of the darkest and lightest detail.",
+            Dither::Ordered => "A fixed 8×8 pattern of dots: regular and fast, without noise.",
+            Dither::Grayscale => "No dots: every pixel burns with a power between the minimum and the layer's power.",
+        }
+    }
 }
 
 fn d_min_power() -> f64 {
@@ -501,6 +514,9 @@ pub struct Device {
     /// The library has been filled from the built-in one (once; deleting materials does not refill it).
     #[serde(default)]
     pub materials_seeded: bool,
+    /// The library follows the main library: the materials above are only this device's own copies of changed ones.
+    #[serde(default)]
+    pub materials_inherit: bool,
 }
 
 impl Device {
@@ -572,6 +588,7 @@ impl Default for Device {
             layer_speeds: d_layer_speeds(),
             materials: vec![],
             materials_seeded: false,
+            materials_inherit: false,
         }
     }
 }

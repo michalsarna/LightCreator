@@ -242,6 +242,19 @@ fn tr_tag(t: &str) -> String {
     .to_string()
 }
 
+/// The tags typed in a language of the interface, stored the way they are: "Cut", "Engrave" and "Score" in English.
+fn parse_tags(text: &str) -> Vec<String> {
+    let mut out: Vec<String> = vec![];
+    for t in text.split(',').map(str::trim).filter(|t| !t.is_empty()) {
+        let known = ["Cut", "Engrave", "Score"].into_iter().find(|k| tr_tag(k).eq_ignore_ascii_case(t) || k.eq_ignore_ascii_case(t));
+        let t = known.map(str::to_string).unwrap_or_else(|| t.to_string());
+        if !out.iter().any(|o| o.eq_ignore_ascii_case(&t)) {
+            out.push(t);
+        }
+    }
+    out
+}
+
 /// One material as the main library lists it: all the laser variants that share an id.
 pub struct Entry {
     pub key: String,
@@ -270,9 +283,25 @@ pub fn entries(lib: &[Material]) -> Vec<Entry> {
     out
 }
 
-/// A group of a list that folds up by its title (the name of the category, in the main colour), as in the clipart list.
+/// A group of a list that folds up by its title, drawn as in the clipart list.
 fn category_section(ui: &mut egui::Ui, id: impl std::hash::Hash + std::fmt::Debug, cat: &str, n: usize, body: impl FnOnce(&mut egui::Ui)) {
-    egui::CollapsingHeader::new(RichText::new(format!("{} ({n})", cat_label(cat))).strong().color(theme::accent())).id_salt(id).default_open(true).show(ui, body);
+    ui.add_space(4.0);
+    let id = ui.make_persistent_id(id);
+    let mut open = ui.data_mut(|d| *d.get_persisted_mut_or_insert_with(id, || true));
+    let (rect, resp) = ui.allocate_exact_size(egui::vec2(ui.available_width(), 22.0), egui::Sense::click());
+    if resp.hovered() {
+        ui.painter().rect_filled(rect, 4.0, theme::panel_dark());
+    }
+    let arrow = egui::Rect::from_center_size(egui::pos2(rect.left() + 11.0, rect.center().y), egui::vec2(14.0, 14.0));
+    crate::icons::paint(ui, arrow, if open { "chevron-down" } else { "chevron-right" }, theme::text());
+    ui.painter().text(egui::pos2(rect.left() + 24.0, rect.center().y), egui::Align2::LEFT_CENTER, format!("{}  ({n})", cat_label(cat)), egui::FontId::proportional(13.5), theme::text());
+    if resp.on_hover_text(tr(if open { "Fold up" } else { "Unfold" })).clicked() {
+        open = !open;
+        ui.data_mut(|d| d.insert_persisted(id, open));
+    }
+    if open {
+        body(ui);
+    }
 }
 
 /// What the editor of a material needs to know about the program around it.
@@ -284,6 +313,8 @@ pub struct EditCx<'a> {
     pub cats: Vec<String>,
     pub new_cat: &'a mut String,
     pub add_layer: &'a mut usize,
+    /// Tags in use anywhere, to suggest while typing.
+    pub tags: Vec<String>,
 }
 
 /// Everything about one material: name, thickness, category, tags, note and the settings of each layer.
@@ -316,15 +347,44 @@ pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, salt: &str, cx: &mut
     ui.horizontal(|ui| {
         ui.label(tr("Tags"));
         if ui.add(egui::TextEdit::singleline(&mut text).hint_text(tr("Tags, separated by commas")).desired_width(ui.available_width() - 4.0)).changed() {
-            m.tags = text.split(',').map(|t| t.trim().to_string()).filter(|t| !t.is_empty()).collect();
+            m.tags = parse_tags(&text);
         }
     });
+    // Tags that exist already, narrowed down by what is being typed after the last comma.
+    let used: Vec<String> = m.tags.iter().map(|t| tr_tag(t).to_lowercase()).collect();
+    let mut fragment = text.rsplit(',').next().unwrap_or("").trim().to_lowercase();
+    if used.contains(&fragment) {
+        fragment.clear();
+    }
+    let suggestions: Vec<String> = cx.tags.iter().filter(|t| {
+        let l = tr_tag(t).to_lowercase();
+        !used.contains(&l) && (fragment.is_empty() || l.contains(&fragment))
+    }).take(10).cloned().collect();
+    if !suggestions.is_empty() {
+        ui.horizontal_wrapped(|ui| {
+            ui.spacing_mut().item_spacing.x = 4.0;
+            for t in suggestions {
+                if ui.small_button(tr_tag(&t)).clicked() {
+                    let head = text.rfind(',').map(|i| format!("{} ", &text[..=i])).unwrap_or_default();
+                    text = format!("{head}{}, ", tr_tag(&t));
+                    m.tags = parse_tags(&text);
+                }
+            }
+        });
+    }
     ui.data_mut(|d| d.insert_temp(tags_id, text));
     ui.add(egui::TextEdit::singleline(&mut m.note).hint_text(tr("Note")).desired_width(ui.available_width() - 4.0));
     let mut remove: Option<usize> = None;
     for (li, ml) in m.layers.iter_mut().enumerate() {
         let lname = cx.layers.get(ml.index).map(|l| l.name.clone()).unwrap_or_default();
-        egui::CollapsingHeader::new(RichText::new(format!("{} ({})", ml.label, trf("Layer {}", &[&lname]))).strong()).id_salt((salt, "layer", li)).default_open(true).show(ui, |ui| {
+        let head = format!("{} ({})", ml.label, trf("Layer {}", &[&lname]));
+        let swatch_colour = layer_colour(ml);
+        let state = egui::collapsing_header::CollapsingState::load_with_default_open(ui.ctx(), ui.make_persistent_id((salt, "layer", li)), true);
+        state.show_header(ui, |ui| {
+            swatch(ui, swatch_colour);
+            ui.label(RichText::new(head).strong());
+        })
+        .body(|ui| {
             layer_spec_ui(ui, (salt, 0, li), &mut ml.spec, cx.units, cx.su);
             ui.horizontal_wrapped(|ui| {
                 ui.label(tr("Colour"));
@@ -422,6 +482,64 @@ impl App {
         effective_library(builtin(), &self.global_materials)
     }
 
+    /// Every tag in use in the libraries, each once ("Cut", "Engrave" and "Score" first).
+    fn all_tags(&self) -> Vec<String> {
+        let mut v: Vec<String> = vec!["Cut".into(), "Engrave".into(), "Score".into()];
+        let all = self.main_library().into_iter().chain(self.doc.device.materials.clone()).chain(self.profiles.iter().flat_map(|p| p.materials.clone()));
+        let mut extra: Vec<String> = vec![];
+        for t in all.flat_map(|m| m.tags) {
+            if !v.iter().chain(&extra).any(|x| x.eq_ignore_ascii_case(&t)) {
+                extra.push(t);
+            }
+        }
+        extra.sort_by_key(|t| t.to_lowercase());
+        v.extend(extra);
+        v
+    }
+
+    /// The materials a device shows: its own library, or, when it follows the main library, the main
+    /// materials for its laser type with the device's own copies over them.
+    pub fn view_of(&self, d: &lc_core::Device) -> Vec<Material> {
+        if d.materials_inherit {
+            let main: Vec<Material> = self.main_library().into_iter().filter(|m| m.laser == d.laser).collect();
+            effective_library(&main, &d.materials)
+        } else {
+            d.materials.clone()
+        }
+    }
+
+    pub fn device_view(&self) -> Vec<Material> {
+        self.view_of(&self.doc.device)
+    }
+
+    /// Make the library of a device a plain list again, holding everything it shows.
+    fn materialize(&self, d: &mut lc_core::Device) {
+        if d.materials_inherit {
+            d.materials = self.view_of(d);
+            d.materials_inherit = false;
+        }
+    }
+
+    /// Remove the materials of the device and show those of the main library instead; a material that is
+    /// changed afterwards is kept as a copy for this device.
+    pub fn reset_device_library(&mut self) {
+        self.doc.device.materials.clear();
+        self.doc.device.materials_inherit = true;
+        self.doc.device.materials_seeded = true;
+        self.mat_dev_sel = None;
+        self.sync_profile();
+        self.status = tr("The library of this device now shows the main library.").into();
+    }
+
+    /// Keep a changed material in the library of the device (a copy over the main one when it follows it).
+    fn store_device_material(&mut self, m: Material) {
+        match self.doc.device.materials.iter().position(|e| e.same_key(&m)) {
+            Some(p) => self.doc.device.materials[p] = m,
+            None => self.doc.device.materials.push(m),
+        }
+        self.sync_profile();
+    }
+
     /// Fill the library of the device from the main library, once.
     pub fn seed_device_library(&mut self) {
         if self.doc.device.materials_seeded {
@@ -440,6 +558,9 @@ impl App {
         if incoming.is_empty() {
             return;
         }
+        let mut dev = self.doc.device.clone();
+        self.materialize(&mut dev);
+        self.doc.device = dev;
         // Only what suits the laser of this device belongs in its library.
         let laser = self.doc.device.laser;
         let incoming: Vec<Material> = incoming.into_iter().filter(|m| m.laser == laser).collect();
@@ -564,7 +685,7 @@ impl App {
         });
         ui.label(RichText::new(trf("Library of the device {}", &[&self.doc.device.name])).color(theme::text_dim()));
         let q = self.mat_dev_filter.to_lowercase();
-        let lib = self.doc.device.materials.clone();
+        let lib = self.device_view();
         ui.horizontal(|ui| {
             let refs: Vec<&Material> = lib.iter().collect();
             category_filter(ui, "mat_dev_cat", &mut self.mat_dev_cat, &refs);
@@ -598,7 +719,8 @@ impl App {
             let mut apply = false;
             let mut delete = false;
             let cats = categories_of(self.doc.device.materials.iter().chain(&self.global_materials).chain(self.profiles.iter().flat_map(|p| p.materials.iter())));
-            let mut cx = EditCx { units, su, layers: &self.doc.layers, cats, new_cat: &mut self.mat_new_cat, add_layer: &mut self.mat_add_layer };
+            let tags = self.all_tags();
+            let mut cx = EditCx { units, su, layers: &self.doc.layers, cats, new_cat: &mut self.mat_new_cat, add_layer: &mut self.mat_add_layer, tags };
             material_editor(ui, &mut m, "tab_edit", &mut cx);
             ui.add_space(4.0);
             ui.horizontal(|ui| {
@@ -611,8 +733,7 @@ impl App {
                 }
             });
             if m != lib[i] {
-                self.doc.device.materials[i] = m.clone();
-                self.sync_profile();
+                self.store_device_material(m.clone());
             }
             if apply {
                 self.checkpoint();
@@ -622,7 +743,16 @@ impl App {
                 self.status = trf("Applied {} to {} layer(s)", &[&mat_name(&m, units), &n]);
             }
             if delete {
-                self.doc.device.materials.remove(i);
+                // A copy goes (the main material shows again); one that only comes from the main library is left out.
+                let key = lib[i].key();
+                if self.doc.device.materials_inherit && !self.doc.device.materials.iter().any(|e| e.key() == key) {
+                    let mut left = lib.clone();
+                    left.remove(i);
+                    self.doc.device.materials = left;
+                    self.doc.device.materials_inherit = false;
+                } else {
+                    self.doc.device.materials.retain(|e| e.key() != key);
+                }
                 self.mat_dev_sel = None;
                 self.sync_profile();
             }
@@ -643,7 +773,7 @@ impl App {
                     Some(p) => self.doc.device.materials[p] = m.clone(),
                     None => self.doc.device.materials.push(m.clone()),
                 }
-                self.mat_dev_sel = self.doc.device.materials.iter().position(|e| e.key() == key);
+                self.mat_dev_sel = self.device_view().iter().position(|e| e.key() == key);
                 self.doc.material = Some(m);
                 self.sync_profile();
                 self.status = trf("Saved {} in this device's library", &[&shown]);
@@ -652,12 +782,23 @@ impl App {
             }
         });
         ui.separator();
-        ui.horizontal(|ui| {
+        ui.horizontal_wrapped(|ui| {
             if ui.button(tr("Export library…")).clicked() {
                 self.start_library_export();
             }
             if ui.button(tr("Import library…")).clicked() {
                 self.start_library_import();
+            }
+            if ui.button(tr("Delete all materials")).on_hover_text(tr("Delete all materials of this device? The materials of the main library are shown instead; when you change one, a copy is kept for this device.")).clicked() {
+                let sure = rfd::MessageDialog::new()
+                    .set_level(rfd::MessageLevel::Warning)
+                    .set_title(tr("Delete all materials"))
+                    .set_description(tr("Delete all materials of this device? The materials of the main library are shown instead; when you change one, a copy is kept for this device."))
+                    .set_buttons(rfd::MessageButtons::YesNo)
+                    .show();
+                if sure == rfd::MessageDialogResult::Yes {
+                    self.reset_device_library();
+                }
             }
         });
     }
@@ -809,7 +950,7 @@ impl App {
         if let Some(k) = add_to_device {
             if let Some(m) = self.main_library().into_iter().find(|m| m.key() == k && m.laser == device_laser) {
                 let shown = mat_name(&m, units);
-                match self.doc.device.materials.iter().position(|e| e.same_key(&m)) {
+                match self.device_view().iter().position(|e| e.same_key(&m)) {
                     Some(_) => self.status = trf("{} is already in this device's library", &[&shown]),
                     None => {
                         self.status = trf("Added {} to this device's library", &[&shown]);
@@ -864,6 +1005,7 @@ impl App {
         let mut restore = false;
         let mut new_laser: Option<LaserKind> = None;
         let cats = categories_of(self.main_library().iter().chain(self.doc.device.materials.iter()));
+        let tags = self.all_tags();
         let has_builtin = builtin().iter().any(|b| b.same_key(&ed.m));
         let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 10, right: 10, top: 6, bottom: 8 });
         egui::Window::new("material_edit").title_bar(false).frame(frame).default_size([460.0, 560.0]).resizable(true).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {
@@ -880,8 +1022,8 @@ impl App {
                 });
             });
             ui.separator();
-            egui::ScrollArea::vertical().max_height(400.0).auto_shrink([false, true]).show(ui, |ui| {
-                let mut cx = EditCx { units, su, layers: &self.doc.layers, cats, new_cat: &mut self.mat_new_cat, add_layer: &mut self.mat_add_layer };
+            egui::ScrollArea::vertical().max_height((ui.available_height() - 52.0).max(120.0)).auto_shrink([false, false]).show(ui, |ui| {
+                let mut cx = EditCx { units, su, layers: &self.doc.layers, cats, new_cat: &mut self.mat_new_cat, add_layer: &mut self.mat_add_layer, tags };
                 material_editor(ui, &mut ed.m, "main_edit", &mut cx);
             });
             ui.separator();
@@ -955,7 +1097,11 @@ impl App {
     /// Ask what to put into a library file.
     pub fn start_library_export(&mut self) {
         self.sync_profile();
-        let file = LibraryFile::new(self.global_materials.clone(), self.profiles.clone());
+        let mut devices = self.profiles.clone();
+        for d in &mut devices {
+            self.materialize(d);
+        }
+        let file = LibraryFile::new(self.global_materials.clone(), devices);
         self.lib_dlg = Some(LibDlg::new(true, file, ""));
     }
 
@@ -987,6 +1133,14 @@ impl App {
     /// open windows to choose the values. Returns how many materials and devices were added at once.
     pub fn import_library(&mut self, file: LibraryFile, source: &str) -> (usize, usize) {
         self.sync_profile();
+        for i in 0..self.profiles.len() {
+            let mut d = self.profiles[i].clone();
+            self.materialize(&mut d);
+            if self.screen == crate::app::Screen::Editor && i == self.active {
+                self.doc.device = d.clone();
+            }
+            self.profiles[i] = d;
+        }
         let (mut mats, mut devs) = (0, 0);
         let mut windows = vec![];
         let mut merge = |app: &mut App, target: MergeTarget, name: String, incoming: &[Material]| -> usize {
@@ -1117,9 +1271,11 @@ fn layer_spec_ui(ui: &mut egui::Ui, id: (&str, usize, usize), s: &mut LayerSpec,
         ui.label(tr("Dithering"));
         egui::ComboBox::from_id_salt((id, "dither")).selected_text(tr(s.dither.label())).show_ui(ui, |ui| {
             for d in Dither::ALL {
-                ui.selectable_value(&mut s.dither, d, tr(d.label()));
+                ui.selectable_value(&mut s.dither, d, tr(d.label())).on_hover_text(tr(d.hint()));
             }
-        });
+        })
+        .response
+        .on_hover_text(tr(s.dither.hint()));
         ui.end_row();
         ui.label(tr("Min power (%)"));
         let max = s.power;
@@ -1348,5 +1504,29 @@ mod tests {
         a.doc.material = Some(m.clone());
         let doc2 = Document::from_json(&a.doc.to_json()).unwrap();
         assert_eq!(doc2.material, Some(m));
+    }
+
+    #[test]
+    fn deleting_all_materials_shows_the_main_library_and_keeps_copies_of_changed_ones() {
+        let (mut a, _ctx) = app_with_profile();
+        let n_main = builtin().iter().filter(|m| m.laser == LaserKind::Diode).count();
+        a.doc.device.materials.truncate(2);
+        a.reset_device_library();
+        assert!(a.doc.device.materials.is_empty() && a.doc.device.materials_inherit);
+        assert_eq!(a.device_view().len(), n_main, "the main library is shown");
+        // Changing one keeps a copy for the device; the others stay the main ones.
+        let mut m = a.device_view()[0].clone();
+        m.layers[0].spec.power = 33.0;
+        a.store_device_material(m.clone());
+        assert_eq!(a.doc.device.materials.len(), 1);
+        let view = a.device_view();
+        assert_eq!(view.len(), n_main);
+        assert_eq!(view.iter().find(|e| e.same_key(&m)).unwrap().layers[0].spec.power, 33.0);
+        // The profile keeps it, and a later seeding does not refill it.
+        assert_eq!(a.profiles[0].materials.len(), 1);
+        a.enter_editor(0);
+        assert_eq!(a.doc.device.materials.len(), 1);
+        // Tags suggested while typing come from every library.
+        assert!(a.all_tags().iter().any(|t| t == "Engrave"));
     }
 }

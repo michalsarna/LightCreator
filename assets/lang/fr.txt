@@ -648,3 +648,13 @@
 647|Les valeurs intégrées ont été rétablies.
 648|Ce matériau n'a pas de réglages pour le type de laser de cet appareil
 649|Double-cliquez sur un matériau pour modifier ses réglages. Les changements sont conservés sur cet ordinateur.
+650|Noir ou blanc seulement, séparé à mi-luminosité. Net : bon pour le trait et le texte.
+651|Répartit l'erreur d'arrondi sur les points voisins. Un bon choix général pour les photos.
+652|Répartit l'erreur sur une zone plus large : tons plus doux, un peu plus lent.
+653|Comme Jarvis, avec des détails plus nets.
+654|Garde les hautes lumières propres et le contraste élevé ; perd un peu des détails les plus sombres et les plus clairs.
+655|Une trame fixe de points 8×8 : régulière et rapide, sans bruit.
+656|Pas de points : chaque pixel brûle avec une puissance entre le minimum et la puissance du calque.
+657|Supprimer tous les matériaux
+658|Supprimer tous les matériaux de cet appareil ? Ceux de la bibliothèque principale s'affichent à la place ; si vous en modifiez un, une copie est conservée pour cet appareil.
+659|La bibliothèque de cet appareil affiche maintenant la bibliothèque principale.

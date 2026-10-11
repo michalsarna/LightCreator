@@ -648,3 +648,13 @@
 647|Įtaisytosios reikšmės atkurtos.
 648|Ši medžiaga neturi nustatymų šio įrenginio lazerio tipui
 649|Dukart spustelėkite medžiagą, kad redaguotumėte jos nustatymus. Pakeitimai saugomi šiame kompiuteryje.
+650|Tik juoda arba balta, skiriama ties pusės ryškumo. Aštru: tinka brėžiniams ir tekstui.
+651|Paskirsto apvalinimo paklaidą kaimyniniams taškams. Geras bendras pasirinkimas nuotraukoms.
+652|Paskirsto paklaidą didesniam plotui: lygesni tonai, šiek tiek lėčiau.
+653|Kaip Jarvis, su ryškesnėmis detalėmis.
+654|Išlaiko švarias šviesas ir didelį kontrastą; netenka dalies tamsiausių ir šviesiausių detalių.
+655|Fiksuotas 8×8 taškų raštas: taisyklingas ir greitas, be triukšmo.
+656|Be taškų: kiekvienas pikselis dega galia tarp mažiausios ir sluoksnio galios.
+657|Ištrinti visas medžiagas
+658|Ištrinti visas šio įrenginio medžiagas? Vietoj jų rodomos pagrindinės bibliotekos medžiagos; pakeitus vieną, šiam įrenginiui paliekama jos kopija.
+659|Šio įrenginio biblioteka dabar rodo pagrindinę biblioteką.

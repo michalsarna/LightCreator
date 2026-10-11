@@ -648,3 +648,13 @@
 647|Valorile integrate au fost restabilite.
 648|Acest material nu are setări pentru tipul de laser al acestui dispozitiv
 649|Faceți dublu clic pe un material pentru a-i edita setările. Modificările rămân pe acest computer.
+650|Doar alb sau negru, împărțit la jumătate de luminozitate. Clar: bun pentru desene în linii și text.
+651|Împarte eroarea de rotunjire punctelor vecine. O alegere generală bună pentru fotografii.
+652|Împarte eroarea pe o zonă mai largă: tonuri mai fine, puțin mai lent.
+653|Ca Jarvis, cu detalii mai clare.
+654|Păstrează luminile curate și contrastul ridicat; pierde o parte din detaliile cele mai întunecate și mai luminoase.
+655|Un model fix de puncte 8×8: regulat și rapid, fără zgomot.
+656|Fără puncte: fiecare pixel arde cu o putere între minim și puterea stratului.
+657|Șterge toate materialele
+658|Ștergeți toate materialele acestui dispozitiv? În loc vor fi afișate cele din biblioteca principală; dacă schimbați unul, se păstrează o copie pentru acest dispozitiv.
+659|Biblioteca acestui dispozitiv afișează acum biblioteca principală.

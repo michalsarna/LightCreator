@@ -648,3 +648,13 @@
 647|A beépített értékek vissza lettek állítva.
 648|Ennek az anyagnak nincs beállítása az eszköz lézertípusához
 649|Kattintson duplán egy anyagra a beállításainak szerkesztéséhez. A módosítások ezen a számítógépen maradnak.
+650|Csak fekete vagy fehér, a fényesség felénél osztva. Éles: vonalrajzokhoz és szöveghez jó.
+651|A kerekítési hibát a szomszédos pontokra osztja szét. Jó általános választás fényképekhez.
+652|A hibát nagyobb területre osztja szét: simább tónusok, kicsit lassabb.
+653|Mint a Jarvis, de élesebb részletekkel.
+654|A fényeket tisztán, a kontrasztot magasan tartja; elveszít valamennyit a legsötétebb és legvilágosabb részletekből.
+655|Rögzített 8×8-as pontminta: szabályos és gyors, zaj nélkül.
+656|Nincsenek pontok: minden képpont a minimum és a réteg teljesítménye közötti teljesítménnyel éget.
+657|Összes anyag törlése
+658|Törli az eszköz összes anyagát? Helyettük a fő könyvtár anyagai látszanak; ha egyet módosít, másolata megmarad ehhez az eszközhöz.
+659|Az eszköz könyvtára most a fő könyvtárat mutatja.

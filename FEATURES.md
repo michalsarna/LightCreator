@@ -174,6 +174,9 @@
     built-in data, and *Restore built-in values* brings the original back. A device's library receives the variant for its
     own laser type.
   * Lists are grouped by category; a group folds up by its title (shown in the main colour), as in the clipart list.
+  * **Delete all materials** (Materials tab) empties the device's library and shows the main library instead; a material
+    that is changed there is kept as a copy for the device. Tags are suggested from those already in use, and hovering over
+    the dithering setting explains the chosen method.
   * A saved project carries the device profile, the device library and the **material it was made with**.
   * Every material has the **colour** and a **label** (the name of its purpose, e.g. Cut) of each layer, and a **category**
     (Wood, Metal, Plastic, Paper and leather, Stone and glass, Other, or a category of your own). Applying a material sets

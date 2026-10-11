@@ -648,3 +648,13 @@
 647|Vgrajene vrednosti so obnovljene.
 648|Ta material nima nastavitev za vrsto laserja te naprave
 649|Dvokliknite material, da uredite njegove nastavitve. Spremembe se hranijo v tem računalniku.
+650|Samo črna ali bela, razdelitev pri polovični svetlosti. Ostro: dobro za črtne risbe in besedilo.
+651|Napako zaokroževanja razporedi na sosednje točke. Dobra splošna izbira za fotografije.
+652|Napako razporedi na večje območje: mehkejši toni, nekoliko počasneje.
+653|Kot Jarvis, z ostrejšimi podrobnostmi.
+654|Ohranja čiste svetle dele in visok kontrast; izgubi nekaj najtemnejših in najsvetlejših podrobnosti.
+655|Stalen vzorec točk 8×8: pravilen in hiter, brez šuma.
+656|Brez točk: vsak piksel žge z močjo med najmanjšo in močjo plasti.
+657|Izbriši vse materiale
+658|Izbrišem vse materiale te naprave? Namesto njih se prikažejo materiali glavne knjižnice; ko enega spremenite, se zanj za to napravo ohrani kopija.
+659|Knjižnica te naprave zdaj prikazuje glavno knjižnico.

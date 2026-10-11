@@ -648,3 +648,13 @@
 647|Sisseehitatud väärtused taastati.
 648|Sellel materjalil pole selle seadme laseritüübi jaoks seadeid
 649|Topeltklõpsa materjalil, et selle seadeid muuta. Muudatused salvestatakse sellesse arvutisse.
+650|Ainult must või valge, jaotus poole heleduse juures. Terav: sobib joonisteks ja tekstiks.
+651|Jaotab ümardusvea naaberpunktidele. Hea üldvalik fotodele.
+652|Jaotab vea suuremale alale: pehmemad toonid, veidi aeglasem.
+653|Nagu Jarvis, kuid teravamate detailidega.
+654|Hoiab heledad kohad puhtad ja kontrasti kõrge; kaotab veidi kõige tumedamaid ja heledamaid detaile.
+655|Kindel 8×8 punktimuster: korrapärane ja kiire, müratu.
+656|Punkte pole: iga piksel põleb võimsusega minimaalse ja kihi võimsuse vahel.
+657|Kustuta kõik materjalid
+658|Kas kustutada selle seadme kõik materjalid? Selle asemel näidatakse põhiraamatukogu materjale; kui muudad ühte, jäetakse sellest koopia sellele seadmele.
+659|Selle seadme raamatukogu näitab nüüd põhiraamatukogu.

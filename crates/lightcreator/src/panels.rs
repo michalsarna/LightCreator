@@ -566,9 +566,11 @@ pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_cor
             ui.label(tr("Dithering"));
             egui::ComboBox::from_id_salt(("dither", id_scope)).selected_text(tr(l.dither.label())).show_ui(ui, |ui| {
                 for d in Dither::ALL {
-                    ui.selectable_value(&mut l.dither, d, tr(d.label()));
+                    ui.selectable_value(&mut l.dither, d, tr(d.label())).on_hover_text(tr(d.hint()));
                 }
-            });
+            })
+            .response
+            .on_hover_text(tr(l.dither.hint()));
             ui.end_row();
             ui.label(tr("Min power (%)"));
             let max = l.power;

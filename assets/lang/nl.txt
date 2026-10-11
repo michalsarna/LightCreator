@@ -648,3 +648,13 @@
 647|De ingebouwde waarden zijn hersteld.
 648|Dit materiaal heeft geen instellingen voor het lasertype van dit apparaat
 649|Dubbelklik op een materiaal om de instellingen te bewerken. Wijzigingen blijven op deze computer bewaard.
+650|Alleen zwart of wit, gesplitst bij halve helderheid. Scherp: goed voor lijntekeningen en tekst.
+651|Verdeelt de afrondingsfout over de naburige punten. Een goede algemene keuze voor foto's.
+652|Verdeelt de fout over een groter gebied: zachtere tinten, iets langzamer.
+653|Zoals Jarvis, met scherpere details.
+654|Houdt hooglichten schoon en het contrast hoog; verliest wat van de donkerste en lichtste details.
+655|Een vast 8×8-patroon van punten: regelmatig en snel, zonder ruis.
+656|Geen punten: elke pixel brandt met een vermogen tussen het minimum en het vermogen van de laag.
+657|Alle materialen verwijderen
+658|Alle materialen van dit apparaat verwijderen? In plaats daarvan worden de materialen van de hoofdbibliotheek getoond; als u er een wijzigt, wordt een kopie voor dit apparaat bewaard.
+659|De bibliotheek van dit apparaat toont nu de hoofdbibliotheek.

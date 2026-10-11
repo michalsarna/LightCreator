@@ -648,3 +648,13 @@
 647|Iebūvētās vērtības atjaunotas.
 648|Šim materiālam nav iestatījumu šīs ierīces lāzera tipam
 649|Veiciet dubultklikšķi uz materiāla, lai rediģētu tā iestatījumus. Izmaiņas tiek glabātas šajā datorā.
+650|Tikai melns vai balts, dalījums pie pusi spilgtuma. Asi: der līniju zīmējumiem un tekstam.
+651|Sadala noapaļošanas kļūdu uz kaimiņu punktiem. Laba vispārīga izvēle fotogrāfijām.
+652|Sadala kļūdu lielākā apgabalā: maigāki toņi, nedaudz lēnāk.
+653|Kā Jarvis, ar asākām detaļām.
+654|Saglabā tīras gaišās vietas un augstu kontrastu; zaudē daļu tumšāko un gaišāko detaļu.
+655|Fiksēts 8×8 punktu raksts: regulārs un ātrs, bez trokšņa.
+656|Bez punktiem: katrs pikselis dedzina ar jaudu starp minimālo un slāņa jaudu.
+657|Dzēst visus materiālus
+658|Vai dzēst visus šīs ierīces materiālus? To vietā tiks rādīti galvenās bibliotēkas materiāli; mainot kādu, šai ierīcei tiek saglabāta tā kopija.
+659|Šīs ierīces bibliotēka tagad rāda galveno bibliotēku.

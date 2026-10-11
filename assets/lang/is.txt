@@ -648,3 +648,13 @@
 647|Innbyggðu gildin voru endurheimt.
 648|Þetta efni hefur engar stillingar fyrir leysigerð þessa tækis
 649|Tvísmelltu á efni til að breyta stillingum þess. Breytingar eru geymdar á þessari tölvu.
+650|Aðeins svart eða hvítt, skipt við hálfa birtu. Skarpt: gott fyrir línuteikningar og texta.
+651|Dreifir námundunarskekkjunni á nágrannapunkta. Góður almennur kostur fyrir ljósmyndir.
+652|Dreifir skekkjunni yfir stærra svæði: mýkri tónar, aðeins hægara.
+653|Eins og Jarvis, með skarpari smáatriðum.
+654|Heldur ljósum svæðum hreinum og birtuskilum háum; tapar einhverjum af dekkstu og ljósustu smáatriðum.
+655|Fast 8×8 punktamynstur: reglulegt og hraðvirkt, án suðs.
+656|Engir punktar: hver mynddíll brennur með afli milli lágmarks og afls lagsins.
+657|Eyða öllum efnum
+658|Eyða öllum efnum þessa tækis? Efni aðalsafnsins birtast í staðinn; þegar þú breytir einu er afrit þess geymt fyrir þetta tæki.
+659|Safn þessa tækis sýnir nú aðalsafnið.

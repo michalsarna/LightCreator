@@ -648,3 +648,13 @@
 647|Ugrađene vrijednosti su vraćene.
 648|Ovaj materijal nema postavke za vrstu lasera ovog uređaja
 649|Dvaput kliknite materijal da biste uredili njegove postavke. Promjene se čuvaju na ovom računalu.
+650|Samo crno ili bijelo, podjela na pola svjetline. Oštro: dobro za crteže i tekst.
+651|Širi pogrešku zaokruživanja na susjedne točke. Dobar opći izbor za fotografije.
+652|Širi pogrešku na veće područje: glađi tonovi, malo sporije.
+653|Kao Jarvis, s oštrijim detaljima.
+654|Čuva čista svjetla i visok kontrast; gubi nešto najtamnijih i najsvjetlijih detalja.
+655|Fiksni uzorak točaka 8×8: pravilan i brz, bez šuma.
+656|Bez točaka: svaki piksel gori snagom između minimalne i snage sloja.
+657|Izbriši sve materijale
+658|Izbrisati sve materijale ovog uređaja? Umjesto njih prikazuju se materijali glavne biblioteke; kad jedan promijenite, za ovaj uređaj čuva se njegova kopija.
+659|Biblioteka ovog uređaja sada prikazuje glavnu biblioteku.

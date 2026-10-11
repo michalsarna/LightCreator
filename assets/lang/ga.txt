@@ -648,3 +648,13 @@
 647|Athchóiríodh na luachanna ionsuite.
 648|Níl socruithe ag an ábhar seo do chineál léasair na feiste seo
 649|Cliceáil faoi dhó ar ábhar chun a shocruithe a chur in eagar. Coimeádtar na hathruithe ar an ríomhaire seo.
+650|Dubh nó bán amháin, roinnte ag leath-gile. Géar: maith do líníocht líne agus téacs.
+651|Scaipeann sé an earráid chruinnithe ar na poncanna comharsanacha. Rogha mhaith ghinearálta do ghrianghraif.
+652|Scaipeann sé an earráid thar limistéar níos leithne: tonnta níos míne, beagán níos moille.
+653|Cosúil le Jarvis, le mionsonraí níos géire.
+654|Coinníonn sé na buaicphointí glan agus an codarsnacht ard; cailleann sé cuid de na mionsonraí is dorcha agus is gile.
+655|Patrún seasta poncanna 8×8: rialta agus tapa, gan torann.
+656|Gan poncanna: dónn gach picteilín le cumhacht idir an t-íosmhéid agus cumhacht an chiseal.
+657|Scrios gach ábhar
+658|An scriosfar gach ábhar den fheiste seo? Taispeánfar ábhair na príomhleabharlainne ina n-áit; nuair a athraíonn tú ceann, coimeádtar cóip don fheiste seo.
+659|Taispeánann leabharlann na feiste seo an phríomhleabharlann anois.

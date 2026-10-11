@@ -648,3 +648,13 @@
 647|De indbyggede værdier er gendannet.
 648|Dette materiale har ingen indstillinger til denne enheds lasertype
 649|Dobbeltklik på et materiale for at redigere dets indstillinger. Ændringer gemmes på denne computer.
+650|Kun sort eller hvid, delt ved halv lysstyrke. Skarp: god til stregtegninger og tekst.
+651|Spreder afrundingsfejlen til nabopunkterne. Et godt alsidigt valg til fotos.
+652|Spreder fejlen over et større område: blødere toner, lidt langsommere.
+653|Som Jarvis, med skarpere detaljer.
+654|Holder højlys rene og kontrasten høj; mister lidt af de mørkeste og lyseste detaljer.
+655|Et fast 8×8-mønster af punkter: regelmæssigt og hurtigt, uden støj.
+656|Ingen punkter: hver pixel brænder med en effekt mellem minimum og lagets effekt.
+657|Slet alle materialer
+658|Slet alle materialer på denne enhed? Hovedbibliotekets materialer vises i stedet; når du ændrer et, gemmes en kopi til denne enhed.
+659|Denne enheds bibliotek viser nu hovedbiblioteket.

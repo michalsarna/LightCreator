@@ -648,3 +648,13 @@
 647|Os valores integrados foram repostos.
 648|Este material não tem definições para o tipo de laser deste dispositivo
 649|Faça duplo clique num material para editar as suas definições. As alterações ficam guardadas neste computador.
+650|Apenas preto ou branco, dividido a meia luminosidade. Nítido: bom para desenhos de linha e texto.
+651|Distribui o erro de arredondamento pelos pontos vizinhos. Uma boa escolha geral para fotografias.
+652|Distribui o erro por uma área maior: tons mais suaves, um pouco mais lento.
+653|Como o Jarvis, com detalhes mais nítidos.
+654|Mantém as luzes limpas e o contraste alto; perde um pouco dos detalhes mais escuros e mais claros.
+655|Um padrão fixo de pontos 8×8: regular e rápido, sem ruído.
+656|Sem pontos: cada píxel queima com uma potência entre o mínimo e a potência da camada.
+657|Eliminar todos os materiais
+658|Eliminar todos os materiais deste dispositivo? Em vez deles são mostrados os da biblioteca principal; ao alterar um, fica guardada uma cópia para este dispositivo.
+659|A biblioteca deste dispositivo mostra agora a biblioteca principal.
