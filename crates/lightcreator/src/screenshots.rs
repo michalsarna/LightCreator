@@ -560,6 +560,16 @@ fn render_screenshots() {
     }
     save(&mut h, "36-options-web-server.png");
     app(&mut h).show_options = false;
+
+    // Two of the coloured schemes.
+    for (scheme, name) in [(Scheme::PurpleDark, "37-theme-dark-purple.png"), (Scheme::OrangeLight, "38-theme-light-orange.png")] {
+        app(&mut h).scheme = scheme;
+        theme::apply(&ctx, scheme);
+        app(&mut h).side_tab = SideTab::Layers;
+        save(&mut h, name);
+    }
+    app(&mut h).scheme = Scheme::LightDark;
+    theme::apply(&ctx, Scheme::LightDark);
 }
 
 /// The node-editing bar disappears when another window (the preview) is clicked and returns on a click in the canvas.
