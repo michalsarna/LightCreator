@@ -667,3 +667,10 @@
 666	General
 667	Hardware
 668	G-code
+669	Front-right
+670	Back-right
+671	Invert axes
+672	Panel orientation
+673	Native
+674	Rotated left
+675	Rotated right

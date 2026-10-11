@@ -667,3 +667,10 @@
 666|Općenito
 667|Hardver
 668|G-kod
+669|Prednje desno
+670|Stražnje desno
+671|Obrni osi
+672|Orijentacija ploče
+673|Izvorna
+674|Okrenuto ulijevo
+675|Okrenuto udesno

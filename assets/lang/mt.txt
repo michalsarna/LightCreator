@@ -667,3 +667,10 @@
 666|Ġenerali
 667|Hardware
 668|G-code
+669|Quddiem fuq il-lemin
+670|Wara fuq il-lemin
+671|Aqleb l-assi
+672|Orjentazzjoni tal-pannell
+673|Nattiva
+674|Mdawra lejn ix-xellug
+675|Mdawra lejn il-lemin

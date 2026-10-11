@@ -667,3 +667,10 @@
 666|General
 667|Maquinari
 668|G-code
+669|Davant dreta
+670|Darrere dreta
+671|Inverteix els eixos
+672|Orientació del panell
+673|Nativa
+674|Girada a l'esquerra
+675|Girada a la dreta

@@ -8,7 +8,7 @@ use crate::theme::{self, Scheme};
 use eframe::egui::{self, Align, Color32, Layout, RichText};
 use crate::units_ui::{drag_len, drag_speed, fmt_len, fmt_speed};
 use lc_core::controller::Action;
-use lc_core::{Controller, Device, LaserKind, LinkKind, Origin, SpeedUnit, Units};
+use lc_core::{Controller, Device, LaserKind, LinkKind, Orientation, Origin, SpeedUnit, Units};
 
 /// An in-progress "read settings from the device" request.
 pub struct ReadCfg {
@@ -293,12 +293,24 @@ impl App {
                                     drag_len(ui, u, &mut d.area.bed_h, 1.0, Some((10.0, 5000.0)));
                                     ui.end_row();
                                     ui.label(tr("Machine zero (0,0)"));
-                                    egui::ComboBox::from_id_salt("origin")
-                                        .selected_text(if d.axes.origin == Origin::FrontLeft { tr("Front-left (GRBL default)") } else { tr("Back-left") })
-                                        .show_ui(ui, |ui| {
-                                            ui.selectable_value(&mut d.axes.origin, Origin::FrontLeft, tr("Front-left (GRBL default)"));
-                                            ui.selectable_value(&mut d.axes.origin, Origin::BackLeft, tr("Back-left"));
-                                        });
+                                    egui::ComboBox::from_id_salt("origin").selected_text(tr(d.axes.origin.label())).show_ui(ui, |ui| {
+                                        for o in Origin::ALL {
+                                            ui.selectable_value(&mut d.axes.origin, o, tr(o.label()));
+                                        }
+                                    });
+                                    ui.end_row();
+                                    ui.label(tr("Invert axes"));
+                                    ui.horizontal(|ui| {
+                                        ui.checkbox(&mut d.axes.flip_x, "X");
+                                        ui.checkbox(&mut d.axes.flip_y, "Y");
+                                    });
+                                    ui.end_row();
+                                    ui.label(tr("Panel orientation"));
+                                    egui::ComboBox::from_id_salt("orientation").selected_text(tr(d.axes.orientation.label())).show_ui(ui, |ui| {
+                                        for o in Orientation::ALL {
+                                            ui.selectable_value(&mut d.axes.orientation, o, tr(o.label()));
+                                        }
+                                    });
                                     ui.end_row();
                                 });
                             }
@@ -520,7 +532,7 @@ impl App {
             row(tr("Units"), tr(dev.units.label()).to_string());
             row(tr("Speed units"), tr(dev.speed_unit.label()).to_string());
             row(tr("Work area"), format!("{} × {}", fmt_len(units, dev.area.bed_w, 0), fmt_len(units, dev.area.bed_h, 0)));
-            row(tr("Machine zero (0,0)"), if dev.axes.origin == Origin::FrontLeft { tr("Front-left (GRBL default)") } else { tr("Back-left") }.to_string());
+            row(tr("Machine zero (0,0)"), tr(dev.axes.origin.label()).to_string());
             row(tr("S-value max ($30)"), format!("{}", dev.s_max()));
             row(tr("Dynamic power (M4)"), yes_no(dev.gcode.dynamic_power).to_string());
             row(tr("Travel speed"), fmt_speed(units, dev.speed_unit, true, dev.speeds.travel_speed));

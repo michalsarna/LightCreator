@@ -74,16 +74,12 @@ impl<'a> Writer<'a> {
     }
 
     fn map(&self, p: Pt) -> (f64, f64) {
-        let x = p.x.clamp(0.0, self.dev.area.bed_w);
-        let y = p.y.clamp(0.0, self.dev.area.bed_h);
-        match self.dev.axes.origin {
-            Origin::FrontLeft => (x, self.dev.area.bed_h - y),
-            Origin::BackLeft => (x, y),
-        }
+        self.dev.to_machine(self.clamp(p))
     }
 
     fn clamp(&self, p: Pt) -> Pt {
-        Pt::new(p.x.clamp(0.0, self.dev.area.bed_w), p.y.clamp(0.0, self.dev.area.bed_h))
+        let (w, h) = self.dev.work_size();
+        Pt::new(p.x.clamp(0.0, w), p.y.clamp(0.0, h))
     }
 
     fn travel(&mut self, p: Pt) {

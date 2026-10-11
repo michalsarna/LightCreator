@@ -970,3 +970,53 @@ fn a_profile_without_heads_gets_one() {
     let d: Device = serde_json::from_value(v).unwrap();
     assert_eq!(d.heads.len(), 1);
 }
+
+fn axes_device(origin: Origin, flip_x: bool, flip_y: bool, orientation: Orientation) -> Device {
+    let mut d = Device::default();
+    d.area = Area { bed_w: 300.0, bed_h: 200.0 };
+    d.axes = Axes { origin, flip_x, flip_y, orientation };
+    d
+}
+
+#[test]
+fn machine_transform_round_trips_for_every_corner_flip_and_orientation() {
+    let pts = [Pt::new(0.0, 0.0), Pt::new(12.5, 7.25), Pt::new(100.0, 150.0), Pt::new(199.0, 1.0)];
+    for origin in Origin::ALL {
+        for (fx, fy) in [(false, false), (true, false), (false, true), (true, true)] {
+            for o in Orientation::ALL {
+                let d = axes_device(origin, fx, fy, o);
+                let (w, h) = d.work_size();
+                for p in pts {
+                    let p = Pt::new(p.x.min(w), p.y.min(h));
+                    let (x, y) = d.to_machine(p);
+                    assert!(x >= -1e-9 && x <= 300.0 + 1e-9 && y >= -1e-9 && y <= 200.0 + 1e-9, "{origin:?} {fx} {fy} {o:?}: {x},{y}");
+                    assert!(d.from_machine(x, y).dist(p) < 1e-9, "{origin:?} {fx} {fy} {o:?}");
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn zero_is_at_the_chosen_corner_of_the_design() {
+    // Design y points down: "front" is the bottom edge.
+    let at = |origin| axes_device(origin, false, false, Orientation::Native).home_point();
+    assert_eq!(at(Origin::FrontLeft), Pt::new(0.0, 200.0));
+    assert_eq!(at(Origin::BackLeft), Pt::new(0.0, 0.0));
+    assert_eq!(at(Origin::FrontRight), Pt::new(300.0, 200.0));
+    assert_eq!(at(Origin::BackRight), Pt::new(300.0, 0.0));
+    // Inverting X moves the zero to the other side.
+    assert_eq!(axes_device(Origin::FrontLeft, true, false, Orientation::Native).home_point(), Pt::new(300.0, 200.0));
+}
+
+#[test]
+fn turned_panel_swaps_the_design_size_and_maps_the_corners() {
+    let left = axes_device(Origin::FrontLeft, false, false, Orientation::RotateLeft);
+    assert_eq!(left.work_size(), (200.0, 300.0));
+    // A quarter turn to the right takes the machine's top-left corner to the design's top-right corner.
+    let right = axes_device(Origin::BackLeft, false, false, Orientation::RotateRight);
+    assert_eq!(right.work_size(), (200.0, 300.0));
+    assert_eq!(right.to_machine(Pt::new(200.0, 0.0)), (0.0, 0.0));
+    assert_eq!(right.home_point(), Pt::new(200.0, 0.0));
+    assert_eq!(left.to_machine(Pt::new(0.0, 0.0)), (300.0, 200.0));
+}

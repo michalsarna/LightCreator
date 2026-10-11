@@ -667,3 +667,10 @@
 666|Bendra
 667|Aparatinė įranga
 668|G-kodas
+669|Priekyje dešinėje
+670|Gale dešinėje
+671|Apversti ašis
+672|Skydelio orientacija
+673|Įprasta
+674|Pasukta kairėn
+675|Pasukta dešinėn

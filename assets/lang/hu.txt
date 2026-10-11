@@ -667,3 +667,10 @@
 666|Általános
 667|Hardver
 668|G-kód
+669|Elöl jobbra
+670|Hátul jobbra
+671|Tengelyek megfordítása
+672|Panel tájolása
+673|Eredeti
+674|Balra forgatva
+675|Jobbra forgatva

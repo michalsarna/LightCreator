@@ -667,3 +667,10 @@
 666|Général
 667|Matériel
 668|G-code
+669|Avant droit
+670|Arrière droit
+671|Inverser les axes
+672|Orientation du panneau
+673|Native
+674|Tourné à gauche
+675|Tourné à droite

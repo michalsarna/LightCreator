@@ -242,7 +242,7 @@ impl App {
         let (resp, painter) = ui.allocate_painter(avail, Sense::click_and_drag());
         let rect = resp.rect;
         let o = rect.min;
-        let (bw, bh) = (self.doc.device.area.bed_w, self.doc.device.area.bed_h);
+        let (bw, bh) = self.doc.device.work_size();
 
         self.canvas_avail = (rect.width(), rect.height());
         self.canvas_origin = rect.min;
@@ -325,11 +325,7 @@ impl App {
         }
         painter.rect_stroke(bed, 0.0, Stroke::new(1.0, Color32::from_gray(0x99)), egui::StrokeKind::Outside);
         // Origin marker (machine zero)
-        let zero = match self.doc.device.axes.origin {
-            lc_core::Origin::FrontLeft => Pt::new(0.0, bh),
-            lc_core::Origin::BackLeft => Pt::new(0.0, 0.0),
-        };
-        painter.circle_filled(self.w2s(o, zero), 4.0, theme::accent());
+        painter.circle_filled(self.w2s(o, self.doc.device.home_point()), 4.0, theme::accent());
 
         // ---- camera overlay (under the design) ----
         if self.overlay_visible {

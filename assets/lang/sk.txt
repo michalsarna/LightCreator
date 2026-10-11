@@ -667,3 +667,10 @@
 666|Všeobecné
 667|Hardvér
 668|G-kód
+669|Vpredu vpravo
+670|Vzadu vpravo
+671|Obrátiť osi
+672|Orientácia panelu
+673|Pôvodná
+674|Otočené vľavo
+675|Otočené vpravo

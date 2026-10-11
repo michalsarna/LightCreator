@@ -667,3 +667,10 @@
 666|General
 667|Hardware
 668|Cod G
+669|Față dreapta
+670|Spate dreapta
+671|Inversează axele
+672|Orientarea panoului
+673|Nativă
+674|Rotit la stânga
+675|Rotit la dreapta

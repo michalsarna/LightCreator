@@ -667,3 +667,10 @@
 666|Vispārīgi
 667|Aparatūra
 668|G-kods
+669|Priekšā labajā pusē
+670|Aizmugurē labajā pusē
+671|Apgriezt asis
+672|Paneļa orientācija
+673|Sākotnējā
+674|Pagriezta pa kreisi
+675|Pagriezta pa labi

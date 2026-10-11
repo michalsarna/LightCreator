@@ -667,3 +667,10 @@
 666|Allmänt
 667|Hårdvara
 668|G-kod
+669|Fram till höger
+670|Bak till höger
+671|Vänd axlarna
+672|Panelens orientering
+673|Standard
+674|Roterad åt vänster
+675|Roterad åt höger

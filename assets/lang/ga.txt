@@ -667,3 +667,10 @@
 666|Ginearálta
 667|Crua-earraí
 668|G-code
+669|Tosach ar dheis
+670|Cúl ar dheis
+671|Inbhéartaigh na haiseanna
+672|Treoshuíomh an phainéil
+673|Dúchasach
+674|Rothlaithe ar chlé
+675|Rothlaithe ar dheis

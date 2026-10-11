@@ -667,3 +667,10 @@
 666|Algemeen
 667|Hardware
 668|G-code
+669|Rechtsvoor
+670|Rechtsachter
+671|Assen omkeren
+672|Paneeloriëntatie
+673|Standaard
+674|Naar links gedraaid
+675|Naar rechts gedraaid

@@ -919,6 +919,14 @@ const TABLE: &[[&str; 7]] = &[
     ["General", "Ogólne", "Allgemein", "Generale", "Yleiset", "常规", "सामान्य"],
     ["Hardware", "Sprzęt", "Hardware", "Hardware", "Laitteisto", "硬件", "हार्डवेयर"],
     ["G-code", "G-code", "G-Code", "G-code", "G-koodi", "G 代码", "G-कोड"],
+    // ---- axes ----
+    ["Front-right", "Prawy przód", "Vorne rechts", "Anteriore destro", "Oikea etu", "右前", "आगे-दाएँ"],
+    ["Back-right", "Prawy tył", "Hinten rechts", "Posteriore destro", "Oikea taka", "右后", "पीछे-दाएँ"],
+    ["Invert axes", "Odwróć osie", "Achsen umkehren", "Inverti gli assi", "Käännä akselit", "反转轴", "अक्ष उलटें"],
+    ["Panel orientation", "Orientacja panelu", "Panel-Ausrichtung", "Orientamento del pannello", "Paneelin suunta", "面板方向", "पैनल की दिशा"],
+    ["Native", "Natywna", "Nativ", "Nativo", "Alkuperäinen", "原始", "मूल"],
+    ["Rotated left", "Obrót w lewo", "Nach links gedreht", "Ruotato a sinistra", "Käännetty vasemmalle", "向左旋转", "बाएँ घुमाया"],
+    ["Rotated right", "Obrót w prawo", "Nach rechts gedreht", "Ruotato a destra", "Käännetty oikealle", "向右旋转", "दाएँ घुमाया"],
 ];
 #[cfg(test)]
 mod tests {

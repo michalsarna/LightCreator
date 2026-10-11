@@ -667,3 +667,10 @@
 666|Splošno
 667|Strojna oprema
 668|G-koda
+669|Spredaj desno
+670|Zadaj desno
+671|Obrni osi
+672|Usmerjenost plošče
+673|Izvirna
+674|Zasukano levo
+675|Zasukano desno

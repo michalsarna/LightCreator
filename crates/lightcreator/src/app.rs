@@ -564,7 +564,7 @@ impl App {
         let Some(b) = self.sel_bounds() else { return };
         // A single object aligns to the bed, several align to each other.
         let target = if self.sel.len() == 1 {
-            Rect { min: Pt::new(0.0, 0.0), max: Pt::new(self.doc.device.area.bed_w, self.doc.device.area.bed_h) }
+            Rect { min: Pt::new(0.0, 0.0), max: { let (w, h) = self.doc.device.work_size(); Pt::new(w, h) } }
         } else {
             b
         };
@@ -628,7 +628,8 @@ impl App {
         if let Some(b) = self.sel_bounds() {
             self.checkpoint();
             let (c, d) = (b.center(), &self.doc.device);
-            let t = Xf::translate(d.area.bed_w / 2.0 - c.x, d.area.bed_h / 2.0 - c.y);
+            let (bw, bh) = d.work_size();
+            let t = Xf::translate(bw / 2.0 - c.x, bh / 2.0 - c.y);
             self.transform_selection(t);
         }
     }

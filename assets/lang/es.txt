@@ -667,3 +667,10 @@
 666|General
 667|Hardware
 668|G-code
+669|Delante derecha
+670|Atrás derecha
+671|Invertir los ejes
+672|Orientación del panel
+673|Nativa
+674|Girada a la izquierda
+675|Girada a la derecha

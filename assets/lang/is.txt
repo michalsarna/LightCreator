@@ -667,3 +667,10 @@
 666|Almennt
 667|Vélbúnaður
 668|G-kóði
+669|Fram til hægri
+670|Aftan til hægri
+671|Snúa ásum við
+672|Stefna spjaldsins
+673|Upprunaleg
+674|Snúið til vinstri
+675|Snúið til hægri

@@ -667,3 +667,10 @@
 666|Generelt
 667|Hardware
 668|G-kode
+669|Forrest til højre
+670|Bagest til højre
+671|Vend akserne
+672|Panelets orientering
+673|Oprindelig
+674|Drejet til venstre
+675|Drejet til højre

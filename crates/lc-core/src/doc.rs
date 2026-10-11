@@ -258,12 +258,55 @@ impl Shape {
     }
 }
 
+/// The corner of the work area where the machine's zero is. "Front" is the bottom of the design (y down is the back).
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Origin {
     /// Machine zero at the front-left corner (GRBL default); Y is flipped on output.
     FrontLeft,
     /// Machine zero at the back-left corner.
     BackLeft,
+    FrontRight,
+    BackRight,
+}
+
+impl Origin {
+    pub const ALL: [Origin; 4] = [Origin::FrontLeft, Origin::BackLeft, Origin::FrontRight, Origin::BackRight];
+    pub fn label(self) -> &'static str {
+        match self {
+            Origin::FrontLeft => "Front-left (GRBL default)",
+            Origin::BackLeft => "Back-left",
+            Origin::FrontRight => "Front-right",
+            Origin::BackRight => "Back-right",
+        }
+    }
+    fn right(self) -> bool {
+        matches!(self, Origin::FrontRight | Origin::BackRight)
+    }
+    fn front(self) -> bool {
+        matches!(self, Origin::FrontLeft | Origin::FrontRight)
+    }
+}
+
+/// How the machine's panel sits in front of the user: the work area is shown turned the same way.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Orientation {
+    #[default]
+    Native,
+    /// The panel is turned a quarter turn counter-clockwise.
+    RotateLeft,
+    /// The panel is turned a quarter turn clockwise.
+    RotateRight,
+}
+
+impl Orientation {
+    pub const ALL: [Orientation; 3] = [Orientation::Native, Orientation::RotateLeft, Orientation::RotateRight];
+    pub fn label(self) -> &'static str {
+        match self {
+            Orientation::Native => "Native",
+            Orientation::RotateLeft => "Rotated left",
+            Orientation::RotateRight => "Rotated right",
+        }
+    }
 }
 
 /// Time basis in which speeds are shown and entered. Stored speeds stay in mm/s (layers) and mm/min (travel, jog)
@@ -455,11 +498,19 @@ fn d_jog_feed() -> f64 {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Axes {
     pub origin: Origin,
+    /// X counts the other way (the machine's X axis is inverted).
+    #[serde(default)]
+    pub flip_x: bool,
+    /// Y counts the other way.
+    #[serde(default)]
+    pub flip_y: bool,
+    #[serde(default)]
+    pub orientation: Orientation,
 }
 
 impl Default for Axes {
     fn default() -> Self {
-        Axes { origin: Origin::FrontLeft }
+        Axes { origin: Origin::FrontLeft, flip_x: false, flip_y: false, orientation: Orientation::Native }
     }
 }
 
@@ -642,7 +693,7 @@ struct DeviceWire {
 impl From<DeviceWire> for Device {
     fn from(w: DeviceWire) -> Device {
         let d = Device::default();
-        let axes = w.axes.unwrap_or(Axes { origin: w.origin.unwrap_or(d.axes.origin) });
+        let axes = w.axes.unwrap_or(Axes { origin: w.origin.unwrap_or(d.axes.origin), ..Axes::default() });
         let area = w.area.unwrap_or(Area { bed_w: w.bed_w.unwrap_or(d.area.bed_w), bed_h: w.bed_h.unwrap_or(d.area.bed_h) });
         let speeds = w.speeds.unwrap_or(Speeds { travel_speed: w.travel_speed.unwrap_or(d.speeds.travel_speed) });
         let gcode = w.gcode.unwrap_or(GcodeCfg { dynamic_power: w.dynamic_power.unwrap_or(true), return_home: w.return_home.unwrap_or(true) });
@@ -696,12 +747,50 @@ impl Device {
         }
     }
 
+    /// Size of the work area as the design sees it (millimetres): the axis ranges, swapped when the panel is turned.
+    pub fn work_size(&self) -> (f64, f64) {
+        match self.axes.orientation {
+            Orientation::Native => (self.area.bed_w, self.area.bed_h),
+            Orientation::RotateLeft | Orientation::RotateRight => (self.area.bed_h, self.area.bed_w),
+        }
+    }
+
+    /// A design point (millimetres, y down, within `work_size`) as the machine's X and Y coordinate.
+    pub fn to_machine(&self, p: Pt) -> (f64, f64) {
+        let (w, h) = (self.area.bed_w, self.area.bed_h);
+        // Back to the machine's own view of its work area.
+        let q = match self.axes.orientation {
+            Orientation::Native => p,
+            Orientation::RotateLeft => Pt::new(w - p.y, p.x),
+            Orientation::RotateRight => Pt::new(p.y, h - p.x),
+        };
+        let mut x = if self.axes.origin.right() { w - q.x } else { q.x };
+        let mut y = if self.axes.origin.front() { h - q.y } else { q.y };
+        if self.axes.flip_x {
+            x = w - x;
+        }
+        if self.axes.flip_y {
+            y = h - y;
+        }
+        (x, y)
+    }
+
+    /// The design point of a machine coordinate; the inverse of `to_machine`.
+    pub fn from_machine(&self, x: f64, y: f64) -> Pt {
+        let (w, h) = (self.area.bed_w, self.area.bed_h);
+        let x = if self.axes.flip_x { w - x } else { x };
+        let y = if self.axes.flip_y { h - y } else { y };
+        let q = Pt::new(if self.axes.origin.right() { w - x } else { x }, if self.axes.origin.front() { h - y } else { y });
+        match self.axes.orientation {
+            Orientation::Native => q,
+            Orientation::RotateLeft => Pt::new(q.y, w - q.x),
+            Orientation::RotateRight => Pt::new(h - q.y, q.x),
+        }
+    }
+
     /// Where the machine's zero is, in design coordinates (millimetres, y down). Jobs start and end here.
     pub fn home_point(&self) -> Pt {
-        match self.axes.origin {
-            Origin::FrontLeft => Pt::new(0.0, self.area.bed_h),
-            Origin::BackLeft => Pt::new(0.0, 0.0),
-        }
+        self.from_machine(0.0, 0.0)
     }
 
     /// Laser head `i`, or the first one when there is no such head.

@@ -667,3 +667,10 @@
 666|Üldine
 667|Riistvara
 668|G-kood
+669|Ees paremal
+670|Taga paremal
+671|Pööra teljed ümber
+672|Paneeli suund
+673|Algne
+674|Pööratud vasakule
+675|Pööratud paremale

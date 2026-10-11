@@ -667,3 +667,10 @@
 666|Generelt
 667|Maskinvare
 668|G-kode
+669|Foran til høyre
+670|Bak til høyre
+671|Snu aksene
+672|Panelets retning
+673|Original
+674|Rotert til venstre
+675|Rotert til høyre
