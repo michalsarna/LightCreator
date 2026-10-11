@@ -4,6 +4,8 @@
 
 ![Warstwy](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/19-layers-lock.png)
 
+![Materiały](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/34-material-layers.png)
+
 ## Warstwy
 * 30 kolorowych warstw. Każda ma **tryb** (Line, Fill, Fill + Line, Offset fill), prędkość, moc, liczbę przejść, interwał, kąt skanowania, overscan, skanowanie dwukierunkowe oraz przełączniki wyjścia i widoczności.
 * Nowe warstwy startują z mocą 100 % i prędkością 1000 mm/min. Ustawienia warstw należą do **projektu**: plik projektu zawiera je razem z profilem urządzenia; sam profil urządzenia nie przechowuje prędkości warstw (starsze profile nadal zawierają starą listę, która jest ignorowana). Prędkości są pokazywane na sekundę lub na minutę (opcja urządzenia *Speed units*), w mm lub calach.

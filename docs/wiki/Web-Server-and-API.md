@@ -2,6 +2,8 @@
 
 # Web Server and API
 
+![Options](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/36-options-web-server.png)
+
 *Program options → Web server and API* switches on a small web server built into LightCreator. It is **off by default**. It shows the state of the machine, the project and a camera in a browser (also on a phone), and offers an API for other programs.
 
 **There is no password and no encryption.** By default the server listens only on this computer (`http://localhost:8765`). *Reachable from other computers on the network* makes it listen on every interface: then anyone on the network can see the machine and stop or move it. Use that only on a network you trust, and never open the port to the internet.

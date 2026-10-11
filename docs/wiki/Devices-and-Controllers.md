@@ -4,6 +4,8 @@
 
 ![Device configuration](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/05-device-config.png)
 
+![Add a device](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/33-add-device.png)
+
 ## Axes, work area and the check before a job
 * **Machine zero** can be at any of the four corners; **Invert axes** reverses X and/or Y, and **Panel orientation** (native, rotated left, rotated right) turns the work area the way the panel sits in front of you (the area is shown turned and the G-code is mapped to match). Everything goes through one design-to-machine transform, so the jog arrows, the zero marker, frame, G-code, HPGL and DXF agree.
 * **Margins** are strips along the edges that the machine cannot use (clamps, a frame); they are hatched on the canvas. **Software limits** are an optional own rectangle inside the usable area (outlined in orange). The jog buttons stop at the edge of the allowed area; a head that stands outside may always move back in.

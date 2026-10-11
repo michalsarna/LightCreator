@@ -4,6 +4,8 @@
 
 ![Konfiguracja urządzenia](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/05-device-config.png)
 
+![Dodawanie urządzenia](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/33-add-device.png)
+
 ## Osie, pole robocze i kontrola przed zadaniem
 * **Zero maszyny** może być w każdym z czterech narożników; **Invert axes** odwraca X i/lub Y, a **Panel orientation** (natywna, obrót w lewo, obrót w prawo) obraca pole robocze tak, jak panel stoi przed tobą (pole jest pokazane obrócone, a G-code odpowiednio mapowany). Wszystko przechodzi przez jedną transformację projekt → maszyna, więc strzałki ręcznego przesuwu, znacznik zera, ramka, G-code, HPGL i DXF są spójne.
 * **Marginesy** to pasy przy krawędziach, których maszyna nie może użyć (zaciski, rama); są kreskowane na kanwie. **Limity programowe** to opcjonalny własny prostokąt w polu użytecznym (obrys pomarańczowy). Przyciski przesuwu zatrzymują się na brzegu dozwolonego obszaru; głowica stojąca na zewnątrz zawsze może wrócić do środka.

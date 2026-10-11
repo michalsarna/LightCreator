@@ -20,6 +20,10 @@ Language, colour scheme, device profiles, the last used profile and the window s
 * **Settings** menu: language (English default) and colour scheme (Dark, Light Dark, Medium Light, Light; default Light Dark), plus view options (grids, background, line thickness).
 * Interface languages (30): English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी and 23 more European languages: Български, Català, Hrvatski, Čeština, Dansk, Nederlands, Eesti, Français, Ελληνικά, Magyar, Íslenska, Gaeilge, Latviešu, Lietuvių, Malti, Norsk bokmål, Português, Română, Slovenčina, Slovenščina, Español, Svenska, Українська. The European texts are in `assets/lang/` (one file per language) and were prepared with machine help, so corrections from native speakers are welcome. Icons are SVG files and fonts (Noto Sans, Mono, SC, Devanagari) are embedded from `assets/`, so the look is identical on every system.
 
+## Status bar and button colours
+
+The status bar at the bottom shows the state of the device (with a dot: green when connected) and of the web server (off, on with its port, or an error). Save buttons are **green**, import buttons **blue** and delete buttons **red** with a bin.
+
 ## Printing
 *File → Print…* (Ctrl+P) prints the design on a paper printer. The page is a one-page PDF made by LightCreator: the whole work area to scale (dashed border) or only the objects as large as the page allows; objects on visible layers only, or all; A4 or Letter; a margin of 0–40 mm. The page turns to landscape when the printed part is wider than tall, and a line at the bottom gives the scale. Layers are drawn in their colours, filled shapes lightly tinted, images in grey. A warning appears when objects reach outside the work area (with the work-area option they are cut off at its edge).
 

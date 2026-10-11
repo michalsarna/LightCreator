@@ -218,6 +218,8 @@
 * Languages (30): English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी and 23 more European languages: Български, Català, Hrvatski, Čeština, Dansk, Nederlands, Eesti, Français, Ελληνικά, Magyar, Íslenska, Gaeilge, Latviešu, Lietuvių, Malti, Norsk bokmål, Português, Română, Slovenčina, Slovenščina, Español, Svenska, Українська. The texts of the European languages are in `assets/lang/<code>.txt`, one file per language,
   and were prepared with machine help: corrections from native speakers are welcome. Russian is not included. The quick
   guide exists in English and Polish; the other languages show the English text there.
+* The status bar shows the state of the device and of the web server (off, on with the port, error). Save buttons are
+  green, import buttons blue and delete buttons red.
 * Colour schemes: Dark, Light Dark, Medium Light, Light.
 * Application icon in every place the platform supports.
 * All interface icons (tool bar, menus, context menu, buttons) are SVG files and all text fonts (Noto Sans,
@@ -225,5 +227,5 @@
   program, so the look is the same on every system. Every menu entry has an icon, in the in-window menus (Windows,
   Linux) and in the native macOS menu bar (menu titles on macOS stay text, as the system requires).
 
-**Not yet implemented:** direct Ruida / Trocen binary protocols, scan angles for images, kerning and complex
+**Not yet implemented:** direct Ruida / Trocen binary protocols, kerning and complex
 script shaping in text, automatic lens calibration for the camera (the lens correction is entered by hand).

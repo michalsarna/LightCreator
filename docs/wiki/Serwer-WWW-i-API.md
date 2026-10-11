@@ -2,6 +2,8 @@
 
 # Serwer WWW i API
 
+![Opcje](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/36-options-web-server.png)
+
 *Opcje programu → Serwer WWW i API* włącza mały serwer WWW wbudowany w LightCreator. Jest **domyślnie wyłączony**. Pokazuje w przeglądarce (także na telefonie) stan maszyny, projekt i kamerę oraz udostępnia API dla innych programów.
 
 **Nie ma hasła ani szyfrowania.** Domyślnie serwer nasłuchuje tylko na tym komputerze (`http://localhost:8765`). *Dostępny z innych komputerów w sieci* włącza nasłuch na wszystkich interfejsach: wtedy każdy w sieci może zobaczyć maszynę oraz ją zatrzymać lub poruszyć. Używaj tego tylko w sieci, której ufasz, i nigdy nie otwieraj portu do internetu.
