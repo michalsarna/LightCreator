@@ -609,3 +609,19 @@
 608|Innstilling
 609|Denne enheten
 610|Materialer
+611|Tre
+612|Metall
+613|Plast
+614|Papir og lær
+615|Stein og glass
+616|Annet
+617|Eksporter biblioteket…
+618|Importer biblioteket…
+619|Merk av hva som skal i filen.
+620|Merk av hva som skal hentes fra filen.
+621|Globale materialer
+622|Enheter
+623|Biblioteket er lagret: {} materiale(r) og {} enhet(er)
+624|Importerte {} materiale(r) og {} enhet(er)
+625|Dette er ikke en bibliotekfil fra LightCreator.
+626|{} har materialinnstillinger som avviker fra {}. Velg verdiene som skal beholdes.

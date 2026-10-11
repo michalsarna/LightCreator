@@ -609,3 +609,19 @@
 608|Nastavení
 609|Toto zařízení
 610|Materiály
+611|Dřevo
+612|Kov
+613|Plast
+614|Papír a kůže
+615|Kámen a sklo
+616|Ostatní
+617|Exportovat knihovnu…
+618|Importovat knihovnu…
+619|Zaškrtněte, co se uloží do souboru.
+620|Zaškrtněte, co se má převzít ze souboru.
+621|Globální materiály
+622|Zařízení
+623|Knihovna uložena: materiálů {} a zařízení {}
+624|Importováno materiálů: {}, zařízení: {}
+625|Toto není soubor knihovny LightCreator.
+626|{} obsahuje nastavení materiálů odlišná od {}. Vyberte hodnoty, které se mají zachovat.

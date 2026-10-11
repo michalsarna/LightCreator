@@ -609,3 +609,19 @@
 608|Postavka
 609|Ovaj uređaj
 610|Materijali
+611|Drvo
+612|Metal
+613|Plastika
+614|Papir i koža
+615|Kamen i staklo
+616|Ostalo
+617|Izvezi biblioteku…
+618|Uvezi biblioteku…
+619|Označite što ide u datoteku.
+620|Označite što treba preuzeti iz datoteke.
+621|Globalni materijali
+622|Uređaji
+623|Biblioteka spremljena: materijala {} i uređaja {}
+624|Uvezeno materijala: {}, uređaja: {}
+625|Ovo nije datoteka biblioteke programa LightCreator.
+626|{} sadrži postavke materijala različite od {}. Odaberite vrijednosti koje se zadržavaju.

@@ -609,3 +609,19 @@
 608	Setting
 609	This device
 610	Materials
+611	Wood
+612	Metal
+613	Plastic
+614	Paper and leather
+615	Stone and glass
+616	Other
+617	Export library…
+618	Import library…
+619	Tick what goes into the file.
+620	Tick what to take from the file.
+621	Global materials
+622	Devices
+623	Saved the library: {} material(s) and {} device(s)
+624	Imported {} material(s) and {} device(s)
+625	This is not a library file of LightCreator.
+626	{} has material settings that differ from {}. Choose the values to keep.

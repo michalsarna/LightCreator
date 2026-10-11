@@ -60,7 +60,7 @@ impl Tool {
 pub const APP_VERSION: &str = "v0.0.10";
 
 /// Tabs of the right-hand panel.
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
 pub enum SideTab {
     Properties,
     Layers,
@@ -81,6 +81,37 @@ impl SideTab {
         (SideTab::Clipart, "Clipart"),
         (SideTab::Materials, "Materials"),
     ];
+
+    pub fn id(self) -> &'static str {
+        match self {
+            SideTab::Properties => "properties",
+            SideTab::Layers => "layers",
+            SideTab::Device => "device",
+            SideTab::Console => "console",
+            SideTab::Clipart => "clipart",
+            SideTab::Materials => "materials",
+            SideTab::Camera => "camera",
+        }
+    }
+
+    /// The tabs in the order the user arranged them (`ids` comes from the settings); tabs it does not mention
+    /// keep their place at the end.
+    pub fn arranged(ids: &str) -> Vec<(SideTab, &'static str)> {
+        let mut out: Vec<(SideTab, &'static str)> = vec![];
+        for id in ids.split(',') {
+            if let Some(t) = SideTab::ALL.iter().find(|(t, _)| t.id() == id.trim()) {
+                if !out.contains(t) {
+                    out.push(*t);
+                }
+            }
+        }
+        for t in SideTab::ALL {
+            if !out.contains(&t) {
+                out.push(t);
+            }
+        }
+        out
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -219,6 +250,19 @@ pub struct App {
     /// The library window was opened to add materials to the device (from the Materials tab).
     pub mat_add_mode: bool,
     pub mat_merge: Option<crate::materials_ui::MergeDlg>,
+    /// More windows of differences, shown one after the other.
+    pub mat_merge_next: Vec<crate::materials_ui::MergeDlg>,
+    /// Category shown in the Materials tab (`None`: all).
+    pub mat_dev_cat: Option<String>,
+    /// Category shown in the Material library window (`None`: all).
+    pub mat_cat: Option<String>,
+    /// Category chosen for a material that is being saved (`None`: the one its name suggests).
+    pub mat_save_cat: Option<String>,
+    pub mat_new_cat: String,
+    /// The window that exports or imports a library file.
+    pub lib_dlg: Option<crate::materials_ui::LibDlg>,
+    /// The order of the tabs of the side panel.
+    pub tab_order: Vec<(SideTab, &'static str)>,
     pub mat_filter: String,
     pub mat_laser: Option<lc_core::LaserKind>,
     pub mat_sel: Option<usize>,
@@ -374,6 +418,13 @@ impl App {
             mat_global_name: String::new(),
             mat_add_mode: false,
             mat_merge: None,
+            mat_merge_next: vec![],
+            mat_dev_cat: None,
+            mat_cat: None,
+            mat_save_cat: None,
+            mat_new_cat: String::new(),
+            lib_dlg: None,
+            tab_order: SideTab::arranged(&saved("tab_order").unwrap_or_default()),
             mat_filter: String::new(),
             mat_laser: None,
             mat_sel: None,
@@ -1637,6 +1688,7 @@ impl App {
         self.round_window(ctx);
         self.materials_window(ctx);
         self.merge_dialog(ctx);
+        self.library_dialog(ctx);
         self.overlay_window(ctx);
         self.prefs_window(ctx);
         self.preview_window(ctx);
@@ -1741,6 +1793,7 @@ impl App {
         if let Ok(j) = serde_json::to_string(&self.global_materials) {
             v.push(("global_materials", j));
         }
+        v.push(("tab_order", self.tab_order.iter().map(|(t, _)| t.id()).collect::<Vec<_>>().join(",")));
         v
     }
 

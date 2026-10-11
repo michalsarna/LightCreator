@@ -153,6 +153,9 @@ impl App {
         if get("global_materials").is_some() || get("user_materials").is_some() {
             self.global_materials = crate::materials_ui::load_global(&|k| m.get(k).cloned());
         }
+        if let Some(o) = get("tab_order") {
+            self.tab_order = crate::app::SideTab::arranged(o);
+        }
         self.cfg = None;
         if self.screen == crate::app::Screen::Editor && !self.profiles.is_empty() {
             self.enter_editor(self.active);

@@ -609,3 +609,19 @@
 608|Stilling
 609|Þetta tæki
 610|Efni
+611|Tré
+612|Málmur
+613|Plast
+614|Pappír og leður
+615|Steinn og gler
+616|Annað
+617|Flytja safn út…
+618|Flytja safn inn…
+619|Hakaðu við það sem fer í skrána.
+620|Hakaðu við það sem á að taka úr skránni.
+621|Almenn efni
+622|Tæki
+623|Safn vistað: {} efni og {} tæki
+624|Flutt inn: {} efni og {} tæki
+625|Þetta er ekki safnskrá frá LightCreator.
+626|{} inniheldur efnisstillingar sem eru frábrugðnar {}. Veldu gildin sem á að halda.

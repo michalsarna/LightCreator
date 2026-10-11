@@ -609,3 +609,19 @@
 608|Réglage
 609|Cet appareil
 610|Matériaux
+611|Bois
+612|Métal
+613|Plastique
+614|Papier et cuir
+615|Pierre et verre
+616|Autre
+617|Exporter la bibliothèque…
+618|Importer la bibliothèque…
+619|Cochez ce qui va dans le fichier.
+620|Cochez ce qu'il faut prendre du fichier.
+621|Matériaux globaux
+622|Appareils
+623|Bibliothèque enregistrée : {} matériau(x) et {} appareil(s)
+624|{} matériau(x) et {} appareil(s) importé(s)
+625|Ce n'est pas un fichier de bibliothèque de LightCreator.
+626|{} contient des réglages de matériaux différents de ceux de {}. Choisissez les valeurs à conserver.

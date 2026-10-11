@@ -275,6 +275,16 @@ fn render_screenshots() {
     }
     save(&mut h, "34-material-merge.png");
     app(&mut h).mat_merge = None;
+    // Choosing what goes into a library file.
+    {
+        let a = app(&mut h);
+        a.start_library_export();
+        if let Some(d) = &mut a.lib_dlg {
+            d.global_on = true;
+        }
+    }
+    save(&mut h, "35-library-export.png");
+    app(&mut h).lib_dlg = None;
 
     // Preview window: several operations, each in its own colour, with travel moves.
     {

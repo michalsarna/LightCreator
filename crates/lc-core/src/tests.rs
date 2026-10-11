@@ -845,3 +845,48 @@ fn a_device_gets_missing_materials_from_a_source_for_its_laser() {
     let d: Device = serde_json::from_str(old).unwrap();
     assert!(d.materials.is_empty() && !d.materials_seeded);
 }
+
+#[test]
+fn materials_keep_colours_and_categories() {
+    // Built-in materials know their category and the colour of each layer.
+    let mats = materials::builtin_materials();
+    let ply = mats.iter().find(|m| m.name == "Plywood 3 mm").unwrap();
+    assert_eq!(ply.category(), "Wood");
+    assert_eq!(mats.iter().find(|m| m.name.starts_with("Acrylic")).unwrap().category(), "Plastic");
+    assert_eq!(mats.iter().find(|m| m.name.starts_with("Anodised")).unwrap().category(), "Metal");
+    assert!(ply.layers.iter().all(|l| l.spec.colour == l.index));
+    // A material saved without a category (or a colour) still loads; the category is guessed.
+    let old = r#"{"name":"Birch plywood","laser":"Diode","layers":[{"index":4,"label":"Cut","spec":{"mode":"Line","speed":3.0,"power":90.0,"passes":1,"interval":0.1,"angle":0.0,"overscan":1.0,"bidirectional":true,"dither":"Threshold","min_power":0.0,"air_assist":false}}]}"#;
+    let m: materials::Material = serde_json::from_str(old).unwrap();
+    assert_eq!((m.category().as_str(), m.layers[0].spec.colour), ("Wood", materials::NO_COLOUR));
+    // Applying a material sets the colour and the name of the layer; without a colour the layer keeps its own.
+    let mut doc = Document::default();
+    let mut m2 = ply.clone();
+    m2.layers[0].spec.colour = 17;
+    m2.layers[0].label = "Outline".into();
+    m2.apply(&mut doc.layers);
+    assert_eq!((doc.layers[0].color, doc.layers[0].name.as_str()), (17, "Outline"));
+    let before = doc.layers[4].color;
+    m.apply(&mut doc.layers);
+    assert_eq!(doc.layers[4].color, before);
+    // A category of your own survives a round trip.
+    let mut mine = ply.clone();
+    mine.category = "Samples".into();
+    let back: materials::Material = serde_json::from_str(&serde_json::to_string(&mine).unwrap()).unwrap();
+    assert_eq!(back.category(), "Samples");
+}
+
+#[test]
+fn a_library_file_holds_global_materials_and_devices() {
+    let mats = materials::builtin_materials();
+    let mut d = Device::default();
+    d.name = "Shop laser".into();
+    d.materials = mats[..3].to_vec();
+    let f = materials::LibraryFile::new(mats[3..5].to_vec(), vec![d]);
+    let back = materials::LibraryFile::from_json(&f.to_json()).expect("reads back");
+    assert_eq!(back, f);
+    assert_eq!(back.devices[0].materials.len(), 3);
+    // Anything else is refused.
+    assert!(materials::LibraryFile::from_json("{\"hello\":1}").is_none());
+    assert!(materials::LibraryFile::from_json("not json").is_none());
+}

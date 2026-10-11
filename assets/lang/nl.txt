@@ -609,3 +609,19 @@
 608|Instelling
 609|Dit apparaat
 610|Materialen
+611|Hout
+612|Metaal
+613|Kunststof
+614|Papier en leer
+615|Steen en glas
+616|Overig
+617|Bibliotheek exporteren…
+618|Bibliotheek importeren…
+619|Vink aan wat in het bestand komt.
+620|Vink aan wat uit het bestand wordt overgenomen.
+621|Algemene materialen
+622|Apparaten
+623|Bibliotheek opgeslagen: {} materia(a)l(en) en {} apparaat/apparaten
+624|{} materia(a)l(en) en {} apparaat/apparaten geïmporteerd
+625|Dit is geen bibliotheekbestand van LightCreator.
+626|{} bevat materiaalinstellingen die afwijken van {}. Kies de waarden die blijven.

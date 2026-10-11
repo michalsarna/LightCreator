@@ -609,3 +609,19 @@
 608|Issettjar
 609|Dan it-tagħmir
 610|Materjali
+611|Injam
+612|Metall
+613|Plastik
+614|Karta u ġilda
+615|Ġebel u ħġieġ
+616|Oħrajn
+617|Esporta l-librerija…
+618|Importa l-librerija…
+619|Immarka dak li jmur fil-fajl.
+620|Immarka dak li għandu jittieħed mill-fajl.
+621|Materjali globali
+622|Apparati
+623|Il-librerija ġiet salvata: {} materjal u {} apparat
+624|Importati {} materjal u {} apparat
+625|Din mhix fajl ta' librerija ta' LightCreator.
+626|{} fih issettings tal-materjali differenti minn {}. Agħżel il-valuri li għandhom jinżammu.

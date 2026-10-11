@@ -609,3 +609,19 @@
 608|Ajust
 609|Aquest dispositiu
 610|Materials
+611|Fusta
+612|Metall
+613|Plàstic
+614|Paper i cuir
+615|Pedra i vidre
+616|Altres
+617|Exporta la biblioteca…
+618|Importa la biblioteca…
+619|Marqueu què va al fitxer.
+620|Marqueu què cal agafar del fitxer.
+621|Materials globals
+622|Dispositius
+623|Biblioteca desada: {} material(s) i {} dispositiu(s)
+624|Importats {} material(s) i {} dispositiu(s)
+625|Aquest no és un fitxer de biblioteca de LightCreator.
+626|{} conté paràmetres de materials diferents dels de {}. Trieu els valors que voleu conservar.

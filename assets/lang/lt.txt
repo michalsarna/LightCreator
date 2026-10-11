@@ -609,3 +609,19 @@
 608|Nustatymas
 609|Šis įrenginys
 610|Medžiagos
+611|Mediena
+612|Metalas
+613|Plastikas
+614|Popierius ir oda
+615|Akmuo ir stiklas
+616|Kita
+617|Eksportuoti biblioteką…
+618|Importuoti biblioteką…
+619|Pažymėkite, kas bus įrašyta į failą.
+620|Pažymėkite, ką paimti iš failo.
+621|Bendros medžiagos
+622|Įrenginiai
+623|Biblioteka išsaugota: medžiagų {} ir įrenginių {}
+624|Importuota medžiagų: {}, įrenginių: {}
+625|Tai nėra „LightCreator“ bibliotekos failas.
+626|{} medžiagų nustatymai skiriasi nuo {}. Pasirinkite reikšmes, kurias palikti.

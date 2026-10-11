@@ -609,3 +609,19 @@
 608|Iestatījums
 609|Šī ierīce
 610|Materiāli
+611|Koks
+612|Metāls
+613|Plastmasa
+614|Papīrs un āda
+615|Akmens un stikls
+616|Citi
+617|Eksportēt bibliotēku…
+618|Importēt bibliotēku…
+619|Atzīmējiet, kas tiks ierakstīts failā.
+620|Atzīmējiet, ko ņemt no faila.
+621|Kopīgie materiāli
+622|Ierīces
+623|Bibliotēka saglabāta: {} materiāli un {} ierīces
+624|Importēti {} materiāli un {} ierīces
+625|Šis nav LightCreator bibliotēkas fails.
+626|{} materiālu iestatījumi atšķiras no {}. Izvēlieties vērtības, kas jāatstāj.

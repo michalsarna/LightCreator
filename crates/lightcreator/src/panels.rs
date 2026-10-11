@@ -8,21 +8,57 @@ use lc_core::{Dither, Kind, LayerMode, TextData, Xf, PALETTE};
 
 impl App {
     pub fn side_panel(&mut self, ui: &mut egui::Ui) {
+        let mut tabs: Vec<(SideTab, &'static str)> = self.tab_order.clone();
+        let camera_tab = self.show_stream && self.stream_mode == crate::stream_ui::StreamMode::Tab;
+        if camera_tab {
+            tabs.push((SideTab::Camera, "Camera view"));
+        }
+        if self.side_tab == SideTab::Camera && !camera_tab {
+            self.side_tab = SideTab::Properties;
+        }
+        // Tabs can be dragged to another place; the order is kept in the settings.
+        let mut moved: Option<(usize, usize)> = None;
         ui.horizontal_wrapped(|ui| {
-            let mut tabs: Vec<(SideTab, &'static str)> = SideTab::ALL.to_vec();
-            let camera_tab = self.show_stream && self.stream_mode == crate::stream_ui::StreamMode::Tab;
-            if camera_tab {
-                tabs.push((SideTab::Camera, "Camera view"));
+            let mut rects: Vec<egui::Rect> = vec![];
+            let mut dragging: Option<usize> = None;
+            for (i, (t, label)) in tabs.iter().enumerate() {
+                let b = egui::Button::selectable(self.side_tab == *t, RichText::new(tr(label)).strong()).sense(egui::Sense::click_and_drag());
+                let r = ui.add(b);
+                if r.clicked() {
+                    self.side_tab = *t;
+                }
+                if r.dragged() {
+                    dragging = Some(i);
+                    ui.ctx().set_cursor_icon(egui::CursorIcon::Grabbing);
+                }
+                if r.drag_stopped() {
+                    moved = Some((i, usize::MAX));
+                }
+                rects.push(r.rect);
             }
-            if self.side_tab == SideTab::Camera && !camera_tab {
-                self.side_tab = SideTab::Properties;
-            }
-            for (t, label) in tabs {
-                if ui.selectable_label(self.side_tab == t, RichText::new(tr(label)).strong()).clicked() {
-                    self.side_tab = t;
+            // Where a dragged tab would land: next to the tab nearest to the pointer.
+            let pointer = ui.input(|i| i.pointer.interact_pos());
+            let dragged = dragging.or(moved.map(|m| m.0));
+            if let (Some(from), Some(p)) = (dragged, pointer) {
+                let dist = |r: &egui::Rect| r.distance_to_pos(p);
+                let to = (0..rects.len()).filter(|i| *i < self.tab_order.len()).min_by(|a, b| dist(&rects[*a]).total_cmp(&dist(&rects[*b])));
+                if let Some(to) = to {
+                    if dragging.is_some() && to != from {
+                        let x = if to > from { rects[to].right() + 2.0 } else { rects[to].left() - 2.0 };
+                        ui.painter().line_segment([egui::pos2(x, rects[to].top()), egui::pos2(x, rects[to].bottom())], egui::Stroke::new(2.0, theme::accent()));
+                    }
+                    if let Some(m) = &mut moved {
+                        m.1 = to;
+                    }
                 }
             }
         });
+        if let Some((from, to)) = moved {
+            if from < self.tab_order.len() && to < self.tab_order.len() && from != to {
+                let t = self.tab_order.remove(from);
+                self.tab_order.insert(to, t);
+            }
+        }
         ui.separator();
         match self.side_tab {
             SideTab::Properties => {

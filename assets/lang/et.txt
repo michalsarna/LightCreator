@@ -609,3 +609,19 @@
 608|Seade
 609|See seade
 610|Materjalid
+611|Puit
+612|Metall
+613|Plast
+614|Paber ja nahk
+615|Kivi ja klaas
+616|Muu
+617|Ekspordi raamatukogu…
+618|Impordi raamatukogu…
+619|Märgi, mis faili salvestatakse.
+620|Märgi, mis failist võetakse.
+621|Ühised materjalid
+622|Seadmed
+623|Raamatukogu salvestatud: {} materjali ja {} seadet
+624|Imporditud {} materjali ja {} seadet
+625|See ei ole LightCreatori raamatukogufail.
+626|Failis {} on materjaliseaded, mis erinevad seadmest {}. Vali väärtused, mis jäävad.

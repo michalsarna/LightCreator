@@ -609,3 +609,19 @@
 608|Definição
 609|Este dispositivo
 610|Materiais
+611|Madeira
+612|Metal
+613|Plástico
+614|Papel e couro
+615|Pedra e vidro
+616|Outros
+617|Exportar biblioteca…
+618|Importar biblioteca…
+619|Marque o que vai para o ficheiro.
+620|Marque o que se toma do ficheiro.
+621|Materiais globais
+622|Dispositivos
+623|Biblioteca guardada: {} material(is) e {} dispositivo(s)
+624|Importados {} material(is) e {} dispositivo(s)
+625|Este não é um ficheiro de biblioteca do LightCreator.
+626|{} tem definições de materiais diferentes das de {}. Escolha os valores a manter.

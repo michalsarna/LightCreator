@@ -35,6 +35,11 @@ Obrazy są grawerowane linia po linii co interwał warstwy. Wybierz **próg**, *
 
 Biblioteka urządzenia jest zapisana w profilu urządzenia (więc także w kopiach zapasowych) i wewnątrz każdego zapisanego projektu. Przy otwarciu projektu jego biblioteka jest scalana z biblioteką aktywnego urządzenia: nowe materiały są dodawane, a przy różnicach okno pozwala wybrać, wartość po wartości, czy zachować swoją, czy wziąć tę z pliku.
 
+Każda warstwa materiału pamięta też swój **kolor** i **etykietę** (przeznaczenie, np. *Cut*); zastosowanie materiału ustawia parametry, kolor i nazwę jego warstw. Materiały mają **kategorię** (Drewno, Metal, Tworzywa, Papier i skóra, Kamień i szkło, Inne albo własną), a listę w zakładce Materials można po niej filtrować. Każda pozycja pokazuje swoje warstwy z kolorem i głównymi ustawieniami.
+
+**Export library… / Import library…** (w oknie Material library i w zakładce Materials) zapisują i wczytują jeden plik `.lcb` z materiałami globalnymi i urządzeniami wraz z ich bibliotekami. Okno pozwala zaznaczyć dokładnie, co trafia do pliku lub co jest z niego brane; materiały, które się różnią, otwierają okno różnic. Zakładki panelu bocznego można przeciągać, aby zmienić ich kolejność.
+
+![Plik biblioteki](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/35-library-export.png)
 ![Zakładka Materials](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/33-materials-tab.png)
 ![Różnice](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/34-material-merge.png)
 ![Materiały](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/11-materials.png)

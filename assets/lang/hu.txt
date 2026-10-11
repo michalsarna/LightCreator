@@ -609,3 +609,19 @@
 608|Beállítás
 609|Ez az eszköz
 610|Anyagok
+611|Fa
+612|Fém
+613|Műanyag
+614|Papír és bőr
+615|Kő és üveg
+616|Egyéb
+617|Könyvtár exportálása…
+618|Könyvtár importálása…
+619|Jelölje be, mi kerüljön a fájlba.
+620|Jelölje be, mit vegyen át a fájlból.
+621|Globális anyagok
+622|Eszközök
+623|Könyvtár mentve: {} anyag és {} eszköz
+624|Importálva: {} anyag és {} eszköz
+625|Ez nem a LightCreator könyvtárfájlja.
+626|A(z) {} anyagbeállításai eltérnek a(z) {} beállításaitól. Válassza ki a megtartandó értékeket.

@@ -609,3 +609,19 @@
 608|Setare
 609|Acest dispozitiv
 610|Materiale
+611|Lemn
+612|Metal
+613|Plastic
+614|Hârtie și piele
+615|Piatră și sticlă
+616|Altele
+617|Exportă biblioteca…
+618|Importă biblioteca…
+619|Bifați ce intră în fișier.
+620|Bifați ce se preia din fișier.
+621|Materiale globale
+622|Dispozitive
+623|Biblioteca a fost salvată: {} material(e) și {} dispozitiv(e)
+624|Importate {} material(e) și {} dispozitiv(e)
+625|Acesta nu este un fișier de bibliotecă LightCreator.
+626|{} conține setări de materiale diferite de cele din {}. Alegeți valorile de păstrat.

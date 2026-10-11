@@ -856,6 +856,23 @@ const TABLE: &[[&str; 7]] = &[
     ["Setting", "Ustawienie", "Einstellung", "Impostazione", "Asetus", "设置", "सेटिंग"],
     ["This device", "To urządzenie", "Dieses Gerät", "Questo dispositivo", "Tämä laite", "此设备", "यह डिवाइस"],
     ["Materials", "Materiały", "Materialien", "Materiali", "Materiaalit", "材料", "सामग्रियाँ"],
+    // ---- categories, library files ----
+    ["Wood", "Drewno", "Holz", "Legno", "Puu", "木材", "लकड़ी"],
+    ["Metal", "Metal", "Metall", "Metallo", "Metalli", "金属", "धातु"],
+    ["Plastic", "Tworzywa", "Kunststoff", "Plastica", "Muovi", "塑料", "प्लास्टिक"],
+    ["Paper and leather", "Papier i skóra", "Papier und Leder", "Carta e pelle", "Paperi ja nahka", "纸张和皮革", "कागज़ और चमड़ा"],
+    ["Stone and glass", "Kamień i szkło", "Stein und Glas", "Pietra e vetro", "Kivi ja lasi", "石材和玻璃", "पत्थर और काँच"],
+    ["Other", "Inne", "Sonstiges", "Altro", "Muu", "其他", "अन्य"],
+    ["Export library…", "Eksportuj bibliotekę…", "Bibliothek exportieren…", "Esporta libreria…", "Vie kirjasto…", "导出库…", "लाइब्रेरी निर्यात करें…"],
+    ["Import library…", "Importuj bibliotekę…", "Bibliothek importieren…", "Importa libreria…", "Tuo kirjasto…", "导入库…", "लाइब्रेरी आयात करें…"],
+    ["Tick what goes into the file.", "Zaznacz, co trafi do pliku.", "Wählen Sie, was in die Datei kommt.", "Spunta ciò che va nel file.", "Valitse, mitä tiedostoon tallennetaan.", "勾选要写入文件的内容。", "चुनें कि फ़ाइल में क्या जाएगा।"],
+    ["Tick what to take from the file.", "Zaznacz, co wziąć z pliku.", "Wählen Sie, was aus der Datei übernommen wird.", "Spunta ciò che prendere dal file.", "Valitse, mitä tiedostosta otetaan.", "勾选要从文件中取出的内容。", "चुनें कि फ़ाइल से क्या लेना है।"],
+    ["Global materials", "Materiały globalne", "Globale Materialien", "Materiali globali", "Yhteiset materiaalit", "全局材料", "वैश्विक सामग्रियाँ"],
+    ["Devices", "Urządzenia", "Geräte", "Dispositivi", "Laitteet", "设备", "डिवाइस"],
+    ["Saved the library: {} material(s) and {} device(s)", "Zapisano bibliotekę: materiałów {}, urządzeń {}", "Bibliothek gespeichert: {} Material(ien) und {} Gerät(e)", "Libreria salvata: {} materiale/i e {} dispositivo/i", "Kirjasto tallennettu: {} materiaalia ja {} laitetta", "已保存库：{} 个材料，{} 台设备", "लाइब्रेरी सहेजी गई: {} सामग्री और {} डिवाइस"],
+    ["Imported {} material(s) and {} device(s)", "Zaimportowano materiałów: {}, urządzeń: {}", "Importiert: {} Material(ien) und {} Gerät(e)", "Importati {} materiale/i e {} dispositivo/i", "Tuotu {} materiaalia ja {} laitetta", "已导入 {} 个材料和 {} 台设备", "{} सामग्री और {} डिवाइस आयात किए गए"],
+    ["This is not a library file of LightCreator.", "To nie jest plik biblioteki LightCreatora.", "Das ist keine Bibliotheksdatei von LightCreator.", "Questo non è un file di libreria di LightCreator.", "Tämä ei ole LightCreatorin kirjastotiedosto.", "这不是 LightCreator 的库文件。", "यह LightCreator की लाइब्रेरी फ़ाइल नहीं है।"],
+    ["{} has material settings that differ from {}. Choose the values to keep.", "{} zawiera ustawienia materiałów różne od {}. Wybierz wartości do zachowania.", "{} enthält Materialeinstellungen, die von {} abweichen. Wählen Sie die Werte, die bleiben sollen.", "{} contiene impostazioni dei materiali diverse da {}. Scegli i valori da mantenere.", "{} sisältää materiaaliasetuksia, jotka eroavat kohteesta {}. Valitse säilytettävät arvot.", "{} 中的材料设置与 {} 不同。请选择要保留的值。", "{} में सामग्री सेटिंग {} से अलग हैं। रखने के लिए मान चुनें।"],
 ];
 #[cfg(test)]
 mod tests {

@@ -73,6 +73,7 @@
 * **Export** submenu: SVG, G-code, and HPGL (`.plt`) / DXF. Native `.lcr` projects embed images.
 * **Layer list:** the three switches at the end of each row (output, visible, air pump) have icon headings above
   the list; the layer colour is shown next to the title of the cut settings.
+* **Tab order:** the tabs of the side panel can be dragged to another place; the order is kept in the settings and in backups.
 * **Side panel layout:** Properties is laid out as a table with sections separated by lines (position and size,
   rotation, mirroring, alignment, layer) and buttons of one size. Image settings of a layer show only when the layer
   holds bitmap images. In the Device tab the jog arrows, Home, Unlock, Pause and Resume are equal icon buttons (STOP
@@ -166,6 +167,13 @@
     project file is opened, its library is merged into the library of the active device: new materials are added at
     once, materials that differ open a window where, value by value, you choose to keep your own or take the one from
     the file.
+  * Every material has the **colour** and a **label** (the name of its purpose, e.g. Cut) of each layer, and a **category**
+    (Wood, Metal, Plastic, Paper and leather, Stone and glass, Other, or a category of your own). Applying a material sets
+    the settings, colour and name of its layers. The list in the Materials tab shows every layer with its colour and main
+    settings and can be filtered by category, as the clipart list can.
+  * **Export library… / Import library…** (Material library window and Materials tab) write and read one `.lcb` file with
+    the global materials and the devices with their libraries. A window lets you tick exactly what goes into the file or
+    is taken from it; materials that differ open the same window of differences.
 * **Camera overlay:** a photo or the live camera (build with `--features camera`) under the design, aligned
   with four draggable corners (perspective corrected), opacity, flip and rotate; saved per device.
 

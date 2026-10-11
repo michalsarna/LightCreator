@@ -609,3 +609,19 @@
 608|Socrú
 609|An gléas seo
 610|Ábhair
+611|Adhmad
+612|Miotal
+613|Plaisteach
+614|Páipéar agus leathar
+615|Cloch agus gloine
+616|Eile
+617|Easpórtáil an leabharlann…
+618|Iompórtáil an leabharlann…
+619|Cuir tic leis an méid a théann sa chomhad.
+620|Cuir tic leis an méid atá le tógáil ón gcomhad.
+621|Ábhair ghlobhacha
+622|Feistí
+623|Sábháladh an leabharlann: {} ábhar agus {} feiste
+624|Iompórtáladh {} ábhar agus {} feiste
+625|Ní comhad leabharlainne de chuid LightCreator é seo.
+626|Tá socruithe ábhair i {} atá difriúil ó {}. Roghnaigh na luachanna le coinneáil.

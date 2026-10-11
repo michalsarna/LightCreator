@@ -112,6 +112,16 @@ pub struct LayerSpec {
     pub dither: Dither,
     pub min_power: f64,
     pub air_assist: bool,
+    /// Index of the layer colour in `PALETTE`; `NO_COLOUR` for materials saved before colours were kept.
+    #[serde(default = "no_colour")]
+    pub colour: usize,
+}
+
+/// A material layer that does not say which colour it has.
+pub const NO_COLOUR: usize = usize::MAX;
+
+fn no_colour() -> usize {
+    NO_COLOUR
 }
 
 /// A value of one setting, for showing differences.
@@ -128,11 +138,13 @@ pub enum Value {
     Angle(f64),
     Flag(bool),
     Dither(Dither),
+    /// Index into `PALETTE`.
+    Colour(usize),
 }
 
 impl LayerSpec {
     /// The names of the settings, as shown in the interface (they are also the keys of `value` / `take`).
-    pub const FIELDS: [&'static str; 11] = ["Mode", "Speed", "Power (%)", "Passes", "Interval", "Scan angle", "Overscan", "Bidirectional", "Dithering", "Min power (%)", "Air assist"];
+    pub const FIELDS: [&'static str; 12] = ["Colour", "Mode", "Speed", "Power (%)", "Passes", "Interval", "Scan angle", "Overscan", "Bidirectional", "Dithering", "Min power (%)", "Air assist"];
 
     pub fn from_layer(l: &Layer) -> LayerSpec {
         LayerSpec {
@@ -147,10 +159,11 @@ impl LayerSpec {
             dither: l.dither,
             min_power: l.min_power,
             air_assist: l.air_assist,
+            colour: l.color,
         }
     }
 
-    /// Copy the settings into a layer; its name, colour, output and visibility stay.
+    /// Copy the settings (and the colour) into a layer; its name, output and visibility stay.
     pub fn apply(&self, l: &mut Layer) {
         l.mode = self.mode;
         l.speed = self.speed;
@@ -163,6 +176,9 @@ impl LayerSpec {
         l.dither = self.dither;
         l.min_power = self.min_power.min(self.power);
         l.air_assist = self.air_assist;
+        if self.colour < PALETTE.len() {
+            l.color = self.colour;
+        }
     }
 
     pub fn value(&self, field: &str) -> Option<Value> {
@@ -178,6 +194,7 @@ impl LayerSpec {
             "Dithering" => Value::Dither(self.dither),
             "Min power (%)" => Value::Percent(self.min_power),
             "Air assist" => Value::Flag(self.air_assist),
+            "Colour" => Value::Colour(self.colour),
             _ => return None,
         })
     }
@@ -196,6 +213,7 @@ impl LayerSpec {
             "Dithering" => self.dither = other.dither,
             "Min power (%)" => self.min_power = other.min_power,
             "Air assist" => self.air_assist = other.air_assist,
+            "Colour" => self.colour = other.colour,
             _ => {}
         }
     }
@@ -226,7 +244,32 @@ pub struct Material {
     pub laser: LaserKind,
     #[serde(default)]
     pub note: String,
+    /// "Wood", "Metal", a category of your own... Empty: guessed from the name (see `category`).
+    #[serde(default)]
+    pub category: String,
     pub layers: Vec<MaterialLayer>,
+}
+
+/// The categories every library starts with. Materials may use any other name too.
+pub const CATEGORIES: [&str; 6] = ["Wood", "Metal", "Plastic", "Paper and leather", "Stone and glass", "Other"];
+
+/// The category a material name suggests ("Plywood 3 mm" is Wood).
+pub fn guess_category(name: &str) -> &'static str {
+    let n = name.to_lowercase();
+    let has = |words: &[&str]| words.iter().any(|w| n.contains(w));
+    if has(&["plywood", "mdf", "wood", "cork", "bamboo", "veneer"]) {
+        "Wood"
+    } else if has(&["alumin", "steel", "metal", "brass", "copper", "titan"]) {
+        "Metal"
+    } else if has(&["acrylic", "plastic", "rubber", "pvc", "abs", "delrin", "foam"]) {
+        "Plastic"
+    } else if has(&["paper", "card", "leather", "felt", "fabric", "cloth"]) {
+        "Paper and leather"
+    } else if has(&["slate", "stone", "glass", "ceramic", "tile", "marble"]) {
+        "Stone and glass"
+    } else {
+        "Other"
+    }
 }
 
 impl Material {
@@ -234,19 +277,32 @@ impl Material {
     pub fn from_layers(name: &str, laser: LaserKind, layers: &[(usize, &Layer)]) -> Material {
         let mut ls: Vec<MaterialLayer> = layers.iter().map(|(i, l)| MaterialLayer { index: *i, label: l.name.clone(), spec: LayerSpec::from_layer(l) }).collect();
         ls.sort_by_key(|l| l.index);
-        Material { name: name.trim().to_string(), laser, note: String::new(), layers: ls }
+        Material { name: name.trim().to_string(), laser, note: String::new(), category: guess_category(name).to_string(), layers: ls }
+    }
+
+    /// The category of the material: the one set, or a guess from its name.
+    pub fn category(&self) -> String {
+        if self.category.trim().is_empty() {
+            guess_category(&self.name).to_string()
+        } else {
+            self.category.trim().to_string()
+        }
     }
 
     pub fn layer(&self, index: usize) -> Option<&MaterialLayer> {
         self.layers.iter().find(|l| l.index == index)
     }
 
-    /// Put the settings of every layer of the material into `layers`. Returns how many layers were set.
+    /// Put the settings of every layer of the material into `layers`: values, colour and name (the label).
+    /// Returns how many layers were set.
     pub fn apply(&self, layers: &mut [Layer]) -> usize {
         let mut n = 0;
         for ml in &self.layers {
             if let Some(l) = layers.get_mut(ml.index) {
                 ml.spec.apply(l);
+                if !ml.label.trim().is_empty() {
+                    l.name = ml.label.trim().to_string();
+                }
                 n += 1;
             }
         }
@@ -273,12 +329,12 @@ fn operation_index(op: &str) -> usize {
 pub fn materials_from_presets(presets: &[Preset]) -> Vec<Material> {
     let mut out: Vec<Material> = vec![];
     for p in presets {
-        let spec = LayerSpec { mode: p.mode, speed: p.speed, power: p.power, passes: p.passes.max(1), interval: p.interval, angle: 0.0, overscan: 1.0, bidirectional: true, dither: Dither::default(), min_power: 0.0, air_assist: false };
+        let spec = LayerSpec { mode: p.mode, speed: p.speed, power: p.power, passes: p.passes.max(1), interval: p.interval, angle: 0.0, overscan: 1.0, bidirectional: true, dither: Dither::default(), min_power: 0.0, air_assist: false, colour: NO_COLOUR };
         let mut index = operation_index(&p.operation);
         let pos = match out.iter().position(|m| m.name == p.material && m.laser == p.laser) {
             Some(i) => i,
             None => {
-                out.push(Material { name: p.material.clone(), laser: p.laser, note: String::new(), layers: vec![] });
+                out.push(Material { name: p.material.clone(), laser: p.laser, note: String::new(), category: guess_category(&p.material).to_string(), layers: vec![] });
                 out.len() - 1
             }
         };
@@ -286,7 +342,9 @@ pub fn materials_from_presets(presets: &[Preset]) -> Vec<Material> {
         while out[pos].layer(index).is_some() {
             index += 1;
         }
-        out[pos].layers.push(MaterialLayer { index: index.min(29), label: p.operation.clone(), spec });
+        let index = index.min(29);
+        let spec = LayerSpec { colour: index, ..spec };
+        out[pos].layers.push(MaterialLayer { index, label: p.operation.clone(), spec });
     }
     for m in &mut out {
         m.layers.sort_by_key(|l| l.index);
@@ -396,5 +454,37 @@ pub fn apply_rows(local: &mut Material, conflict: &Conflict, take: &[bool]) {
         } else if let Some(ll) = local.layers.iter_mut().find(|l| l.index == row.layer) {
             ll.spec.take(row.field, &il.spec);
         }
+    }
+}
+
+// ---- The library file (.lcb) ----
+
+/// What `LightCreator library` files start with.
+pub const LIBRARY_FORMAT: &str = "lightcreator-library";
+
+/// The private library of a user in one file: the materials added for every device and the devices, each with
+/// the materials of its own library.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct LibraryFile {
+    pub format: String,
+    pub version: u32,
+    #[serde(default)]
+    pub global: Vec<Material>,
+    #[serde(default)]
+    pub devices: Vec<Device>,
+}
+
+impl LibraryFile {
+    pub fn new(global: Vec<Material>, devices: Vec<Device>) -> LibraryFile {
+        LibraryFile { format: LIBRARY_FORMAT.into(), version: 1, global, devices }
+    }
+
+    pub fn to_json(&self) -> String {
+        serde_json::to_string_pretty(self).unwrap_or_default()
+    }
+
+    /// Read a library file; `None` when the text is not one.
+    pub fn from_json(text: &str) -> Option<LibraryFile> {
+        serde_json::from_str::<LibraryFile>(text).ok().filter(|f| f.format == LIBRARY_FORMAT)
     }
 }
