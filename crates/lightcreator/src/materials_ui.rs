@@ -458,8 +458,9 @@ fn scroll_list(ui: &mut egui::Ui, id: &str, max_h: f32, add: impl FnOnce(&mut eg
     }
 }
 
-/// One entry of a list of materials: name and tags on a row whose background alternates with `row`.
-fn material_card(ui: &mut egui::Ui, m: &Material, selected: bool, row: usize, units: Units, lasers: Option<&str>) -> egui::Response {
+/// One entry of a list of materials: only the name, on a row whose background alternates with `row`; a mark in front
+/// of the one the project uses.
+fn material_card(ui: &mut egui::Ui, m: &Material, selected: bool, active: bool, row: usize, units: Units, lasers: Option<&str>) -> egui::Response {
     let fill = if selected {
         theme::accent().gamma_multiply(0.25)
     } else if row % 2 == 0 {
@@ -472,15 +473,16 @@ fn material_card(ui: &mut egui::Ui, m: &Material, selected: bool, row: usize, un
     let out = egui::Frame::new().fill(fill).corner_radius(3).inner_margin(egui::Margin::symmetric(4, 3)).show(ui, |ui| {
         ui.set_width(inner);
         ui.horizontal(|ui| {
+            // The mark takes room whether it is shown or not, so the names stay in line.
+            let (rect, _) = ui.allocate_exact_size(egui::vec2(16.0, 16.0), egui::Sense::hover());
+            if active {
+                crate::icons::paint(ui, rect, "circle-check", Color32::from_rgb(0x2e, 0xa0, 0x4f));
+            }
             ui.label(RichText::new(mat_name(m, units)).strong());
             if let Some(l) = lasers {
                 ui.label(RichText::new(l).small().color(theme::text_dim()));
             }
         });
-        if !m.tags.is_empty() {
-            let tags = m.tags.iter().map(|t| tr_tag(t)).collect::<Vec<_>>().join(", ");
-            ui.add(egui::Label::new(RichText::new(tags).small().italics().color(theme::text_dim())).truncate());
-        }
     });
     let r = ui.interact(out.response.rect, ui.id().with(("material_card", m.key(), m.laser as u8)), egui::Sense::click());
     r.on_hover_cursor(egui::CursorIcon::PointingHand)
@@ -614,6 +616,55 @@ impl App {
     }
 
     /// Keep a changed material in the library of the device (a copy over the main one when it follows it).
+    /// Use a material: its parameters go into the layers (not their names) and from then on the layers and the
+    /// material follow each other; the material of the device's library is saved every 60 seconds.
+    pub fn choose_material(&mut self, m: Material) {
+        self.checkpoint();
+        let n = m.apply(&mut self.doc.layers);
+        self.doc.material = Some(m.clone());
+        self.mat_chosen = true;
+        self.mat_sync_dirty = false;
+        self.mat_sync_last = std::time::Instant::now();
+        self.touch();
+        let (units, _) = (self.doc.device.units, ());
+        self.status = trf("Applied {} to {} layer(s)", &[&mat_name(&m, units), &n]);
+    }
+
+    /// Keep the chosen material in step with the layers: an edit of a layer is copied into the material of the
+    /// project at once and into the library of the device every 60 seconds.
+    pub fn material_sync_tick(&mut self) {
+        if !self.mat_chosen {
+            return;
+        }
+        let Some(mut m) = self.doc.material.clone() else { return };
+        let mut changed = false;
+        for ml in &mut m.layers {
+            if let Some(l) = self.doc.layers.get(ml.index) {
+                let spec = lc_core::materials::LayerSpec::from_layer(l);
+                if spec != ml.spec {
+                    ml.spec = spec;
+                    changed = true;
+                }
+            }
+        }
+        if changed {
+            self.doc.material = Some(m);
+            self.mat_sync_dirty = true;
+        }
+        if self.mat_sync_dirty && self.mat_sync_last.elapsed() >= std::time::Duration::from_secs(60) {
+            self.mat_sync_now();
+        }
+    }
+
+    /// Write the chosen material into the library of the device now.
+    pub fn mat_sync_now(&mut self) {
+        if let Some(m) = self.doc.material.clone() {
+            self.store_device_material(m);
+        }
+        self.mat_sync_dirty = false;
+        self.mat_sync_last = std::time::Instant::now();
+    }
+
     fn store_device_material(&mut self, m: Material) {
         match self.doc.device.materials.iter().position(|e| e.same_key(&m)) {
             Some(p) => self.doc.device.materials[p] = m,
@@ -779,6 +830,8 @@ impl App {
             ui.add_space(6.0);
             ui.label(RichText::new(tr("This library is empty. Add materials from the built-in library or save your layers as a material.")).color(theme::text_dim()));
         }
+        let active_key = self.doc.material.as_ref().map(|m| m.key());
+        let mut choose: Option<usize> = None;
         scroll_list(ui, "dev_materials", self.mat_list_h, |ui| {
             let mut cats: Vec<String> = shown.iter().map(|i| lib[*i].category()).collect();
             cats.sort_by_key(|c| cat_label(c).to_lowercase());
@@ -788,13 +841,22 @@ impl App {
                 order.sort_by_key(|i| (mat_name(&lib[*i], units).to_lowercase(), lib[*i].thickness as i64));
                 category_section(ui, ("tab_cat", c.clone()), &c, order.len(), |ui| {
                     for (row, i) in order.into_iter().enumerate() {
-                        if material_card(ui, &lib[i], self.mat_dev_sel == Some(i), row, units, None).clicked() {
+                        let card = material_card(ui, &lib[i], self.mat_dev_sel == Some(i), active_key.as_deref() == Some(lib[i].key().as_str()) && self.doc.material.as_ref().is_some_and(|d| d.laser == lib[i].laser), row, units, None);
+                        if card.clicked() {
                             self.mat_dev_sel = Some(i);
+                        }
+                        if card.double_clicked() {
+                            choose = Some(i);
                         }
                     }
                 });
             }
         });
+        if let Some(i) = choose {
+            let m = lib[i].clone();
+            self.mat_dev_sel = Some(i);
+            self.choose_material(m);
+        }
         // The border between the list and the editor: drag it to give either more room.
         let (grip, resp) = ui.allocate_exact_size(egui::vec2(ui.available_width(), 8.0), egui::Sense::drag());
         let hot = resp.hovered() || resp.dragged();
@@ -826,13 +888,15 @@ impl App {
             });
             if m != lib[i] {
                 self.store_device_material(m.clone());
+                // The material in use: what is changed here is changed in the layers too.
+                if self.mat_chosen && self.doc.material.as_ref().is_some_and(|d| d.same_key(&m)) {
+                    m.apply(&mut self.doc.layers);
+                    self.doc.material = Some(m.clone());
+                    self.touch();
+                }
             }
             if apply {
-                self.checkpoint();
-                let n = m.apply(&mut self.doc.layers);
-                self.doc.material = Some(m.clone());
-                self.touch();
-                self.status = trf("Applied {} to {} layer(s)", &[&mat_name(&m, units), &n]);
+                self.choose_material(m.clone());
             }
             if delete {
                 // A copy goes (the main material shows again); one that only comes from the main library is left out.
@@ -867,6 +931,7 @@ impl App {
                 }
                 self.mat_dev_sel = self.device_view().iter().position(|e| e.key() == key);
                 self.doc.material = Some(m);
+                self.mat_chosen = true;
                 self.sync_profile();
                 self.status = trf("Saved {} in this device's library", &[&shown]);
                 self.mat_name.clear();
@@ -979,7 +1044,7 @@ impl App {
                     category_section(ui, ("win_cat", c.clone()), &c, group.len(), |ui| {
                         for (row, e) in group.into_iter().enumerate() {
                             let m = e.pick(want, device_laser);
-                            let r = material_card(ui, m, self.mat_sel.as_deref() == Some(e.key.as_str()), row, units, Some(&e.lasers()));
+                            let r = material_card(ui, m, self.mat_sel.as_deref() == Some(e.key.as_str()), false, row, units, Some(&e.lasers()));
                             if r.clicked() {
                                 self.mat_sel = Some(e.key.clone());
                             }
@@ -1622,5 +1687,48 @@ mod tests {
         assert_eq!(a.doc.device.materials.len(), 1);
         // Tags suggested while typing come from every library.
         assert!(a.all_tags().iter().any(|t| t == "Engrave"));
+    }
+
+    #[test]
+    fn a_chosen_material_and_the_layers_follow_each_other_and_names_stay() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.profiles = vec![lc_core::Device::default()];
+        a.enter_editor(0);
+        a.screen = crate::app::Screen::Editor;
+        a.doc.layers[2].name = "My red".into();
+        let mut m = lc_core::materials::Material::from_layers("Plywood 3 mm", a.doc.device.laser(), &[(2, &a.doc.layers[2])]);
+        m.layers[0].label = "Cut".into();
+        m.layers[0].spec.speed = 7.0;
+        m.layers[0].spec.power = 55.0;
+        a.choose_material(m.clone());
+        assert_eq!((a.doc.layers[2].speed, a.doc.layers[2].power), (7.0, 55.0), "the parameters go into the layers");
+        assert_eq!(a.doc.layers[2].name, "My red", "but the names do not");
+        assert!(a.mat_chosen && a.doc.material.is_some());
+        // A change in the layer is copied into the material of the project at once...
+        a.doc.layers[2].power = 80.0;
+        a.material_sync_tick();
+        assert_eq!(a.doc.material.as_ref().unwrap().layers[0].spec.power, 80.0);
+        assert_eq!(a.doc.material.as_ref().unwrap().layers[0].label, "Cut", "the label is kept");
+        // ...and into the library of the device only after 60 seconds.
+        assert!(a.doc.device.materials.iter().filter(|e| e.same_key(&m)).all(|e| e.layers.iter().all(|l| l.spec.power != 80.0)));
+        a.mat_sync_last = std::time::Instant::now() - std::time::Duration::from_secs(61);
+        a.material_sync_tick();
+        assert!(a.doc.device.materials.iter().any(|e| e.same_key(&m) && e.layers[0].spec.power == 80.0));
+        assert_eq!(a.profiles[0].materials.iter().find(|e| e.same_key(&m)).map(|e| e.layers[0].spec.power), Some(80.0));
+        assert!(!a.mat_sync_dirty);
+        // A new document is no longer tied to the material.
+        a.new_doc();
+        assert!(!a.mat_chosen);
+        a.doc.layers[2].power = 10.0;
+        a.material_sync_tick();
+        assert!(a.doc.material.is_none());
+    }
+
+    #[test]
+    fn the_side_tabs_start_in_the_order_properties_materials_layers() {
+        let ids: Vec<&str> = crate::app::SideTab::ALL.iter().map(|(t, _)| t.id()).collect();
+        assert_eq!(&ids[..3], ["properties", "materials", "layers"]);
+        assert_eq!(&ids[3..], ["device", "console", "clipart", "description"]);
     }
 }

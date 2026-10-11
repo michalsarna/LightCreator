@@ -859,13 +859,13 @@ fn materials_keep_colours_and_categories() {
     let old = r#"{"name":"Birch plywood","laser":"Diode","layers":[{"index":4,"label":"Cut","spec":{"mode":"Line","speed":3.0,"power":90.0,"passes":1,"interval":0.1,"angle":0.0,"overscan":1.0,"bidirectional":true,"dither":"Threshold","min_power":0.0,"air_assist":false}}]}"#;
     let m: materials::Material = serde_json::from_str(old).unwrap();
     assert_eq!((m.category().as_str(), m.layers[0].spec.colour), ("Wood", materials::NO_COLOUR));
-    // Applying a material sets the colour and the name of the layer; without a colour the layer keeps its own.
+    // Applying a material sets the colour (not the name) of the layer; without a colour the layer keeps its own.
     let mut doc = Document::default();
     let mut m2 = ply.clone();
     m2.layers[0].spec.colour = 17;
     m2.layers[0].label = "Outline".into();
     m2.apply(&mut doc.layers);
-    assert_eq!((doc.layers[0].color, doc.layers[0].name.as_str()), (17, "Outline"));
+    assert_eq!((doc.layers[0].color, doc.layers[0].name.as_str()), (17, "C00"), "the label is not a layer name");
     let before = doc.layers[4].color;
     m.apply(&mut doc.layers);
     assert_eq!(doc.layers[4].color, before);

@@ -218,9 +218,11 @@
     the dithering setting explains the chosen method.
   * A saved project carries the device profile, the device library and the **material it was made with**.
   * Every material has the **colour** and a **label** (the name of its purpose, e.g. Cut) of each layer, and a **category**
-    (Wood, Metal, Plastic, Paper and leather, Stone and glass, Other, or a category of your own). Applying a material sets
-    the settings, colour and name of its layers. The list in the Materials tab shows every layer with its colour and main
-    settings and can be filtered by category, as the clipart list can.
+    (Wood, Metal, Plastic, Paper and leather, Stone and glass, Other, or a category of your own). Choosing a material
+    (double-click it in the Materials tab; a green mark shows the one in use) puts its parameters and colours into the layers
+    (their names stay) and keeps the two in step: a change in the Layers tab is copied into the material at once and saved
+    into the device's library every 60 seconds, and a change of the material in its editor goes into the layers. The list shows
+    only the names and can be filtered by category, as the clipart list can.
   * **Export library… / Import library…** (Material library window and Materials tab) write and read one `.lcb` file with
     the global materials and the devices with their libraries. A window lets you tick exactly what goes into the file or
     is taken from it; materials that differ open the same window of differences.
@@ -240,7 +242,7 @@
   and Help > Project page on GitHub opens the repository.
 
 **Interface**
-* Side panel with tabs for Properties, Layers, Device, Console (live view of everything sent to and received from
+* Side panel with tabs for Properties, Materials, Layers, Device, Console (live view of everything sent to and received from
   the serial port, with status polling hidden by default), Clipart and, when a camera is set, Camera view.
 * **Own window frame:** no system title bar and no rounded corners. A flat bar at the top shows the icon, the
   title (with the open file) and modern minimise / maximise / close buttons; drag it to move the window, double-click

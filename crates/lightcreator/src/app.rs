@@ -77,11 +77,11 @@ pub enum SideTab {
 impl SideTab {
     pub const ALL: [(SideTab, &'static str); 7] = [
         (SideTab::Properties, "Properties"),
+        (SideTab::Materials, "Materials"),
         (SideTab::Layers, "Layers"),
         (SideTab::Device, "Device"),
         (SideTab::Console, "Console"),
         (SideTab::Clipart, "Clipart"),
-        (SideTab::Materials, "Materials"),
         (SideTab::Description, "Description"),
     ];
 
@@ -156,6 +156,10 @@ pub struct App {
     pub autosave_on: bool,
     /// The web server and API (off by default): switched on, port, and reachable from the network.
     pub api_on: bool,
+    /// A material was chosen for this project: the layers and the material keep each other up to date.
+    pub mat_chosen: bool,
+    pub mat_sync_dirty: bool,
+    pub mat_sync_last: std::time::Instant,
     pub api_port: u16,
     pub api_lan: bool,
     pub api: crate::api_ui::ApiState,
@@ -408,6 +412,9 @@ impl App {
             saved_revision: 0,
             autosaved_revision: 0,
             autosave_on: saved("autosave_on").map(|v| v != "0").unwrap_or(true),
+            mat_chosen: false,
+            mat_sync_dirty: false,
+            mat_sync_last: std::time::Instant::now(),
             api_on: saved("api_on").map(|v| v == "1").unwrap_or(false),
             api_port: saved("api_port").and_then(|v| v.parse::<u16>().ok()).filter(|p| *p >= 1024).unwrap_or(crate::api_ui::DEFAULT_PORT),
             api_lan: saved("api_lan").map(|v| v == "1").unwrap_or(false),
@@ -773,6 +780,7 @@ impl App {
         let device = self.doc.device.clone();
         self.doc = Document::default();
         self.doc.device = device;
+        self.mat_chosen = false;
         self.undo.clear();
         self.redo.clear();
         self.sel.clear();
@@ -811,6 +819,7 @@ impl App {
                     }
                 }
                 self.doc = d;
+                self.mat_chosen = false;
                 let have_profile = self.profiles.get(self.active).is_some();
                 if let Some(p) = self.profiles.get(self.active) {
                     self.doc.device = p.clone();

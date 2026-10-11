@@ -377,16 +377,13 @@ impl Material {
         self.layers.iter().find(|l| l.index == index)
     }
 
-    /// Put the settings of every layer of the material into `layers`: values, colour and name (the label).
-    /// Returns how many layers were set.
+    /// Put the settings of every layer of the material into `layers`: values and colour. The names of the layers
+    /// stay as they are (the label of a material layer is not a layer name). Returns how many layers were set.
     pub fn apply(&self, layers: &mut [Layer]) -> usize {
         let mut n = 0;
         for ml in &self.layers {
             if let Some(l) = layers.get_mut(ml.index) {
                 ml.spec.apply(l);
-                if !ml.label.trim().is_empty() {
-                    l.name = ml.label.trim().to_string();
-                }
                 n += 1;
             }
         }
