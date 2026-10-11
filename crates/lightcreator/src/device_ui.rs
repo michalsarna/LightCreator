@@ -129,7 +129,7 @@ impl App {
         egui::ScrollArea::vertical().max_height(220.0).auto_shrink([false, true]).show(ui, |ui| {
             for i in 0..self.profiles.len() {
                 let d = &self.profiles[i];
-                let text = format!("{}    {} × {}", d.name, fmt_len(d.units, d.bed_w, 0), fmt_len(d.units, d.bed_h, 0));
+                let text = format!("{}    {} × {}", d.name, fmt_len(d.units, d.area.bed_w, 0), fmt_len(d.units, d.area.bed_h, 0));
                 let r = ui.add_sized([ui.available_width(), 28.0], egui::Button::selectable(self.start_sel == i, text));
                 if r.clicked() {
                     self.start_sel = i;
@@ -218,9 +218,9 @@ impl App {
                     });
                     ui.end_row();
                     ui.label(tr("Laser type"));
-                    egui::ComboBox::from_id_salt("laser_kind").selected_text(d.laser.label()).show_ui(ui, |ui| {
+                    egui::ComboBox::from_id_salt("laser_kind").selected_text(d.laser().label()).show_ui(ui, |ui| {
                         for k in LaserKind::ALL {
-                            ui.selectable_value(&mut d.laser, k, k.label());
+                            ui.selectable_value(&mut d.laser(), k, k.label());
                         }
                     });
                     ui.end_row();
@@ -240,30 +240,30 @@ impl App {
                     ui.end_row();
                     let (u, su) = (d.units, d.speed_unit);
                     ui.label(tr("Work area X"));
-                    drag_len(ui, u, &mut d.bed_w, 1.0, Some((10.0, 5000.0)));
+                    drag_len(ui, u, &mut d.area.bed_w, 1.0, Some((10.0, 5000.0)));
                     ui.end_row();
                     ui.label(tr("Work area Y"));
-                    drag_len(ui, u, &mut d.bed_h, 1.0, Some((10.0, 5000.0)));
+                    drag_len(ui, u, &mut d.area.bed_h, 1.0, Some((10.0, 5000.0)));
                     ui.end_row();
                     ui.label(tr("Machine zero (0,0)"));
                     egui::ComboBox::from_id_salt("origin")
-                        .selected_text(if d.origin == Origin::FrontLeft { tr("Front-left (GRBL default)") } else { tr("Back-left") })
+                        .selected_text(if d.axes.origin == Origin::FrontLeft { tr("Front-left (GRBL default)") } else { tr("Back-left") })
                         .show_ui(ui, |ui| {
-                            ui.selectable_value(&mut d.origin, Origin::FrontLeft, tr("Front-left (GRBL default)"));
-                            ui.selectable_value(&mut d.origin, Origin::BackLeft, tr("Back-left"));
+                            ui.selectable_value(&mut d.axes.origin, Origin::FrontLeft, tr("Front-left (GRBL default)"));
+                            ui.selectable_value(&mut d.axes.origin, Origin::BackLeft, tr("Back-left"));
                         });
                     ui.end_row();
                     ui.label(tr("S-value max ($30)"));
-                    ui.add(egui::DragValue::new(&mut d.s_max).range(1.0..=100000.0));
+                    ui.add(egui::DragValue::new(&mut d.s_max()).range(1.0..=100000.0));
                     ui.end_row();
                     ui.label(tr("Dynamic power (M4)"));
-                    ui.checkbox(&mut d.dynamic_power, "");
+                    ui.checkbox(&mut d.gcode.dynamic_power, "");
                     ui.end_row();
                     ui.label(tr("Travel speed"));
-                    drag_speed(ui, u, su, true, &mut d.travel_speed, 50.0, Some((100.0, 60000.0)));
+                    drag_speed(ui, u, su, true, &mut d.speeds.travel_speed, 50.0, Some((100.0, 60000.0)));
                     ui.end_row();
                     ui.label(tr("Return to origin"));
-                    ui.checkbox(&mut d.return_home, "");
+                    ui.checkbox(&mut d.gcode.return_home, "");
                     ui.end_row();
                     ui.label(tr("Jog step"));
                     drag_len(ui, u, &mut d.jog_step, 0.1, Some((0.1, 200.0)));
@@ -272,7 +272,7 @@ impl App {
                     drag_speed(ui, u, su, true, &mut d.jog_feed, 10.0, Some((10.0, 20000.0)));
                     ui.end_row();
                     ui.label(tr("Frame power"));
-                    ui.add(egui::DragValue::new(&mut d.frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
+                    ui.add(egui::DragValue::new(&mut d.heads[0].frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
                     ui.end_row();
                 });
             });
@@ -281,18 +281,18 @@ impl App {
                 section(ui, tr("Connection"), &mut |ui| {
                     egui::Grid::new("dev_link").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
                         ui.label(tr("Connection type"));
-                        egui::ComboBox::from_id_salt("link_kind").width(230.0).selected_text(tr(d.link.label())).show_ui(ui, |ui| {
+                        egui::ComboBox::from_id_salt("link_kind").width(230.0).selected_text(tr(d.connection.link.label())).show_ui(ui, |ui| {
                             for k in LinkKind::ALL {
-                                ui.selectable_value(&mut d.link, k, tr(k.label()));
+                                ui.selectable_value(&mut d.connection.link, k, tr(k.label()));
                             }
                         });
                         ui.end_row();
-                        if d.link == LinkKind::Serial {
+                        if d.connection.link == LinkKind::Serial {
                             ui.label(tr("Port"));
                             ui.horizontal_wrapped(|ui| {
-                                egui::ComboBox::from_id_salt("cfg_port").width(170.0).selected_text(if d.port.is_empty() { tr("No port") } else { d.port.as_str() }).show_ui(ui, |ui| {
+                                egui::ComboBox::from_id_salt("cfg_port").width(170.0).selected_text(if d.connection.port.is_empty() { tr("No port") } else { d.connection.port.as_str() }).show_ui(ui, |ui| {
                                     for p in &self.ports {
-                                        ui.selectable_value(&mut d.port, p.clone(), p);
+                                        ui.selectable_value(&mut d.connection.port, p.clone(), p);
                                     }
                                 });
                                 if ui.button(tr("Refresh")).clicked() {
@@ -301,14 +301,14 @@ impl App {
                             });
                             ui.end_row();
                             ui.label(tr("Baud rate"));
-                            ui.add(egui::DragValue::new(&mut d.baud).range(1200..=1_000_000));
+                            ui.add(egui::DragValue::new(&mut d.connection.baud).range(1200..=1_000_000));
                             ui.end_row();
                         } else {
                             ui.label(tr("Host"));
-                            ui.add(egui::TextEdit::singleline(&mut d.host).hint_text("raspberrypi.local").desired_width(200.0));
+                            ui.add(egui::TextEdit::singleline(&mut d.connection.host).hint_text("raspberrypi.local").desired_width(200.0));
                             ui.end_row();
                             ui.label(tr("TCP port"));
-                            ui.add(egui::DragValue::new(&mut d.tcp_port).range(1..=65535));
+                            ui.add(egui::DragValue::new(&mut d.connection.tcp_port).range(1..=65535));
                             ui.end_row();
                         }
                         ui.label("");
@@ -463,19 +463,19 @@ impl App {
                 ui.end_row();
             };
             row(tr("Controller"), dev.controller.label().to_string());
-            row(tr("Laser type"), dev.laser.label().to_string());
+            row(tr("Laser type"), dev.laser().label().to_string());
             row(tr("Units"), tr(dev.units.label()).to_string());
             row(tr("Speed units"), tr(dev.speed_unit.label()).to_string());
-            row(tr("Work area"), format!("{} × {}", fmt_len(units, dev.bed_w, 0), fmt_len(units, dev.bed_h, 0)));
-            row(tr("Machine zero (0,0)"), if dev.origin == Origin::FrontLeft { tr("Front-left (GRBL default)") } else { tr("Back-left") }.to_string());
-            row(tr("S-value max ($30)"), format!("{}", dev.s_max));
-            row(tr("Dynamic power (M4)"), yes_no(dev.dynamic_power).to_string());
-            row(tr("Travel speed"), fmt_speed(units, dev.speed_unit, true, dev.travel_speed));
-            row(tr("Return to origin"), yes_no(dev.return_home).to_string());
+            row(tr("Work area"), format!("{} × {}", fmt_len(units, dev.area.bed_w, 0), fmt_len(units, dev.area.bed_h, 0)));
+            row(tr("Machine zero (0,0)"), if dev.axes.origin == Origin::FrontLeft { tr("Front-left (GRBL default)") } else { tr("Back-left") }.to_string());
+            row(tr("S-value max ($30)"), format!("{}", dev.s_max()));
+            row(tr("Dynamic power (M4)"), yes_no(dev.gcode.dynamic_power).to_string());
+            row(tr("Travel speed"), fmt_speed(units, dev.speed_unit, true, dev.speeds.travel_speed));
+            row(tr("Return to origin"), yes_no(dev.gcode.return_home).to_string());
             if dev.controller.is_serial() {
-                row(tr("Connection type"), tr(dev.link.label()).to_string());
-                if dev.link == LinkKind::Serial {
-                    row(tr("Baud rate"), dev.baud.to_string());
+                row(tr("Connection type"), tr(dev.connection.link.label()).to_string());
+                if dev.connection.link == LinkKind::Serial {
+                    row(tr("Baud rate"), dev.connection.baud.to_string());
                 }
                 row(tr("Port"), if dev.has_target() { dev.target_label() } else { tr("No port").to_string() });
             }
@@ -496,8 +496,8 @@ impl App {
             self.sync_profile();
             return;
         }
-        let mut port = self.doc.device.port.clone();
-        let tcp = self.doc.device.link == LinkKind::Tcp;
+        let mut port = self.doc.device.connection.port.clone();
+        let tcp = self.doc.device.connection.link == LinkKind::Tcp;
         ui.horizontal_wrapped(|ui| {
             if tcp {
                 ui.label(RichText::new(self.doc.device.target_label()).monospace());
@@ -521,7 +521,7 @@ impl App {
                 }
             } else {
                 let mut dev = self.doc.device.clone();
-                dev.port = port.clone();
+                dev.connection.port = port.clone();
                 let green = egui::Button::new(RichText::new(tr("Connect")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f));
                 if ui.add_enabled(dev.has_target(), green).clicked() {
                     if let Some(target) = Target::of(&dev) {
@@ -530,7 +530,7 @@ impl App {
                 }
             }
         });
-        self.doc.device.port = port;
+        self.doc.device.connection.port = port;
         ui.label(format!("{}: {}   X {:.2}  Y {:.2}", tr("State"), self.machine.0, self.machine.1, self.machine.2));
         let mut act: Option<Action> = None;
         // Options of the device that belong to jogging and framing, always editable.
@@ -543,7 +543,7 @@ impl App {
             drag_speed(ui, units, self.doc.device.speed_unit, true, &mut self.doc.device.jog_feed, 10.0, Some((10.0, 20000.0)));
             ui.end_row();
             ui.label(tr("Frame power"));
-            ui.add(egui::DragValue::new(&mut self.doc.device.frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
+            ui.add(egui::DragValue::new(&mut self.doc.device.heads[0].frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
             ui.end_row();
         }));
         ui.separator();
@@ -706,19 +706,19 @@ impl App {
         if let Some(cfg) = &mut self.cfg {
             let d = &mut cfg.draft;
             if let Some(v) = reading.bed_w {
-                d.bed_w = v;
+                d.area.bed_w = v;
             }
             if let Some(v) = reading.bed_h {
-                d.bed_h = v;
+                d.area.bed_h = v;
             }
             if let Some(v) = reading.s_max {
-                d.s_max = v;
+                d.heads[0].s_max = v;
             }
             if let Some(v) = reading.travel_speed {
-                d.travel_speed = v;
+                d.speeds.travel_speed = v;
             }
             if let Some(v) = reading.dynamic_power {
-                d.dynamic_power = v;
+                d.gcode.dynamic_power = v;
             }
         }
         self.status = trf("Read {} values from the device", &[&n]);

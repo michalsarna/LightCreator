@@ -119,8 +119,8 @@ pub fn export(doc: &Document) -> String {
     let _ = writeln!(
         s,
         "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"{w}mm\" height=\"{h}mm\" viewBox=\"0 0 {w} {h}\">",
-        w = d.bed_w,
-        h = d.bed_h
+        w = d.area.bed_w,
+        h = d.area.bed_h
     );
     for sh in &doc.shapes {
         let c = PALETTE[doc.layers[sh.layer].color.min(29)];

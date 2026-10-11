@@ -72,14 +72,14 @@ fn render_screenshots() {
         diode.name = "Diode laser 400 × 400".into();
         let mut co2 = Device::default();
         co2.name = "CO2 K40 (300 × 200 mm)".into();
-        co2.bed_w = 300.0;
-        co2.bed_h = 200.0;
-        co2.origin = Origin::BackLeft;
+        co2.area.bed_w = 300.0;
+        co2.area.bed_h = 200.0;
+        co2.axes.origin = Origin::BackLeft;
         let mut inch = Device::default();
         inch.name = "Desktop engraver (inches)".into();
         inch.units = Units::Inch;
-        inch.bed_w = 17.0 * 25.4;
-        inch.bed_h = 12.0 * 25.4;
+        inch.area.bed_w = 17.0 * 25.4;
+        inch.area.bed_h = 12.0 * 25.4;
         a.profiles = vec![diode, co2, inch];
         a.start_sel = 0;
         a.cfg = None;
@@ -98,7 +98,7 @@ fn render_screenshots() {
         // Keep local paths and ports out of the pictures.
         a.status = "Imported 4 paths from badge.svg".into();
         a.ports = vec!["/dev/ttyUSB0".into()];
-        a.doc.device.port = "/dev/ttyUSB0".into();
+        a.doc.device.connection.port = "/dev/ttyUSB0".into();
     }
     h.run_steps(3);
     save(&mut h, "02-editor-properties.png");
@@ -138,9 +138,9 @@ fn render_screenshots() {
         a.side_tab = SideTab::Device;
         a.open_cfg_edit(0);
         if let Some(c) = a.cfg.as_mut() {
-            c.draft.link = lc_core::LinkKind::Tcp;
-            c.draft.host = "raspberrypi.local".into();
-            c.draft.tcp_port = 3333;
+            c.draft.connection.link = lc_core::LinkKind::Tcp;
+            c.draft.connection.host = "raspberrypi.local".into();
+            c.draft.connection.tcp_port = 3333;
             c.draft.camera_url = "http://raspberrypi.local:8080/stream.mjpg".into();
         }
     }

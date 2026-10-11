@@ -581,7 +581,7 @@ impl App {
     /// materials for its laser type with the device's own copies over them.
     pub fn view_of(&self, d: &lc_core::Device) -> Vec<Material> {
         if d.materials_inherit {
-            let main: Vec<Material> = self.main_library().into_iter().filter(|m| m.laser == d.laser).collect();
+            let main: Vec<Material> = self.main_library().into_iter().filter(|m| m.laser == d.laser()).collect();
             effective_library(&main, &d.materials)
         } else {
             d.materials.clone()
@@ -625,7 +625,7 @@ impl App {
         if self.doc.device.materials_seeded {
             return;
         }
-        let laser = self.doc.device.laser;
+        let laser = self.doc.device.laser();
         let main = self.main_library();
         add_missing(&mut self.doc.device.materials, &main, laser);
         self.doc.device.materials_seeded = true;
@@ -642,7 +642,7 @@ impl App {
         self.materialize(&mut dev);
         self.doc.device = dev;
         // Only what suits the laser of this device belongs in its library.
-        let laser = self.doc.device.laser;
+        let laser = self.doc.device.laser();
         let incoming: Vec<Material> = incoming.into_iter().filter(|m| m.laser == laser).collect();
         let plan = plan_merge(&self.doc.device.materials, &incoming);
         let added = plan.added.len();
@@ -758,7 +758,7 @@ impl App {
         ui.horizontal(|ui| {
             ui.add(egui::TextEdit::singleline(&mut self.mat_dev_filter).hint_text(tr("Search")).desired_width(120.0));
             if ui.button(tr("Add from library…")).on_hover_text(tr("Copy materials from the built-in library into this device")).clicked() {
-                self.mat_laser = Some(self.doc.device.laser);
+                self.mat_laser = Some(self.doc.device.laser());
                 self.mat_add_mode = true;
                 self.show_materials = true;
             }
@@ -910,7 +910,7 @@ impl App {
             used.push(self.active_layer);
         }
         let layers: Vec<(usize, &Layer)> = used.iter().map(|i| (*i, &self.doc.layers[*i])).collect();
-        Material::from_layers(name, self.doc.device.laser, &layers)
+        Material::from_layers(name, self.doc.device.laser(), &layers)
     }
 
     // ---------------------------------------------------------------------------------------------------------
@@ -929,7 +929,7 @@ impl App {
         let mut export = false;
         let mut import = false;
         let (units, _su) = (self.doc.device.units, self.doc.device.speed_unit);
-        let device_laser = self.doc.device.laser;
+        let device_laser = self.doc.device.laser();
         let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 10, right: 10, top: 6, bottom: 8 });
         egui::Window::new("material_library").title_bar(false).frame(frame).default_size([640.0, 540.0]).resizable(true).show(ctx, |ui| {
             crate::window_ui::mini_title(ui, &tr("Material library"), &mut open, |_| {});
@@ -1248,7 +1248,7 @@ impl App {
         };
         mats += merge(self, MergeTarget::Global, tr("Material library").to_string(), &file.global);
         for d in file.devices {
-            let found = self.profiles.iter().position(|p| p.name.trim().eq_ignore_ascii_case(d.name.trim()) && p.laser == d.laser);
+            let found = self.profiles.iter().position(|p| p.name.trim().eq_ignore_ascii_case(d.name.trim()) && p.laser() == d.laser());
             match found {
                 Some(i) => mats += merge(self, MergeTarget::Profile(i), d.name.clone(), &d.materials),
                 None => {

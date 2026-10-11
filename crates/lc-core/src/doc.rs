@@ -451,45 +451,62 @@ fn d_jog_feed() -> f64 {
     3000.0
 }
 
-/// A device (machine) profile: everything the Device tab shows and the job generators need.
+/// Machine axes: where the zero is.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Device {
-    pub name: String,
-    /// Display units; profiles saved before this existed load as millimetres.
-    #[serde(default)]
-    pub units: Units,
-    /// Whether speeds are shown per second or per minute.
-    #[serde(default)]
-    pub speed_unit: SpeedUnit,
-    #[serde(default)]
-    pub controller: Controller,
-    #[serde(default)]
-    pub laser: LaserKind,
+pub struct Axes {
+    pub origin: Origin,
+}
+
+impl Default for Axes {
+    fn default() -> Self {
+        Axes { origin: Origin::FrontLeft }
+    }
+}
+
+/// The work area of the machine, millimetres.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Area {
     pub bed_w: f64,
     pub bed_h: f64,
-    pub origin: Origin,
-    /// GRBL `$30`, the S value that equals 100% power.
-    pub s_max: f64,
+}
+
+impl Default for Area {
+    fn default() -> Self {
+        Area { bed_w: 400.0, bed_h: 400.0 }
+    }
+}
+
+/// Machine speeds.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Speeds {
+    /// Speed of moves with the laser off, mm/min.
+    pub travel_speed: f64,
+}
+
+impl Default for Speeds {
+    fn default() -> Self {
+        Speeds { travel_speed: 3000.0 }
+    }
+}
+
+/// How the G-code of a job is written.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct GcodeCfg {
     /// Use `M4` dynamic power (recommended) instead of `M3`.
     pub dynamic_power: bool,
-    pub travel_speed: f64,
+    /// Go back to the machine zero when the job is done.
     pub return_home: bool,
-    pub baud: u32,
-    /// Serial port used for this device (empty = none chosen yet).
-    #[serde(default)]
-    pub port: String,
-    /// Jog step in mm.
-    #[serde(default = "d_jog_step")]
-    pub jog_step: f64,
-    /// Jog feed in mm/min.
-    #[serde(default = "d_jog_feed")]
-    pub jog_feed: f64,
-    /// Laser power (percent) while framing; 0 keeps the laser off.
-    #[serde(default)]
-    pub frame_power: f64,
-    /// Camera overlay alignment for this machine.
-    #[serde(default)]
-    pub camera: Option<CameraCfg>,
+}
+
+impl Default for GcodeCfg {
+    fn default() -> Self {
+        GcodeCfg { dynamic_power: true, return_home: true }
+    }
+}
+
+/// How the program reaches the machine.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Connection {
     /// Serial port or TCP socket.
     #[serde(default)]
     pub link: LinkKind,
@@ -498,25 +515,170 @@ pub struct Device {
     pub host: String,
     #[serde(default = "d_tcp_port")]
     pub tcp_port: u16,
-    /// URL of a live picture of the machine (MJPEG stream or JPEG snapshot). Empty = none.
+    /// Serial port used for this device (empty = none chosen yet).
     #[serde(default)]
+    pub port: String,
+    pub baud: u32,
+}
+
+impl Default for Connection {
+    fn default() -> Self {
+        Connection { link: LinkKind::Serial, host: String::new(), tcp_port: 3333, port: String::new(), baud: 115_200 }
+    }
+}
+
+/// One laser head of the machine.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct LaserHead {
+    #[serde(default)]
+    pub name: String,
+    /// GRBL `$30`, the S value that equals 100% power.
+    pub s_max: f64,
+    /// Laser power (percent) while framing; 0 keeps the laser off.
+    #[serde(default)]
+    pub frame_power: f64,
+    #[serde(default)]
+    pub laser: LaserKind,
+}
+
+impl Default for LaserHead {
+    fn default() -> Self {
+        LaserHead { name: String::new(), s_max: 1000.0, frame_power: 0.0, laser: LaserKind::Diode }
+    }
+}
+
+/// A device (machine) profile: everything the Device tab shows and the job generators need.
+///
+/// Profiles written by earlier versions keep the settings of the groups as flat fields (`bed_w`, `origin`,
+/// `s_max`, ...); they are read into the groups, the laser head fields into `heads[0]`.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(from = "DeviceWire")]
+pub struct Device {
+    pub name: String,
+    /// Display units; profiles saved before this existed load as millimetres.
+    pub units: Units,
+    /// Whether speeds are shown per second or per minute.
+    pub speed_unit: SpeedUnit,
+    pub controller: Controller,
+    pub axes: Axes,
+    pub area: Area,
+    pub speeds: Speeds,
+    pub gcode: GcodeCfg,
+    pub connection: Connection,
+    /// The laser heads; there is always at least one.
+    pub heads: Vec<LaserHead>,
+    /// Jog step in mm.
+    pub jog_step: f64,
+    /// Jog feed in mm/min.
+    pub jog_feed: f64,
+    /// Camera overlay alignment for this machine.
+    pub camera: Option<CameraCfg>,
+    /// URL of a live picture of the machine (MJPEG stream or JPEG snapshot). Empty = none.
     pub camera_url: String,
     /// Quarter turns clockwise applied to the camera picture (0..=3).
-    #[serde(default)]
     pub camera_rotation: u8,
     /// Default speed of each of the 30 layers in mm/min, kept with the device and used for new documents.
-    #[serde(default = "d_layer_speeds")]
     pub layer_speeds: Vec<f64>,
     /// The material library of this device: materials with the settings of all their layers. It is stored with
     /// the profile and with saved projects.
-    #[serde(default)]
     pub materials: Vec<crate::materials::Material>,
     /// The library has been filled from the built-in one (once; deleting materials does not refill it).
-    #[serde(default)]
     pub materials_seeded: bool,
     /// The library follows the main library: the materials above are only this device's own copies of changed ones.
-    #[serde(default)]
     pub materials_inherit: bool,
+}
+
+/// What a device profile looks like in a file: the groups, or the flat fields of older versions.
+#[derive(Deserialize)]
+struct DeviceWire {
+    name: String,
+    #[serde(default)]
+    units: Units,
+    #[serde(default)]
+    speed_unit: SpeedUnit,
+    #[serde(default)]
+    controller: Controller,
+    axes: Option<Axes>,
+    area: Option<Area>,
+    speeds: Option<Speeds>,
+    gcode: Option<GcodeCfg>,
+    connection: Option<Connection>,
+    heads: Option<Vec<LaserHead>>,
+    #[serde(default = "d_jog_step")]
+    jog_step: f64,
+    #[serde(default = "d_jog_feed")]
+    jog_feed: f64,
+    #[serde(default)]
+    camera: Option<CameraCfg>,
+    #[serde(default)]
+    camera_url: String,
+    #[serde(default)]
+    camera_rotation: u8,
+    #[serde(default = "d_layer_speeds")]
+    layer_speeds: Vec<f64>,
+    #[serde(default)]
+    materials: Vec<crate::materials::Material>,
+    #[serde(default)]
+    materials_seeded: bool,
+    #[serde(default)]
+    materials_inherit: bool,
+    // Flat fields of profiles saved before the groups existed.
+    origin: Option<Origin>,
+    bed_w: Option<f64>,
+    bed_h: Option<f64>,
+    travel_speed: Option<f64>,
+    dynamic_power: Option<bool>,
+    return_home: Option<bool>,
+    link: Option<LinkKind>,
+    host: Option<String>,
+    tcp_port: Option<u16>,
+    port: Option<String>,
+    baud: Option<u32>,
+    s_max: Option<f64>,
+    frame_power: Option<f64>,
+    laser: Option<LaserKind>,
+}
+
+impl From<DeviceWire> for Device {
+    fn from(w: DeviceWire) -> Device {
+        let d = Device::default();
+        let axes = w.axes.unwrap_or(Axes { origin: w.origin.unwrap_or(d.axes.origin) });
+        let area = w.area.unwrap_or(Area { bed_w: w.bed_w.unwrap_or(d.area.bed_w), bed_h: w.bed_h.unwrap_or(d.area.bed_h) });
+        let speeds = w.speeds.unwrap_or(Speeds { travel_speed: w.travel_speed.unwrap_or(d.speeds.travel_speed) });
+        let gcode = w.gcode.unwrap_or(GcodeCfg { dynamic_power: w.dynamic_power.unwrap_or(true), return_home: w.return_home.unwrap_or(true) });
+        let connection = w.connection.unwrap_or(Connection {
+            link: w.link.unwrap_or_default(),
+            host: w.host.unwrap_or_default(),
+            tcp_port: w.tcp_port.unwrap_or(3333),
+            port: w.port.unwrap_or_default(),
+            baud: w.baud.unwrap_or(115_200),
+        });
+        let mut heads = w.heads.unwrap_or_default();
+        if heads.is_empty() {
+            heads.push(LaserHead { name: String::new(), s_max: w.s_max.unwrap_or(1000.0), frame_power: w.frame_power.unwrap_or(0.0), laser: w.laser.unwrap_or_default() });
+        }
+        Device {
+            name: w.name,
+            units: w.units,
+            speed_unit: w.speed_unit,
+            controller: w.controller,
+            axes,
+            area,
+            speeds,
+            gcode,
+            connection,
+            heads,
+            jog_step: w.jog_step,
+            jog_feed: w.jog_feed,
+            camera: w.camera,
+            camera_url: w.camera_url,
+            camera_rotation: w.camera_rotation,
+            layer_speeds: w.layer_speeds,
+            materials: w.materials,
+            materials_seeded: w.materials_seeded,
+            materials_inherit: w.materials_inherit,
+        }
+    }
 }
 
 impl Device {
@@ -536,25 +698,45 @@ impl Device {
 
     /// Where the machine's zero is, in design coordinates (millimetres, y down). Jobs start and end here.
     pub fn home_point(&self) -> Pt {
-        match self.origin {
-            Origin::FrontLeft => Pt::new(0.0, self.bed_h),
+        match self.axes.origin {
+            Origin::FrontLeft => Pt::new(0.0, self.area.bed_h),
             Origin::BackLeft => Pt::new(0.0, 0.0),
         }
     }
 
+    /// Laser head `i`, or the first one when there is no such head.
+    pub fn head(&self, i: usize) -> &LaserHead {
+        self.heads.get(i).unwrap_or(&self.heads[0])
+    }
+
+    pub fn head_mut(&mut self, i: usize) -> &mut LaserHead {
+        let i = if i < self.heads.len() { i } else { 0 };
+        &mut self.heads[i]
+    }
+
+    /// The laser type of the first head (the one the material library follows).
+    pub fn laser(&self) -> LaserKind {
+        self.heads[0].laser
+    }
+
+    /// `$30` of the first head: the S value that equals 100 % power.
+    pub fn s_max(&self) -> f64 {
+        self.heads[0].s_max
+    }
+
     /// Short description of the connection target.
     pub fn target_label(&self) -> String {
-        match self.link {
-            LinkKind::Serial => self.port.clone(),
-            LinkKind::Tcp => format!("{}:{}", self.host, self.tcp_port),
+        match self.connection.link {
+            LinkKind::Serial => self.connection.port.clone(),
+            LinkKind::Tcp => format!("{}:{}", self.connection.host, self.connection.tcp_port),
         }
     }
 
     /// Is a connection target configured?
     pub fn has_target(&self) -> bool {
-        match self.link {
-            LinkKind::Serial => !self.port.is_empty(),
-            LinkKind::Tcp => !self.host.trim().is_empty(),
+        match self.connection.link {
+            LinkKind::Serial => !self.connection.port.is_empty(),
+            LinkKind::Tcp => !self.connection.host.trim().is_empty(),
         }
     }
 }
@@ -566,23 +748,15 @@ impl Default for Device {
             units: Units::Mm,
             speed_unit: SpeedUnit::default(),
             controller: Controller::Grbl,
-            laser: LaserKind::Diode,
-            bed_w: 400.0,
-            bed_h: 400.0,
-            origin: Origin::FrontLeft,
-            s_max: 1000.0,
-            dynamic_power: true,
-            travel_speed: 3000.0,
-            return_home: true,
-            baud: 115_200,
-            port: String::new(),
+            axes: Axes::default(),
+            area: Area::default(),
+            speeds: Speeds::default(),
+            gcode: GcodeCfg::default(),
+            connection: Connection::default(),
+            heads: vec![LaserHead::default()],
             jog_step: 5.0,
             jog_feed: 3000.0,
-            frame_power: 0.0,
             camera: None,
-            link: LinkKind::Serial,
-            host: String::new(),
-            tcp_port: 3333,
             camera_url: String::new(),
             camera_rotation: 0,
             layer_speeds: d_layer_speeds(),

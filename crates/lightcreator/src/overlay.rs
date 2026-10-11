@@ -30,7 +30,7 @@ pub fn quad_map(c: &[Pt; 4], u: f64, v: f64) -> Pt {
 
 impl App {
     fn bed_corners(&self) -> [Pt; 4] {
-        let (w, h) = (self.doc.device.bed_w, self.doc.device.bed_h);
+        let (w, h) = (self.doc.device.area.bed_w, self.doc.device.area.bed_h);
         [Pt::new(0.0, 0.0), Pt::new(w, 0.0), Pt::new(w, h), Pt::new(0.0, h)]
     }
 
@@ -155,7 +155,7 @@ impl App {
                 ui.checkbox(&mut self.overlay_edit, tr("Align: drag the four corners on the work area")).on_hover_text(tr("Drag each corner to the matching corner of the material or work area; perspective is corrected."));
                 ui.horizontal_wrapped(|ui| {
                     if ui.button(tr("Reset to work area")).clicked() {
-                        let (w, h) = (self.doc.device.bed_w, self.doc.device.bed_h);
+                        let (w, h) = (self.doc.device.area.bed_w, self.doc.device.area.bed_h);
                         ov.corners = [Pt::new(0.0, 0.0), Pt::new(w, 0.0), Pt::new(w, h), Pt::new(0.0, h)];
                         changed = true;
                     }

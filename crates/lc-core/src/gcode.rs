@@ -74,16 +74,16 @@ impl<'a> Writer<'a> {
     }
 
     fn map(&self, p: Pt) -> (f64, f64) {
-        let x = p.x.clamp(0.0, self.dev.bed_w);
-        let y = p.y.clamp(0.0, self.dev.bed_h);
-        match self.dev.origin {
-            Origin::FrontLeft => (x, self.dev.bed_h - y),
+        let x = p.x.clamp(0.0, self.dev.area.bed_w);
+        let y = p.y.clamp(0.0, self.dev.area.bed_h);
+        match self.dev.axes.origin {
+            Origin::FrontLeft => (x, self.dev.area.bed_h - y),
             Origin::BackLeft => (x, y),
         }
     }
 
     fn clamp(&self, p: Pt) -> Pt {
-        Pt::new(p.x.clamp(0.0, self.dev.bed_w), p.y.clamp(0.0, self.dev.bed_h))
+        Pt::new(p.x.clamp(0.0, self.dev.area.bed_w), p.y.clamp(0.0, self.dev.area.bed_h))
     }
 
     fn travel(&mut self, p: Pt) {
@@ -93,8 +93,8 @@ impl<'a> Writer<'a> {
         }
         let (x, y) = self.map(p);
         let _ = writeln!(self.out, "G0 X{:.3} Y{:.3}", x, y);
-        self.moves.push(Move { a: self.pos, b: p, laser: false, layer: self.layer, op: self.op, dur: p.dist(self.pos) / self.dev.travel_speed.max(1.0) * 60.0 });
-        self.seconds += p.dist(self.pos) / self.dev.travel_speed.max(1.0) * 60.0;
+        self.moves.push(Move { a: self.pos, b: p, laser: false, layer: self.layer, op: self.op, dur: p.dist(self.pos) / self.dev.speeds.travel_speed.max(1.0) * 60.0 });
+        self.seconds += p.dist(self.pos) / self.dev.speeds.travel_speed.max(1.0) * 60.0;
         self.pos = p;
     }
 
@@ -139,7 +139,7 @@ impl<'a> Writer<'a> {
     /// Linear move with the laser at `power` percent and `speed` mm/s.
     fn line(&mut self, p: Pt, power: f64, speed: f64) {
         let p = self.clamp(p);
-        let s = (power / 100.0 * self.dev.s_max).round();
+        let s = (power / 100.0 * self.dev.s_max()).round();
         let f = (speed * 60.0).round();
         let (x, y) = self.map(p);
         let mut l = format!("G1 X{:.3} Y{:.3}", x, y);
@@ -263,7 +263,7 @@ pub fn generate(doc: &Document) -> Job {
         // Marlin laser feature: inline power, S on each G1 sets the power.
         let _ = writeln!(w.out, "M3 I S0");
     } else {
-        let _ = writeln!(w.out, "{} S0", if dev.dynamic_power { "M4" } else { "M3" });
+        let _ = writeln!(w.out, "{} S0", if dev.gcode.dynamic_power { "M4" } else { "M3" });
     }
 
     // Air assist: M8 / M9 for GRBL, the fan commands for Marlin.
@@ -343,7 +343,7 @@ pub fn generate(doc: &Document) -> Job {
         }
     }
     let _ = writeln!(w.out, "{}", if dev.controller == Controller::Marlin { "M5 I ; laser off" } else { "M5 ; laser off" });
-    if dev.return_home {
+    if dev.gcode.return_home {
         w.travel(dev.home_point());
     }
     if air {

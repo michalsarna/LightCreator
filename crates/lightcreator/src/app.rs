@@ -564,7 +564,7 @@ impl App {
         let Some(b) = self.sel_bounds() else { return };
         // A single object aligns to the bed, several align to each other.
         let target = if self.sel.len() == 1 {
-            Rect { min: Pt::new(0.0, 0.0), max: Pt::new(self.doc.device.bed_w, self.doc.device.bed_h) }
+            Rect { min: Pt::new(0.0, 0.0), max: Pt::new(self.doc.device.area.bed_w, self.doc.device.area.bed_h) }
         } else {
             b
         };
@@ -628,7 +628,7 @@ impl App {
         if let Some(b) = self.sel_bounds() {
             self.checkpoint();
             let (c, d) = (b.center(), &self.doc.device);
-            let t = Xf::translate(d.bed_w / 2.0 - c.x, d.bed_h / 2.0 - c.y);
+            let t = Xf::translate(d.area.bed_w / 2.0 - c.x, d.area.bed_h / 2.0 - c.y);
             self.transform_selection(t);
         }
     }
@@ -872,7 +872,7 @@ impl App {
             self.status = tr("Connect to a laser first (Laser panel)").into();
             return;
         }
-        let g = gcode::frame_gcode(b, &self.doc.device, self.doc.device.frame_power, 40.0);
+        let g = gcode::frame_gcode(b, &self.doc.device, self.doc.device.heads[0].frame_power, 40.0);
         for l in laser::clean_gcode(&g) {
             self.link.send(Cmd::Line(l));
         }
@@ -1143,7 +1143,7 @@ impl App {
                 }
             }
             Act::MaterialLibrary => {
-                self.mat_laser = Some(self.doc.device.laser);
+                self.mat_laser = Some(self.doc.device.laser());
                 self.mat_add_mode = false;
                 self.show_materials = true;
             }

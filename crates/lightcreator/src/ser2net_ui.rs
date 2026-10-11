@@ -73,9 +73,9 @@ impl App {
         let dev = &self.doc.device;
         self.ser2net = Some(Ser2NetDlg {
             version,
-            serial_port: if dev.port.is_empty() { self.ports.first().cloned().unwrap_or_else(|| "/dev/ttyUSB0".into()) } else { dev.port.clone() },
-            baud: dev.baud,
-            tcp_port: dev.tcp_port,
+            serial_port: if dev.connection.port.is_empty() { self.ports.first().cloned().unwrap_or_else(|| "/dev/ttyUSB0".into()) } else { dev.connection.port.clone() },
+            baud: dev.connection.baud,
+            tcp_port: dev.connection.tcp_port,
             local_only: false,
             kick: true,
             installed,

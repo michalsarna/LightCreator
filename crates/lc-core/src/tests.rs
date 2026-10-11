@@ -51,7 +51,7 @@ fn inner_cut_before_outer() {
 #[test]
 fn y_flip_for_front_left_origin() {
     let mut d = square_doc(LayerMode::Line);
-    d.device.bed_h = 100.0;
+    d.device.area.bed_h = 100.0;
     let job = gcode::generate(&d);
     assert!(job.gcode.contains("Y95.000"), "{}", job.gcode);
 }
@@ -100,7 +100,7 @@ fn old_device_json_gets_new_fields() {
     let d: Device = serde_json::from_str(old).unwrap();
     assert_eq!(d.controller, Controller::Grbl);
     assert_eq!(d.jog_step, 5.0);
-    assert!(d.port.is_empty());
+    assert!(d.connection.port.is_empty());
 }
 
 #[test]
@@ -411,8 +411,8 @@ fn automatic_shapes() {
 fn jobs_start_and_end_at_the_machine_origin() {
     for (origin, home) in [(Origin::FrontLeft, Pt::new(0.0, 400.0)), (Origin::BackLeft, Pt::new(0.0, 0.0))] {
         let mut d = Document::default();
-        d.device.origin = origin;
-        d.device.return_home = true;
+        d.device.axes.origin = origin;
+        d.device.gcode.return_home = true;
         d.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(50.0, 50.0));
         assert_eq!(d.device.home_point(), home);
         let job = gcode::generate(&d);
@@ -430,7 +430,7 @@ fn jobs_start_and_end_at_the_machine_origin() {
 fn old_devices_get_link_defaults() {
     let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
     let d: Device = serde_json::from_str(old).unwrap();
-    assert_eq!((d.link, d.tcp_port, d.camera_url.is_empty()), (LinkKind::Serial, 3333, true));
+    assert_eq!((d.connection.link, d.connection.tcp_port, d.camera_url.is_empty()), (LinkKind::Serial, 3333, true));
     assert!(!d.has_target());
 }
 
@@ -936,4 +936,37 @@ fn a_document_remembers_the_material_it_was_made_with() {
     assert_eq!(back.material, doc.material);
     // Old files have none.
     assert!(Document::from_json(&Document::default().to_json().replace(",\"material\":null", "")).unwrap().material.is_none());
+}
+
+/// A profile exactly as v0.0.11 wrote it: every setting is a flat field.
+const OLD_PROFILE: &str = r#"{"name":"Old CO2","units":"Inch","speed_unit":"PerMinute","controller":"Marlin","laser":"Co2","bed_w":300.0,"bed_h":200.0,"origin":"BackLeft","s_max":255.0,"dynamic_power":false,"travel_speed":4500.0,"return_home":false,"baud":250000,"port":"/dev/ttyUSB3","jog_step":2.5,"jog_feed":1800.0,"frame_power":1.5,"camera":null,"link":"Tcp","host":"pi.local","tcp_port":4000,"camera_url":"http://pi.local:8080/stream","camera_rotation":2,"layer_speeds":[1200.0],"materials":[],"materials_seeded":true,"materials_inherit":false}"#;
+
+#[test]
+fn old_flat_profile_is_read_into_the_groups() {
+    let d: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert_eq!((d.area.bed_w, d.area.bed_h, d.axes.origin), (300.0, 200.0, Origin::BackLeft));
+    assert_eq!((d.speeds.travel_speed, d.gcode.dynamic_power, d.gcode.return_home), (4500.0, false, false));
+    assert_eq!((d.connection.baud, d.connection.port.as_str(), d.connection.link, d.connection.host.as_str(), d.connection.tcp_port), (250000, "/dev/ttyUSB3", LinkKind::Tcp, "pi.local", 4000));
+    assert_eq!(d.heads.len(), 1);
+    assert_eq!((d.heads[0].s_max, d.heads[0].frame_power, d.heads[0].laser), (255.0, 1.5, LaserKind::Co2));
+    assert_eq!((d.controller, d.units, d.jog_step, d.camera_rotation, d.materials_seeded), (Controller::Marlin, Units::Inch, 2.5, 2, true));
+}
+
+#[test]
+fn new_profile_round_trips_and_a_minimal_old_one_gets_defaults() {
+    let d: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    let json = serde_json::to_string(&d).unwrap();
+    assert!(json.contains("\"heads\"") && json.contains("\"area\""));
+    let back: Device = serde_json::from_str(&json).unwrap();
+    assert_eq!(back, d);
+    let tiny: Device = serde_json::from_str(r#"{"name":"x","bed_w":100.0,"bed_h":80.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#).unwrap();
+    assert_eq!((tiny.area.bed_w, tiny.heads.len(), tiny.connection.tcp_port, tiny.layer_speeds.len()), (100.0, 1, 3333, 30));
+}
+
+#[test]
+fn a_profile_without_heads_gets_one() {
+    let mut v: serde_json::Value = serde_json::to_value(Device::default()).unwrap();
+    v["heads"] = serde_json::json!([]);
+    let d: Device = serde_json::from_value(v).unwrap();
+    assert_eq!(d.heads.len(), 1);
 }

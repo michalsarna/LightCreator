@@ -20,9 +20,9 @@ impl Target {
         if !dev.has_target() {
             return None;
         }
-        Some(match dev.link {
-            lc_core::LinkKind::Serial => Target::Serial { port: dev.port.clone(), baud: dev.baud },
-            lc_core::LinkKind::Tcp => Target::Tcp { host: dev.host.trim().to_string(), port: dev.tcp_port },
+        Some(match dev.connection.link {
+            lc_core::LinkKind::Serial => Target::Serial { port: dev.connection.port.clone(), baud: dev.connection.baud },
+            lc_core::LinkKind::Tcp => Target::Tcp { host: dev.connection.host.trim().to_string(), port: dev.connection.tcp_port },
         })
     }
     fn label(&self) -> String {

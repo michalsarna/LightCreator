@@ -23,9 +23,9 @@ pub fn layer_paths(doc: &Document, li: usize) -> Vec<Polyline> {
 }
 
 fn out_y(dev: &Device, y: f64) -> f64 {
-    let y = y.clamp(0.0, dev.bed_h);
-    match dev.origin {
-        Origin::FrontLeft => dev.bed_h - y,
+    let y = y.clamp(0.0, dev.area.bed_h);
+    match dev.axes.origin {
+        Origin::FrontLeft => dev.area.bed_h - y,
         Origin::BackLeft => y,
     }
 }
@@ -57,7 +57,7 @@ pub fn hpgl(doc: &Document) -> String {
             if p.pts.len() < 2 {
                 continue;
             }
-            let pt = |q: &Pt| format!("{},{}", u(q.x.clamp(0.0, dev.bed_w)), u(out_y(dev, q.y)));
+            let pt = |q: &Pt| format!("{},{}", u(q.x.clamp(0.0, dev.area.bed_w)), u(out_y(dev, q.y)));
             let _ = writeln!(s, "PU{};", pt(&p.pts[0]));
             let mut pd: Vec<String> = p.pts[1..].iter().map(pt).collect();
             if p.closed {
@@ -107,7 +107,7 @@ pub fn dxf(doc: &Document) -> String {
             }
             let _ = write!(s, "0\nPOLYLINE\n8\n{}\n66\n1\n70\n{}\n", name, if p.closed { 1 } else { 0 });
             for q in &p.pts {
-                let _ = write!(s, "0\nVERTEX\n8\n{}\n10\n{:.4}\n20\n{:.4}\n", name, q.x.clamp(0.0, dev.bed_w), out_y(dev, q.y));
+                let _ = write!(s, "0\nVERTEX\n8\n{}\n10\n{:.4}\n20\n{:.4}\n", name, q.x.clamp(0.0, dev.area.bed_w), out_y(dev, q.y));
             }
             let _ = write!(s, "0\nSEQEND\n8\n{}\n", name);
         }
