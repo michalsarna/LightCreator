@@ -10,6 +10,7 @@ use lc_core::{Controller, Device, LinkKind, Units};
 fn blank_device() -> Device {
     let mut d = Device::default();
     d.name = String::new();
+    d.speed_unit = lc_core::SpeedUnit::PerMinute;
     d
 }
 
@@ -98,6 +99,13 @@ impl App {
                     egui::ComboBox::from_id_salt("add_units").selected_text(tr(d.units.label())).show_ui(ui, |ui| {
                         for u in Units::ALL {
                             ui.selectable_value(&mut d.units, u, tr(u.label()));
+                        }
+                    });
+                    ui.end_row();
+                    ui.label(tr("Speed units"));
+                    egui::ComboBox::from_id_salt("add_speed_units").selected_text(tr(d.speed_unit.label())).show_ui(ui, |ui| {
+                        for k in lc_core::SpeedUnit::ALL {
+                            ui.selectable_value(&mut d.speed_unit, k, tr(k.label()));
                         }
                     });
                     ui.end_row();
