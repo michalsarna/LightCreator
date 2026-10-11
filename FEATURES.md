@@ -122,6 +122,9 @@
   after connecting, single-axis homing when the firmware has it, and a **Firmware ($$)** page (all GRBL settings with
   meaning and typical values, checked and confirmed writes, backup / restore with read-back, typed-word factory reset;
   `M503` text for Marlin).
+* **Laser heads:** several heads per device (tool number, laser type including fibre, wavelength, power, frame and focus
+  settings, beam spot, pointer offset, stored PWM values); layers choose a head, the G-code scales S by the head's S max
+  and writes `T<n>`; a focus beam with a safety off switch; pointer alignment and a laser-off dry run.
 * **While a job runs** the Device tab locks jog, cancel jog, home, unlock and the jog options; pause, resume and STOP
   stay. Connect is green and Disconnect purple.
 * **Read from device:** the device configuration window can connect and read work area, S-value max, travel
