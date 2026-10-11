@@ -1058,3 +1058,5 @@
 1057|Zöld (világos)
 1058|Lila (sötét)
 1059|Lila (világos)
+1060|Barna (sötét)
+1061|Barna (világos)

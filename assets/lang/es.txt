@@ -1058,3 +1058,5 @@
 1057|Verde (claro)
 1058|Morado (oscuro)
 1059|Morado (claro)
+1060|Marrón (oscuro)
+1061|Marrón (claro)

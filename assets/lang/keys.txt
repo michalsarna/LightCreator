@@ -1058,3 +1058,5 @@
 1057	Green (light)
 1058	Purple (dark)
 1059	Purple (light)
+1060	Brown (dark)
+1061	Brown (light)

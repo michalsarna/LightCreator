@@ -1058,3 +1058,5 @@
 1057|Verde (deschis)
 1058|Violet (închis)
 1059|Violet (deschis)
+1060|Maro (închis)
+1061|Maro (deschis)

@@ -1058,3 +1058,5 @@
 1057|Glas (éadrom)
 1058|Corcra (dorcha)
 1059|Corcra (éadrom)
+1060|Donn (dorcha)
+1061|Donn (éadrom)

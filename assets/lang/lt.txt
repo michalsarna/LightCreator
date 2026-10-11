@@ -1058,3 +1058,5 @@
 1057|Žalia (šviesi)
 1058|Violetinė (tamsi)
 1059|Violetinė (šviesi)
+1060|Ruda (tamsi)
+1061|Ruda (šviesi)

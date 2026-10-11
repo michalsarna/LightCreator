@@ -1058,3 +1058,5 @@
 1057|Vert (clair)
 1058|Violet (sombre)
 1059|Violet (clair)
+1060|Marron (sombre)
+1061|Marron (clair)

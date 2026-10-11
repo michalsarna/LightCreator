@@ -17,10 +17,12 @@ pub enum Scheme {
     GreenLight,
     PurpleDark,
     PurpleLight,
+    BrownDark,
+    BrownLight,
 }
 
 impl Scheme {
-    pub const ALL: [Scheme; 10] = [Scheme::Dark, Scheme::LightDark, Scheme::MediumLight, Scheme::Light, Scheme::BlueDark, Scheme::BlueLight, Scheme::GreenDark, Scheme::GreenLight, Scheme::PurpleDark, Scheme::PurpleLight];
+    pub const ALL: [Scheme; 12] = [Scheme::Dark, Scheme::LightDark, Scheme::MediumLight, Scheme::Light, Scheme::BlueDark, Scheme::BlueLight, Scheme::GreenDark, Scheme::GreenLight, Scheme::PurpleDark, Scheme::PurpleLight, Scheme::BrownDark, Scheme::BrownLight];
 
     /// English label (translated through `i18n::tr`).
     pub fn label(self) -> &'static str {
@@ -29,6 +31,8 @@ impl Scheme {
             Scheme::LightDark => "Light Dark",
             Scheme::MediumLight => "Medium Light",
             Scheme::Light => "Light",
+            Scheme::BrownDark => "Brown (dark)",
+            Scheme::BrownLight => "Brown (light)",
             Scheme::PurpleDark => "Purple (dark)",
             Scheme::PurpleLight => "Purple (light)",
             Scheme::GreenDark => "Green (dark)",
@@ -43,6 +47,8 @@ impl Scheme {
             Scheme::LightDark => "light-dark",
             Scheme::MediumLight => "medium-light",
             Scheme::Light => "light",
+            Scheme::BrownDark => "brown-dark",
+            Scheme::BrownLight => "brown-light",
             Scheme::PurpleDark => "purple-dark",
             Scheme::PurpleLight => "purple-light",
             Scheme::GreenDark => "green-dark",
@@ -55,7 +61,7 @@ impl Scheme {
         Scheme::ALL.into_iter().find(|x| x.id() == s)
     }
     pub fn is_dark(self) -> bool {
-        matches!(self, Scheme::Dark | Scheme::LightDark | Scheme::PurpleDark | Scheme::GreenDark | Scheme::BlueDark)
+        matches!(self, Scheme::Dark | Scheme::LightDark | Scheme::BrownDark | Scheme::PurpleDark | Scheme::GreenDark | Scheme::BlueDark)
     }
     fn index(self) -> u8 {
         Scheme::ALL.iter().position(|x| *x == self).unwrap_or(3) as u8
@@ -67,6 +73,8 @@ impl Scheme {
             Scheme::LightDark => LIGHT_DARK,
             Scheme::MediumLight => MEDIUM_LIGHT,
             Scheme::Light => LIGHT,
+            Scheme::BrownDark => tinted(DARK, BROWN, false),
+            Scheme::BrownLight => tinted(LIGHT, BROWN, true),
             Scheme::PurpleDark => tinted(DARK, PURPLE, false),
             Scheme::PurpleLight => tinted(LIGHT, PURPLE, true),
             Scheme::GreenDark => tinted(DARK, GREEN, false),
@@ -191,6 +199,8 @@ const BLUE: Hue = Hue { tint: [0.25, 0.45, 0.95], accent: rgb(0x4a, 0x8f, 0xf0) 
 const GREEN: Hue = Hue { tint: [0.3, 0.8, 0.4], accent: rgb(0x3f, 0xb8, 0x60) };
 
 const PURPLE: Hue = Hue { tint: [0.6, 0.4, 0.9], accent: rgb(0x9b, 0x6b, 0xe8) };
+
+const BROWN: Hue = Hue { tint: [0.65, 0.45, 0.3], accent: rgb(0xc0, 0x8a, 0x5a) };
 
 static CURRENT: AtomicU8 = AtomicU8::new(3);
 static PALETTES: OnceLock<Vec<Palette>> = OnceLock::new();

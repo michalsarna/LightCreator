@@ -1058,3 +1058,5 @@
 1057|Zelena (svetla)
 1058|Vijolična (temna)
 1059|Vijolična (svetla)
+1060|Rjava (temna)
+1061|Rjava (svetla)

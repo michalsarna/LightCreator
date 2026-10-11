@@ -1058,3 +1058,5 @@
 1057|Grønn (lys)
 1058|Lilla (mørk)
 1059|Lilla (lys)
+1060|Brun (mørk)
+1061|Brun (lys)

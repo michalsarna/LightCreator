@@ -1058,3 +1058,5 @@
 1057|Aħdar (ċar)
 1058|Vjola (skur)
 1059|Vjola (ċar)
+1060|Kannella (skur)
+1061|Kannella (ċar)

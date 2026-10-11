@@ -1058,3 +1058,5 @@
 1057|Roheline (hele)
 1058|Lilla (tume)
 1059|Lilla (hele)
+1060|Pruun (tume)
+1061|Pruun (hele)

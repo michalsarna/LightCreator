@@ -1058,3 +1058,5 @@
 1057|Zelený (světlý)
 1058|Fialový (tmavý)
 1059|Fialový (světlý)
+1060|Hnědý (tmavý)
+1061|Hnědý (světlý)

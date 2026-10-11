@@ -1058,3 +1058,5 @@
 1057|Verde (claro)
 1058|Roxo (escuro)
 1059|Roxo (claro)
+1060|Castanho (escuro)
+1061|Castanho (claro)

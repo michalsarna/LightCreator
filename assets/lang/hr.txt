@@ -1058,3 +1058,5 @@
 1057|Zelena (svijetla)
 1058|Ljubičasta (tamna)
 1059|Ljubičasta (svijetla)
+1060|Smeđa (tamna)
+1061|Smeđa (svijetla)

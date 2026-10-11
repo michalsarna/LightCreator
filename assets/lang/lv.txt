@@ -1058,3 +1058,5 @@
 1057|Zaļa (gaiša)
 1058|Violeta (tumša)
 1059|Violeta (gaiša)
+1060|Brūna (tumša)
+1061|Brūna (gaiša)

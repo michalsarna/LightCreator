@@ -1058,3 +1058,5 @@
 1057|Groen (licht)
 1058|Paars (donker)
 1059|Paars (licht)
+1060|Bruin (donker)
+1061|Bruin (licht)
