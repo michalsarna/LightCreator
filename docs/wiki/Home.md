@@ -29,7 +29,7 @@ An open-source alternative to [LightBurn](https://lightburnsoftware.com/) for CN
 * **Design:** shapes, Bézier node editing, text, boolean operations, offset, round corners, grouping, locking; SVG / Illustrator / PDF and bitmap import, image tracing.
 * **Engraving:** line, fill, offset fill and raster images with six dithering methods and grayscale power; 30 LightBurn-style cut layers; preview with time estimate.
 * **Devices:** per-machine profiles; GRBL and Marlin over serial or TCP (ser2net); Ruida and Trocen via PLT / DXF export.
-* **Helpers:** material library, camera overlay with four-corner alignment, 310-picture clipart gallery with online search.
+* **Helpers:** camera overlay with four-corner alignment, 310-picture clipart gallery with online search.
 * **Interface:** 30 languages (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी and 23 other European ones) and four colour schemes.
 
 > ⚠️ **Safety:** lasers are dangerous. Test G-code at low power, wear eye protection, never leave a running machine unattended. See [Safety and Limitations](Safety-and-Limitations).

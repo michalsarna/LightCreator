@@ -14,8 +14,8 @@ All pictures are rendered headlessly from the real UI. Back to the [README](../R
 | Bézier node editing with its floating toolbar | Text tool and text properties |
 | ![Image engraving](screenshots/09-image.png) | ![Camera overlay](screenshots/10-camera-overlay.png) |
 | Raster image engraving, dithered toolpath preview | Camera overlay aligned with four corners |
-| ![Material library](screenshots/11-materials.png) | ![Preview window](screenshots/12-preview.png) |
-| Material library | Preview window: every burn operation in its own colour, with travel moves |
+| ![Preview window](screenshots/12-preview.png) | |
+| Preview window: every burn operation in its own colour, with travel moves | |
 | ![Import image](screenshots/13-image-import.png) | ![Trace image](screenshots/14-trace.png) |
 | Image import with rotate, flip, brightness, contrast and gamma | Trace an image into curves |
 | ![Grid options](screenshots/15-grid-layers.png) | ![Automatic shapes](screenshots/16-shapes.png) |
@@ -36,11 +36,8 @@ All pictures are rendered headlessly from the real UI. Back to the [README](../R
 | Closing with unsaved work: Save, Discard or Cancel | |
 | ![About](screenshots/30-about.png) | ![Greek interface](screenshots/31-greek.png) |
 | The About window, in the style of the preview and camera windows | Greek interface |
-| ![Ukrainian interface](screenshots/32-ukrainian.png) | ![Materials tab](screenshots/33-materials-tab.png) |
-| Ukrainian interface (one of the 23 added European languages) | The Materials tab: the library of the device, settings of every layer of a material |
-| ![Material differences](screenshots/34-material-merge.png) | ![Library file](screenshots/35-library-export.png) |
-| ![Editing a material](screenshots/36-material-edit.png) | |
-| A library read from a project file: choose, value by value, what to keep | |
+| ![Ukrainian interface](screenshots/32-ukrainian.png) | |
+| Ukrainian interface (one of the 23 added European languages) | |
 
 Regenerate them with
 `cargo test -p lightcreator --release render_screenshots -- --ignored`.

@@ -84,7 +84,6 @@ impl App {
         }
         self.update_tick(ctx);
         self.api_tick(ctx);
-        self.material_sync_tick();
         self.toast_ui(ctx);
         self.close_dialog(ctx);
         self.confirm_dialog(ctx);
@@ -187,7 +186,6 @@ impl App {
 
 /// What a Yes answer does.
 pub enum ConfirmAct {
-    DeleteAllMaterials,
     EnableLaserMode,
     /// Write `$id=value` to the controller.
     WriteSetting(u32, String),
@@ -212,7 +210,6 @@ impl App {
     /// What a Yes answer does.
     pub fn do_confirmed(&mut self, ctx: &egui::Context, act: ConfirmAct) {
         match act {
-            ConfirmAct::DeleteAllMaterials => self.reset_device_library(),
             ConfirmAct::WriteSetting(id, v) => {
                 self.link.send(crate::laser::Cmd::Line(lc_core::grbl_settings::write_line(id, &v)));
                 self.fw.reread_at = Some(std::time::Instant::now() + std::time::Duration::from_millis(600));
@@ -261,9 +258,7 @@ impl App {
             ui.label(RichText::new(c.text.as_str()).size(14.0));
             ui.add_space(10.0);
             ui.horizontal(|ui| {
-                // Deleting everything is answered with a red button with a bin.
-                let yes = if matches!(c.act, ConfirmAct::DeleteAllMaterials) { crate::window_ui::delete_button(ui, &tr("Yes")) } else { ui.button(RichText::new(tr("Yes")).strong()) };
-                if yes.clicked() {
+                if ui.button(RichText::new(tr("Yes")).strong()).clicked() {
                     answer = Some(true);
                 }
                 if ui.button(tr("No")).clicked() {

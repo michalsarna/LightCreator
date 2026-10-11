@@ -120,7 +120,6 @@ impl App {
         // The first-run setup belongs to the start screen.
         self.wizard = None;
         self.load_camera_view();
-        self.seed_device_library();
         self.touch();
         self.view.need_fit = true;
         self.screen = Screen::Editor;
@@ -128,10 +127,6 @@ impl App {
     }
 
     /// Open the configuration window on a new profile made from `draft`.
-    pub fn open_cfg_with(&mut self, draft: Device) {
-        self.cfg = Some(CfgEdit { idx: None, draft, page: CfgPage::General, head: 0 });
-    }
-
     /// A copy of a profile, under a free name, selected.
     pub fn duplicate_profile(&mut self, idx: usize) {
         let Some(src) = self.profiles.get(idx).cloned() else { return };
@@ -1794,13 +1789,5 @@ mod tests {
         a.import_profile_from(&dir.join("missing.json"));
         assert_eq!(a.profiles.len(), 4);
         let _ = std::fs::remove_dir_all(&dir);
-    }
-
-    #[test]
-    fn the_template_window_opens_the_configuration_with_the_chosen_machine() {
-        let mut a = app();
-        a.open_cfg_with(lc_core::profiles::template("marlin-diode"));
-        let c = a.cfg.as_ref().unwrap();
-        assert_eq!((c.idx, c.draft.controller), (None, Controller::Marlin));
     }
 }

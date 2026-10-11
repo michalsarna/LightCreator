@@ -41,9 +41,9 @@
   picture to show (a saved photo, or the live camera while its window is open) and then switches it on the work area.
   Start / STOP are written in capitals.
 * **Web server and API** (Program options, off by default, no password): a web page with the state of the machine, the project and a camera, and an API for the status, the project as SVG, the cameras and the commands stop, home, cancel jog, jog and camera choice. Listens only on this computer unless you allow the network. See the wiki page Web Server and API.
-* **Delete buttons:** everything that deletes (devices, cameras, zones, macros, counters, materials, clipart, nodes, the overlay...) has a bin icon and is red.
+* **Delete buttons:** everything that deletes (devices, cameras, zones, macros, counters, clipart, nodes, the overlay...) has a bin icon and is red.
 * **Description tab:** a plain multi-line text about the project in the side panel (it can be moved like the other tabs), saved in the project file.
-* **Layer cut options:** kerf offset, perforation (cut / skip lengths) and automatic tabs / bridges for line layers, saved with the layer, the material and the project; a layer of images is always in the Image mode (mode fixed, the rest editable) and images have a scan angle. Not implemented: sub-layers and hand-placed tabs.
+* **Layer cut options:** kerf offset, perforation (cut / skip lengths) and automatic tabs / bridges for line layers, saved with the layer and the project; a layer of images is always in the Image mode (mode fixed, the rest editable) and images have a scan angle. Not implemented: sub-layers and hand-placed tabs.
 * **Control bar:** name of the current tool in a box of fixed width, New / Open / Save icons, switches for the grid,
   the secondary grid, snapping to the grid and snapping to other objects (while moving, edges and centres join with a guide line) (icons, highlighted while on) and the Toolpaths button, green while the toolpaths
   are shown and grey otherwise. Toolpaths are drawn in layer colours darkened or lightened until they stand out from
@@ -103,7 +103,7 @@
   Jarvis, Stucki, Atkinson, ordered or grayscale power (minimum and maximum power); negative option per image.
 * Inner shapes are cut first, nearest-neighbour ordering, live toolpath preview with time estimate.
 * The layer colour strip at the bottom shows the layer names. Double-clicking a layer name there or in the
-  Layers tab opens the layer options window (name, mode, speed, power, passes, fill and image settings). New layers start at 100 % power and 1000 mm/min; the settings of the layers belong to the project file, together with the device profile and the material it was made with; reusable settings live in the materials of the device's library, not in the device profile.
+  Layers tab opens the layer options window (name, mode, speed, power, passes, fill and image settings). New layers start at 100 % power and 1000 mm/min; the settings of the layers belong to the project file, together with the device profile, not in the device profile itself.
 * The **Layers** tab lists layers in burn order; move them up or down to change the order. The Properties tab
   shows the colour of the selected object's layer.
 * **Preview window:** playback starts at ×10; the bottom line shows the real job time at the slider position out of
@@ -176,7 +176,7 @@
   controller's own software (for example RDWorks). Fill is exported as hatch lines, raster images are skipped.
 * Per-device display units: millimetres or inches (stored geometry stays in millimetres) and, separately, speeds
   per second or per minute (mm/s, mm/min, in/s, in/min). This applies to layer speed, travel speed, jog feed and the
-  material list; values are converted automatically and the G-code always carries the mm/min feed that GRBL and Marlin
+  other speeds; values are converted automatically and the G-code always carries the mm/min feed that GRBL and Marlin
   expect after `G21`.
 * The editor cannot be opened until at least one device profile exists.
 
@@ -192,46 +192,12 @@
   or deleted from the right-click menu. They live in the application's data folder next to `app.ron`, in the `clipart` folder (the location per system is in the README).
 
 **Helpers**
-* **Material libraries:** a material holds the settings of all the layers it needs (mode, speed, power, passes,
-  interval, scan angle, overscan, dithering, minimum power, air assist). There are three levels.
-  * The **built-in library** (starting values for typical 10 W diode and 40 W CO2 lasers) is the source for the rest.
-  * The **Material library…** window of the Laser menu is the only place that extends it: "Save the layers of the
-    design as a material for every device" adds a global material that every device can use. Built-in materials are read-only.
-  * Every device has its **own library**, shown in the **Materials** tab of the side panel and filled once from the
-    built-in and global materials that suit its laser type. In the tab you edit all the settings of every layer of a
-    material, add or remove layers, rename, delete, apply a material to the layers of the design and save the layers of
-    the design as a material; all of that is kept in the device library.
-  * Lists show name and tags in alternating rows with scroll arrows; a layer's label is picked from a list that the **Layer labels…** button of the library window extends. Questions (restore, delete all materials) are asked in the program's own language; pop-up windows share one style and resize both ways.
-  * The device library is saved in the device profile (and so in backups) and inside every saved project. When a
-    project file is opened, its library is merged into the library of the active device: new materials are added at
-    once, materials that differ open a window where, value by value, you choose to keep your own or take the one from
-    the file.
-  * A material is **one entry for both laser types** (diode and CO2 have their own settings under the same id, e.g.
-    `plywood-3`). Names such as "Plywood" are translated; the thickness is a separate value; there is a one-line note and
-    tags (Cut, Engrave...). The program's built-in values can be **changed on this computer**: double-click a material in the
-    Material library window (or Edit material) to set every layer, then Save; it is kept as a local copy that overrides the
-    built-in data, and *Restore built-in values* brings the original back. A device's library receives the variant for its
-    own laser type.
-  * Lists are grouped by category; a group folds up by its title (shown in the main colour), as in the clipart list.
-  * **Delete all materials** (Materials tab) empties the device's library and shows the main library instead; a material
-    that is changed there is kept as a copy for the device. Tags are suggested from those already in use, and hovering over
-    the dithering setting explains the chosen method.
-  * A saved project carries the device profile, the device library and the **material it was made with**.
-  * Every material has the **colour** and a **label** (the name of its purpose, e.g. Cut) of each layer, and a **category**
-    (Wood, Metal, Plastic, Paper and leather, Stone and glass, Other, or a category of your own). Choosing a material
-    (double-click it in the Materials tab; a green mark shows the one in use) puts its parameters and colours into the layers
-    (their names stay) and keeps the two in step: a change in the Layers tab is copied into the material at once and saved
-    into the device's library every 60 seconds, and a change of the material in its editor goes into the layers. The list shows
-    only the names and can be filtered by category, as the clipart list can.
-  * **Export library… / Import library…** (Material library window and Materials tab) write and read one `.lcb` file with
-    the global materials and the devices with their libraries. A window lets you tick exactly what goes into the file or
-    is taken from it; materials that differ open the same window of differences.
 * **Camera overlay:** a photo or the live camera (build with `--features camera`) under the design, aligned
   with four draggable corners (perspective corrected), opacity, flip and rotate; saved per device.
 
 **Help**
 * **Download backup…** (Help menu): asks where to save a zip file with everything the program keeps on this computer,
-  the settings (`app.ron`: device profiles, language, colour scheme, material presets, recent files) and the whole
+  the settings (`app.ron`: device profiles, language, colour scheme, recent files) and the whole
   `clipart` folder, plus a README. **Restore from backup…** (Help menu) reads such a file back: settings and clipart
   are replaced after a confirmation. When no profile files are found at start, the start window offers the same
   restore with a green button.
@@ -242,7 +208,7 @@
   and Help > Project page on GitHub opens the repository.
 
 **Interface**
-* Side panel with tabs for Properties, Materials, Layers, Device, Console (live view of everything sent to and received from
+* Side panel with tabs for Properties, Layers, Device, Console (live view of everything sent to and received from
   the serial port, with status polling hidden by default), Clipart and, when a camera is set, Camera view.
 * **Own window frame:** no system title bar and no rounded corners. A flat bar at the top shows the icon, the
   title (with the open file) and modern minimise / maximise / close buttons; drag it to move the window, double-click

@@ -16,7 +16,6 @@ pub mod snap;
 pub mod fillet;
 pub mod geom;
 pub mod grbl_settings;
-pub mod materials;
 pub mod ops;
 pub mod pdf;
 pub mod profiles;

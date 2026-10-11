@@ -2,7 +2,7 @@
 
 # Ustawienia i pliki
 
-Język, schemat kolorów, profile urządzeń, własne ustawienia materiałów, ostatnio używany profil i rozmiar okna są zapisane w jednym pliku, `app.ron`:
+Język, schemat kolorów, profile urządzeń, ostatnio używany profil i rozmiar okna są zapisane w jednym pliku, `app.ron`:
 
 | System | Położenie |
 |---|---|

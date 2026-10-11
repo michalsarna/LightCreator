@@ -525,7 +525,7 @@ impl Controller {
     }
 }
 
-/// Laser source type; selects matching entries in the material library.
+/// Laser source type.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum LaserKind {
     #[default]
@@ -1090,15 +1090,8 @@ pub struct Device {
     /// How the camera view opens (mode, zoom, window places).
     pub camera_view: crate::camimg::CameraView,
     /// Legacy: older versions kept a default speed for each of the 30 layers here. The settings of the layers now
-    /// belong to the project and to the materials of the device's library; this list is read and kept, not used.
+    /// belong to the project; this list is read and kept, not used.
     pub layer_speeds: Vec<f64>,
-    /// The material library of this device: materials with the settings of all their layers. It is stored with
-    /// the profile and with saved projects.
-    pub materials: Vec<crate::materials::Material>,
-    /// The library has been filled from the built-in one (once; deleting materials does not refill it).
-    pub materials_seeded: bool,
-    /// The library follows the main library: the materials above are only this device's own copies of changed ones.
-    pub materials_inherit: bool,
     /// Own G-code scripts that are run by hand from the Device tab.
     pub macros: Vec<Macro>,
     /// Parts of the work area the machine must not enter, in design coordinates.
@@ -1319,12 +1312,6 @@ struct DeviceWire {
     #[serde(default = "d_layer_speeds")]
     layer_speeds: Vec<f64>,
     #[serde(default)]
-    materials: Vec<crate::materials::Material>,
-    #[serde(default)]
-    materials_seeded: bool,
-    #[serde(default)]
-    materials_inherit: bool,
-    #[serde(default)]
     macros: Vec<Macro>,
     #[serde(default)]
     zones: Vec<Zone>,
@@ -1394,9 +1381,6 @@ impl From<DeviceWire> for Device {
             active_camera: w.active_camera,
             camera_view: w.camera_view,
             layer_speeds: w.layer_speeds,
-            materials: w.materials,
-            materials_seeded: w.materials_seeded,
-            materials_inherit: w.materials_inherit,
             macros: w.macros,
             zones: w.zones,
             rotary: w.rotary,
@@ -1564,7 +1548,7 @@ impl Device {
         self.heads.iter().enumerate().any(|(i, h)| self.heads[..i].iter().any(|o| o.tool == h.tool))
     }
 
-    /// The laser type of the first head (the one the material library follows).
+    /// The laser type of the first head.
     pub fn laser(&self) -> LaserKind {
         self.heads[0].laser
     }
@@ -1611,9 +1595,6 @@ impl Default for Device {
             active_camera: 0,
             camera_view: Default::default(),
             layer_speeds: d_layer_speeds(),
-            materials: vec![],
-            materials_seeded: false,
-            materials_inherit: false,
             macros: vec![],
             zones: vec![],
             rotary: Rotary::default(),
@@ -1635,10 +1616,6 @@ pub struct Document {
     pub order: Vec<usize>,
     #[serde(default)]
     next_group: u64,
-    /// The material whose settings were put into the layers of this design (it travels with the file, so the
-    /// design can be repeated on another machine).
-    #[serde(default)]
-    pub material: Option<crate::materials::Material>,
     /// A free text about the project (what it is, the settings that worked...), saved in the project file.
     #[serde(default)]
     pub description: String,
@@ -1668,7 +1645,6 @@ impl Default for Document {
             next_id: 1,
             order: identity_order(),
             next_group: 1,
-            material: None,
             description: String::new(),
             job_info: JobInfo::default(),
         }

@@ -151,7 +151,6 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::ToggleZones => "eye",
         Act::DeviceSettings => "settings",
         Act::SwitchDevice => "refresh-cw",
-        Act::MaterialLibrary => "package",
         Act::Frame => "square-dashed",
         Act::StartJob => "play",
         Act::ShareSer2net => "wifi",

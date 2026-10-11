@@ -68,7 +68,6 @@ pub enum Act {
     ToggleAutoFit,
     DeviceSettings,
     SwitchDevice,
-    MaterialLibrary,
     CameraOverlay,
     GridOptions,
     ProgramOptions,
@@ -147,7 +146,6 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
     }
     let mut laser = vec![
         Item(Act::SwitchDevice, "Switch device…", None),
-        Item(Act::MaterialLibrary, "Material library…", None),
         Item(Act::DeviceSettings, "Device settings…", None),
         Item(Act::Frame, "Frame", None),
         Item(Act::StartJob, "Start job", None),

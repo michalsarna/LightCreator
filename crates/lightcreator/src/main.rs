@@ -20,7 +20,6 @@ mod help_ui;
 mod icons;
 mod image_ui;
 mod laser;
-mod materials_ui;
 mod markdown_ui;
 mod menu;
 mod nodes;

@@ -17,8 +17,7 @@ and more) are on the [screenshots page](docs/SCREENSHOTS.md).
 
 ## Settings and configuration files
 
-Language, colour scheme, device profiles (controller, units, port, camera alignment and so on), your own material
-presets, the last used profile and the window size are stored by the application in a single file, `app.ron`:
+Language, colour scheme, device profiles (controller, units, port, camera alignment and so on), the last used profile and the window size are stored by the application in a single file, `app.ron`:
 
 | System | Location |
 |--------|----------|
@@ -46,8 +45,7 @@ A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
   jog settings, camera URL), start window, live console, camera view.
 * **Controllers:** GRBL and Marlin over a serial port. Ruida and Trocen jobs are exported as PLT / DXF for the
   controller's own software.
-* **Helpers:** material library with starting settings and your own presets, camera / photo overlay with
-  four-corner alignment.
+* **Helpers:** camera / photo overlay with four-corner alignment.
 * **Preview:** separate preview window with every burn operation in its own colour, optional travel moves and a
   simulation slider; layers can be reordered to change the burn order.
 * **Interface:** flat, square window frame with its own title bar, icon control bar and arrange bar, recent files,
@@ -61,8 +59,8 @@ screenshots are rendered from the real UI. Nothing has been run against real har
 Marlin streaming, the Ruida / Trocen import path and the live camera still need testing on actual machines.
 GRBL streaming is exercised end to end against the real GRBL 1.1h firmware running in a simulator, see
 [docs/grbl-sim.md](docs/grbl-sim.md).
-Reading settings from a device, material values and the Illustrator import (PDF-compatible files only) are
-untested on real machines and files from Adobe. Material library values are generic starting points, always test on scrap. Complex scripts (Devanagari,
+Reading settings from a device and the Illustrator import (PDF-compatible files only) are
+untested on real machines and files from Adobe. Complex scripts (Devanagari,
 Arabic) are not shaped by the text tool.
 
 ## Building
@@ -86,7 +84,7 @@ About window and the Linux desktop entry.
 
 | Crate | Purpose |
 |-------|---------|
-| `crates/lc-core` | geometry, Bézier contours, boolean ops and offsets, text outlines, raster engraving, G-code and PLT / DXF export, material presets (UI independent, unit-tested) |
+| `crates/lc-core` | geometry, Bézier contours, boolean ops and offsets, text outlines, raster engraving, G-code and PLT / DXF export (UI independent, unit-tested) |
 | `crates/lightcreator` | egui desktop application, serial worker (GRBL / Marlin), camera capture |
 
 Coordinates are millimetres with the origin at the top-left of the work area; on output Y is flipped for

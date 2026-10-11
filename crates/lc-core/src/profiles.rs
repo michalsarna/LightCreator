@@ -168,8 +168,8 @@ pub fn validate(d: &Device) -> Result<(), String> {
     if d.layer_speeds.len() > 30 || !d.layer_speeds.iter().all(|v| between(*v, 0.0, 100_000.0)) {
         return bad("a layer speed");
     }
-    if d.macros.len() > 50 || d.zones.len() > 100 || d.materials.len() > 5000 {
-        return Err("too many macros, zones or materials".into());
+    if d.macros.len() > 50 || d.zones.len() > 100 {
+        return Err("too many macros or zones".into());
     }
     if d.maintenance.counters.len() > 50 || !d.maintenance.counters.iter().all(|c| text_ok(&c.name, 80) && between(c.secs, 0.0, 1e10) && c.threshold_hours.map_or(true, |h| between(h, 0.0, 1e7))) || !between(d.maintenance.total_secs, 0.0, 1e10) {
         return bad("a maintenance counter");

@@ -73,9 +73,6 @@ impl App {
             }
             SideTab::Console => self.console_panel(ui),
             SideTab::Clipart => self.clipart_panel(ui),
-            SideTab::Materials => {
-                egui::ScrollArea::vertical().id_salt("tab_materials").auto_shrink([false, false]).show(ui, |ui| self.materials_tab(ui));
-            }
             SideTab::Description => self.description_panel(ui),
             SideTab::Camera => {
                 egui::ScrollArea::vertical().id_salt("tab_camera").auto_shrink([false, false]).show(ui, |ui| self.stream_view(ui));

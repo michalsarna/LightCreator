@@ -2,7 +2,7 @@
 
 # Settings and Files
 
-Language, colour scheme, device profiles, your material presets, the last used profile and the window size are stored in a single file, `app.ron`:
+Language, colour scheme, device profiles, the last used profile and the window size are stored in a single file, `app.ron`:
 
 | System | Location |
 |---|---|
