@@ -51,3 +51,14 @@ Każda warstwa materiału pamięta też swój **kolor** i **etykietę** (przezna
 ## Okno podglądu
 Otwiera się przybliżone do obiektów do wypalenia; dwie ikony w linii tytułu dopasowują widok do obszaru roboczego lub do wszystkich obiektów. Przycisk *Preview…* na pasku sterowania jest błękitny, gdy okno jest otwarte, i zamyka je po ponownym kliknięciu. Całe zadanie, a każda operacja (warstwa, wypełnienie, linia, offset, obraz, przejście) w swoim kolorze lub kolorze warstwy, przełączniki operacji, opcjonalne ruchy jałowe, zero maszyny w prawdziwym rogu, odtwarzanie w czasie zadania (15 s, czas rzeczywisty, ×10 do ×200), suwak i sumy czasu, długości, przejść i ruchów.
 ![Podgląd](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/12-preview.png)
+
+## Szczelina, perforacja i mostki (warstwy liniowe)
+* **Kerf offset:** przesuwa zamknięte kontury na zewnątrz o podaną odległość (do wewnątrz, gdy ujemna), by uwzględnić szerokość cięcia; otwory przesuwają się w drugą stronę. 0 = wyłączone. Używa tego tylko G-code; eksport HPGL / DXF i podgląd ścieżek pokazują kontury tak, jak je narysowano.
+* **Perforacja:** kontur jest cięty przez *Cut length*, pomijany przez *Skip length* i tak dalej. Pominięte odcinki to przejazdy z wyłączonym laserem.
+* **Mostki:** krótkie odcinki konturu zostają nieprzecięte albo cięte z procentem mocy warstwy (*Tab cut power*), żeby element trzymał się na miejscu. *Tab size* to długość wzdłuż konturu. *Even spacing* daje mostek co *Spacing* milimetrów (co najmniej *Min tabs*), *Tabs per shape* stałą liczbę; *Limit max tabs* ogranicza liczbę, a *Skip inner shapes* zostawia bez mostków kształty leżące wewnątrz innych. Mostki są rozmieszczane automatycznie, równomiernie wzdłuż konturu; ręczne ustawianie nie jest jeszcze możliwe.
+Opcje są domyślnie wyłączone i wtedy nic nie zmieniają w G-code. Zapisują się z warstwą, z materiałem i w projekcie.
+
+## Obrazy i tryb Obraz
+Warstwa, która zawiera wyłącznie obrazy bitmapowe, jest zawsze w trybie **Obraz**; trybu nie można zmienić, ale prędkość, moc, przejścia, odstęp, kąt skanowania, overscan, rastrowanie i resztę można. Kształty wektorowe położone na takiej warstwie nie są wypalane (warstwa z obrazami i konturami zachowuje wybrany tryb). **Kąt skanowania** obraca linie wypalania obrazu o ten kąt.
+
+Niezaimplementowane z ustawień cięcia innych programów: podwarstwy (kilka ustawień na jednym kolorze) i ręczne ustawianie mostków.
