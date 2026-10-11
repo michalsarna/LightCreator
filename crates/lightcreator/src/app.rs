@@ -1874,7 +1874,7 @@ impl App {
                 ui.label(tr("Inspired by LightBurn; interface inspired by VectorCraft."));
                 ui.label(tr("Author: Michał Sarna"));
                 ui.hyperlink(crate::help_ui::GITHUB_URL);
-                ui.label(tr("MIT licensed."));
+                ui.label(format!("{}: MIT OR Apache-2.0", tr("Licence")));
             });
         }
         self.show_about = open;

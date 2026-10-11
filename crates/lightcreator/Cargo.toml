@@ -57,6 +57,8 @@ assets = [
   ["../../assets/icons/icon-256.png", "usr/share/icons/hicolor/256x256/apps/lightcreator.png", "644"],
   ["../../assets/icons/icon-512.png", "usr/share/icons/hicolor/512x512/apps/lightcreator.png", "644"],
   ["../../README.md", "usr/share/doc/lightcreator/README.md", "644"],
+  ["../../LICENSE", "usr/share/doc/lightcreator/LICENSE", "644"],
+  ["../../LICENSE-APACHE", "usr/share/doc/lightcreator/LICENSE-APACHE", "644"],
 ]
 
 [dev-dependencies]

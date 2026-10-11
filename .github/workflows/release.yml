@@ -49,7 +49,7 @@ jobs:
         shell: bash
         run: |
           mkdir dist
-          cp README.md LICENSE dist/
+          cp README.md LICENSE LICENSE-APACHE dist/
           cp target/release/lightcreator dist/ 2>/dev/null || cp target/release/lightcreator.exe dist/
           name="lightcreator-${TAG}-${{ matrix.name }}"
           if [ "$RUNNER_OS" = Windows ]; then 7z a "$name.zip" ./dist/*; else tar czf "$name.tar.gz" -C dist .; fi
