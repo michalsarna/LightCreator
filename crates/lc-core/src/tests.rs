@@ -2066,3 +2066,61 @@ fn the_new_layer_options_travel_with_the_layer_the_material_and_old_files() {
     taken.take("Tabs / bridges", &changed);
     assert_eq!(taken.tabs.per_shape, 4);
 }
+
+fn image_shape(doc: &mut Document, layer: usize, x: f64) -> u64 {
+    let im = ImageData { name: "t".into(), px_w: 4, px_h: 4, gray: vec![0; 16], w: 8.0, h: 8.0, invert: false };
+    doc.add(layer, Kind::Image(im), Xf::translate(x, 10.0))
+}
+
+#[test]
+fn a_layer_of_images_is_in_the_image_mode_and_goes_back_when_the_images_leave() {
+    let mut d = Document::default();
+    image_shape(&mut d, 3, 10.0);
+    assert!(d.is_image_layer(3) && !d.is_image_layer(4));
+    assert!(d.normalize_image_layers());
+    assert_eq!(d.layers[3].mode, LayerMode::Image);
+    assert!(!d.normalize_image_layers(), "nothing more to do");
+    // Setting another mode does not stick.
+    d.layers[3].mode = LayerMode::Fill;
+    d.normalize_image_layers();
+    assert_eq!(d.layers[3].mode, LayerMode::Image);
+    // An outline on the same layer: the layer is mixed, so it is no longer an image layer and goes back to Line.
+    d.add(3, Kind::Rect { w: 5.0, h: 5.0 }, Xf::IDENTITY);
+    assert!(!d.is_image_layer(3));
+    d.normalize_image_layers();
+    assert_eq!(d.layers[3].mode, LayerMode::Line);
+    // A mixed layer keeps the mode the user gave it.
+    d.layers[3].mode = LayerMode::FillAndLine;
+    assert!(!d.normalize_image_layers());
+    assert_eq!(d.layers[3].mode, LayerMode::FillAndLine);
+    // Old files read as before.
+    let v = serde_json::to_string(&LayerMode::Image).unwrap();
+    assert_eq!(serde_json::from_str::<LayerMode>(&v).unwrap(), LayerMode::Image);
+}
+
+#[test]
+fn image_layers_burn_only_the_images_and_may_scan_at_an_angle() {
+    let mut d = Document::default();
+    image_shape(&mut d, 0, 10.0);
+    d.normalize_image_layers();
+    let flat = gcode::generate(&d).gcode;
+    assert!(flat.contains("G1"), "the image is engraved");
+    // With a scan angle the rows run at that angle: moves are no longer along X only.
+    d.layers[0].angle = 45.0;
+    let turned = gcode::generate(&d).gcode;
+    assert_ne!(flat, turned);
+    // Share of engraving moves that change Y: rows along X keep Y, turned rows change it with every move.
+    let y_changes = |g: &str| {
+        let ys: Vec<f64> = g.lines().filter(|l| l.starts_with("G1")).filter_map(|l| l.split_whitespace().find_map(|w| w.strip_prefix('Y')).and_then(|v| v.parse::<f64>().ok())).collect();
+        ys.windows(2).filter(|w| (w[0] - w[1]).abs() > 1e-6).count() as f64 / ys.len().max(1) as f64
+    };
+    assert!(y_changes(&turned) > 0.8 && y_changes(&flat) < 0.6, "{} vs {}", y_changes(&turned), y_changes(&flat));
+    // The same image engraved at angle 0 is byte for byte what it was.
+    d.layers[0].angle = 0.0;
+    assert_eq!(gcode::generate(&d).gcode, flat);
+    // Vector shapes on a layer in the Image mode are not burnt.
+    let mut v = Document::default();
+    v.add(1, Kind::Rect { w: 10.0, h: 10.0 }, Xf::IDENTITY);
+    v.layers[1].mode = LayerMode::Image;
+    assert!(!gcode::generate(&v).gcode.contains("G1 X"), "{}", gcode::generate(&v).gcode);
+}

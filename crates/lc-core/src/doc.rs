@@ -36,9 +36,12 @@ pub enum LayerMode {
     Fill,
     /// Fill the interior, then cut the outline.
     FillAndLine,
+    /// Engrave bitmap images. A layer that holds only images is always in this mode; vector shapes are not burnt in it.
+    Image,
 }
 
 impl LayerMode {
+    /// The modes a layer can be switched between by hand (a layer of images is in the Image mode and stays there).
     pub const ALL: [LayerMode; 4] = [LayerMode::Line, LayerMode::Fill, LayerMode::FillAndLine, LayerMode::Offset];
     pub fn label(self) -> &'static str {
         match self {
@@ -46,6 +49,7 @@ impl LayerMode {
             LayerMode::Fill => "Fill",
             LayerMode::Offset => "Offset fill",
             LayerMode::FillAndLine => "Fill + Line",
+            LayerMode::Image => "Image",
         }
     }
 }
@@ -1662,6 +1666,48 @@ impl Default for Document {
 }
 
 impl Document {
+    /// A layer that holds images and nothing else is in the Image mode; a layer left in that mode without images goes
+    /// back to Line. Returns whether anything changed. Mixed layers (images and outlines) keep their mode.
+    pub fn normalize_image_layers(&mut self) -> bool {
+        let mut changed = false;
+        for li in 0..self.layers.len() {
+            let (mut img, mut vec) = (false, false);
+            for s in self.shapes.iter().filter(|s| s.layer == li) {
+                if s.is_image() {
+                    img = true;
+                } else {
+                    vec = true;
+                }
+            }
+            let want = if img && !vec {
+                Some(LayerMode::Image)
+            } else if self.layers[li].mode == LayerMode::Image && (vec || img) {
+                Some(LayerMode::Line)
+            } else {
+                None
+            };
+            if let Some(m) = want {
+                if self.layers[li].mode != m {
+                    self.layers[li].mode = m;
+                    changed = true;
+                }
+            }
+        }
+        changed
+    }
+
+    /// Does layer `li` hold only images?
+    pub fn is_image_layer(&self, li: usize) -> bool {
+        let mut img = false;
+        for s in self.shapes.iter().filter(|s| s.layer == li) {
+            if !s.is_image() {
+                return false;
+            }
+            img = true;
+        }
+        img
+    }
+
     pub fn add(&mut self, layer: usize, kind: Kind, xf: Xf) -> u64 {
         let id = self.next_id;
         self.next_id += 1;

@@ -550,6 +550,7 @@ impl App {
     // ---------- document editing helpers ----------
     pub fn touch(&mut self) {
         self.revision += 1;
+        self.doc.normalize_image_layers();
     }
     pub fn checkpoint(&mut self) {
         self.undo.push(self.doc.clone());
