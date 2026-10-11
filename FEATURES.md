@@ -128,6 +128,8 @@
 * **Hooks, macros and no-go zones:** own G-code at the start and end of layers and objects with `{variables}`, named macros
   with `@include` run from the Device tab, and rectangular / round no-go zones that block Start, Frame and export when
   any move (also travel) touches them; all validated before they are kept.
+* **Z axis and rotary:** an optional Z axis (range, layer heights and a step per pass, Z jog, checked heights) and a rotary
+  attachment (chuck or rollers, Y or true A axis, steps per mm for `$101`, rotary layers, circumference check and marks).
 * **While a job runs** the Device tab locks jog, cancel jog, home, unlock and the jog options; pause, resume and STOP
   stay. Connect is green and Disconnect purple.
 * **Read from device:** the device configuration window can connect and read work area, S-value max, travel
