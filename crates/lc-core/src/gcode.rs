@@ -66,6 +66,8 @@ struct Writer<'a> {
     layer: usize,
     /// The laser head of the layer being written: its S max scales the power.
     head: usize,
+    /// Degrees of `A` for a millimetre of surface while a rotary layer is written in the fourth-axis mode.
+    rot: Option<f64>,
     op: usize,
     ops: Vec<OpInfo>,
     seconds: f64,
@@ -74,7 +76,7 @@ struct Writer<'a> {
 
 impl<'a> Writer<'a> {
     fn new(dev: &'a Device) -> Self {
-        Writer { dev, out: String::new(), moves: vec![], pos: dev.home_point(), s: None, f: None, layer: 0, head: 0, op: 0, ops: vec![], seconds: 0.0, cut_len: 0.0 }
+        Writer { dev, out: String::new(), moves: vec![], pos: dev.home_point(), s: None, f: None, layer: 0, head: 0, rot: None, op: 0, ops: vec![], seconds: 0.0, cut_len: 0.0 }
     }
 
     fn map(&self, p: Pt) -> (f64, f64) {
@@ -86,7 +88,7 @@ impl<'a> Writer<'a> {
             return;
         }
         let (x, y) = self.map(p);
-        let _ = writeln!(self.out, "G0 X{:.3} Y{:.3}", x, y);
+        let _ = writeln!(self.out, "G0 X{:.3} {}", x, self.y_word(y));
         self.moves.push(Move { a: self.pos, b: p, laser: false, layer: self.layer, op: self.op, dur: p.dist(self.pos) / self.dev.speeds.travel_speed.max(1.0) * 60.0, speed: self.dev.speeds.travel_speed.max(1.0) / 60.0 });
         self.seconds += p.dist(self.pos) / self.dev.speeds.travel_speed.max(1.0) * 60.0;
         self.pos = p;
@@ -160,11 +162,19 @@ impl<'a> Writer<'a> {
     /// Linear move with the laser at `power` percent and `speed` mm/s.
     fn line(&mut self, p: Pt, power: f64, speed: f64) {
         let (x, y) = self.map(p);
-        let mut l = format!("G1 X{:.3} Y{:.3}", x, y);
+        let mut l = format!("G1 X{:.3} {}", x, self.y_word(y));
         self.modal(&mut l, power, speed);
         self.out.push_str(&l);
         self.out.push('\n');
         self.record(p, power, speed);
+    }
+
+    /// The word of the second axis: `Y<mm>`, or `A<degrees>` while a rotary layer is written with a fourth axis.
+    fn y_word(&self, y: f64) -> String {
+        match self.rot {
+            Some(deg_per_mm) => format!("A{:.3}", y * deg_per_mm),
+            None => format!("Y{:.3}", y),
+        }
     }
 
     /// The `S` and `F` words that changed since the last move.
@@ -202,7 +212,8 @@ impl<'a> Writer<'a> {
     /// Trace `pts` (the first point is where the head is): as lines, or, when the device wants arcs, as arcs and
     /// lines that stay within the arc tolerance of the path.
     fn stroke(&mut self, pts: &[Pt], power: f64, speed: f64) {
-        if !self.dev.gcode.arcs || pts.len() < 2 {
+        // No arcs on the fourth axis: a circle on the surface is not a circle in X and A.
+        if !self.dev.gcode.arcs || pts.len() < 2 || self.rot.is_some() {
             for q in &pts[1..] {
                 self.line(*q, power, speed);
             }
@@ -466,6 +477,7 @@ pub fn generate(doc: &Document) -> Job {
         }
         w.layer = li;
         w.head = layer.head.min(dev.heads.len() - 1);
+        w.rot = (dev.rotary.enabled && layer.rotary && dev.rotary_mode() == RotaryMode::TrueA).then(|| dev.rotary.degrees_per_mm());
         let _ = writeln!(w.out, "; layer {} ({}) speed {} mm/s power {}%", layer.name, layer.mode.label(), layer.speed, layer.power);
         // With several heads the controller is told which one burns this layer.
         if dev.heads.len() > 1 && w.head != tool {
@@ -529,6 +541,7 @@ pub fn generate(doc: &Document) -> Job {
         }
         w.hook(&dev.gcode.hooks.layer_end, "layer_end", &ctx, None);
     }
+    w.rot = None;
     let _ = writeln!(w.out, "{}", if dialect == Dialect::Marlin { "M5 I ; laser off" } else { "M5 ; laser off" });
     if dev.gcode.return_home {
         w.travel(dev.home_point());

@@ -150,6 +150,9 @@ pub struct Layer {
     /// Millimetres Z moves with each further pass (negative = down for a machine with up = +Z); 0 = no Z moves.
     #[serde(default)]
     pub z_step: f64,
+    /// The layer is burnt on a rotary attachment (when the device has one switched on).
+    #[serde(default)]
+    pub rotary: bool,
 }
 
 impl Layer {
@@ -207,6 +210,7 @@ impl Layer {
             head: 0,
             z_start: 0.0,
             z_step: 0.0,
+            rotary: false,
         }
     }
 }
@@ -1074,6 +1078,93 @@ pub struct Device {
     pub macros: Vec<Macro>,
     /// Parts of the work area the machine must not enter, in design coordinates.
     pub zones: Vec<Zone>,
+    /// A rotary attachment (chuck or roller) that turns the work.
+    pub rotary: Rotary,
+}
+
+/// How the rotation is written into the G-code.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum RotaryMode {
+    /// The Y motor drives the rotary: Y stays a distance on the surface, the controller's steps per mm (`$101`) make
+    /// it right.
+    #[default]
+    ReplaceY,
+    /// A fourth axis A in degrees takes the place of Y (needs firmware with a fourth axis; GRBL 1.1 has three).
+    TrueA,
+}
+
+/// The kind of rotary attachment.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum RotaryKind {
+    /// The work is clamped and turned by the motor: the angle follows the workpiece diameter.
+    #[default]
+    Chuck,
+    /// The work lies on two rollers and is turned by friction: the surface moves like the surface of a roller.
+    Roller,
+}
+
+/// The settings of a rotary attachment.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Rotary {
+    #[serde(default)]
+    pub enabled: bool,
+    #[serde(default)]
+    pub mode: RotaryMode,
+    #[serde(default)]
+    pub kind: RotaryKind,
+    /// Diameter of the workpiece, millimetres.
+    #[serde(default = "d_rot_diameter")]
+    pub diameter: f64,
+    /// Diameter of the rollers (for the roller kind), millimetres.
+    #[serde(default = "d_rot_roller")]
+    pub roller_diameter: f64,
+    /// Microsteps of the motor for one full turn of what it drives (the roller, or the chuck).
+    #[serde(default = "d_rot_micro")]
+    pub microsteps_per_rev: f64,
+}
+
+fn d_rot_diameter() -> f64 {
+    50.0
+}
+fn d_rot_roller() -> f64 {
+    30.0
+}
+fn d_rot_micro() -> f64 {
+    6400.0
+}
+
+impl Default for Rotary {
+    fn default() -> Self {
+        Rotary { enabled: false, mode: RotaryMode::ReplaceY, kind: RotaryKind::Chuck, diameter: 50.0, roller_diameter: 30.0, microsteps_per_rev: 6400.0 }
+    }
+}
+
+impl Rotary {
+    /// Distance round the workpiece, millimetres: the most the design may be high.
+    pub fn circumference(&self) -> f64 {
+        std::f64::consts::PI * self.diameter.max(0.0)
+    }
+
+    /// The diameter that sets how far the surface moves for a turn of the motor: the workpiece on a chuck, a roller
+    /// when the work is turned by rollers (the surface of the work moves like the surface of a roller).
+    pub fn drive_diameter(&self) -> f64 {
+        match self.kind {
+            RotaryKind::Chuck => self.diameter,
+            RotaryKind::Roller => self.roller_diameter,
+        }
+    }
+
+    /// Steps per millimetre of surface the controller's Y axis needs (`$101`) in the `ReplaceY` mode.
+    pub fn steps_per_mm(&self) -> f64 {
+        let c = std::f64::consts::PI * self.drive_diameter();
+        if c > 0.0 { self.microsteps_per_rev / c } else { 0.0 }
+    }
+
+    /// Degrees of the driven part for one millimetre of surface (`A` in the `TrueA` mode).
+    pub fn degrees_per_mm(&self) -> f64 {
+        let c = std::f64::consts::PI * self.drive_diameter();
+        if c > 0.0 { 360.0 / c } else { 0.0 }
+    }
 }
 
 /// The shape of a no-go zone, in design millimetres.
@@ -1143,6 +1234,8 @@ struct DeviceWire {
     macros: Vec<Macro>,
     #[serde(default)]
     zones: Vec<Zone>,
+    #[serde(default)]
+    rotary: Rotary,
     // Flat fields of profiles saved before the groups existed.
     origin: Option<Origin>,
     bed_w: Option<f64>,
@@ -1205,6 +1298,7 @@ impl From<DeviceWire> for Device {
             materials_inherit: w.materials_inherit,
             macros: w.macros,
             zones: w.zones,
+            rotary: w.rotary,
         }
     }
 }
@@ -1237,6 +1331,11 @@ impl Device {
     pub fn suggested_overscan(&self, speed: f64) -> Option<f64> {
         let a = self.speeds.acceleration;
         (a > 0.0).then(|| speed * speed / (2.0 * a))
+    }
+
+    /// The way the rotary is written for this device: `TrueA` needs a fourth axis, which GRBL does not have.
+    pub fn rotary_mode(&self) -> RotaryMode {
+        if self.rotary.mode == RotaryMode::TrueA && self.dialect().is_grbl() { RotaryMode::ReplaceY } else { self.rotary.mode }
     }
 
     /// The usable area in design coordinates: the work area minus the margins (never negative in size).
@@ -1399,6 +1498,7 @@ impl Default for Device {
             materials_inherit: false,
             macros: vec![],
             zones: vec![],
+            rotary: Rotary::default(),
         }
     }
 }

@@ -1597,3 +1597,68 @@ fn z_heights_outside_the_travel_are_an_error_and_status_reports_give_z() {
     let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
     assert!(!old.axes.has_z);
 }
+
+#[test]
+fn rotary_formulas_for_a_chuck_and_for_rollers_worked_out_by_hand() {
+    use std::f64::consts::PI;
+    // A chuck: the work is 50 mm across, the motor turns it: one turn = 6400 microsteps = pi * 50 = 157.0796 mm.
+    let chuck = Rotary { enabled: true, mode: RotaryMode::ReplaceY, kind: RotaryKind::Chuck, diameter: 50.0, roller_diameter: 30.0, microsteps_per_rev: 6400.0 };
+    assert!((chuck.circumference() - 157.0796).abs() < 1e-3);
+    assert!((chuck.steps_per_mm() - 40.7437).abs() < 1e-3, "{}", chuck.steps_per_mm()); // 6400 / 157.0796
+    assert!((chuck.degrees_per_mm() - 2.29183).abs() < 1e-4); // 360 / 157.0796
+    // A quarter of the way round is 39.27 mm and 90 degrees.
+    assert!((39.2699 * chuck.degrees_per_mm() - 90.0).abs() < 1e-3);
+    // Rollers: the work (80 mm) lies on 30 mm rollers; the surface moves like the roller's surface (94.2478 mm a turn).
+    let roller = Rotary { kind: RotaryKind::Roller, diameter: 80.0, roller_diameter: 30.0, ..chuck.clone() };
+    assert!((roller.steps_per_mm() - 67.906).abs() < 1e-3, "{}", roller.steps_per_mm()); // 6400 / (pi * 30)
+    assert!((roller.degrees_per_mm() - 3.81972).abs() < 1e-4); // 360 / (pi * 30)
+    // ... but the way round the work is its own: pi * 80 = 251.327 mm.
+    assert!((roller.circumference() - 251.327).abs() < 1e-3);
+    assert_eq!(roller.drive_diameter(), 30.0);
+    // Zero diameters do not divide by zero.
+    let none = Rotary { diameter: 0.0, ..chuck };
+    assert_eq!((none.steps_per_mm(), none.degrees_per_mm(), none.circumference()), (0.0, 0.0, 0.0));
+    let _ = PI;
+}
+
+fn rotary_check_doc(rot: &[bool], heights: &[f64]) -> Document {
+    let mut d = Document::default();
+    d.device.area = Area { bed_w: 300.0, bed_h: 300.0, ..Area::default() };
+    d.device.rotary = Rotary { enabled: true, diameter: 50.0, ..Rotary::default() }; // 157.08 mm round
+    for (i, (r, h)) in rot.iter().zip(heights).enumerate() {
+        d.layers[i].rotary = *r;
+        d.layers[i].mode = LayerMode::Line;
+        d.add(i, Kind::Rect { w: 20.0, h: *h }, Xf::translate(20.0 + 40.0 * i as f64, 20.0));
+    }
+    d
+}
+
+#[test]
+fn rotary_and_flat_layers_do_not_mix_and_the_design_must_fit_round_the_work() {
+    let kinds = |d: &Document| check::job_check(d).into_iter().map(|i| i.kind).collect::<Vec<_>>();
+    // All rotary and low enough: fine.
+    assert!(kinds(&rotary_check_doc(&[true, true], &[100.0, 150.0])).is_empty());
+    // One flat layer next to a rotary one.
+    assert!(kinds(&rotary_check_doc(&[true, false], &[100.0, 50.0])).contains(&check::IssueKind::RotaryMix));
+    // Higher than the circumference (157.08 mm).
+    let too_tall = rotary_check_doc(&[true], &[160.0]);
+    let issues = check::job_check(&too_tall);
+    assert!(issues.iter().any(|i| i.kind == check::IssueKind::RotaryTooTall && i.layer == Some(0) && i.level == check::Level::Error && !i.shapes.is_empty()), "{issues:?}");
+    // Exactly round is allowed (within the tolerance).
+    assert!(!kinds(&rotary_check_doc(&[true], &[157.0])).contains(&check::IssueKind::RotaryTooTall));
+    // All flat layers on a machine with a rotary switched on are only flat jobs.
+    assert!(kinds(&rotary_check_doc(&[false, false], &[250.0, 10.0])).is_empty());
+    // With the rotary switched off the flags mean nothing.
+    let mut off = rotary_check_doc(&[true, false], &[100.0, 50.0]);
+    off.device.rotary.enabled = false;
+    assert!(kinds(&off).is_empty());
+    // The fourth-axis mode falls back to Y on GRBL, and stays on Marlin.
+    let mut dev = Device::default();
+    dev.rotary.mode = RotaryMode::TrueA;
+    assert_eq!(dev.rotary_mode(), RotaryMode::ReplaceY);
+    dev.controller = Controller::Marlin;
+    assert_eq!(dev.rotary_mode(), RotaryMode::TrueA);
+    // Old profiles have no rotary.
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert!(!old.rotary.enabled);
+}

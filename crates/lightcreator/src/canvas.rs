@@ -356,6 +356,22 @@ impl App {
                 painter.rect_stroke(l, 0.0, Stroke::new(1.5, Color32::from_rgb(0xe8, 0x8a, 0x1f)), egui::StrokeKind::Middle);
             }
         }
+        // A rotary attachment: the design wraps round the workpiece, so the way round is marked where it repeats.
+        if self.doc.device.rotary.enabled {
+            let circ = self.doc.device.rotary.circumference();
+            if circ > 1.0 {
+                let mut k = 1.0;
+                while circ * k < bh {
+                    let y = self.w2s(o, Pt::new(0.0, circ * k)).y;
+                    painter.line_segment([egui::pos2(bed.min.x, y), egui::pos2(bed.max.x, y)], Stroke::new(1.0, Color32::from_rgb(0x2e, 0xa0, 0xc0)));
+                    k += 1.0;
+                }
+                let y = self.w2s(o, Pt::new(0.0, circ)).y;
+                if circ < bh {
+                    painter.text(egui::pos2(bed.min.x + 4.0, y - 2.0), egui::Align2::LEFT_BOTTOM, format!("{} {}", crate::i18n::tr("Circumference"), crate::units_ui::fmt_len(self.doc.device.units, circ, 1)), egui::FontId::proportional(11.0), Color32::from_rgb(0x2e, 0xa0, 0xc0));
+                }
+            }
+        }
         // No-go zones: red areas the machine must not enter (switched off in the View menu).
         if self.zones_visible {
             for z in &self.doc.device.zones {

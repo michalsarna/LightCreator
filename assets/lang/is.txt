@@ -863,3 +863,27 @@
 862|Z-ás
 863|Z-hæð
 864|Z á umferð
+865|Snúningstæki er tengt
+866|A snýst um {} gráður fyrir hvern millimetra á yfirborðinu.
+867|Öll brennd lög verða að vera snúningslög, eða ekkert. Hönnunin má ekki vera hærri en ummál hlutarins.
+868|Biður fyrst um staðfestingu. Aðeins Y-ás stýringarinnar breytist.
+869|Brenna þetta lag á snúningstækinu
+870|Patróna
+871|Ummál
+872|GRBL 1.1 hefur þrjá ása: A-ás er ekki tiltækur, Y er notað.
+873|Gerð
+874|Lög merkt sem snúningur eru brennd á tækinu. Líkanið er einfalt: patróna snýst eftir þvermáli hlutarins, rúllur færa yfirborðið eins og sitt eigið; raunveruleg vél þarf prófanir.
+875|Örskref mótorsins fyrir heilan snúning þess sem hann knýr (patrónuna eða eina rúllu).
+876|Örskref á snúning
+877|Kemur í stað Y (Y-mótorinn snýr hlutnum)
+878|Þvermál rúllu
+879|Rúllur
+880|Snúningur
+881|Snúnings- og flöt lög mega ekki vera í sama verki: merktu öll brennd lög sem snúning, eða ekkert.
+882|Snúningur í G-kóða
+883|Stýringin þarf {} skref á mm á Y-ásnum ($101).
+884|Hönnunin á lagi {} er hærri en ummál hlutarins.
+885|Ummál hlutarins: hönnunin má ekki vera hærri.
+886|Raunverulegur A-ás (gráður)
+887|Þvermál hlutar
+888|Skrifa $101 í stýringuna…

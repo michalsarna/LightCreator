@@ -863,3 +863,27 @@
 862	Z axis
 863	Z height
 864	Z per pass
+865	A rotary attachment is connected
+866	A turns {} degrees for each millimetre on the surface.
+867	All burning layers must be rotary, or none. The design may not be higher than the way round the workpiece.
+868	Asks for a confirmation first. Only the Y axis of the controller changes.
+869	Burn this layer on the rotary
+870	Chuck
+871	Circumference
+872	GRBL 1.1 has three axes: the A axis is not available, Y is used.
+873	Kind
+874	Layers marked as rotary are burnt on the attachment. The model is simple: a chuck turns by the workpiece diameter, rollers move the surface like their own; a real machine needs testing.
+875	Microsteps of the motor for one full turn of what it drives (the chuck, or one roller).
+876	Microsteps per turn
+877	Replaces Y (the Y motor turns the work)
+878	Roller diameter
+879	Rollers
+880	Rotary
+881	Rotary layers and flat layers cannot be in one job: mark all the burning layers as rotary, or none.
+882	Rotation in the G-code
+883	The controller needs {} steps per mm on the Y axis ($101).
+884	The design on layer {} is higher than the way round the workpiece.
+885	The way round the workpiece: the design may not be higher.
+886	True A axis (degrees)
+887	Workpiece diameter
+888	Write $101 to the controller…

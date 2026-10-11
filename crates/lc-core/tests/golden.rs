@@ -317,3 +317,46 @@ fn z_moves_only_when_the_machine_has_a_z_axis_and_the_layer_asks_for_them() {
     with_z.axes.has_z = true;
     assert!(!gcode_for(plain, with_z).contains("G0 Z"));
 }
+
+fn rotary_doc() -> Document {
+    let mut doc = rect_doc(LayerMode::Line);
+    doc.layers[0].rotary = true;
+    doc
+}
+
+fn rotary_device(controller: &str, mode: RotaryMode) -> Device {
+    let mut dev = device(&[("controller", controller.into())]);
+    dev.rotary = Rotary { enabled: true, mode, kind: RotaryKind::Chuck, diameter: 50.0, roller_diameter: 30.0, microsteps_per_rev: 6400.0 };
+    dev
+}
+
+#[test]
+fn the_rotary_in_a_fourth_axis_writes_degrees_and_in_the_y_mode_changes_nothing() {
+    // Marlin has room for a fourth axis: A in degrees takes the place of Y. 360 / (pi * 50 mm) = 2.2918 degrees per mm.
+    let text = gcode_for(rotary_doc(), rotary_device("Marlin", RotaryMode::TrueA));
+    check("marlin_rotary_true_a", &text);
+    let a_words: Vec<f64> = text.lines().filter(|l| l.starts_with("G0 X") || l.starts_with("G1 X")).filter_map(|l| l.split_whitespace().find_map(|t| t.strip_prefix('A')).and_then(|v| v.parse().ok())).collect();
+    assert!(!a_words.is_empty());
+    // The rectangle is 10 mm high at design y 40: its two Y levels are machine Y 150 and 160 (200 - y), mm on the surface.
+    let deg = 360.0 / (std::f64::consts::PI * 50.0);
+    for a in &a_words {
+        let mm = a / deg;
+        assert!((mm - 150.0).abs() < 0.01 || (mm - 160.0).abs() < 0.01, "A{a} is {mm} mm on the surface");
+    }
+    // Every move of the layer has an A and no Y (the way home at the end is written after the layer, in Y).
+    let body: Vec<&str> = text.lines().skip_while(|l| !l.starts_with("; layer")).take_while(|l| !l.starts_with("M5")).filter(|l| l.starts_with("G0 X") || l.starts_with("G1 X")).collect();
+    assert!(body.len() >= 5 && body.iter().all(|l| l.contains(" A") && !l.contains(" Y")), "{body:?}");
+    // The Y mode: the same G-code as a flat job (the controller's steps per mm do the work).
+    let y_mode = gcode_for(rotary_doc(), rotary_device("Marlin", RotaryMode::ReplaceY));
+    let flat = gcode_for(rect_doc(LayerMode::Line), device(&[("controller", "Marlin".into())]));
+    assert_eq!(y_mode, flat);
+    // GRBL has three axes: the fourth-axis mode falls back to Y, never writes an A.
+    let grbl = gcode_for(rotary_doc(), rotary_device("Grbl", RotaryMode::TrueA));
+    assert!(!grbl.contains(" A"), "{grbl}");
+    // Flat layers of a machine with a rotary are not touched, and the way home is written in Y.
+    let mut mixed = rotary_doc();
+    mixed.layers[1].mode = LayerMode::Line;
+    mixed.add(1, Kind::Rect { w: 5.0, h: 5.0 }, Xf::translate(100.0, 100.0));
+    let t = gcode_for(mixed, rotary_device("Marlin", RotaryMode::TrueA));
+    assert!(t.lines().rev().find(|l| l.starts_with("G0 X")).is_some_and(|l| l.contains(" Y")));
+}

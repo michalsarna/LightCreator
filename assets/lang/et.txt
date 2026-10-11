@@ -863,3 +863,27 @@
 862|Z-telg
 863|Z-kõrgus
 864|Z läbimise kohta
+865|Pöörlemisseade on ühendatud
+866|A pöörleb {} kraadi iga pinna millimeetri kohta.
+867|Kõik põletatavad kihid peavad olema pöörlevad või mitte ükski. Kujundus ei tohi olla kõrgem kui töödeldava eseme ümbermõõt.
+868|Küsib esmalt kinnitust. Muutub ainult kontrolleri Y-telg.
+869|Põleta see kiht pöörlemisseadmel
+870|Padrun
+871|Ümbermõõt
+872|GRBL 1.1-l on kolm telge: A-telg pole saadaval, kasutatakse Y-d.
+873|Liik
+874|Pöörlevaks märgitud kihid põletatakse seadmel. Mudel on lihtne: padrun pöörleb eseme läbimõõdu järgi, rullid liigutavad pinda nagu enda oma; päris masin vajab proovimist.
+875|Mootori mikrosammud ühe täispöörde kohta sellest, mida see ajab (padrun või üks rull).
+876|Mikrosammu pöörde kohta
+877|Asendab Y (Y-mootor pöörab eset)
+878|Rulli läbimõõt
+879|Rullid
+880|Pöörlev
+881|Pöörlevaid ja lamedaid kihte ei saa ühes töös segada: märgi kõik põletatavad kihid pöörlevaks või mitte ühtegi.
+882|Pöörlemine G-koodis
+883|Kontroller vajab Y-teljel {} sammu mm kohta ($101).
+884|Kihi {} kujundus on kõrgem kui eseme ümbermõõt.
+885|Eseme ümbermõõt: kujundus ei tohi olla kõrgem.
+886|Päris A-telg (kraadid)
+887|Eseme läbimõõt
+888|Kirjuta $101 kontrollerisse…

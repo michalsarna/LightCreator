@@ -863,3 +863,27 @@
 862|Z ass
 863|Z augstums
 864|Z uz caurlaidi
+865|Pievienots rotācijas piederums
+866|A pagriežas par {} grādiem uz katru milimetru virsmas.
+867|Visiem dedzināmajiem slāņiem jābūt rotācijas, vai nevienam. Dizains nedrīkst būt augstāks par priekšmeta apkārtmēru.
+868|Vispirms lūdz apstiprinājumu. Mainās tikai kontroliera Y ass.
+869|Dedzināt šo slāni uz rotācijas
+870|Patrona
+871|Apkārtmērs
+872|GRBL 1.1 ir trīs asis: A ass nav pieejama, tiek izmantota Y.
+873|Veids
+874|Slāņi, kas atzīmēti kā rotācijas, tiek dedzināti uz piederuma. Modelis ir vienkāršs: patrona griežas pēc priekšmeta diametra, veltņi virsmu pārvieto kā savu; īstai iekārtai vajag izmēģinājumus.
+875|Motora mikrosoļi vienam pilnam tā dzenātā (patronas vai viena veltņa) apgriezienam.
+876|Mikrosoļu uz apgriezienu
+877|Aizstāj Y (Y motors griež priekšmetu)
+878|Veltņa diametrs
+879|Veltņi
+880|Rotācijas
+881|Rotācijas un plakanos slāņus nevar jaukt vienā darbā: atzīmējiet visus dedzināmos slāņus kā rotācijas, vai nevienu.
+882|Griešana G kodā
+883|Kontrolierim vajag {} soļus uz mm Y asī ($101).
+884|Dizains slānī {} ir augstāks par priekšmeta apkārtmēru.
+885|Priekšmeta apkārtmērs: dizains nedrīkst būt augstāks.
+886|Īstā A ass (grādi)
+887|Priekšmeta diametrs
+888|Ierakstīt $101 kontrolierī…

@@ -24,6 +24,10 @@ pub enum IssueKind {
     MoveOutside,
     /// An output layer that has objects burns at 0 % power.
     ZeroPower,
+    /// Rotary layers and flat layers in one job.
+    RotaryMix,
+    /// A rotary layer is higher than the workpiece is round.
+    RotaryTooTall,
     /// The Z of a layer's passes leaves the range of the Z axis.
     ZOutOfRange,
     /// A move (also an empty one) touches an enabled no-go zone.
@@ -111,6 +115,22 @@ pub fn job_check(doc: &Document) -> Vec<Issue> {
         let named = out.iter().any(|i| i.level == Level::Error && doc.shapes.iter().any(|s| s.layer == li && i.shapes.contains(&s.id)));
         if !named {
             out.push(Issue { level: Level::Error, kind: IssueKind::MoveOutside, shapes: vec![], layer: Some(li), zone: None });
+        }
+    }
+    // A rotary attachment turns the work: the layers must all be rotary or all flat, and the design must not be higher
+    // than the way round the workpiece.
+    if dev.rotary.enabled {
+        let burning: Vec<usize> = doc.layer_order().into_iter().filter(|&li| doc.layers[li].output && doc.shapes.iter().any(|s| s.layer == li)).collect();
+        let rot: Vec<usize> = burning.iter().copied().filter(|&li| doc.layers[li].rotary).collect();
+        if !rot.is_empty() && rot.len() != burning.len() {
+            out.push(Issue { level: Level::Error, kind: IssueKind::RotaryMix, shapes: vec![], layer: rot.first().copied(), zone: None });
+        }
+        let circ = dev.rotary.circumference();
+        for &li in &rot {
+            let b = doc.shapes.iter().filter(|s| s.layer == li).filter_map(|s| s.bounds()).reduce(Rect::union);
+            if b.is_some_and(|b| b.height() > circ + TOLERANCE) {
+                out.push(Issue { level: Level::Error, kind: IssueKind::RotaryTooTall, shapes: doc.shapes.iter().filter(|s| s.layer == li).map(|s| s.id).collect(), layer: Some(li), zone: None });
+            }
         }
     }
     // The heights the layers go to must lie in the travel of the Z axis.

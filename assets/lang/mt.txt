@@ -863,3 +863,27 @@
 862|Assi Z
 863|Għoli Z
 864|Z għal kull passaġġ
+865|Hemm attachment rotatorju konness
+866|A iddur {} gradi għal kull millimetru fuq il-wiċċ.
+867|Is-saffi kollha li jinħarqu jridu jkunu rotatorji, jew l-ebda wieħed. Id-disinn ma jistax ikun itwal mill-ċirkonferenza tal-biċċa.
+868|L-ewwel jitlob konferma. Jinbidel biss l-assi Y tal-kontrollur.
+869|Aħraq dan is-saff fuq ir-rotatorju
+870|Chuck
+871|Ċirkonferenza
+872|GRBL 1.1 għandu tliet assi: l-assi A mhux disponibbli, jintuża Y.
+873|Tip
+874|Is-saffi mmarkati bħala rotatorji jinħarqu fuq l-attachment. Il-mudell huwa sempliċi: chuck iduru skont id-dijametru tal-biċċa, ir-rullijiet iċaqilqu l-wiċċ bħal tagħhom; magna vera teħtieġ ittestjar.
+875|Mikro-passi tal-mutur għal dawra sħiħa ta' dak li jmexxi (il-chuck jew rullu wieħed).
+876|Mikro-passi għal kull dawra
+877|Jissostitwixxi Y (il-mutur Y idawwar il-biċċa)
+878|Dijametru tar-rullu
+879|Rullijiet
+880|Rotatorju
+881|Saffi rotatorji u ċatti ma jistgħux ikunu fl-istess xogħol: immarka s-saffi kollha li jinħarqu bħala rotatorji, jew l-ebda wieħed.
+882|Rotazzjoni fil-G-code
+883|Il-kontrollur jeħtieġ {} passi għal kull mm fuq l-assi Y ($101).
+884|Id-disinn fuq is-saff {} huwa itwal mill-ċirkonferenza tal-biċċa.
+885|Iċ-ċirkonferenza tal-biċċa: id-disinn ma jistax ikun itwal.
+886|Assi A veru (gradi)
+887|Dijametru tal-biċċa
+888|Ikteb $101 fil-kontrollur…

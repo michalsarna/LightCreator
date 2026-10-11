@@ -863,3 +863,27 @@
 862|Z-as
 863|Z-hoogte
 864|Z per doorgang
+865|Er is een rotatieopzetstuk aangesloten
+866|A draait {} graden voor elke millimeter op het oppervlak.
+867|Alle gebrande lagen moeten rotatielagen zijn, of geen. Het ontwerp mag niet hoger zijn dan de omtrek van het werkstuk.
+868|Vraagt eerst om bevestiging. Alleen de Y-as van de besturing verandert.
+869|Deze laag branden op de rotatie
+870|Klauwplaat
+871|Omtrek
+872|GRBL 1.1 heeft drie assen: de A-as is niet beschikbaar, Y wordt gebruikt.
+873|Soort
+874|Lagen die als rotatie zijn gemarkeerd worden op het opzetstuk gebrand. Het model is eenvoudig: een klauwplaat draait met de diameter van het werkstuk, rollen verplaatsen het oppervlak als hun eigen; een echte machine moet worden getest.
+875|Microstappen van de motor voor één volledige omwenteling van wat hij aandrijft (de klauwplaat of één rol).
+876|Microstappen per omwenteling
+877|Vervangt Y (de Y-motor draait het werkstuk)
+878|Rolldiameter
+879|Rollen
+880|Rotatie
+881|Rotatie- en vlakke lagen kunnen niet in één opdracht zitten: markeer alle gebrande lagen als rotatie, of geen.
+882|Rotatie in de G-code
+883|De besturing heeft {} stappen per mm op de Y-as nodig ($101).
+884|Het ontwerp op laag {} is hoger dan de omtrek van het werkstuk.
+885|De omtrek van het werkstuk: het ontwerp mag niet hoger zijn.
+886|Echte A-as (graden)
+887|Werkstukdiameter
+888|$101 naar de besturing schrijven…

@@ -863,3 +863,27 @@
 862|Os Z
 863|Z visina
 864|Z po prolazu
+865|Spojen je rotacijski dodatak
+866|A se okreće za {} stupnjeva za svaki milimetar na površini.
+867|Svi sloj koji se pale moraju biti rotacijski, ili nijedan. Dizajn ne smije biti viši od opsega obratka.
+868|Najprije traži potvrdu. Mijenja se samo os Y upravljača.
+869|Pali ovaj sloj na rotaciji
+870|Stezna glava
+871|Opseg
+872|GRBL 1.1 ima tri osi: os A nije dostupna, koristi se Y.
+873|Vrsta
+874|Slojevi označeni kao rotacijski pale se na dodatku. Model je jednostavan: stezna glava se okreće prema promjeru obratka, valjci pomiču površinu kao vlastitu; pravi stroj treba isprobati.
+875|Mikrokoraci motora za jedan puni okret onoga što pokreće (stezne glave ili jednog valjka).
+876|Mikrokoraka po okretu
+877|Zamjenjuje Y (motor Y okreće obradak)
+878|Promjer valjka
+879|Valjci
+880|Rotacijski
+881|Rotacijski i ravni slojevi ne mogu biti u istom poslu: označite sve slojeve koji se pale kao rotacijske, ili nijedan.
+882|Rotacija u G-kodu
+883|Upravljaču treba {} koraka po mm na osi Y ($101).
+884|Dizajn na sloju {} viši je od opsega obratka.
+885|Opseg obratka: dizajn ne smije biti viši.
+886|Prava os A (stupnjevi)
+887|Promjer obratka
+888|Upiši $101 u upravljač…

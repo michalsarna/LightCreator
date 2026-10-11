@@ -863,3 +863,27 @@
 862|Eixo Z
 863|Altura Z
 864|Z por passagem
+865|Está ligado um acessório rotativo
+866|O A roda {} graus por cada milímetro da superfície.
+867|Todas as camadas gravadas têm de ser rotativas, ou nenhuma. O desenho não pode ser mais alto do que o perímetro da peça.
+868|Pede primeiro uma confirmação. Só muda o eixo Y do controlador.
+869|Gravar esta camada no rotativo
+870|Mandril
+871|Perímetro
+872|O GRBL 1.1 tem três eixos: o eixo A não está disponível, usa-se Y.
+873|Tipo
+874|As camadas marcadas como rotativas são gravadas no acessório. O modelo é simples: um mandril roda segundo o diâmetro da peça, os rolos movem a superfície como a sua própria; uma máquina real precisa de testes.
+875|Micropassos do motor para uma volta completa do que ele move (o mandril ou um rolo).
+876|Micropassos por volta
+877|Substitui Y (o motor Y roda a peça)
+878|Diâmetro do rolo
+879|Rolos
+880|Rotativo
+881|Camadas rotativas e planas não podem estar no mesmo trabalho: marque todas as camadas gravadas como rotativas, ou nenhuma.
+882|Rotação no G-code
+883|O controlador precisa de {} passos por mm no eixo Y ($101).
+884|O desenho da camada {} é mais alto do que o perímetro da peça.
+885|O perímetro da peça: o desenho não pode ser mais alto.
+886|Eixo A verdadeiro (graus)
+887|Diâmetro da peça
+888|Escrever $101 no controlador…

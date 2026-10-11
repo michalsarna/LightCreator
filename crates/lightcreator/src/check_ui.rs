@@ -33,6 +33,8 @@ pub fn describe(i: &Issue, layers: &[String], zones: &[String], frame: bool) -> 
         IssueKind::MoveOutside => trf("The toolpath of layer {} leaves the allowed area (overscan or travel moves).", &[&layer]),
         IssueKind::NoGoZone if frame => trf("The frame touches the no-go zone \"{}\".", &[&zone]),
         IssueKind::NoGoZone => trf("The toolpath of layer {} touches the no-go zone \"{}\".", &[&layer, &zone]),
+        IssueKind::RotaryMix => tr("Rotary layers and flat layers cannot be in one job: mark all the burning layers as rotary, or none.").to_string(),
+        IssueKind::RotaryTooTall => trf("The design on layer {} is higher than the way round the workpiece.", &[&layer]),
         IssueKind::ZOutOfRange => trf("The Z heights of layer {} are outside the travel of the Z axis.", &[&layer]),
         IssueKind::SpeedAboveMax => trf("Layer {} is faster than the maximum cutting speed of the machine.", &[&layer]),
         IssueKind::ZeroPower => trf("Layer {} burns at 0 % power.", &[&layer]),

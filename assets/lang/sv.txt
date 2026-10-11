@@ -863,3 +863,27 @@
 862|Z-axel
 863|Z-höjd
 864|Z per genomgång
+865|Ett rotationstillbehör är anslutet
+866|A vrider {} grader för varje millimeter på ytan.
+867|Alla brända lager måste vara rotationslager, eller inget. Designen får inte vara högre än arbetsstyckets omkrets.
+868|Ber först om en bekräftelse. Bara styrenhetens Y-axel ändras.
+869|Bränn det här lagret på rotationen
+870|Chuck
+871|Omkrets
+872|GRBL 1.1 har tre axlar: A-axeln är inte tillgänglig, Y används.
+873|Slag
+874|Lager markerade som rotation bränns på tillbehöret. Modellen är enkel: en chuck vrids med arbetsstyckets diameter, rullar flyttar ytan som sin egen; en riktig maskin måste testas.
+875|Motorns mikrosteg för ett helt varv av det den driver (chucken eller en rulle).
+876|Mikrosteg per varv
+877|Ersätter Y (Y-motorn vrider arbetsstycket)
+878|Rulldiameter
+879|Rullar
+880|Rotation
+881|Rotations- och plana lager kan inte vara i samma jobb: markera alla brända lager som rotation, eller inget.
+882|Rotation i G-koden
+883|Styrenheten behöver {} steg per mm på Y-axeln ($101).
+884|Designen på lager {} är högre än arbetsstyckets omkrets.
+885|Arbetsstyckets omkrets: designen får inte vara högre.
+886|Riktig A-axel (grader)
+887|Arbetsstyckets diameter
+888|Skriv $101 till styrenheten…

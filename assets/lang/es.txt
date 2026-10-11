@@ -863,3 +863,27 @@
 862|Eje Z
 863|Altura Z
 864|Z por pasada
+865|Hay un accesorio rotativo conectado
+866|A gira {} grados por cada milímetro de la superficie.
+867|Todas las capas que se graban deben ser rotativas, o ninguna. El diseño no puede ser más alto que la circunferencia de la pieza.
+868|Pide primero una confirmación. Solo cambia el eje Y del controlador.
+869|Grabar esta capa en el rotativo
+870|Mandril
+871|Circunferencia
+872|GRBL 1.1 tiene tres ejes: el eje A no está disponible, se usa Y.
+873|Tipo
+874|Las capas marcadas como rotativas se graban en el accesorio. El modelo es simple: un mandril gira según el diámetro de la pieza, los rodillos mueven la superficie como la propia; una máquina real necesita pruebas.
+875|Micropasos del motor para una vuelta completa de lo que mueve (el mandril o un rodillo).
+876|Micropasos por vuelta
+877|Sustituye a Y (el motor Y gira la pieza)
+878|Diámetro del rodillo
+879|Rodillos
+880|Rotativo
+881|Las capas rotativas y planas no pueden estar en un mismo trabajo: marque todas las capas que se graban como rotativas, o ninguna.
+882|Rotación en el G-code
+883|El controlador necesita {} pasos por mm en el eje Y ($101).
+884|El diseño de la capa {} es más alto que la circunferencia de la pieza.
+885|La circunferencia de la pieza: el diseño no puede ser más alto.
+886|Eje A verdadero (grados)
+887|Diámetro de la pieza
+888|Escribir $101 en el controlador…

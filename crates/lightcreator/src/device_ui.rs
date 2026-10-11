@@ -65,6 +65,7 @@ pub enum CfgPage {
     Gcode,
     Connection,
     Camera,
+    Rotary,
     Zones,
     Advanced,
     Firmware,
@@ -79,6 +80,7 @@ impl CfgPage {
             CfgPage::Gcode => "G-code",
             CfgPage::Connection => "Connection",
             CfgPage::Camera => "Camera",
+            CfgPage::Rotary => "Rotary",
             CfgPage::Zones => "No-go zones",
             CfgPage::Advanced => "Advanced",
             CfgPage::Firmware => "Firmware ($$)",
@@ -92,6 +94,7 @@ impl CfgPage {
             v.push(CfgPage::Connection);
         }
         v.push(CfgPage::Camera);
+        v.push(CfgPage::Rotary);
         v.push(CfgPage::Zones);
         v.push(CfgPage::Advanced);
         if matches!(controller, Controller::Grbl | Controller::Marlin) {
@@ -639,6 +642,56 @@ impl App {
                                     });
                                     ui.end_row();
                                 });
+                            }
+                            CfgPage::Rotary => {
+                                let grbl = d.dialect().is_grbl();
+                                ui.checkbox(&mut d.rotary.enabled, tr("A rotary attachment is connected"));
+                                ui.add_enabled_ui(d.rotary.enabled, |ui| {
+                                    egui::Grid::new("dev_rotary").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                                        ui.label(tr("Rotation in the G-code"));
+                                        ui.vertical(|ui| {
+                                            ui.radio_value(&mut d.rotary.mode, lc_core::RotaryMode::ReplaceY, tr("Replaces Y (the Y motor turns the work)"));
+                                            ui.add_enabled_ui(!grbl, |ui| {
+                                                ui.radio_value(&mut d.rotary.mode, lc_core::RotaryMode::TrueA, tr("True A axis (degrees)"));
+                                            });
+                                            if grbl {
+                                                ui.label(RichText::new(tr("GRBL 1.1 has three axes: the A axis is not available, Y is used.")).color(Color32::from_rgb(0xe8, 0x8a, 0x1f)));
+                                            }
+                                        });
+                                        ui.end_row();
+                                        ui.label(tr("Kind"));
+                                        ui.horizontal(|ui| {
+                                            ui.radio_value(&mut d.rotary.kind, lc_core::RotaryKind::Chuck, tr("Chuck"));
+                                            ui.radio_value(&mut d.rotary.kind, lc_core::RotaryKind::Roller, tr("Rollers"));
+                                        });
+                                        ui.end_row();
+                                        ui.label(tr("Workpiece diameter"));
+                                        drag_len(ui, u, &mut d.rotary.diameter, 0.5, Some((1.0, 1000.0)));
+                                        ui.end_row();
+                                        if d.rotary.kind == lc_core::RotaryKind::Roller {
+                                            ui.label(tr("Roller diameter"));
+                                            drag_len(ui, u, &mut d.rotary.roller_diameter, 0.5, Some((1.0, 1000.0)));
+                                            ui.end_row();
+                                        }
+                                        ui.label(tr("Microsteps per turn"));
+                                        ui.add(egui::DragValue::new(&mut d.rotary.microsteps_per_rev).range(1.0..=1_000_000.0)).on_hover_text(tr("Microsteps of the motor for one full turn of what it drives (the chuck, or one roller)."));
+                                        ui.end_row();
+                                        ui.label(tr("Circumference"));
+                                        ui.label(fmt_len(u, d.rotary.circumference(), 2)).on_hover_text(tr("The way round the workpiece: the design may not be higher."));
+                                        ui.end_row();
+                                    });
+                                    if d.rotary.mode == lc_core::RotaryMode::TrueA && !grbl {
+                                        ui.label(trf("A turns {} degrees for each millimetre on the surface.", &[&format!("{:.4}", d.rotary.degrees_per_mm())]));
+                                    } else {
+                                        let steps = d.rotary.steps_per_mm();
+                                        ui.label(trf("The controller needs {} steps per mm on the Y axis ($101).", &[&format!("{:.3}", steps)]));
+                                        if d.controller == lc_core::Controller::Grbl && self.connected && steps > 0.0 && ui.button(tr("Write $101 to the controller…")).on_hover_text(tr("Asks for a confirmation first. Only the Y axis of the controller changes.")).clicked() {
+                                            fw_acts.push(crate::firmware_ui::FwAct::Write(101, format!("{:.3}", steps)));
+                                        }
+                                    }
+                                });
+                                ui.add_space(4.0);
+                                ui.label(RichText::new(tr("Layers marked as rotary are burnt on the attachment. The model is simple: a chuck turns by the workpiece diameter, rollers move the surface like their own; a real machine needs testing.")).color(theme::text_dim()));
                             }
                             CfgPage::Zones => {
                                 ui.label(RichText::new(tr("Parts of the work area the machine must never enter (a clamp, a fixture). A move that touches an enabled zone, also one with the laser off, stops Start, Frame and export. The program does not route around zones.")).color(theme::text_dim()));

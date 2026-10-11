@@ -863,3 +863,27 @@
 862|Axa Z
 863|Înălțime Z
 864|Z pe trecere
+865|Este conectat un accesoriu rotativ
+866|A se rotește cu {} grade pentru fiecare milimetru pe suprafață.
+867|Toate straturile arse trebuie să fie rotative, sau niciunul. Desenul nu poate fi mai înalt decât circumferința piesei.
+868|Cere mai întâi o confirmare. Se schimbă doar axa Y a controlerului.
+869|Arde acest strat pe rotativ
+870|Mandrină
+871|Circumferință
+872|GRBL 1.1 are trei axe: axa A nu este disponibilă, se folosește Y.
+873|Tip
+874|Straturile marcate ca rotative sunt arse pe accesoriu. Modelul este simplu: o mandrină se rotește după diametrul piesei, rolele mută suprafața ca pe a lor; o mașină reală necesită teste.
+875|Micropașii motorului pentru o rotație completă a ceea ce antrenează (mandrina sau o rolă).
+876|Micropași pe rotație
+877|Înlocuiește Y (motorul Y rotește piesa)
+878|Diametrul rolei
+879|Role
+880|Rotativ
+881|Straturile rotative și plate nu pot fi în aceeași lucrare: marcați toate straturile arse ca rotative, sau niciunul.
+882|Rotația în G-code
+883|Controlerul are nevoie de {} pași pe mm pe axa Y ($101).
+884|Desenul de pe stratul {} este mai înalt decât circumferința piesei.
+885|Circumferința piesei: desenul nu poate fi mai înalt.
+886|Axa A adevărată (grade)
+887|Diametrul piesei
+888|Scrie $101 în controler…

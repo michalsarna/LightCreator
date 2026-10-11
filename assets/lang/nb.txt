@@ -863,3 +863,27 @@
 862|Z-akse
 863|Z-høyde
 864|Z per gjennomløp
+865|Et rotasjonstilbehør er tilkoblet
+866|A dreier {} grader for hver millimeter på overflaten.
+867|Alle brente lag må være rotasjonslag, eller ingen. Designet kan ikke være høyere enn emnets omkrets.
+868|Ber først om en bekreftelse. Bare kontrollerens Y-akse endres.
+869|Brenn dette laget på rotasjonen
+870|Chuck
+871|Omkrets
+872|GRBL 1.1 har tre akser: A-aksen er ikke tilgjengelig, Y brukes.
+873|Type
+874|Lag merket som rotasjon brennes på tilbehøret. Modellen er enkel: en chuck dreier med emnets diameter, ruller flytter overflaten som sin egen; en ekte maskin trenger testing.
+875|Motorens mikrotrinn for en hel omdreining av det den driver (chucken eller én rulle).
+876|Mikrotrinn per omdreining
+877|Erstatter Y (Y-motoren dreier emnet)
+878|Rullediameter
+879|Ruller
+880|Rotasjon
+881|Rotasjons- og flate lag kan ikke være i én jobb: merk alle brente lag som rotasjon, eller ingen.
+882|Rotasjon i G-koden
+883|Kontrolleren trenger {} trinn per mm på Y-aksen ($101).
+884|Designet på lag {} er høyere enn emnets omkrets.
+885|Emnets omkrets: designet kan ikke være høyere.
+886|Ekte A-akse (grader)
+887|Emnets diameter
+888|Skriv $101 til kontrolleren…

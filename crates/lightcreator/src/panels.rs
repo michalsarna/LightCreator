@@ -526,6 +526,8 @@ pub struct LayerCtx {
     pub power_modes: bool,
     /// The machine has a Z axis: layers can set a height and a step per pass.
     pub has_z: bool,
+    /// The machine has a rotary attachment switched on: layers can be marked as rotary.
+    pub rotary: bool,
     /// Names and beam spots (mm, the smaller side; 0 = not known) of the laser heads.
     pub heads: Vec<(String, f64)>,
 }
@@ -536,6 +538,7 @@ impl LayerCtx {
             accel: dev.speeds.acceleration,
             power_modes: dev.dialect().is_grbl(),
             has_z: dev.axes.has_z,
+            rotary: dev.rotary.enabled,
             heads: dev.heads.iter().enumerate().map(|(i, h)| (if h.name.trim().is_empty() { trf("Head {}", &[&(i + 1)]) } else { h.name.clone() }, if h.spot_x > 0.0 && h.spot_y > 0.0 { h.spot_x.min(h.spot_y) } else { h.spot_x.max(h.spot_y) })).collect(),
         }
     }
@@ -561,6 +564,11 @@ pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_cor
         ui.label(tr("Passes"));
         ui.add(egui::DragValue::new(&mut l.passes).range(1..=100));
         ui.end_row();
+        if dev.rotary {
+            ui.label(tr("Rotary"));
+            ui.checkbox(&mut l.rotary, tr("Burn this layer on the rotary")).on_hover_text(tr("All burning layers must be rotary, or none. The design may not be higher than the way round the workpiece."));
+            ui.end_row();
+        }
         if dev.has_z {
             ui.label(tr("Z height"));
             ui.add(egui::DragValue::new(&mut l.z_start).speed(0.1).suffix(" mm")).on_hover_text(tr("Machine Z the head goes to before the first pass. 0 together with 0 per pass = Z is not moved."));

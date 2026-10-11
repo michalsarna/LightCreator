@@ -863,3 +863,27 @@
 862|Axe Z
 863|Hauteur Z
 864|Z par passe
+865|Un accessoire rotatif est connecté
+866|A tourne de {} degrés pour chaque millimètre de la surface.
+867|Tous les calques gravés doivent être rotatifs, ou aucun. Le dessin ne peut pas être plus haut que la circonférence de la pièce.
+868|Demande d'abord une confirmation. Seul l'axe Y du contrôleur change.
+869|Graver ce calque sur le rotatif
+870|Mandrin
+871|Circonférence
+872|GRBL 1.1 a trois axes : l'axe A n'est pas disponible, Y est utilisé.
+873|Type
+874|Les calques marqués rotatifs sont gravés sur l'accessoire. Le modèle est simple : un mandrin tourne selon le diamètre de la pièce, les rouleaux déplacent la surface comme la leur ; une vraie machine demande des essais.
+875|Micropas du moteur pour un tour complet de ce qu'il entraîne (le mandrin ou un rouleau).
+876|Micropas par tour
+877|Remplace Y (le moteur Y fait tourner la pièce)
+878|Diamètre du rouleau
+879|Rouleaux
+880|Rotatif
+881|Les calques rotatifs et plats ne peuvent pas être dans un même travail : marquez tous les calques gravés comme rotatifs, ou aucun.
+882|Rotation dans le G-code
+883|Le contrôleur a besoin de {} pas par mm sur l'axe Y ($101).
+884|Le dessin du calque {} est plus haut que la circonférence de la pièce.
+885|La circonférence de la pièce : le dessin ne peut pas être plus haut.
+886|Vrai axe A (degrés)
+887|Diamètre de la pièce
+888|Écrire $101 dans le contrôleur…

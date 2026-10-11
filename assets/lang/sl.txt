@@ -863,3 +863,27 @@
 862|Os Z
 863|Višina Z
 864|Z na prehod
+865|Priključen je vrtljiv nastavek
+866|A se zavrti za {} stopinj na vsak milimeter površine.
+867|Vse žgane plasti morajo biti vrtljive, ali nobena. Načrt ne sme biti višji od oboda obdelovanca.
+868|Najprej zahteva potrditev. Spremeni se le os Y krmilnika.
+869|Žgi to plast na vrtljivem nastavku
+870|Vpenjalo
+871|Obod
+872|GRBL 1.1 ima tri osi: os A ni na voljo, uporabi se Y.
+873|Vrsta
+874|Plasti, označene kot vrtljive, se žgejo na nastavku. Model je preprost: vpenjalo se vrti po premeru obdelovanca, valji premikajo površino kot svojo; pravi stroj je treba preizkusiti.
+875|Mikrokoraki motorja za en poln obrat tistega, kar poganja (vpenjala ali enega valja).
+876|Mikrokorakov na obrat
+877|Nadomesti Y (motor Y vrti obdelovanec)
+878|Premer valja
+879|Valji
+880|Vrtljiv
+881|Vrtljivih in ravnih plasti ni mogoče mešati v enem delu: vse žgane plasti označite kot vrtljive, ali nobene.
+882|Vrtenje v G-kodi
+883|Krmilnik potrebuje {} korakov na mm na osi Y ($101).
+884|Načrt na plasti {} je višji od oboda obdelovanca.
+885|Obod obdelovanca: načrt ne sme biti višji.
+886|Prava os A (stopinje)
+887|Premer obdelovanca
+888|Zapiši $101 v krmilnik…

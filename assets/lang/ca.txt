@@ -863,3 +863,27 @@
 862|Eix Z
 863|Altura Z
 864|Z per passada
+865|Hi ha un accessori rotatiu connectat
+866|A gira {} graus per cada mil·límetre de la superfície.
+867|Totes les capes que es graven han de ser rotatives, o cap. El disseny no pot ser més alt que la circumferència de la peça.
+868|Primer demana una confirmació. Només canvia l'eix Y del controlador.
+869|Grava aquesta capa al rotatiu
+870|Mandril
+871|Circumferència
+872|GRBL 1.1 té tres eixos: l'eix A no està disponible, s'usa Y.
+873|Tipus
+874|Les capes marcades com a rotatives es graven a l'accessori. El model és senzill: un mandril gira pel diàmetre de la peça, els corrons mouen la superfície com la pròpia; una màquina real necessita proves.
+875|Microtrams del motor per a una volta completa del que mou (el mandril o un corró).
+876|Microtrams per volta
+877|Substitueix Y (el motor Y fa girar la peça)
+878|Diàmetre del corró
+879|Corrons
+880|Rotatiu
+881|Les capes rotatives i planes no poden estar en una mateixa feina: marqueu totes les capes que es graven com a rotatives, o cap.
+882|Rotació al G-code
+883|El controlador necessita {} passos per mm a l'eix Y ($101).
+884|El disseny de la capa {} és més alt que la circumferència de la peça.
+885|La circumferència de la peça: el disseny no pot ser més alt.
+886|Veritable eix A (graus)
+887|Diàmetre de la peça
+888|Escriu $101 al controlador…

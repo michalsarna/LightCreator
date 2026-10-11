@@ -863,3 +863,27 @@
 862|Z-akse
 863|Z-højde
 864|Z pr. gennemløb
+865|En rotationstilbehør er tilsluttet
+866|A drejer {} grader for hver millimeter på overfladen.
+867|Alle brændte lag skal være rotationslag, eller ingen. Designet må ikke være højere end emnets omkreds.
+868|Beder først om en bekræftelse. Kun styringens Y-akse ændres.
+869|Brænd dette lag på rotationen
+870|Spændepatron
+871|Omkreds
+872|GRBL 1.1 har tre akser: A-aksen er ikke tilgængelig, Y bruges.
+873|Slags
+874|Lag markeret som rotation brændes på tilbehøret. Modellen er enkel: en patron drejer med emnets diameter, ruller flytter overfladen som deres egen; en rigtig maskine kræver afprøvning.
+875|Motorens mikrotrin for en hel omdrejning af det, den driver (patronen eller én rulle).
+876|Mikrotrin pr. omdrejning
+877|Erstatter Y (Y-motoren drejer emnet)
+878|Rullediameter
+879|Ruller
+880|Rotation
+881|Rotations- og flade lag kan ikke være i ét job: marker alle brændte lag som rotation, eller ingen.
+882|Rotation i G-koden
+883|Styringen skal bruge {} trin pr. mm på Y-aksen ($101).
+884|Designet på lag {} er højere end emnets omkreds.
+885|Emnets omkreds: designet må ikke være højere.
+886|Ægte A-akse (grader)
+887|Emnets diameter
+888|Skriv $101 til styringen…

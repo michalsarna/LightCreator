@@ -863,3 +863,27 @@
 862|Z tengely
 863|Z magasság
 864|Z áthaladásonként
+865|Forgatóegység csatlakoztatva
+866|Az A a felület minden milliméterére {} fokot fordul.
+867|Minden égetett rétegnek forgatós kell lennie, vagy egyiknek sem. A terv nem lehet magasabb a munkadarab kerületénél.
+868|Előbb megerősítést kér. Csak a vezérlő Y tengelye változik.
+869|Ennek a rétegnek az égetése a forgatón
+870|Tokmány
+871|Kerület
+872|A GRBL 1.1-nek három tengelye van: az A tengely nem elérhető, az Y-t használja.
+873|Fajta
+874|A forgatósnak jelölt rétegek az egységen égnek. A modell egyszerű: a tokmány a munkadarab átmérője szerint fordul, a görgők úgy mozgatják a felületet, mint a sajátjukat; egy valódi gépet ki kell próbálni.
+875|A motor mikrolépései annak egy teljes fordulatához, amit hajt (a tokmány vagy egy görgő).
+876|Mikrolépés fordulatonként
+877|Az Y helyett (az Y motor forgatja a munkadarabot)
+878|Görgő átmérője
+879|Görgők
+880|Forgató
+881|Forgatós és sík rétegek nem lehetnek egy munkában: jelölje az összes égetett réteget forgatósnak, vagy egyiket sem.
+882|Forgatás a G-kódban
+883|A vezérlőnek {} lépés/mm kell az Y tengelyen ($101).
+884|A(z) {} réteg terve magasabb a munkadarab kerületénél.
+885|A munkadarab kerülete: a terv nem lehet magasabb.
+886|Valódi A tengely (fok)
+887|Munkadarab átmérője
+888|$101 beírása a vezérlőbe…

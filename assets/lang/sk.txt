@@ -863,3 +863,27 @@
 862|Os Z
 863|Výška Z
 864|Z na prechod
+865|Je pripojený rotačný nástavec
+866|A sa otočí o {} stupňov na každý milimeter povrchu.
+867|Všetky pálené vrstvy musia byť rotačné, alebo žiadna. Návrh nesmie byť vyšší ako obvod obrobku.
+868|Najprv žiada o potvrdenie. Mení sa len os Y riadiacej jednotky.
+869|Páliť túto vrstvu na rotačnom nástavci
+870|Skľučovadlo
+871|Obvod
+872|GRBL 1.1 má tri osi: os A nie je k dispozícii, použije sa Y.
+873|Druh
+874|Vrstvy označené ako rotačné sa pália na nástavci. Model je jednoduchý: skľučovadlo sa otáča podľa priemeru obrobku, valčeky posúvajú povrch ako svoj vlastný; skutočný stroj vyžaduje skúšky.
+875|Mikrokroky motora na jednu celú otáčku toho, čo poháňa (skľučovadla alebo jedného valčeka).
+876|Mikrokrokov na otáčku
+877|Nahrádza Y (motor Y otáča obrobkom)
+878|Priemer valčeka
+879|Valčeky
+880|Rotačný
+881|Rotačné a ploché vrstvy nemôžu byť v jednej úlohe: označte všetky pálené vrstvy ako rotačné, alebo žiadnu.
+882|Otáčanie v G-kóde
+883|Riadiaca jednotka potrebuje {} krokov na mm na osi Y ($101).
+884|Návrh na vrstve {} je vyšší ako obvod obrobku.
+885|Obvod obrobku: návrh nesmie byť vyšší.
+886|Skutočná os A (stupne)
+887|Priemer obrobku
+888|Zapísať $101 do riadiacej jednotky…

@@ -863,3 +863,27 @@
 862|Z ašis
 863|Z aukštis
 864|Z per praėjimą
+865|Prijungtas sukimo priedas
+866|A pasisuka {} laipsnių kiekvienam paviršiaus milimetrui.
+867|Visi deginami sluoksniai turi būti sukimosi, arba nė vienas. Dizainas negali būti aukštesnis už ruošinio apskritimo ilgį.
+868|Pirmiausia prašo patvirtinimo. Keičiasi tik valdiklio Y ašis.
+869|Deginti šį sluoksnį ant sukimo priedo
+870|Griebtuvas
+871|Apimtis
+872|GRBL 1.1 turi tris ašis: A ašis nepasiekiama, naudojama Y.
+873|Rūšis
+874|Sukimosi sluoksniais pažymėti sluoksniai deginami ant priedo. Modelis paprastas: griebtuvas sukasi pagal ruošinio skersmenį, ritinėliai paviršių judina kaip savo; tikrą įrenginį reikia išbandyti.
+875|Variklio mikrožingsniai vienam pilnam to, ką jis suka, apsisukimui (griebtuvo ar vieno ritinėlio).
+876|Mikrožingsnių per apsisukimą
+877|Pakeičia Y (Y variklis suka ruošinį)
+878|Ritinėlio skersmuo
+879|Ritinėliai
+880|Sukimosi
+881|Sukimosi ir plokščių sluoksnių negalima maišyti viename darbe: pažymėkite visus deginamus sluoksnius kaip sukimosi, arba nė vieno.
+882|Sukimas G kode
+883|Valdikliui reikia {} žingsnių mm Y ašyje ($101).
+884|Dizainas sluoksnyje {} aukštesnis už ruošinio apimtį.
+885|Ruošinio apimtis: dizainas negali būti aukštesnis.
+886|Tikra A ašis (laipsniai)
+887|Ruošinio skersmuo
+888|Įrašyti $101 į valdiklį…

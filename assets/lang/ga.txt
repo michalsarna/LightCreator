@@ -863,3 +863,27 @@
 862|Ais Z
 863|Airde Z
 864|Z in aghaidh an phais
+865|Tá ceangaltán rothlach ceangailte
+866|Casann A {} céim do gach milliméadar ar an dromchla.
+867|Caithfidh na sraitheanna dóite go léir a bheith rothlach, nó aon cheann. Ní féidir leis an dearadh a bheith níos airde ná imlíne an phíosa.
+868|Iarrann sé deimhniú ar dtús. Ní athraíonn ach ais Y an rialaitheora.
+869|Dóigh an tsraith seo ar an rothlach
+870|Chuck
+871|Imlíne
+872|Tá trí ais ag GRBL 1.1: níl an ais A ar fáil, úsáidtear Y.
+873|Cineál
+874|Dóitear na sraitheanna a mharcáiltear rothlach ar an gceangaltán. Tá an tsamhail simplí: casann chuck de réir trastomhas an phíosa, bogann rollóirí an dromchla mar a ndromchla féin; teastaíonn tástáil ó mheaisín fíor.
+875|Micreaghlais an mhótair do chasadh iomlán an ruda a thiomáineann sé (an chuck nó rollóir amháin).
+876|Micreaghlais in aghaidh an chasta
+877|Cuireann sé Y ina áit (casann an mótar Y an píosa)
+878|Trastomhas an rollóra
+879|Rollóirí
+880|Rothlach
+881|Ní féidir sraitheanna rothlacha agus cothroma a bheith in obair amháin: marcáil na sraitheanna dóite go léir mar rothlach, nó aon cheann.
+882|Rothlú sa G-code
+883|Teastaíonn {} céim in aghaidh an mm ón rialaitheoir ar an ais Y ($101).
+884|Tá an dearadh ar shraith {} níos airde ná imlíne an phíosa.
+885|Imlíne an phíosa: ní féidir leis an dearadh a bheith níos airde.
+886|Fíor-ais A (céimeanna)
+887|Trastomhas an phíosa
+888|Scríobh $101 chuig an rialaitheoir…
