@@ -1052,3 +1052,20 @@
 1051|Serveur web : actif, port {}
 1052|Serveur web : éteint
 1053|Serveur web : erreur
+1054|Bleu sombre
+1055|Bleu clair
+1056|Vert sombre
+1057|Vert clair
+1058|Violet sombre
+1059|Violet clair
+1060|Marron sombre
+1061|Marron clair
+1062|Orange sombre
+1063|Orange clair
+1064|Couleur de l'espace de travail
+1065|L'espace autour de la zone de travail
+1066|Une page web avec l'état de la machine, le projet et la caméra, et une API pour d'autres programmes. Chaque requête demande la phrase d'accès ; il n'y a pas de chiffrement.
+1067|Toute personne du réseau qui connaît la phrase d'accès peut voir la machine et l'arrêter ou la déplacer. La phrase est envoyée sans chiffrement : à n'utiliser que sur un réseau de confiance.
+1068|Phrase d'accès
+1069|Utiliser cette phrase d'accès à partir de maintenant
+1070|La phrase d'accès ne peut pas être vide ni contenir de caractères de contrôle.

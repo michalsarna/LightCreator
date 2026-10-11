@@ -1052,3 +1052,20 @@
 1051|Freastalaí gréasáin: ar siúl, port {}
 1052|Freastalaí gréasáin: múchta
 1053|Freastalaí gréasáin: earráid
+1054|Gorm dorcha
+1055|Gorm éadrom
+1056|Glas dorcha
+1057|Glas éadrom
+1058|Corcra dorcha
+1059|Corcra éadrom
+1060|Donn dorcha
+1061|Donn éadrom
+1062|Oráiste dorcha
+1063|Oráiste éadrom
+1064|Dath an spáis oibre
+1065|An spás timpeall an limistéir oibre
+1066|Leathanach gréasáin le staid an mheaisín, an tionscadal agus an ceamara, agus API do chláir eile. Teastaíonn an abairt rochtana ó gach iarratas; níl criptiú ann.
+1067|Is féidir le duine ar bith ar an líonra a bhfuil an abairt rochtana ar eolas aige an meaisín a fheiceáil agus é a stopadh nó a bhogadh. Seoltar an abairt gan chriptiú: ná húsáid ach ar líonra a bhfuil muinín agat as.
+1068|Abairt rochtana
+1069|Úsáid an abairt rochtana seo as seo amach
+1070|Ní féidir an abairt rochtana a bheith folamh ná carachtair rialaithe a bheith inti.

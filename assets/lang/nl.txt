@@ -1052,3 +1052,20 @@
 1051|Webserver: aan, poort {}
 1052|Webserver: uit
 1053|Webserver: fout
+1054|Donker blauw
+1055|Licht blauw
+1056|Donker groen
+1057|Licht groen
+1058|Donker paars
+1059|Licht paars
+1060|Donker bruin
+1061|Licht bruin
+1062|Donker oranje
+1063|Licht oranje
+1064|Kleur van de werkruimte
+1065|De ruimte rond het werkgebied
+1066|Een webpagina met de toestand van de machine, het project en de camera, en een API voor andere programma's. Elk verzoek heeft de toegangszin nodig; er is geen versleuteling.
+1067|Iedereen op het netwerk die de toegangszin kent, kan de machine zien en stoppen of verplaatsen. De zin wordt onversleuteld verstuurd: gebruik alleen op een netwerk dat je vertrouwt.
+1068|Toegangszin
+1069|Gebruik deze toegangszin vanaf nu
+1070|De toegangszin mag niet leeg zijn of stuurtekens bevatten.

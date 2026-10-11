@@ -50,7 +50,7 @@ A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
   simulation slider; layers can be reordered to change the burn order.
 * **Interface:** flat, square window frame with its own title bar, icon control bar and arrange bar, recent files,
   native menu bar on macOS, in-window menu on Windows and Linux, 30 languages
-  (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी and 23 other European ones) and four colour schemes.
+  (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी and 23 other European ones) and 14 colour schemes.
 
 ### What has and has not been verified
 

@@ -30,8 +30,8 @@ An open-source alternative to [LightBurn](https://lightburnsoftware.com/) for CN
 * **Engraving:** line, fill, offset fill and raster images with six dithering methods and grayscale power; 30 LightBurn-style cut layers; preview with time estimate.
 * **Devices:** per-machine profiles; GRBL and Marlin over serial or TCP (ser2net); Ruida and Trocen via PLT / DXF export.
 * **Helpers:** camera overlay with four-corner alignment, 310-picture clipart gallery with online search.
-* **Interface:** 30 languages (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी and 23 other European ones) and four colour schemes.
+* **Interface:** 30 languages (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी and 23 other European ones) and 14 colour schemes.
 
 > ⚠️ **Safety:** lasers are dangerous. Test G-code at low power, wear eye protection, never leave a running machine unattended. See [Safety and Limitations](Safety-and-Limitations).
 
-Latest release: **v0.1.3** · [Releases](https://github.com/michalsarna/LightCreator/releases) · [Issues](https://github.com/michalsarna/LightCreator/issues) · Licence: [MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) or [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE), at your option
+Latest release: **v0.1.4** · [Releases](https://github.com/michalsarna/LightCreator/releases) · [Issues](https://github.com/michalsarna/LightCreator/issues) · Licence: [MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) or [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE), at your option

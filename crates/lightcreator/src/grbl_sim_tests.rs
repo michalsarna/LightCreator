@@ -269,10 +269,16 @@ fn grbl_sim_job_sent_right_after_connect_is_not_lost() {
 }
 
 /// The settings report of `$$`, as the lines GRBL printed before its `ok`.
+/// Is there an "ok" after a line that starts with `prefix`?
+fn ok_after(lines: &[String], prefix: &str) -> bool {
+    lines.iter().position(|l| l.starts_with(prefix)).is_some_and(|i| lines[i..].iter().any(|l| l == "ok"))
+}
+
 fn read_settings(s: &mut Session) -> Vec<String> {
     let from = s.seen.rx.len();
     s.link.send(Cmd::Line("$$".into()));
-    s.wait("settings report", 5.0, |v| v.rx[from..].iter().any(|l| l == "ok"));
+    // The "ok" that closes the report, not one that answers an earlier line still in flight.
+    s.wait("settings report", 5.0, |v| ok_after(&v.rx[from..], "$"));
     s.seen.rx[from..].to_vec()
 }
 
@@ -350,7 +356,7 @@ fn grbl_sim_focus_beam_switches_on_with_m3_and_off_with_m5() {
     let parser_state = |s: &mut Session| {
         let from = s.seen.rx.len();
         s.link.send(Cmd::Line("$G".into()));
-        s.wait("parser state", 5.0, |v| v.rx[from..].iter().any(|l| l == "ok"));
+        s.wait("parser state", 5.0, |v| ok_after(&v.rx[from..], "[GC:"));
         s.seen.rx[from..].iter().find(|l| l.starts_with("[GC:")).cloned().unwrap_or_default()
     };
     for l in &on {

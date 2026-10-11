@@ -225,7 +225,7 @@ impl App {
                 let avail = ui.available_size();
                 let (resp, painter) = ui.allocate_painter(avail, Sense::click_and_drag());
                 let rect = resp.rect;
-                painter.rect_filled(rect, 0.0, theme::workspace());
+                painter.rect_filled(rect, 0.0, self.workspace_fill());
                 if (self.pv.view.need_fit || self.pv.view.auto_fit) && rect.width() > 50.0 {
                     let mut bounds: Option<(f64, f64, f64, f64)> = None;
                     if self.pv.fit_objects {

@@ -40,7 +40,7 @@
   pressed again. The Overlay button follows Camera view and is always visible; it is greyed out until there is a
   picture to show (a saved photo, or the live camera while its window is open) and then switches it on the work area.
   Start / STOP are written in capitals.
-* **Web server and API** (Program options, off by default, no password): a web page with the state of the machine, the project and a camera, and an API for the status, the project as SVG, the cameras and the commands stop, home, cancel jog, jog and camera choice. Listens only on this computer unless you allow the network. See the wiki page Web Server and API.
+* **Web server and API** (Program options, off by default, protected by an access phrase): a web page (two columns on a computer, one on a phone; the camera, the control panel, the project that opens full screen with zoom, move and reset; the colour schemes of the program) with the state of the machine, the project and a camera, and an API for the status, the project as SVG, the cameras and the commands stop, home, cancel jog, jog and camera choice. Listens only on this computer unless you allow the network. See the wiki page Web Server and API.
 * **Delete buttons:** everything that deletes (devices, cameras, zones, macros, counters, clipart, nodes, the overlay...) has a bin icon and is red.
 * **Description tab:** a plain multi-line text about the project in the side panel (it can be moved like the other tabs), saved in the project file.
 * **Materials:** every device has a list of materials (a new device starts with an empty, translated *Default material* and starting points for its laser type: Plywood, Cardboard, Leather, Paper, and Acrylic for CO2; a new material is empty); a material has a name and the settings of the layers it uses. The Layers tab edits the layers of the selected material and its heading chooses, adds (a copy), renames and deletes materials; layers the design uses are added to the material with default settings. The list belongs to the device (profile, exports, backups) and to saved projects.
@@ -65,7 +65,7 @@
   "Auto-fit work area to window" toggles it). The preview window behaves the same way.
 * **View options** (Settings menu): main grid and a finer secondary grid, each with its own line distance and
   colour, the work-area background colour (automatically very light grey in the dark colour schemes and
-  white in the light ones, or your own) and the thickness of the drawn lines.
+  white in the light ones, or your own), the colour of the workspace around it (the colour scheme's, or your own) and the thickness of the drawn lines.
 
 **Files**
 * **Saving:** a "File saved" message appears for 5 seconds after saving by hand. Auto-save (Settings → Program options…,
@@ -220,7 +220,7 @@
   guide exists in English and Polish; the other languages show the English text there.
 * The status bar shows the state of the device and of the web server (off, on with the port, error). Save buttons are
   green, import buttons blue and delete buttons red.
-* Colour schemes: Dark, Light Dark, Medium Light, Light.
+* Colour schemes (14): Dark, Light Dark, Medium Light, Light, and a dark and a light one in blue, green, purple, brown and orange (the greys and the accent take the colour).
 * Application icon in every place the platform supports.
 * All interface icons (tool bar, menus, context menu, buttons) are SVG files and all text fonts (Noto Sans,
   Noto Sans Mono, Noto Sans SC, Noto Sans Devanagari) are font files from the `assets` folder, embedded in the

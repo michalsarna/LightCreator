@@ -1,6 +1,7 @@
 //! The optional web server and API: a status page, the project as an SVG, the cameras, and a few commands (stop,
-//! home, cancel a jog, jog). It is NOT protected in any way (no password, no encryption): by default it listens only
-//! on this computer. It is a small HTTP/1.1 server on the standard library: one short thread per request.
+//! home, cancel a jog, jog). Every request needs the access phrase (HTTP Basic authentication, any user name); there
+//! is no encryption, so use it on a network you trust. By default it listens only on this computer. It is a small
+//! HTTP/1.1 server on the standard library: one short thread per request.
 use serde_json::Value;
 use std::collections::VecDeque;
 use std::io::{Read, Write};
@@ -68,9 +69,90 @@ pub struct Shared {
     /// The project as SVG, with the revision it was made for.
     pub svg: Mutex<(u64, Arc<String>)>,
     pub cameras: Mutex<Value>,
+    /// The colour schemes of the program, for the page.
+    pub themes: Mutex<Value>,
     /// The latest picture of the camera view in the program: width, height, RGB.
     pub frame: Mutex<Option<(u32, u32, Arc<Vec<u8>>)>>,
     pub commands: Mutex<VecDeque<Command>>,
+    /// The access phrase every request must carry; the program changes it while the server runs.
+    pub access: Mutex<String>,
+}
+
+/// The access phrase a new installation starts with.
+pub const DEFAULT_ACCESS: &str = "LightCreator";
+/// The longest access phrase.
+pub const MAX_ACCESS: usize = 100;
+
+/// Is this a phrase that can be kept: not empty, not long, no control characters?
+pub fn access_ok(s: &str) -> bool {
+    !s.is_empty() && s.chars().count() <= MAX_ACCESS && !s.chars().any(|c| c.is_control())
+}
+
+/// Are the two equal? Takes the same time whatever the first difference, so the time tells nothing.
+fn same_bytes(a: &[u8], b: &[u8]) -> bool {
+    let mut diff = (a.len() ^ b.len()) as u32;
+    for i in 0..a.len().max(b.len()) {
+        diff |= (*a.get(i).unwrap_or(&0) ^ *b.get(i).unwrap_or(&0)) as u32;
+    }
+    diff == 0
+}
+
+/// The bytes as standard base64 (with padding).
+pub fn base64_encode(bytes: &[u8]) -> String {
+    const A: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    let mut out = String::with_capacity(bytes.len().div_ceil(3) * 4);
+    for c in bytes.chunks(3) {
+        let n = (c[0] as u32) << 16 | (*c.get(1).unwrap_or(&0) as u32) << 8 | *c.get(2).unwrap_or(&0) as u32;
+        for i in 0..4 {
+            out.push(if i <= c.len() { A[(n >> (18 - 6 * i) & 63) as usize] as char } else { '=' });
+        }
+    }
+    out
+}
+
+/// The access phrase as it is kept in the settings (base64: not readable at a glance, but no encryption).
+pub fn access_to_setting(phrase: &str) -> String {
+    base64_encode(phrase.as_bytes())
+}
+
+/// The access phrase from the settings; `None` when it is not valid base64 of a usable phrase.
+pub fn access_from_setting(text: &str) -> Option<String> {
+    let phrase = String::from_utf8(base64_decode(text)?).ok()?;
+    access_ok(&phrase).then_some(phrase)
+}
+
+/// The text of a standard base64 string (padding allowed), or `None` when it is not valid.
+fn base64_decode(s: &str) -> Option<Vec<u8>> {
+    let s = s.trim().trim_end_matches('=');
+    let mut out = Vec::with_capacity(s.len() * 3 / 4);
+    let (mut acc, mut bits) = (0u32, 0u32);
+    for c in s.bytes() {
+        let v = match c {
+            b'A'..=b'Z' => c - b'A',
+            b'a'..=b'z' => c - b'a' + 26,
+            b'0'..=b'9' => c - b'0' + 52,
+            b'+' => 62,
+            b'/' => 63,
+            _ => return None,
+        };
+        acc = (acc << 6) | v as u32;
+        bits += 6;
+        if bits >= 8 {
+            bits -= 8;
+            out.push((acc >> bits) as u8);
+            acc &= (1 << bits) - 1;
+        }
+    }
+    Some(out)
+}
+
+/// Does the `Authorization: Basic ...` value carry the phrase (as the part after the first colon)?
+fn access_granted(header: Option<&str>, access: &str) -> bool {
+    let Some(h) = header else { return false };
+    let Some(b64) = h.trim().strip_prefix("Basic ").or_else(|| h.trim().strip_prefix("basic ")) else { return false };
+    let Some(raw) = base64_decode(b64) else { return false };
+    let Some(i) = raw.iter().position(|b| *b == b':') else { return false };
+    !access.is_empty() && same_bytes(&raw[i + 1..], access.as_bytes())
 }
 
 pub struct Server {
@@ -97,6 +179,9 @@ impl Server {
         let addr = listener.local_addr().map_err(|e| e.to_string())?;
         let stop = Arc::new(AtomicBool::new(false));
         let shared = Arc::new(Shared::default());
+        if let Ok(mut a) = shared.access.lock() {
+            *a = DEFAULT_ACCESS.to_string();
+        }
         let (flag, sh) = (stop.clone(), shared.clone());
         let active = Arc::new(AtomicUsize::new(0));
         std::thread::spawn(move || {
@@ -126,6 +211,8 @@ struct Request {
     method: String,
     path: String,
     query: Vec<(String, String)>,
+    /// The value of the Authorization header.
+    auth: Option<String>,
 }
 
 fn url_decode(s: &str) -> String {
@@ -164,7 +251,11 @@ fn parse_request(head: &str) -> Option<Request> {
         let (k, v) = p.split_once('=').unwrap_or((p, ""));
         (url_decode(k), url_decode(v))
     }).collect();
-    Some(Request { method: method.to_string(), path: url_decode(path), query })
+    let auth = head.lines().skip(1).find_map(|l| {
+        let (k, v) = l.split_once(':')?;
+        k.trim().eq_ignore_ascii_case("authorization").then(|| v.trim().to_string())
+    });
+    Some(Request { method: method.to_string(), path: url_decode(path), query, auth })
 }
 
 fn respond(s: &mut TcpStream, code: u16, ctype: &str, body: &[u8]) -> std::io::Result<()> {
@@ -172,11 +263,13 @@ fn respond(s: &mut TcpStream, code: u16, ctype: &str, body: &[u8]) -> std::io::R
         200 => "OK",
         400 => "Bad Request",
         404 => "Not Found",
+        401 => "Unauthorized",
         405 => "Method Not Allowed",
         503 => "Service Unavailable",
         _ => "Error",
     };
-    let head = format!("HTTP/1.1 {code} {reason}\r\nContent-Type: {ctype}\r\nContent-Length: {}\r\nCache-Control: no-store\r\nAccess-Control-Allow-Origin: *\r\nConnection: close\r\n\r\n", body.len());
+    let challenge = if code == 401 { "WWW-Authenticate: Basic realm=\"LightCreator\", charset=\"UTF-8\"\r\n" } else { "" };
+    let head = format!("HTTP/1.1 {code} {reason}\r\n{challenge}Content-Type: {ctype}\r\nContent-Length: {}\r\nCache-Control: no-store\r\nAccess-Control-Allow-Origin: *\r\nConnection: close\r\n\r\n", body.len());
     s.write_all(head.as_bytes())?;
     s.write_all(body)
 }
@@ -199,6 +292,12 @@ fn handle(mut s: TcpStream, sh: &Shared) -> std::io::Result<()> {
     }
     let head = String::from_utf8_lossy(&buf).to_string();
     let Some(req) = parse_request(&head) else { return respond(&mut s, 400, "text/plain", b"bad request") };
+    let access = sh.access.lock().map(|a| a.clone()).unwrap_or_default();
+    if !access_granted(req.auth.as_deref(), &access) {
+        // A wrong guess waits a moment: guessing the phrase over the network is slow.
+        std::thread::sleep(Duration::from_millis(300));
+        return respond(&mut s, 401, "text/plain", b"access phrase needed");
+    }
     route(&mut s, &req, sh)
 }
 
@@ -216,6 +315,10 @@ fn route(s: &mut TcpStream, req: &Request, sh: &Shared) -> std::io::Result<()> {
         ("/api/project.svg", true, _) => {
             let svg = sh.svg.lock().map(|v| v.1.clone()).unwrap_or_default();
             respond(s, 200, "image/svg+xml; charset=utf-8", svg.as_bytes())
+        }
+        ("/api/themes", true, _) => {
+            let v = sh.themes.lock().map(|v| v.clone()).unwrap_or(Value::Null);
+            json(s, 200, &v)
         }
         ("/api/cameras", true, _) => {
             let v = sh.cameras.lock().map(|v| v.clone()).unwrap_or(Value::Null);
@@ -270,68 +373,8 @@ pub fn encode_jpeg(w: u32, h: u32, rgb: &[u8]) -> Option<Vec<u8>> {
     Some(out)
 }
 
-/// The page of the web server: status, the project, the camera and the commands.
-const PAGE: &str = r##"<!doctype html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LightCreator</title>
-<style>
-body{font-family:system-ui,sans-serif;margin:0;background:#1d1f23;color:#e6e6e6}
-header{padding:8px 14px;background:#2a2d33;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
-main{display:flex;flex-wrap:wrap;gap:14px;padding:14px}
-section{background:#2a2d33;border-radius:8px;padding:10px;flex:1 1 360px}
-h2{margin:0 0 8px;font-size:14px;color:#aab}
-img.p{width:100%;background:#fff;border-radius:4px}
-button{font-size:15px;padding:10px 14px;border:0;border-radius:6px;background:#3d4350;color:#fff;cursor:pointer}
-button:hover{background:#4d5568}
-button.stop{background:#c03030;font-weight:bold}
-.pad{display:grid;grid-template-columns:repeat(3,56px);gap:6px;justify-content:center;margin:8px 0}
-.pad button{padding:12px 0}
-#state{font-weight:bold}
-select{font-size:15px;padding:6px}
-.warn{color:#e0a030;font-size:12px}
-.bar{background:#3d4350;border-radius:4px;height:10px;overflow:hidden}
-.bar i{display:block;height:100%;background:#2ea04f;width:0}
-</style></head><body>
-<header><b>LightCreator</b><span id="dev"></span><span id="state"></span><span id="pos"></span><span id="time"></span></header>
-<main>
-<section><h2>Project</h2><img class="p" id="proj" alt="project"><div class="bar"><i id="bar"></i></div></section>
-<section><h2>Camera</h2><select id="cam"></select><div id="camview" style="margin-top:8px"></div></section>
-<section><h2>Control</h2>
-<button class="stop" onclick="cmd('stop')">STOP</button> <button onclick="cmd('home')">Home</button> <button onclick="cmd('cancel-jog')">Cancel jog</button>
-<div class="pad" id="pad"></div>
-<div class="warn">No password or encryption: use only on a network you trust.</div></section>
-</main>
-<script>
-const dirs=[["up-left","↖"],["up","↑"],["up-right","↗"],["left","←"],["","■"],["right","→"],["down-left","↙"],["down","↓"],["down-right","↘"]];
-const pad=document.getElementById('pad');
-for(const [d,t] of dirs){const b=document.createElement('button');b.textContent=t;if(d)b.onclick=()=>fetch('/api/jog?dir='+d,{method:'POST'});else b.onclick=()=>cmd('cancel-jog');pad.appendChild(b);}
-function cmd(c){fetch('/api/'+c,{method:'POST'});}
-const f=s=>{s=Math.max(0,Math.floor(s||0));const p=n=>String(n).padStart(2,'0');return p(Math.floor(s/3600))+':'+p(Math.floor(s/60)%60)+':'+p(s%60)};
-let rev=-1,camsig='';
-async function tick(){
- try{
-  const st=await (await fetch('/api/status')).json();
-  document.getElementById('dev').textContent=(st.device&&st.device.name)||'';
-  document.getElementById('state').textContent=st.device?(st.device.connected?st.device.state:'not connected'):'';
-  document.getElementById('pos').textContent=st.device&&st.device.connected?('X '+st.device.x.toFixed(2)+'  Y '+st.device.y.toFixed(2)):'';
-  document.getElementById('time').textContent=st.job?(f(st.job.elapsed_s)+' / '+f(st.job.estimate_s)):'';
-  document.getElementById('bar').style.width=st.job&&st.job.total?Math.round(100*st.job.done/st.job.total)+'%':'0';
-  if(st.project&&st.project.revision!==rev){rev=st.project.revision;document.getElementById('proj').src='/api/project.svg?r='+rev;}
-  const cams=await (await fetch('/api/cameras')).json();
-  const sig=JSON.stringify(cams);
-  if(sig!==camsig){camsig=sig;const sel=document.getElementById('cam');sel.innerHTML='';
-   (cams.cameras||[]).forEach(c=>{const o=document.createElement('option');o.value=c.index;o.textContent=c.name+(c.enabled?'':' (off)');if(c.active)o.selected=true;sel.appendChild(o);});
-   sel.onchange=()=>fetch('/api/camera/select?index='+sel.value,{method:'POST'});
-   const v=document.getElementById('camview');const a=(cams.cameras||[]).find(c=>c.active);
-   v.innerHTML='';
-   if(a&&a.url){const i=document.createElement('img');i.className='p';i.src=a.url;v.appendChild(i);}
-   else if(a){const i=document.createElement('img');i.className='p';i.id='snap';v.appendChild(i);}
-  }
-  const snap=document.getElementById('snap');if(snap)snap.src='/api/camera.jpg?t='+Date.now();
- }catch(e){document.getElementById('state').textContent='no connection to the program';}
-}
-tick();setInterval(tick,1000);
-</script></body></html>"##;
+/// The page of the web server: status, the camera, the project and the commands.
+const PAGE: &str = include_str!("web_page.html");
 
 #[cfg(test)]
 mod tests {
@@ -348,12 +391,69 @@ mod tests {
         (code, text.split("\r\n\r\n").nth(1).unwrap_or("").to_string())
     }
 
+    fn basic(user: &str, phrase: &str) -> String {
+        format!("Authorization: Basic {}\r\n", base64_encode(format!("{user}:{phrase}").as_bytes()))
+    }
+
+    fn get_as(addr: SocketAddr, path: &str, auth: &str) -> (u16, String) {
+        ask(addr, &format!("GET {path} HTTP/1.1\r\nHost: x\r\n{auth}\r\n"))
+    }
+
     fn get(addr: SocketAddr, path: &str) -> (u16, String) {
-        ask(addr, &format!("GET {path} HTTP/1.1\r\nHost: x\r\n\r\n"))
+        get_as(addr, path, &basic("me", DEFAULT_ACCESS))
     }
 
     fn post(addr: SocketAddr, path: &str) -> (u16, String) {
-        ask(addr, &format!("POST {path} HTTP/1.1\r\nHost: x\r\nContent-Length: 0\r\n\r\n"))
+        ask(addr, &format!("POST {path} HTTP/1.1\r\nHost: x\r\n{}Content-Length: 0\r\n\r\n", basic("me", DEFAULT_ACCESS)))
+    }
+
+    #[test]
+    fn nothing_is_answered_without_the_access_phrase_and_it_can_change_while_running() {
+        let srv = Server::start(0, false).unwrap();
+        for path in ["/", "/api/status", "/api/project.svg", "/api/cameras", "/api/camera.jpg"] {
+            assert_eq!(get_as(srv.addr, path, "").0, 401, "{path} without it");
+            assert_eq!(get_as(srv.addr, path, &basic("me", "wrong")).0, 401, "{path} with a wrong one");
+        }
+        let no = ask(srv.addr, "POST /api/stop HTTP/1.1\r\nHost: x\r\nContent-Length: 0\r\n\r\n");
+        assert_eq!(no.0, 401);
+        assert!(srv.shared.commands.lock().unwrap().is_empty(), "a refused command is not queued");
+        let raw = {
+            let mut s = TcpStream::connect(srv.addr).unwrap();
+            s.write_all(b"GET / HTTP/1.1\r\nHost: x\r\n\r\n").unwrap();
+            let mut out = vec![];
+            let _ = s.read_to_end(&mut out);
+            String::from_utf8_lossy(&out).to_string()
+        };
+        assert!(raw.contains("WWW-Authenticate: Basic"), "the browser is asked for it");
+        // Any user name, the phrase after the first colon, a phrase with colons, upper or lower case of the scheme.
+        assert_eq!(get_as(srv.addr, "/api/status", &basic("", DEFAULT_ACCESS)).0, 200);
+        assert_eq!(get_as(srv.addr, "/api/status", &basic("a:b", DEFAULT_ACCESS)).0, 401);
+        *srv.shared.access.lock().unwrap() = "new:phrase ü".into();
+        assert_eq!(get(srv.addr, "/api/status").0, 401, "the old phrase stops working at once");
+        assert_eq!(get_as(srv.addr, "/api/status", &basic("x", "new:phrase ü")).0, 200);
+        assert_eq!(get_as(srv.addr, "/api/status", "Authorization: Basic !!!\r\n").0, 401);
+        assert_eq!(get_as(srv.addr, "/api/status", "Authorization: Bearer abc\r\n").0, 401);
+    }
+
+    #[test]
+    fn phrases_and_base64() {
+        assert!(access_ok("LightCreator") && access_ok("a b ü"));
+        assert!(!access_ok("") && !access_ok("a\nb") && !access_ok(&"x".repeat(MAX_ACCESS + 1)));
+        assert!(access_ok(&"x".repeat(MAX_ACCESS)));
+        assert_eq!(base64_decode("bWU6TGlnaHQ=").unwrap(), b"me:Light");
+        for raw in ["", "a", "ab", "abc", "abcd", "LightCreator", "ü ž:\"x"] {
+            assert_eq!(base64_decode(&base64_encode(raw.as_bytes())).unwrap(), raw.as_bytes(), "{raw}");
+        }
+        assert_eq!(base64_encode(b"LightCreator"), "TGlnaHRDcmVhdG9y");
+        assert_eq!(access_from_setting(&access_to_setting("my phrase ü")).as_deref(), Some("my phrase ü"));
+        assert_eq!(access_from_setting("!!!"), None);
+        assert_eq!(access_from_setting(""), None, "an empty phrase is not usable");
+        assert_eq!(access_from_setting(&base64_encode(&[0xff, 0xfe])), None, "not text");
+        assert_eq!(access_from_setting(&base64_encode(b"a\nb")), None, "control characters");
+        assert_eq!(base64_decode("bWU6TGlnaHQ").unwrap(), b"me:Light");
+        assert!(base64_decode("a$b").is_none());
+        assert!(same_bytes(b"abc", b"abc") && !same_bytes(b"abc", b"abd") && !same_bytes(b"abc", b"ab") && !same_bytes(b"", b"a"));
+        assert!(!access_granted(None, "x") && !access_granted(Some("Basic bWU6"), ""), "an empty phrase never opens");
     }
 
     #[test]
@@ -370,6 +470,12 @@ mod tests {
         assert!(get(srv.addr, "/api/cameras").1.contains("http://a/x"));
         let (c, page) = get(srv.addr, "/");
         assert!(c == 200 && page.contains("LightCreator") && page.contains("STOP"));
+        for marker in ["grid-template-areas", "@media (max-width:800px)", "dblclick", "resetView", "rotsel", "rotated", "No camera", "/api/themes", "lc-theme"] {
+            assert!(page.contains(marker), "the page lacks {marker}");
+        }
+        assert!(page.find("id=\"cam\"").unwrap() < page.find("id=\"ctl\"").unwrap() && page.find("id=\"ctl\"").unwrap() < page.find("id=\"prev\"").unwrap());
+        *srv.shared.themes.lock().unwrap() = serde_json::json!([{"id": "dark"}]);
+        assert!(get(srv.addr, "/api/themes").1.contains("\"dark\""));
         assert_eq!(get(srv.addr, "/nope").0, 404);
         assert_eq!(get(srv.addr, "/api/camera.jpg").0, 503, "no picture yet");
     }

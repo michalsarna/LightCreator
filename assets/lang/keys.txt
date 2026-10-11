@@ -1052,3 +1052,20 @@
 1051	Web server: on, port {}
 1052	Web server: off
 1053	Web server: error
+1054	Dark Blue
+1055	Light Blue
+1056	Dark Green
+1057	Light Green
+1058	Dark Purple
+1059	Light Purple
+1060	Dark Brown
+1061	Light Brown
+1062	Dark Orange
+1063	Light Orange
+1064	Workspace colour
+1065	The space around the work area
+1066	A web page with the state of the machine, the project and the camera, and an API for other programs. Every request needs the access phrase; there is no encryption.
+1067	Anyone on the network who knows the access phrase can see the machine and stop or move it. The phrase is sent without encryption: use only on a network you trust.
+1068	Access phrase
+1069	Use this access phrase from now on
+1070	The access phrase cannot be empty or have control characters.

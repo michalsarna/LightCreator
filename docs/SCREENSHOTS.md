@@ -45,3 +45,5 @@ Regenerate them with
 | Adding a device: one window with the basic settings and a first material | Layers tab: the material header above the layers of that material |
 | ![Description tab](screenshots/35-description.png) | ![Program options](screenshots/36-options-web-server.png) |
 | Description tab, saved in the project | Program options with the web server; its state is in the status bar |
+| ![Dark purple scheme](screenshots/37-theme-dark-purple.png) | ![Light orange scheme](screenshots/38-theme-light-orange.png) |
+| Colour scheme Dark Purple (there are ten coloured ones: dark and light blue, green, purple, brown, orange) | Colour scheme Light Orange |

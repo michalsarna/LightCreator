@@ -1052,3 +1052,20 @@
 1051|Webový server: zapnut, port {}
 1052|Webový server: vypnut
 1053|Webový server: chyba
+1054|Tmavý modrý
+1055|Světlý modrý
+1056|Tmavý zelený
+1057|Světlý zelený
+1058|Tmavý fialový
+1059|Světlý fialový
+1060|Tmavý hnědý
+1061|Světlý hnědý
+1062|Tmavý oranžový
+1063|Světlý oranžový
+1064|Barva pracovního prostoru
+1065|Prostor kolem pracovní plochy
+1066|Webová stránka se stavem stroje, projektem a kamerou a API pro jiné programy. Každý požadavek vyžaduje přístupovou frázi; šifrování není.
+1067|Kdokoli v síti, kdo zná přístupovou frázi, může stroj vidět a zastavit nebo posunout. Fráze se posílá bez šifrování: používejte jen v síti, které věříte.
+1068|Přístupová fráze
+1069|Používat tuto přístupovou frázi od nynějška
+1070|Přístupová fráze nesmí být prázdná ani obsahovat řídicí znaky.

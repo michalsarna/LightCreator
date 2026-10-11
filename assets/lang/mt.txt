@@ -1052,3 +1052,20 @@
 1051|Server tal-web: mixgħul, port {}
 1052|Server tal-web: mitfi
 1053|Server tal-web: żball
+1054|Blu skur
+1055|Blu ċar
+1056|Aħdar skur
+1057|Aħdar ċar
+1058|Vjola skur
+1059|Vjola ċar
+1060|Kannella skur
+1061|Kannella ċar
+1062|Oranġjo skur
+1063|Oranġjo ċar
+1064|Kulur tal-ispazju tax-xogħol
+1065|L-ispazju madwar iż-żona tax-xogħol
+1066|Paġna tal-web bl-istat tal-magna, il-proġett u l-kamera, u API għal programmi oħra. Kull talba teħtieġ il-frażi ta' aċċess; m'hemm l-ebda ċifrar.
+1067|Kull persuna fin-netwerk li tkun taf il-frażi ta' aċċess tista' tara l-magna u twaqqafha jew tċaqlaqha. Il-frażi tintbagħat mingħajr ċifrar: uża biss f'netwerk li tafda.
+1068|Frażi ta' aċċess
+1069|Uża din il-frażi ta' aċċess minn issa
+1070|Il-frażi ta' aċċess ma tistax tkun vojta jew ikollha karattri ta' kontroll.

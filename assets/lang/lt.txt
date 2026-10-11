@@ -1052,3 +1052,20 @@
 1051|Žiniatinklio serveris: įjungtas, prievadas {}
 1052|Žiniatinklio serveris: išjungtas
 1053|Žiniatinklio serveris: klaida
+1054|Tamsi mėlyna
+1055|Šviesi mėlyna
+1056|Tamsi žalia
+1057|Šviesi žalia
+1058|Tamsi violetinė
+1059|Šviesi violetinė
+1060|Tamsi ruda
+1061|Šviesi ruda
+1062|Tamsi oranžinė
+1063|Šviesi oranžinė
+1064|Darbo erdvės spalva
+1065|Erdvė aplink darbo plotą
+1066|Tinklalapis su aparato būsena, projektu ir kamera bei API kitoms programoms. Kiekvienai užklausai reikia prieigos frazės; šifravimo nėra.
+1067|Bet kas tinkle, kas žino prieigos frazę, gali matyti aparatą ir jį sustabdyti ar judinti. Frazė siunčiama nešifruota: naudokite tik patikimame tinkle.
+1068|Prieigos frazė
+1069|Nuo dabar naudoti šią prieigos frazę
+1070|Prieigos frazė negali būti tuščia ar turėti valdymo simbolių.

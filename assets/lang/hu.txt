@@ -1052,3 +1052,20 @@
 1051|Webszerver: be, port {}
 1052|Webszerver: ki
 1053|Webszerver: hiba
+1054|Sötét kék
+1055|Világos kék
+1056|Sötét zöld
+1057|Világos zöld
+1058|Sötét lila
+1059|Világos lila
+1060|Sötét barna
+1061|Világos barna
+1062|Sötét narancs
+1063|Világos narancs
+1064|A munkaterület színe
+1065|A munkaterület körüli tér
+1066|Weboldal a gép állapotával, a projekttel és a kamerával, valamint API más programoknak. Minden kérés hozzáférési mondatot igényel; nincs titkosítás.
+1067|A hálózaton bárki, aki ismeri a hozzáférési mondatot, láthatja a gépet, leállíthatja vagy mozgathatja. A mondat titkosítás nélkül megy át: csak megbízható hálózaton használd.
+1068|Hozzáférési mondat
+1069|Ezt a hozzáférési mondatot használja mostantól
+1070|A hozzáférési mondat nem lehet üres, és nem tartalmazhat vezérlőkaraktert.

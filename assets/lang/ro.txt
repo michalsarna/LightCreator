@@ -1052,3 +1052,20 @@
 1051|Server web: pornit, port {}
 1052|Server web: oprit
 1053|Server web: eroare
+1054|Albastru închis
+1055|Albastru deschis
+1056|Verde închis
+1057|Verde deschis
+1058|Violet închis
+1059|Violet deschis
+1060|Maro închis
+1061|Maro deschis
+1062|Portocaliu închis
+1063|Portocaliu deschis
+1064|Culoarea spațiului de lucru
+1065|Spațiul din jurul zonei de lucru
+1066|O pagină web cu starea mașinii, proiectul și camera, și un API pentru alte programe. Fiecare cerere necesită fraza de acces; nu există criptare.
+1067|Oricine din rețea care cunoaște fraza de acces poate vedea mașina și o poate opri sau muta. Fraza este trimisă necriptat: folosiți doar într-o rețea de încredere.
+1068|Frază de acces
+1069|Folosește această frază de acces de acum
+1070|Fraza de acces nu poate fi goală și nu poate avea caractere de control.

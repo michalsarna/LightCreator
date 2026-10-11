@@ -1052,3 +1052,20 @@
 1051|Veebiserver: sees, port {}
 1052|Veebiserver: väljas
 1053|Veebiserver: viga
+1054|Tume sinine
+1055|Hele sinine
+1056|Tume roheline
+1057|Hele roheline
+1058|Tume lilla
+1059|Hele lilla
+1060|Tume pruun
+1061|Hele pruun
+1062|Tume oranž
+1063|Hele oranž
+1064|Tööruumi värv
+1065|Tööala ümbritsev ruum
+1066|Veebileht masina oleku, projekti ja kaameraga ning API teistele programmidele. Iga päring vajab juurdepääsufraasi; krüpteerimist ei ole.
+1067|Igaüks võrgus, kes juurdepääsufraasi teab, näeb masinat ning võib selle peatada või liigutada. Fraas saadetakse krüpteerimata: kasuta ainult usaldusväärses võrgus.
+1068|Juurdepääsufraas
+1069|Kasuta nüüdsest seda juurdepääsufraasi
+1070|Juurdepääsufraas ei tohi olla tühi ega sisaldada juhtmärke.

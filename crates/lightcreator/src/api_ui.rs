@@ -47,6 +47,12 @@ impl App {
         }
         let Some(server) = &self.api.server else { return };
         let shared = server.shared.clone();
+        // A changed access phrase counts from now on, without restarting the server.
+        if let Ok(mut a) = shared.access.lock() {
+            if *a != self.api_access {
+                *a = self.api_access.clone();
+            }
+        }
         // The commands first, so that STOP does not wait for the next publication.
         let cmds: Vec<Command> = shared.commands.lock().map(|mut q| q.drain(..).collect()).unwrap_or_default();
         for c in cmds {
@@ -62,6 +68,7 @@ impl App {
         let status = json!({
             "app": "LightCreator",
             "version": crate::app::APP_VERSION,
+            "theme": self.scheme.id(),
             "device": {
                 "name": dev.name,
                 "controller": format!("{:?}", dev.controller),
@@ -93,6 +100,10 @@ impl App {
                 // The address of a camera that has one; a camera of this computer only has the snapshot.
                 "url": match &c.kind { lc_core::CameraKind::Url(u) if c.enabled && c.is_valid() => json!(u.trim()), _ => json!(null) },
                 "snapshot": "/api/camera.jpg",
+                // The turn set for this camera in the program, in degrees clockwise ...
+                "rotation": (c.rotation % 4) as u32 * 90,
+                // ... and how much of it is already in the snapshot (the program turns its picture; a camera's own address is raw).
+                "rotated": match &c.kind { lc_core::CameraKind::Url(u) if c.enabled && c.is_valid() && !u.trim().is_empty() => 0, _ => (c.rotation % 4) as u32 * 90 },
             })).collect::<Vec<_>>(),
         });
         if let Ok(mut s) = shared.status.lock() {
@@ -100,6 +111,11 @@ impl App {
         }
         if let Ok(mut c) = shared.cameras.lock() {
             *c = cams;
+        }
+        if let Ok(mut t) = shared.themes.lock() {
+            if t.is_null() {
+                *t = crate::theme::web_themes();
+            }
         }
         let rev = self.revision;
         let stale = shared.svg.lock().map(|s| s.0 != rev || s.1.is_empty()).unwrap_or(false);
@@ -158,7 +174,7 @@ impl App {
     pub fn api_options_ui(&mut self, ui: &mut egui::Ui) {
         ui.label(tr("Web server and API"));
         ui.vertical(|ui| {
-            ui.checkbox(&mut self.api_on, tr("Switch on the web server and the API")).on_hover_text(tr("A web page with the state of the machine, the project and the camera, and an API for other programs. It has no password."));
+            ui.checkbox(&mut self.api_on, tr("Switch on the web server and the API")).on_hover_text(tr("A web page with the state of the machine, the project and the camera, and an API for other programs. Every request needs the access phrase; there is no encryption."));
             ui.add_enabled_ui(self.api_on, |ui| {
                 ui.horizontal(|ui| {
                     ui.label(tr("Port"));
@@ -166,8 +182,29 @@ impl App {
                 });
                 ui.checkbox(&mut self.api_lan, tr("Reachable from other computers on the network"));
             });
+            ui.add_enabled_ui(self.api_on, |ui| {
+                if self.api_access_edit.is_empty() && !self.api_access_typing {
+                    self.api_access_edit = self.api_access.clone();
+                }
+                let ok = crate::api_server::access_ok(&self.api_access_edit);
+                ui.horizontal(|ui| {
+                    ui.label(tr("Access phrase"));
+                    let r = ui.add(egui::TextEdit::singleline(&mut self.api_access_edit).password(true).desired_width(140.0).char_limit(crate::api_server::MAX_ACCESS));
+                    if r.changed() {
+                        self.api_access_typing = true;
+                    }
+                    let changed = self.api_access_edit != self.api_access;
+                    if crate::window_ui::save_button_enabled(ui, ok && changed, &tr("Save")).on_hover_text(tr("Use this access phrase from now on")).clicked() {
+                        self.api_access = self.api_access_edit.clone();
+                        self.api_access_typing = false;
+                    }
+                });
+                if !ok {
+                    ui.label(RichText::new(tr("The access phrase cannot be empty or have control characters.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
+                }
+            });
             if self.api_on && self.api_lan {
-                ui.label(RichText::new(tr("Anyone on the network can see the machine and stop or move it. There is no password or encryption: use only on a network you trust.")).color(Color32::from_rgb(0xc0, 0x80, 0x20)));
+                ui.label(RichText::new(tr("Anyone on the network who knows the access phrase can see the machine and stop or move it. The phrase is sent without encryption: use only on a network you trust.")).color(Color32::from_rgb(0xc0, 0x80, 0x20)));
             }
             if let Some(s) = &self.api.server {
                 ui.label(RichText::new(trf("Listening on {}", &[&format!("http://{}:{}", if self.api_lan { "<this computer>".to_string() } else { "localhost".to_string() }, s.addr.port())])).color(Color32::from_rgb(0x2e, 0xa0, 0x4f)));
@@ -207,6 +244,8 @@ mod tests {
         let st = shared.status.lock().unwrap().clone();
         assert_eq!(st["device"]["name"], "My laser");
         assert_eq!(st["app"], "LightCreator");
+        assert_eq!(st["theme"], a.scheme.id(), "the page starts with the program's scheme");
+        assert_eq!(shared.themes.lock().unwrap().as_array().map(|l| l.len()), Some(crate::theme::Scheme::ALL.len()));
         assert!(shared.svg.lock().unwrap().1.contains("<svg"));
         // Other computers: the server is started again on every interface.
         a.api_lan = true;
@@ -216,6 +255,49 @@ mod tests {
         a.api_on = false;
         a.api_tick(&ctx);
         assert!(a.api.server.is_none());
+    }
+
+    #[test]
+    fn the_phrase_is_kept_as_base64_and_read_back() {
+        let (mut a, _ctx) = app();
+        a.api_access = "my phrase ü".into();
+        let pairs = a.settings_pairs();
+        let kept = pairs.iter().find(|(k, _)| *k == "api_access").map(|(_, v)| v.clone()).unwrap();
+        assert!(!kept.contains("phrase"), "not in plain text");
+        assert_eq!(crate::api_server::access_from_setting(&kept).as_deref(), Some("my phrase ü"));
+        // The phrase a fresh installation starts with is kept the same way.
+        let (b, _) = app();
+        let fresh = b.settings_pairs().into_iter().find(|(k, _)| *k == "api_access").map(|(_, v)| v).unwrap();
+        assert_eq!(fresh, "TGlnaHRDcmVhdG9y");
+    }
+
+    #[test]
+    fn a_new_access_phrase_reaches_the_running_server() {
+        let (mut a, ctx) = app();
+        a.api_on = true;
+        a.api_tick(&ctx);
+        let shared = a.api.server.as_ref().unwrap().shared.clone();
+        assert_eq!(*shared.access.lock().unwrap(), crate::api_server::DEFAULT_ACCESS, "the default");
+        a.api_access = "other".into();
+        a.api.last_publish = None;
+        a.api_tick(&ctx);
+        assert_eq!(*shared.access.lock().unwrap(), "other");
+    }
+
+    #[test]
+    fn the_cameras_carry_their_turn_and_how_much_of_it_is_in_the_snapshot() {
+        let (mut a, ctx) = app();
+        a.api_on = true;
+        let mut own = lc_core::CameraSource::url("Own", "http://a/x", 1);
+        own.enabled = true;
+        let mut local = lc_core::CameraSource::url("Local", "", 3);
+        local.kind = lc_core::CameraKind::Local(0);
+        a.doc.device.cameras = vec![own, local];
+        a.api_tick(&ctx);
+        let shared = a.api.server.as_ref().unwrap().shared.clone();
+        let c = shared.cameras.lock().unwrap().clone();
+        assert_eq!((c["cameras"][0]["rotation"].as_u64(), c["cameras"][0]["rotated"].as_u64()), (Some(90), Some(0)), "the camera's own address is raw");
+        assert_eq!((c["cameras"][1]["rotation"].as_u64(), c["cameras"][1]["rotated"].as_u64()), (Some(270), Some(270)), "the program turns its own picture");
     }
 
     #[test]
@@ -240,8 +322,9 @@ mod tests {
         a.api_on = true;
         a.api_port = 9000;
         a.api_lan = true;
+        a.api_access = "my phrase".into();
         let pairs = a.settings_pairs();
-        for (k, v) in [("api_on", "1"), ("api_port", "9000"), ("api_lan", "1")] {
+        for (k, v) in [("api_on", "1"), ("api_port", "9000"), ("api_lan", "1"), ("api_access", "bXkgcGhyYXNl")] {
             assert!(pairs.iter().any(|(a, b)| *a == k && b == v), "{k}");
         }
     }

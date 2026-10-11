@@ -1052,3 +1052,20 @@
 1051|Webserver: på, port {}
 1052|Webserver: av
 1053|Webserver: feil
+1054|Mørk blå
+1055|Lys blå
+1056|Mørk grønn
+1057|Lys grønn
+1058|Mørk lilla
+1059|Lys lilla
+1060|Mørk brun
+1061|Lys brun
+1062|Mørk oransje
+1063|Lys oransje
+1064|Farge på arbeidsrommet
+1065|Rommet rundt arbeidsområdet
+1066|En nettside med maskinens tilstand, prosjektet og kameraet, og en API for andre programmer. Hver forespørsel krever tilgangssetningen; det er ingen kryptering.
+1067|Alle på nettverket som kjenner tilgangssetningen, kan se maskinen og stoppe eller flytte den. Setningen sendes uten kryptering: bruk bare på et nettverk du stoler på.
+1068|Tilgangssetning
+1069|Bruk denne tilgangssetningen fra nå av
+1070|Tilgangssetningen kan ikke være tom eller ha kontrolltegn.

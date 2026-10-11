@@ -18,6 +18,9 @@ pub struct GridPrefs {
     /// Colour of the work-area sheet; `None` picks one that suits the colour scheme.
     #[serde(default)]
     pub bed_color: Option<[u8; 4]>,
+    /// Colour of the space around the work area; `None` takes the one of the colour scheme.
+    #[serde(default)]
+    pub workspace_color: Option<[u8; 4]>,
     /// Thickness of the outlines drawn in the editor, in points. Previews use a little less.
     #[serde(default = "default_line_width")]
     pub line_width: f32,
@@ -29,7 +32,7 @@ fn default_line_width() -> f32 {
 
 impl Default for GridPrefs {
     fn default() -> Self {
-        GridPrefs { main_color: [0xc4, 0xc4, 0xcc, 0xff], minor_on: false, minor_mm: 2.0, minor_color: [0xe6, 0xe6, 0xea, 0xff], bed_color: None, line_width: 1.0 }
+        GridPrefs { main_color: [0xc4, 0xc4, 0xcc, 0xff], minor_on: false, minor_mm: 2.0, minor_color: [0xe6, 0xe6, 0xea, 0xff], bed_color: None, workspace_color: None, line_width: 1.0 }
     }
 }
 
@@ -52,6 +55,11 @@ impl App {
             None if self.scheme.is_dark() => Color32::from_rgb(0xea, 0xea, 0xed),
             None => Color32::WHITE,
         }
+    }
+
+    /// Colour of the space around the work area: your choice, or the one of the colour scheme.
+    pub fn workspace_fill(&self) -> Color32 {
+        self.grid_prefs.workspace_color.map(c32).unwrap_or_else(theme::workspace)
     }
 
     pub fn prefs_window(&mut self, ctx: &egui::Context) {
@@ -113,6 +121,21 @@ impl App {
                     }
                 });
                 ui.end_row();
+                ui.label(tr("Workspace colour")).on_hover_text(tr("The space around the work area"));
+                ui.horizontal(|ui| {
+                    let mut auto = self.grid_prefs.workspace_color.is_none();
+                    let current = self.workspace_fill().to_srgba_unmultiplied();
+                    if ui.checkbox(&mut auto, tr("Automatic")).changed() {
+                        self.grid_prefs.workspace_color = if auto { None } else { Some(current) };
+                    }
+                    if let Some(c) = self.grid_prefs.workspace_color {
+                        let mut col = c32(c);
+                        if egui::color_picker::color_edit_button_srgba(ui, &mut col, egui::color_picker::Alpha::Opaque).changed() {
+                            self.grid_prefs.workspace_color = Some(col.to_srgba_unmultiplied());
+                        }
+                    }
+                });
+                ui.end_row();
                 ui.label(tr("Line thickness"));
                 ui.add(egui::Slider::new(&mut self.grid_prefs.line_width, 0.5..=3.0).step_by(0.1));
                 ui.end_row();
@@ -124,5 +147,28 @@ impl App {
             }
         });
         self.show_prefs = open;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn the_workspace_colour_is_the_schemes_until_chosen_and_old_settings_still_load() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        assert_eq!(a.grid_prefs.workspace_color, None);
+        assert_eq!(a.workspace_fill(), theme::workspace());
+        a.grid_prefs.workspace_color = Some([10, 20, 30, 255]);
+        assert_eq!(a.workspace_fill(), Color32::from_rgb(10, 20, 30));
+        // Settings written before this option existed.
+        let mut v = serde_json::to_value(GridPrefs::default()).unwrap();
+        v.as_object_mut().unwrap().remove("workspace_color");
+        let old: GridPrefs = serde_json::from_value(v).unwrap();
+        assert_eq!(old.workspace_color, None);
+        // The choice is kept with the settings.
+        let back: GridPrefs = serde_json::from_str(&serde_json::to_string(&a.grid_prefs).unwrap()).unwrap();
+        assert_eq!(back.workspace_color, Some([10, 20, 30, 255]));
     }
 }

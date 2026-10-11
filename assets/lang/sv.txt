@@ -1052,3 +1052,20 @@
 1051|Webbserver: på, port {}
 1052|Webbserver: av
 1053|Webbserver: fel
+1054|Mörk blå
+1055|Ljus blå
+1056|Mörk grön
+1057|Ljus grön
+1058|Mörk lila
+1059|Ljus lila
+1060|Mörk brun
+1061|Ljus brun
+1062|Mörk orange
+1063|Ljus orange
+1064|Arbetsytans färg
+1065|Utrymmet runt arbetsområdet
+1066|En webbsida med maskinens tillstånd, projektet och kameran samt ett API för andra program. Varje förfrågan kräver åtkomstfrasen; det finns ingen kryptering.
+1067|Alla i nätverket som känner till åtkomstfrasen kan se maskinen och stoppa eller flytta den. Frasen skickas okrypterad: använd bara i ett nätverk du litar på.
+1068|Åtkomstfras
+1069|Använd den här åtkomstfrasen från och med nu
+1070|Åtkomstfrasen får inte vara tom eller ha styrtecken.
