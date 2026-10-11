@@ -719,3 +719,8 @@
 718|Restaura els valors per defecte
 719|Inici de la feina
 720|Un G-code erroni pot disparar el làser, fer topar el capçal amb els finals de cursa o malmetre el material. Proveu amb el làser apagat o a la potència mínima.
+721|Mode de potència
+722|Com el dispositiu
+723|Constant (M3)
+724|Dinàmica (M4)
+725|M4 (dinàmica) baixa la potència en els racons i en accelerar; M3 (constant) la manté. El G-code canvia entre ells quan les capes difereixen.

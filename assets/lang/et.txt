@@ -719,3 +719,8 @@
 718|Taasta vaikeväärtused
 719|Töö algus
 720|Vale G-kood võib lasteri süüdata, juhtida pea piirikutesse või materjali rikkuda. Testi välja lülitatud laseriga või väikseima võimsusega.
+721|Võimsusrežiim
+722|Nagu seade
+723|Püsiv (M3)
+724|Dünaamiline (M4)
+725|M4 (dünaamiline) vähendab võimsust nurkades ja kiirendamisel; M3 (püsiv) hoiab selle. G-kood vahetab neid, kui kihid erinevad.

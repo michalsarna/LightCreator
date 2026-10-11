@@ -719,3 +719,8 @@
 718|Gjenopprett standard
 719|Start på jobben
 720|Feil G-kode kan avfyre laseren, kjøre hodet inn i endestoppene eller ødelegge materialet. Test med laseren av eller på laveste effekt.
+721|Effektmodus
+722|Som enheten
+723|Konstant (M3)
+724|Dynamisk (M4)
+725|M4 (dynamisk) senker effekten i hjørner og under akselerasjon; M3 (konstant) beholder den. G-koden bytter mellom dem når lag er forskjellige.

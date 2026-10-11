@@ -719,3 +719,8 @@
 718|Vrati zadano
 719|Početak posla
 720|Pogrešan G-kod može upaliti laser, zabiti glavu u krajnje prekidače ili uništiti materijal. Testirajte s isključenim laserom ili na najmanjoj snazi.
+721|Način snage
+722|Kao uređaj
+723|Stalna (M3)
+724|Dinamička (M4)
+725|M4 (dinamička) smanjuje snagu u kutovima i pri ubrzanju; M3 (stalna) je zadržava. G-kod prebacuje između njih kad se slojevi razlikuju.

@@ -141,3 +141,22 @@ fn snippet_limits() {
     c.reset_custom();
     assert!(c.air_on.is_empty());
 }
+
+#[test]
+fn layers_switch_between_constant_and_dynamic_power() {
+    let mut doc = layers_doc();
+    doc.layers[1].power_mode = PowerMode::Constant;
+    // Layer 2 inherits: after a constant layer the device's dynamic mode comes back.
+    check("grbl_m4_layer_power_modes", &gcode_for(doc.clone(), device(&[])));
+    let text = gcode_for(doc.clone(), device(&[]));
+    let modes: Vec<&str> = text.lines().filter(|l| l.contains("power") && (l.starts_with("M3") || l.starts_with("M4"))).collect();
+    assert_eq!(modes, vec!["M3 ; constant power", "M4 ; dynamic power"]);
+    // Dialects that cannot switch ignore the setting.
+    let marlin = gcode_for(doc.clone(), device(&[("controller", "Marlin".into())]));
+    assert!(!marlin.contains("constant power") && !marlin.contains("dynamic power"));
+    // A constant-power device with a dynamic layer switches the other way round.
+    let mut dynamic_layer = layers_doc();
+    dynamic_layer.layers[2].power_mode = PowerMode::Dynamic;
+    let t = gcode_for(dynamic_layer, device(&[("dynamic_power", false.into())]));
+    assert!(t.contains("M4 ; dynamic power") && !t.contains("M3 ; constant power"));
+}

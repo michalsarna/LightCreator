@@ -719,3 +719,8 @@
 718|Repor predefinições
 719|Início do trabalho
 720|Um G-code errado pode disparar o laser, levar o cabeçote contra os fins de curso ou arruinar o material. Teste com o laser desligado ou à potência mínima.
+721|Modo de potência
+722|Como o dispositivo
+723|Constante (M3)
+724|Dinâmico (M4)
+725|M4 (dinâmico) reduz a potência nos cantos e ao acelerar; M3 (constante) mantém-na. O G-code alterna entre eles quando as camadas diferem.

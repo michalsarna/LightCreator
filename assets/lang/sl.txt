@@ -719,3 +719,8 @@
 718|Obnovi privzeto
 719|Začetek dela
 720|Napačna G-koda lahko prižge laser, zapelje glavo v končna stikala ali uniči material. Preizkusite z izklopljenim laserjem ali z najmanjšo močjo.
+721|Način moči
+722|Kot naprava
+723|Stalna (M3)
+724|Dinamična (M4)
+725|M4 (dinamična) zmanjša moč v vogalih in pri pospeševanju; M3 (stalna) jo ohrani. G-koda preklaplja med njima, ko se plasti razlikujejo.

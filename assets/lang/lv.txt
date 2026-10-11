@@ -719,3 +719,8 @@
 718|Atjaunot noklusējumus
 719|Darba sākums
 720|Nepareizs G kods var iedegt lāzeru, ietriekt galviņu gala slēdžos vai sabojāt materiālu. Pārbaudiet ar izslēgtu lāzeru vai mazāko jaudu.
+721|Jaudas režīms
+722|Kā ierīcei
+723|Nemainīga (M3)
+724|Dinamiska (M4)
+725|M4 (dinamiska) samazina jaudu stūros un paātrinot; M3 (nemainīga) to saglabā. G kods pārslēdzas starp tiem, kad slāņi atšķiras.

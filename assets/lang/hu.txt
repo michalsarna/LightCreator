@@ -719,3 +719,8 @@
 718|Alapértékek visszaállítása
 719|A munka eleje
 720|A hibás G-kód begyújthatja a lézert, a végálláskapcsolóknak ütközhet a fej, vagy tönkreteheti az anyagot. Kikapcsolt lézerrel vagy a legkisebb teljesítménnyel tesztelje.
+721|Teljesítmény mód
+722|Mint az eszköz
+723|Állandó (M3)
+724|Dinamikus (M4)
+725|Az M4 (dinamikus) csökkenti a teljesítményt a sarkokban és gyorsításkor; az M3 (állandó) megtartja. A G-kód vált köztük, ha a rétegek eltérnek.

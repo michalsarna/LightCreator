@@ -719,3 +719,8 @@
 718|Gendan standard
 719|Start på opgaven
 720|Forkert G-kode kan affyre laseren, køre hovedet ind i endestoppene eller ødelægge materialet. Test med laseren slukket eller på laveste effekt.
+721|Effekttilstand
+722|Som enheden
+723|Konstant (M3)
+724|Dynamisk (M4)
+725|M4 (dynamisk) sænker effekten i hjørner og under acceleration; M3 (konstant) bevarer den. G-koden skifter mellem dem, når lag er forskellige.

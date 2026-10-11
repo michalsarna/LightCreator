@@ -719,3 +719,8 @@
 718|Restaurează valorile implicite
 719|Începutul lucrării
 720|Un G-code greșit poate declanșa laserul, lovi capul de limitatoare sau strica materialul. Testați cu laserul oprit sau la puterea minimă.
+721|Mod de putere
+722|Ca dispozitivul
+723|Constantă (M3)
+724|Dinamică (M4)
+725|M4 (dinamică) reduce puterea în colțuri și la accelerare; M3 (constantă) o păstrează. G-code-ul comută între ele când straturile diferă.

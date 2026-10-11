@@ -719,3 +719,8 @@
 718|Athchóirigh na réamhshocruithe
 719|Tús na hoibre
 720|Is féidir le G-code mícheart an léasair a lasadh, an ceann a thiomáint isteach sna stopanna ceann scríbe nó an t-ábhar a mhilleadh. Triail leis an léasair múchta nó ag an gcumhacht is ísle.
+721|Mód cumhachta
+722|Mar an gléas
+723|Seasmhach (M3)
+724|Dinimiciúil (M4)
+725|Laghdaíonn M4 (dinimiciúil) an chumhacht i gcúinní agus le linn luasghéaraithe; coimeádann M3 (seasmhach) í. Athraíonn an G-code eatarthu nuair a bhíonn sraitheanna difriúil.

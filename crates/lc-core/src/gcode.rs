@@ -290,6 +290,8 @@ pub fn generate(doc: &Document) -> Job {
     let (air_on, air_off) = (own(&dev.gcode.air_on, def_on), own(&dev.gcode.air_off, def_off));
     let (air_on, air_off) = (air_on.as_str(), air_off.as_str());
     let mut air = false;
+    // The GRBL-like dialects can switch between constant and dynamic power from layer to layer.
+    let mut mode = if dialect == Dialect::Grbl { PowerMode::Constant } else { PowerMode::Dynamic };
     for li in doc.layer_order() {
         let layer = &doc.layers[li];
         if !layer.output {
@@ -302,6 +304,17 @@ pub fn generate(doc: &Document) -> Job {
         }
         w.layer = li;
         let _ = writeln!(w.out, "; layer {} ({}) speed {} mm/s power {}%", layer.name, layer.mode.label(), layer.speed, layer.power);
+        if dialect.is_grbl() {
+            let want = match layer.power_mode {
+                PowerMode::Inherit if dialect == Dialect::Grbl => PowerMode::Constant,
+                PowerMode::Inherit => PowerMode::Dynamic,
+                m => m,
+            };
+            if want != mode {
+                mode = want;
+                let _ = writeln!(w.out, "{} ; {} power", if mode == PowerMode::Constant { "M3" } else { "M4" }, if mode == PowerMode::Constant { "constant" } else { "dynamic" });
+            }
+        }
         if layer.air_assist != air {
             air = layer.air_assist;
             let _ = writeln!(w.out, "{} ; air assist {}", if air { air_on } else { air_off }, if air { "on" } else { "off" });

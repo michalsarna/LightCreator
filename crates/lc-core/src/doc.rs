@@ -132,6 +132,32 @@ pub struct Layer {
     /// Switch the air assist (air pump) on while this layer burns.
     #[serde(default)]
     pub air_assist: bool,
+    /// Constant (`M3`) or dynamic (`M4`) power for this layer; GRBL-like dialects only.
+    #[serde(default)]
+    pub power_mode: PowerMode,
+}
+
+/// How a layer's laser power follows the speed.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum PowerMode {
+    /// Whatever the device is set to.
+    #[default]
+    Inherit,
+    /// `M3`: the power stays what is set, also in corners and while accelerating.
+    Constant,
+    /// `M4`: GRBL scales the power with the speed (recommended for corners and short moves).
+    Dynamic,
+}
+
+impl PowerMode {
+    pub const ALL: [PowerMode; 3] = [PowerMode::Inherit, PowerMode::Constant, PowerMode::Dynamic];
+    pub fn label(self) -> &'static str {
+        match self {
+            PowerMode::Inherit => "Like the device",
+            PowerMode::Constant => "Constant (M3)",
+            PowerMode::Dynamic => "Dynamic (M4)",
+        }
+    }
 }
 
 impl Layer {
@@ -152,6 +178,7 @@ impl Layer {
             dither: Dither::default(),
             min_power: 0.0,
             air_assist: false,
+            power_mode: PowerMode::Inherit,
         }
     }
 }

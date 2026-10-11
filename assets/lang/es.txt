@@ -719,3 +719,8 @@
 718|Restaurar valores por defecto
 719|Inicio del trabajo
 720|Un G-code erróneo puede disparar el láser, llevar el cabezal contra los finales de carrera o arruinar el material. Pruebe con el láser apagado o a la potencia mínima.
+721|Modo de potencia
+722|Como el dispositivo
+723|Constante (M3)
+724|Dinámico (M4)
+725|M4 (dinámico) reduce la potencia en las esquinas y al acelerar; M3 (constante) la mantiene. El G-code cambia entre ambos cuando las capas difieren.

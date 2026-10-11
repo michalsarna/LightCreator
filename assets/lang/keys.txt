@@ -719,3 +719,8 @@
 718	Restore defaults
 719	Start of the job
 720	Wrong G-code can fire the laser, drive the head into the end stops or ruin the material. Test with the laser off or at the lowest power.
+721	Power mode
+722	Like the device
+723	Constant (M3)
+724	Dynamic (M4)
+725	M4 (dynamic) lowers the power in corners and while accelerating; M3 (constant) keeps it. The G-code switches between them when layers differ.

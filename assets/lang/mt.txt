@@ -719,3 +719,8 @@
 718|Irrestawra l-valuri awtomatiċi
 719|Bidu tax-xogħol
 720|G-code ħażin jista' jaqbad il-laser, jibgħat ir-ras kontra l-limiti jew jeqred il-materjal. Ittestja bil-laser mitfi jew bl-inqas qawwa.
+721|Modalità tal-qawwa
+722|Bħall-apparat
+723|Kostanti (M3)
+724|Dinamika (M4)
+725|M4 (dinamika) ibaxxi l-qawwa fil-kantunieri u waqt l-aċċelerazzjoni; M3 (kostanti) iżżommha. Il-G-code jaqleb bejniethom meta s-saffi jkunu differenti.

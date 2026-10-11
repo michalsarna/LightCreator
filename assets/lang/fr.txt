@@ -719,3 +719,8 @@
 718|Rétablir les valeurs par défaut
 719|Début du travail
 720|Un G-code erroné peut déclencher le laser, envoyer la tête contre les butées ou ruiner le matériau. Testez avec le laser éteint ou à la puissance minimale.
+721|Mode de puissance
+722|Comme l'appareil
+723|Constant (M3)
+724|Dynamique (M4)
+725|M4 (dynamique) réduit la puissance dans les angles et à l'accélération ; M3 (constant) la maintient. Le G-code passe de l'un à l'autre quand les calques diffèrent.

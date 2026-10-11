@@ -719,3 +719,8 @@
 718|Endurheimta sjálfgefið
 719|Upphaf verksins
 720|Rangur G-kóði getur kveikt á leysinum, ekið hausnum í endastopp eða eyðilagt efnið. Prófaðu með slökktan leysi eða minnsta afl.
+721|Aflhamur
+722|Eins og tækið
+723|Fast (M3)
+724|Breytilegt (M4)
+725|M4 (breytilegt) lækkar aflið í hornum og við hröðun; M3 (fast) heldur því. G-kóðinn skiptir á milli þegar lög eru ólík.

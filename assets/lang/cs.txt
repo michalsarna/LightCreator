@@ -719,3 +719,8 @@
 718|Obnovit výchozí
 719|Začátek úlohy
 720|Chybný G-kód může zapálit laser, najet hlavou na koncové dorazy nebo zničit materiál. Testujte s vypnutým laserem nebo na nejmenší výkon.
+721|Režim výkonu
+722|Jako zařízení
+723|Stálý (M3)
+724|Dynamický (M4)
+725|M4 (dynamický) snižuje výkon v rozích a při zrychlování; M3 (stálý) ho zachovává. G-kód mezi nimi přepíná, když se vrstvy liší.

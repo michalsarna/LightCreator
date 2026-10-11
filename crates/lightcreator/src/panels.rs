@@ -374,6 +374,7 @@ impl App {
         let has_images = self.doc.shapes.iter().any(|s| s.layer == self.active_layer && s.is_image());
         let accel = self.doc.device.speeds.acceleration;
         let overscan_hint = move |v: f64| (accel > 0.0).then(|| v * v / (2.0 * accel));
+        let power_modes = self.doc.device.dialect().is_grbl();
         let l = &mut self.doc.layers[self.active_layer];
         ui.horizontal(|ui| {
             let c = PALETTE[l.color.min(29)];
@@ -383,7 +384,7 @@ impl App {
             ui.label(RichText::new(trf("Cut settings — {}", &[&l.name])).strong());
         });
         let panel_scope = format!("panel-{}", self.active_layer);
-        layer_settings_ui(ui, (units, su), l, panel_scope.as_str(), has_images, overscan_hint);
+        layer_settings_ui(ui, (units, su), l, panel_scope.as_str(), has_images, overscan_hint, power_modes);
         let now = ui.input(|i| i.time);
         self.commit_layer_edit(now, before);
     }
@@ -418,6 +419,7 @@ impl App {
         let has_images = self.doc.shapes.iter().any(|s| s.layer == i && s.is_image());
         let accel = self.doc.device.speeds.acceleration;
         let overscan_hint = move |v: f64| (accel > 0.0).then(|| v * v / (2.0 * accel));
+        let power_modes = self.doc.device.dialect().is_grbl();
         let mut open = true;
         let title = trf("Layer options — {}", &[&self.doc.layers[i].name]);
         crate::window_ui::popup(ctx, "layer_dialog", &title, [340.0, 220.0], &mut open, |ui| {
@@ -439,7 +441,7 @@ impl App {
                 ui.end_row();
             });
             ui.separator();
-            layer_settings_ui(ui, (units, su), l, "dialog", has_images, overscan_hint);
+            layer_settings_ui(ui, (units, su), l, "dialog", has_images, overscan_hint, power_modes);
         });
         let now = ctx.input(|i| i.time);
         self.commit_layer_edit(now, before);
@@ -521,7 +523,7 @@ fn button_grid(ui: &mut egui::Ui, id: &str, cells: &[(&str, &str, &str)]) -> Opt
 /// The cut settings of one layer: mode, speed, power, passes, fill options and image options.
 /// `id_scope` keeps the widget ids apart when the same settings are shown in the panel and in the dialog.
 /// `overscan_hint` is the braking distance for the speed of the layer when the machine's acceleration is known.
-pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_core::SpeedUnit), l: &mut lc_core::Layer, id_scope: &str, has_images: bool, overscan_hint: impl Fn(f64) -> Option<f64>) {
+pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_core::SpeedUnit), l: &mut lc_core::Layer, id_scope: &str, has_images: bool, overscan_hint: impl Fn(f64) -> Option<f64>, power_modes: bool) {
     egui::Grid::new(("cut", id_scope)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
         ui.label(tr("Mode"));
         egui::ComboBox::from_id_salt(("cm", id_scope)).selected_text(tr(l.mode.label())).show_ui(ui, |ui| {
@@ -542,6 +544,17 @@ pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_cor
         ui.label(tr("Air assist"));
         ui.checkbox(&mut l.air_assist, tr("Air pump on")).on_hover_text(tr("Switch the air pump on while this layer burns (M8 / M9)"));
         ui.end_row();
+        if power_modes {
+            ui.label(tr("Power mode"));
+            egui::ComboBox::from_id_salt(("pm", id_scope)).selected_text(tr(l.power_mode.label())).show_ui(ui, |ui| {
+                for m in lc_core::PowerMode::ALL {
+                    ui.selectable_value(&mut l.power_mode, m, tr(m.label()));
+                }
+            })
+            .response
+            .on_hover_text(tr("M4 (dynamic) lowers the power in corners and while accelerating; M3 (constant) keeps it. The G-code switches between them when layers differ."));
+            ui.end_row();
+        }
         if l.mode == LayerMode::Offset {
             ui.label(tr("Interval"));
             drag_len(ui, units, &mut l.interval, 0.005, Some((0.01, 5.0)));

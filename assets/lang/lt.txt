@@ -719,3 +719,8 @@
 718|Atkurti numatytuosius
 719|Darbo pradžia
 720|Klaidingas G kodas gali įjungti lazerį, trenkti galvutę į ribotuvus arba sugadinti medžiagą. Išbandykite išjungę lazerį arba mažiausia galia.
+721|Galios režimas
+722|Kaip įrenginys
+723|Pastovi (M3)
+724|Dinaminė (M4)
+725|M4 (dinaminė) sumažina galią kampuose ir greitėjant; M3 (pastovi) ją išlaiko. G kodas perjungia tarp jų, kai sluoksniai skiriasi.
