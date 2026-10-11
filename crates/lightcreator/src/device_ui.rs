@@ -32,6 +32,8 @@ pub enum ReadKind {
     Probe,
     /// The build info (`$I`), to learn which options the firmware was built with.
     Info,
+    /// The settings for the Firmware ($$) page.
+    Firmware,
 }
 
 impl ReadCfg {
@@ -62,6 +64,7 @@ pub enum CfgPage {
     Connection,
     Camera,
     Advanced,
+    Firmware,
 }
 
 impl CfgPage {
@@ -74,6 +77,7 @@ impl CfgPage {
             CfgPage::Connection => "Connection",
             CfgPage::Camera => "Camera",
             CfgPage::Advanced => "Advanced",
+            CfgPage::Firmware => "Firmware ($$)",
         }
     }
 
@@ -85,6 +89,9 @@ impl CfgPage {
         }
         v.push(CfgPage::Camera);
         v.push(CfgPage::Advanced);
+        if matches!(controller, Controller::Grbl | Controller::Marlin) {
+            v.push(CfgPage::Firmware);
+        }
         v
     }
 }
@@ -248,6 +255,7 @@ impl App {
         let mut read_clicked = false;
         let reading = self.read_cfg.is_some();
         let mut cfg_open = true;
+        let mut fw_acts: Vec<crate::firmware_ui::FwAct> = vec![];
         crate::window_ui::popup(ctx, "device_cfg", &title, [720.0, 500.0], &mut cfg_open, |ui| {
             if must_create {
                 ui.label(RichText::new(tr("Create at least one device profile to continue.")).color(theme::text_dim()));
@@ -522,6 +530,12 @@ impl App {
                                     ui.end_row();
                                 });
                             }
+                            CfgPage::Firmware => {
+                                if self.connected {
+                                    ui.label(RichText::new(trf("Connected to: {}", &[&self.doc.device.target_label()])).small().color(theme::text_dim()));
+                                }
+                                crate::firmware_ui::page(ui, &mut self.fw, self.connected, d.controller, &mut fw_acts);
+                            }
                             CfgPage::Advanced => {
                                 egui::Frame::new().fill(Color32::from_rgba_unmultiplied(0xc0, 0x30, 0x30, 40)).stroke(egui::Stroke::new(1.0, Color32::from_rgb(0xc0, 0x30, 0x30))).inner_margin(8.0).corner_radius(4.0).show(ui, |ui| {
                                     ui.label(RichText::new(tr("Wrong G-code can fire the laser, drive the head into the end stops or ruin the material. Test with the laser off or at the lowest power.")).strong());
@@ -581,6 +595,7 @@ impl App {
         if !cfg_open && !must_create {
             cancel = true;
         }
+        self.run_fw_acts(fw_acts);
         if read_clicked {
             self.start_read(&cfg.draft);
         }
@@ -1024,6 +1039,11 @@ impl App {
         }
         if r.kind == ReadKind::Info {
             self.single_axis_homing = lc_core::controller::grbl_options(&r.lines).is_some_and(|o| lc_core::controller::single_axis_homing(&o));
+            self.fw.info = r.lines;
+            return;
+        }
+        if r.kind == ReadKind::Firmware {
+            self.fw_got(r.lines);
             return;
         }
         let n = reading.count();

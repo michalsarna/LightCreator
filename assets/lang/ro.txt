@@ -756,3 +756,35 @@
 755|Fă homing mașinii
 756|Homing {}
 757|Face homing doar axei {} ($H{})
+758|Toate cele {} setări din fișier sunt acum în controler.
+759|Faceți mai întâi o copie a setărilor. Pentru a continua, tastați {}:
+760|Salvează într-un fișier…
+761|Fișierul nu poate fi folosit: {}
+762|Conectați-vă mai întâi la mașină (fila Dispozitiv).
+763|Conectat la: {}
+764|Setări din fabrică ($RST=$)…
+765|Marlin își ține setările în comenzi proprii (M92, M203, M204, ...): această pagină arată doar ce raportează `M503`.
+766|Încă nu s-a citit nimic.
+767|Citește setările ($$)
+768|Citește setările (M503)
+769|Scrieți cu adevărat $RST=$ în controler?
+770|Restaurează dintr-un fișier…
+771|Restaurează setările din fabrică
+772|Restaurează setările dintr-un fișier
+773|Setări salvate în {}
+774|Controlerul le are deja pe toate.
+775|Aceste setări sunt în controler, nu în profil. Schimbați-le pe rând și notați valoarea veche: o valoare greșită poate face mașina să se miște la o distanță greșită sau să tragă laserul.
+776|Aceste setări din fișier diferă de controler. Nu se scrie nimic până nu apăsați Scrie tot.
+777|Aceasta scrie $RST=$: fiecare setare a controlerului revine la valorile implicite ale firmware-ului. Pașii, cursa, vitezele, modul laser și homing se vor schimba.
+778|Scrie
+779|Scrieți ${} = {} în controler? Acum este {}. Schimbați o setare pe rând și notați valoarea veche.
+780|Scrie o setare
+781|Scrie tot
+782|Scrieți {} setări în controler? Mașina se va comporta cum spune fișierul.
+783|{} din {} setări diferă după scriere:
+784|Valoare
+785|Unitate
+786|Tipic
+787|nu este un număr
+788|în afara intervalului
+789|Firmware ($$)

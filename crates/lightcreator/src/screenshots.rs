@@ -959,6 +959,21 @@ fn device_window_pages_open_and_save() {
         app(&mut h).cfg.as_mut().unwrap().page = p;
         h.run_steps(3);
     }
+    // The firmware page with a table to draw as well.
+    {
+        let a = app(&mut h);
+        a.connected = true;
+        a.fw.values = lc_core::grbl_settings::parse_report(&["$30=1000.000".to_string(), "$32=1".to_string(), "$110=3000.000".to_string(), "$130=400.000".to_string()]);
+        a.fw.typed.insert(110, "99999999".into());
+        a.cfg.as_mut().unwrap().page = CfgPage::Firmware;
+    }
+    h.run_steps(3);
+    {
+        let a = app(&mut h);
+        a.connected = false;
+        a.fw.values.clear();
+        a.fw.typed.clear();
+    }
     {
         let c = app(&mut h).cfg.as_mut().unwrap();
         c.draft.area.bed_w = 123.0;

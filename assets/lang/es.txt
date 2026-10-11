@@ -756,3 +756,35 @@
 755|Hacer homing de la máquina
 756|Homing {}
 757|Hace homing solo del eje {} ($H{})
+758|Los {} ajustes del archivo ya están en el controlador.
+759|Primero haga una copia de los ajustes. Para continuar, escriba {}:
+760|Copia a un archivo…
+761|No se puede usar el archivo: {}
+762|Primero conéctese a la máquina (pestaña Dispositivo).
+763|Conectado a: {}
+764|Ajustes de fábrica ($RST=$)…
+765|Marlin guarda sus ajustes en comandos propios (M92, M203, M204, ...): esta página solo muestra lo que informa `M503`.
+766|Aún no se ha leído nada.
+767|Leer los ajustes ($$)
+768|Leer los ajustes (M503)
+769|¿Escribir de verdad $RST=$ en el controlador?
+770|Restaurar desde un archivo…
+771|Restaurar los ajustes de fábrica
+772|Restaurar los ajustes desde un archivo
+773|Ajustes guardados en {}
+774|El controlador ya los tiene todos.
+775|Estos ajustes están en el controlador, no en el perfil. Cambie uno cada vez y anote el valor anterior: un valor erróneo puede hacer que la máquina se mueva una distancia equivocada o dispare el láser.
+776|Estos ajustes del archivo difieren del controlador. No se escribe nada hasta que pulse Escribir todo.
+777|Esto escribe $RST=$: todos los ajustes del controlador vuelven a los valores del firmware. Pasos, recorrido, velocidades, modo láser y homing cambiarán.
+778|Escribir
+779|¿Escribir ${} = {} en el controlador? Ahora es {}. Cambie un ajuste cada vez y anote el valor antiguo.
+780|Escribir un ajuste
+781|Escribir todo
+782|¿Escribir {} ajustes en el controlador? La máquina se comportará como dice el archivo.
+783|{} de {} ajustes difieren tras escribir:
+784|Valor
+785|Unidad
+786|Típico
+787|no es un número
+788|fuera de rango
+789|Firmware ($$)

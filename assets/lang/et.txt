@@ -756,3 +756,35 @@
 755|Kodusta masin
 756|Kodusta {}
 757|Kodustab ainult {}-telje ($H{})
+758|Kõik faili {} seadet on nüüd kontrolleris.
+759|Tee seadetest esmalt varukoopia. Jätkamiseks kirjuta {}:
+760|Varunda faili…
+761|Faili ei saa kasutada: {}
+762|Ühendu esmalt masinaga (vaheleht Seade).
+763|Ühendatud: {}
+764|Tehaseseaded ($RST=$)…
+765|Marlin hoiab oma seadeid omaenda käskudes (M92, M203, M204, ...): see leht näitab ainult, mida `M503` teatab.
+766|Midagi pole veel loetud.
+767|Loe seaded ($$)
+768|Loe seaded (M503)
+769|Kas tõesti kirjutada $RST=$ kontrollerisse?
+770|Taasta failist…
+771|Taasta tehaseseaded
+772|Taasta seaded failist
+773|Seaded salvestatud: {}
+774|Kontrolleris on need juba kõik olemas.
+775|Need seaded asuvad kontrolleris, mitte profiilis. Muuda neid ühekaupa ja pane vana väärtus kirja: vale väärtus võib panna masina liikuma vale vahemaa või lasteri süütama.
+776|Faili need seaded erinevad kontrollerist. Midagi ei kirjutata, kuni vajutad Kirjuta kõik.
+777|See kirjutab $RST=$: kõik kontrolleri seaded lähevad tagasi püsivara vaikeväärtustele. Sammud, käik, kiirused, lasterežiim ja kodustamine muutuvad.
+778|Kirjuta
+779|Kas kirjutada ${} = {} kontrollerisse? Praegu on see {}. Muuda ühte seadet korraga ja pane vana väärtus kirja.
+780|Kirjuta seade
+781|Kirjuta kõik
+782|Kas kirjutada {} seadet kontrollerisse? Masin käitub nii, nagu fail ütleb.
+783|{} seadet {}-st erineb pärast kirjutamist:
+784|Väärtus
+785|Ühik
+786|Tüüpiline
+787|pole arv
+788|vahemikust väljas
+789|Püsivara ($$)

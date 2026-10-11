@@ -1337,3 +1337,42 @@ fn circle_becomes_a_few_arcs_in_the_right_direction_for_every_axis_setup() {
         }
     }
 }
+
+#[test]
+fn grbl_settings_report_validation_and_backup() {
+    use crate::grbl_settings as gs;
+    let lines: Vec<String> = ["$0=10", "$30=1000.000", "$32=0", "$110=3000.000", "$130=400.000", "ok", "[VER:1.1h.20190825:]", "$x=1", "$131="].iter().map(|s| s.to_string()).collect();
+    let v = gs::parse_report(&lines);
+    assert_eq!(v.len(), 5);
+    assert_eq!(v[&110], "3000.000");
+    // Writing: ranges, masks, flags and numbers that are not numbers.
+    assert_eq!(gs::validate(110, " 5000 "), Ok("5000".into()));
+    assert_eq!(gs::validate(11, "0.02"), Ok("0.02".into()));
+    assert_eq!(gs::validate(110, "abc"), Err("not a number"));
+    assert_eq!(gs::validate(110, "NaN"), Err("not a number"));
+    assert_eq!(gs::validate(0, "1"), Err("out of range"));
+    assert_eq!(gs::validate(32, "2"), Err("out of range"));
+    assert_eq!(gs::validate(32, "1"), Ok("1".into()));
+    assert_eq!(gs::validate(3, "7"), Ok("7".into()));
+    assert_eq!(gs::validate(3, "8"), Err("out of range"));
+    assert_eq!(gs::validate(3, "1.5"), Err("out of range"));
+    assert_eq!(gs::write_line(110, "5000"), "$110=5000");
+    // Backup text round-trips and is read strictly.
+    let text = gs::backup_text(&v, &["[VER:1.1h.20190825:]".to_string()], "2026-10-11");
+    assert!(text.starts_with("; LightCreator backup") && text.contains("$110=3000.000"));
+    let back = gs::parse_backup(&text).unwrap();
+    assert_eq!(back.len(), 5);
+    assert!(back.contains(&(110, "3000".into())));
+    assert!(gs::parse_backup("$110=1\n$110=2\n").unwrap_err().contains("twice"));
+    assert!(gs::parse_backup("G1 X1").unwrap_err().contains("line 1"));
+    assert!(gs::parse_backup("$110=zz").unwrap_err().contains("line 1"));
+    assert!(gs::parse_backup("; only comments\n").is_err());
+    assert!(gs::parse_backup(&"$1=1\n".repeat(10_000)).is_err());
+    assert!(gs::same_value("500", "500.000") && !gs::same_value("500", "501"));
+    // The table: the critical ones, and no setting twice.
+    let critical: Vec<u32> = gs::SETTINGS.iter().filter(|s| s.critical).map(|s| s.id).collect();
+    assert_eq!(critical, vec![30, 31, 32, 130, 131, 132]);
+    let mut ids: Vec<u32> = gs::SETTINGS.iter().map(|s| s.id).collect();
+    ids.dedup();
+    assert_eq!(ids.len(), gs::SETTINGS.len());
+}

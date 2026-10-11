@@ -10,6 +10,7 @@ pub mod gcode;
 pub mod image;
 pub mod fillet;
 pub mod geom;
+pub mod grbl_settings;
 pub mod materials;
 pub mod ops;
 pub mod pdf;

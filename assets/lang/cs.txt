@@ -756,3 +756,35 @@
 755|Referencovat stroj
 756|Referencovat {}
 757|Referencuje jen osu {} ($H{})
+758|Všech {} nastavení ze souboru je nyní v řídicí jednotce.
+759|Nejprve nastavení zálohujte. Pokračujte zadáním {}:
+760|Zálohovat do souboru…
+761|Soubor nelze použít: {}
+762|Nejprve se připojte ke stroji (karta Zařízení).
+763|Připojeno k: {}
+764|Tovární nastavení ($RST=$)…
+765|Marlin drží nastavení ve vlastních příkazech (M92, M203, M204, ...): tato stránka jen ukazuje, co hlásí `M503`.
+766|Zatím nic nepřečteno.
+767|Přečíst nastavení ($$)
+768|Přečíst nastavení (M503)
+769|Opravdu zapsat $RST=$ do řídicí jednotky?
+770|Obnovit ze souboru…
+771|Obnovit tovární nastavení
+772|Obnovit nastavení ze souboru
+773|Nastavení uložena do {}
+774|Řídicí jednotka je už má všechna.
+775|Tato nastavení jsou v řídicí jednotce, ne v profilu. Měňte je po jednom a poznamenejte si předchozí hodnotu: špatná hodnota může stroj nechat jet o špatnou vzdálenost nebo zapálit laser.
+776|Tato nastavení ze souboru se liší od řídicí jednotky. Nic se nezapíše, dokud nestisknete Zapsat vše.
+777|Tím se zapíše $RST=$: každé nastavení řídicí jednotky se vrátí na výchozí hodnoty firmwaru. Změní se kroky, dráhy, rychlosti, laserový režim i referencování.
+778|Zapsat
+779|Zapsat ${} = {} do řídicí jednotky? Nyní je {}. Měňte jedno nastavení po druhém a poznamenejte si starou hodnotu.
+780|Zápis nastavení
+781|Zapsat vše
+782|Zapsat {} nastavení do řídicí jednotky? Stroj se bude chovat podle souboru.
+783|{} z {} nastavení se po zápisu liší:
+784|Hodnota
+785|Jednotka
+786|Typická
+787|není číslo
+788|mimo rozsah
+789|Firmware ($$)

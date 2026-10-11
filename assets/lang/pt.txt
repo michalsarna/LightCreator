@@ -756,3 +756,35 @@
 755|Fazer homing da máquina
 756|Homing {}
 757|Faz homing só do eixo {} ($H{})
+758|Todas as {} definições do ficheiro estão agora no controlador.
+759|Faça primeiro uma cópia das definições. Para continuar, escreva {}:
+760|Copiar para um ficheiro…
+761|Não é possível usar o ficheiro: {}
+762|Ligue-se primeiro à máquina (separador Dispositivo).
+763|Ligado a: {}
+764|Definições de fábrica ($RST=$)…
+765|O Marlin guarda as definições em comandos próprios (M92, M203, M204, ...): esta página só mostra o que o `M503` indica.
+766|Ainda nada lido.
+767|Ler as definições ($$)
+768|Ler as definições (M503)
+769|Escrever mesmo $RST=$ no controlador?
+770|Restaurar de um ficheiro…
+771|Restaurar as definições de fábrica
+772|Restaurar as definições de um ficheiro
+773|Definições guardadas em {}
+774|O controlador já tem todas.
+775|Estas definições estão no controlador, não no perfil. Altere uma de cada vez e anote o valor anterior: um valor errado pode fazer a máquina mover-se a distância errada ou disparar o laser.
+776|Estas definições do ficheiro diferem do controlador. Nada é escrito até premir Escrever tudo.
+777|Isto escreve $RST=$: todas as definições do controlador voltam aos valores do firmware. Passos, curso, velocidades, modo laser e homing mudarão.
+778|Escrever
+779|Escrever ${} = {} no controlador? Agora é {}. Altere uma definição de cada vez e anote o valor antigo.
+780|Escrever uma definição
+781|Escrever tudo
+782|Escrever {} definições no controlador? A máquina vai comportar-se como o ficheiro diz.
+783|{} de {} definições diferem depois de escrever:
+784|Valor
+785|Unidade
+786|Típico
+787|não é um número
+788|fora do intervalo
+789|Firmware ($$)

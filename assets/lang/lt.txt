@@ -756,3 +756,35 @@
 755|Bazuoti staklės
 756|Bazuoti {}
 757|Bazuoja tik {} ašį ($H{})
+758|Visi {} failo nustatymai dabar yra valdiklyje.
+759|Pirmiausia sukurkite nustatymų atsarginę kopiją. Norėdami tęsti, įveskite {}:
+760|Atsarginė kopija į failą…
+761|Failo naudoti negalima: {}
+762|Pirmiausia prisijunkite prie staklių (skirtukas Įrenginys).
+763|Prisijungta prie: {}
+764|Gamykliniai nustatymai ($RST=$)…
+765|Marlin saugo nustatymus savo komandose (M92, M203, M204, ...): šis puslapis rodo tik tai, ką praneša `M503`.
+766|Dar nieko neperskaityta.
+767|Skaityti nustatymus ($$)
+768|Skaityti nustatymus (M503)
+769|Tikrai įrašyti $RST=$ į valdiklį?
+770|Atkurti iš failo…
+771|Atkurti gamyklinius nustatymus
+772|Atkurti nustatymus iš failo
+773|Nustatymai išsaugoti: {}
+774|Valdiklis jau turi visus.
+775|Šie nustatymai yra valdiklyje, ne profilyje. Keiskite po vieną ir užsirašykite ankstesnę vertę: bloga vertė gali priversti stakles judėti netinkamą atstumą arba uždegti lazerį.
+776|Šie failo nustatymai skiriasi nuo valdiklio. Niekas neįrašoma, kol nepaspausite Įrašyti visus.
+777|Tai įrašo $RST=$: kiekvienas valdiklio nustatymas grįžta į programinės įrangos numatytąsias vertes. Pasikeis žingsniai, eiga, greičiai, lazerio režimas ir bazavimas.
+778|Įrašyti
+779|Įrašyti ${} = {} į valdiklį? Dabar yra {}. Keiskite po vieną nustatymą ir užsirašykite seną vertę.
+780|Įrašyti nustatymą
+781|Įrašyti visus
+782|Įrašyti {} nustatymų į valdiklį? Staklės elgsis taip, kaip sako failas.
+783|Po įrašymo skiriasi {} iš {} nustatymų:
+784|Vertė
+785|Vienetas
+786|Tipinė
+787|ne skaičius
+788|už ribų
+789|Programinė įranga ($$)

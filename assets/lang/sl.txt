@@ -756,3 +756,35 @@
 755|Poišči izhodišče stroja
 756|Izhodišče {}
 757|Poišče izhodišče samo osi {} ($H{})
+758|Vseh {} nastavitev iz datoteke je zdaj v krmilniku.
+759|Najprej naredite varnostno kopijo nastavitev. Za nadaljevanje vnesite {}:
+760|Varnostna kopija v datoteko…
+761|Datoteke ni mogoče uporabiti: {}
+762|Najprej se povežite s strojem (zavihek Naprava).
+763|Povezano z: {}
+764|Tovarniške nastavitve ($RST=$)…
+765|Marlin hrani nastavitve v lastnih ukazih (M92, M203, M204, ...): ta stran kaže le, kar sporoča `M503`.
+766|Še nič ni prebrano.
+767|Preberi nastavitve ($$)
+768|Preberi nastavitve (M503)
+769|Res zapisati $RST=$ v krmilnik?
+770|Obnovi iz datoteke…
+771|Obnovi tovarniške nastavitve
+772|Obnovi nastavitve iz datoteke
+773|Nastavitve shranjene v {}
+774|Krmilnik jih že ima vse.
+775|Te nastavitve so v krmilniku, ne v profilu. Spreminjajte jih eno po eno in si zapišite prejšnjo vrednost: napačna vrednost lahko stroj premakne za napačno razdaljo ali prižge laser.
+776|Te nastavitve iz datoteke se razlikujejo od krmilnika. Nič se ne zapiše, dokler ne pritisnete Zapiši vse.
+777|To zapiše $RST=$: vsaka nastavitev krmilnika se vrne na privzete vrednosti strojne programske opreme. Koraki, hodi, hitrosti, laserski način in iskanje izhodišča se spremenijo.
+778|Zapiši
+779|Zapisati ${} = {} v krmilnik? Zdaj je {}. Spreminjajte eno nastavitev naenkrat in si zapišite staro vrednost.
+780|Zapis nastavitve
+781|Zapiši vse
+782|Zapisati {} nastavitev v krmilnik? Stroj se bo obnašal, kot pravi datoteka.
+783|{} od {} nastavitev se po zapisu razlikuje:
+784|Vrednost
+785|Enota
+786|Tipično
+787|ni število
+788|izven območja
+789|Strojna programska oprema ($$)

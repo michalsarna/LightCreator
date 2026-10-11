@@ -756,3 +756,35 @@
 755|Agħmel homing tal-magna
 756|Homing {}
 757|Jagħmel homing tal-assi {} biss ($H{})
+758|L-{} issettjar kollha tal-fajl issa qegħdin fil-kontrollur.
+759|Ħu kopja tal-issettjar l-ewwel. Biex tkompli, ikteb {}:
+760|Ħu kopja f'fajl…
+761|Il-fajl ma jistax jintuża: {}
+762|Qabbad mal-magna l-ewwel (it-tab Apparat).
+763|Konness ma': {}
+764|Issettjar tal-fabbrika ($RST=$)…
+765|Marlin iżomm l-issettjar tiegħu fil-kmandi tiegħu stess (M92, M203, M204, ...): din il-paġna turi biss dak li jirrapporta `M503`.
+766|Għadu ma nqara xejn.
+767|Aqra l-issettjar ($$)
+768|Aqra l-issettjar (M503)
+769|Tassew tikteb $RST=$ fil-kontrollur?
+770|Irrestawra minn fajl…
+771|Irrestawra l-issettjar tal-fabbrika
+772|Irrestawra l-issettjar minn fajl
+773|Issettjar salvat f'{}
+774|Il-kontrollur diġà għandu kollha.
+775|Dawn l-issettjar jgħixu fil-kontrollur, mhux fil-profil. Biddel wieħed kull darba u ikteb il-valur ta' qabel: valur ħażin jista' jġiegħel il-magna titħarrek id-distanza ħażina jew tqabbad il-laser.
+776|Dawn l-issettjar tal-fajl huma differenti mill-kontrollur. Xejn ma jinkiteb sakemm ma tagħfasx Ikteb kollox.
+777|Dan jikteb $RST=$: kull issettjar tal-kontrollur jirritorna għall-valuri awtomatiċi tal-firmware. Il-passi, il-vjaġġ, il-veloċitajiet, il-modalità tal-laser u l-homing jinbidlu.
+778|Ikteb
+779|Tikteb ${} = {} fil-kontrollur? Issa huwa {}. Biddel issettjar wieħed kull darba u nota l-valur l-antik.
+780|Ikteb issettjar
+781|Ikteb kollox
+782|Tikteb {} issettjar fil-kontrollur? Il-magna se tġib ruħha kif jgħid il-fajl.
+783|{} minn {} issettjar huma differenti wara l-kitba:
+784|Valur
+785|Unità
+786|Tipiku
+787|mhux numru
+788|barra mill-medda
+789|Firmware ($$)

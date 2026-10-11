@@ -756,3 +756,35 @@
 755|De machine homen
 756|Home {}
 757|Homet alleen de {}-as ($H{})
+758|Alle {} instellingen uit het bestand staan nu in de besturing.
+759|Maak eerst een back-up van de instellingen. Typ {} om door te gaan:
+760|Back-up naar een bestand…
+761|Het bestand kan niet worden gebruikt: {}
+762|Verbind eerst met de machine (tabblad Apparaat).
+763|Verbonden met: {}
+764|Fabrieksinstellingen ($RST=$)…
+765|Marlin bewaart zijn instellingen in eigen opdrachten (M92, M203, M204, ...): deze pagina toont alleen wat `M503` meldt.
+766|Nog niets gelezen.
+767|Instellingen lezen ($$)
+768|Instellingen lezen (M503)
+769|$RST=$ echt naar de besturing schrijven?
+770|Herstellen uit een bestand…
+771|Fabrieksinstellingen herstellen
+772|Instellingen herstellen uit een bestand
+773|Instellingen opgeslagen in {}
+774|De besturing heeft ze al allemaal.
+775|Deze instellingen staan in de besturing, niet in het profiel. Wijzig ze één voor één en noteer de vorige waarde: een verkeerde waarde kan de machine een verkeerde afstand laten rijden of de laser laten afgaan.
+776|Deze instellingen uit het bestand verschillen van de besturing. Er wordt niets geschreven tot je op Alles schrijven drukt.
+777|Dit schrijft $RST=$: elke instelling van de besturing gaat terug naar de standaardwaarden van de firmware. Stappen, verplaatsing, snelheden, lasermodus en homing veranderen.
+778|Schrijven
+779|${} = {} naar de besturing schrijven? Nu is het {}. Wijzig één instelling tegelijk en noteer de oude waarde.
+780|Een instelling schrijven
+781|Alles schrijven
+782|{} instellingen naar de besturing schrijven? De machine gedraagt zich zoals het bestand zegt.
+783|{} van {} instellingen verschillen na het schrijven:
+784|Waarde
+785|Eenheid
+786|Typisch
+787|is geen getal
+788|buiten het bereik
+789|Firmware ($$)

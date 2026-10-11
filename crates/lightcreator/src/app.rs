@@ -306,6 +306,8 @@ pub struct App {
     pub connect_actions_at: Option<std::time::Instant>,
     /// The firmware reported that it was built with single-axis homing (`$HX`, `$HY`).
     pub single_axis_homing: bool,
+    /// The Firmware ($$) page.
+    pub fw: crate::firmware_ui::FwUi,
     pub connected: bool,
     pub machine: (String, f64, f64),
     pub progress: (usize, usize),
@@ -486,6 +488,7 @@ impl App {
             reconnect_at: None,
             connect_actions_at: None,
             single_axis_homing: false,
+            fw: Default::default(),
             connected: false,
             machine: (tr("Disconnected").into(), 0.0, 0.0),
             progress: (0, 0),
@@ -1781,6 +1784,7 @@ impl App {
         self.check_window(ctx);
         self.fw_window(ctx);
         self.stall_window(ctx);
+        self.fw_windows(ctx);
         self.material_edit_window(ctx);
         self.labels_window(ctx);
         self.merge_dialog(ctx);

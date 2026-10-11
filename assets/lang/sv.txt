@@ -756,3 +756,35 @@
 755|Home maskinen
 756|Home {}
 757|Homar bara {}-axeln ($H{})
+758|Alla {} inställningar från filen finns nu i styrenheten.
+759|Säkerhetskopiera inställningarna först. För att fortsätta, skriv {}:
+760|Säkerhetskopiera till en fil…
+761|Filen kan inte användas: {}
+762|Anslut först till maskinen (fliken Enhet).
+763|Ansluten till: {}
+764|Fabriksinställningar ($RST=$)…
+765|Marlin håller sina inställningar i egna kommandon (M92, M203, M204, ...): den här sidan visar bara vad `M503` rapporterar.
+766|Inget läst ännu.
+767|Läs inställningarna ($$)
+768|Läs inställningarna (M503)
+769|Ska $RST=$ verkligen skrivas till styrenheten?
+770|Återställ från en fil…
+771|Återställ fabriksinställningarna
+772|Återställ inställningarna från en fil
+773|Inställningarna sparade i {}
+774|Styrenheten har redan alla.
+775|De här inställningarna finns i styrenheten, inte i profilen. Ändra en i taget och anteckna det förra värdet: ett fel värde kan få maskinen att röra sig fel sträcka eller avfyra lasern.
+776|De här inställningarna i filen skiljer sig från styrenheten. Inget skrivs förrän du trycker Skriv alla.
+777|Detta skriver $RST=$: varje inställning i styrenheten går tillbaka till firmwarens standard. Steg, rörelse, hastigheter, lasertillstånd och homing ändras.
+778|Skriv
+779|Ska ${} = {} skrivas till styrenheten? Nu är det {}. Ändra en inställning i taget och anteckna det gamla värdet.
+780|Skriv en inställning
+781|Skriv alla
+782|Ska {} inställningar skrivas till styrenheten? Maskinen beter sig som filen säger.
+783|{} av {} inställningar skiljer sig efter skrivning:
+784|Värde
+785|Enhet
+786|Typiskt
+787|är inte ett tal
+788|utanför intervallet
+789|Firmware ($$)

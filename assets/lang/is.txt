@@ -756,3 +756,35 @@
 755|Núllstilla vélina
 756|Núllstilla {}
 757|Núllstillir aðeins {}-ásinn ($H{})
+758|Allar {} stillingar skrárinnar eru nú í stýringunni.
+759|Taktu fyrst afrit af stillingunum. Til að halda áfram skaltu slá inn {}:
+760|Afrita í skrá…
+761|Ekki er hægt að nota skrána: {}
+762|Tengstu fyrst við vélina (flipinn Tæki).
+763|Tengt við: {}
+764|Verksmiðjustillingar ($RST=$)…
+765|Marlin geymir stillingar sínar í eigin skipunum (M92, M203, M204, ...): þessi síða sýnir aðeins það sem `M503` skilar.
+766|Ekkert lesið enn.
+767|Lesa stillingar ($$)
+768|Lesa stillingar (M503)
+769|Skrifa $RST=$ í stýringuna í alvöru?
+770|Endurheimta úr skrá…
+771|Endurheimta verksmiðjustillingar
+772|Endurheimta stillingar úr skrá
+773|Stillingar vistaðar í {}
+774|Stýringin hefur þær allar nú þegar.
+775|Þessar stillingar eru í stýringunni, ekki í sniðinu. Breyttu einni í einu og skrifaðu niður fyrra gildið: rangt gildi getur látið vélina færast ranga vegalengd eða kveikt á leysinum.
+776|Þessar stillingar skrárinnar eru frábrugðnar stýringunni. Ekkert er skrifað fyrr en þú ýtir á Skrifa allt.
+777|Þetta skrifar $RST=$: hver stilling stýringarinnar fer aftur í sjálfgefin gildi fastbúnaðarins. Skref, færsla, hraði, leysiháttur og núllstilling breytast.
+778|Skrifa
+779|Skrifa ${} = {} í stýringuna? Nú er það {}. Breyttu einni stillingu í einu og skrifaðu niður gamla gildið.
+780|Skrifa stillingu
+781|Skrifa allt
+782|Skrifa {} stillingar í stýringuna? Vélin hagar sér eins og skráin segir.
+783|{} af {} stillingum eru ólíkar eftir skrif:
+784|Gildi
+785|Eining
+786|Dæmigert
+787|ekki tala
+788|utan sviðs
+789|Fastbúnaður ($$)

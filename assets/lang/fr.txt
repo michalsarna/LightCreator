@@ -756,3 +756,35 @@
 755|Référencer la machine
 756|Référencer {}
 757|Référence seulement l'axe {} ($H{})
+758|Les {} réglages du fichier sont maintenant dans le contrôleur.
+759|Sauvegardez d'abord les réglages. Pour continuer, tapez {} :
+760|Sauvegarder dans un fichier…
+761|Impossible d'utiliser le fichier : {}
+762|Connectez-vous d'abord à la machine (onglet Appareil).
+763|Connecté à : {}
+764|Réglages d'usine ($RST=$)…
+765|Marlin garde ses réglages dans ses propres commandes (M92, M203, M204, ...) : cette page montre seulement ce que rapporte `M503`.
+766|Rien de lu pour l'instant.
+767|Lire les réglages ($$)
+768|Lire les réglages (M503)
+769|Écrire vraiment $RST=$ dans le contrôleur ?
+770|Restaurer depuis un fichier…
+771|Restaurer les réglages d'usine
+772|Restaurer les réglages depuis un fichier
+773|Réglages enregistrés dans {}
+774|Le contrôleur les a déjà tous.
+775|Ces réglages sont dans le contrôleur, pas dans le profil. Changez-les un par un et notez l'ancienne valeur : une mauvaise valeur peut faire bouger la machine d'une mauvaise distance ou déclencher le laser.
+776|Ces réglages du fichier diffèrent du contrôleur. Rien n'est écrit tant que vous n'appuyez pas sur Tout écrire.
+777|Cela écrit $RST=$ : chaque réglage du contrôleur revient aux valeurs par défaut du micrologiciel. Pas, courses, vitesses, mode laser et prise d'origine changeront.
+778|Écrire
+779|Écrire ${} = {} dans le contrôleur ? Il vaut {} actuellement. Changez un réglage à la fois et notez l'ancienne valeur.
+780|Écrire un réglage
+781|Tout écrire
+782|Écrire {} réglages dans le contrôleur ? La machine se comportera comme le dit le fichier.
+783|{} réglages sur {} diffèrent après l'écriture :
+784|Valeur
+785|Unité
+786|Typique
+787|n'est pas un nombre
+788|hors plage
+789|Micrologiciel ($$)

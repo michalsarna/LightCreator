@@ -756,3 +756,35 @@
 755|Bāzēt iekārtu
 756|Bāzēt {}
 757|Bāzē tikai {} asi ($H{})
+758|Visi {} faila iestatījumi tagad ir kontrolierī.
+759|Vispirms izveidojiet iestatījumu rezerves kopiju. Lai turpinātu, ierakstiet {}:
+760|Rezerves kopija failā…
+761|Failu nevar izmantot: {}
+762|Vispirms savienojieties ar iekārtu (cilne Ierīce).
+763|Savienots ar: {}
+764|Rūpnīcas iestatījumi ($RST=$)…
+765|Marlin glabā iestatījumus savās komandās (M92, M203, M204, ...): šī lapa rāda tikai to, ko ziņo `M503`.
+766|Vēl nekas nav nolasīts.
+767|Nolasīt iestatījumus ($$)
+768|Nolasīt iestatījumus (M503)
+769|Vai tiešām ierakstīt $RST=$ kontrolierī?
+770|Atjaunot no faila…
+771|Atjaunot rūpnīcas iestatījumus
+772|Atjaunot iestatījumus no faila
+773|Iestatījumi saglabāti: {}
+774|Kontrolierim tie jau visi ir.
+775|Šie iestatījumi ir kontrolierī, nevis profilā. Mainiet tos pa vienam un pierakstiet iepriekšējo vērtību: nepareiza vērtība var likt iekārtai pārvietoties nepareizu attālumu vai iedegt lāzeru.
+776|Šie faila iestatījumi atšķiras no kontroliera. Nekas netiek rakstīts, kamēr nenospiežat Rakstīt visus.
+777|Tas ieraksta $RST=$: katrs kontroliera iestatījums atgriežas programmaparatūras noklusējumos. Soļi, gājiens, ātrumi, lāzera režīms un bāzēšana mainīsies.
+778|Rakstīt
+779|Vai ierakstīt ${} = {} kontrolierī? Tagad tas ir {}. Mainiet pa vienam iestatījumam un pierakstiet veco vērtību.
+780|Rakstīt iestatījumu
+781|Rakstīt visus
+782|Vai ierakstīt {} iestatījumus kontrolierī? Iekārta darbosies tā, kā teikts failā.
+783|Pēc rakstīšanas {} no {} iestatījumiem atšķiras:
+784|Vērtība
+785|Vienība
+786|Tipiska
+787|nav skaitlis
+788|ārpus diapazona
+789|Programmaparatūra ($$)

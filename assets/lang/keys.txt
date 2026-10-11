@@ -756,3 +756,35 @@
 755	Home the machine
 756	Home {}
 757	Homes the {} axis only ($H{})
+758	All {} settings of the file are in the controller now.
+759	Back the settings up first. To go on, type {}:
+760	Back up to a file…
+761	Cannot use the file: {}
+762	Connect to the machine first (Device tab).
+763	Connected to: {}
+764	Factory settings ($RST=$)…
+765	Marlin keeps its settings in its own commands (M92, M203, M204, ...): this page only shows what `M503` reports.
+766	Nothing read yet.
+767	Read the settings ($$)
+768	Read the settings (M503)
+769	Really write $RST=$ to the controller?
+770	Restore from a file…
+771	Restore the factory settings
+772	Restore the settings from a file
+773	Saved the settings to {}
+774	The controller already has all of them.
+775	These settings live in the controller, not in the profile. Change one at a time and write down the previous value: a wrong value can make the machine move the wrong distance or fire the laser.
+776	These settings of the file differ from the controller. Nothing is written until you press Write all.
+777	This writes $RST=$: every setting of the controller goes back to the firmware's defaults. Step counts, travel, speeds, laser mode and homing will all change.
+778	Write
+779	Write ${} = {} to the controller? It is now {}. Change one setting at a time and note the old value.
+780	Write a setting
+781	Write all
+782	Write {} settings to the controller? The machine will behave as the file says.
+783	{} of {} settings differ after writing:
+784	Value
+785	Unit
+786	Typical
+787	not a number
+788	out of range
+789	Firmware ($$)

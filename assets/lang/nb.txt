@@ -756,3 +756,35 @@
 755|Home maskinen
 756|Home {}
 757|Homer bare {}-aksen ($H{})
+758|Alle {} innstillingene fra filen er nå i kontrolleren.
+759|Ta først en sikkerhetskopi av innstillingene. For å fortsette, skriv {}:
+760|Sikkerhetskopier til en fil…
+761|Filen kan ikke brukes: {}
+762|Koble først til maskinen (fanen Enhet).
+763|Koblet til: {}
+764|Fabrikkinnstillinger ($RST=$)…
+765|Marlin lagrer innstillingene i egne kommandoer (M92, M203, M204, ...): denne siden viser bare det `M503` melder.
+766|Ingenting lest ennå.
+767|Les innstillingene ($$)
+768|Les innstillingene (M503)
+769|Skal $RST=$ virkelig skrives til kontrolleren?
+770|Gjenopprett fra en fil…
+771|Gjenopprett fabrikkinnstillingene
+772|Gjenopprett innstillingene fra en fil
+773|Innstillingene lagret i {}
+774|Kontrolleren har allerede alle.
+775|Disse innstillingene ligger i kontrolleren, ikke i profilen. Endre én om gangen og noter den forrige verdien: en feil verdi kan få maskinen til å flytte seg feil avstand eller avfyre laseren.
+776|Disse innstillingene i filen avviker fra kontrolleren. Ingenting skrives før du trykker Skriv alle.
+777|Dette skriver $RST=$: hver innstilling i kontrolleren går tilbake til fastvarens standard. Trinn, bevegelse, hastigheter, lasermodus og homing endres.
+778|Skriv
+779|Skal ${} = {} skrives til kontrolleren? Nå er den {}. Endre én innstilling om gangen og noter den gamle verdien.
+780|Skriv en innstilling
+781|Skriv alle
+782|Skal {} innstillinger skrives til kontrolleren? Maskinen oppfører seg som filen sier.
+783|{} av {} innstillinger avviker etter skriving:
+784|Verdi
+785|Enhet
+786|Typisk
+787|er ikke et tall
+788|utenfor området
+789|Fastvare ($$)

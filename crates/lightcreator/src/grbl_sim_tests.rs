@@ -308,3 +308,30 @@ fn grbl_sim_runs_a_job_with_arcs_and_ends_where_expected() {
     s.wait_idle_at(0.0, 0.0, 30.0);
     assert!(s.errors().is_empty(), "GRBL rejected lines: {:?}", s.errors());
 }
+
+#[test]
+#[ignore = "needs grbl-sim: tools/grbl-sim/build.sh"]
+fn grbl_sim_settings_can_be_read_changed_backed_up_and_restored() {
+    use lc_core::grbl_settings as gs;
+    let mut s = Session::connect();
+    s.wait_banner();
+    // The whole report: the settings the page knows are all there.
+    let all = gs::parse_report(&read_settings(&mut s));
+    for id in [0, 1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 20, 21, 22, 23, 24, 25, 26, 27, 30, 31, 32, 100, 101, 102, 110, 111, 112, 120, 121, 122, 130, 131, 132] {
+        assert!(all.contains_key(&id), "${id} is missing from the report: {all:?}");
+    }
+    // Change one setting and read it back.
+    let old = all[&110].clone();
+    s.link.send(Cmd::Line(gs::write_line(110, "1234")));
+    let changed = gs::parse_report(&read_settings(&mut s));
+    assert!(gs::same_value(&changed[&110], "1234"), "{}", changed[&110]);
+    // The backup text holds it, reads back strictly, and restoring it brings the old value back.
+    let backup = gs::backup_text(&all, &[], "test");
+    let file = gs::parse_backup(&backup).expect("the backup is readable");
+    for (id, v) in &file {
+        s.link.send(Cmd::Line(gs::write_line(*id, v)));
+    }
+    let restored = gs::parse_report(&read_settings(&mut s));
+    assert!(gs::same_value(&restored[&110], &old), "{} vs {old}", restored[&110]);
+    assert!(s.errors().is_empty(), "{:?}", s.errors());
+}

@@ -756,3 +756,35 @@
 755|Fes el homing de la màquina
 756|Homing {}
 757|Fa el homing només de l'eix {} ($H{})
+758|Les {} configuracions del fitxer ja són al controlador.
+759|Primer feu una còpia de la configuració. Per continuar, escriviu {}:
+760|Fes una còpia a un fitxer…
+761|No es pot fer servir el fitxer: {}
+762|Primer connecteu-vos a la màquina (pestanya Dispositiu).
+763|Connectat a: {}
+764|Configuració de fàbrica ($RST=$)…
+765|Marlin guarda la configuració en ordres pròpies (M92, M203, M204, ...): aquesta pàgina només mostra el que informa `M503`.
+766|Encara no s'ha llegit res.
+767|Llegeix la configuració ($$)
+768|Llegeix la configuració (M503)
+769|Esteu segur que voleu escriure $RST=$ al controlador?
+770|Restaura des d'un fitxer…
+771|Restaura la configuració de fàbrica
+772|Restaura la configuració des d'un fitxer
+773|Configuració desada a {}
+774|El controlador ja les té totes.
+775|Aquesta configuració és al controlador, no al perfil. Canvieu-ne una cada cop i apunteu el valor anterior: un valor erroni pot fer que la màquina es mogui una distància equivocada o dispari el làser.
+776|Aquesta configuració del fitxer difereix del controlador. No s'escriu res fins que premeu Escriu-ho tot.
+777|Això escriu $RST=$: tota la configuració del controlador torna als valors per defecte del microprogramari. Passos, recorreguts, velocitats, mode làser i homing canviaran.
+778|Escriu
+779|Voleu escriure ${} = {} al controlador? Ara és {}. Canvieu una configuració cada cop i apunteu el valor antic.
+780|Escriu una configuració
+781|Escriu-ho tot
+782|Voleu escriure {} configuracions al controlador? La màquina es comportarà com diu el fitxer.
+783|{} de {} configuracions difereixen després d'escriure:
+784|Valor
+785|Unitat
+786|Típic
+787|no és un número
+788|fora de rang
+789|Microprogramari ($$)

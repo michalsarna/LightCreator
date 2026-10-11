@@ -756,3 +756,35 @@
 755|Cuir an meaisín abhaile
 756|Baile {}
 757|Cuireann sé ais {} amháin abhaile ($H{})
+758|Tá na {} socruithe uile ón gcomhad sa rialaitheoir anois.
+759|Cuir cúltaca de na socruithe ar dtús. Chun leanúint ar aghaidh, clóscríobh {}:
+760|Cúltaca go comhad…
+761|Ní féidir an comhad a úsáid: {}
+762|Ceangail leis an meaisín ar dtús (cluaisín Gléas).
+763|Ceangailte le: {}
+764|Socruithe monarchan ($RST=$)…
+765|Coinníonn Marlin a shocruithe ina orduithe féin (M92, M203, M204, ...): ní thaispeánann an leathanach seo ach an méid a thuairiscíonn `M503`.
+766|Níor léadh aon rud go fóill.
+767|Léigh na socruithe ($$)
+768|Léigh na socruithe (M503)
+769|An scríobh $RST=$ chuig an rialaitheoir i ndáiríre?
+770|Athchóirigh ó chomhad…
+771|Athchóirigh socruithe monarchan
+772|Athchóirigh socruithe ó chomhad
+773|Socruithe sábháilte i {}
+774|Tá siad uile ag an rialaitheoir cheana.
+775|Tá na socruithe seo sa rialaitheoir, ní sa phróifíl. Athraigh ceann amháin ag an am agus nótáil an luach roimhe: d'fhéadfadh luach mícheart an meaisín a bhogadh an fad mícheart nó an léasair a lasadh.
+776|Tá na socruithe seo den chomhad difriúil ón rialaitheoir. Ní scríobhtar aon rud go dtí go mbrúnn tú Scríobh uile.
+777|Scríobhann sé seo $RST=$: filleann gach socrú den rialaitheoir ar réamhshocruithe an dochtearraí. Athróidh céimeanna, taisteal, luasanna, mód léasair agus baile.
+778|Scríobh
+779|An scríobh ${} = {} chuig an rialaitheoir? Is {} anois é. Athraigh socrú amháin ag an am agus nótáil an seanluach.
+780|Scríobh socrú
+781|Scríobh uile
+782|An scríobh {} socrú chuig an rialaitheoir? Beidh an meaisín ag obair mar a deir an comhad.
+783|Tá {} as {} socrú difriúil tar éis scríobh:
+784|Luach
+785|Aonad
+786|Tipiciúil
+787|ní uimhir é
+788|lasmuigh den raon
+789|Dochtearraí ($$)

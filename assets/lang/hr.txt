@@ -756,3 +756,35 @@
 755|Referenciraj stroj
 756|Referenciraj {}
 757|Referencira samo os {} ($H{})
+758|Svih {} postavki iz datoteke sada je u upravljaču.
+759|Najprije napravite sigurnosnu kopiju postavki. Za nastavak upišite {}:
+760|Spremi sigurnosnu kopiju u datoteku…
+761|Datoteka se ne može koristiti: {}
+762|Najprije se spojite na stroj (kartica Uređaj).
+763|Spojeno na: {}
+764|Tvorničke postavke ($RST=$)…
+765|Marlin čuva postavke u vlastitim naredbama (M92, M203, M204, ...): ova stranica samo prikazuje što javlja `M503`.
+766|Još ništa nije pročitano.
+767|Pročitaj postavke ($$)
+768|Pročitaj postavke (M503)
+769|Zaista upisati $RST=$ u upravljač?
+770|Vrati iz datoteke…
+771|Vrati tvorničke postavke
+772|Vrati postavke iz datoteke
+773|Postavke spremljene u {}
+774|Upravljač ih već sve ima.
+775|Ove postavke žive u upravljaču, ne u profilu. Mijenjajte jednu po jednu i zapišite prethodnu vrijednost: pogrešna vrijednost može natjerati stroj da se pomakne pogrešnu udaljenost ili upaliti laser.
+776|Ove postavke iz datoteke razlikuju se od upravljača. Ništa se ne upisuje dok ne pritisnete Upiši sve.
+777|Ovo upisuje $RST=$: svaka postavka upravljača vraća se na zadane vrijednosti firmwarea. Koraci, hodovi, brzine, laserski način i referenciranje promijenit će se.
+778|Upiši
+779|Upisati ${} = {} u upravljač? Sada je {}. Mijenjajte jednu postavku po jednu i zapišite staru vrijednost.
+780|Upis postavke
+781|Upiši sve
+782|Upisati {} postavki u upravljač? Stroj će se ponašati kako kaže datoteka.
+783|{} od {} postavki razlikuje se nakon upisa:
+784|Vrijednost
+785|Jedinica
+786|Tipično
+787|nije broj
+788|izvan raspona
+789|Firmware ($$)

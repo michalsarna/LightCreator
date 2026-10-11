@@ -756,3 +756,35 @@
 755|A gép referenciafutása
 756|{} referenciafutás
 757|Csak a(z) {} tengelyt referálja ($H{})
+758|A fájl mind a(z) {} beállítása most a vezérlőben van.
+759|Előbb mentse el a beállításokat. A folytatáshoz írja be: {}:
+760|Mentés fájlba…
+761|A fájl nem használható: {}
+762|Előbb csatlakozzon a géphez (Eszköz fül).
+763|Csatlakozva: {}
+764|Gyári beállítások ($RST=$)…
+765|A Marlin a beállításait saját parancsaiban tartja (M92, M203, M204, ...): ez az oldal csak az `M503` jelentését mutatja.
+766|Még nincs beolvasva semmi.
+767|Beállítások beolvasása ($$)
+768|Beállítások beolvasása (M503)
+769|Tényleg beírja a $RST=$ parancsot a vezérlőbe?
+770|Visszaállítás fájlból…
+771|Gyári beállítások visszaállítása
+772|Beállítások visszaállítása fájlból
+773|A beállítások mentve: {}
+774|A vezérlőben már mind megvan.
+775|Ezek a beállítások a vezérlőben vannak, nem a profilban. Egyesével módosítsa őket, és jegyezze fel a régi értéket: a rossz érték miatt a gép rossz távolságot mozoghat vagy a lézer begyulladhat.
+776|A fájl ezen beállításai eltérnek a vezérlőtől. Semmi sem íródik, amíg nem nyomja meg az Összes írása gombot.
+777|Ez a $RST=$-t írja: a vezérlő minden beállítása a firmware alapértékére áll vissza. A lépések, a futás, a sebességek, a lézer mód és a referenciafutás megváltozik.
+778|Írás
+779|Beírja a ${} = {} értéket a vezérlőbe? Jelenleg {}. Egyszerre egy beállítást módosítson, és jegyezze fel a régi értéket.
+780|Beállítás írása
+781|Összes írása
+782|Beír {} beállítást a vezérlőbe? A gép úgy viselkedik, ahogy a fájl mondja.
+783|Írás után {} / {} beállítás eltér:
+784|Érték
+785|Egység
+786|Tipikus
+787|nem szám
+788|tartományon kívül
+789|Firmware ($$)

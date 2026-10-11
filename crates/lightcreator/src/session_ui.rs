@@ -185,6 +185,12 @@ impl App {
 pub enum ConfirmAct {
     DeleteAllMaterials,
     EnableLaserMode,
+    /// Write `$id=value` to the controller.
+    WriteSetting(u32, String),
+    /// Write the settings of a backup file.
+    ImportSettings(Vec<(u32, String)>),
+    /// `$RST=$`.
+    ResetSettings,
     RestoreBackup(std::path::PathBuf),
 }
 
@@ -199,6 +205,18 @@ impl App {
     pub fn do_confirmed(&mut self, ctx: &egui::Context, act: ConfirmAct) {
         match act {
             ConfirmAct::DeleteAllMaterials => self.reset_device_library(),
+            ConfirmAct::WriteSetting(id, v) => {
+                self.link.send(crate::laser::Cmd::Line(lc_core::grbl_settings::write_line(id, &v)));
+                self.fw.reread_at = Some(std::time::Instant::now() + std::time::Duration::from_millis(600));
+            }
+            ConfirmAct::ImportSettings(settings) => self.fw_write_all(settings),
+            ConfirmAct::ResetSettings => {
+                self.link.send(crate::laser::Cmd::Line("$RST=$".into()));
+                self.fw.values.clear();
+                self.fw.typed.clear();
+                self.fw.report.clear();
+                self.fw.reread_at = Some(std::time::Instant::now() + std::time::Duration::from_millis(2500));
+            }
             ConfirmAct::EnableLaserMode => {
                 self.link.send(crate::laser::Cmd::Line("$32=1".into()));
                 if let Some(w) = &mut self.fw_warn {
