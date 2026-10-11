@@ -1020,3 +1020,4 @@
 1019|Broer
 1020|Broer pr. form
 1021|Vektorformer på et lag i billedtilstand brændes ikke.
+1022|Arbejdstid

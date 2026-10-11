@@ -1305,6 +1305,8 @@ const TABLE: &[[&str; 7]] = &[
     ["Tabs / bridges", "Mostki", "Stege / Brücken", "Ponticelli", "Sillat", "连桥", "टैब / ब्रिज"],
     ["Tabs per shape", "Mostków na kształt", "Stege pro Form", "Ponticelli per forma", "Siltoja muotoa kohden", "每个形状的连桥数", "प्रति आकृति टैब"],
     ["Vector shapes on a layer in the Image mode are not burnt.", "Kształty wektorowe na warstwie w trybie Obraz nie są wypalane.", "Vektorformen auf einer Ebene im Bildmodus werden nicht gebrannt.", "Le forme vettoriali su un livello in modalità Immagine non vengono incise.", "Kuvatilassa olevan tason vektorimuotoja ei polteta.", "处于图像模式的图层上的矢量形状不会被雕刻。", "छवि मोड वाली परत पर वेक्टर आकृतियाँ नहीं जलाई जातीं।"],
+    // ---- working time ----
+    ["Working time", "Czas pracy", "Arbeitszeit", "Tempo di lavoro", "Työaika", "工作时间", "कार्य समय"],
 ];
 #[cfg(test)]
 mod tests {

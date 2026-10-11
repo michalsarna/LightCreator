@@ -1020,3 +1020,4 @@
 1019|Můstky
 1020|Můstků na tvar
 1021|Vektorové tvary na vrstvě v režimu Obraz se nevypalují.
+1022|Doba práce

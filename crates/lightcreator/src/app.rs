@@ -332,6 +332,9 @@ pub struct App {
     pub macros_ok: bool,
     /// When the running job started (for the work time of the machine).
     pub job_started: Option<std::time::Instant>,
+    /// The estimated time of the job that was sent last, and how long the last finished one really ran (seconds).
+    pub job_est: f64,
+    pub job_last_secs: f64,
     /// The counters (by index) that have been announced as due in this session.
     pub maintenance_notified: std::collections::HashSet<usize>,
     /// For this session only: aim with the pointer dot (the frame and the dry run move back by its offset).
@@ -533,6 +536,8 @@ impl App {
             focus_on: false,
             macros_ok: false,
             job_started: None,
+            job_est: 0.0,
+            job_last_secs: 0.0,
             maintenance_notified: Default::default(),
             pointer_align: false,
             connected: false,
@@ -933,6 +938,8 @@ impl App {
         }
         let lines = laser::clean_gcode(&job.gcode);
         self.push_console(ConsoleLine::info(trf("Starting job: {} lines, ~{}", &[&lines.len(), &fmt_time(job.est_seconds)])));
+        self.job_est = job.est_seconds;
+        self.job_last_secs = 0.0;
         self.link.send(Cmd::Job(lines));
     }
     /// Start can be pressed: a streaming controller needs a connected laser, the file-based ones (Ruida, Trocen)
@@ -1018,6 +1025,7 @@ impl App {
         let stopped = self.progress.1 == 0 || !self.connected;
         if finished || stopped {
             self.job_started = None;
+            self.job_last_secs = t0.elapsed().as_secs_f64();
             self.maintenance_add(t0.elapsed().as_secs_f64());
         }
     }
@@ -1938,6 +1946,12 @@ impl App {
         self.print_window(ctx);
         self.cam_test_window(ctx);
     }
+}
+
+/// `hh:mm:ss` with two digits for the hours, for the clock under the camera picture.
+pub fn fmt_clock(s: f64) -> String {
+    let s = if s.is_finite() && s > 0.0 { s as u64 } else { 0 };
+    format!("{:02}:{:02}:{:02}", s / 3600, s / 60 % 60, s % 60)
 }
 
 pub fn fmt_time(s: f64) -> String {

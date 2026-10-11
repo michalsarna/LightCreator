@@ -1020,3 +1020,4 @@
 1019|Tilteliai
 1020|Tiltelių vienai formai
 1021|Vektorinės formos sluoksnyje, esančiame Vaizdo režime, nededamos.
+1022|Darbo laikas

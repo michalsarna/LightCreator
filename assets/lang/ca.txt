@@ -1020,3 +1020,4 @@
 1019|Pons
 1020|Pons per forma
 1021|Les formes vectorials d'una capa en mode Imatge no es graven.
+1022|Temps de treball

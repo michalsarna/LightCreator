@@ -187,6 +187,12 @@ impl App {
                 ui.add_space(30.0);
             }
         }
+        // The working time of the job, over the estimate: 00:04:12 / 00:13:00.
+        let elapsed = self.job_started.map_or(self.job_last_secs, |t| t.elapsed().as_secs_f64());
+        ui.label(RichText::new(format!("{} {} / {}", tr("Working time"), crate::app::fmt_clock(elapsed), crate::app::fmt_clock(self.job_est))).monospace().strong());
+        if self.job_started.is_some() {
+            ui.ctx().request_repaint_after(std::time::Duration::from_millis(500));
+        }
         if !ui.input(|i| i.pointer.any_down()) {
             self.save_camera_view();
         }
@@ -380,5 +386,22 @@ mod tests {
         assert_eq!(a.stream_mode, StreamMode::Tab);
         a.enter_editor(1);
         assert_eq!((a.stream_mode, a.stream_zoom), (StreamMode::Detached, 2.0));
+    }
+
+    #[test]
+    fn the_clock_under_the_picture_counts_hours_minutes_seconds() {
+        use crate::app::fmt_clock;
+        assert_eq!(fmt_clock(0.0), "00:00:00");
+        assert_eq!(fmt_clock(780.0), "00:13:00");
+        assert_eq!(fmt_clock(3.0 * 3600.0 + 61.9), "03:01:01");
+        assert_eq!(fmt_clock(f64::NAN), "00:00:00");
+        assert_eq!(fmt_clock(-5.0), "00:00:00");
+        // While a job runs the elapsed time comes from its start; afterwards the last one stays.
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.job_est = 780.0;
+        a.job_started = Some(std::time::Instant::now() - std::time::Duration::from_secs(252));
+        let e = a.job_started.map_or(a.job_last_secs, |t| t.elapsed().as_secs_f64());
+        assert_eq!(fmt_clock(e), "00:04:12");
     }
 }

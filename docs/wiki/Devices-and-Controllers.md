@@ -87,6 +87,8 @@ Give the device a camera URL (MJPEG stream or JPEG snapshot, http / https; RTSP 
 **Camera overlay alignment:** a photo or live camera sits under the design, aligned with four draggable corners (perspective corrected), with opacity, flip and rotate, saved per device.
 ![Overlay](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/10-camera-overlay.png)
 
+**Working time:** under the picture, in every mode, the camera view shows how long the running job has been working over the estimated time (`00:04:12 / 00:13:00`); after the job the last working time stays.
+
 **The camera view opens the same way every time:** the way it is shown (floating, separate window or side tab), the zoom and the place and size of its window are kept with the device.
 
 **Several cameras.** A device can have any number of cameras (the *Camera* page): each has a name, an on/off switch, a source (an http / https address, or a camera of this computer where the build has camera support), a rotation and one *active* flag; the active one gives the live picture. A camera can only be switched on when its address is valid. Per camera there are **picture settings** (brightness, contrast, white balance, noise reduction, and for a local camera a preference for the uncompressed YUYV format) and a **manual lens correction** (radial k1–k3 and tangential p1, p2 coefficients, entered by hand; all 0 means no correction). Profiles with a single camera URL from earlier versions become one camera. A newly added camera becomes the active one. The **Test** button of a camera opens its picture in a small window with the rotation, picture settings and lens correction as they are being edited, without saving anything.
