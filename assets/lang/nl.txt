@@ -929,3 +929,14 @@
 928|Welke machine heb je?
 929|Het controleren waard
 930|niet ingesteld
+931|Teller toevoegen
+932|Geteld wordt de tijd dat opdrachten echt lopen (van start tot einde of Stop), niet naar schatting. Het totaal kan niet worden gereset.
+933|Naam van de teller (een buis, een lens, een riem)
+934|Teller {}
+935|Deze teller verwijderen
+936|Onderhoud nodig: {}
+937|Herinner na
+938|De teller resetten
+939|De teller "{}" opnieuw vanaf nul laten beginnen?
+940|Totale werktijd: {}
+941|Onderhoud

@@ -67,6 +67,7 @@ pub enum CfgPage {
     Camera,
     Rotary,
     Zones,
+    Maintenance,
     Advanced,
     Firmware,
 }
@@ -82,6 +83,7 @@ impl CfgPage {
             CfgPage::Camera => "Camera",
             CfgPage::Rotary => "Rotary",
             CfgPage::Zones => "No-go zones",
+            CfgPage::Maintenance => "Maintenance",
             CfgPage::Advanced => "Advanced",
             CfgPage::Firmware => "Firmware ($$)",
         }
@@ -96,6 +98,7 @@ impl CfgPage {
         v.push(CfgPage::Camera);
         v.push(CfgPage::Rotary);
         v.push(CfgPage::Zones);
+        v.push(CfgPage::Maintenance);
         v.push(CfgPage::Advanced);
         if matches!(controller, Controller::Grbl | Controller::Marlin) {
             v.push(CfgPage::Firmware);
@@ -135,6 +138,7 @@ impl App {
         let taken: Vec<String> = self.profiles.iter().map(|p| p.name.clone()).collect();
         let mut copy = src;
         copy.name = lc_core::profiles::copy_name(&copy.name, &taken);
+        lc_core::profiles::without_history(&mut copy);
         self.status = trf("Copied to {}", &[&copy.name]);
         self.profiles.push(copy);
         self.start_sel = self.profiles.len() - 1;
@@ -303,7 +307,11 @@ impl App {
         egui::ScrollArea::vertical().max_height(220.0).auto_shrink([false, true]).show(ui, |ui| {
             for i in 0..self.profiles.len() {
                 let d = &self.profiles[i];
-                let text = format!("{}    {} × {}", d.name, fmt_len(d.units, d.area.bed_w, 0), fmt_len(d.units, d.area.bed_h, 0));
+                let due: Vec<&str> = d.maintenance.due().iter().map(|c| c.name.as_str()).collect();
+                let mut text = format!("{}    {} × {}", d.name, fmt_len(d.units, d.area.bed_w, 0), fmt_len(d.units, d.area.bed_h, 0));
+                if !due.is_empty() {
+                    text.push_str(&format!("    ⚠ {}", trf("Maintenance due: {}", &[&due.join(", ")])));
+                }
                 let r = ui.add_sized([ui.available_width(), 28.0], egui::Button::selectable(self.start_sel == i, text));
                 if r.clicked() {
                     self.start_sel = i;
@@ -377,6 +385,7 @@ impl App {
         let mut cfg_open = true;
         let mut fw_acts: Vec<crate::firmware_ui::FwAct> = vec![];
         let mut cfg_head = cfg.head;
+        let mut maint_reset: Option<usize> = None;
         crate::window_ui::popup(ctx, "device_cfg", &title, [720.0, 500.0], &mut cfg_open, |ui| {
             if must_create {
                 ui.label(RichText::new(tr("Create at least one device profile to continue.")).color(theme::text_dim()));
@@ -804,6 +813,42 @@ impl App {
                                 ui.add_space(4.0);
                                 ui.label(RichText::new(tr("Layers marked as rotary are burnt on the attachment. The model is simple: a chuck turns by the workpiece diameter, rollers move the surface like their own; a real machine needs testing.")).color(theme::text_dim()));
                             }
+                            CfgPage::Maintenance => {
+                                ui.label(RichText::new(trf("Total working time: {}", &[&crate::app::fmt_time(d.maintenance.total_secs)])).strong());
+                                ui.label(RichText::new(tr("Counted from the time jobs really run (from start to the end or Stop), not from estimates. The total cannot be reset.")).color(theme::text_dim()));
+                                ui.add_space(4.0);
+                                let mut remove = None;
+                                let mut reset = None;
+                                for (i, c) in d.maintenance.counters.iter_mut().enumerate() {
+                                    ui.horizontal_wrapped(|ui| {
+                                        ui.add(egui::TextEdit::singleline(&mut c.name).hint_text(tr("Counter name (a tube, a lens, a belt)")).desired_width(180.0));
+                                        let mut limited = c.threshold_hours.is_some();
+                                        if ui.checkbox(&mut limited, tr("Remind after")).changed() {
+                                            c.threshold_hours = if limited { Some(100.0) } else { None };
+                                        }
+                                        if let Some(h) = &mut c.threshold_hours {
+                                            ui.add(egui::DragValue::new(h).range(0.1..=100_000.0).speed(1.0).suffix(" h"));
+                                        }
+                                        let text = RichText::new(crate::app::fmt_time(c.secs));
+                                        ui.label(if c.is_due() { text.color(Color32::from_rgb(0xe8, 0x8a, 0x1f)).strong() } else { text });
+                                        if ui.button(tr("Reset")).clicked() {
+                                            reset = Some(i);
+                                        }
+                                        if ui.small_button("✕").on_hover_text(tr("Delete this counter")).clicked() {
+                                            remove = Some(i);
+                                        }
+                                    });
+                                }
+                                if let Some(i) = remove {
+                                    d.maintenance.counters.remove(i);
+                                }
+                                if let Some(i) = reset {
+                                    maint_reset = Some(i);
+                                }
+                                if ui.button(tr("Add a counter")).clicked() {
+                                    d.maintenance.counters.push(lc_core::Counter { name: trf("Counter {}", &[&(d.maintenance.counters.len() + 1)]), secs: 0.0, threshold_hours: None });
+                                }
+                            }
                             CfgPage::Zones => {
                                 ui.label(RichText::new(tr("Parts of the work area the machine must never enter (a clamp, a fixture). A move that touches an enabled zone, also one with the laser off, stops Start, Frame and export. The program does not route around zones.")).color(theme::text_dim()));
                                 ui.add_space(4.0);
@@ -976,11 +1021,29 @@ impl App {
             cancel = true;
         }
         self.run_fw_acts(fw_acts);
+        if let Some(i) = maint_reset {
+            let name = cfg.draft.maintenance.counters.get(i).map(|c| c.name.clone()).unwrap_or_default();
+            self.confirm = Some(crate::session_ui::Confirm {
+                title: tr("Reset the counter").to_string(),
+                text: trf("Start the counter \"{}\" again from zero?", &[&name]),
+                act: crate::session_ui::ConfirmAct::ResetCounter(i),
+            });
+        }
         if read_clicked {
             self.start_read(&cfg.draft);
         }
         if save {
             cfg.draft.name = cfg.draft.name.trim().to_string();
+            // The time counted while the window was open belongs to the profile, not to the draft: names and limits
+            // come from the draft, the times from the profile.
+            if let Some(live) = cfg.idx.and_then(|i| self.profiles.get(i)) {
+                cfg.draft.maintenance.total_secs = live.maintenance.total_secs;
+                for (i, c) in cfg.draft.maintenance.counters.iter_mut().enumerate() {
+                    if let Some(l) = live.maintenance.counters.get(i) {
+                        c.secs = l.secs;
+                    }
+                }
+            }
             let idx = match cfg.idx {
                 Some(i) if i < self.profiles.len() => {
                     self.profiles[i] = cfg.draft.clone();

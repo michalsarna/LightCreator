@@ -929,3 +929,14 @@
 928|Quina màquina teniu?
 929|Val la pena comprovar
 930|no definit
+931|Afegeix un comptador
+932|Es compta des del temps en què les feines s'executen de debò (de l'inici al final o a Atura), no des d'estimacions. El total no es pot posar a zero.
+933|Nom del comptador (un tub, una lent, una corretja)
+934|Comptador {}
+935|Elimina aquest comptador
+936|Cal manteniment: {}
+937|Recorda després de
+938|Posa el comptador a zero
+939|Voleu tornar a començar el comptador «{}» de zero?
+940|Temps de treball total: {}
+941|Manteniment

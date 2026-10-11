@@ -929,3 +929,14 @@
 928	What machine do you have?
 929	Worth checking
 930	not set
+931	Add a counter
+932	Counted from the time jobs really run (from start to the end or Stop), not from estimates. The total cannot be reset.
+933	Counter name (a tube, a lens, a belt)
+934	Counter {}
+935	Delete this counter
+936	Maintenance due: {}
+937	Remind after
+938	Reset the counter
+939	Start the counter "{}" again from zero?
+940	Total working time: {}
+941	Maintenance

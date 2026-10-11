@@ -929,3 +929,14 @@
 928|Mis masin sul on?
 929|Tasub kontrollida
 930|pole seatud
+931|Lisa loendur
+932|Loetakse ajast, mil tööd tegelikult jooksevad (algusest lõpuni või Peatamiseni), mitte hinnangutest. Kogusummat ei saa nullida.
+933|Loenduri nimi (toru, lääts, rihm)
+934|Loendur {}
+935|Kustuta see loendur
+936|Hooldus on vajalik: {}
+937|Tuleta meelde pärast
+938|Nulli loendur
+939|Kas alustada loendurit „{}“ uuesti nullist?
+940|Kogu tööaeg: {}
+941|Hooldus

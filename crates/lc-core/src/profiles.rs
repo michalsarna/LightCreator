@@ -45,6 +45,15 @@ pub fn template(id: &str) -> Device {
     d
 }
 
+/// A profile that starts a new life (a copy, an import): the work times begin at zero, the counters keep their names
+/// and limits.
+pub fn without_history(d: &mut Device) {
+    d.maintenance.total_secs = 0.0;
+    for c in &mut d.maintenance.counters {
+        c.secs = 0.0;
+    }
+}
+
 /// A name for a copy: "Name (copy)", "Name (copy 2)"... that none of `taken` has.
 pub fn copy_name(name: &str, taken: &[String]) -> String {
     let base = name.trim();
@@ -138,6 +147,9 @@ pub fn validate(d: &Device) -> Result<(), String> {
     if d.macros.len() > 50 || d.zones.len() > 100 || d.materials.len() > 5000 {
         return Err("too many macros, zones or materials".into());
     }
+    if d.maintenance.counters.len() > 50 || !d.maintenance.counters.iter().all(|c| text_ok(&c.name, 80) && between(c.secs, 0.0, 1e10) && c.threshold_hours.map_or(true, |h| between(h, 0.0, 1e7))) || !between(d.maintenance.total_secs, 0.0, 1e10) {
+        return bad("a maintenance counter");
+    }
     if !text_ok(&d.template_notes, 5000) || !between(d.rotary.diameter, 0.0, 5000.0) || !between(d.rotary.roller_diameter, 0.0, 5000.0) || !between(d.rotary.microsteps_per_rev, 0.0, 10_000_000.0) {
         return bad("a note or the rotary");
     }
@@ -183,5 +195,6 @@ pub fn import_profile(text: &str) -> Result<Device, String> {
     };
     dev.connection.port.clear();
     validate(&dev)?;
+    without_history(&mut dev);
     Ok(dev)
 }

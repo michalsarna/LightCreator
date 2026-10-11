@@ -929,3 +929,14 @@
 928|¿Qué máquina tiene?
 929|Conviene comprobar
 930|sin definir
+931|Añadir un contador
+932|Se cuenta desde el tiempo en que los trabajos realmente corren (del inicio al final o a Parar), no desde estimaciones. El total no se puede reiniciar.
+933|Nombre del contador (un tubo, una lente, una correa)
+934|Contador {}
+935|Eliminar este contador
+936|Mantenimiento pendiente: {}
+937|Recordar tras
+938|Reiniciar el contador
+939|¿Empezar de nuevo desde cero el contador «{}»?
+940|Tiempo total de trabajo: {}
+941|Mantenimiento

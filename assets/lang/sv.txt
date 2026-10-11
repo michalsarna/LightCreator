@@ -929,3 +929,14 @@
 928|Vilken maskin har du?
 929|Värt att kontrollera
 930|inte satt
+931|Lägg till en räknare
+932|Räknas från den tid jobb verkligen körs (från start till slut eller Stopp), inte från uppskattningar. Summan kan inte nollställas.
+933|Räknarens namn (ett rör, en lins, en rem)
+934|Räknare {}
+935|Ta bort den här räknaren
+936|Underhåll förfaller: {}
+937|Påminn efter
+938|Nollställ räknaren
+939|Börja räknaren "{}" om från noll?
+940|Total arbetstid: {}
+941|Underhåll

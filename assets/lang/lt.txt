@@ -929,3 +929,14 @@
 928|Kokias stakles turite?
 929|Verta patikrinti
 930|nenustatyta
+931|Pridėti skaitiklį
+932|Skaičiuojama pagal laiką, kurį darbai iš tikrųjų vyksta (nuo pradžios iki pabaigos ar Stabdymo), o ne pagal įverčius. Sumos nulinti negalima.
+933|Skaitiklio pavadinimas (vamzdis, lęšis, diržas)
+934|Skaitiklis {}
+935|Ištrinti šį skaitiklį
+936|Reikia techninės priežiūros: {}
+937|Priminti po
+938|Nulinti skaitiklį
+939|Pradėti skaitiklį „{}“ iš naujo nuo nulio?
+940|Bendras darbo laikas: {}
+941|Techninė priežiūra

@@ -1784,3 +1784,27 @@ fn a_bad_profile_file_gives_a_clear_message_and_never_a_panic() {
     let d = profiles::import_profile(&v.to_string()).unwrap();
     assert!(d.connection.port.is_empty(), "no path from the file reaches a port");
 }
+
+#[test]
+fn maintenance_counts_resets_and_is_cleared_for_imports() {
+    let mut m = Maintenance { total_secs: 0.0, counters: vec![Counter { name: "Tube".into(), secs: 0.0, threshold_hours: Some(1.0) }, Counter { name: "Belt".into(), secs: 0.0, threshold_hours: None }] };
+    m.add_run(1800.0);
+    m.add_run(f64::NAN);
+    m.add_run(-5.0);
+    assert_eq!((m.total_secs, m.counters[0].secs, m.counters[1].secs), (1800.0, 1800.0, 1800.0));
+    assert!(m.due().is_empty());
+    m.add_run(1800.0);
+    assert_eq!(m.due().iter().map(|c| c.name.as_str()).collect::<Vec<_>>(), vec!["Tube"], "one hour of the limit is reached, the counter without a limit is never due");
+    m.reset(0);
+    m.reset(9);
+    assert_eq!((m.total_secs, m.counters[0].secs, m.counters[1].secs), (3600.0, 0.0, 3600.0));
+    // A profile carries them; a file made from it starts them again, and old profiles have none.
+    let mut d = Device::default();
+    d.maintenance = m;
+    let back: Device = serde_json::from_str(&serde_json::to_string(&d).unwrap()).unwrap();
+    assert_eq!(back.maintenance, d.maintenance);
+    let imported = profiles::import_profile(&profiles::export_profile(&d, "v0.0.11")).unwrap();
+    assert_eq!((imported.maintenance.total_secs, imported.maintenance.counters[1].secs, imported.maintenance.counters[0].name.as_str()), (0.0, 0.0, "Tube"));
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert_eq!(old.maintenance, Maintenance::default());
+}

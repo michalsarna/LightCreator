@@ -929,3 +929,14 @@
 928|Hvaða vél áttu?
 929|Vert að athuga
 930|ekki stillt
+931|Bæta við teljara
+932|Talið er frá þeim tíma sem verk keyra í raun (frá ræsingu til loka eða Stöðvunar), ekki frá áætlunum. Ekki er hægt að núllstilla heildina.
+933|Heiti teljara (rör, linsa, reim)
+934|Teljari {}
+935|Eyða þessum teljara
+936|Viðhald á gjalddaga: {}
+937|Minna á eftir
+938|Núllstilla teljarann
+939|Byrja teljarann „{}“ aftur frá núlli?
+940|Heildarvinnutími: {}
+941|Viðhald

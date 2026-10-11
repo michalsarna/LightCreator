@@ -929,3 +929,14 @@
 928|Quelle machine avez-vous ?
 929|À vérifier
 930|non défini
+931|Ajouter un compteur
+932|On compte le temps pendant lequel les travaux tournent vraiment (du départ à la fin ou à l'arrêt), pas des estimations. Le total ne peut pas être remis à zéro.
+933|Nom du compteur (un tube, une lentille, une courroie)
+934|Compteur {}
+935|Supprimer ce compteur
+936|Entretien à faire : {}
+937|Rappeler après
+938|Remettre le compteur à zéro
+939|Repartir de zéro avec le compteur « {} » ?
+940|Temps de travail total : {}
+941|Entretien

@@ -929,3 +929,14 @@
 928|Hvilken maskine har du?
 929|Værd at tjekke
 930|ikke sat
+931|Tilføj en tæller
+932|Tælles fra den tid, opgaver virkelig kører (fra start til slut eller Stop), ikke fra skøn. Summen kan ikke nulstilles.
+933|Tællernavn (et rør, en linse, en rem)
+934|Tæller {}
+935|Slet denne tæller
+936|Vedligeholdelse påkrævet: {}
+937|Påmind efter
+938|Nulstil tælleren
+939|Start tælleren "{}" forfra fra nul?
+940|Samlet driftstid: {}
+941|Vedligeholdelse

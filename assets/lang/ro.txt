@@ -929,3 +929,14 @@
 928|Ce mașină aveți?
 929|Merită verificat
 930|nesetat
+931|Adaugă un contor
+932|Se numără din timpul în care lucrările rulează cu adevărat (de la pornire până la sfârșit sau Stop), nu din estimări. Totalul nu poate fi resetat.
+933|Numele contorului (un tub, o lentilă, o curea)
+934|Contor {}
+935|Șterge acest contor
+936|Este necesară întreținerea: {}
+937|Amintește după
+938|Resetează contorul
+939|Reîncepeți contorul „{}” de la zero?
+940|Timp total de funcționare: {}
+941|Întreținere

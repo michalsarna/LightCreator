@@ -929,3 +929,14 @@
 928|Cén meaisín atá agat?
 929|Fiú a sheiceáil
 930|gan socrú
+931|Cuir comhaire leis
+932|Áirítear ón am a ritheann na hoibreacha i ndáiríre (ón tús go dtí an deireadh nó Stop), ní ó mheastacháin. Ní féidir an iomlán a athshocrú.
+933|Ainm an chomhairigh (feadán, lionsa, crios)
+934|Comhaire {}
+935|Scrios an comhaire seo
+936|Is gá cothabháil: {}
+937|Meabhraigh tar éis
+938|Athshocraigh an comhaire
+939|An dtosóidh tú an comhaire "{}" arís ó nialas?
+940|Iomlán an ama oibre: {}
+941|Cothabháil

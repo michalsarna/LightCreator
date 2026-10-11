@@ -929,3 +929,14 @@
 928|Kakšen stroj imate?
 929|Vredno preveriti
 930|ni nastavljeno
+931|Dodaj števec
+932|Šteje se iz časa, ko dela res tečejo (od začetka do konca ali Ustavi), ne iz ocen. Skupnega ni mogoče ponastaviti.
+933|Ime števca (cev, leča, jermen)
+934|Števec {}
+935|Izbriši ta števec
+936|Potrebno je vzdrževanje: {}
+937|Opomni po
+938|Ponastavi števec
+939|Znova začeti števec »{}« od nič?
+940|Skupni delovni čas: {}
+941|Vzdrževanje

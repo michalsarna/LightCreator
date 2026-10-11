@@ -1082,6 +1082,60 @@ pub struct Device {
     pub rotary: Rotary,
     /// Notes that came with the template the profile was made from (shown, not edited).
     pub template_notes: String,
+    /// How long the machine has worked, and the counters of the user (a tube, a lens, a belt).
+    pub maintenance: Maintenance,
+}
+
+/// A counter of working time that can be reset, with an optional limit after which it asks for attention.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct Counter {
+    pub name: String,
+    /// Seconds of work counted since the last reset.
+    #[serde(default)]
+    pub secs: f64,
+    /// Hours after which the counter is due; `None` = never.
+    #[serde(default)]
+    pub threshold_hours: Option<f64>,
+}
+
+impl Counter {
+    pub fn is_due(&self) -> bool {
+        self.threshold_hours.is_some_and(|h| h > 0.0 && self.secs >= h * 3600.0)
+    }
+}
+
+/// The work time of a machine.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct Maintenance {
+    /// Seconds of work since the profile was made; it cannot be reset.
+    #[serde(default)]
+    pub total_secs: f64,
+    #[serde(default)]
+    pub counters: Vec<Counter>,
+}
+
+impl Maintenance {
+    /// A job has run for `secs`: the total and every counter grow.
+    pub fn add_run(&mut self, secs: f64) {
+        if secs.is_finite() && secs > 0.0 {
+            self.total_secs += secs;
+            for c in &mut self.counters {
+                c.secs += secs;
+            }
+        }
+    }
+
+    /// The counters that have passed their limit.
+    pub fn due(&self) -> Vec<&Counter> {
+        self.counters.iter().filter(|c| c.is_due()).collect()
+    }
+
+    /// Start counter `i` again (the total stays).
+    pub fn reset(&mut self, i: usize) {
+        if let Some(c) = self.counters.get_mut(i) {
+            c.secs = 0.0;
+        }
+    }
 }
 
 /// How the rotation is written into the G-code.
@@ -1244,6 +1298,8 @@ struct DeviceWire {
     rotary: Rotary,
     #[serde(default)]
     template_notes: String,
+    #[serde(default)]
+    maintenance: Maintenance,
     // Flat fields of profiles saved before the groups existed.
     origin: Option<Origin>,
     bed_w: Option<f64>,
@@ -1308,6 +1364,7 @@ impl From<DeviceWire> for Device {
             zones: w.zones,
             rotary: w.rotary,
             template_notes: w.template_notes,
+            maintenance: w.maintenance,
         }
     }
 }
@@ -1509,6 +1566,7 @@ impl Default for Device {
             zones: vec![],
             rotary: Rotary::default(),
             template_notes: String::new(),
+            maintenance: Maintenance::default(),
         }
     }
 }

@@ -929,3 +929,14 @@
 928|Milyen gépe van?
 929|Érdemes ellenőrizni
 930|nincs beállítva
+931|Számláló hozzáadása
+932|A munkák tényleges futási idejéből számol (indítástól a végéig vagy a Leállításig), nem becslésből. Az összeg nem nullázható.
+933|A számláló neve (cső, lencse, szíj)
+934|{}. számláló
+935|A számláló törlése
+936|Karbantartás esedékes: {}
+937|Emlékeztető ennyi után
+938|Számláló nullázása
+939|Újrakezdi nulláról a(z) „{}” számlálót?
+940|Teljes üzemidő: {}
+941|Karbantartás

@@ -323,6 +323,10 @@ pub struct App {
     pub focus_on: bool,
     /// The warning about macros has been answered in this session.
     pub macros_ok: bool,
+    /// When the running job started (for the work time of the machine).
+    pub job_started: Option<std::time::Instant>,
+    /// The counters (by index) that have been announced as due in this session.
+    pub maintenance_notified: std::collections::HashSet<usize>,
     /// For this session only: aim with the pointer dot (the frame and the dry run move back by its offset).
     pub pointer_align: bool,
     pub connected: bool,
@@ -516,6 +520,8 @@ impl App {
             wizard_skipped: false,
             focus_on: false,
             macros_ok: false,
+            job_started: None,
+            maintenance_notified: Default::default(),
             pointer_align: false,
             connected: false,
             machine: (tr("Disconnected").into(), 0.0, 0.0),
@@ -995,7 +1001,40 @@ impl App {
         }
     }
 
+    /// Count the time a job really runs: from its start until the machine is idle again after the last line, or until
+    /// it is stopped or the link is lost.
+    pub fn job_clock_tick(&mut self) {
+        let running = self.progress.1 > 0 && self.progress.0 < self.progress.1;
+        if running && self.job_started.is_none() {
+            self.job_started = Some(std::time::Instant::now());
+        }
+        let Some(t0) = self.job_started else { return };
+        let finished = self.progress.1 > 0 && self.progress.0 >= self.progress.1 && self.machine.0.starts_with("Idle");
+        let stopped = self.progress.1 == 0 || !self.connected;
+        if finished || stopped {
+            self.job_started = None;
+            self.maintenance_add(t0.elapsed().as_secs_f64());
+        }
+    }
+
+    /// A job has run for `secs`: the machine's total and its counters grow, and what has become due is announced.
+    pub fn maintenance_add(&mut self, secs: f64) {
+        self.doc.device.maintenance.add_run(secs);
+        if let Some(p) = self.profiles.get_mut(self.active) {
+            p.maintenance = self.doc.device.maintenance.clone();
+        }
+        let due: Vec<(usize, String)> = self.doc.device.maintenance.counters.iter().enumerate().filter(|(_, c)| c.is_due()).map(|(i, c)| (i, c.name.clone())).collect();
+        for (i, name) in due {
+            if self.maintenance_notified.insert(i) {
+                let msg = trf("Maintenance due: {}", &[&name]);
+                self.status = msg.clone();
+                self.toast(msg);
+            }
+        }
+    }
+
     fn poll_laser(&mut self) {
+        self.job_clock_tick();
         for e in self.link.poll() {
             match e {
                 Evt::Log(s) => self.push_console(ConsoleLine::info(s)),

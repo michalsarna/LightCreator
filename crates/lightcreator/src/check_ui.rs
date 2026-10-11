@@ -551,3 +551,88 @@ mod z_tests {
         assert_eq!(jog(&mut a, -1.0).unwrap(), "$J=G91 G21 Z5 F3000");
     }
 }
+
+#[cfg(test)]
+mod maintenance_tests {
+    use super::*;
+    use crate::session_ui::ConfirmAct;
+    use lc_core::Counter;
+    use std::time::{Duration, Instant};
+
+    fn app() -> App {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.screen = crate::app::Screen::Editor;
+        let mut d = lc_core::Device::default();
+        d.maintenance.counters = vec![Counter { name: "Tube".into(), secs: 0.0, threshold_hours: Some(0.01) }, Counter { name: "Lens".into(), secs: 0.0, threshold_hours: None }];
+        a.profiles = vec![d];
+        a.enter_editor(0);
+        a.connected = true;
+        a
+    }
+
+    #[test]
+    fn the_work_time_is_the_time_a_job_really_ran_and_the_counters_follow() {
+        let mut a = app();
+        // A job starts: the clock starts with it.
+        a.progress = (2, 10);
+        a.job_clock_tick();
+        assert!(a.job_started.is_some());
+        // 90 s later the last line is acknowledged but the machine still moves: the clock keeps running.
+        a.job_started = Some(Instant::now() - Duration::from_secs(90));
+        a.progress = (10, 10);
+        a.machine.0 = "Run".into();
+        a.job_clock_tick();
+        assert!(a.job_started.is_some() && a.doc.device.maintenance.total_secs == 0.0);
+        // The machine is idle: the time is counted, in the total and in every counter, and kept in the profile.
+        a.machine.0 = "Idle".into();
+        a.job_clock_tick();
+        assert!(a.job_started.is_none());
+        let m = &a.doc.device.maintenance;
+        assert!((m.total_secs - 90.0).abs() < 1.0, "{}", m.total_secs);
+        assert!((m.counters[0].secs - m.total_secs).abs() < 1e-9 && (m.counters[1].secs - m.total_secs).abs() < 1e-9);
+        assert_eq!(a.profiles[0].maintenance, *m);
+        // The tube has a limit of 36 s: it is due, announced once.
+        assert!(m.counters[0].is_due() && !m.counters[1].is_due());
+        assert!(a.status.contains("Tube"), "{}", a.status);
+        a.status.clear();
+        a.maintenance_add(10.0);
+        assert!(a.status.is_empty(), "announced only once per session: {}", a.status);
+    }
+
+    #[test]
+    fn a_stopped_job_or_a_lost_link_counts_what_ran_and_nothing_runs_without_a_job() {
+        let mut a = app();
+        a.job_clock_tick();
+        assert!(a.job_started.is_none() && a.doc.device.maintenance.total_secs == 0.0);
+        a.progress = (3, 10);
+        a.job_clock_tick();
+        a.job_started = Some(Instant::now() - Duration::from_secs(30));
+        a.progress = (0, 0); // Stop
+        a.job_clock_tick();
+        assert!((a.doc.device.maintenance.total_secs - 30.0).abs() < 1.0);
+        a.progress = (1, 5);
+        a.job_clock_tick();
+        a.job_started = Some(Instant::now() - Duration::from_secs(10));
+        a.connected = false;
+        a.job_clock_tick();
+        assert!((a.doc.device.maintenance.total_secs - 40.0).abs() < 1.0);
+    }
+
+    #[test]
+    fn a_counter_can_be_reset_but_the_total_stays_and_copies_start_at_zero() {
+        let mut a = app();
+        a.maintenance_add(100.0);
+        a.open_cfg_edit(0);
+        a.do_confirmed(&egui::Context::default(), ConfirmAct::ResetCounter(0));
+        assert_eq!(a.doc.device.maintenance.counters[0].secs, 0.0);
+        assert!((a.doc.device.maintenance.counters[1].secs - 100.0).abs() < 1e-9);
+        assert!((a.doc.device.maintenance.total_secs - 100.0).abs() < 1e-9, "the total cannot be reset");
+        assert_eq!(a.profiles[0].maintenance.counters[0].secs, 0.0);
+        // A copy of the profile starts a new life: no work time, same counters.
+        a.duplicate_profile(0);
+        let copy = &a.profiles[1].maintenance;
+        assert_eq!((copy.total_secs, copy.counters.len(), copy.counters[1].secs), (0.0, 2, 0.0));
+        assert_eq!(copy.counters[0].name, "Tube");
+    }
+}

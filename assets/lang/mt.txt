@@ -929,3 +929,14 @@
 928|X'magna għandek?
 929|Ta' min jiċċekkja
 930|mhux issettjat
+931|Żid kontatur
+932|Jingħadd mill-ħin li fih ix-xogħlijiet jaħdmu tassew (mill-bidu sat-tmiem jew Waqqaf), mhux minn stimi. It-total ma jistax jiġi rrisettjat.
+933|Isem il-kontatur (tubu, lenti, ċinturin)
+934|Kontatur {}
+935|Ħassar dan il-kontatur
+936|Meħtieġa manutenzjoni: {}
+937|Fakkar wara
+938|Irrisettja l-kontatur
+939|Terġa' tibda l-kontatur "{}" minn żero?
+940|Ħin totali tax-xogħol: {}
+941|Manutenzjoni

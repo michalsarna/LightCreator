@@ -929,3 +929,14 @@
 928|Jaký máte stroj?
 929|Stojí za kontrolu
 930|nenastaveno
+931|Přidat počítadlo
+932|Počítá se z doby, kdy úlohy skutečně běží (od startu do konce nebo Stopu), ne z odhadů. Součet nelze vynulovat.
+933|Název počítadla (trubice, čočka, řemen)
+934|Počítadlo {}
+935|Smazat toto počítadlo
+936|Je třeba údržba: {}
+937|Připomenout po
+938|Vynulovat počítadlo
+939|Začít počítadlo „{}“ znovu od nuly?
+940|Celková doba provozu: {}
+941|Údržba

@@ -929,3 +929,14 @@
 928|Kāda iekārta jums ir?
 929|Vērts pārbaudīt
 930|nav iestatīts
+931|Pievienot skaitītāju
+932|Skaita no laika, kad darbi patiešām darbojas (no sākuma līdz beigām vai Apturēšanai), nevis no aplēsēm. Kopsummu nevar atiestatīt.
+933|Skaitītāja nosaukums (caurule, lēca, siksna)
+934|Skaitītājs {}
+935|Dzēst šo skaitītāju
+936|Nepieciešama apkope: {}
+937|Atgādināt pēc
+938|Atiestatīt skaitītāju
+939|Sākt skaitītāju „{}” no jauna no nulles?
+940|Kopējais darba laiks: {}
+941|Apkope

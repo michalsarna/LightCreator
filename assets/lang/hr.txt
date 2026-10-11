@@ -929,3 +929,14 @@
 928|Koji stroj imate?
 929|Vrijedi provjeriti
 930|nije postavljeno
+931|Dodaj brojač
+932|Broji se iz vremena u kojem poslovi doista rade (od početka do kraja ili Zaustavi), a ne iz procjena. Ukupno se ne može poništiti.
+933|Naziv brojača (cijev, leća, remen)
+934|Brojač {}
+935|Izbriši ovaj brojač
+936|Potrebno održavanje: {}
+937|Podsjeti nakon
+938|Poništi brojač
+939|Pokrenuti brojač „{}” ponovno od nule?
+940|Ukupno vrijeme rada: {}
+941|Održavanje

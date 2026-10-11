@@ -1206,6 +1206,18 @@ const TABLE: &[[&str; 7]] = &[
     ["What machine do you have?", "Jaką masz maszynę?", "Welche Maschine haben Sie?", "Che macchina hai?", "Mikä kone sinulla on?", "你有什么机器？", "आपके पास कौन सी मशीन है?"],
     ["Worth checking", "Warto sprawdzić", "Zu prüfen", "Da controllare", "Kannattaa tarkistaa", "值得检查", "जाँचने लायक"],
     ["not set", "nie ustawiono", "nicht gesetzt", "non impostato", "ei asetettu", "未设置", "सेट नहीं"],
+    // ---- maintenance ----
+    ["Add a counter", "Dodaj licznik", "Zähler hinzufügen", "Aggiungi un contatore", "Lisää laskuri", "添加计数器", "काउंटर जोड़ें"],
+    ["Counted from the time jobs really run (from start to the end or Stop), not from estimates. The total cannot be reset.", "Liczone z czasu, w którym zadania naprawdę trwają (od startu do końca lub Stop), nie z szacunków. Sumy nie można wyzerować.", "Gezählt wird die Zeit, in der Aufträge wirklich laufen (vom Start bis zum Ende oder Stopp), nicht nach Schätzung. Die Summe lässt sich nicht zurücksetzen.", "Si conta il tempo in cui i lavori girano davvero (dall'avvio alla fine o allo Stop), non le stime. Il totale non si può azzerare.", "Lasketaan ajasta, jonka työt todella kestävät (alusta loppuun tai Pysäytykseen), ei arvioista. Kokonaisaikaa ei voi nollata.", "按作业实际运行的时间计算（从开始到结束或停止），而不是估算。总计无法重置。", "काम जितनी देर सच में चलते हैं (शुरू से अंत या रोकने तक), उससे गिना जाता है, अनुमान से नहीं। कुल को रीसेट नहीं किया जा सकता।"],
+    ["Counter name (a tube, a lens, a belt)", "Nazwa licznika (tuba, soczewka, pasek)", "Zählername (Röhre, Linse, Riemen)", "Nome del contatore (un tubo, una lente, una cinghia)", "Laskurin nimi (putki, linssi, hihna)", "计数器名称（灯管、镜片、皮带）", "काउंटर का नाम (ट्यूब, लेंस, बेल्ट)"],
+    ["Counter {}", "Licznik {}", "Zähler {}", "Contatore {}", "Laskuri {}", "计数器 {}", "काउंटर {}"],
+    ["Delete this counter", "Usuń ten licznik", "Diesen Zähler löschen", "Elimina questo contatore", "Poista tämä laskuri", "删除此计数器", "इस काउंटर को हटाएँ"],
+    ["Maintenance due: {}", "Czas na konserwację: {}", "Wartung fällig: {}", "Manutenzione dovuta: {}", "Huolto erääntynyt: {}", "需要维护：{}", "रखरखाव का समय: {}"],
+    ["Remind after", "Przypomnij po", "Erinnern nach", "Ricorda dopo", "Muistuta jälkeen", "超过后提醒", "इसके बाद याद दिलाएँ"],
+    ["Reset the counter", "Wyzeruj licznik", "Zähler zurücksetzen", "Azzera il contatore", "Nollaa laskuri", "重置计数器", "काउंटर रीसेट करें"],
+    ["Start the counter \"{}\" again from zero?", "Zacząć licznik „{}” od zera?", "Den Zähler „{}“ wieder bei null beginnen?", "Ricominciare da zero il contatore \"{}\"?", "Aloitetaanko laskuri \"{}\" alusta?", "把计数器“{}”重新从零开始吗？", "काउंटर \"{}\" को फिर शून्य से शुरू करें?"],
+    ["Total working time: {}", "Łączny czas pracy: {}", "Gesamtbetriebszeit: {}", "Tempo di lavoro totale: {}", "Kokonaistyöaika: {}", "总工作时间：{}", "कुल कार्य समय: {}"],
+    ["Maintenance", "Konserwacja", "Wartung", "Manutenzione", "Huolto", "维护", "रखरखाव"],
 ];
 #[cfg(test)]
 mod tests {

@@ -929,3 +929,14 @@
 928|Hvilken maskin har du?
 929|Verdt å sjekke
 930|ikke satt
+931|Legg til en teller
+932|Telles fra tiden jobbene virkelig kjører (fra start til slutt eller Stopp), ikke fra anslag. Summen kan ikke nullstilles.
+933|Tellernavn (et rør, en linse, en reim)
+934|Teller {}
+935|Slett denne telleren
+936|Vedlikehold forfaller: {}
+937|Påminn etter
+938|Nullstill telleren
+939|Starte telleren «{}» på nytt fra null?
+940|Total arbeidstid: {}
+941|Vedlikehold

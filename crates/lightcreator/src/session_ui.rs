@@ -193,6 +193,8 @@ pub enum ConfirmAct {
     ResetSettings,
     /// Run the macro of this name.
     RunMacro(String),
+    /// Start counter number `i` of the profile again.
+    ResetCounter(usize),
     RestoreBackup(std::path::PathBuf),
 }
 
@@ -212,6 +214,20 @@ impl App {
                 self.fw.reread_at = Some(std::time::Instant::now() + std::time::Duration::from_millis(600));
             }
             ConfirmAct::ImportSettings(settings) => self.fw_write_all(settings),
+            ConfirmAct::ResetCounter(i) => {
+                let active = self.active;
+                if let Some(c) = &mut self.cfg {
+                    c.draft.maintenance.reset(i);
+                    // What is reset in the profile being edited is reset in the profile itself.
+                    if let Some(live) = c.idx.and_then(|k| self.profiles.get_mut(k)) {
+                        live.maintenance.reset(i);
+                    }
+                    if c.idx == Some(active) && self.screen == crate::app::Screen::Editor {
+                        self.doc.device.maintenance.reset(i);
+                    }
+                }
+                self.maintenance_notified.remove(&i);
+            }
             ConfirmAct::RunMacro(name) => {
                 self.macros_ok = true;
                 self.run_macro(&name);
