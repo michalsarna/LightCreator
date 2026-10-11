@@ -695,7 +695,7 @@ fn cut_options_ui(ui: &mut egui::Ui, units: lc_core::Units, l: &mut lc_core::Lay
                 drag_len(ui, units, &mut l.tabs.size, 0.05, Some((0.05, 100.0)));
                 ui.end_row();
                 ui.label(tr("Placement"));
-                ui.horizontal(|ui| {
+                ui.vertical(|ui| {
                     ui.selectable_value(&mut l.tabs.mode, TabMode::Even, tr("Even spacing"));
                     ui.selectable_value(&mut l.tabs.mode, TabMode::PerShape, tr("Tabs per shape"));
                 });
