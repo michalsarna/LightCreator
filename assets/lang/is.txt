@@ -824,3 +824,11 @@
 823|Ekkert til að keyra: engin form á úttakslögum
 824|Keyrir braut verksins færða um færslu bendilsins með slökktum leysi til að sjá hvert hún færi.
 825|Aðeins í þessari lotu: ramminn og þurrkeyrslan færast til baka um færslu rauða bendilspunktsins svo punkturinn lendir þar sem geislinn myndi lenda. Verk og handfærsla eru aldrei færð.
+826|Krókur {}: {}
+827|Krókar
+828|Eigin G-kóði skrifaður í verkið: þegar lag byrjar, fyrir og eftir hvern hlut, þegar lag endar. Með hlutakrókum er lag brennt hlut fyrir hlut (og einu sinni í hverri umferð).
+829|Breytur: {}
+830|Upphaf lags
+831|Lok lags
+832|Upphaf hlutar
+833|Lok hlutar

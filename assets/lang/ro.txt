@@ -824,3 +824,11 @@
 823|Nimic de rulat: nu există forme pe straturile de ieșire
 824|Parcurge traseul lucrării decalat cu decalajul indicatorului, cu laserul oprit, ca să se vadă unde ar merge.
 825|Doar în această sesiune: cadrul și rularea uscată se mută înapoi cu decalajul punctului roșu al indicatorului, astfel încât punctul să cadă unde ar cădea fasciculul. Lucrările și mișcarea manuală nu sunt mutate niciodată.
+826|Hook {}: {}
+827|Hook-uri
+828|G-code propriu scris în lucrare: când începe un strat, înainte și după fiecare obiect, când se termină un strat. Cu hook-uri de obiect, un strat este ars obiect cu obiect (și o dată pe trecere).
+829|Variabile: {}
+830|Începutul stratului
+831|Sfârșitul stratului
+832|Începutul obiectului
+833|Sfârșitul obiectului

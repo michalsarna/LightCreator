@@ -824,3 +824,11 @@
 823|Nav ko palaist: izvades slāņos nav formu
 824|Izskrien darba trajektoriju, pārbīdītu par rādītāja nobīdi, ar izslēgtu lāzeru, lai redzētu, kur tā ietu.
 825|Tikai šajā sesijā: rāmis un sausā darbināšana atkāpjas par sarkanā rādītāja punkta nobīdi, lai punkts nokristu tur, kur nokristu stars. Darbi un manuālā virzīšana netiek pārbīdīti nekad.
+826|Āķis {}: {}
+827|Āķi
+828|Pašu G kods, kas tiek ierakstīts darbā: kad sākas slānis, pirms un pēc katra objekta, kad slānis beidzas. Ar objektu āķiem slānis tiek dedzināts objekts pa objektam (un reizi katrā caurlaidē).
+829|Mainīgie: {}
+830|Slāņa sākums
+831|Slāņa beigas
+832|Objekta sākums
+833|Objekta beigas

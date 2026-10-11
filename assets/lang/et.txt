@@ -824,3 +824,11 @@
 823|Pole midagi käivitada: väljundkihtidel pole kujundeid
 824|Käib läbi töö raja, nihutatud osuti nihke võrra, laser väljas, et näha, kuhu see läheks.
 825|Ainult selles seansis: raam ja kuivkäitus nihkuvad tagasi punase osutipunkti nihke võrra, nii et punkt langeb sinna, kuhu kiir langeks. Töid ja käsiliigutust ei nihutata kunagi.
+826|Hook {}: {}
+827|Hookid
+828|Oma G-kood, mis kirjutatakse töösse: kui kiht algab, enne ja pärast iga objekti, kui kiht lõpeb. Objektihookidega põletatakse kiht objekt objekti haaval (ja kord läbimise kohta).
+829|Muutujad: {}
+830|Kihi algus
+831|Kihi lõpp
+832|Objekti algus
+833|Objekti lõpp

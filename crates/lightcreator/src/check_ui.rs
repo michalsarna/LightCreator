@@ -375,3 +375,23 @@ mod connect_tests {
         assert!(!a.single_axis_homing);
     }
 }
+
+#[cfg(test)]
+mod stamp_tests {
+    use super::*;
+
+    #[test]
+    fn the_job_carries_the_file_name_and_the_time_for_hooks() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.path = Some(std::path::PathBuf::from("/tmp/projects/badge.lcr"));
+        a.stamp_job();
+        let i = &a.doc.job_info;
+        assert_eq!(i.name, "badge");
+        // 2026-... and 14:05 in form, whatever the moment is.
+        assert!(i.date.len() == 10 && i.date.as_bytes()[4] == b'-' && i.date.as_bytes()[7] == b'-', "{}", i.date);
+        assert!(i.time.len() == 5 && i.time.as_bytes()[2] == b':', "{}", i.time);
+        // Not saved with the project.
+        assert!(!a.doc.to_json().contains("badge"));
+    }
+}

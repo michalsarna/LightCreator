@@ -824,3 +824,11 @@
 823|Níl aon rud le rith: níl cruthanna ar na sraitheanna aschuir
 824|Ritheann sé cosán na hoibre aistrithe de réir fhritháireamh an phointeora agus an léasair múchta, chun a fheiceáil cá rachadh sé.
 825|Don seisiún seo amháin: bogann an fráma agus an rith tirim ar ais de réir fhritháireamh an phoint dheirg pointeora, ionas go dtiteann an ponc san áit a dtitfeadh an bíoma. Ní bhogtar oibreacha ná gluaiseacht láimhe riamh.
+826|Crúca {}: {}
+827|Crúcaí
+828|G-code féin a scríobhtar isteach san obair: nuair a thosaíonn sraith, roimh gach réad agus ina dhiaidh, nuair a chríochnaíonn sraith. Le crúcaí réada dóitear sraith réad ar réad (agus uair amháin in aghaidh gach pas).
+829|Athróga: {}
+830|Tús na sraithe
+831|Deireadh na sraithe
+832|Tús an réada
+833|Deireadh an réada

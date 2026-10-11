@@ -698,6 +698,9 @@ pub struct GcodeCfg {
     /// How far a flattened curve (Bézier, text) may stray from the true curve, millimetres.
     #[serde(default = "d_flatten_tol")]
     pub flatten_tolerance: f64,
+    /// Own G-code at the start and end of layers and objects.
+    #[serde(default)]
+    pub hooks: Hooks,
 }
 
 fn d_arc_tol() -> f64 {
@@ -720,7 +723,69 @@ impl Default for GcodeCfg {
             arcs: false,
             arc_tolerance: DEFAULT_ARC_TOL,
             flatten_tolerance: DEFAULT_FLATTEN_TOL,
+            hooks: Hooks::default(),
         }
+    }
+}
+
+/// A piece of own G-code run at a set point of a job.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct Hook {
+    #[serde(default)]
+    pub enabled: bool,
+    #[serde(default)]
+    pub code: String,
+}
+
+impl Hook {
+    /// The lines to write, or none when the hook is off, empty or not fit to be used.
+    pub fn lines(&self) -> Vec<&str> {
+        if !self.enabled {
+            return vec![];
+        }
+        GcodeCfg::custom(&self.code).unwrap_or_default().into_iter().filter(|l| !l.trim().is_empty()).collect()
+    }
+}
+
+/// The four places where a job runs own G-code, in the order they come: a layer starts, an object starts and ends,
+/// the layer ends.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct Hooks {
+    #[serde(default)]
+    pub layer_start: Hook,
+    #[serde(default)]
+    pub layer_end: Hook,
+    #[serde(default)]
+    pub object_start: Hook,
+    #[serde(default)]
+    pub object_end: Hook,
+}
+
+impl Hooks {
+    pub const NAMES: [&'static str; 4] = ["layer_start", "layer_end", "object_start", "object_end"];
+
+    pub fn get(&self, i: usize) -> &Hook {
+        [&self.layer_start, &self.layer_end, &self.object_start, &self.object_end][i]
+    }
+
+    pub fn get_mut(&mut self, i: usize) -> &mut Hook {
+        [&mut self.layer_start, &mut self.layer_end, &mut self.object_start, &mut self.object_end].into_iter().nth(i).unwrap()
+    }
+
+    /// Do the objects have hooks? Then a layer is burnt object by object.
+    pub fn per_object(&self) -> bool {
+        !self.object_start.lines().is_empty() || !self.object_end.lines().is_empty()
+    }
+
+    /// The first thing wrong with a hook (text not fit for G-code, an unknown variable), as `(hook, reason)`.
+    pub fn problem(&self) -> Option<(&'static str, String)> {
+        (0..4).find_map(|i| {
+            let h = self.get(i);
+            if !snippet_ok(&h.code) {
+                return Some((Self::NAMES[i], "a control character or too long".to_string()));
+            }
+            crate::hooks::check_variables(&h.code, crate::hooks::JOB_VARS).err().map(|e| (Self::NAMES[i], e))
+        })
     }
 }
 
@@ -754,6 +819,7 @@ impl GcodeCfg {
         self.postscript.clear();
         self.air_on.clear();
         self.air_off.clear();
+        self.hooks = Hooks::default();
     }
 
     /// The lines of an own piece of G-code, or `None` when it is empty or not fit to be used.
@@ -1277,6 +1343,17 @@ pub struct Document {
     /// design can be repeated on another machine).
     #[serde(default)]
     pub material: Option<crate::materials::Material>,
+    /// What hooks may print about the job; set by the program before the G-code is made, never saved.
+    #[serde(skip)]
+    pub job_info: JobInfo,
+}
+
+/// The name of the job and the moment it is made, for the `{job_name}`, `{date}` and `{time}` of hooks.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct JobInfo {
+    pub name: String,
+    pub date: String,
+    pub time: String,
 }
 
 fn identity_order() -> Vec<usize> {
@@ -1293,6 +1370,7 @@ impl Default for Document {
             order: identity_order(),
             next_group: 1,
             material: None,
+            job_info: JobInfo::default(),
         }
     }
 }

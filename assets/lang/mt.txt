@@ -824,3 +824,11 @@
 823|Xejn x'jitmexxa: l-ebda forma fuq is-saffi tal-output
 824|Tgħaddi mill-mogħdija tax-xogħol imċaqlqa bl-ispostament tal-indikatur bil-laser mitfi, biex tara fejn tmur.
 825|Għal din is-sessjoni biss: il-qafas u t-tmexxija niexfa jmorru lura bl-ispostament tat-tikka ħamra tal-indikatur, biex it-tikka tinżel fejn tinżel ir-raġġ. Ix-xogħlijiet u t-tħarrik manwali qatt ma jiċċaqalqu.
+826|Hook {}: {}
+827|Hooks
+828|G-code proprju miktub fix-xogħol: meta jibda saff, qabel u wara kull oġġett, meta jispiċċa saff. Bil-hooks tal-oġġetti saff jinħaraq oġġett b'oġġett (u darba għal kull passaġġ).
+829|Varjabbli: {}
+830|Bidu tas-saff
+831|Tmiem is-saff
+832|Bidu tal-oġġett
+833|Tmiem l-oġġett

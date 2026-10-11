@@ -824,3 +824,11 @@
 823|Nema što pokrenuti: nema oblika na izlaznim slojevima
 824|Prolazi putanju posla pomaknutu za pomak pokazivača s isključenim laserom da se vidi kamo bi išla.
 825|Samo u ovoj sesiji: okvir i suhi hod pomiču se unatrag za pomak crvene točke pokazivača pa točka pada tamo gdje bi pao snop. Poslovi i ručno pomicanje nikad se ne pomiču.
+826|Hook {}: {}
+827|Hookovi
+828|Vlastiti G-kod upisan u posao: kad sloj počne, prije i poslije svakog objekta, kad sloj završi. S hookovima objekata sloj se pali objekt po objekt (i jednom po prolazu).
+829|Varijable: {}
+830|Početak sloja
+831|Kraj sloja
+832|Početak objekta
+833|Kraj objekta

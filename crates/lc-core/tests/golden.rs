@@ -203,3 +203,90 @@ fn two_heads_get_their_tool_numbers_and_their_own_s_scale() {
     let unused = gcode_for(layers_doc(), dev);
     assert!(!unused.lines().any(|l| l.starts_with('T')));
 }
+
+fn hooked_doc() -> (Document, Device) {
+    let mut doc = Document::default();
+    doc.layers[0].mode = LayerMode::Line;
+    doc.layers[0].speed = 20.0;
+    doc.layers[0].power = 60.0;
+    doc.layers[1].mode = LayerMode::Line;
+    doc.add(0, Kind::Rect { w: 20.0, h: 10.0 }, Xf::translate(30.0, 40.0));
+    doc.add(0, Kind::Ellipse { w: 12.0, h: 12.0 }, Xf::translate(80.0, 40.0));
+    doc.add(1, Kind::Rect { w: 5.0, h: 5.0 }, Xf::translate(120.0, 40.0));
+    doc.job_info = JobInfo { name: "badge".into(), date: "2026-10-11".into(), time: "14:05".into() };
+    let mut dev = device(&[]);
+    dev.name = "Golden".into();
+    dev.gcode.hooks.layer_start = Hook { enabled: true, code: "M117 {layer_name} {layer_index}/{total_layers}\n; {job_name} {date} {time}".into() };
+    dev.gcode.hooks.layer_end = Hook { enabled: true, code: "M117 done {layer_name}".into() };
+    dev.gcode.hooks.object_start = Hook { enabled: true, code: "; start {workpiece_name} {workpiece_index}/{total_workpieces} on {machine_name} {work_width}x{work_height} T{tool_number}".into() };
+    dev.gcode.hooks.object_end = Hook { enabled: true, code: "; end {workpiece_index}".into() };
+    (doc, dev)
+}
+
+#[test]
+fn hooks_run_in_order_with_their_variables() {
+    let (doc, dev) = hooked_doc();
+    let text = gcode_for(doc, dev);
+    check("hooks_all_four", &text);
+    let marks: Vec<&str> = text.lines().filter(|l| l.starts_with("; hook")).collect();
+    assert_eq!(
+        marks,
+        vec![
+            "; hook layer_start", "; hook object_start", "; hook object_end", "; hook object_start", "; hook object_end", "; hook layer_end",
+            "; hook layer_start", "; hook object_start", "; hook object_end", "; hook layer_end",
+        ]
+    );
+    assert!(text.contains("M117 C00 1/2") && text.contains("M117 C01 2/2"));
+    assert!(text.contains("; badge 2026-10-11 14:05"));
+    assert!(text.contains("; start Rectangle 1/3 on Golden 300x200 T0") && text.contains("; start Ellipse 2/3") && text.contains("; start Rectangle 3/3"));
+    assert!(text.contains("; end 1") && text.contains("M117 done C01"));
+}
+
+#[test]
+fn without_hooks_or_with_them_switched_off_the_job_is_the_plain_one() {
+    let (doc, mut dev) = hooked_doc();
+    for i in 0..4 {
+        dev.gcode.hooks.get_mut(i).enabled = false;
+    }
+    let off = gcode_for(doc.clone(), dev);
+    assert!(!off.contains("hook"));
+    let mut plain = device(&[]);
+    plain.name = "Golden".into();
+    assert_eq!(off, gcode_for(doc, plain));
+}
+
+#[test]
+fn only_layer_hooks_keep_the_paths_of_a_layer_together() {
+    let (doc, mut dev) = hooked_doc();
+    dev.gcode.hooks.object_start.enabled = false;
+    dev.gcode.hooks.object_end.enabled = false;
+    let with_layer_hooks = gcode_for(doc.clone(), dev);
+    assert!(with_layer_hooks.contains("hook layer_start") && !with_layer_hooks.contains("hook object_start"));
+    // The moves between the hooks are those of a job without any hook.
+    let strip = |t: &str| t.lines().filter(|l| l.starts_with('G')).collect::<Vec<_>>().join("\n");
+    let mut plain = device(&[]);
+    plain.name = "Golden".into();
+    assert_eq!(strip(&with_layer_hooks), strip(&gcode_for(doc, plain)));
+}
+
+#[test]
+fn hooks_are_validated_before_they_are_kept() {
+    let mut h = Hooks::default();
+    assert_eq!(h.problem(), None);
+    h.layer_start.code = "M117 {layer_nam}".into();
+    assert_eq!(h.problem().map(|p| p.0), Some("layer_start"));
+    h.layer_start.code = "M117 {layer_name".into();
+    assert!(h.problem().is_some());
+    h.layer_start.code = "M117 }".into();
+    assert!(h.problem().is_some());
+    h.layer_start.code = "M117 {}".into();
+    assert!(h.problem().is_some());
+    h.layer_start.code = "M117 {layer_name}\u{7}".into();
+    assert!(h.problem().is_some());
+    h.layer_start.code = "M117 {layer_name} {job_name} {pwm_freq}".into();
+    h.object_end.code = "; {workpiece_index}".into();
+    assert_eq!(h.problem(), None);
+    // Variables of a job are not allowed in a macro; the ones of the machine are.
+    assert!(lc_core::hooks::check_variables("G4 P{layer_index}", lc_core::hooks::MACRO_VARS).is_err());
+    assert!(lc_core::hooks::check_variables("M117 {machine_name} {pulse_width}", lc_core::hooks::MACRO_VARS).is_ok());
+}

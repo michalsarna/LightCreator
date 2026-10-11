@@ -824,3 +824,11 @@
 823|Nincs mit futtatni: nincs alakzat a kimeneti rétegeken
 824|Végigfuttatja a munka útvonalát a mutató eltolásával eltolva, kikapcsolt lézerrel, hogy lássa, hová menne.
 825|Csak ebben a munkamenetben: a keret és a szárazfutás visszalép a piros mutatópont eltolásával, így a pont ott ér földet, ahol a sugár. A munkákat és a kézi mozgatást soha nem tolja el.
+826|Hook {}: {}
+827|Hookok
+828|Saját G-kód a munkába írva: egy réteg kezdetekor, minden objektum előtt és után, egy réteg végén. Objektum hookokkal a réteg objektumonként ég (és áthaladásonként egyszer).
+829|Változók: {}
+830|Réteg kezdete
+831|Réteg vége
+832|Objektum kezdete
+833|Objektum vége

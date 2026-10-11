@@ -7,6 +7,7 @@ pub mod controller;
 pub mod doc;
 pub mod export;
 pub mod gcode;
+pub mod hooks;
 pub mod image;
 pub mod fillet;
 pub mod geom;

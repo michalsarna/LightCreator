@@ -824,3 +824,11 @@
 823|Ničesar ni za zagnati: na izhodnih plasteh ni oblik
 824|Prevozi pot dela, premaknjeno za odmik kazalca, z izklopljenim laserjem, da se vidi, kam bi šla.
 825|Samo v tej seji: okvir in suhi tek se premakneta nazaj za odmik rdeče pike kazalca, tako da pika pade tja, kamor bi padel žarek. Delo in ročno premikanje se nikoli ne premakneta.
+826|Kavelj {}: {}
+827|Kavlji
+828|Lastna G-koda, zapisana v delo: ko se plast začne, pred in po vsakem objektu, ko se plast konča. S kavlji objektov se plast žge objekt za objektom (in enkrat na prehod).
+829|Spremenljivke: {}
+830|Začetek plasti
+831|Konec plasti
+832|Začetek objekta
+833|Konec objekta

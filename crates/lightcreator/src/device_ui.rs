@@ -654,6 +654,18 @@ impl App {
                                     ui.add(egui::TextEdit::singleline(&mut d.gcode.air_off).font(egui::TextStyle::Monospace).hint_text("M9"));
                                     ui.end_row();
                                 });
+                                ui.add_space(8.0);
+                                ui.label(RichText::new(tr("Hooks")).strong());
+                                ui.label(RichText::new(tr("Own G-code written into the job: when a layer starts, before and after each object, when a layer ends. With object hooks a layer is burnt object by object (and once per pass).")).color(theme::text_dim()));
+                                for (i, title) in ["Layer start", "Layer end", "Object start", "Object end"].into_iter().enumerate() {
+                                    let h = d.gcode.hooks.get_mut(i);
+                                    ui.horizontal(|ui| {
+                                        ui.checkbox(&mut h.enabled, "");
+                                        ui.label(RichText::new(tr(title)).strong());
+                                    });
+                                    ui.add_enabled(h.enabled, egui::TextEdit::multiline(&mut h.code).font(egui::TextStyle::Monospace).desired_rows(2).desired_width(f32::INFINITY));
+                                }
+                                ui.label(RichText::new(trf("Variables: {}", &[&lc_core::hooks::JOB_VARS.iter().map(|v| format!("{{{v}}}")).collect::<Vec<_>>().join(" ")])).small().color(theme::text_dim()));
                                 ui.add_space(6.0);
                                 if ui.button(tr("Restore defaults")).clicked() {
                                     d.gcode.reset_custom();
@@ -667,8 +679,12 @@ impl App {
             cfg.head = cfg_head;
             ui.add_space(8.0);
             let bad_gcode = !cfg.draft.gcode.invalid_fields().is_empty();
+            let hook_problem = cfg.draft.gcode.hooks.problem();
+            if let Some((name, why)) = &hook_problem {
+                ui.label(RichText::new(trf("Hook {}: {}", &[name, why])).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
+            }
             let dup_tools = cfg.draft.has_duplicate_tools();
-            let valid = !cfg.draft.name.trim().is_empty() && !bad_gcode && !dup_tools;
+            let valid = !cfg.draft.name.trim().is_empty() && !bad_gcode && !dup_tools && hook_problem.is_none();
             if dup_tools {
                 ui.label(RichText::new(tr("Two laser heads have the same tool number.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
             }

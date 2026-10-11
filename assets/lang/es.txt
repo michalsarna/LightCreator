@@ -824,3 +824,11 @@
 823|Nada que ejecutar: no hay formas en las capas de salida
 824|Recorre la trayectoria del trabajo desplazada por el desfase del puntero con el láser apagado, para ver adónde iría.
 825|Solo en esta sesión: el marco y el ensayo en seco se desplazan hacia atrás por el desfase del punto rojo del puntero, de modo que el punto cae donde caería el haz. Los trabajos y el movimiento manual nunca se desplazan.
+826|Hook {}: {}
+827|Hooks
+828|G-code propio escrito en el trabajo: cuando empieza una capa, antes y después de cada objeto, cuando termina una capa. Con hooks de objeto una capa se graba objeto a objeto (y una vez por pasada).
+829|Variables: {}
+830|Inicio de capa
+831|Fin de capa
+832|Inicio de objeto
+833|Fin de objeto

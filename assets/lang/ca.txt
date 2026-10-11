@@ -824,3 +824,11 @@
 823|Res a executar: no hi ha formes a les capes de sortida
 824|Recorre el camí de la feina desplaçat pel desplaçament del punter amb el làser apagat, per veure on aniria.
 825|Només en aquesta sessió: el marc i la prova en sec es desplacen enrere pel desplaçament del punt vermell del punter, de manera que el punt cau on cauria el feix. Les feines i el moviment manual mai es desplacen.
+826|Hook {}: {}
+827|Hooks
+828|G-code propi escrit a la feina: quan comença una capa, abans i després de cada objecte, quan acaba una capa. Amb hooks d'objecte una capa es grava objecte per objecte (i una vegada per passada).
+829|Variables: {}
+830|Inici de la capa
+831|Final de la capa
+832|Inici de l'objecte
+833|Final de l'objecte

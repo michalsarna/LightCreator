@@ -824,3 +824,11 @@
 823|Niets om uit te voeren: geen vormen op uitvoerlagen
 824|Doorloopt het pad van de opdracht, verschoven met de aanwijzerverschuiving, met de laser uit, om te zien waar het heen zou gaan.
 825|Alleen in deze sessie: het kader en de proefrun schuiven terug met de verschuiving van de rode aanwijzerstip, zodat de stip landt waar de straal zou landen. Opdrachten en handmatig verplaatsen worden nooit verschoven.
+826|Hook {}: {}
+827|Hooks
+828|Eigen G-code die in de opdracht wordt geschreven: als een laag begint, voor en na elk object, als een laag eindigt. Met objecthooks wordt een laag object voor object gebrand (en één keer per doorgang).
+829|Variabelen: {}
+830|Begin van de laag
+831|Einde van de laag
+832|Begin van het object
+833|Einde van het object

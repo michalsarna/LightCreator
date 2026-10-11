@@ -824,3 +824,11 @@
 823|Není co spustit: na výstupních vrstvách nejsou tvary
 824|Projde dráhu úlohy posunutou o posun ukazatele s vypnutým laserem, aby bylo vidět, kam by šla.
 825|Jen v této relaci: rámeček a zkušební chod se posunou zpět o posun červené tečky ukazatele, takže tečka dopadne tam, kam by dopadl paprsek. Úlohy a ruční pojezd se nikdy neposouvají.
+826|Hook {}: {}
+827|Hooky
+828|Vlastní G-kód zapsaný do úlohy: když začíná vrstva, před a po každém objektu, když vrstva končí. S hooky objektů se vrstva pálí objekt po objektu (a jednou za průchod).
+829|Proměnné: {}
+830|Začátek vrstvy
+831|Konec vrstvy
+832|Začátek objektu
+833|Konec objektu

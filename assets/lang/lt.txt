@@ -824,3 +824,11 @@
 823|Nėra ką paleisti: išvesties sluoksniuose nėra figūrų
 824|Pereina darbo trajektoriją, pastumtą rodyklės poslinkiu, išjungus lazerį, kad būtų matyti, kur ji eitų.
 825|Tik šioje sesijoje: rėmelis ir sausas paleidimas pasislenka atgal raudono rodyklės taško poslinkiu, todėl taškas nukrenta ten, kur kristų spindulys. Darbai ir rankinis judinimas niekada nestumiami.
+826|Kablys {}: {}
+827|Kabliai
+828|Savas G kodas, įrašomas į darbą: kai prasideda sluoksnis, prieš ir po kiekvieno objekto, kai sluoksnis baigiasi. Su objektų kabliais sluoksnis deginamas objektas po objekto (ir kartą per praėjimą).
+829|Kintamieji: {}
+830|Sluoksnio pradžia
+831|Sluoksnio pabaiga
+832|Objekto pradžia
+833|Objekto pabaiga

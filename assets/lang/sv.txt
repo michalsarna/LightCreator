@@ -824,3 +824,11 @@
 823|Inget att köra: inga former på utdatalagren
 824|Kör jobbets bana förskjuten med pekarens förskjutning med lasern av, för att se var den skulle gå.
 825|Endast i den här sessionen: ramen och torrkörningen flyttas tillbaka med förskjutningen av den röda pekarpunkten, så att punkten landar där strålen skulle landa. Jobb och manuell körning flyttas aldrig.
+826|Hook {}: {}
+827|Hooks
+828|Egen G-kod som skrivs in i jobbet: när ett lager börjar, före och efter varje objekt, när ett lager slutar. Med objekthooks bränns ett lager objekt för objekt (och en gång per genomgång).
+829|Variabler: {}
+830|Lagrets början
+831|Lagrets slut
+832|Objektets början
+833|Objektets slut

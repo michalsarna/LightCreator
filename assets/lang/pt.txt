@@ -824,3 +824,11 @@
 823|Nada a executar: não há formas nas camadas de saída
 824|Percorre o trajeto do trabalho deslocado pelo desvio do ponteiro com o laser desligado, para ver para onde iria.
 825|Só nesta sessão: a moldura e o ensaio a seco recuam pelo desvio do ponto vermelho do ponteiro, para que o ponto caia onde cairia o feixe. Os trabalhos e o movimento manual nunca são deslocados.
+826|Hook {}: {}
+827|Hooks
+828|G-code próprio escrito no trabalho: quando começa uma camada, antes e depois de cada objeto, quando acaba uma camada. Com hooks de objeto uma camada é gravada objeto a objeto (e uma vez por passagem).
+829|Variáveis: {}
+830|Início da camada
+831|Fim da camada
+832|Início do objeto
+833|Fim do objeto

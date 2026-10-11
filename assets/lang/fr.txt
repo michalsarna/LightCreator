@@ -824,3 +824,11 @@
 823|Rien à exécuter : aucune forme sur les calques de sortie
 824|Parcourt le tracé du travail décalé du décalage du pointeur, laser éteint, pour voir où il irait.
 825|Pour cette session seulement : le cadre et l'essai à blanc reculent du décalage du point rouge du pointeur, si bien que le point tombe là où tomberait le faisceau. Les travaux et le déplacement manuel ne sont jamais décalés.
+826|Hook {} : {}
+827|Hooks
+828|G-code propre écrit dans le travail : au début d'un calque, avant et après chaque objet, à la fin d'un calque. Avec des hooks d'objet, un calque est gravé objet par objet (et une fois par passe).
+829|Variables : {}
+830|Début du calque
+831|Fin du calque
+832|Début de l'objet
+833|Fin de l'objet

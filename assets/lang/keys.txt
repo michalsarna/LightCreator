@@ -824,3 +824,11 @@
 823	Nothing to run: no shapes on output layers
 824	Runs the path of the job shifted by the pointer offset with the laser off, to see where it would go.
 825	This session only: the frame and the dry run move back by the offset of the red pointer dot, so the dot lands where the beam would. Jobs and jogging are never moved.
+826	Hook {}: {}
+827	Hooks
+828	Own G-code written into the job: when a layer starts, before and after each object, when a layer ends. With object hooks a layer is burnt object by object (and once per pass).
+829	Variables: {}
+830	Layer start
+831	Layer end
+832	Object start
+833	Object end

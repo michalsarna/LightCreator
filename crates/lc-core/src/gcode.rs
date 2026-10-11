@@ -92,6 +92,33 @@ impl<'a> Writer<'a> {
         self.pos = p;
     }
 
+    /// Write the lines of a hook (if it is on) with its variables filled in.
+    fn hook(&mut self, hook: &Hook, name: &str, ctx: &HookCtx, object: Option<(&Shape, usize)>) {
+        let lines = hook.lines();
+        if lines.is_empty() {
+            return;
+        }
+        let info = &ctx.doc.job_info;
+        let value = |v: &str| -> Option<String> {
+            Some(match v {
+                "job_name" => info.name.clone(),
+                "date" => info.date.clone(),
+                "time" => info.time.clone(),
+                "layer_name" => ctx.layer_name.to_string(),
+                "layer_index" => ctx.layer_no.to_string(),
+                "total_layers" => ctx.layers_total.to_string(),
+                "workpiece_name" => object.map(|(s, _)| shape_label(s)).unwrap_or_default(),
+                "workpiece_index" => object.map(|(_, n)| n.to_string()).unwrap_or_default(),
+                "total_workpieces" => ctx.objects_total.to_string(),
+                other => return crate::hooks::device_value(self.dev, other, ctx.head),
+            })
+        };
+        let _ = writeln!(self.out, "; hook {name}");
+        for l in lines {
+            let _ = writeln!(self.out, "{}", crate::hooks::substitute(l.trim(), &value));
+        }
+    }
+
     /// Start a new burn operation; following moves belong to it.
     fn begin_op(&mut self, layer: usize, kind: OpKind, pass: u32, passes: u32) {
         self.ops.push(OpInfo { layer, kind, pass, passes });
@@ -303,6 +330,80 @@ pub fn fill_lines(polys: &[Polyline], interval: f64, angle_deg: f64, bidirection
     out
 }
 
+/// What a hook may say about the job: where in it we are.
+struct HookCtx<'a> {
+    doc: &'a Document,
+    layer_name: &'a str,
+    layer_no: usize,
+    layers_total: usize,
+    head: usize,
+    objects_total: usize,
+}
+
+/// A short name for an object, for `{workpiece_name}`.
+fn shape_label(sh: &Shape) -> String {
+    match &sh.kind {
+        Kind::Rect { .. } => "Rectangle".into(),
+        Kind::Ellipse { .. } => "Ellipse".into(),
+        Kind::Path(_) => "Path".into(),
+        Kind::Bezier(_) => "Curve".into(),
+        Kind::Image(im) => if im.name.is_empty() { "Image".into() } else { im.name.clone() },
+        Kind::Text(t) => t.text.lines().next().unwrap_or("Text").chars().take(40).collect(),
+    }
+}
+
+/// Burn one set of paths and images with the settings of `layer`: images, offset rings, fill, outline.
+fn burn(w: &mut Writer, li: usize, layer: &Layer, polys: &[Polyline], images: &[&Shape], pn: u32, pt: u32) {
+    for sh in images {
+        if let Kind::Image(im) = &sh.kind {
+            w.begin_op(li, OpKind::Image, pn, pt);
+            let rows = crate::raster::rows_for(sh, im, layer);
+            w.raster(&rows, layer);
+        }
+    }
+    if layer.mode == LayerMode::Offset {
+        w.begin_op(li, OpKind::Offset, pn, pt);
+        let rings = crate::ops::inset_rings(polys, layer.interval, 10_000);
+        for p in order_paths(rings, w.pos) {
+            w.travel(p.pts[0]);
+            let mut pts = p.pts.clone();
+            if p.closed {
+                pts.push(p.pts[0]);
+            }
+            w.stroke(&pts, layer.power, layer.speed);
+        }
+    }
+    if matches!(layer.mode, LayerMode::Fill | LayerMode::FillAndLine) {
+        w.begin_op(li, OpKind::Fill, pn, pt);
+        let os = layer.overscan.max(0.0);
+        for (a, b) in fill_lines(polys, layer.interval, layer.angle, layer.bidirectional) {
+            let d = Pt::new(b.x - a.x, b.y - a.y);
+            let len = (d.x * d.x + d.y * d.y).sqrt();
+            let u = Pt::new(d.x / len, d.y / len);
+            let (pre, post) = (Pt::new(a.x - u.x * os, a.y - u.y * os), Pt::new(b.x + u.x * os, b.y + u.y * os));
+            w.travel(pre);
+            if os > 0.0 {
+                w.line(a, 0.0, layer.speed);
+            }
+            w.line(b, layer.power, layer.speed);
+            if os > 0.0 {
+                w.line(post, 0.0, layer.speed);
+            }
+        }
+    }
+    if matches!(layer.mode, LayerMode::Line | LayerMode::FillAndLine) && !polys.is_empty() {
+        w.begin_op(li, OpKind::Line, pn, pt);
+        for p in order_paths(polys.to_vec(), w.pos) {
+            w.travel(p.pts[0]);
+            let mut pts = p.pts.clone();
+            if p.closed {
+                pts.push(p.pts[0]);
+            }
+            w.stroke(&pts, layer.power, layer.speed);
+        }
+    }
+}
+
 pub fn generate(doc: &Document) -> Job {
     let dev = &doc.device;
     let mut w = Writer::new(dev);
@@ -345,6 +446,13 @@ pub fn generate(doc: &Document) -> Job {
     let mut mode = if dialect == Dialect::Grbl { PowerMode::Constant } else { PowerMode::Dynamic };
     // The head that is active when the job starts is the first one.
     let mut tool = 0usize;
+    // Where we are in the job, for the variables of hooks.
+    let burning: Vec<usize> = doc.layer_order().into_iter().filter(|&li| doc.layers[li].output && doc.shapes.iter().any(|s| s.layer == li)).collect();
+    let layers_total = burning.len();
+    let objects_total = doc.shapes.iter().filter(|s| burning.contains(&s.layer)).count();
+    // The objects in the order they are burnt, for `{workpiece_index}`.
+    let object_order: Vec<u64> = burning.iter().flat_map(|&li| doc.shapes.iter().filter(move |s| s.layer == li).map(|s| s.id)).collect();
+    let mut layer_no = 0usize;
     for li in doc.layer_order() {
         let layer = &doc.layers[li];
         if !layer.output {
@@ -382,60 +490,38 @@ pub fn generate(doc: &Document) -> Job {
             air = layer.air_assist;
             let _ = writeln!(w.out, "{} ; air assist {}", if air { air_on } else { air_off }, if air { "on" } else { "off" });
         }
+        // Objects with hooks are burnt one by one; otherwise a layer is one set of paths (nearest neighbour over all).
+        let per_object = dev.gcode.hooks.per_object();
+        let sets: Vec<(Vec<Polyline>, Vec<&Shape>, Option<&Shape>)> = if per_object {
+            doc.shapes
+                .iter()
+                .filter(|s| s.layer == li)
+                .map(|s| if s.is_image() { (vec![], vec![s], Some(s)) } else { (s.polys_tol(tol), vec![], Some(s)) })
+                .filter(|(p, i, _)| !p.is_empty() || !i.is_empty())
+                .collect()
+        } else {
+            vec![(polys.clone(), images.clone(), None)]
+        };
+        layer_no += 1;
+        let ctx = HookCtx { doc, layer_name: &layer.name, layer_no, layers_total, head: w.head, objects_total };
+        w.hook(&dev.gcode.hooks.layer_start, "layer_start", &ctx, None);
         for pass in 0..layer.passes.max(1) {
             if layer.passes > 1 {
                 let _ = writeln!(w.out, "; pass {}/{}", pass + 1, layer.passes);
             }
             let (pn, pt) = (pass + 1, layer.passes.max(1));
-            for sh in &images {
-                if let Kind::Image(im) = &sh.kind {
-                    w.begin_op(li, OpKind::Image, pn, pt);
-                    let rows = crate::raster::rows_for(sh, im, layer);
-                    w.raster(&rows, layer);
-                }
-            }
-            if layer.mode == LayerMode::Offset {
-                w.begin_op(li, OpKind::Offset, pn, pt);
-                let rings = crate::ops::inset_rings(&polys, layer.interval, 10_000);
-                for p in order_paths(rings, w.pos) {
-                    w.travel(p.pts[0]);
-                    let mut pts = p.pts.clone();
-                    if p.closed {
-                        pts.push(p.pts[0]);
-                    }
-                    w.stroke(&pts, layer.power, layer.speed);
-                }
-            }
-            if matches!(layer.mode, LayerMode::Fill | LayerMode::FillAndLine) {
-                w.begin_op(li, OpKind::Fill, pn, pt);
-                let os = layer.overscan.max(0.0);
-                for (a, b) in fill_lines(&polys, layer.interval, layer.angle, layer.bidirectional) {
-                    let d = Pt::new(b.x - a.x, b.y - a.y);
-                    let len = (d.x * d.x + d.y * d.y).sqrt();
-                    let u = Pt::new(d.x / len, d.y / len);
-                    let (pre, post) = (Pt::new(a.x - u.x * os, a.y - u.y * os), Pt::new(b.x + u.x * os, b.y + u.y * os));
-                    w.travel(pre);
-                    if os > 0.0 {
-                        w.line(a, 0.0, layer.speed);
-                    }
-                    w.line(b, layer.power, layer.speed);
-                    if os > 0.0 {
-                        w.line(post, 0.0, layer.speed);
-                    }
-                }
-            }
-            if matches!(layer.mode, LayerMode::Line | LayerMode::FillAndLine) && !polys.is_empty() {
-                w.begin_op(li, OpKind::Line, pn, pt);
-                for p in order_paths(polys.clone(), w.pos) {
-                    w.travel(p.pts[0]);
-                    let mut pts = p.pts.clone();
-                    if p.closed {
-                        pts.push(p.pts[0]);
-                    }
-                    w.stroke(&pts, layer.power, layer.speed);
+            for (polys, images, shape) in &sets {
+                if let Some(sh) = shape {
+                    let no = object_order.iter().position(|id| *id == sh.id).map_or(0, |i| i + 1);
+                    w.hook(&dev.gcode.hooks.object_start, "object_start", &ctx, Some((sh, no)));
+                    burn(&mut w, li, layer, polys, images, pn, pt);
+                    w.hook(&dev.gcode.hooks.object_end, "object_end", &ctx, Some((sh, no)));
+                } else {
+                    burn(&mut w, li, layer, polys, images, pn, pt);
                 }
             }
         }
+        w.hook(&dev.gcode.hooks.layer_end, "layer_end", &ctx, None);
     }
     let _ = writeln!(w.out, "{}", if dialect == Dialect::Marlin { "M5 I ; laser off" } else { "M5 ; laser off" });
     if dev.gcode.return_home {

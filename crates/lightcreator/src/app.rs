@@ -835,6 +835,7 @@ impl App {
         }
     }
     pub fn export_gcode_now(&mut self) {
+        self.stamp_job();
         if let Some(p) = rfd::FileDialog::new().add_filter("G-code", &["gcode", "nc"]).set_file_name("job.gcode").save_file() {
             let job = gcode::generate(&self.doc);
             self.status = match std::fs::write(&p, job.gcode) {
@@ -876,8 +877,20 @@ impl App {
             self.send_job_now();
         }
     }
+    /// Put the name of the file and the moment (UTC) where hooks can print them.
+    pub fn stamp_job(&mut self) {
+        let secs = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0);
+        let ymd = crate::backup_ui::ymd(secs);
+        self.doc.job_info = lc_core::JobInfo {
+            name: self.path.as_ref().and_then(|p| p.file_stem()).map(|s| s.to_string_lossy().into_owned()).unwrap_or_default(),
+            date: format!("{}-{}-{}", &ymd[..4], &ymd[4..6], &ymd[6..]),
+            time: format!("{:02}:{:02}", secs / 3600 % 24, secs / 60 % 60),
+        };
+    }
+
     pub fn send_job_now(&mut self) {
         self.focus_off();
+        self.stamp_job();
         // The job is written for the design as it is: the pointer alignment never moves it.
         let job = gcode::generate(&self.doc);
         if job.moves.is_empty() {
