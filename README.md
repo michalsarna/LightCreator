@@ -102,3 +102,7 @@ machines whose zero is at the front-left (configurable under *Laser → Device s
     <img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=%E2%98%95&slug=michalsarna&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" alt="Buy me a coffee" height="48">
   </a>
 </p>
+
+## Credits and licence
+
+LightCreator is MIT licensed (see [LICENSE](LICENSE)). It is built on many open-source projects, fonts and icon sets: see [CREDITS.md](CREDITS.md).
