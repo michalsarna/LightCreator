@@ -843,3 +843,13 @@
 842|Imenovane skripte koje ručno pokrećete s kartice Uređaj. Jedna naredba po retku; komentari nakon ; ili u zagradama; @include(naziv) umeće drugi makro. Mogu se koristiti varijable stroja.
 843|Pokreni makro {}
 844|Pokreće ovaj makro na stroju
+845|Dodaj zonu
+846|Krug
+847|Izbriši ovu zonu
+848|Dijelovi radne površine u koje stroj nikad ne smije ući (stega, držač). Pomak koji dodiruje uključenu zonu, i s isključenim laserom, zaustavlja Pokreni, Okvir i izvoz. Program ne zaobilazi zone.
+849|Okvir dodiruje zabranjenu zonu „{}”.
+850|Putanja sloja {} dodiruje zabranjenu zonu „{}”.
+851|Naziv zone
+852|Zona {}
+853|Zabranjene zone
+854|Prikaži zabranjene zone

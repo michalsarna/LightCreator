@@ -843,3 +843,13 @@
 842|Elnevezett szkriptek, amelyeket kézzel futtatsz az Eszköz fülről. Soronként egy parancs; megjegyzés ; után vagy zárójelben; az @include(név) másik makrót szúr be. A gép változói használhatók.
 843|{} makró futtatása
 844|Lefuttatja ezt a makrót a gépen
+845|Zóna hozzáadása
+846|Kör
+847|Zóna törlése
+848|A munkaterület azon részei, ahová a gép soha nem léphet be (szorító, rögzítő). Egy engedélyezett zónát érintő mozgás, kikapcsolt lézerrel is, megállítja az Indítást, a Keretet és az exportot. A program nem kerüli ki a zónákat.
+849|A keret érinti a tiltott zónát: „{}”.
+850|A(z) {} réteg szerszámútja érinti a tiltott zónát: „{}”.
+851|Zóna neve
+852|{}. zóna
+853|Tiltott zónák
+854|Tiltott zónák megjelenítése

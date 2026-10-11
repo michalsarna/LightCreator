@@ -843,3 +843,13 @@
 842|Navngitte skript du kjører for hånd fra fanen Enhet. Én kommando per linje; kommentarer etter ; eller i parentes; @include(navn) setter inn en annen makro. Maskinens variabler kan brukes.
 843|Kjør makroen {}
 844|Kjører denne makroen på maskinen
+845|Legg til en sone
+846|Sirkel
+847|Slett denne sonen
+848|Deler av arbeidsflaten maskinen aldri må gå inn i (en klemme, en fiksering). En bevegelse som berører en aktiv sone, også med laseren av, stopper Start, Ramme og eksport. Programmet kjører ikke utenom soner.
+849|Rammen berører forbudssonen «{}».
+850|Verktøybanen til lag {} berører forbudssonen «{}».
+851|Sonenavn
+852|Sone {}
+853|Forbudssoner
+854|Vis forbudssoner

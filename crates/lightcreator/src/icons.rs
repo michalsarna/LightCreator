@@ -146,6 +146,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::ZoomOut => "zoom-out",
         Act::CameraView => "video",
         Act::ToggleOverlay | Act::CameraOverlay => "layers",
+        Act::ToggleZones => "eye",
         Act::DeviceSettings => "settings",
         Act::SwitchDevice => "refresh-cw",
         Act::MaterialLibrary => "package",

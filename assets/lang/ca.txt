@@ -843,3 +843,13 @@
 842|Scripts amb nom que executes a mà des de la pestanya Dispositiu. Una ordre per línia; comentaris després de ; o entre parèntesis; @include(nom) insereix una altra macro. Es poden usar les variables de la màquina.
 843|Executa la macro {}
 844|Executa aquesta macro a la màquina
+845|Afegeix una zona
+846|Cercle
+847|Elimina aquesta zona
+848|Parts de l'àrea de treball on la màquina no ha d'entrar mai (una pinça, un fixador). Un moviment que toca una zona activa, també amb el làser apagat, atura Inicia, Marc i l'exportació. El programa no rodeja les zones.
+849|El marc toca la zona prohibida «{}».
+850|La trajectòria de la capa {} toca la zona prohibida «{}».
+851|Nom de la zona
+852|Zona {}
+853|Zones prohibides
+854|Mostra les zones prohibides

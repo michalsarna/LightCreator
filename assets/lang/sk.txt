@@ -843,3 +843,13 @@
 842|Pomenované skripty spúšťané ručne z karty Zariadenie. Jeden príkaz na riadok; komentáre za ; alebo v zátvorkách; @include(názov) vloží iné makro. Možno použiť premenné stroja.
 843|Spustiť makro {}
 844|Spustí toto makro na stroji
+845|Pridať zónu
+846|Kruh
+847|Zmazať túto zónu
+848|Časti pracovnej plochy, do ktorých stroj nikdy nesmie vstúpiť (svorka, upínač). Pohyb, ktorý sa dotkne zapnutej zóny, aj s vypnutým laserom, zastaví Štart, Rámik aj export. Program zóny neobchádza.
+849|Rámik sa dotýka zakázanej zóny „{}“.
+850|Dráha vrstvy {} sa dotýka zakázanej zóny „{}“.
+851|Názov zóny
+852|Zóna {}
+853|Zakázané zóny
+854|Zobraziť zakázané zóny

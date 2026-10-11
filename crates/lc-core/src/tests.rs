@@ -1478,3 +1478,90 @@ fn bad_macros_cannot_be_kept() {
     let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
     assert!(old.macros.is_empty());
 }
+
+fn rect_zone() -> ZoneShape {
+    ZoneShape::Rect { x: 10.0, y: 10.0, w: 20.0, h: 10.0 } // (10,10) to (30,20)
+}
+
+#[test]
+fn segments_against_a_rectangular_zone_including_the_edge_cases() {
+    let z = rect_zone();
+    let hit = |a: (f64, f64), b: (f64, f64)| zones::segment_hits(&z, Pt::new(a.0, a.1), Pt::new(b.0, b.1));
+    assert!(!hit((0.0, 0.0), (5.0, 5.0)), "far away");
+    assert!(!hit((0.0, 25.0), (40.0, 25.0)), "passes below");
+    assert!(!hit((0.0, 9.99), (40.0, 9.99)), "parallel, just outside");
+    assert!(hit((0.0, 15.0), (40.0, 15.0)), "straight through");
+    assert!(hit((15.0, 12.0), (25.0, 18.0)), "completely inside");
+    assert!(hit((0.0, 15.0), (12.0, 15.0)), "ends inside");
+    assert!(hit((0.0, 10.0), (40.0, 10.0)), "runs along the edge");
+    assert!(hit((10.0, 0.0), (10.0, 10.0)), "just touches a corner");
+    assert!(hit((0.0, 0.0), (10.0, 10.0)), "touches the corner from outside");
+    assert!(!hit((0.0, 0.0), (9.9, 9.9)), "stops short of the corner");
+    assert!(hit((20.0, 15.0), (20.0, 15.0)), "a point inside");
+    assert!(!hit((5.0, 5.0), (5.0, 5.0)), "a point outside");
+    assert!(hit((0.0, 0.0), (40.0, 30.0)), "diagonal across a corner region: through");
+    assert!(!hit((0.0, 12.0), (9.0, 30.0)), "diagonal that misses");
+    // A rectangle given with a negative size is the same rectangle.
+    assert!(zones::segment_hits(&ZoneShape::Rect { x: 30.0, y: 20.0, w: -20.0, h: -10.0 }, Pt::new(0.0, 15.0), Pt::new(40.0, 15.0)));
+}
+
+#[test]
+fn segments_against_a_round_zone() {
+    let z = ZoneShape::Circle { x: 50.0, y: 50.0, r: 10.0 };
+    let hit = |a: (f64, f64), b: (f64, f64)| zones::segment_hits(&z, Pt::new(a.0, a.1), Pt::new(b.0, b.1));
+    assert!(hit((0.0, 50.0), (100.0, 50.0)), "through the middle");
+    assert!(hit((0.0, 40.0), (100.0, 40.0)), "tangent: touching counts");
+    assert!(!hit((0.0, 39.9), (100.0, 39.9)), "just outside");
+    assert!(hit((45.0, 50.0), (55.0, 52.0)), "inside");
+    assert!(hit((0.0, 0.0), (50.0, 45.0)), "ends inside");
+    assert!(!hit((0.0, 0.0), (30.0, 30.0)), "stops before");
+    assert!(hit((50.0, 50.0), (50.0, 50.0)));
+    assert_eq!(z_bounds(), (40.0, 40.0, 60.0, 60.0));
+}
+
+fn z_bounds() -> (f64, f64, f64, f64) {
+    let b = ZoneShape::Circle { x: 50.0, y: 50.0, r: 10.0 }.bounds();
+    (b.min.x, b.min.y, b.max.x, b.max.y)
+}
+
+fn zoned_doc() -> Document {
+    let mut d = check_doc(100.0, 100.0);
+    d.device.zones = vec![Zone { name: "Clamp".into(), enabled: true, shape: ZoneShape::Rect { x: 140.0, y: 60.0, w: 40.0, h: 30.0 } }];
+    d
+}
+
+#[test]
+fn a_zone_in_the_way_of_any_move_is_an_error_naming_the_zone_and_the_layer() {
+    // The rectangle sits at (100,100): the zone is not on its outline ...
+    let mut d = zoned_doc();
+    assert!(check::job_check(&d).is_empty(), "{:?}", check::job_check(&d));
+    // ... but the way back to the machine's zero (front-left: bottom-left of the design) is a move too: put a zone on it.
+    d.device.zones.push(Zone { name: "Way home".into(), enabled: true, shape: ZoneShape::Circle { x: 50.0, y: 150.0, r: 5.0 } });
+    let issues = check::job_check(&d);
+    let hit: Vec<_> = issues.iter().filter(|i| i.kind == check::IssueKind::NoGoZone).collect();
+    assert_eq!(hit.len(), 1, "{issues:?}");
+    assert_eq!((hit[0].zone, hit[0].level), (Some(1), check::Level::Error));
+    assert_eq!(hit[0].layer, Some(0));
+    // A zone on the outline itself.
+    let mut on = zoned_doc();
+    on.device.zones[0].shape = ZoneShape::Rect { x: 110.0, y: 95.0, w: 5.0, h: 20.0 };
+    assert!(check::job_check(&on).iter().any(|i| i.kind == check::IssueKind::NoGoZone && i.zone == Some(0)));
+    // Switched off, it is not a zone.
+    on.device.zones[0].enabled = false;
+    assert!(!check::job_check(&on).iter().any(|i| i.kind == check::IssueKind::NoGoZone));
+}
+
+#[test]
+fn the_frame_may_not_touch_a_zone_either_and_zones_travel_with_the_profile() {
+    let d = zoned_doc();
+    let r = |x0, y0, x1, y1| Rect { min: Pt::new(x0, y0), max: Pt::new(x1, y1) };
+    assert!(check::check_frame(&d.device, r(100.0, 100.0, 120.0, 110.0)).is_empty());
+    // A frame that encloses the zone has its edges clear of it: only the edges are traced.
+    assert!(check::check_frame(&d.device, r(100.0, 40.0, 200.0, 110.0)).is_empty());
+    let hit = check::check_frame(&d.device, r(100.0, 70.0, 160.0, 110.0));
+    assert!(hit.iter().any(|i| i.kind == check::IssueKind::NoGoZone && i.zone == Some(0)), "{hit:?}");
+    let back: Device = serde_json::from_str(&serde_json::to_string(&d.device).unwrap()).unwrap();
+    assert_eq!(back.zones, d.device.zones);
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert!(old.zones.is_empty());
+}

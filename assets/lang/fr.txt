@@ -843,3 +843,13 @@
 842|Scripts nommés que vous lancez à la main depuis l'onglet Appareil. Une commande par ligne ; commentaires après ; ou entre parenthèses ; @include(nom) insère une autre macro. Les variables de la machine sont utilisables.
 843|Exécuter la macro {}
 844|Exécute cette macro sur la machine
+845|Ajouter une zone
+846|Cercle
+847|Supprimer cette zone
+848|Parties de la zone de travail où la machine ne doit jamais entrer (une bride, un gabarit). Un déplacement qui touche une zone active, même laser éteint, bloque Démarrer, Cadre et l'export. Le programme ne contourne pas les zones.
+849|Le cadre touche la zone interdite « {} ».
+850|Le parcours du calque {} touche la zone interdite « {} ».
+851|Nom de la zone
+852|Zone {}
+853|Zones interdites
+854|Afficher les zones interdites

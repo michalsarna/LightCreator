@@ -22,7 +22,8 @@ pub struct CheckDlg {
 }
 
 /// The text of an issue in the language of the interface; `layers` names the layers of the design.
-pub fn describe(i: &Issue, layers: &[String], frame: bool) -> String {
+pub fn describe(i: &Issue, layers: &[String], zones: &[String], frame: bool) -> String {
+    let zone = i.zone.and_then(|z| zones.get(z)).cloned().unwrap_or_default();
     let layer = i.layer.and_then(|l| layers.get(l)).cloned().unwrap_or_default();
     match i.kind {
         IssueKind::OutsideArea if frame => tr("The frame is outside the usable area (beyond the work area or in a margin).").to_string(),
@@ -30,6 +31,8 @@ pub fn describe(i: &Issue, layers: &[String], frame: bool) -> String {
         IssueKind::OutsideArea => trf("{} object(s) are outside the usable area (beyond the work area or in a margin).", &[&i.shapes.len()]),
         IssueKind::OutsideLimits => trf("{} object(s) are outside the software limits.", &[&i.shapes.len()]),
         IssueKind::MoveOutside => trf("The toolpath of layer {} leaves the allowed area (overscan or travel moves).", &[&layer]),
+        IssueKind::NoGoZone if frame => trf("The frame touches the no-go zone \"{}\".", &[&zone]),
+        IssueKind::NoGoZone => trf("The toolpath of layer {} touches the no-go zone \"{}\".", &[&layer, &zone]),
         IssueKind::SpeedAboveMax => trf("Layer {} is faster than the maximum cutting speed of the machine.", &[&layer]),
         IssueKind::ZeroPower => trf("Layer {} burns at 0 % power.", &[&layer]),
         IssueKind::NothingToBurn => trf("Layer {} has objects but no toolpath (open lines on a fill layer, for example).", &[&layer]),
@@ -137,6 +140,7 @@ impl App {
     pub fn check_window(&mut self, ctx: &egui::Context) {
         let Some(dlg) = &self.check_dlg else { return };
         let names = self.layer_names();
+        let zone_names: Vec<String> = self.doc.device.zones.iter().map(|z| z.name.clone()).collect();
         let frame = dlg.pending == Pending::Frame;
         let blocked = check::has_error(&dlg.issues);
         let mut open = true;
@@ -151,7 +155,7 @@ impl App {
                         Level::Warning => ("⚠", Color32::from_rgb(0xe8, 0x8a, 0x1f)),
                     };
                     ui.label(RichText::new(icon).color(colour).strong());
-                    ui.label(describe(i, &names, frame));
+                    ui.label(describe(i, &names, &zone_names, frame));
                     if !i.shapes.is_empty() && ui.small_button(tr("Select objects")).clicked() {
                         select = Some(i.shapes.clone());
                     }
@@ -233,8 +237,8 @@ mod tests {
     #[test]
     fn issues_are_described_in_words() {
         let names: Vec<String> = (0..30).map(|i| format!("C{i:02}")).collect();
-        let i = Issue { level: Level::Warning, kind: IssueKind::ZeroPower, shapes: vec![1], layer: Some(3) };
-        assert!(describe(&i, &names, false).contains("C03"));
+        let i = Issue { level: Level::Warning, kind: IssueKind::ZeroPower, shapes: vec![1], layer: Some(3), zone: None };
+        assert!(describe(&i, &names, &[], false).contains("C03"));
     }
 }
 
@@ -445,5 +449,56 @@ mod macro_tests {
         a.run_macro("Missing");
         assert!(a.status.contains("Missing"), "{}", a.status);
         assert_eq!(a.console.len(), n);
+    }
+}
+
+#[cfg(test)]
+mod zone_tests {
+    use super::*;
+    use crate::menu::Act;
+    use lc_core::{Kind, Xf, Zone, ZoneShape};
+
+    fn app() -> App {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.screen = crate::app::Screen::Editor;
+        let mut d = lc_core::Device::default();
+        d.zones = vec![Zone { name: "Clamp".into(), enabled: true, shape: ZoneShape::Rect { x: 100.0, y: 100.0, w: 30.0, h: 30.0 } }];
+        a.profiles = vec![d];
+        a.enter_editor(0);
+        a.connected = true;
+        a.doc.add(0, Kind::Rect { w: 20.0, h: 10.0 }, Xf::translate(110.0, 105.0));
+        a
+    }
+
+    #[test]
+    fn a_job_through_a_zone_is_stopped_everywhere_and_the_message_names_the_zone() {
+        let mut a = app();
+        a.send_job();
+        let dlg = a.check_dlg.take().expect("Start is stopped");
+        assert!(dlg.issues.iter().any(|i| i.kind == IssueKind::NoGoZone));
+        assert!(!a.guard(Pending::ExportGcode, None));
+        let issue = a.check_dlg.take().unwrap().issues.into_iter().find(|i| i.kind == IssueKind::NoGoZone).unwrap();
+        let text = describe(&issue, &(0..30).map(|i| format!("C{i:02}")).collect::<Vec<_>>(), &["Clamp".to_string()], false);
+        assert!(text.contains("Clamp") && text.contains("C00"), "{text}");
+        a.select_all();
+        a.frame();
+        assert!(a.check_dlg.take().is_some_and(|d| d.issues.iter().any(|i| i.kind == IssueKind::NoGoZone)), "the frame is checked too");
+        // Switch the zone off and the same job goes ahead.
+        a.doc.device.zones[0].enabled = false;
+        assert!(a.guard(Pending::ExportGcode, None));
+    }
+
+    #[test]
+    fn the_zones_can_be_shown_or_hidden_from_the_menu_when_there_are_any() {
+        let ctx = egui::Context::default();
+        let mut a = app();
+        assert!(a.act_enabled(Act::ToggleZones));
+        assert_eq!(a.act_checked(Act::ToggleZones), Some(true));
+        a.do_act(&ctx, Act::ToggleZones);
+        assert_eq!(a.act_checked(Act::ToggleZones), Some(false));
+        a.doc.device.zones.clear();
+        assert!(!a.act_enabled(Act::ToggleZones));
+        assert!(a.settings_pairs().iter().any(|(k, v)| *k == "zones_visible" && v == "0"));
     }
 }

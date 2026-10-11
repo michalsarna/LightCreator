@@ -843,3 +843,13 @@
 842|Scripteanna ainmnithe a rithfidh tú de láimh ón gcluaisín Gléas. Ordú amháin in aghaidh na líne; tuairimí tar éis ; nó idir lúibíní; cuireann @include(ainm) macra eile isteach. Is féidir athróga an mheaisín a úsáid.
 843|Rith an macra {}
 844|Ritheann sé an macra seo ar an meaisín
+845|Cuir crios leis
+846|Ciorcal
+847|Scrios an crios seo
+848|Codanna den limistéar oibre nach gcaithfidh an meaisín dul isteach iontu go deo (clampa, daingneán). Stopann gluaiseacht a leagann lámh ar chrios gníomhach, fiú le léasair múchta, Tosaigh, Fráma agus onnmhairiú. Ní théann an clár timpeall ar chriosanna.
+849|Leagann an fráma lámh ar an gcrios toirmiscthe "{}".
+850|Leagann cosán uirlise shraith {} lámh ar an gcrios toirmiscthe "{}".
+851|Ainm an chriosa
+852|Crios {}
+853|Criosanna toirmiscthe
+854|Taispeáin criosanna toirmiscthe

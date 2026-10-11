@@ -843,3 +843,13 @@
 842|Navngivne scripts, du kører i hånden fra fanen Enhed. Én kommando pr. linje; kommentarer efter ; eller i parentes; @include(navn) indsætter en anden makro. Maskinens variabler kan bruges.
 843|Kør makroen {}
 844|Kører denne makro på maskinen
+845|Tilføj en zone
+846|Cirkel
+847|Slet denne zone
+848|Dele af arbejdsfladen, maskinen aldrig må komme ind i (en klemme, en fiksering). En bevægelse, der rører en aktiv zone, også med laseren slukket, stopper Start, Ramme og eksport. Programmet kører ikke uden om zoner.
+849|Rammen rører forbudszonen "{}".
+850|Værktøjsstien for lag {} rører forbudszonen "{}".
+851|Zonenavn
+852|Zone {}
+853|Forbudszoner
+854|Vis forbudszoner

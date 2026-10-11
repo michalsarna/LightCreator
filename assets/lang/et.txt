@@ -843,3 +843,13 @@
 842|Nimega skriptid, mida käivitad käsitsi vahelehelt Seade. Üks käsk real; kommentaarid pärast ; või sulgudes; @include(nimi) lisab teise makro. Masina muutujaid saab kasutada.
 843|Käivita makro {}
 844|Käivitab selle makro masinal
+845|Lisa tsoon
+846|Ring
+847|Kustuta see tsoon
+848|Tööala osad, kuhu masin ei tohi kunagi siseneda (klamber, kinnitus). Liigutus, mis puudutab lubatud tsooni, ka laseriga väljas, peatab Alustamise, Raami ja ekspordi. Programm tsoonidest mööda ei sõida.
+849|Raam puudutab keelutsooni „{}“.
+850|Kihi {} tööte puudutab keelutsooni „{}“.
+851|Tsooni nimi
+852|Tsoon {}
+853|Keelutsoonid
+854|Näita keelutsoone

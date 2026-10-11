@@ -149,6 +149,9 @@ impl App {
         if let Some(v) = get("grid_main_on") {
             self.show_grid = v != "0";
         }
+        if let Some(v) = get("zones_visible") {
+            self.zones_visible = v != "0";
+        }
         if let Some(v) = get("grid_main_mm").and_then(|v| v.parse::<f64>().ok()) {
             self.grid = v;
         }

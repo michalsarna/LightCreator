@@ -843,3 +843,13 @@
 842|Scripts con nombre que ejecuta a mano desde la pestaña Dispositivo. Un comando por línea; comentarios tras ; o entre paréntesis; @include(nombre) inserta otra macro. Se pueden usar las variables de la máquina.
 843|Ejecutar la macro {}
 844|Ejecuta esta macro en la máquina
+845|Añadir una zona
+846|Círculo
+847|Eliminar esta zona
+848|Partes del área de trabajo en las que la máquina nunca debe entrar (una pinza, una fijación). Un movimiento que toque una zona activa, también con el láser apagado, detiene Iniciar, Marco y la exportación. El programa no rodea las zonas.
+849|El marco toca la zona prohibida «{}».
+850|La trayectoria de la capa {} toca la zona prohibida «{}».
+851|Nombre de la zona
+852|Zona {}
+853|Zonas prohibidas
+854|Mostrar las zonas prohibidas

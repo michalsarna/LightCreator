@@ -843,3 +843,13 @@
 842|Benoemde scripts die je met de hand uitvoert vanuit het tabblad Apparaat. Eén opdracht per regel; commentaar na ; of tussen haakjes; @include(naam) voegt een andere macro in. Variabelen van de machine zijn bruikbaar.
 843|Macro {} uitvoeren
 844|Voert deze macro uit op de machine
+845|Zone toevoegen
+846|Cirkel
+847|Deze zone verwijderen
+848|Delen van het werkgebied waar de machine nooit in mag komen (een klem, een bevestiging). Een beweging die een actieve zone raakt, ook met de laser uit, stopt Start, Kader en export. Het programma gaat niet om zones heen.
+849|Het kader raakt de verboden zone "{}".
+850|Het gereedschapspad van laag {} raakt de verboden zone "{}".
+851|Zonenaam
+852|Zone {}
+853|Verboden zones
+854|Verboden zones tonen

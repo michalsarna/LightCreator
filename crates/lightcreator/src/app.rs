@@ -171,6 +171,8 @@ pub struct App {
     pub check_updates: bool,
     pub update: crate::update_ui::UpdateState,
     pub show_grid: bool,
+    /// Draw the no-go zones on the work area (kept between sessions).
+    pub zones_visible: bool,
     pub snap: bool,
     pub grid: f64,
     pub preview_on: bool,
@@ -386,6 +388,7 @@ impl App {
             check_updates: saved("check_updates").map(|v| v != "0").unwrap_or(true),
             update: Default::default(),
             show_grid,
+            zones_visible: saved("zones_visible").map(|v| v != "0").unwrap_or(true),
             snap: false,
             grid,
             preview_on: false,
@@ -1140,6 +1143,7 @@ impl App {
             Act::ToggleSnap => Some(self.snap),
             Act::TogglePreview => Some(self.preview_on),
             Act::ToggleOverlay => Some(self.overlay.is_some() && self.overlay_visible),
+            Act::ToggleZones => Some(self.zones_visible),
             Act::ToggleAutoFit => Some(self.view.auto_fit),
             Act::SetLang(l) => Some(self.lang == l),
             Act::SetScheme(s) => Some(self.scheme == s),
@@ -1156,6 +1160,7 @@ impl App {
             Act::StartJob => self.can_start() && !self.job_running(),
             Act::CenterEachOther => self.sel.len() >= 2,
             Act::ToggleOverlay => self.overlay.is_some(),
+            Act::ToggleZones => !self.doc.device.zones.is_empty(),
             _ => true,
         }
     }
@@ -1257,6 +1262,7 @@ impl App {
             }
             Act::GridArray => self.show_array = true,
             Act::ToggleGrid => self.show_grid = !self.show_grid,
+            Act::ToggleZones => self.zones_visible = !self.zones_visible,
             Act::ToggleSnap => self.snap = !self.snap,
             Act::TogglePreview => self.preview_on = !self.preview_on,
             Act::FitBed => {
@@ -1936,6 +1942,7 @@ impl App {
             v.push(("grid_prefs", j));
         }
         v.push(("grid_main_on", if self.show_grid { "1" } else { "0" }.into()));
+        v.push(("zones_visible", if self.zones_visible { "1" } else { "0" }.into()));
         v.push(("grid_main_mm", self.grid.to_string()));
         v.push(("mat_list_h", self.mat_list_h.to_string()));
         if let Ok(j) = serde_json::to_string(&self.layer_labels) {

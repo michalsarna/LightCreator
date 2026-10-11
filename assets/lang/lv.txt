@@ -843,3 +843,13 @@
 842|Nosauktas skripti, ko palaižat ar roku no cilnes Ierīce. Viena komanda rindā; komentāri pēc ; vai iekavās; @include(nosaukums) ievieto citu makro. Var izmantot iekārtas mainīgos.
 843|Palaist makro {}
 844|Palaiž šo makro uz iekārtas
+845|Pievienot zonu
+846|Aplis
+847|Dzēst šo zonu
+848|Darba zonas daļas, kurās iekārta nekad nedrīkst ieiet (skava, stiprinājums). Kustība, kas pieskaras ieslēgtai zonai, arī ar izslēgtu lāzeru, aptur Sākt, Rāmi un eksportu. Programma zonas neapiet.
+849|Rāmis skar aizliegto zonu “{}”.
+850|Slāņa {} trajektorija skar aizliegto zonu “{}”.
+851|Zonas nosaukums
+852|Zona {}
+853|Aizliegtās zonas
+854|Rādīt aizliegtās zonas

@@ -20,6 +20,7 @@ pub mod ser2net;
 pub mod svg;
 pub mod text;
 pub mod trace;
+pub mod zones;
 
 pub use bezier::*;
 pub use doc::*;

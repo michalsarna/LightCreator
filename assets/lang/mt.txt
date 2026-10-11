@@ -843,3 +843,13 @@
 842|Skripts bl-isem li tmexxi bl-id mit-tab Apparat. Kmand wieħed f'linja; kummenti wara ; jew bejn parentesi; @include(isem) iddaħħal makro oħra. Il-varjabbli tal-magna jistgħu jintużaw.
 843|Mexxi l-makro {}
 844|Imexxi din il-makro fuq il-magna
+845|Żid żona
+846|Ċirku
+847|Ħassar din iż-żona
+848|Partijiet taż-żona tax-xogħol li l-magna qatt ma għandha tidħol fihom (clamp, fixture). Moviment li jmiss żona attiva, anki bil-laser mitfi, iwaqqaf Ibda, Qafas u l-esportazzjoni. Il-programm ma jduru madwar iż-żoni.
+849|Il-qafas imiss iż-żona pprojbita "{}".
+850|Il-mogħdija tas-saff {} timmiss iż-żona pprojbita "{}".
+851|Isem iż-żona
+852|Żona {}
+853|Żoni pprojbiti
+854|Uri ż-żoni pprojbiti

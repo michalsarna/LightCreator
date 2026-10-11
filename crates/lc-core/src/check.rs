@@ -24,6 +24,8 @@ pub enum IssueKind {
     MoveOutside,
     /// An output layer that has objects burns at 0 % power.
     ZeroPower,
+    /// A move (also an empty one) touches an enabled no-go zone.
+    NoGoZone,
     /// The speed of an output layer is above the maximum cutting speed of the machine.
     SpeedAboveMax,
     /// An output layer has objects but they produce no toolpath (open outlines on a fill layer, for example).
@@ -37,6 +39,8 @@ pub struct Issue {
     /// The objects concerned (empty when the issue is about a layer or the framed box).
     pub shapes: Vec<u64>,
     pub layer: Option<usize>,
+    /// The no-go zone concerned (an index into the device's zones).
+    pub zone: Option<usize>,
 }
 
 fn outside(r: Rect, area: Rect) -> bool {
@@ -60,7 +64,20 @@ fn rect_issue(dev: &Device, r: Rect) -> Option<IssueKind> {
 
 /// The check of a frame: the box that is traced must lie inside the allowed area.
 pub fn check_frame(dev: &Device, bounds: Rect) -> Vec<Issue> {
-    rect_issue(dev, bounds).map(|kind| Issue { level: Level::Error, kind, shapes: vec![], layer: None }).into_iter().collect()
+    let mut out: Vec<Issue> = rect_issue(dev, bounds).map(|kind| Issue { level: Level::Error, kind, shapes: vec![], layer: None, zone: None }).into_iter().collect();
+    // The frame is traced round the box: any edge that touches a zone is an error.
+    let (a, b) = (bounds.min, bounds.max);
+    let corners = [a, Pt::new(b.x, a.y), b, Pt::new(a.x, b.y), a];
+    let mut hit: Vec<usize> = vec![];
+    for w in corners.windows(2) {
+        for z in crate::zones::zones_hit(dev, w[0], w[1]) {
+            if !hit.contains(&z) {
+                hit.push(z);
+            }
+        }
+    }
+    out.extend(hit.into_iter().map(|z| Issue { level: Level::Error, kind: IssueKind::NoGoZone, shapes: vec![], layer: None, zone: Some(z) }));
+    out
 }
 
 /// The check of a whole job: objects and toolpaths of the output layers, and the settings of those layers.
@@ -71,7 +88,7 @@ pub fn job_check(doc: &Document) -> Vec<Issue> {
     for kind in [IssueKind::OutsideArea, IssueKind::OutsideLimits] {
         let ids: Vec<u64> = doc.shapes.iter().filter(|s| doc.layers[s.layer].output).filter(|s| s.bounds().and_then(|b| rect_issue(dev, b)) == Some(kind)).map(|s| s.id).collect();
         if !ids.is_empty() {
-            out.push(Issue { level: Level::Error, kind, shapes: ids, layer: None });
+            out.push(Issue { level: Level::Error, kind, shapes: ids, layer: None, zone: None });
         }
     }
     let job = crate::gcode::generate(doc);
@@ -91,7 +108,19 @@ pub fn job_check(doc: &Document) -> Vec<Issue> {
         // Reported once per layer, and not again when the objects of that layer are already named above.
         let named = out.iter().any(|i| i.level == Level::Error && doc.shapes.iter().any(|s| s.layer == li && i.shapes.contains(&s.id)));
         if !named {
-            out.push(Issue { level: Level::Error, kind: IssueKind::MoveOutside, shapes: vec![], layer: Some(li) });
+            out.push(Issue { level: Level::Error, kind: IssueKind::MoveOutside, shapes: vec![], layer: Some(li), zone: None });
+        }
+    }
+    // Every move, also the ones with the laser off, must stay out of the zones.
+    if dev.zones.iter().any(|z| z.enabled) {
+        let mut seen: Vec<(usize, usize)> = vec![];
+        for m in &job.moves {
+            for z in crate::zones::zones_hit(dev, m.a, m.b) {
+                if !seen.contains(&(z, m.layer)) {
+                    seen.push((z, m.layer));
+                    out.push(Issue { level: Level::Error, kind: IssueKind::NoGoZone, shapes: vec![], layer: Some(m.layer), zone: Some(z) });
+                }
+            }
         }
     }
     for li in doc.layer_order() {
@@ -105,13 +134,13 @@ pub fn job_check(doc: &Document) -> Vec<Issue> {
         }
         let max = dev.speeds.max_cut_speed;
         if max > 0.0 && layer.speed * 60.0 > max + 1e-6 {
-            out.push(Issue { level: Level::Warning, kind: IssueKind::SpeedAboveMax, shapes: ids.clone(), layer: Some(li) });
+            out.push(Issue { level: Level::Warning, kind: IssueKind::SpeedAboveMax, shapes: ids.clone(), layer: Some(li), zone: None });
         }
         if layer.power <= 0.0 {
-            out.push(Issue { level: Level::Warning, kind: IssueKind::ZeroPower, shapes: ids.clone(), layer: Some(li) });
+            out.push(Issue { level: Level::Warning, kind: IssueKind::ZeroPower, shapes: ids.clone(), layer: Some(li), zone: None });
         }
         if !job.moves.iter().any(|m| m.layer == li && m.laser) && layer.power > 0.0 {
-            out.push(Issue { level: Level::Warning, kind: IssueKind::NothingToBurn, shapes: ids, layer: Some(li) });
+            out.push(Issue { level: Level::Warning, kind: IssueKind::NothingToBurn, shapes: ids, layer: Some(li), zone: None });
         }
     }
     out

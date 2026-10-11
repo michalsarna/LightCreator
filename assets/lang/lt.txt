@@ -843,3 +843,13 @@
 842|Pavadinti scenarijai, kuriuos vykdote rankiniu būdu skirtuke Įrenginys. Viena komanda eilutėje; komentarai po ; arba skliaustuose; @include(pavadinimas) įterpia kitą makrokomandą. Galima naudoti staklių kintamuosius.
 843|Vykdyti makrokomandą {}
 844|Vykdo šią makrokomandą staklėse
+845|Pridėti zoną
+846|Apskritimas
+847|Ištrinti šią zoną
+848|Darbo srities dalys, į kurias stakles niekada negali įeiti (spaustukas, įtaisas). Judesys, palietęs įjungtą zoną, net su išjungtu lazeriu, sustabdo Pradėti, Rėmelį ir eksportą. Programa zonų neapeina.
+849|Rėmelis liečia uždraustą zoną „{}“.
+850|Sluoksnio {} trajektorija liečia uždraustą zoną „{}“.
+851|Zonos pavadinimas
+852|Zona {}
+853|Uždraustos zonos
+854|Rodyti uždraustas zonas

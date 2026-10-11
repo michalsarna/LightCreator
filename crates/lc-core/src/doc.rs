@@ -1038,6 +1038,30 @@ pub struct Device {
     pub materials_inherit: bool,
     /// Own G-code scripts that are run by hand from the Device tab.
     pub macros: Vec<Macro>,
+    /// Parts of the work area the machine must not enter, in design coordinates.
+    pub zones: Vec<Zone>,
+}
+
+/// The shape of a no-go zone, in design millimetres.
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+pub enum ZoneShape {
+    /// A rectangle: top-left corner and size.
+    Rect { x: f64, y: f64, w: f64, h: f64 },
+    /// A circle: centre and radius.
+    Circle { x: f64, y: f64, r: f64 },
+}
+
+/// A no-go zone of a device.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Zone {
+    pub name: String,
+    #[serde(default = "d_true")]
+    pub enabled: bool,
+    pub shape: ZoneShape,
+}
+
+fn d_true() -> bool {
+    true
 }
 
 /// A named script of own G-code, run by hand.
@@ -1083,6 +1107,8 @@ struct DeviceWire {
     materials_inherit: bool,
     #[serde(default)]
     macros: Vec<Macro>,
+    #[serde(default)]
+    zones: Vec<Zone>,
     // Flat fields of profiles saved before the groups existed.
     origin: Option<Origin>,
     bed_w: Option<f64>,
@@ -1144,6 +1170,7 @@ impl From<DeviceWire> for Device {
             materials_seeded: w.materials_seeded,
             materials_inherit: w.materials_inherit,
             macros: w.macros,
+            zones: w.zones,
         }
     }
 }
@@ -1337,6 +1364,7 @@ impl Default for Device {
             materials_seeded: false,
             materials_inherit: false,
             macros: vec![],
+            zones: vec![],
         }
     }
 }

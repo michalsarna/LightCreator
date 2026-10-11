@@ -843,3 +843,13 @@
 842|Imenovane skripte, ki jih ročno zaženete iz zavihka Naprava. En ukaz na vrstico; komentarji za ; ali v oklepajih; @include(ime) vstavi drug makro. Uporabite lahko spremenljivke stroja.
 843|Zaženi makro {}
 844|Zažene ta makro na stroju
+845|Dodaj območje
+846|Krog
+847|Izbriši to območje
+848|Deli delovnega območja, kamor stroj nikoli ne sme vstopiti (spenjalo, pripomoček). Premik, ki se dotakne vklopljenega območja, tudi z izklopljenim laserjem, ustavi Začni, Okvir in izvoz. Program območij ne obide.
+849|Okvir se dotika prepovedanega območja »{}«.
+850|Pot plasti {} se dotika prepovedanega območja »{}«.
+851|Ime območja
+852|Območje {}
+853|Prepovedana območja
+854|Pokaži prepovedana območja

@@ -843,3 +843,13 @@
 842|Nefnd skriftur sem þú keyrir í höndunum úr flipanum Tæki. Ein skipun í línu; athugasemdir á eftir ; eða í svigum; @include(nafn) setur inn annan fjölva. Breytur vélarinnar má nota.
 843|Keyra fjölvann {}
 844|Keyrir þennan fjölva á vélinni
+845|Bæta við svæði
+846|Hringur
+847|Eyða þessu svæði
+848|Hlutar vinnusvæðisins sem vélin má aldrei fara inn í (klemma, festing). Hreyfing sem snertir virkt svæði, líka með slökktum leysi, stöðvar Ræsa, Ramma og útflutning. Forritið sneiðir ekki hjá svæðum.
+849|Ramminn snertir bannsvæðið „{}“.
+850|Braut lags {} snertir bannsvæðið „{}“.
+851|Heiti svæðis
+852|Svæði {}
+853|Bannsvæði
+854|Sýna bannsvæði

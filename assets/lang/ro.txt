@@ -843,3 +843,13 @@
 842|Scripturi cu nume pe care le rulezi manual din fila Dispozitiv. O comandă pe linie; comentarii după ; sau între paranteze; @include(nume) inserează alt macro. Se pot folosi variabilele mașinii.
 843|Rulează macro-ul {}
 844|Rulează acest macro pe mașină
+845|Adaugă o zonă
+846|Cerc
+847|Șterge această zonă
+848|Părți ale zonei de lucru în care mașina nu trebuie să intre niciodată (o clemă, un dispozitiv de fixare). O mișcare care atinge o zonă activă, chiar și cu laserul oprit, oprește Pornire, Cadru și exportul. Programul nu ocolește zonele.
+849|Cadrul atinge zona interzisă „{}”.
+850|Traseul stratului {} atinge zona interzisă „{}”.
+851|Numele zonei
+852|Zona {}
+853|Zone interzise
+854|Arată zonele interzise

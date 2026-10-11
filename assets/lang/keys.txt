@@ -843,3 +843,13 @@
 842	Named scripts you run by hand from the Device tab. One command per line; comments after ; or in brackets; @include(name) inserts another macro. Variables of the machine can be used.
 843	Run the macro {}
 844	Runs this macro on the machine
+845	Add a zone
+846	Circle
+847	Delete this zone
+848	Parts of the work area the machine must never enter (a clamp, a fixture). A move that touches an enabled zone, also one with the laser off, stops Start, Frame and export. The program does not route around zones.
+849	The frame touches the no-go zone "{}".
+850	The toolpath of layer {} touches the no-go zone "{}".
+851	Zone name
+852	Zone {}
+853	No-go zones
+854	Show no-go zones
