@@ -730,3 +730,12 @@
 729|Tolerancija krivulja
 730|Koliko spljoštena krivulja (Bézier, tekst) smije odstupati od prave.
 731|Zapisuj krivulje kao lukove gdje pristaju
+732|Brojanje puni međuspremnik upravljača i brzo je. Jednostavno šalje jedan redak i čeka njegov ok: sporo, ali za firmware koji odgovara pogrešno.
+733|Nastavi čekati
+734|Upravljač ne odgovara {} s tijekom posla (stanje: {}).
+735|Ništa nije nastavljeno ni poslano. Stroj je možda samo spor ili je redak izgubljen; pogledajte konzolu pa odaberite.
+736|Zaustavi posao
+737|Strujanje
+738|Upravljač ne odgovara
+739|Broji međuspremnik
+740|Jednostavno (čekaj svaki ok)

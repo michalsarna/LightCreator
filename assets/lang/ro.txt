@@ -730,3 +730,12 @@
 729|Toleranța curbelor
 730|Cât se poate abate o curbă aplatizată (Bézier, text) de la cea reală.
 731|Scrie curbele ca arce acolo unde se potrivesc
+732|Numărarea umple bufferul controlerului și este rapidă. Simplu trimite o linie și așteaptă ok-ul ei: lent, dar pentru firmware care răspunde greșit.
+733|Continuă să aștepți
+734|Niciun răspuns de la controler de {} s în timpul unei lucrări (stare: {}).
+735|Nimic nu a fost reluat sau trimis. Mașina poate fi doar lentă sau linia s-a pierdut; priviți consola și alegeți.
+736|Oprește lucrarea
+737|Transmisie
+738|Controlerul nu răspunde
+739|Numără bufferul
+740|Simplu (așteaptă fiecare ok)

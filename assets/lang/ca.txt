@@ -730,3 +730,12 @@
 729|Tolerància de les corbes
 730|Quant pot allunyar-se una corba aplanada (Bézier, text) de la corba real.
 731|Escriu les corbes com a arcs on encaixin
+732|El recompte omple la memòria intermèdia del controlador i és ràpid. El simple envia una línia i espera el seu ok: lent, però per a microprogramari que respon malament.
+733|Continua esperant
+734|Cap resposta del controlador des de fa {} s mentre s'executa una feina (estat: {}).
+735|No s'ha represa ni enviat res. La màquina pot ser lenta o la línia s'ha perdut; mireu la consola i trieu.
+736|Atura la feina
+737|Transmissió
+738|El controlador no respon
+739|Compta el buffer
+740|Simple (espera cada ok)

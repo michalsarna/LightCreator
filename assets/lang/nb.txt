@@ -730,3 +730,12 @@
 729|Kurvetoleranse
 730|Hvor langt en flatet kurve (Bézier, tekst) kan avvike fra den ekte.
 731|Skriv kurver som buer der de passer
+732|Telling fyller kontrollerens buffer og er rask. Enkel sender én linje og venter på dens ok: treg, men for fastvare som svarer feil.
+733|Fortsett å vente
+734|Ingen svar fra kontrolleren på {} s under en jobb (tilstand: {}).
+735|Ingenting ble gjenopptatt eller sendt. Maskinen kan bare være treg, eller linjen gikk tapt; se i konsollen og velg.
+736|Stopp jobben
+737|Strømming
+738|Kontrolleren svarer ikke
+739|Tell bufferen
+740|Enkel (vent på hvert ok)

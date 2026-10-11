@@ -730,3 +730,12 @@
 729|Tolleranza tal-kurvi
 730|Kemm tista' tiddevja kurva ċatta (Bézier, test) mill-kurva vera.
 731|Ikteb il-kurvi bħala arkijiet fejn jaqblu
+732|Il-għadd jimla l-buffer tal-kontrollur u huwa ċkejken. Is-sempliċi jibgħat linja waħda u jistenna l-ok tagħha: bil-mod, imma għal firmware li jwieġeb ħażin.
+733|Kompli stenna
+734|L-ebda tweġiba mill-kontrollur għal {} s waqt li jaħdem xogħol (stat: {}).
+735|Xejn ma kompla jew ma intbagħat. Il-magna tista' tkun sempliċement bil-mod jew il-linja ntilfet; ħares lejn il-console u agħżel.
+736|Waqqaf ix-xogħol
+737|Streaming
+738|Il-kontrollur mhux qed iwieġeb
+739|Għodd il-buffer
+740|Sempliċi (stenna kull ok)

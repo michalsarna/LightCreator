@@ -730,3 +730,12 @@
 729|Kurvtolerans
 730|Hur långt en tillplattad kurva (Bézier, text) får avvika från den riktiga.
 731|Skriv kurvor som bågar där de passar
+732|Räkning fyller styrenhetens buffert och är snabb. Enkel skickar en rad och väntar på dess ok: långsam, men för firmware som svarar fel.
+733|Fortsätt vänta
+734|Inget svar från styrenheten på {} s under ett jobb (tillstånd: {}).
+735|Inget återupptogs eller skickades. Maskinen kan bara vara långsam, eller så gick raden förlorad; titta i konsolen och välj.
+736|Stoppa jobbet
+737|Strömning
+738|Styrenheten svarar inte
+739|Räkna bufferten
+740|Enkel (vänta på varje ok)

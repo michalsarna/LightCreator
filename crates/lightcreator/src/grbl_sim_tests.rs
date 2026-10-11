@@ -74,7 +74,7 @@ impl Session {
     fn connect() -> Session {
         let sim = Sim::start();
         let link = LaserLink::spawn(eframe::egui::Context::default());
-        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port: sim.port }, controller: Controller::Grbl });
+        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port: sim.port }, controller: Controller::Grbl, streaming: lc_core::Streaming::Counting });
         let mut s = Session { link, seen: Seen::default(), _sim: sim };
         s.wait("connected", 5.0, |v| v.connected == Some(true));
         s

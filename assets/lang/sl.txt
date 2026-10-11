@@ -730,3 +730,12 @@
 729|Toleranca krivulj
 730|Koliko sme poravnana krivulja (Bézier, besedilo) odstopati od prave.
 731|Krivulje zapiši kot loke, kjer ustrezajo
+732|Štetje napolni medpomnilnik krmilnika in je hitro. Preprosti pošlje eno vrstico in počaka na njen ok: počasno, a za strojno programsko opremo, ki odgovarja napačno.
+733|Še naprej čakaj
+734|Krmilnik ne odgovarja {} s med delom (stanje: {}).
+735|Nič ni bilo nadaljevano ali poslano. Stroj je morda le počasen ali pa se je vrstica izgubila; poglejte konzolo in izberite.
+736|Ustavi delo
+737|Pretakanje
+738|Krmilnik ne odgovarja
+739|Štej medpomnilnik
+740|Preprosto (čakaj vsak ok)

@@ -730,3 +730,12 @@
 729|Krommetolerantie
 730|Hoever een afgevlakte kromme (Bézier, tekst) mag afwijken van de echte.
 731|Krommen als bogen schrijven waar ze passen
+732|Tellen vult de buffer van de besturing en is snel. Eenvoudig stuurt één regel en wacht op zijn ok: traag, maar voor firmware die verkeerd antwoordt.
+733|Blijf wachten
+734|Al {} s geen antwoord van de besturing tijdens een opdracht (toestand: {}).
+735|Er is niets hervat of verstuurd. De machine kan gewoon traag zijn of de regel is zoekgeraakt; kijk in de console en kies.
+736|Opdracht stoppen
+737|Streamen
+738|De besturing antwoordt niet
+739|De buffer tellen
+740|Eenvoudig (op elke ok wachten)

@@ -730,3 +730,12 @@
 729|Caoinfhulaingt cuair
 730|An méid is féidir le cuar cothrom (Bézier, téacs) imeacht ón gcuar fíor.
 731|Scríobh cuair mar chaoirí nuair a oireann siad
+732|Líonann comhaireamh maolán an rialaitheora agus tá sé tapa. Seolann simplí líne amháin agus fanann sé lena ok: mall, ach d'earraí dochta a fhreagraíonn go mícheart.
+733|Lean ort ag fanacht
+734|Gan freagra ón rialaitheoir le {} s le linn oibre (staid: {}).
+735|Níor atosaíodh ná níor seoladh aon rud. B'fhéidir go bhfuil an meaisín mall nó go bhfuil an líne caillte; féach ar an gconsól agus roghnaigh.
+736|Stop an obair
+737|Sruthú
+738|Níl an rialaitheoir ag freagairt
+739|Comhairigh an maolán
+740|Simplí (fan le gach ok)

@@ -730,3 +730,12 @@
 729|Görbék tűrése
 730|Mennyire térhet el a lapított görbe (Bézier, szöveg) a valódi görbétől.
 731|A görbék írása ívként, ahol illeszkednek
+732|A számlálás megtölti a vezérlő pufferét, és gyors. Az egyszerű egy sort küld, és várja az ok-ját: lassú, de rosszul válaszoló firmware-hez.
+733|Várakozás folytatása
+734|A vezérlő {} másodperce nem válaszol munka közben (állapot: {}).
+735|Semmi sem folytatódott vagy lett elküldve. A gép lehet egyszerűen lassú, vagy a sor elveszett; nézze meg a konzolt, majd válasszon.
+736|Munka leállítása
+737|Streamelés
+738|A vezérlő nem válaszol
+739|Puffer számlálása
+740|Egyszerű (minden ok-ra vár)

@@ -730,3 +730,12 @@
 729|Tolérance des courbes
 730|De combien une courbe aplatie (Bézier, texte) peut s'écarter de la vraie.
 731|Écrire les courbes en arcs là où elles s'y prêtent
+732|Le comptage remplit le tampon du contrôleur et est rapide. Le simple envoie une ligne et attend son ok : lent, mais pour un micrologiciel qui répond mal.
+733|Continuer d'attendre
+734|Aucune réponse du contrôleur depuis {} s pendant un travail (état : {}).
+735|Rien n'a été repris ni envoyé. La machine est peut-être simplement lente ou la ligne s'est perdue ; regardez la console, puis choisissez.
+736|Arrêter le travail
+737|Flux
+738|Le contrôleur ne répond pas
+739|Compter le tampon
+740|Simple (attendre chaque ok)

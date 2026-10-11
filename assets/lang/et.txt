@@ -730,3 +730,12 @@
 729|Kõverate tolerants
 730|Kui palju võib lamendatud kõver (Bézier, tekst) tegelikust kõverast kalduda.
 731|Kirjuta kõverad kaartena, kus need sobivad
+732|Loendamine täidab kontrolleri puhvri ja on kiire. Lihtne saadab ühe rea ja ootab selle ok-d: aeglane, kuid valesti vastavale püsivarale.
+733|Jätka ootamist
+734|Kontroller ei ole töö ajal vastanud {} s (olek: {}).
+735|Midagi ei jätkatud ega saadetud. Masin võib olla lihtsalt aeglane või rida läks kaduma; vaata konsooli ja vali.
+736|Peata töö
+737|Voogedastus
+738|Kontroller ei vasta
+739|Loenda puhvrit
+740|Lihtne (oota iga ok-d)

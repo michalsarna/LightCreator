@@ -730,3 +730,12 @@
 729|Tolerância das curvas
 730|Quanto uma curva achatada (Bézier, texto) pode afastar-se da curva real.
 731|Escrever as curvas como arcos onde couberem
+732|A contagem enche o buffer do controlador e é rápida. O simples envia uma linha e espera pelo seu ok: lento, mas para firmware que responde mal.
+733|Continuar a esperar
+734|Sem resposta do controlador há {} s durante um trabalho (estado: {}).
+735|Nada foi retomado nem enviado. A máquina pode ser apenas lenta ou a linha perdeu-se; veja a consola e escolha.
+736|Parar o trabalho
+737|Transmissão
+738|O controlador não responde
+739|Contar o buffer
+740|Simples (esperar cada ok)

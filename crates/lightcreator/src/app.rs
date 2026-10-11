@@ -161,6 +161,8 @@ pub struct App {
     pub check_dlg: Option<crate::check_ui::CheckDlg>,
     /// What the controller reported after connecting that does not look right.
     pub fw_warn: Option<lc_core::controller::FwCheck>,
+    /// A running job waits for an answer while the machine stands still: seconds and machine state.
+    pub stall: Option<(u64, String)>,
     /// The box the frame command traces.
     pub frame_bounds: Option<lc_core::Rect>,
     pub allow_close: bool,
@@ -359,6 +361,7 @@ impl App {
             confirm: None,
             check_dlg: None,
             fw_warn: None,
+            stall: None,
             frame_bounds: None,
             allow_close: false,
             show_options: false,
@@ -933,10 +936,17 @@ impl App {
                     if !c {
                         self.machine.0 = tr("Disconnected").into();
                         self.fw_warn = None;
+                        self.stall = None;
                     }
                 }
                 Evt::Status { state, x, y } => self.machine = (state, x, y),
-                Evt::Progress { done, total } => self.progress = (done, total),
+                Evt::Progress { done, total } => {
+                    self.progress = (done, total);
+                    if done >= total {
+                        self.stall = None;
+                    }
+                }
+                Evt::Stalled { secs, state } => self.stall = Some((secs, state)),
             }
         }
     }
@@ -1747,6 +1757,7 @@ impl App {
         self.materials_window(ctx);
         self.check_window(ctx);
         self.fw_window(ctx);
+        self.stall_window(ctx);
         self.material_edit_window(ctx);
         self.labels_window(ctx);
         self.merge_dialog(ctx);

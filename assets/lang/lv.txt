@@ -730,3 +730,12 @@
 729|Līkņu pielaide
 730|Cik daudz saplacināta līkne (Bézier, teksts) drīkst atšķirties no patiesās.
 731|Rakstīt līknes kā lokus, kur tie der
+732|Skaitīšana piepilda kontroliera buferi un ir ātra. Vienkāršais nosūta vienu rindu un gaida tās ok: lēns, bet programmaparatūrai, kas atbild nepareizi.
+733|Turpināt gaidīt
+734|Kontrolieris nav atbildējis {} s darba laikā (stāvoklis: {}).
+735|Nekas netika atsākts vai nosūtīts. Iekārta var būt vienkārši lēna vai rinda pazuda; apskatiet konsoli un izvēlieties.
+736|Apturēt darbu
+737|Straumēšana
+738|Kontrolieris neatbild
+739|Skaitīt buferi
+740|Vienkāršs (gaidīt katru ok)

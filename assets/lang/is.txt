@@ -730,3 +730,12 @@
 729|Vikmörk ferla
 730|Hversu mikið flattur ferill (Bézier, texti) má víkja frá hinum rétta.
 731|Skrifa ferla sem boga þar sem þeir passa
+732|Talning fyllir biðminni stýringarinnar og er hröð. Einföld sendir eina línu og bíður eftir ok: hæg, en fyrir fastbúnað sem svarar rangt.
+733|Halda áfram að bíða
+734|Ekkert svar frá stýringunni í {} s meðan verk er í gangi (staða: {}).
+735|Ekkert var endurræst eða sent. Vélin getur bara verið hæg eða línan týnst; skoðaðu stjórnborðið og veldu.
+736|Stöðva verkið
+737|Streymi
+738|Stýringin svarar ekki
+739|Telja biðminnið
+740|Einföld (bíða eftir hverju ok)

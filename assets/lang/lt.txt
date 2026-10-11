@@ -730,3 +730,12 @@
 729|Kreivių tolerancija
 730|Kiek suplotoji kreivė (Bézier, tekstas) gali nukrypti nuo tikrosios.
 731|Rašyti kreives kaip lankus, kur jos tinka
+732|Skaičiavimas užpildo valdiklio buferį ir yra greitas. Paprastas siunčia vieną eilutę ir laukia jos ok: lėtas, bet skirtas programinei įrangai, kuri atsako klaidingai.
+733|Toliau laukti
+734|Valdiklis neatsako {} s vykdant darbą (būsena: {}).
+735|Niekas nebuvo tęsiama ar siunčiama. Staklės gali būti tiesiog lėtos arba eilutė dingo; pažiūrėkite į konsolę ir pasirinkite.
+736|Sustabdyti darbą
+737|Srautinis siuntimas
+738|Valdiklis neatsako
+739|Skaičiuoti buferį
+740|Paprastas (laukti kiekvieno ok)

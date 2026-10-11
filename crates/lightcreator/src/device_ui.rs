@@ -439,6 +439,15 @@ impl App {
                                         ui.add(egui::DragValue::new(&mut d.connection.tcp_port).range(1..=65535));
                                         ui.end_row();
                                     }
+                                    ui.label(tr("Streaming"));
+                                    egui::ComboBox::from_id_salt("streaming").selected_text(tr(d.connection.streaming.label())).show_ui(ui, |ui| {
+                                        for m in lc_core::Streaming::ALL {
+                                            ui.selectable_value(&mut d.connection.streaming, m, tr(m.label()));
+                                        }
+                                    })
+                                    .response
+                                    .on_hover_text(tr("Counting fills the controller's buffer and is fast. Simple sends one line and waits for its ok: slow, but for firmware that answers wrongly."));
+                                    ui.end_row();
                                     ui.label("");
                                     let label = if reading { tr("Reading…") } else { tr("Read from device") };
                                     if ui.add_enabled(!reading && d.has_target(), egui::Button::new(label)).on_hover_text(tr("Connect and read work area, S-value max and speed from the controller")).clicked() {
@@ -701,7 +710,7 @@ impl App {
                 let green = egui::Button::new(RichText::new(tr("Connect")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f));
                 if ui.add_enabled(dev.has_target(), green).clicked() {
                     if let Some(target) = Target::of(&dev) {
-                        self.link.send(Cmd::Connect { target, controller: ctrl });
+                        self.link.send(Cmd::Connect { target, controller: ctrl, streaming: self.doc.device.connection.streaming });
                     }
                 }
             }
@@ -811,7 +820,7 @@ impl App {
         } else {
             st.waiting_connect = true;
             match Target::of(draft) {
-                Some(target) => self.link.send(Cmd::Connect { target, controller: c }),
+                Some(target) => self.link.send(Cmd::Connect { target, controller: c, streaming: draft.connection.streaming }),
                 None => return,
             }
         }

@@ -736,6 +736,26 @@ impl GcodeCfg {
     }
 }
 
+/// How a job is fed to the controller.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Streaming {
+    /// Several lines are in the controller's buffer at once; the program counts the bytes (fast, the default).
+    #[default]
+    Counting,
+    /// One line at a time: send, wait for `ok`, send the next. Slow, but for firmware that answers wrongly.
+    Simple,
+}
+
+impl Streaming {
+    pub const ALL: [Streaming; 2] = [Streaming::Counting, Streaming::Simple];
+    pub fn label(self) -> &'static str {
+        match self {
+            Streaming::Counting => "Count the buffer",
+            Streaming::Simple => "Simple (wait for each ok)",
+        }
+    }
+}
+
 /// How the program reaches the machine.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Connection {
@@ -751,11 +771,13 @@ pub struct Connection {
     #[serde(default)]
     pub port: String,
     pub baud: u32,
+    #[serde(default)]
+    pub streaming: Streaming,
 }
 
 impl Default for Connection {
     fn default() -> Self {
-        Connection { link: LinkKind::Serial, host: String::new(), tcp_port: 3333, port: String::new(), baud: 115_200 }
+        Connection { link: LinkKind::Serial, host: String::new(), tcp_port: 3333, port: String::new(), baud: 115_200, streaming: Streaming::Counting }
     }
 }
 
@@ -884,6 +906,7 @@ impl From<DeviceWire> for Device {
             tcp_port: w.tcp_port.unwrap_or(3333),
             port: w.port.unwrap_or_default(),
             baud: w.baud.unwrap_or(115_200),
+            streaming: Streaming::Counting,
         });
         let mut heads = w.heads.unwrap_or_default();
         if heads.is_empty() {

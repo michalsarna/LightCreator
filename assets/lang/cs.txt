@@ -730,3 +730,12 @@
 729|Tolerance křivek
 730|O kolik se zploštělá křivka (Bézier, text) smí odchýlit od skutečné.
 731|Zapisovat křivky jako oblouky, kde se hodí
+732|Počítání plní vyrovnávací paměť řídicí jednotky a je rychlé. Jednoduchý režim pošle jeden řádek a čeká na jeho ok: pomalý, ale pro firmware, který odpovídá špatně.
+733|Dál čekat
+734|Řídicí jednotka neodpovídá {} s během úlohy (stav: {}).
+735|Nic nebylo obnoveno ani odesláno. Stroj může být jen pomalý nebo se řádek ztratil; podívejte se do konzole a rozhodněte.
+736|Zastavit úlohu
+737|Streamování
+738|Řídicí jednotka neodpovídá
+739|Počítat vyrovnávací paměť
+740|Jednoduchý (čekat na každé ok)

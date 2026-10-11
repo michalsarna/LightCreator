@@ -730,3 +730,12 @@
 729|Kurvetolerance
 730|Hvor langt en fladtrykt kurve (Bézier, tekst) må afvige fra den rigtige.
 731|Skriv kurver som buer, hvor de passer
+732|Optælling fylder styringens buffer og er hurtig. Enkel sender én linje og venter på dens ok: langsom, men til firmware, der svarer forkert.
+733|Bliv ved med at vente
+734|Intet svar fra styringen i {} s under en opgave (tilstand: {}).
+735|Intet blev genoptaget eller sendt. Maskinen kan bare være langsom, eller linjen gik tabt; se i konsollen og vælg.
+736|Stop opgaven
+737|Streaming
+738|Styringen svarer ikke
+739|Tæl bufferen
+740|Enkel (vent på hvert ok)

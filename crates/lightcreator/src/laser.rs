@@ -61,7 +61,7 @@ fn open_link(t: &Target) -> Result<(Box<dyn Link>, bool), String> {
 }
 
 pub enum Cmd {
-    Connect { target: Target, controller: Controller },
+    Connect { target: Target, controller: Controller, streaming: lc_core::Streaming },
     Disconnect,
     /// A single immediate line (jog, $H, ...), queued ahead of any running job.
     Line(String),
@@ -105,6 +105,8 @@ pub enum Evt {
     Connected(bool),
     Status { state: String, x: f64, y: f64 },
     Progress { done: usize, total: usize },
+    /// A job is running, the controller has not answered for `secs` and the machine is not moving.
+    Stalled { secs: u64, state: String },
 }
 
 pub struct LaserLink {
@@ -114,9 +116,13 @@ pub struct LaserLink {
 
 impl LaserLink {
     pub fn spawn(ctx: eframe::egui::Context) -> Self {
+        Self::spawn_with(ctx, STALL_AFTER)
+    }
+    /// `stall` is how long a job may wait for an answer, with the machine standing still, before it is reported.
+    pub fn spawn_with(ctx: eframe::egui::Context, stall: Duration) -> Self {
         let (tx, wrx) = channel();
         let (wtx, rx) = channel();
-        std::thread::spawn(move || worker(wrx, wtx, ctx));
+        std::thread::spawn(move || worker(wrx, wtx, ctx, stall));
         Self { tx, rx }
     }
     pub fn send(&self, c: Cmd) {
@@ -157,6 +163,8 @@ fn realtime_name(b: u8) -> String {
 const RX_BUFFER: usize = 120; // GRBL has 128 bytes; keep a margin.
 /// Longest wait for GRBL's start-up banner after a soft reset before streaming anyway.
 const BANNER_TIMEOUT: Duration = Duration::from_millis(2500);
+/// How long a running job may wait for an `ok` while the machine stands still before it is reported as stalled.
+const STALL_AFTER: Duration = Duration::from_secs(10);
 
 /// Why a line is in the queue; decides how its `ok` is shown in the console.
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -166,7 +174,7 @@ enum Kind {
     Poll,
 }
 
-fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
+fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context, stall_after: Duration) {
     let emit = |e: Evt| {
         let _ = tx.send(e);
         ctx.request_repaint();
@@ -183,15 +191,23 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
     // Set after a soft reset: GRBL drops everything it receives until it has restarted and printed its banner
     // (`Grbl 1.1h ['$' for help]`), so queued lines are held back until then.
     let mut restarting: Option<Instant> = None;
+    let mut simple = false;
+    // Since when a line has been waiting for its `ok`, and the machine state from the last status report.
+    let mut waiting_since: Option<Instant> = None;
+    let mut stall_reported = false;
+    let mut machine_state = String::new();
     loop {
         loop {
             match rx.try_recv() {
-                Ok(Cmd::Connect { target, controller: c }) => {
+                Ok(Cmd::Connect { target, controller: c, streaming }) => {
                     let label = target.label();
                     match open_link(&target) {
                         Ok((mut p, tcp)) => {
                             is_tcp = tcp;
                             controller = c;
+                            simple = streaming == lc_core::Streaming::Simple;
+                            waiting_since = None;
+                            stall_reported = false;
                             restarting = None;
                             if let Some(b) = c.on_connect() {
                                 let _ = p.write_all(&[b]);
@@ -275,6 +291,7 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                     emit(traffic(Dir::Rx, line, false));
                 } else if let Some((state, x, y)) = lc_core::controller::parse_status(&line) {
                     emit(traffic(Dir::Rx, line.clone(), true));
+                    machine_state = state.clone();
                     emit(Evt::Status { state, x, y });
                 } else if restarting.is_some() && (line == "ok" || line.starts_with("error")) {
                     // Start-up noise (e.g. `error:7` from an empty EEPROM) or a late reply to a line sent before the
@@ -282,6 +299,8 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                     emit(traffic(Dir::Rx, line, false));
                 } else if line == "ok" || line.starts_with("error") {
                     let kind = pending.pop_front().map(|(_, k)| k);
+                    waiting_since = (!pending.is_empty()).then(Instant::now);
+                    stall_reported = false;
                     emit(traffic(Dir::Rx, line.clone(), kind == Some(Kind::Poll)));
                     if kind == Some(Kind::Job) {
                         done += 1;
@@ -299,7 +318,8 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
             // Write while the controller's RX buffer has room.
             while let Some((l, _)) = queue.front().filter(|_| restarting.is_none()) {
                 let used: usize = pending.iter().map(|(n, _)| n).sum();
-                if used + l.len() + 1 > RX_BUFFER {
+                // Simple streaming keeps one line in flight; counting fills the controller's buffer.
+                if used + l.len() + 1 > RX_BUFFER || (simple && !pending.is_empty()) {
                     break;
                 }
                 let (l, kind) = queue.pop_front().unwrap();
@@ -308,7 +328,26 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                     lost = true;
                     break;
                 }
+                if pending.is_empty() {
+                    waiting_since = Some(Instant::now());
+                }
                 pending.push_back((l.len() + 1, kind));
+            }
+            // A job that waits for an answer while the machine stands still: say so, ask for the state, and leave the
+            // decision to the user (nothing is resumed or sent on its own).
+            let moving = matches!(machine_state.split(':').next().unwrap_or(""), "Run" | "Hold" | "Home" | "Jog" | "Door" | "Check");
+            let running_job = total > 0 && done < total;
+            if let (Some(t), true) = (waiting_since, running_job && !pending.is_empty() && !moving && !stall_reported) {
+                if t.elapsed() >= stall_after {
+                    stall_reported = true;
+                    let secs = t.elapsed().as_secs();
+                    emit(Evt::Log(crate::i18n::trf("No answer from the controller for {} s while a job is running (state: {}).", &[&secs, &machine_state])));
+                    emit(Evt::Stalled { secs, state: machine_state.clone() });
+                    if let StatusPoll::Byte(b) = controller.status_poll() {
+                        let _ = p.write_all(&[b]);
+                        emit(traffic(Dir::Tx, (b as char).to_string(), true));
+                    }
+                }
             }
             if last_poll.elapsed() > Duration::from_millis(controller.poll_interval_ms()) {
                 last_poll = Instant::now();
@@ -392,7 +431,7 @@ mod tests {
         let port = listener.local_addr().unwrap().port();
         fake_grbl(listener, 1500);
         let link = LaserLink::spawn(eframe::egui::Context::default());
-        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port }, controller: Controller::Grbl });
+        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port }, controller: Controller::Grbl, streaming: lc_core::Streaming::Counting });
         assert!(wait_for(&link, 3.0, |e| matches!(e, Evt::Connected(true))), "connected");
         link.send(Cmd::Job(vec!["G21".into(), "G0 X5 Y5".into(), "M5".into()]));
         let mut done = false;
@@ -408,11 +447,121 @@ mod tests {
         assert!(wait_for(&link, 4.0, |e| matches!(e, Evt::Connected(false))), "connection lost detected");
     }
 
+    /// A controller that acknowledges lines slowly (or not at all) and reports how many lines it had in flight.
+    fn slow_grbl(listener: TcpListener, ack_delay_ms: u64, silent_from: Option<usize>, state: &'static str) -> std::sync::mpsc::Receiver<usize> {
+        let (tx, rx) = std::sync::mpsc::channel();
+        std::thread::spawn(move || {
+            let (mut s, _) = listener.accept().unwrap();
+            let _ = s.set_read_timeout(Some(Duration::from_millis(10)));
+            let start = Instant::now();
+            let (mut buf, mut chunk) = (Vec::<u8>::new(), [0u8; 64]);
+            let (mut inflight, mut seen, mut max) = (0usize, 0usize, 0usize);
+            let mut ack_at: Option<Instant> = None;
+            while start.elapsed() < Duration::from_secs(6) {
+                let read = s.read(&mut chunk);
+                // The worker closed the socket: done.
+                if matches!(read, Ok(0)) {
+                    break;
+                }
+                if let Ok(n) = read {
+                    for &b in &chunk[..n] {
+                        match b {
+                            b'?' => {
+                                let _ = s.write_all(format!("<{state}|MPos:0.000,0.000,0.000|FS:0,0>\n").as_bytes());
+                            }
+                            0x18 => {
+                                let _ = s.write_all(b"\r\nGrbl 1.1h ['$' for help]\r\n");
+                            }
+                            b'\n' => {
+                                buf.clear();
+                                seen += 1;
+                                inflight += 1;
+                                max = max.max(inflight);
+                                if ack_at.is_none() {
+                                    ack_at = Some(Instant::now() + Duration::from_millis(ack_delay_ms));
+                                }
+                            }
+                            _ => buf.push(b),
+                        }
+                    }
+                }
+                // Acknowledge the oldest line when its time has come, unless the controller has gone quiet.
+                if inflight > 0 && ack_at.is_some_and(|t| Instant::now() >= t) && silent_from.map_or(true, |n| seen <= n) {
+                    inflight -= 1;
+                    let _ = s.write_all(b"ok\n");
+                    ack_at = (inflight > 0).then(|| Instant::now() + Duration::from_millis(ack_delay_ms));
+                }
+            }
+            let _ = tx.send(max);
+        });
+        rx
+    }
+
+    fn run_job_on(streaming: lc_core::Streaming, lines: usize, ack_ms: u64) -> usize {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let max = slow_grbl(listener, ack_ms, None, "Idle");
+        let link = LaserLink::spawn(eframe::egui::Context::default());
+        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port }, controller: Controller::Grbl, streaming });
+        assert!(wait_for(&link, 3.0, |e| matches!(e, Evt::Connected(true))));
+        link.send(Cmd::Job((0..lines).map(|i| format!("G1 X{i}")).collect()));
+        let mut finished = false;
+        assert!(wait_for(&link, 6.0, |e| {
+            if let Evt::Progress { done, total } = e {
+                finished = *done == lines && *total == lines;
+            }
+            finished
+        }), "the job finishes");
+        link.send(Cmd::Disconnect);
+        max.recv_timeout(Duration::from_secs(8)).unwrap()
+    }
+
+    #[test]
+    fn counting_keeps_several_lines_in_flight_and_simple_keeps_one() {
+        assert!(run_job_on(lc_core::Streaming::Counting, 6, 40) > 1, "counting fills the buffer");
+        assert_eq!(run_job_on(lc_core::Streaming::Simple, 6, 40), 1, "simple waits for every ok");
+    }
+
+    #[test]
+    fn a_job_that_waits_with_the_machine_standing_still_is_reported_once() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let _max = slow_grbl(listener, 5, Some(2), "Idle");
+        let link = LaserLink::spawn_with(eframe::egui::Context::default(), Duration::from_millis(400));
+        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port }, controller: Controller::Grbl, streaming: lc_core::Streaming::Counting });
+        assert!(wait_for(&link, 3.0, |e| matches!(e, Evt::Connected(true))));
+        // The third and later lines are never acknowledged.
+        link.send(Cmd::Job((0..6).map(|i| format!("G1 X{i}")).collect()));
+        let mut stalled = 0;
+        let mut state = String::new();
+        wait_for(&link, 3.0, |e| {
+            if let Evt::Stalled { state: s, .. } = e {
+                stalled += 1;
+                state = s.clone();
+            }
+            false
+        });
+        assert_eq!(stalled, 1, "reported exactly once");
+        assert_eq!(state, "Idle");
+    }
+
+    #[test]
+    fn a_machine_that_is_moving_is_not_called_stalled() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let _max = slow_grbl(listener, 5, Some(2), "Run");
+        let link = LaserLink::spawn_with(eframe::egui::Context::default(), Duration::from_millis(400));
+        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port }, controller: Controller::Grbl, streaming: lc_core::Streaming::Counting });
+        assert!(wait_for(&link, 3.0, |e| matches!(e, Evt::Connected(true))));
+        link.send(Cmd::Job((0..6).map(|i| format!("G1 X{i}")).collect()));
+        assert!(!wait_for(&link, 2.0, |e| matches!(e, Evt::Stalled { .. })));
+    }
+
     #[test]
     fn unreachable_host_reports_an_error() {
         let link = LaserLink::spawn(eframe::egui::Context::default());
         // Port 1 on localhost is closed.
-        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port: 1 }, controller: Controller::Grbl });
+        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port: 1 }, controller: Controller::Grbl, streaming: lc_core::Streaming::Counting });
         assert!(wait_for(&link, 5.0, |e| matches!(e, Evt::Log(s) if s.contains("127.0.0.1:1"))));
     }
 }

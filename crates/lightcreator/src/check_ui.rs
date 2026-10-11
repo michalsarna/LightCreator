@@ -52,6 +52,34 @@ impl App {
         false
     }
 
+    /// The job waits for an `ok` and the machine stands still: the user decides.
+    pub fn stall_window(&mut self, ctx: &egui::Context) {
+        let Some((secs, state)) = self.stall.clone() else { return };
+        let mut open = true;
+        let mut stop = false;
+        let mut close = false;
+        crate::window_ui::popup(ctx, "job_stall", &tr("The controller is not answering"), [480.0, 190.0], &mut open, |ui| {
+            ui.label(RichText::new(trf("No answer from the controller for {} s while a job is running (state: {}).", &[&secs, &state])).color(Color32::from_rgb(0xe8, 0x8a, 0x1f)).strong());
+            ui.label(tr("Nothing was resumed or sent. The machine may just be slow, or the line was lost; look at the console, then choose."));
+            ui.add_space(6.0);
+            ui.horizontal(|ui| {
+                if ui.button(tr("Keep waiting")).clicked() {
+                    close = true;
+                }
+                let b = egui::Button::new(RichText::new(tr("Stop the job")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0xc0, 0x30, 0x30));
+                if ui.add(b).clicked() {
+                    stop = true;
+                }
+            });
+        });
+        if stop {
+            self.link.send(crate::laser::Cmd::Abort);
+        }
+        if stop || close || !open {
+            self.stall = None;
+        }
+    }
+
     /// The warning about what the controller reported after connecting: laser mode off, `$30` unlike the profile.
     pub fn fw_window(&mut self, ctx: &egui::Context) {
         let Some(w) = self.fw_warn.clone() else { return };

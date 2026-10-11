@@ -730,3 +730,12 @@
 729	Curve tolerance
 730	How far a flattened curve (Bézier, text) may stray from the true curve.
 731	Write curves as arcs where they fit
+732	Counting fills the controller's buffer and is fast. Simple sends one line and waits for its ok: slow, but for firmware that answers wrongly.
+733	Keep waiting
+734	No answer from the controller for {} s while a job is running (state: {}).
+735	Nothing was resumed or sent. The machine may just be slow, or the line was lost; look at the console, then choose.
+736	Stop the job
+737	Streaming
+738	The controller is not answering
+739	Count the buffer
+740	Simple (wait for each ok)

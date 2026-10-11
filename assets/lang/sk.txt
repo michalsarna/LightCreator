@@ -730,3 +730,12 @@
 729|Tolerancia kriviek
 730|O koľko sa môže sploštená krivka (Bézier, text) odchýliť od skutočnej.
 731|Zapisovať krivky ako oblúky, kde sa hodia
+732|Počítanie napĺňa vyrovnávaciu pamäť riadiacej jednotky a je rýchle. Jednoduchý režim pošle jeden riadok a čaká na jeho ok: pomalý, ale pre firmvér, ktorý odpovedá zle.
+733|Ďalej čakať
+734|Riadiaca jednotka neodpovedá {} s počas úlohy (stav: {}).
+735|Nič nebolo obnovené ani odoslané. Stroj môže byť len pomalý alebo sa riadok stratil; pozrite do konzoly a rozhodnite.
+736|Zastaviť úlohu
+737|Streamovanie
+738|Riadiaca jednotka neodpovedá
+739|Počítať vyrovnávaciu pamäť
+740|Jednoduchý (čakať na každé ok)
