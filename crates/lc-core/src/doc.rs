@@ -416,21 +416,24 @@ pub enum Controller {
     Ruida,
     /// Trocen DSP controllers: jobs are exported as HPGL `.plt` files.
     Trocen,
+    /// Smoothieware firmware over a serial port (streamed live like GRBL).
+    Smoothieware,
 }
 
 impl Controller {
-    pub const ALL: [Controller; 4] = [Controller::Grbl, Controller::Marlin, Controller::Ruida, Controller::Trocen];
+    pub const ALL: [Controller; 5] = [Controller::Grbl, Controller::Marlin, Controller::Smoothieware, Controller::Ruida, Controller::Trocen];
     pub fn label(self) -> &'static str {
         match self {
             Controller::Grbl => "GRBL",
             Controller::Marlin => "Marlin",
             Controller::Ruida => "Ruida",
             Controller::Trocen => "Trocen",
+            Controller::Smoothieware => "Smoothieware",
         }
     }
     /// Can LightCreator talk to this controller over a serial port?
     pub fn is_serial(self) -> bool {
-        matches!(self, Controller::Grbl | Controller::Marlin)
+        matches!(self, Controller::Grbl | Controller::Marlin | Controller::Smoothieware)
     }
 }
 
@@ -569,6 +572,35 @@ impl Default for Speeds {
     }
 }
 
+/// The flavour of G-code a job is written in.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Dialect {
+    /// GRBL with constant power (`M3`).
+    Grbl,
+    /// GRBL with dynamic power (`M4`, recommended).
+    GrblDynamic,
+    /// Marlin with the laser feature (inline power).
+    Marlin,
+    /// Smoothieware (laser module; S is a fraction of the full power).
+    Smoothieware,
+}
+
+impl Dialect {
+    pub const ALL: [Dialect; 4] = [Dialect::Grbl, Dialect::GrblDynamic, Dialect::Marlin, Dialect::Smoothieware];
+    pub fn label(self) -> &'static str {
+        match self {
+            Dialect::Grbl => "GRBL (M3)",
+            Dialect::GrblDynamic => "GRBL dynamic (M4)",
+            Dialect::Marlin => "Marlin",
+            Dialect::Smoothieware => "Smoothieware",
+        }
+    }
+    /// The GRBL-like flavours switch between `M3` and `M4`.
+    pub fn is_grbl(self) -> bool {
+        matches!(self, Dialect::Grbl | Dialect::GrblDynamic)
+    }
+}
+
 /// How the G-code of a job is written.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct GcodeCfg {
@@ -576,11 +608,14 @@ pub struct GcodeCfg {
     pub dynamic_power: bool,
     /// Go back to the machine zero when the job is done.
     pub return_home: bool,
+    /// The flavour of G-code; `None` follows the controller (and `dynamic_power` for GRBL).
+    #[serde(default)]
+    pub dialect: Option<Dialect>,
 }
 
 impl Default for GcodeCfg {
     fn default() -> Self {
-        GcodeCfg { dynamic_power: true, return_home: true }
+        GcodeCfg { dynamic_power: true, return_home: true, dialect: None }
     }
 }
 
@@ -725,7 +760,7 @@ impl From<DeviceWire> for Device {
         let axes = w.axes.unwrap_or(Axes { origin: w.origin.unwrap_or(d.axes.origin), ..Axes::default() });
         let area = w.area.unwrap_or(Area { bed_w: w.bed_w.unwrap_or(d.area.bed_w), bed_h: w.bed_h.unwrap_or(d.area.bed_h), ..Area::default() });
         let speeds = w.speeds.unwrap_or(Speeds { travel_speed: w.travel_speed.unwrap_or(d.speeds.travel_speed), ..Speeds::default() });
-        let gcode = w.gcode.unwrap_or(GcodeCfg { dynamic_power: w.dynamic_power.unwrap_or(true), return_home: w.return_home.unwrap_or(true) });
+        let gcode = w.gcode.unwrap_or(GcodeCfg { dynamic_power: w.dynamic_power.unwrap_or(true), return_home: w.return_home.unwrap_or(true), dialect: None });
         let connection = w.connection.unwrap_or(Connection {
             link: w.link.unwrap_or_default(),
             host: w.host.unwrap_or_default(),
@@ -870,6 +905,19 @@ impl Device {
     /// Where the machine's zero is, in design coordinates (millimetres, y down). Jobs start and end here.
     pub fn home_point(&self) -> Pt {
         self.from_machine(0.0, 0.0)
+    }
+
+    /// The flavour of G-code this device gets.
+    pub fn dialect(&self) -> Dialect {
+        if let Some(d) = self.gcode.dialect {
+            return d;
+        }
+        match self.controller {
+            Controller::Marlin => Dialect::Marlin,
+            Controller::Smoothieware => Dialect::Smoothieware,
+            _ if self.gcode.dynamic_power => Dialect::GrblDynamic,
+            _ => Dialect::Grbl,
+        }
     }
 
     /// Laser head `i`, or the first one when there is no such head.

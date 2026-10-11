@@ -704,3 +704,7 @@
 703|0 = anaithnid. Le luach áirítear rampaí tosaithe agus stoptha sa mheastachán ama agus molann painéal na sraithe overscan.
 704|Molta: {} (an fad brecála ag an luas seo agus le luasghéarú an mheaisín)
 705|Tá sraith {} níos tapúla ná uasluas gearrtha an mheaisín.
+706|Uathoibríoch (ón rialaitheoir)
+707|Canúint G-code
+708|Smoothieware: scríobhtar S mar chodán den chumhacht iomlán (socraigh uasluach S ar 1). Oibríonn sruthú mar a dhéanann GRBL; níor triaileadh aon cheann de seo ar fheabhsmhaoin fhíor.
+709|Úsáidtear nuair atá an chanúint uathoibríoch; cinneann canúint GRBL roghnaithe idir M3 agus M4 í féin.

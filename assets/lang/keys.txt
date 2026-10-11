@@ -704,3 +704,7 @@
 703	0 = not known. With a value the time estimate includes the start and stop ramps and the layer panel suggests an overscan.
 704	Suggested: {} (the braking distance at this speed and the machine's acceleration)
 705	Layer {} is faster than the maximum cutting speed of the machine.
+706	Automatic (from the controller)
+707	G-code dialect
+708	Smoothieware: S is written as a fraction of the full power (set S-value max to 1). Streaming works like GRBL's; none of this has been tried on real hardware.
+709	Used when the dialect is automatic; a chosen GRBL dialect decides between M3 and M4 itself.

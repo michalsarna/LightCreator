@@ -704,3 +704,7 @@
 703|0 = ukendt. Med en værdi indeholder tidsestimatet start- og stoprampe, og lagpanelet foreslår en overscan.
 704|Foreslået: {} (bremselængden ved denne hastighed og maskinens acceleration)
 705|Lag {} er hurtigere end maskinens maksimale skærehastighed.
+706|Automatisk (fra styringen)
+707|G-kodedialekt
+708|Smoothieware: S skrives som en brøkdel af fuld effekt (sæt S-værdi maks. til 1). Streaming fungerer som i GRBL; intet af dette er prøvet på ægte hardware.
+709|Bruges når dialekten er automatisk; en valgt GRBL-dialekt afgør selv mellem M3 og M4.

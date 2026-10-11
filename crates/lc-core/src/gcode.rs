@@ -130,12 +130,19 @@ impl<'a> Writer<'a> {
 
     /// Linear move with the laser at `power` percent and `speed` mm/s.
     fn line(&mut self, p: Pt, power: f64, speed: f64) {
-        let s = (power / 100.0 * self.dev.s_max()).round();
+        let raw = power / 100.0 * self.dev.s_max();
+        // Smoothieware takes a fraction of the full power, so it keeps decimals; the others take whole numbers.
+        let smooth = self.dev.dialect() == Dialect::Smoothieware;
+        let s = if smooth { (raw * 1000.0).round() / 1000.0 } else { raw.round() };
         let f = (speed * 60.0).round();
         let (x, y) = self.map(p);
         let mut l = format!("G1 X{:.3} Y{:.3}", x, y);
         if self.s != Some(s) {
-            let _ = write!(l, " S{}", s as i64);
+            if smooth {
+                let _ = write!(l, " S{}", s);
+            } else {
+                let _ = write!(l, " S{}", s as i64);
+            }
             self.s = Some(s);
         }
         if self.f != Some(f) {
@@ -250,15 +257,22 @@ pub fn generate(doc: &Document) -> Job {
     let mut w = Writer::new(dev);
     let _ = writeln!(w.out, "; LightCreator job — {}", dev.name);
     let _ = writeln!(w.out, "G21 ; mm\nG90 ; absolute\nG17");
-    if dev.controller == Controller::Marlin {
+    let dialect = dev.dialect();
+    match dialect {
         // Marlin laser feature: inline power, S on each G1 sets the power.
-        let _ = writeln!(w.out, "M3 I S0");
-    } else {
-        let _ = writeln!(w.out, "{} S0", if dev.gcode.dynamic_power { "M4" } else { "M3" });
+        Dialect::Marlin => {
+            let _ = writeln!(w.out, "M3 I S0");
+        }
+        Dialect::GrblDynamic => {
+            let _ = writeln!(w.out, "M4 S0");
+        }
+        Dialect::Grbl | Dialect::Smoothieware => {
+            let _ = writeln!(w.out, "M3 S0");
+        }
     }
 
-    // Air assist: M8 / M9 for GRBL, the fan commands for Marlin.
-    let (air_on, air_off) = if dev.controller == Controller::Marlin { ("M106 S255", "M107") } else { ("M8", "M9") };
+    // Air assist: M8 / M9 for GRBL, the fan commands for Marlin and Smoothieware.
+    let (air_on, air_off) = if dialect.is_grbl() { ("M8", "M9") } else { ("M106 S255", "M107") };
     let mut air = false;
     for li in doc.layer_order() {
         let layer = &doc.layers[li];
@@ -333,14 +347,14 @@ pub fn generate(doc: &Document) -> Job {
             }
         }
     }
-    let _ = writeln!(w.out, "{}", if dev.controller == Controller::Marlin { "M5 I ; laser off" } else { "M5 ; laser off" });
+    let _ = writeln!(w.out, "{}", if dialect == Dialect::Marlin { "M5 I ; laser off" } else { "M5 ; laser off" });
     if dev.gcode.return_home {
         w.travel(dev.home_point());
     }
     if air {
         let _ = writeln!(w.out, "{air_off} ; air assist off");
     }
-    if dev.controller != Controller::Marlin {
+    if dialect.is_grbl() {
         let _ = writeln!(w.out, "M2");
     }
     let est = timing(&mut w.moves, dev, w.seconds);
@@ -389,16 +403,22 @@ fn timing(moves: &mut [Move], dev: &Device, plain_total: f64) -> f64 {
 /// G-code that traces the bounding box of the design. `power` is percent (0 = laser off, 1-2 gives a visible dot on diodes).
 pub fn frame_gcode(bounds: Rect, dev: &Device, power: f64, speed_mm_s: f64) -> String {
     let mut w = Writer::new(dev);
-    if dev.controller == Controller::Marlin {
-        let _ = writeln!(w.out, "G21\nG90\nM3 I S0");
-    } else {
-        let _ = writeln!(w.out, "G21\nG90\nM4 S0");
+    match dev.dialect() {
+        Dialect::Marlin => {
+            let _ = writeln!(w.out, "G21\nG90\nM3 I S0");
+        }
+        Dialect::Smoothieware => {
+            let _ = writeln!(w.out, "G21\nG90\nM3 S0");
+        }
+        Dialect::Grbl | Dialect::GrblDynamic => {
+            let _ = writeln!(w.out, "G21\nG90\nM4 S0");
+        }
     }
     let (a, b) = (bounds.min, bounds.max);
     w.travel(a);
     for p in [Pt::new(b.x, a.y), b, Pt::new(a.x, b.y), a] {
         w.line(p, power, speed_mm_s);
     }
-    let _ = writeln!(w.out, "{}", if dev.controller == Controller::Marlin { "M5 I" } else { "M5" });
+    let _ = writeln!(w.out, "{}", if dev.dialect() == Dialect::Marlin { "M5 I" } else { "M5" });
     w.out
 }

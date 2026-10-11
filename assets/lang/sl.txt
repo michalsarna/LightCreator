@@ -704,3 +704,7 @@
 703|0 = ni znano. Z vrednostjo ocena časa vključuje rampi zagona in ustavitve, plošča plasti pa predlaga overscan.
 704|Predlog: {} (zavorna pot pri tej hitrosti in pospešku stroja)
 705|Plast {} je hitrejša od največje hitrosti rezanja stroja.
+706|Samodejno (iz krmilnika)
+707|Narečje G-kode
+708|Smoothieware: S se zapiše kot delež polne moči (nastavite največji S na 1). Pretakanje deluje kot pri GRBL; nič od tega ni bilo preizkušeno na pravi strojni opremi.
+709|Uporablja se pri samodejnem narečju; izbrano narečje GRBL samo odloči med M3 in M4.

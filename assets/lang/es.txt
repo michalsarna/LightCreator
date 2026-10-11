@@ -704,3 +704,7 @@
 703|0 = desconocida. Con un valor la estimación del tiempo incluye las rampas de arranque y parada y el panel de la capa sugiere un overscan.
 704|Sugerido: {} (la distancia de frenado a esta velocidad y con la aceleración de la máquina)
 705|La capa {} es más rápida que la velocidad máxima de corte de la máquina.
+706|Automático (desde el controlador)
+707|Dialecto de G-code
+708|Smoothieware: S se escribe como fracción de la potencia total (ponga S máx. a 1). La transmisión funciona como la de GRBL; nada de esto se ha probado en hardware real.
+709|Se usa cuando el dialecto es automático; un dialecto GRBL elegido decide por sí mismo entre M3 y M4.

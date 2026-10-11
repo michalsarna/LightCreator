@@ -23,7 +23,7 @@ pub enum Action {
 impl Controller {
     pub fn status_poll(self) -> StatusPoll {
         match self {
-            Controller::Grbl => StatusPoll::Byte(b'?'),
+            Controller::Grbl | Controller::Smoothieware => StatusPoll::Byte(b'?'),
             Controller::Marlin => StatusPoll::Line("M114"),
             _ => StatusPoll::None,
         }
@@ -37,7 +37,7 @@ impl Controller {
     }
     pub fn home(self) -> Action {
         match self {
-            Controller::Grbl => Action::Lines(vec!["$H".into()]),
+            Controller::Grbl | Controller::Smoothieware => Action::Lines(vec!["$H".into()]),
             Controller::Marlin => Action::Lines(vec!["G28 X Y".into()]),
             _ => Action::None,
         }
@@ -46,20 +46,20 @@ impl Controller {
     pub fn unlock(self) -> Action {
         match self {
             Controller::Grbl => Action::Lines(vec!["$X".into()]),
-            Controller::Marlin => Action::Lines(vec!["M999".into()]),
+            Controller::Marlin | Controller::Smoothieware => Action::Lines(vec!["M999".into()]),
             _ => Action::None,
         }
     }
     pub fn pause(self) -> Action {
         match self {
-            Controller::Grbl => Action::Byte(b'!'),
+            Controller::Grbl | Controller::Smoothieware => Action::Byte(b'!'),
             Controller::Marlin => Action::Lines(vec!["M25".into()]),
             _ => Action::None,
         }
     }
     pub fn resume(self) -> Action {
         match self {
-            Controller::Grbl => Action::Byte(b'~'),
+            Controller::Grbl | Controller::Smoothieware => Action::Byte(b'~'),
             Controller::Marlin => Action::Lines(vec!["M24".into()]),
             _ => Action::None,
         }
@@ -75,7 +75,7 @@ impl Controller {
     pub fn jog(self, dx: f64, dy: f64, feed: f64) -> Action {
         match self {
             Controller::Grbl => Action::Lines(vec![format!("$J=G91 G21 X{dx} Y{dy} F{feed}")]),
-            Controller::Marlin => Action::Lines(vec!["G91".into(), format!("G0 X{dx} Y{dy} F{feed}"), "G90".into()]),
+            Controller::Marlin | Controller::Smoothieware => Action::Lines(vec!["G91".into(), format!("G0 X{dx} Y{dy} F{feed}"), "G90".into()]),
             _ => Action::None,
         }
     }
@@ -89,7 +89,7 @@ impl Controller {
     /// Emergency stop / abort byte, if the controller has a realtime one.
     pub fn abort_byte(self) -> Option<u8> {
         match self {
-            Controller::Grbl => Some(0x18),
+            Controller::Grbl | Controller::Smoothieware => Some(0x18),
             _ => None,
         }
     }
@@ -104,6 +104,15 @@ impl Controller {
 
 /// Parse a status report into (state, x, y). GRBL: `<Idle|MPos:1,2,0|...>`; Marlin: `X:1.00 Y:2.00 Z:0.00 ...`.
 pub fn parse_status(line: &str) -> Option<(String, f64, f64)> {
+    // Smoothieware: `<Idle,MPos:1.0000,2.0000,3.0000,WPos:...>` (commas everywhere).
+    if let Some(inner) = line.strip_prefix('<').and_then(|l| l.strip_suffix('>')).filter(|l| !l.contains('|') && l.contains(',')) {
+        let parts: Vec<&str> = inner.split(',').collect();
+        let state = parts.first()?.to_string();
+        let at = parts.iter().position(|p| p.starts_with("MPos:") || p.starts_with("WPos:"))?;
+        let x = parts[at].split(':').nth(1)?.parse::<f64>().ok()?;
+        let y = parts.get(at + 1)?.parse::<f64>().ok()?;
+        return Some((state, x, y));
+    }
     if let Some(inner) = line.strip_prefix('<').and_then(|l| l.strip_suffix('>')) {
         let mut parts = inner.split('|');
         let state = parts.next()?.to_string();

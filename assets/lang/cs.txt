@@ -704,3 +704,7 @@
 703|0 = neznámé. S hodnotou odhad času zahrnuje rozjezdové a brzdné rampy a panel vrstvy navrhne přejezd (overscan).
 704|Doporučeno: {} (brzdná dráha při této rychlosti a zrychlení stroje)
 705|Vrstva {} je rychlejší než maximální řezná rychlost stroje.
+706|Automaticky (z řídicí jednotky)
+707|Dialekt G-kódu
+708|Smoothieware: S se zapisuje jako zlomek plného výkonu (nastavte S max na 1). Streamování funguje jako u GRBL; nic z toho nebylo vyzkoušeno na skutečném hardwaru.
+709|Používá se při automatickém dialektu; zvolený dialekt GRBL si mezi M3 a M4 rozhodne sám.

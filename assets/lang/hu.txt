@@ -704,3 +704,7 @@
 703|0 = ismeretlen. Értékkel az időbecslés tartalmazza az indítási és fékezési rámpákat, és a rétegpanel túlfutást javasol.
 704|Javasolt: {} (a fékezési út ezen a sebességen és a gép gyorsulásával)
 705|A(z) {} réteg gyorsabb, mint a gép maximális vágási sebessége.
+706|Automatikus (a vezérlőtől)
+707|G-kód nyelvjárás
+708|Smoothieware: az S a teljes teljesítmény törtrészeként íródik (állítsa az S max értéket 1-re). A streamelés úgy működik, mint a GRBL-nél; ebből semmit sem próbáltak ki valódi hardveren.
+709|Automatikus nyelvjárásnál használatos; a kiválasztott GRBL nyelvjárás maga dönt az M3 és M4 között.

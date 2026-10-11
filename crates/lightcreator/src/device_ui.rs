@@ -369,13 +369,26 @@ impl App {
                             }
                             CfgPage::Gcode => {
                                 egui::Grid::new("dev_gcode").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                                    ui.label(tr("G-code dialect"));
+                                    let shown = d.gcode.dialect.map(|x| x.label()).unwrap_or("");
+                                    egui::ComboBox::from_id_salt("dialect").selected_text(if d.gcode.dialect.is_none() { tr("Automatic (from the controller)") } else { shown.into() }).show_ui(ui, |ui| {
+                                        ui.selectable_value(&mut d.gcode.dialect, None, tr("Automatic (from the controller)"));
+                                        for x in lc_core::Dialect::ALL {
+                                            ui.selectable_value(&mut d.gcode.dialect, Some(x), x.label());
+                                        }
+                                    });
+                                    ui.end_row();
                                     ui.label(tr("Dynamic power (M4)"));
-                                    ui.checkbox(&mut d.gcode.dynamic_power, "");
+                                    ui.add_enabled(d.gcode.dialect.is_none(), egui::Checkbox::without_text(&mut d.gcode.dynamic_power)).on_hover_text(tr("Used when the dialect is automatic; a chosen GRBL dialect decides between M3 and M4 itself."));
                                     ui.end_row();
                                     ui.label(tr("Return to origin"));
                                     ui.checkbox(&mut d.gcode.return_home, "");
                                     ui.end_row();
                                 });
+                                if d.dialect() == lc_core::Dialect::Smoothieware {
+                                    ui.add_space(6.0);
+                                    ui.label(RichText::new(tr("Smoothieware: S is written as a fraction of the full power (set S-value max to 1). Streaming works like GRBL's; none of this has been tried on real hardware.")).color(theme::text_dim()));
+                                }
                             }
                             CfgPage::Connection => {
                                 egui::Grid::new("dev_link").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {

@@ -704,3 +704,7 @@
 703|0 = nezināms. Ar vērtību laika aprēķins ietver starta un apstāšanās rampas, un slāņa panelis iesaka pārsniegumu.
 704|Ieteikts: {} (bremzēšanas ceļš šajā ātrumā un iekārtas paātrinājums)
 705|Slānis {} ir ātrāks par iekārtas maksimālo griešanas ātrumu.
+706|Automātiski (no kontroliera)
+707|G koda dialekts
+708|Smoothieware: S tiek rakstīts kā pilnas jaudas daļa (iestatiet S maks. uz 1). Straumēšana darbojas kā GRBL; nekas no šī nav izmēģināts uz īstas aparatūras.
+709|Izmanto, kad dialekts ir automātisks; izvēlētais GRBL dialekts pats izlemj starp M3 un M4.

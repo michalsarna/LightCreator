@@ -704,3 +704,7 @@
 703|0 = nepoznato. S vrijednošću procjena vremena uključuje rampe pokretanja i zaustavljanja, a ploča sloja predlaže overscan.
 704|Predloženo: {} (put kočenja pri ovoj brzini i ubrzanju stroja)
 705|Sloj {} je brži od najveće brzine rezanja stroja.
+706|Automatski (iz upravljača)
+707|Dijalekt G-koda
+708|Smoothieware: S se zapisuje kao razlomak pune snage (postavite S maks. na 1). Strujanje radi kao kod GRBL-a; ništa od ovoga nije isprobano na stvarnom hardveru.
+709|Koristi se kad je dijalekt automatski; odabrani GRBL dijalekt sam odlučuje između M3 i M4.

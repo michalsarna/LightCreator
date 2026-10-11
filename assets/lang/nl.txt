@@ -704,3 +704,7 @@
 703|0 = onbekend. Met een waarde bevat de tijdschatting de start- en stopramps en stelt het lagenpaneel een overscan voor.
 704|Voorstel: {} (de remweg bij deze snelheid en de versnelling van de machine)
 705|Laag {} is sneller dan de maximale snijsnelheid van de machine.
+706|Automatisch (van de besturing)
+707|G-code-dialect
+708|Smoothieware: S wordt geschreven als fractie van het volle vermogen (zet S-max op 1). Streamen werkt zoals bij GRBL; niets hiervan is op echte hardware geprobeerd.
+709|Gebruikt als het dialect automatisch is; een gekozen GRBL-dialect beslist zelf tussen M3 en M4.

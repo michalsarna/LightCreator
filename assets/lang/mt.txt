@@ -704,3 +704,7 @@
 703|0 = mhux magħruf. B'valur l-istima tal-ħin tinkludi r-rampi tal-bidu u tal-waqfien u l-pannell tas-saff jissuġġerixxi overscan.
 704|Issuġġerit: {} (id-distanza tal-brejkijiet b'din il-veloċità u bl-aċċelerazzjoni tal-magna)
 705|Is-saff {} huwa aktar mgħaġġel mill-veloċità massima tal-qtugħ tal-magna.
+706|Awtomatiku (mill-kontrollur)
+707|Djalett tal-G-code
+708|Smoothieware: S jinkiteb bħala frazzjoni tal-qawwa sħiħa (issettja S max fuq 1). L-istreaming jaħdem bħal dak ta' GRBL; xejn minn dan ma ġie ppruvat fuq hardware reali.
+709|Jintuża meta d-djalett ikun awtomatiku; djalett GRBL magħżul jiddeċiedi waħdu bejn M3 u M4.

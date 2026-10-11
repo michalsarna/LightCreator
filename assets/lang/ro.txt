@@ -704,3 +704,7 @@
 703|0 = necunoscută. Cu o valoare estimarea timpului include rampele de pornire și oprire, iar panoul stratului sugerează un overscan.
 704|Sugerat: {} (distanța de frânare la această viteză și cu accelerația mașinii)
 705|Stratul {} este mai rapid decât viteza maximă de tăiere a mașinii.
+706|Automat (de la controler)
+707|Dialect G-code
+708|Smoothieware: S se scrie ca fracție din puterea maximă (setați S max la 1). Transmisia funcționează ca la GRBL; nimic din asta nu a fost încercat pe hardware real.
+709|Folosit când dialectul este automat; un dialect GRBL ales decide singur între M3 și M4.

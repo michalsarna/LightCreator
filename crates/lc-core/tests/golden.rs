@@ -95,3 +95,15 @@ fn frame_gcode_for_both_dialects() {
     check("frame_grbl", &gcode::frame_gcode(b, &device(&[]), 1.5, 25.0));
     check("frame_marlin", &gcode::frame_gcode(b, &device(&[("controller", "Marlin".into())]), 0.0, 25.0));
 }
+
+#[test]
+fn smoothieware_and_forced_dialects() {
+    let smooth = || device(&[("controller", "Smoothieware".into()), ("s_max", 1.0.into())]);
+    check("smoothie_line", &gcode_for(rect_doc(LayerMode::Line), smooth()));
+    check("smoothie_layers_air_passes", &gcode_for(layers_doc(), smooth()));
+    check("frame_smoothie", &gcode::frame_gcode(lc_core::Rect { min: Pt::new(30.0, 40.0), max: Pt::new(80.0, 70.0) }, &smooth(), 1.5, 25.0));
+    // A chosen GRBL dialect decides between M3 and M4 whatever the "dynamic power" flag says.
+    let mut forced = device(&[("dynamic_power", true.into())]);
+    forced.gcode.dialect = Some(Dialect::Grbl);
+    check("grbl_forced_m3", &gcode_for(rect_doc(LayerMode::Line), forced));
+}

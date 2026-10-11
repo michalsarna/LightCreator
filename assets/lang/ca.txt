@@ -704,3 +704,7 @@
 703|0 = desconeguda. Amb un valor l'estimació del temps inclou les rampes d'arrencada i parada i el tauler de la capa suggereix un overscan.
 704|Suggerit: {} (la distància de frenada a aquesta velocitat i amb l'acceleració de la màquina)
 705|La capa {} és més ràpida que la velocitat màxima de tall de la màquina.
+706|Automàtic (del controlador)
+707|Dialecte de G-code
+708|Smoothieware: S s'escriu com a fracció de la potència plena (poseu S màx. a 1). La transmissió funciona com la de GRBL; res d'això s'ha provat en maquinari real.
+709|S'usa quan el dialecte és automàtic; un dialecte GRBL triat decideix ell mateix entre M3 i M4.

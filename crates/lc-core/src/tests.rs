@@ -1206,3 +1206,27 @@ fn a_run_of_short_segments_ramps_once_and_a_layer_above_the_maximum_warns() {
     assert_eq!(d.device.suggested_overscan(10.0), Some(5.0));
     assert_eq!(Device::default().suggested_overscan(10.0), None);
 }
+
+#[test]
+fn dialect_follows_the_controller_unless_chosen() {
+    let mut d = Device::default();
+    assert_eq!(d.dialect(), Dialect::GrblDynamic);
+    d.gcode.dynamic_power = false;
+    assert_eq!(d.dialect(), Dialect::Grbl);
+    d.controller = Controller::Marlin;
+    assert_eq!(d.dialect(), Dialect::Marlin);
+    d.controller = Controller::Smoothieware;
+    assert_eq!(d.dialect(), Dialect::Smoothieware);
+    d.gcode.dialect = Some(Dialect::GrblDynamic);
+    assert_eq!(d.dialect(), Dialect::GrblDynamic);
+    assert!(Controller::Smoothieware.is_serial() && Controller::ALL.contains(&Controller::Smoothieware));
+}
+
+#[test]
+fn smoothieware_status_reports_are_read() {
+    let (state, x, y) = controller::parse_status("<Idle,MPos:12.5000,7.2500,0.0000,WPos:12.5000,7.2500,0.0000>").unwrap();
+    assert_eq!((state.as_str(), x, y), ("Idle", 12.5, 7.25));
+    // GRBL 1.1 reports still go the old way.
+    let (state, x, y) = controller::parse_status("<Run|MPos:1.000,2.000,0.000|FS:500,0>").unwrap();
+    assert_eq!((state.as_str(), x, y), ("Run", 1.0, 2.0));
+}
