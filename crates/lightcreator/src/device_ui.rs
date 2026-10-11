@@ -220,7 +220,7 @@ impl App {
                     ui.label(tr("Laser type"));
                     egui::ComboBox::from_id_salt("laser_kind").selected_text(d.laser().label()).show_ui(ui, |ui| {
                         for k in LaserKind::ALL {
-                            ui.selectable_value(&mut d.laser(), k, k.label());
+                            ui.selectable_value(&mut d.heads[0].laser, k, k.label());
                         }
                     });
                     ui.end_row();
@@ -254,7 +254,7 @@ impl App {
                         });
                     ui.end_row();
                     ui.label(tr("S-value max ($30)"));
-                    ui.add(egui::DragValue::new(&mut d.s_max()).range(1.0..=100000.0));
+                    ui.add(egui::DragValue::new(&mut d.heads[0].s_max).range(1.0..=100000.0));
                     ui.end_row();
                     ui.label(tr("Dynamic power (M4)"));
                     ui.checkbox(&mut d.gcode.dynamic_power, "");
