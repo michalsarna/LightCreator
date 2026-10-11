@@ -420,11 +420,11 @@ impl App {
     pub fn device_tab(&mut self, ui: &mut egui::Ui) {
         let units = self.doc.device.units;
         let ctrl = self.doc.device.controller;
-        ui.horizontal(|ui| {
+        ui.horizontal_wrapped(|ui| {
             ui.label(tr("Device"));
             let mut sel = self.active;
             egui::ComboBox::from_id_salt("dev_sel")
-                .width(190.0)
+                .width((ui.available_width() - 70.0).clamp(80.0, 190.0))
                 .selected_text(self.profiles.get(self.active).map(|d| d.name.clone()).unwrap_or_default())
                 .show_ui(ui, |ui| {
                     for (i, d) in self.profiles.iter().enumerate() {
@@ -435,7 +435,7 @@ impl App {
                 self.switch_profile(sel);
             }
         });
-        ui.horizontal(|ui| {
+        ui.horizontal_wrapped(|ui| {
             if ui.button(tr("Edit…")).clicked() {
                 self.open_cfg_edit(self.active);
             }
@@ -452,7 +452,7 @@ impl App {
         let dev = self.doc.device.clone();
         let yes_no = |b: bool| if b { tr("Yes") } else { tr("No") };
         let half = ((ui.available_width() - 12.0) / 2.0).max(60.0);
-        egui::Grid::new("dev_summary").num_columns(2).min_col_width(half).spacing([12.0, 3.0]).striped(true).show(ui, |ui| {
+        egui::Grid::new("dev_summary").num_columns(2).min_col_width(half).max_col_width(half).spacing([12.0, 3.0]).striped(true).show(ui, |ui| {
             let mut row = |k: &str, v: String| {
                 ui.label(RichText::new(k).color(theme::text_dim()));
                 ui.label(v);
@@ -494,7 +494,7 @@ impl App {
         }
         let mut port = self.doc.device.port.clone();
         let tcp = self.doc.device.link == LinkKind::Tcp;
-        ui.horizontal(|ui| {
+        ui.horizontal_wrapped(|ui| {
             if tcp {
                 ui.label(RichText::new(self.doc.device.target_label()).monospace());
             } else {

@@ -263,6 +263,8 @@ pub struct App {
     pub lib_dlg: Option<crate::materials_ui::LibDlg>,
     /// The order of the tabs of the side panel.
     pub tab_order: Vec<(SideTab, &'static str)>,
+    /// Width of the side panel as drawn in the last frame.
+    pub side_w: f32,
     pub mat_filter: String,
     pub mat_laser: Option<lc_core::LaserKind>,
     pub mat_sel: Option<usize>,
@@ -424,6 +426,7 @@ impl App {
             mat_save_cat: None,
             mat_new_cat: String::new(),
             lib_dlg: None,
+            side_w: 0.0,
             tab_order: SideTab::arranged(&saved("tab_order").unwrap_or_default()),
             mat_filter: String::new(),
             mat_laser: None,

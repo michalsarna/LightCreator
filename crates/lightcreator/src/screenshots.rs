@@ -872,3 +872,46 @@ fn escape_key_reaches_the_editor() {
     h.run_steps(1);
     assert!(app(&mut h).esc_time > -1.0, "the key press was seen");
 }
+
+/// The width of the side panel after showing `tab` in `lang`, from a fresh start (a panel never gets narrower again).
+fn side_width(lang: Lang, tab: SideTab) -> f32 {
+    let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    i18n::set_lang(lang);
+    {
+        let a = app(&mut h);
+        a.lang = lang;
+        a.profiles = vec![Device::default()];
+        a.enter_editor(0);
+        a.doc.add(0, Kind::Rect { w: 20.0, h: 10.0 }, Xf::IDENTITY);
+        a.select_all();
+        a.mat_dev_sel = Some(0);
+        a.side_tab = tab;
+    }
+    h.run_steps(6);
+    app(&mut h).side_w
+}
+
+/// No tab may push the side panel wider than the others, in any language: a wide widget inside would squeeze the canvas.
+#[test]
+fn no_tab_widens_the_side_panel() {
+    let base = side_width(Lang::En, SideTab::Properties);
+    let mut bad: Vec<String> = vec![];
+    // The widest texts: all 30 languages were checked once; these few keep it so.
+    for lang in [Lang::En, Lang::Pl, Lang::De, Lang::Es, Lang::Bg, Lang::Uk] {
+        for (t, _) in SideTab::ALL {
+            let w = side_width(lang, t);
+            if (w - base).abs() >= 1.0 {
+                bad.push(format!("{:?} in {:?}: {w:.0} instead of {base:.0}", t, lang));
+            }
+        }
+    }
+    i18n::set_lang(Lang::En);
+    assert!(bad.is_empty(), "the side panel changes its width:\n{}", bad.join("\n"));
+}

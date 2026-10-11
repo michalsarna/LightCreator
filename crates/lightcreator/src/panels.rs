@@ -8,6 +8,7 @@ use lc_core::{Dither, Kind, LayerMode, TextData, Xf, PALETTE};
 
 impl App {
     pub fn side_panel(&mut self, ui: &mut egui::Ui) {
+        self.side_w = ui.max_rect().width();
         let mut tabs: Vec<(SideTab, &'static str)> = self.tab_order.clone();
         let camera_tab = self.show_stream && self.stream_mode == crate::stream_ui::StreamMode::Tab;
         if camera_tab {
@@ -149,11 +150,11 @@ impl App {
         let bw = (ui.available_width() - 12.0) / 3.0;
         egui::Grid::new("props_rotate").num_columns(3).spacing([6.0, 6.0]).show(ui, |ui| {
             ui.allocate_ui_with_layout(egui::vec2(bw, 24.0), egui::Layout::left_to_right(egui::Align::Center), |ui| {
-                ui.label(tr("Rotate"));
-                ui.add(egui::DragValue::new(&mut self.rot_input).suffix("°"));
+                // A label as well would not fit in every language; the section title says what this is.
+                ui.add(egui::DragValue::new(&mut self.rot_input).suffix("°")).on_hover_text(tr("Rotate"));
             });
             let ink = theme::text();
-            if ui.add_sized([bw, 24.0], egui::Button::image_and_text(crate::icons::slot(Some("check"), ink), tr("Apply"))).clicked() {
+            if ui.add_sized([bw, 24.0], egui::Button::image_and_text(crate::icons::slot(Some("check"), ink), tr("Apply")).truncate()).clicked() {
                 self.rotate_sel(self.rot_input);
             }
             if ui.add_sized([bw, 24.0], egui::Button::image_and_text(crate::icons::slot(Some("rotate-cw"), ink), "90°")).clicked() {
@@ -192,7 +193,7 @@ impl App {
         section_title(ui, "layers", &tr("Layer"));
         let first = self.doc.shape(self.sel[0]).map(|s| s.layer).unwrap_or(0);
         let mut layer = first;
-        ui.horizontal(|ui| {
+        ui.horizontal_wrapped(|ui| {
             let lc = PALETTE[self.doc.layers[layer].color.min(29)];
             let (r, _) = ui.allocate_exact_size(egui::vec2(16.0, 16.0), egui::Sense::hover());
             ui.painter().rect_filled(r, 3.0, Color32::from_rgb(lc[0], lc[1], lc[2]));
@@ -472,7 +473,7 @@ impl App {
         });
         });
         ui.horizontal(|ui| {
-            let r = ui.add(egui::TextEdit::singleline(&mut self.console_input).desired_width(ui.available_width() - 70.0).hint_text(tr("send G-code / $ command")));
+            let r = ui.add(egui::TextEdit::singleline(&mut self.console_input).desired_width((ui.available_width() - 110.0).max(60.0)).hint_text(tr("send G-code / $ command")));
             let send = ui.button(tr("Send")).clicked() || (r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)));
             if send && self.connected && !self.console_input.trim().is_empty() {
                 self.link.send(Cmd::Line(self.console_input.trim().to_string()));
@@ -501,7 +502,7 @@ fn button_grid(ui: &mut egui::Ui, id: &str, cells: &[(&str, &str, &str)]) -> Opt
     let bw = (ui.available_width() - 12.0) / 3.0;
     egui::Grid::new(id).num_columns(3).spacing([6.0, 6.0]).show(ui, |ui| {
         for (i, (label, tip, icon)) in cells.iter().enumerate() {
-            let btn = egui::Button::image_and_text(crate::icons::slot(Some(icon), theme::text()), *label);
+            let btn = egui::Button::image_and_text(crate::icons::slot(Some(icon), theme::text()), *label).truncate();
             if ui.add_sized([bw, 24.0], btn).on_hover_text(*tip).clicked() {
                 clicked = Some(i);
             }

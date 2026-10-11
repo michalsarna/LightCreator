@@ -201,8 +201,10 @@ fn category_filter(ui: &mut egui::Ui, id: &str, current: &mut Option<String>, li
 /// One entry of a list of materials: name and category, then every layer with its colour, label and main settings.
 fn material_card(ui: &mut egui::Ui, m: &Material, selected: bool, units: Units, su: SpeedUnit) -> egui::Response {
     let fill = if selected { theme::accent().gamma_multiply(0.18) } else { Color32::TRANSPARENT };
+    // The frame adds its margin to the inner width, so leave room for it or the panel grows with every frame.
+    let inner = (ui.available_width() - 8.0).max(40.0);
     let out = egui::Frame::new().fill(fill).corner_radius(3).inner_margin(egui::Margin::symmetric(4, 3)).show(ui, |ui| {
-        ui.set_width(ui.available_width());
+        ui.set_width(inner);
         ui.horizontal(|ui| {
             ui.label(RichText::new(&m.name).strong());
             ui.label(RichText::new(cat_label(&m.category())).small().color(theme::text_dim()));
@@ -415,7 +417,7 @@ impl App {
             });
             ui.add(egui::TextEdit::singleline(&mut m.note).hint_text(tr("Note")).desired_width(ui.available_width() - 4.0));
             let cats = categories_of(self.doc.device.materials.iter().chain(&self.global_materials).chain(self.profiles.iter().flat_map(|p| p.materials.iter())));
-            ui.horizontal(|ui| {
+            ui.horizontal_wrapped(|ui| {
                 ui.label(tr("Category"));
                 let own = m.category();
                 egui::ComboBox::from_id_salt("mat_category").width(120.0).selected_text(cat_label(&own)).show_ui(ui, |ui| {
@@ -436,7 +438,7 @@ impl App {
                 let lname = self.doc.layers.get(ml.index).map(|l| l.name.clone()).unwrap_or_default();
                 egui::CollapsingHeader::new(RichText::new(format!("{} ({})", ml.label, trf("Layer {}", &[&lname]))).strong()).id_salt(("mat_layer", i, li)).default_open(true).show(ui, |ui| {
                     layer_spec_ui(ui, ("mat_spec", i, li), &mut ml.spec, units, su);
-                    ui.horizontal(|ui| {
+                    ui.horizontal_wrapped(|ui| {
                         ui.label(tr("Colour"));
                         colour_picker(ui, ("mat_colour", i, li), &mut ml.spec.colour, ml.index);
                         ui.label(tr("Label"));
@@ -498,8 +500,8 @@ impl App {
         }
         // Save the layers of the design as a material of this device.
         ui.label(RichText::new(tr("Save the layers of the design as a material")).strong());
-        ui.horizontal(|ui| {
-            ui.add(egui::TextEdit::singleline(&mut self.mat_name).hint_text(tr("Material name")).desired_width(ui.available_width() - 90.0));
+        ui.horizontal_wrapped(|ui| {
+            ui.add(egui::TextEdit::singleline(&mut self.mat_name).hint_text(tr("Material name")).desired_width((ui.available_width() - 40.0).clamp(80.0, 240.0)));
             let name = self.mat_name.clone();
             let cat = self.save_category(ui, "tab_save_cat", &name);
             if ui.add_enabled(!name.trim().is_empty(), egui::Button::new(tr("Save"))).on_hover_text(tr("Saves the settings of the layers used in the design")).clicked() {
