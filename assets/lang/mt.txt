@@ -1021,3 +1021,5 @@
 1020|Pontijiet għal kull forma
 1021|Il-forom vettorjali fuq saff fil-modalità Immaġni ma jinħarqux.
 1022|Ħin tax-xogħol
+1023|Deskrizzjoni
+1024|Iddeskrivi l-proġett: x'inhu, l-issettjar li ħadem, noti għall-darba li jmiss.

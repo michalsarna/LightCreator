@@ -2141,3 +2141,14 @@ fn the_camera_view_is_stored_with_the_device_and_checked_on_import() {
         assert!(profiles::import_profile(&profiles::export_profile(&x, "v0.1.2")).is_err());
     }
 }
+
+#[test]
+fn the_description_is_saved_in_the_project_and_old_projects_have_none() {
+    let mut d = Document::default();
+    d.description = "Birch plywood 3 mm\nair assist on".into();
+    let back = Document::from_json(&d.to_json()).unwrap();
+    assert_eq!(back.description, d.description);
+    let mut v: serde_json::Value = serde_json::from_str(&d.to_json()).unwrap();
+    v.as_object_mut().unwrap().remove("description");
+    assert_eq!(Document::from_json(&v.to_string()).unwrap().description, "");
+}

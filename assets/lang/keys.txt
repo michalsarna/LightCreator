@@ -1021,3 +1021,5 @@
 1020	Tabs per shape
 1021	Vector shapes on a layer in the Image mode are not burnt.
 1022	Working time
+1023	Description
+1024	Describe the project: what it is, the settings that worked, notes for next time.

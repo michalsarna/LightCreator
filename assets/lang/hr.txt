@@ -1021,3 +1021,5 @@
 1020|Mostića po obliku
 1021|Vektorski oblici na sloju u načinu Slika ne gravira se.
 1022|Radno vrijeme
+1023|Opis
+1024|Opišite projekt: što je, postavke koje su uspjele, bilješke za sljedeći put.

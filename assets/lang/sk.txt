@@ -1021,3 +1021,5 @@
 1020|Mostíkov na tvar
 1021|Vektorové tvary na vrstve v režime Obraz sa nevypaľujú.
 1022|Čas práce
+1023|Popis
+1024|Opíšte projekt: čo to je, nastavenia, ktoré fungovali, poznámky nabudúce.

@@ -1021,3 +1021,5 @@
 1020|Puentes por forma
 1021|Las formas vectoriales de una capa en modo Imagen no se queman.
 1022|Tiempo de trabajo
+1023|Descripción
+1024|Describe el proyecto: qué es, los ajustes que funcionaron, notas para la próxima vez.

@@ -1021,3 +1021,5 @@
 1020|Brýr á hvert form
 1021|Vektoraform á lagi í myndham eru ekki brennd.
 1022|Vinnutími
+1023|Lýsing
+1024|Lýstu verkefninu: hvað það er, stillingar sem virkuðu, athugasemdir fyrir næsta skipti.

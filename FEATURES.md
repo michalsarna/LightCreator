@@ -40,6 +40,7 @@
   pressed again. The Overlay button follows Camera view and is always visible; it is greyed out until there is a
   picture to show (a saved photo, or the live camera while its window is open) and then switches it on the work area.
   Start / STOP are written in capitals.
+* **Description tab:** a plain multi-line text about the project in the side panel (it can be moved like the other tabs), saved in the project file.
 * **Layer cut options:** kerf offset, perforation (cut / skip lengths) and automatic tabs / bridges for line layers, saved with the layer, the material and the project; a layer of images is always in the Image mode (mode fixed, the rest editable) and images have a scan angle. Not implemented: sub-layers and hand-placed tabs.
 * **Control bar:** name of the current tool in a box of fixed width, New / Open / Save icons, switches for the grid,
   the secondary grid, snapping to the grid and snapping to other objects (while moving, edges and centres join with a guide line) (icons, highlighted while on) and the Toolpaths button, green while the toolpaths

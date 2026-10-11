@@ -1021,3 +1021,5 @@
 1020|Pons per forma
 1021|Les formes vectorials d'una capa en mode Imatge no es graven.
 1022|Temps de treball
+1023|Descripció
+1024|Descriu el projecte: què és, els paràmetres que han funcionat, notes per a la propera vegada.

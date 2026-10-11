@@ -1021,3 +1021,5 @@
 1020|Bruggen per vorm
 1021|Vectorvormen op een laag in de beeldmodus worden niet gebrand.
 1022|Werktijd
+1023|Beschrijving
+1024|Beschrijf het project: wat het is, welke instellingen werkten, notities voor de volgende keer.

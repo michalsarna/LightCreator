@@ -1021,3 +1021,5 @@
 1020|Sildu kujundi kohta
 1021|Pildirežiimis kihi vektorkujundeid ei põletata.
 1022|Tööaeg
+1023|Kirjeldus
+1024|Kirjelda projekti: mis see on, millised seaded töötasid, märkmed järgmiseks korraks.

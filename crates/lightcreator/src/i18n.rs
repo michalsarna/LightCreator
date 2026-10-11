@@ -1307,6 +1307,9 @@ const TABLE: &[[&str; 7]] = &[
     ["Vector shapes on a layer in the Image mode are not burnt.", "Kształty wektorowe na warstwie w trybie Obraz nie są wypalane.", "Vektorformen auf einer Ebene im Bildmodus werden nicht gebrannt.", "Le forme vettoriali su un livello in modalità Immagine non vengono incise.", "Kuvatilassa olevan tason vektorimuotoja ei polteta.", "处于图像模式的图层上的矢量形状不会被雕刻。", "छवि मोड वाली परत पर वेक्टर आकृतियाँ नहीं जलाई जातीं।"],
     // ---- working time ----
     ["Working time", "Czas pracy", "Arbeitszeit", "Tempo di lavoro", "Työaika", "工作时间", "कार्य समय"],
+    // ---- description tab ----
+    ["Description", "Opis", "Beschreibung", "Descrizione", "Kuvaus", "描述", "विवरण"],
+    ["Describe the project: what it is, the settings that worked, notes for next time.", "Opisz projekt: co to jest, ustawienia, które zadziałały, notatki na następny raz.", "Beschreibe das Projekt: was es ist, welche Einstellungen funktionierten, Notizen fürs nächste Mal.", "Descrivi il progetto: cos'è, le impostazioni che hanno funzionato, appunti per la prossima volta.", "Kuvaile projekti: mikä se on, toimivat asetukset, muistiinpanoja seuraavaa kertaa varten.", "描述项目：它是什么、有效的设置、给下次的备注。", "परियोजना का वर्णन करें: यह क्या है, कौन-सी सेटिंग काम आईं, अगली बार के लिए नोट्स।"],
 ];
 #[cfg(test)]
 mod tests {

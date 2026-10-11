@@ -1021,3 +1021,5 @@
 1020|Pontes por forma
 1021|As formas vetoriais numa camada no modo Imagem não são queimadas.
 1022|Tempo de trabalho
+1023|Descrição
+1024|Descreva o projeto: o que é, as definições que funcionaram, notas para a próxima vez.

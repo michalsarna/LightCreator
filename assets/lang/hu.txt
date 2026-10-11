@@ -1021,3 +1021,5 @@
 1020|Hidak alakzatonként
 1021|A Kép módú rétegen lévő vektoros alakzatok nem kerülnek kiégetésre.
 1022|Munkaidő
+1023|Leírás
+1024|Írd le a projektet: mi ez, mely beállítások működtek, jegyzetek a következő alkalomra.

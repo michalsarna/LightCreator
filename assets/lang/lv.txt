@@ -1021,3 +1021,5 @@
 1020|Tiltiņi uz formu
 1021|Vektoru formas slānī Attēla režīmā netiek dedzinātas.
 1022|Darba laiks
+1023|Apraksts
+1024|Aprakstiet projektu: kas tas ir, kuri iestatījumi darbojās, piezīmes nākamajam reizei.

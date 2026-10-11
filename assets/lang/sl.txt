@@ -1021,3 +1021,5 @@
 1020|Mostičkov na obliko
 1021|Vektorske oblike na sloju v načinu Slika se ne žgejo.
 1022|Čas dela
+1023|Opis
+1024|Opišite projekt: kaj je, nastavitve, ki so delovale, zapiski za naslednjič.

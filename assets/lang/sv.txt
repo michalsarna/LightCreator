@@ -1021,3 +1021,5 @@
 1020|Bryggor per form
 1021|Vektorformer på ett lager i bildläge bränns inte.
 1022|Arbetstid
+1023|Beskrivning
+1024|Beskriv projektet: vad det är, inställningar som fungerade, anteckningar till nästa gång.

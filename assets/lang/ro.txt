@@ -1021,3 +1021,5 @@
 1020|Punți pe formă
 1021|Formele vectoriale de pe un strat în modul Imagine nu sunt arse.
 1022|Timp de lucru
+1023|Descriere
+1024|Descrie proiectul: ce este, setările care au funcționat, note pentru data viitoare.

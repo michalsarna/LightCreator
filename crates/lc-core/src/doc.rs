@@ -1639,6 +1639,9 @@ pub struct Document {
     /// design can be repeated on another machine).
     #[serde(default)]
     pub material: Option<crate::materials::Material>,
+    /// A free text about the project (what it is, the settings that worked...), saved in the project file.
+    #[serde(default)]
+    pub description: String,
     /// What hooks may print about the job; set by the program before the G-code is made, never saved.
     #[serde(skip)]
     pub job_info: JobInfo,
@@ -1666,6 +1669,7 @@ impl Default for Document {
             order: identity_order(),
             next_group: 1,
             material: None,
+            description: String::new(),
             job_info: JobInfo::default(),
         }
     }

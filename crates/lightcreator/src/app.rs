@@ -68,18 +68,21 @@ pub enum SideTab {
     Console,
     Clipart,
     Materials,
+    /// A free text about the project.
+    Description,
     /// The camera picture; only listed while the stream is shown as a tab.
     Camera,
 }
 
 impl SideTab {
-    pub const ALL: [(SideTab, &'static str); 6] = [
+    pub const ALL: [(SideTab, &'static str); 7] = [
         (SideTab::Properties, "Properties"),
         (SideTab::Layers, "Layers"),
         (SideTab::Device, "Device"),
         (SideTab::Console, "Console"),
         (SideTab::Clipart, "Clipart"),
         (SideTab::Materials, "Materials"),
+        (SideTab::Description, "Description"),
     ];
 
     pub fn id(self) -> &'static str {
@@ -90,6 +93,7 @@ impl SideTab {
             SideTab::Console => "console",
             SideTab::Clipart => "clipart",
             SideTab::Materials => "materials",
+            SideTab::Description => "description",
             SideTab::Camera => "camera",
         }
     }

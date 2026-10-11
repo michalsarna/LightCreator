@@ -1021,3 +1021,5 @@
 1020|Broer pr. form
 1021|Vektorformer på et lag i billedtilstand brændes ikke.
 1022|Arbejdstid
+1023|Beskrivelse
+1024|Beskriv projektet: hvad det er, indstillinger der virkede, noter til næste gang.

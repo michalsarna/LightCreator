@@ -1021,3 +1021,5 @@
 1020|Tiltelių vienai formai
 1021|Vektorinės formos sluoksnyje, esančiame Vaizdo režime, nededamos.
 1022|Darbo laikas
+1023|Aprašymas
+1024|Aprašykite projektą: kas tai, kurie nustatymai veikė, pastabos kitam kartui.

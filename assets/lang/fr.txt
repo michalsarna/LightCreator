@@ -1021,3 +1021,5 @@
 1020|Ponts par forme
 1021|Les formes vectorielles d'un calque en mode Image ne sont pas gravées.
 1022|Temps de travail
+1023|Description
+1024|Décrivez le projet : ce que c'est, les réglages qui ont fonctionné, des notes pour la prochaine fois.

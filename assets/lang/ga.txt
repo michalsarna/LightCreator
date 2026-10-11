@@ -1021,3 +1021,5 @@
 1020|Táibleoga in aghaidh an chruth
 1021|Ní dhóitear cruthanna veicteora ar chiseal sa mhód Íomhá.
 1022|Am oibre
+1023|Cur síos
+1024|Déan cur síos ar an tionscadal: cad é, na socruithe a d'oibrigh, nótaí don chéad uair eile.
