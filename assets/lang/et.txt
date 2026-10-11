@@ -1052,15 +1052,15 @@
 1051|Veebiserver: sees, port {}
 1052|Veebiserver: väljas
 1053|Veebiserver: viga
-1054|Sinine (tume)
-1055|Sinine (hele)
-1056|Roheline (tume)
-1057|Roheline (hele)
-1058|Lilla (tume)
-1059|Lilla (hele)
-1060|Pruun (tume)
-1061|Pruun (hele)
-1062|Oranž (tume)
-1063|Oranž (hele)
+1054|Tume sinine
+1055|Hele sinine
+1056|Tume roheline
+1057|Hele roheline
+1058|Tume lilla
+1059|Hele lilla
+1060|Tume pruun
+1061|Hele pruun
+1062|Tume oranž
+1063|Hele oranž
 1064|Tööruumi värv
 1065|Tööala ümbritsev ruum

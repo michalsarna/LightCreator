@@ -1346,20 +1346,20 @@ const TABLE: &[[&str; 7]] = &[
     ["Web server: off", "Serwer WWW: wyłączony", "Webserver: aus", "Server web: spento", "Verkkopalvelin: pois", "网络服务器：已关闭", "वेब सर्वर: बंद"],
     ["Web server: error", "Serwer WWW: błąd", "Webserver: Fehler", "Server web: errore", "Verkkopalvelin: virhe", "网络服务器：错误", "वेब सर्वर: त्रुटि"],
     // ---- theme names: blue ----
-    ["Blue (dark)", "niebieski (ciemny)", "Blau (dunkel)", "Blu (scuro)", "Sininen (tumma)", "蓝色 (深色)", "नीला (गहरा)"],
-    ["Blue (light)", "niebieski (jasny)", "Blau (hell)", "Blu (chiaro)", "Sininen (vaalea)", "蓝色 (浅色)", "नीला (हल्का)"],
+    ["Dark Blue", "Ciemny niebieski", "Dunkelblau", "Blu scuro", "Tumma sininen", "深蓝", "गहरा नीला"],
+    ["Light Blue", "Jasny niebieski", "Hellblau", "Blu chiaro", "Vaalea sininen", "浅蓝", "हल्का नीला"],
     // ---- theme names: green ----
-    ["Green (dark)", "zielony (ciemny)", "Grün (dunkel)", "Verde (scuro)", "Vihreä (tumma)", "绿色 (深色)", "हरा (गहरा)"],
-    ["Green (light)", "zielony (jasny)", "Grün (hell)", "Verde (chiaro)", "Vihreä (vaalea)", "绿色 (浅色)", "हरा (हल्का)"],
+    ["Dark Green", "Ciemny zielony", "Dunkelgrün", "Verde scuro", "Tumma vihreä", "深绿", "गहरा हरा"],
+    ["Light Green", "Jasny zielony", "Hellgrün", "Verde chiaro", "Vaalea vihreä", "浅绿", "हल्का हरा"],
     // ---- theme names: purple ----
-    ["Purple (dark)", "fioletowy (ciemny)", "Violett (dunkel)", "Viola (scuro)", "Violetti (tumma)", "紫色 (深色)", "बैंगनी (गहरा)"],
-    ["Purple (light)", "fioletowy (jasny)", "Violett (hell)", "Viola (chiaro)", "Violetti (vaalea)", "紫色 (浅色)", "बैंगनी (हल्का)"],
+    ["Dark Purple", "Ciemny fioletowy", "Dunkelviolett", "Viola scuro", "Tumma violetti", "深紫", "गहरा बैंगनी"],
+    ["Light Purple", "Jasny fioletowy", "Hellviolett", "Viola chiaro", "Vaalea violetti", "浅紫", "हल्का बैंगनी"],
     // ---- theme names: brown ----
-    ["Brown (dark)", "brązowy (ciemny)", "Braun (dunkel)", "Marrone (scuro)", "Ruskea (tumma)", "棕色 (深色)", "भूरा (गहरा)"],
-    ["Brown (light)", "brązowy (jasny)", "Braun (hell)", "Marrone (chiaro)", "Ruskea (vaalea)", "棕色 (浅色)", "भूरा (हल्का)"],
+    ["Dark Brown", "Ciemny brązowy", "Dunkelbraun", "Marrone scuro", "Tumma ruskea", "深棕", "गहरा भूरा"],
+    ["Light Brown", "Jasny brązowy", "Hellbraun", "Marrone chiaro", "Vaalea ruskea", "浅棕", "हल्का भूरा"],
     // ---- theme names: orange ----
-    ["Orange (dark)", "pomarańczowy (ciemny)", "Orange (dunkel)", "Arancione (scuro)", "Oranssi (tumma)", "橙色 (深色)", "नारंगी (गहरा)"],
-    ["Orange (light)", "pomarańczowy (jasny)", "Orange (hell)", "Arancione (chiaro)", "Oranssi (vaalea)", "橙色 (浅色)", "नारंगी (हल्का)"],
+    ["Dark Orange", "Ciemny pomarańczowy", "Dunkelorange", "Arancione scuro", "Tumma oranssi", "深橙", "गहरा नारंगी"],
+    ["Light Orange", "Jasny pomarańczowy", "Hellorange", "Arancione chiaro", "Vaalea oranssi", "浅橙", "हल्का नारंगी"],
     // ---- workspace colour option ----
     ["Workspace colour", "Kolor obszaru roboczego", "Farbe des Arbeitsbereichs", "Colore dell'area di lavoro", "Työtilan väri", "工作区颜色", "कार्यक्षेत्र का रंग"],
     ["The space around the work area", "Przestrzeń wokół pola roboczego", "Der Raum um die Arbeitsfläche", "Lo spazio intorno al piano di lavoro", "Työalueen ympärillä oleva tila", "工作区域周围的空间", "कार्य क्षेत्र के चारों ओर की जगह"],

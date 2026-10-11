@@ -1052,15 +1052,15 @@
 1051|Webszerver: be, port {}
 1052|Webszerver: ki
 1053|Webszerver: hiba
-1054|Kék (sötét)
-1055|Kék (világos)
-1056|Zöld (sötét)
-1057|Zöld (világos)
-1058|Lila (sötét)
-1059|Lila (világos)
-1060|Barna (sötét)
-1061|Barna (világos)
-1062|Narancs (sötét)
-1063|Narancs (világos)
+1054|Sötét kék
+1055|Világos kék
+1056|Sötét zöld
+1057|Világos zöld
+1058|Sötét lila
+1059|Világos lila
+1060|Sötét barna
+1061|Világos barna
+1062|Sötét narancs
+1063|Világos narancs
 1064|A munkaterület színe
 1065|A munkaterület körüli tér

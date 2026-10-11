@@ -1052,15 +1052,15 @@
 1051|Žiniatinklio serveris: įjungtas, prievadas {}
 1052|Žiniatinklio serveris: išjungtas
 1053|Žiniatinklio serveris: klaida
-1054|Mėlyna (tamsi)
-1055|Mėlyna (šviesi)
-1056|Žalia (tamsi)
-1057|Žalia (šviesi)
-1058|Violetinė (tamsi)
-1059|Violetinė (šviesi)
-1060|Ruda (tamsi)
-1061|Ruda (šviesi)
-1062|Oranžinė (tamsi)
-1063|Oranžinė (šviesi)
+1054|Tamsi mėlyna
+1055|Šviesi mėlyna
+1056|Tamsi žalia
+1057|Šviesi žalia
+1058|Tamsi violetinė
+1059|Šviesi violetinė
+1060|Tamsi ruda
+1061|Šviesi ruda
+1062|Tamsi oranžinė
+1063|Šviesi oranžinė
 1064|Darbo erdvės spalva
 1065|Erdvė aplink darbo plotą

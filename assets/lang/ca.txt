@@ -1052,15 +1052,15 @@
 1051|Servidor web: actiu, port {}
 1052|Servidor web: apagat
 1053|Servidor web: error
-1054|Blau (fosc)
-1055|Blau (clar)
-1056|Verd (fosc)
-1057|Verd (clar)
-1058|Lila (fosc)
-1059|Lila (clar)
-1060|Marró (fosc)
-1061|Marró (clar)
-1062|Taronja (fosc)
-1063|Taronja (clar)
+1054|Blau fosc
+1055|Blau clar
+1056|Verd fosc
+1057|Verd clar
+1058|Lila fosc
+1059|Lila clar
+1060|Marró fosc
+1061|Marró clar
+1062|Taronja fosc
+1063|Taronja clar
 1064|Color de l'espai de treball
 1065|L'espai al voltant de l'àrea de treball

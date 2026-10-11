@@ -1052,15 +1052,15 @@
 1051|Webserver: tændt, port {}
 1052|Webserver: slukket
 1053|Webserver: fejl
-1054|Blå (mørk)
-1055|Blå (lys)
-1056|Grøn (mørk)
-1057|Grøn (lys)
-1058|Lilla (mørk)
-1059|Lilla (lys)
-1060|Brun (mørk)
-1061|Brun (lys)
-1062|Orange (mørk)
-1063|Orange (lys)
+1054|Mørk blå
+1055|Lys blå
+1056|Mørk grøn
+1057|Lys grøn
+1058|Mørk lilla
+1059|Lys lilla
+1060|Mørk brun
+1061|Lys brun
+1062|Mørk orange
+1063|Lys orange
 1064|Farve på arbejdsrummet
 1065|Rummet omkring arbejdsområdet

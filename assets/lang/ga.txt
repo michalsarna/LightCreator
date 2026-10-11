@@ -1052,15 +1052,15 @@
 1051|Freastalaí gréasáin: ar siúl, port {}
 1052|Freastalaí gréasáin: múchta
 1053|Freastalaí gréasáin: earráid
-1054|Gorm (dorcha)
-1055|Gorm (éadrom)
-1056|Glas (dorcha)
-1057|Glas (éadrom)
-1058|Corcra (dorcha)
-1059|Corcra (éadrom)
-1060|Donn (dorcha)
-1061|Donn (éadrom)
-1062|Oráiste (dorcha)
-1063|Oráiste (éadrom)
+1054|Gorm dorcha
+1055|Gorm éadrom
+1056|Glas dorcha
+1057|Glas éadrom
+1058|Corcra dorcha
+1059|Corcra éadrom
+1060|Donn dorcha
+1061|Donn éadrom
+1062|Oráiste dorcha
+1063|Oráiste éadrom
 1064|Dath an spáis oibre
 1065|An spás timpeall an limistéir oibre

@@ -1052,15 +1052,15 @@
 1051|Webový server: zapnut, port {}
 1052|Webový server: vypnut
 1053|Webový server: chyba
-1054|Modrý (tmavý)
-1055|Modrý (světlý)
-1056|Zelený (tmavý)
-1057|Zelený (světlý)
-1058|Fialový (tmavý)
-1059|Fialový (světlý)
-1060|Hnědý (tmavý)
-1061|Hnědý (světlý)
-1062|Oranžový (tmavý)
-1063|Oranžový (světlý)
+1054|Tmavý modrý
+1055|Světlý modrý
+1056|Tmavý zelený
+1057|Světlý zelený
+1058|Tmavý fialový
+1059|Světlý fialový
+1060|Tmavý hnědý
+1061|Světlý hnědý
+1062|Tmavý oranžový
+1063|Světlý oranžový
 1064|Barva pracovního prostoru
 1065|Prostor kolem pracovní plochy

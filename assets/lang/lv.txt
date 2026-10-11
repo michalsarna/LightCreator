@@ -1052,15 +1052,15 @@
 1051|Tīmekļa serveris: ieslēgts, ports {}
 1052|Tīmekļa serveris: izslēgts
 1053|Tīmekļa serveris: kļūda
-1054|Zila (tumša)
-1055|Zila (gaiša)
-1056|Zaļa (tumša)
-1057|Zaļa (gaiša)
-1058|Violeta (tumša)
-1059|Violeta (gaiša)
-1060|Brūna (tumša)
-1061|Brūna (gaiša)
-1062|Oranža (tumša)
-1063|Oranža (gaiša)
+1054|Tumša zila
+1055|Gaiša zila
+1056|Tumša zaļa
+1057|Gaiša zaļa
+1058|Tumša violeta
+1059|Gaiša violeta
+1060|Tumša brūna
+1061|Gaiša brūna
+1062|Tumša oranža
+1063|Gaiša oranža
 1064|Darba telpas krāsa
 1065|Telpa ap darba laukumu

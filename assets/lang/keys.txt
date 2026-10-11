@@ -1052,15 +1052,15 @@
 1051	Web server: on, port {}
 1052	Web server: off
 1053	Web server: error
-1054	Blue (dark)
-1055	Blue (light)
-1056	Green (dark)
-1057	Green (light)
-1058	Purple (dark)
-1059	Purple (light)
-1060	Brown (dark)
-1061	Brown (light)
-1062	Orange (dark)
-1063	Orange (light)
+1054	Dark Blue
+1055	Light Blue
+1056	Dark Green
+1057	Light Green
+1058	Dark Purple
+1059	Light Purple
+1060	Dark Brown
+1061	Light Brown
+1062	Dark Orange
+1063	Light Orange
 1064	Workspace colour
 1065	The space around the work area

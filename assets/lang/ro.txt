@@ -1052,15 +1052,15 @@
 1051|Server web: pornit, port {}
 1052|Server web: oprit
 1053|Server web: eroare
-1054|Albastru (închis)
-1055|Albastru (deschis)
-1056|Verde (închis)
-1057|Verde (deschis)
-1058|Violet (închis)
-1059|Violet (deschis)
-1060|Maro (închis)
-1061|Maro (deschis)
-1062|Portocaliu (închis)
-1063|Portocaliu (deschis)
+1054|Albastru închis
+1055|Albastru deschis
+1056|Verde închis
+1057|Verde deschis
+1058|Violet închis
+1059|Violet deschis
+1060|Maro închis
+1061|Maro deschis
+1062|Portocaliu închis
+1063|Portocaliu deschis
 1064|Culoarea spațiului de lucru
 1065|Spațiul din jurul zonei de lucru

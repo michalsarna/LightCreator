@@ -1052,15 +1052,15 @@
 1051|Spletni strežnik: vklopljen, vrata {}
 1052|Spletni strežnik: izklopljen
 1053|Spletni strežnik: napaka
-1054|Modra (temna)
-1055|Modra (svetla)
-1056|Zelena (temna)
-1057|Zelena (svetla)
-1058|Vijolična (temna)
-1059|Vijolična (svetla)
-1060|Rjava (temna)
-1061|Rjava (svetla)
-1062|Oranžna (temna)
-1063|Oranžna (svetla)
+1054|Temna modra
+1055|Svetla modra
+1056|Temna zelena
+1057|Svetla zelena
+1058|Temna vijolična
+1059|Svetla vijolična
+1060|Temna rjava
+1061|Svetla rjava
+1062|Temna oranžna
+1063|Svetla oranžna
 1064|Barva delovnega prostora
 1065|Prostor okoli delovnega območja

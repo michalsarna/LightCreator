@@ -1052,15 +1052,15 @@
 1051|Serveur web : actif, port {}
 1052|Serveur web : éteint
 1053|Serveur web : erreur
-1054|Bleu (sombre)
-1055|Bleu (clair)
-1056|Vert (sombre)
-1057|Vert (clair)
-1058|Violet (sombre)
-1059|Violet (clair)
-1060|Marron (sombre)
-1061|Marron (clair)
-1062|Orange (sombre)
-1063|Orange (clair)
+1054|Bleu sombre
+1055|Bleu clair
+1056|Vert sombre
+1057|Vert clair
+1058|Violet sombre
+1059|Violet clair
+1060|Marron sombre
+1061|Marron clair
+1062|Orange sombre
+1063|Orange clair
 1064|Couleur de l'espace de travail
 1065|L'espace autour de la zone de travail

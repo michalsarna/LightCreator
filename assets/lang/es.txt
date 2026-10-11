@@ -1052,15 +1052,15 @@
 1051|Servidor web: activo, puerto {}
 1052|Servidor web: apagado
 1053|Servidor web: error
-1054|Azul (oscuro)
-1055|Azul (claro)
-1056|Verde (oscuro)
-1057|Verde (claro)
-1058|Morado (oscuro)
-1059|Morado (claro)
-1060|Marrón (oscuro)
-1061|Marrón (claro)
-1062|Naranja (oscuro)
-1063|Naranja (claro)
+1054|Azul oscuro
+1055|Azul claro
+1056|Verde oscuro
+1057|Verde claro
+1058|Morado oscuro
+1059|Morado claro
+1060|Marrón oscuro
+1061|Marrón claro
+1062|Naranja oscuro
+1063|Naranja claro
 1064|Color del espacio de trabajo
 1065|El espacio alrededor del área de trabajo

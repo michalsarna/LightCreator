@@ -1052,15 +1052,15 @@
 1051|Webbserver: på, port {}
 1052|Webbserver: av
 1053|Webbserver: fel
-1054|Blå (mörk)
-1055|Blå (ljus)
-1056|Grön (mörk)
-1057|Grön (ljus)
-1058|Lila (mörk)
-1059|Lila (ljus)
-1060|Brun (mörk)
-1061|Brun (ljus)
-1062|Orange (mörk)
-1063|Orange (ljus)
+1054|Mörk blå
+1055|Ljus blå
+1056|Mörk grön
+1057|Ljus grön
+1058|Mörk lila
+1059|Ljus lila
+1060|Mörk brun
+1061|Ljus brun
+1062|Mörk orange
+1063|Ljus orange
 1064|Arbetsytans färg
 1065|Utrymmet runt arbetsområdet

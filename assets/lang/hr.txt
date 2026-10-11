@@ -1052,15 +1052,15 @@
 1051|Web poslužitelj: uključen, port {}
 1052|Web poslužitelj: isključen
 1053|Web poslužitelj: greška
-1054|Plava (tamna)
-1055|Plava (svijetla)
-1056|Zelena (tamna)
-1057|Zelena (svijetla)
-1058|Ljubičasta (tamna)
-1059|Ljubičasta (svijetla)
-1060|Smeđa (tamna)
-1061|Smeđa (svijetla)
-1062|Narančasta (tamna)
-1063|Narančasta (svijetla)
+1054|Tamna plava
+1055|Svijetla plava
+1056|Tamna zelena
+1057|Svijetla zelena
+1058|Tamna ljubičasta
+1059|Svijetla ljubičasta
+1060|Tamna smeđa
+1061|Svijetla smeđa
+1062|Tamna narančasta
+1063|Svijetla narančasta
 1064|Boja radnog prostora
 1065|Prostor oko radne površine

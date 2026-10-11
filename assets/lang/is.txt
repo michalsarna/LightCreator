@@ -1052,15 +1052,15 @@
 1051|Vefþjónn: á, gátt {}
 1052|Vefþjónn: af
 1053|Vefþjónn: villa
-1054|Blátt (dökkt)
-1055|Blátt (ljóst)
-1056|Grænt (dökkt)
-1057|Grænt (ljóst)
-1058|Fjólublátt (dökkt)
-1059|Fjólublátt (ljóst)
-1060|Brúnt (dökkt)
-1061|Brúnt (ljóst)
-1062|Appelsínugult (dökkt)
-1063|Appelsínugult (ljóst)
+1054|Dökkt blátt
+1055|Ljóst blátt
+1056|Dökkt grænt
+1057|Ljóst grænt
+1058|Dökkt fjólublátt
+1059|Ljóst fjólublátt
+1060|Dökkt brúnt
+1061|Ljóst brúnt
+1062|Dökkt appelsínugult
+1063|Ljóst appelsínugult
 1064|Litur vinnusvæðisins
 1065|Svæðið í kringum vinnusvæðið

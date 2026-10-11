@@ -1052,15 +1052,15 @@
 1051|Webserver: aan, poort {}
 1052|Webserver: uit
 1053|Webserver: fout
-1054|Blauw (donker)
-1055|Blauw (licht)
-1056|Groen (donker)
-1057|Groen (licht)
-1058|Paars (donker)
-1059|Paars (licht)
-1060|Bruin (donker)
-1061|Bruin (licht)
-1062|Oranje (donker)
-1063|Oranje (licht)
+1054|Donker blauw
+1055|Licht blauw
+1056|Donker groen
+1057|Licht groen
+1058|Donker paars
+1059|Licht paars
+1060|Donker bruin
+1061|Licht bruin
+1062|Donker oranje
+1063|Licht oranje
 1064|Kleur van de werkruimte
 1065|De ruimte rond het werkgebied
