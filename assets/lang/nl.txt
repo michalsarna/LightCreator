@@ -571,3 +571,96 @@
 570|Zet de tekst om in curven, of vectoriseer de afbeelding, om de knooppunten te bewerken.
 571|Selecteer eerst een vorm en bewerk dan zijn knooppunten.
 572|Hart (K)
+573|{} materia(a)l(en) toegevoegd uit {}
+574|Verschillen in de materiaalbibliotheek
+575|{} bevat materiaalinstellingen die afwijken van dit apparaat. Kies de waarden die u wilt houden.
+576|{} nieuwe materialen toegevoegd; {} waren al gelijk.
+577|Al mijn waarden houden
+578|Alles uit het bestand nemen
+579|Laag {}: hele laag
+580|niet aanwezig
+581|Mijn bibliotheek ongewijzigd laten
+582|De bibliotheek van dit apparaat is bijgewerkt.
+583|Toevoegen uit bibliotheek…
+584|Kopieert materialen uit de ingebouwde bibliotheek naar dit apparaat
+585|Bibliotheek van apparaat {}
+586|Deze bibliotheek is leeg. Voeg materialen toe uit de ingebouwde bibliotheek of sla uw lagen op als materiaal.
+587|Notitie
+588|Label
+589|Laag verwijderen
+590|Laag toevoegen
+591|Gebruikt de instellingen van deze laag in het ontwerp
+592|Toepassen op de lagen
+593|Zet de instellingen van al zijn lagen in het ontwerp
+594|{} toegepast op {} laag/lagen
+595|De lagen van het ontwerp opslaan als materiaal
+596|Slaat de instellingen van de in het ontwerp gebruikte lagen op
+597|{} opgeslagen in de bibliotheek van dit apparaat
+598|Hier toegevoegde materialen zijn beschikbaar voor elk apparaat. De eigen bibliotheek van een apparaat bewerkt u op het tabblad Materialen.
+599|Door u toegevoegd
+600|Ingebouwd
+601|Aan dit apparaat toevoegen
+602|De lagen van het ontwerp opslaan als materiaal voor elk apparaat
+603|Opslaan in de bibliotheek
+604|{} staat al in de bibliotheek van dit apparaat
+605|{} toegevoegd aan de bibliotheek van dit apparaat
+606|Er bestaat al een materiaal met deze naam in de bibliotheek.
+607|{} opgeslagen in de materiaalbibliotheek
+608|Instelling
+609|Dit apparaat
+610|Materialen
+611|Hout
+612|Metaal
+613|Kunststof
+614|Papier en leer
+615|Steen en glas
+616|Overig
+617|Bibliotheek exporteren…
+618|Bibliotheek importeren…
+619|Vink aan wat in het bestand komt.
+620|Vink aan wat uit het bestand wordt overgenomen.
+621|Algemene materialen
+622|Apparaten
+623|Bibliotheek opgeslagen: {} materia(a)l(en) en {} apparaat/apparaten
+624|{} materia(a)l(en) en {} apparaat/apparaten geïmporteerd
+625|Dit is geen bibliotheekbestand van LightCreator.
+626|{} bevat materiaalinstellingen die afwijken van {}. Kies de waarden die blijven.
+627|Multiplex
+628|MDF
+629|Karton
+630|Papier
+631|Leer
+632|Vilt
+633|Kurk
+634|Acryl
+635|Acryl, zwart of donker
+636|Leisteen / steen
+637|Geanodiseerd aluminium (gecoat)
+638|Rubber
+639|Stof
+640|Glas
+641|Hout (hardhout)
+642|Tags
+643|Dikte
+644|Tags, gescheiden door komma's
+645|Materiaal bewerken
+646|Ingebouwde waarden herstellen
+647|De ingebouwde waarden zijn hersteld.
+648|Dit materiaal heeft geen instellingen voor het lasertype van dit apparaat
+649|Dubbelklik op een materiaal om de instellingen te bewerken. Wijzigingen blijven op deze computer bewaard.
+650|Alleen zwart of wit, gesplitst bij halve helderheid. Scherp: goed voor lijntekeningen en tekst.
+651|Verdeelt de afrondingsfout over de naburige punten. Een goede algemene keuze voor foto's.
+652|Verdeelt de fout over een groter gebied: zachtere tinten, iets langzamer.
+653|Zoals Jarvis, met scherpere details.
+654|Houdt hooglichten schoon en het contrast hoog; verliest wat van de donkerste en lichtste details.
+655|Een vast 8×8-patroon van punten: regelmatig en snel, zonder ruis.
+656|Geen punten: elke pixel brandt met een vermogen tussen het minimum en het vermogen van de laag.
+657|Alle materialen verwijderen
+658|Alle materialen van dit apparaat verwijderen? In plaats daarvan worden de materialen van de hoofdbibliotheek getoond; als u er een wijzigt, wordt een kopie voor dit apparaat bewaard.
+659|De bibliotheek van dit apparaat toont nu de hoofdbibliotheek.
+660|Laaglabels
+661|Laaglabels…
+662|Labels die worden aangeboden voor de lagen van een materiaal. Cut, Engrave en Score zijn er altijd.
+663|Nieuw label
+664|Labels voor de lagen van een materiaal toevoegen of verwijderen
+665|Toevoegen

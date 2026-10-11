@@ -36,8 +36,11 @@ All pictures are rendered headlessly from the real UI. Back to the [README](../R
 | Closing with unsaved work: Save, Discard or Cancel | |
 | ![About](screenshots/30-about.png) | ![Greek interface](screenshots/31-greek.png) |
 | The About window, in the style of the preview and camera windows | Greek interface |
-| ![Ukrainian interface](screenshots/32-ukrainian.png) | |
-| Ukrainian interface (one of the 23 added European languages) | |
+| ![Ukrainian interface](screenshots/32-ukrainian.png) | ![Materials tab](screenshots/33-materials-tab.png) |
+| Ukrainian interface (one of the 23 added European languages) | The Materials tab: the library of the device, settings of every layer of a material |
+| ![Material differences](screenshots/34-material-merge.png) | ![Library file](screenshots/35-library-export.png) |
+| ![Editing a material](screenshots/36-material-edit.png) | |
+| A library read from a project file: choose, value by value, what to keep | |
 
 Regenerate them with
 `cargo test -p lightcreator --release render_screenshots -- --ignored`.

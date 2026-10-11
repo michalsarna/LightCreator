@@ -571,3 +571,96 @@
 570|Konvertuokite tekstą į kreives arba vektorizuokite paveikslėlį, kad galėtumėte redaguoti jo mazgus.
 571|Pirmiausia pasirinkite formą, tada redaguokite jos mazgus.
 572|Širdis (K)
+573|Pridėta medžiagų: {} iš {}
+574|Medžiagų bibliotekos skirtumai
+575|{} turi medžiagų nustatymų, kurie skiriasi nuo šio įrenginio. Pasirinkite reikšmes, kurias palikti.
+576|Pridėta naujų medžiagų: {}; jau vienodų buvo: {}.
+577|Palikti visas mano
+578|Imti visas iš failo
+579|Sluoksnis {}: visas sluoksnis
+580|nėra
+581|Palikti mano biblioteką nepakeistą
+582|Šio įrenginio biblioteka atnaujinta.
+583|Pridėti iš bibliotekos…
+584|Nukopijuoja medžiagas iš įtaisytosios bibliotekos į šį įrenginį
+585|Įrenginio {} biblioteka
+586|Ši biblioteka tuščia. Pridėkite medžiagų iš įtaisytosios bibliotekos arba įrašykite savo sluoksnius kaip medžiagą.
+587|Pastaba
+588|Etiketė
+589|Pašalinti sluoksnį
+590|Pridėti sluoksnį
+591|Naudoja šio sluoksnio nustatymus dizaine
+592|Taikyti sluoksniams
+593|Įdeda į dizainą visų jos sluoksnių nustatymus
+594|{} pritaikyta sluoksniams: {}
+595|Įrašyti dizaino sluoksnius kaip medžiagą
+596|Įrašo dizaine naudojamų sluoksnių nustatymus
+597|{} įrašyta šio įrenginio bibliotekoje
+598|Čia pridėtos medžiagos prieinamos kiekvienam įrenginiui. Paties įrenginio biblioteka redaguojama skirtuke Medžiagos.
+599|Jūsų pridėta
+600|Įtaisytoji
+601|Pridėti prie šio įrenginio
+602|Įrašyti dizaino sluoksnius kaip medžiagą kiekvienam įrenginiui
+603|Įrašyti į biblioteką
+604|{} jau yra šio įrenginio bibliotekoje
+605|{} pridėta prie šio įrenginio bibliotekos
+606|Medžiaga tokiu pavadinimu bibliotekoje jau yra.
+607|{} įrašyta medžiagų bibliotekoje
+608|Nustatymas
+609|Šis įrenginys
+610|Medžiagos
+611|Mediena
+612|Metalas
+613|Plastikas
+614|Popierius ir oda
+615|Akmuo ir stiklas
+616|Kita
+617|Eksportuoti biblioteką…
+618|Importuoti biblioteką…
+619|Pažymėkite, kas bus įrašyta į failą.
+620|Pažymėkite, ką paimti iš failo.
+621|Bendros medžiagos
+622|Įrenginiai
+623|Biblioteka išsaugota: medžiagų {} ir įrenginių {}
+624|Importuota medžiagų: {}, įrenginių: {}
+625|Tai nėra „LightCreator“ bibliotekos failas.
+626|{} medžiagų nustatymai skiriasi nuo {}. Pasirinkite reikšmes, kurias palikti.
+627|Fanera
+628|MDF
+629|Kartonas
+630|Popierius
+631|Oda
+632|Veltinis
+633|Kamštis
+634|Akrilas
+635|Akrilas, juodas arba tamsus
+636|Skalūnas / akmuo
+637|Anoduotas aliuminis (padengtas)
+638|Guma
+639|Audinys
+640|Stiklas
+641|Mediena (kietmedis)
+642|Žymos
+643|Storis
+644|Žymos, atskirtos kableliais
+645|Redaguoti medžiagą
+646|Atkurti įtaisytąsias reikšmes
+647|Įtaisytosios reikšmės atkurtos.
+648|Ši medžiaga neturi nustatymų šio įrenginio lazerio tipui
+649|Dukart spustelėkite medžiagą, kad redaguotumėte jos nustatymus. Pakeitimai saugomi šiame kompiuteryje.
+650|Tik juoda arba balta, skiriama ties pusės ryškumo. Aštru: tinka brėžiniams ir tekstui.
+651|Paskirsto apvalinimo paklaidą kaimyniniams taškams. Geras bendras pasirinkimas nuotraukoms.
+652|Paskirsto paklaidą didesniam plotui: lygesni tonai, šiek tiek lėčiau.
+653|Kaip Jarvis, su ryškesnėmis detalėmis.
+654|Išlaiko švarias šviesas ir didelį kontrastą; netenka dalies tamsiausių ir šviesiausių detalių.
+655|Fiksuotas 8×8 taškų raštas: taisyklingas ir greitas, be triukšmo.
+656|Be taškų: kiekvienas pikselis dega galia tarp mažiausios ir sluoksnio galios.
+657|Ištrinti visas medžiagas
+658|Ištrinti visas šio įrenginio medžiagas? Vietoj jų rodomos pagrindinės bibliotekos medžiagos; pakeitus vieną, šiam įrenginiui paliekama jos kopija.
+659|Šio įrenginio biblioteka dabar rodo pagrindinę biblioteką.
+660|Sluoksnių žymos
+661|Sluoksnių žymos…
+662|Medžiagos sluoksniams siūlomos žymos. Cut, Engrave ir Score yra visada.
+663|Nauja žyma
+664|Pridėti arba pašalinti medžiagos sluoksniams siūlomas žymas
+665|Pridėti

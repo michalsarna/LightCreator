@@ -571,3 +571,96 @@
 570|Converta o texto em curvas, ou vetorize a imagem, para editar os seus nós.
 571|Selecione primeiro uma forma e depois edite os seus nós.
 572|Coração (K)
+573|{} material(is) adicionado(s) de {}
+574|Diferenças na biblioteca de materiais
+575|{} contém definições de materiais diferentes deste dispositivo. Escolha os valores a manter.
+576|{} novo(s) material(is) adicionado(s); {} já eram iguais.
+577|Manter todos os meus
+578|Usar todos do ficheiro
+579|Camada {}: camada inteira
+580|não existe
+581|Deixar a minha biblioteca como está
+582|A biblioteca deste dispositivo foi atualizada.
+583|Adicionar da biblioteca…
+584|Copia materiais da biblioteca integrada para este dispositivo
+585|Biblioteca do dispositivo {}
+586|Esta biblioteca está vazia. Adicione materiais da biblioteca integrada ou guarde as suas camadas como material.
+587|Nota
+588|Etiqueta
+589|Remover camada
+590|Adicionar camada
+591|Usa as definições desta camada do desenho
+592|Aplicar às camadas
+593|Coloca no desenho as definições de todas as suas camadas
+594|{} aplicado a {} camada(s)
+595|Guardar as camadas do desenho como material
+596|Guarda as definições das camadas usadas no desenho
+597|{} guardado na biblioteca deste dispositivo
+598|Os materiais adicionados aqui estão disponíveis para todos os dispositivos. A biblioteca própria de um dispositivo edita-se no separador Materiais.
+599|Adicionado por si
+600|Integrado
+601|Adicionar a este dispositivo
+602|Guardar as camadas do desenho como material para todos os dispositivos
+603|Guardar na biblioteca
+604|{} já está na biblioteca deste dispositivo
+605|{} adicionado à biblioteca deste dispositivo
+606|Já existe um material com este nome na biblioteca.
+607|{} guardado na biblioteca de materiais
+608|Definição
+609|Este dispositivo
+610|Materiais
+611|Madeira
+612|Metal
+613|Plástico
+614|Papel e couro
+615|Pedra e vidro
+616|Outros
+617|Exportar biblioteca…
+618|Importar biblioteca…
+619|Marque o que vai para o ficheiro.
+620|Marque o que se toma do ficheiro.
+621|Materiais globais
+622|Dispositivos
+623|Biblioteca guardada: {} material(is) e {} dispositivo(s)
+624|Importados {} material(is) e {} dispositivo(s)
+625|Este não é um ficheiro de biblioteca do LightCreator.
+626|{} tem definições de materiais diferentes das de {}. Escolha os valores a manter.
+627|Contraplacado
+628|MDF
+629|Cartão
+630|Papel
+631|Couro
+632|Feltro
+633|Cortiça
+634|Acrílico
+635|Acrílico, preto ou escuro
+636|Ardósia / pedra
+637|Alumínio anodizado (revestido)
+638|Borracha
+639|Tecido
+640|Vidro
+641|Madeira (dura)
+642|Etiquetas
+643|Espessura
+644|Etiquetas, separadas por vírgulas
+645|Editar material
+646|Repor os valores integrados
+647|Os valores integrados foram repostos.
+648|Este material não tem definições para o tipo de laser deste dispositivo
+649|Faça duplo clique num material para editar as suas definições. As alterações ficam guardadas neste computador.
+650|Apenas preto ou branco, dividido a meia luminosidade. Nítido: bom para desenhos de linha e texto.
+651|Distribui o erro de arredondamento pelos pontos vizinhos. Uma boa escolha geral para fotografias.
+652|Distribui o erro por uma área maior: tons mais suaves, um pouco mais lento.
+653|Como o Jarvis, com detalhes mais nítidos.
+654|Mantém as luzes limpas e o contraste alto; perde um pouco dos detalhes mais escuros e mais claros.
+655|Um padrão fixo de pontos 8×8: regular e rápido, sem ruído.
+656|Sem pontos: cada píxel queima com uma potência entre o mínimo e a potência da camada.
+657|Eliminar todos os materiais
+658|Eliminar todos os materiais deste dispositivo? Em vez deles são mostrados os da biblioteca principal; ao alterar um, fica guardada uma cópia para este dispositivo.
+659|A biblioteca deste dispositivo mostra agora a biblioteca principal.
+660|Etiquetas das camadas
+661|Etiquetas das camadas…
+662|Etiquetas oferecidas para as camadas de um material. Cut, Engrave e Score estão sempre presentes.
+663|Nova etiqueta
+664|Adicionar ou remover as etiquetas oferecidas para as camadas de um material
+665|Adicionar

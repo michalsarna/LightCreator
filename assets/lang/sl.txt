@@ -571,3 +571,96 @@
 570|Pretvorite besedilo v krivulje ali vektorizirajte sliko, da lahko urejate njena vozlišča.
 571|Najprej izberite obliko, nato uredite njena vozlišča.
 572|Srce (K)
+573|Dodanih materialov: {} iz {}
+574|Razlike v knjižnici materialov
+575|{} vsebuje nastavitve materialov, ki se razlikujejo od te naprave. Izberite vrednosti, ki jih želite obdržati.
+576|Dodanih novih materialov: {}; že enakih: {}.
+577|Obdrži vse moje
+578|Vzemi vse iz datoteke
+579|Sloj {}: cel sloj
+580|ni
+581|Pusti mojo knjižnico, kakršna je
+582|Knjižnica te naprave je posodobljena.
+583|Dodaj iz knjižnice…
+584|Kopira materiale iz vgrajene knjižnice v to napravo
+585|Knjižnica naprave {}
+586|Ta knjižnica je prazna. Dodajte materiale iz vgrajene knjižnice ali shranite svoje sloje kot material.
+587|Opomba
+588|Oznaka
+589|Odstrani sloj
+590|Dodaj sloj
+591|Uporabi nastavitve tega sloja iz zasnove
+592|Uporabi na slojih
+593|V zasnovo vstavi nastavitve vseh njegovih slojev
+594|{} uporabljeno na slojih: {}
+595|Shrani sloje zasnove kot material
+596|Shrani nastavitve slojev, uporabljenih v zasnovi
+597|{} shranjeno v knjižnico te naprave
+598|Tukaj dodani materiali so na voljo za vsako napravo. Lastno knjižnico naprave urejate na zavihku Materiali.
+599|Dodali ste
+600|Vgrajen
+601|Dodaj tej napravi
+602|Shrani sloje zasnove kot material za vsako napravo
+603|Shrani v knjižnico
+604|{} je že v knjižnici te naprave
+605|{} dodano v knjižnico te naprave
+606|Material s tem imenom v knjižnici že obstaja.
+607|{} shranjeno v knjižnico materialov
+608|Nastavitev
+609|Ta naprava
+610|Materiali
+611|Les
+612|Kovina
+613|Plastika
+614|Papir in usnje
+615|Kamen in steklo
+616|Drugo
+617|Izvozi knjižnico…
+618|Uvozi knjižnico…
+619|Označite, kaj gre v datoteko.
+620|Označite, kaj naj se vzame iz datoteke.
+621|Splošni materiali
+622|Naprave
+623|Knjižnica shranjena: materialov {} in naprav {}
+624|Uvoženo materialov: {}, naprav: {}
+625|To ni datoteka knjižnice programa LightCreator.
+626|{} vsebuje nastavitve materialov, ki se razlikujejo od {}. Izberite vrednosti, ki jih želite obdržati.
+627|Vezana plošča
+628|MDF
+629|Karton
+630|Papir
+631|Usnje
+632|Filc
+633|Pluta
+634|Akril
+635|Akril, črn ali temen
+636|Skrilavec / kamen
+637|Eloksiran aluminij (prevlečen)
+638|Guma
+639|Tkanina
+640|Steklo
+641|Les (trd)
+642|Oznake
+643|Debelina
+644|Oznake, ločene z vejicami
+645|Uredi material
+646|Obnovi vgrajene vrednosti
+647|Vgrajene vrednosti so obnovljene.
+648|Ta material nima nastavitev za vrsto laserja te naprave
+649|Dvokliknite material, da uredite njegove nastavitve. Spremembe se hranijo v tem računalniku.
+650|Samo črna ali bela, razdelitev pri polovični svetlosti. Ostro: dobro za črtne risbe in besedilo.
+651|Napako zaokroževanja razporedi na sosednje točke. Dobra splošna izbira za fotografije.
+652|Napako razporedi na večje območje: mehkejši toni, nekoliko počasneje.
+653|Kot Jarvis, z ostrejšimi podrobnostmi.
+654|Ohranja čiste svetle dele in visok kontrast; izgubi nekaj najtemnejših in najsvetlejših podrobnosti.
+655|Stalen vzorec točk 8×8: pravilen in hiter, brez šuma.
+656|Brez točk: vsak piksel žge z močjo med najmanjšo in močjo plasti.
+657|Izbriši vse materiale
+658|Izbrišem vse materiale te naprave? Namesto njih se prikažejo materiali glavne knjižnice; ko enega spremenite, se zanj za to napravo ohrani kopija.
+659|Knjižnica te naprave zdaj prikazuje glavno knjižnico.
+660|Oznake plasti
+661|Oznake plasti…
+662|Oznake, ponujene za plasti materiala. Cut, Engrave in Score so vedno na voljo.
+663|Nova oznaka
+664|Dodaj ali odstrani oznake, ponujene za plasti materiala
+665|Dodaj

@@ -750,3 +750,190 @@ fn the_interface_font_covers_every_european_translation() {
     }
     assert!(missing.is_empty(), "characters without a glyph: {missing:?}");
 }
+
+#[test]
+fn builtin_materials_group_the_presets_by_material_and_laser() {
+    let mats = materials::builtin_materials();
+    assert!(mats.len() < materials::builtin().len());
+    let ply = mats.iter().find(|m| m.name == "Plywood" && m.thickness == 3.0 && m.laser == LaserKind::Diode).unwrap();
+    assert_eq!(ply.layers.iter().map(|l| (l.index, l.label.as_str())).collect::<Vec<_>>(), vec![(0, "Cut"), (1, "Engrave")]);
+    assert_eq!(ply.layer(0).unwrap().spec.mode, LayerMode::Line);
+    assert_eq!(ply.layer(1).unwrap().spec.mode, LayerMode::Fill);
+    // The same material for another laser is another entry.
+    assert!(mats.iter().any(|m| m.name == "Plywood" && m.thickness == 3.0 && m.laser == LaserKind::Co2));
+}
+
+#[test]
+fn a_material_keeps_and_restores_the_settings_of_all_its_layers() {
+    let mut doc = Document::default();
+    doc.layers[0].speed = 5.0;
+    doc.layers[0].air_assist = true;
+    doc.layers[0].passes = 3;
+    doc.layers[2].mode = LayerMode::Offset;
+    doc.layers[2].power = 40.0;
+    let m = materials::Material::from_layers(" Birch ", LaserKind::Diode, &[(2, &doc.layers[2]), (0, &doc.layers[0])]);
+    assert_eq!(m.name, "Birch");
+    assert_eq!(m.layers.iter().map(|l| l.index).collect::<Vec<_>>(), vec![0, 2], "sorted by layer");
+    let mut other = Document::default();
+    assert_eq!(m.apply(&mut other.layers), 2);
+    assert_eq!((other.layers[0].speed, other.layers[0].air_assist, other.layers[0].passes), (5.0, true, 3));
+    assert_eq!((other.layers[2].mode, other.layers[2].power), (LayerMode::Offset, 40.0));
+    // Layers the material does not mention stay as they are.
+    assert_eq!(other.layers[1], Document::default().layers[1]);
+    // It survives JSON like the rest of a device profile.
+    let back: materials::Material = serde_json::from_str(&serde_json::to_string(&m).unwrap()).unwrap();
+    assert_eq!(back, m);
+}
+
+#[test]
+fn old_user_presets_become_materials() {
+    let mk = |mat: &str, op: &str| materials::Preset { material: mat.into(), operation: op.into(), laser: LaserKind::Co2, mode: LayerMode::Line, speed: 9.0, power: 50.0, passes: 1, interval: 0.1, user: true };
+    let mats = materials::materials_from_presets(&[mk("Mine", "Cut"), mk("Mine", "Engrave"), mk("Mine", "Cut"), mk("Other", "Score")]);
+    assert_eq!(mats.len(), 2);
+    let mine = &mats[0];
+    // The second "Cut" does not overwrite the first: it takes the next free layer.
+    assert_eq!(mine.layers.iter().map(|l| l.index).collect::<Vec<_>>(), vec![0, 1, 2]);
+    assert_eq!(mats[1].layers[0].index, 2);
+}
+
+#[test]
+fn merging_a_library_from_a_file_finds_new_equal_and_different_materials() {
+    let base = |name: &str, speed: f64| {
+        let mut l = Layer::new(0);
+        l.speed = speed;
+        materials::Material::from_layers(name, LaserKind::Diode, &[(0, &l)])
+    };
+    let local = vec![base("Same", 5.0), base("Differs", 5.0), base("Only here", 1.0)];
+    let mut incoming_differs = base("differs", 8.0); // names are compared without regard to case
+    let mut extra = Layer::new(1);
+    extra.power = 33.0;
+    incoming_differs.layers.push(materials::MaterialLayer { index: 1, label: "Engrave".into(), spec: materials::LayerSpec::from_layer(&extra) });
+    let incoming = vec![base("Same", 5.0), incoming_differs, base("Brand new", 2.0)];
+    let plan = materials::plan_merge(&local, &incoming);
+    assert_eq!((plan.unchanged, plan.added.len(), plan.conflicts.len()), (1, 1, 1));
+    assert_eq!(plan.added[0].name, "Brand new");
+    let c = &plan.conflicts[0];
+    let fields: Vec<_> = c.rows.iter().map(|r| (r.layer, r.field)).collect();
+    assert_eq!(fields, vec![(0, "Speed"), (1, "")], "one changed setting and one layer the local material lacks");
+    // Take only the speed from the file: the new layer is not added.
+    let mut mine = local[1].clone();
+    materials::apply_rows(&mut mine, c, &[true, false]);
+    assert_eq!(mine.layer(0).unwrap().spec.speed, 8.0);
+    assert!(mine.layer(1).is_none());
+    // Take both.
+    let mut mine = local[1].clone();
+    materials::apply_rows(&mut mine, c, &[true, true]);
+    assert_eq!(mine.layer(1).unwrap().spec.power, 33.0);
+    // Take nothing: unchanged.
+    let mut mine = local[1].clone();
+    materials::apply_rows(&mut mine, c, &[false, false]);
+    assert_eq!(mine, local[1]);
+}
+
+#[test]
+fn a_device_gets_missing_materials_from_a_source_for_its_laser() {
+    let src = materials::builtin_materials();
+    let mut lib = vec![];
+    let n = materials::add_missing(&mut lib, &src, LaserKind::Co2);
+    assert!(n > 5 && lib.iter().all(|m| m.laser == LaserKind::Co2));
+    // Doing it again adds nothing; a deleted one comes back only when asked for.
+    assert_eq!(materials::add_missing(&mut lib, &src, LaserKind::Co2), 0);
+    lib.remove(0);
+    assert_eq!(materials::add_missing(&mut lib, &src, LaserKind::Co2), 1);
+    // Profiles saved before libraries existed load with an empty one.
+    let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
+    let d: Device = serde_json::from_str(old).unwrap();
+    assert!(d.materials.is_empty() && !d.materials_seeded);
+}
+
+#[test]
+fn materials_keep_colours_and_categories() {
+    // Built-in materials know their category and the colour of each layer.
+    let mats = materials::builtin_materials();
+    let ply = mats.iter().find(|m| m.name == "Plywood" && m.thickness == 3.0).unwrap();
+    assert_eq!(ply.category(), "Wood");
+    assert_eq!(mats.iter().find(|m| m.name.starts_with("Acrylic")).unwrap().category(), "Plastic");
+    assert_eq!(mats.iter().find(|m| m.name.starts_with("Anodised")).unwrap().category(), "Metal");
+    assert!(ply.layers.iter().all(|l| l.spec.colour == l.index));
+    // A material saved without a category (or a colour) still loads; the category is guessed.
+    let old = r#"{"name":"Birch plywood","laser":"Diode","layers":[{"index":4,"label":"Cut","spec":{"mode":"Line","speed":3.0,"power":90.0,"passes":1,"interval":0.1,"angle":0.0,"overscan":1.0,"bidirectional":true,"dither":"Threshold","min_power":0.0,"air_assist":false}}]}"#;
+    let m: materials::Material = serde_json::from_str(old).unwrap();
+    assert_eq!((m.category().as_str(), m.layers[0].spec.colour), ("Wood", materials::NO_COLOUR));
+    // Applying a material sets the colour and the name of the layer; without a colour the layer keeps its own.
+    let mut doc = Document::default();
+    let mut m2 = ply.clone();
+    m2.layers[0].spec.colour = 17;
+    m2.layers[0].label = "Outline".into();
+    m2.apply(&mut doc.layers);
+    assert_eq!((doc.layers[0].color, doc.layers[0].name.as_str()), (17, "Outline"));
+    let before = doc.layers[4].color;
+    m.apply(&mut doc.layers);
+    assert_eq!(doc.layers[4].color, before);
+    // A category of your own survives a round trip.
+    let mut mine = ply.clone();
+    mine.category = "Samples".into();
+    let back: materials::Material = serde_json::from_str(&serde_json::to_string(&mine).unwrap()).unwrap();
+    assert_eq!(back.category(), "Samples");
+}
+
+#[test]
+fn a_library_file_holds_global_materials_and_devices() {
+    let mats = materials::builtin_materials();
+    let mut d = Device::default();
+    d.name = "Shop laser".into();
+    d.materials = mats[..3].to_vec();
+    let f = materials::LibraryFile::new(mats[3..5].to_vec(), vec![d]);
+    let back = materials::LibraryFile::from_json(&f.to_json()).expect("reads back");
+    assert_eq!(back, f);
+    assert_eq!(back.devices[0].materials.len(), 3);
+    // Anything else is refused.
+    assert!(materials::LibraryFile::from_json("{\"hello\":1}").is_none());
+    assert!(materials::LibraryFile::from_json("not json").is_none());
+}
+
+#[test]
+fn materials_have_ids_that_survive_renaming_and_both_lasers_share_one() {
+    let mats = materials::builtin_materials();
+    let diode = mats.iter().find(|m| m.key() == "plywood-3" && m.laser == LaserKind::Diode).unwrap();
+    let co2 = mats.iter().find(|m| m.key() == "plywood-3" && m.laser == LaserKind::Co2).unwrap();
+    assert_eq!((diode.thickness, diode.name.as_str()), (3.0, "Plywood"));
+    assert!(diode.tags.contains(&"Cut".to_string()) && !diode.same_key(co2));
+    // The name can change; the id stays.
+    let mut m = diode.clone();
+    m.name = "Sklejka".into();
+    assert_eq!(m.key(), "plywood-3");
+    assert!(m.same_key(diode));
+    // A name with a thickness is split.
+    assert_eq!(materials::split_thickness("Birch 1.5 mm"), ("Birch".to_string(), 1.5));
+    assert_eq!(materials::split_thickness("Cardboard"), ("Cardboard".to_string(), 0.0));
+    // A material saved without an id gets one from its name.
+    let old = r#"{"name":"Cork","thickness":3.0,"laser":"Diode","layers":[]}"#;
+    assert_eq!(serde_json::from_str::<materials::Material>(old).unwrap().key(), "cork-3");
+}
+
+#[test]
+fn local_changes_override_the_built_in_library() {
+    let built = materials::builtin_materials();
+    let mut changed = built[0].clone();
+    changed.layers[0].spec.power = 11.0;
+    let mut extra = built[1].clone();
+    extra.id = "mine".into();
+    extra.name = "Mine".into();
+    let eff = materials::effective_library(&built, &[changed.clone(), extra.clone()]);
+    assert_eq!(eff.len(), built.len() + 1);
+    assert_eq!(eff[0].layers[0].spec.power, 11.0);
+    assert_eq!(eff.last().unwrap().name, "Mine");
+    // Nothing local: the built-in library as it is.
+    assert_eq!(materials::effective_library(&built, &[]), built);
+}
+
+#[test]
+fn a_document_remembers_the_material_it_was_made_with() {
+    let mut doc = Document::default();
+    assert!(doc.material.is_none());
+    doc.material = Some(materials::builtin_materials().remove(0));
+    let back = Document::from_json(&doc.to_json()).unwrap();
+    assert_eq!(back.material, doc.material);
+    // Old files have none.
+    assert!(Document::from_json(&Document::default().to_json().replace(",\"material\":null", "")).unwrap().material.is_none());
+}

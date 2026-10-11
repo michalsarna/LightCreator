@@ -61,7 +61,7 @@ impl App {
         self.clamp_grid();
         let units = self.doc.device.units;
         let mut open = true;
-        egui::Window::new(tr("View options")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+        crate::window_ui::popup(ctx, "w_prefs_2", &tr("View options"), [340.0, 220.0], &mut open, |ui| {
             ui.label(RichText::new(tr("Main grid")).strong());
             egui::Grid::new("grid_main").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
                 ui.label(tr("Show"));

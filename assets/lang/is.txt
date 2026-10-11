@@ -571,3 +571,96 @@
 570|Breyttu textanum í ferla, eða vigurgerðu myndina, til að breyta hnútum hennar.
 571|Veldu fyrst form og breyttu síðan hnútum þess.
 572|Hjarta (K)
+573|Bætti við {} efni(s) úr {}
+574|Mismunur í efnissafninu
+575|{} inniheldur efnisstillingar sem eru frábrugðnar þessu tæki. Veldu gildin sem á að halda.
+576|{} ný efni bættust við; {} voru þegar eins.
+577|Halda öllum mínum
+578|Taka allt úr skránni
+579|Lag {}: allt lagið
+580|ekki til
+581|Láta safnið mitt vera eins og það er
+582|Safn þessa tækis var uppfært.
+583|Bæta við úr safni…
+584|Afritar efni úr innbyggða safninu í þetta tæki
+585|Safn tækisins {}
+586|Þetta safn er tómt. Bættu við efni úr innbyggða safninu eða vistaðu lögin þín sem efni.
+587|Athugasemd
+588|Merki
+589|Fjarlægja lag
+590|Bæta við lagi
+591|Notar stillingar þessa lags í hönnuninni
+592|Beita á lögin
+593|Setur stillingar allra laga þess í hönnunina
+594|{} beitt á {} lög
+595|Vista lög hönnunarinnar sem efni
+596|Vistar stillingar laganna sem notuð eru í hönnuninni
+597|{} vistað í safni þessa tækis
+598|Efni sem bætt er við hér er í boði fyrir öll tæki. Eigið safn tækis er breytt í flipanum Efni.
+599|Bætt við af þér
+600|Innbyggt
+601|Bæta við þetta tæki
+602|Vista lög hönnunarinnar sem efni fyrir öll tæki
+603|Vista í safnið
+604|{} er þegar í safni þessa tækis
+605|{} bætt við safn þessa tækis
+606|Efni með þessu heiti er þegar til í safninu.
+607|{} vistað í efnissafninu
+608|Stilling
+609|Þetta tæki
+610|Efni
+611|Tré
+612|Málmur
+613|Plast
+614|Pappír og leður
+615|Steinn og gler
+616|Annað
+617|Flytja safn út…
+618|Flytja safn inn…
+619|Hakaðu við það sem fer í skrána.
+620|Hakaðu við það sem á að taka úr skránni.
+621|Almenn efni
+622|Tæki
+623|Safn vistað: {} efni og {} tæki
+624|Flutt inn: {} efni og {} tæki
+625|Þetta er ekki safnskrá frá LightCreator.
+626|{} inniheldur efnisstillingar sem eru frábrugðnar {}. Veldu gildin sem á að halda.
+627|Krossviður
+628|MDF
+629|Pappi
+630|Pappír
+631|Leður
+632|Flóki
+633|Korkur
+634|Akrýl
+635|Akrýl, svart eða dökkt
+636|Flögugrjót / steinn
+637|Anóðíserað ál (húðað)
+638|Gúmmí
+639|Efni
+640|Gler
+641|Viður (harðviður)
+642|Merki
+643|Þykkt
+644|Merki, aðskilin með kommum
+645|Breyta efni
+646|Endurheimta innbyggð gildi
+647|Innbyggðu gildin voru endurheimt.
+648|Þetta efni hefur engar stillingar fyrir leysigerð þessa tækis
+649|Tvísmelltu á efni til að breyta stillingum þess. Breytingar eru geymdar á þessari tölvu.
+650|Aðeins svart eða hvítt, skipt við hálfa birtu. Skarpt: gott fyrir línuteikningar og texta.
+651|Dreifir námundunarskekkjunni á nágrannapunkta. Góður almennur kostur fyrir ljósmyndir.
+652|Dreifir skekkjunni yfir stærra svæði: mýkri tónar, aðeins hægara.
+653|Eins og Jarvis, með skarpari smáatriðum.
+654|Heldur ljósum svæðum hreinum og birtuskilum háum; tapar einhverjum af dekkstu og ljósustu smáatriðum.
+655|Fast 8×8 punktamynstur: reglulegt og hraðvirkt, án suðs.
+656|Engir punktar: hver mynddíll brennur með afli milli lágmarks og afls lagsins.
+657|Eyða öllum efnum
+658|Eyða öllum efnum þessa tækis? Efni aðalsafnsins birtast í staðinn; þegar þú breytir einu er afrit þess geymt fyrir þetta tæki.
+659|Safn þessa tækis sýnir nú aðalsafnið.
+660|Merkingar laga
+661|Merkingar laga…
+662|Merkingar sem bjóðast fyrir lög efnis. Cut, Engrave og Score eru alltaf til staðar.
+663|Ný merking
+664|Bæta við eða fjarlægja merkingar fyrir lög efnis
+665|Bæta við

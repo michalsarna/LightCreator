@@ -571,3 +571,96 @@
 570|Alakítsa a szöveget görbékké, vagy vektorizálja a képet, hogy szerkeszthesse a csomópontjait.
 571|Először jelöljön ki egy alakzatot, majd szerkessze a csomópontjait.
 572|Szív (K)
+573|{} anyag hozzáadva innen: {}
+574|Eltérések az anyagkönyvtárban
+575|{} olyan anyagbeállításokat tartalmaz, amelyek eltérnek ettől az eszköztől. Válassza ki a megtartandó értékeket.
+576|{} új anyag hozzáadva; {} már azonos volt.
+577|Az összes saját megtartása
+578|Az összes átvétele a fájlból
+579|{}. réteg: teljes réteg
+580|nincs
+581|A könyvtáram változatlanul hagyása
+582|Az eszköz könyvtára frissítve lett.
+583|Hozzáadás a könyvtárból…
+584|Anyagokat másol a beépített könyvtárból ebbe az eszközbe
+585|{} eszköz könyvtára
+586|Ez a könyvtár üres. Adjon hozzá anyagokat a beépített könyvtárból, vagy mentse a rétegeit anyagként.
+587|Megjegyzés
+588|Címke
+589|Réteg eltávolítása
+590|Réteg hozzáadása
+591|A terv ezen rétegének beállításait használja
+592|Alkalmazás a rétegekre
+593|A terv összes rétegébe beteszi az anyag rétegeinek beállításait
+594|{} alkalmazva {} rétegre
+595|A terv rétegeinek mentése anyagként
+596|Elmenti a tervben használt rétegek beállításait
+597|{} mentve az eszköz könyvtárába
+598|Az itt hozzáadott anyagok minden eszközön elérhetők. Az eszköz saját könyvtárát az Anyagok fülön szerkesztheti.
+599|Ön által hozzáadott
+600|Beépített
+601|Hozzáadás ehhez az eszközhöz
+602|A terv rétegeinek mentése anyagként minden eszközhöz
+603|Mentés a könyvtárba
+604|{} már benne van az eszköz könyvtárában
+605|{} hozzáadva az eszköz könyvtárához
+606|Ilyen nevű anyag már van a könyvtárban.
+607|{} mentve az anyagkönyvtárba
+608|Beállítás
+609|Ez az eszköz
+610|Anyagok
+611|Fa
+612|Fém
+613|Műanyag
+614|Papír és bőr
+615|Kő és üveg
+616|Egyéb
+617|Könyvtár exportálása…
+618|Könyvtár importálása…
+619|Jelölje be, mi kerüljön a fájlba.
+620|Jelölje be, mit vegyen át a fájlból.
+621|Globális anyagok
+622|Eszközök
+623|Könyvtár mentve: {} anyag és {} eszköz
+624|Importálva: {} anyag és {} eszköz
+625|Ez nem a LightCreator könyvtárfájlja.
+626|A(z) {} anyagbeállításai eltérnek a(z) {} beállításaitól. Válassza ki a megtartandó értékeket.
+627|Rétegelt lemez
+628|MDF
+629|Karton
+630|Papír
+631|Bőr
+632|Filc
+633|Parafa
+634|Akril
+635|Akril, fekete vagy sötét
+636|Pala / kő
+637|Eloxált alumínium (bevonatos)
+638|Gumi
+639|Textil
+640|Üveg
+641|Fa (keményfa)
+642|Címkék
+643|Vastagság
+644|Címkék, vesszővel elválasztva
+645|Anyag szerkesztése
+646|Beépített értékek visszaállítása
+647|A beépített értékek vissza lettek állítva.
+648|Ennek az anyagnak nincs beállítása az eszköz lézertípusához
+649|Kattintson duplán egy anyagra a beállításainak szerkesztéséhez. A módosítások ezen a számítógépen maradnak.
+650|Csak fekete vagy fehér, a fényesség felénél osztva. Éles: vonalrajzokhoz és szöveghez jó.
+651|A kerekítési hibát a szomszédos pontokra osztja szét. Jó általános választás fényképekhez.
+652|A hibát nagyobb területre osztja szét: simább tónusok, kicsit lassabb.
+653|Mint a Jarvis, de élesebb részletekkel.
+654|A fényeket tisztán, a kontrasztot magasan tartja; elveszít valamennyit a legsötétebb és legvilágosabb részletekből.
+655|Rögzített 8×8-as pontminta: szabályos és gyors, zaj nélkül.
+656|Nincsenek pontok: minden képpont a minimum és a réteg teljesítménye közötti teljesítménnyel éget.
+657|Összes anyag törlése
+658|Törli az eszköz összes anyagát? Helyettük a fő könyvtár anyagai látszanak; ha egyet módosít, másolata megmarad ehhez az eszközhöz.
+659|Az eszköz könyvtára most a fő könyvtárat mutatja.
+660|Rétegcímkék
+661|Rétegcímkék…
+662|Az anyag rétegeihez felkínált címkék. A Cut, Engrave és Score mindig elérhető.
+663|Új címke
+664|Az anyag rétegeihez felkínált címkék hozzáadása vagy törlése
+665|Hozzáadás

@@ -571,3 +571,96 @@
 570|Convertiți textul în curbe, sau vectorizați imaginea, pentru a-i edita nodurile.
 571|Selectați mai întâi o formă, apoi editați-i nodurile.
 572|Inimă (K)
+573|S-au adăugat {} material(e) din {}
+574|Diferențe în biblioteca de materiale
+575|{} conține setări de materiale diferite de acest dispozitiv. Alegeți valorile de păstrat.
+576|S-au adăugat {} materiale noi; {} erau deja identice.
+577|Păstrează toate ale mele
+578|Ia toate din fișier
+579|Stratul {}: tot stratul
+580|nu există
+581|Lasă biblioteca mea neschimbată
+582|Biblioteca acestui dispozitiv a fost actualizată.
+583|Adaugă din bibliotecă…
+584|Copiază materiale din biblioteca integrată în acest dispozitiv
+585|Biblioteca dispozitivului {}
+586|Această bibliotecă este goală. Adăugați materiale din biblioteca integrată sau salvați straturile ca material.
+587|Notă
+588|Etichetă
+589|Elimină stratul
+590|Adaugă strat
+591|Folosește setările acestui strat din design
+592|Aplică la straturi
+593|Pune în design setările tuturor straturilor sale
+594|{} aplicat la {} strat(uri)
+595|Salvează straturile designului ca material
+596|Salvează setările straturilor folosite în design
+597|{} salvat în biblioteca acestui dispozitiv
+598|Materialele adăugate aici sunt disponibile pentru orice dispozitiv. Biblioteca proprie a unui dispozitiv se editează în fila Materiale.
+599|Adăugat de dvs.
+600|Integrat
+601|Adaugă la acest dispozitiv
+602|Salvează straturile designului ca material pentru orice dispozitiv
+603|Salvează în bibliotecă
+604|{} este deja în biblioteca acestui dispozitiv
+605|{} adăugat în biblioteca acestui dispozitiv
+606|Un material cu acest nume există deja în bibliotecă.
+607|{} salvat în biblioteca de materiale
+608|Setare
+609|Acest dispozitiv
+610|Materiale
+611|Lemn
+612|Metal
+613|Plastic
+614|Hârtie și piele
+615|Piatră și sticlă
+616|Altele
+617|Exportă biblioteca…
+618|Importă biblioteca…
+619|Bifați ce intră în fișier.
+620|Bifați ce se preia din fișier.
+621|Materiale globale
+622|Dispozitive
+623|Biblioteca a fost salvată: {} material(e) și {} dispozitiv(e)
+624|Importate {} material(e) și {} dispozitiv(e)
+625|Acesta nu este un fișier de bibliotecă LightCreator.
+626|{} conține setări de materiale diferite de cele din {}. Alegeți valorile de păstrat.
+627|Placaj
+628|MDF
+629|Carton
+630|Hârtie
+631|Piele
+632|Fetru
+633|Plută
+634|Acril
+635|Acril, negru sau închis
+636|Ardezie / piatră
+637|Aluminiu anodizat (acoperit)
+638|Cauciuc
+639|Țesătură
+640|Sticlă
+641|Lemn (esență tare)
+642|Etichete
+643|Grosime
+644|Etichete, separate prin virgule
+645|Editează materialul
+646|Restabilește valorile integrate
+647|Valorile integrate au fost restabilite.
+648|Acest material nu are setări pentru tipul de laser al acestui dispozitiv
+649|Faceți dublu clic pe un material pentru a-i edita setările. Modificările rămân pe acest computer.
+650|Doar alb sau negru, împărțit la jumătate de luminozitate. Clar: bun pentru desene în linii și text.
+651|Împarte eroarea de rotunjire punctelor vecine. O alegere generală bună pentru fotografii.
+652|Împarte eroarea pe o zonă mai largă: tonuri mai fine, puțin mai lent.
+653|Ca Jarvis, cu detalii mai clare.
+654|Păstrează luminile curate și contrastul ridicat; pierde o parte din detaliile cele mai întunecate și mai luminoase.
+655|Un model fix de puncte 8×8: regulat și rapid, fără zgomot.
+656|Fără puncte: fiecare pixel arde cu o putere între minim și puterea stratului.
+657|Șterge toate materialele
+658|Ștergeți toate materialele acestui dispozitiv? În loc vor fi afișate cele din biblioteca principală; dacă schimbați unul, se păstrează o copie pentru acest dispozitiv.
+659|Biblioteca acestui dispozitiv afișează acum biblioteca principală.
+660|Etichetele straturilor
+661|Etichetele straturilor…
+662|Etichete oferite pentru straturile unui material. Cut, Engrave și Score sunt mereu prezente.
+663|Etichetă nouă
+664|Adaugă sau elimină etichetele oferite pentru straturile unui material
+665|Adaugă

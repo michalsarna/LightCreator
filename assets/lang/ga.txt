@@ -571,3 +571,96 @@
 570|Tiontaigh an téacs ina chuair, nó veicteoraigh an íomhá, chun a nóid a chur in eagar.
 571|Roghnaigh cruth ar dtús, ansin cuir a nóid in eagar.
 572|Croí (K)
+573|Cuireadh {} ábhar leis ó {}
+574|Difríochtaí i leabharlann na n-ábhar
+575|Tá socruithe ábhar i {} atá difriúil ón ngléas seo. Roghnaigh na luachanna le coinneáil.
+576|Cuireadh {} ábhar nua leis; bhí {} cheana mar a chéile.
+577|Coinnigh mo chuid ar fad
+578|Tóg gach ceann ón gcomhad
+579|Ciseal {}: an ciseal ar fad
+580|níl ann
+581|Fág mo leabharlann mar atá
+582|Nuashonraíodh leabharlann an ghléis seo.
+583|Cuir leis ón leabharlann…
+584|Cóipeálann ábhair ón leabharlann ionsuite chuig an ngléas seo
+585|Leabharlann an ghléis {}
+586|Tá an leabharlann seo folamh. Cuir ábhair leis ón leabharlann ionsuite nó sábháil do chiseail mar ábhar.
+587|Nóta
+588|Lipéad
+589|Bain ciseal
+590|Cuir ciseal leis
+591|Úsáideann socruithe an chiseal seo sa dearadh
+592|Cuir i bhfeidhm ar na ciseail
+593|Cuireann sé socruithe a chiseal go léir isteach sa dearadh
+594|Cuireadh {} i bhfeidhm ar {} ciseal
+595|Sábháil ciseail an deartha mar ábhar
+596|Sábhálann socruithe na gciseal a úsáidtear sa dearadh
+597|{} sábháilte i leabharlann an ghléis seo
+598|Tá ábhair a chuirtear leis anseo ar fáil do gach gléas. Cuirtear leabharlann féin gléis in eagar sa chluaisín Ábhair.
+599|Curtha leis agat
+600|Ionsuite
+601|Cuir leis an ngléas seo
+602|Sábháil ciseail an deartha mar ábhar do gach gléas
+603|Sábháil sa leabharlann
+604|Tá {} i leabharlann an ghléis seo cheana
+605|Cuireadh {} le leabharlann an ghléis seo
+606|Tá ábhar leis an ainm seo sa leabharlann cheana.
+607|{} sábháilte i leabharlann na n-ábhar
+608|Socrú
+609|An gléas seo
+610|Ábhair
+611|Adhmad
+612|Miotal
+613|Plaisteach
+614|Páipéar agus leathar
+615|Cloch agus gloine
+616|Eile
+617|Easpórtáil an leabharlann…
+618|Iompórtáil an leabharlann…
+619|Cuir tic leis an méid a théann sa chomhad.
+620|Cuir tic leis an méid atá le tógáil ón gcomhad.
+621|Ábhair ghlobhacha
+622|Feistí
+623|Sábháladh an leabharlann: {} ábhar agus {} feiste
+624|Iompórtáladh {} ábhar agus {} feiste
+625|Ní comhad leabharlainne de chuid LightCreator é seo.
+626|Tá socruithe ábhair i {} atá difriúil ó {}. Roghnaigh na luachanna le coinneáil.
+627|Pláta
+628|MDF
+629|Cairtchlár
+630|Páipéar
+631|Leathar
+632|Féilt
+633|Corc
+634|Aicrileach
+635|Aicrileach, dubh nó dorcha
+636|Scláta / cloch
+637|Alúmanam anóidithe (brataithe)
+638|Rubar
+639|Fabraic
+640|Gloine
+641|Adhmad (crua)
+642|Clibeanna
+643|Tiús
+644|Clibeanna, scartha le camóga
+645|Cuir ábhar in eagar
+646|Athchóirigh na luachanna ionsuite
+647|Athchóiríodh na luachanna ionsuite.
+648|Níl socruithe ag an ábhar seo do chineál léasair na feiste seo
+649|Cliceáil faoi dhó ar ábhar chun a shocruithe a chur in eagar. Coimeádtar na hathruithe ar an ríomhaire seo.
+650|Dubh nó bán amháin, roinnte ag leath-gile. Géar: maith do líníocht líne agus téacs.
+651|Scaipeann sé an earráid chruinnithe ar na poncanna comharsanacha. Rogha mhaith ghinearálta do ghrianghraif.
+652|Scaipeann sé an earráid thar limistéar níos leithne: tonnta níos míne, beagán níos moille.
+653|Cosúil le Jarvis, le mionsonraí níos géire.
+654|Coinníonn sé na buaicphointí glan agus an codarsnacht ard; cailleann sé cuid de na mionsonraí is dorcha agus is gile.
+655|Patrún seasta poncanna 8×8: rialta agus tapa, gan torann.
+656|Gan poncanna: dónn gach picteilín le cumhacht idir an t-íosmhéid agus cumhacht an chiseal.
+657|Scrios gach ábhar
+658|An scriosfar gach ábhar den fheiste seo? Taispeánfar ábhair na príomhleabharlainne ina n-áit; nuair a athraíonn tú ceann, coimeádtar cóip don fheiste seo.
+659|Taispeánann leabharlann na feiste seo an phríomhleabharlann anois.
+660|Lipéid sraitheanna
+661|Lipéid sraitheanna…
+662|Lipéid le roghnú do shraitheanna ábhair. Bíonn Cut, Engrave agus Score ann i gcónaí.
+663|Lipéad nua
+664|Cuir lipéid do shraitheanna ábhair leis nó bain iad
+665|Cuir leis

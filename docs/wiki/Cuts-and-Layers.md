@@ -27,7 +27,25 @@ Images engrave line by line at the layer interval. Choose **threshold**, **Floyd
 ![Image engraving](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/09-image.png)
 
 ## Material library
-Starting settings for common materials and operations (diode and CO2). Apply them to the active layer or save your own presets. Values are generic: **always test on scrap**.
+A **material** holds the settings of every layer it needs: mode, speed, power, passes, interval, scan angle, overscan, dithering, minimum power and air assist. Three levels work together:
+
+* **Built-in library:** starting values for typical 10 W diode and 40 W CO2 lasers. It is the source for the other libraries. Values are generic: **always test on scrap**.
+* **Global materials:** the *Material library…* window (Laser menu) is the only place that extends the built-in library. *Save the layers of the design as a material for every device* adds a material that every device can use.
+* **Device library:** every device has its own library in the **Materials** tab of the side panel. It is filled once from the built-in and global materials for its laser type. In the tab you edit all the settings of every layer, add or remove layers, rename, delete, **apply a material to the layers** of the design and **save the layers of the design as a material**; this goes to the device library only.
+
+The device library is stored in the device profile (so also in backups) and inside every saved project. When you open a project, its library is merged into the library of the active device: new materials are added, and where a material differs a window lets you choose, value by value, to keep yours or take the one from the file.
+
+A material is **one entry for both laser types**: diode and CO2 keep their own settings under the same id. Names such as *Plywood* are translated, the thickness is a separate value, and every material has a one-line note and tags (*Cut*, *Engrave*...). The built-in values can be changed on your computer: **double-click** a material in the Material library window (or press *Edit material*), set every layer and Save; the copy overrides the built-in data and *Restore built-in values* brings the original back. A device's library receives the variant for its own laser type. Lists are grouped by category and each group can be folded up by its title. The Materials tab has **Delete all materials**: it empties the device's library and shows the main library instead, and a material you change there is kept as a copy for the device. Tags are suggested from those in use, and hovering over *Dithering* explains the method. A saved project carries the device profile, the device library and the material it was made with.
+
+![Editing a material](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/36-material-edit.png)
+
+Each layer of a material also keeps its **colour** and a **label** (its purpose, e.g. *Cut*); applying a material sets the settings, colour and name of its layers. Materials have a **category** (Wood, Metal, Plastic, Paper and leather, Stone and glass, Other, or one you add) and the list in the Materials tab can be filtered by it. Lists show each material's name and tags in rows with alternating backgrounds, and small arrows at the edge when the list scrolls. A layer's label is chosen from a list; the **Layer labels…** button of the Material library window adds your own.
+
+**Export library… / Import library…** (in the Material library window and the Materials tab) write and read one `.lcb` file with your global materials and your devices with their libraries. A window lets you tick exactly what goes into the file or is taken from it; materials that differ open the window of differences. The tabs of the side panel can be dragged to change their order.
+
+![Library file](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/35-library-export.png)
+![Materials tab](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/33-materials-tab.png)
+![Differences](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/34-material-merge.png)
 ![Materials](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/11-materials.png)
 
 ## Preview window

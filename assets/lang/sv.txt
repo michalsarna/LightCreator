@@ -571,3 +571,96 @@
 570|Konvertera texten till kurvor, eller vektorisera bilden, för att redigera dess noder.
 571|Markera först en form och redigera sedan dess noder.
 572|Hjärta (K)
+573|Lade till {} material från {}
+574|Skillnader i materialbiblioteket
+575|{} innehåller materialinställningar som skiljer sig från den här enheten. Välj vilka värden som ska behållas.
+576|{} nya material lades till; {} var redan lika.
+577|Behåll alla mina
+578|Ta alla från filen
+579|Lager {}: hela lagret
+580|saknas
+581|Låt mitt bibliotek vara som det är
+582|Den här enhetens bibliotek uppdaterades.
+583|Lägg till från bibliotek…
+584|Kopierar material från det inbyggda biblioteket till den här enheten
+585|Bibliotek för enheten {}
+586|Det här biblioteket är tomt. Lägg till material från det inbyggda biblioteket eller spara dina lager som ett material.
+587|Anteckning
+588|Etikett
+589|Ta bort lager
+590|Lägg till lager
+591|Använder inställningarna för det här lagret i designen
+592|Använd på lagren
+593|Lägger in inställningarna för alla dess lager i designen
+594|{} användes på {} lager
+595|Spara designens lager som ett material
+596|Sparar inställningarna för de lager som används i designen
+597|{} sparades i den här enhetens bibliotek
+598|Material som läggs till här är tillgängliga för alla enheter. En enhets eget bibliotek redigeras på fliken Material.
+599|Tillagd av dig
+600|Inbyggd
+601|Lägg till i den här enheten
+602|Spara designens lager som ett material för alla enheter
+603|Spara i biblioteket
+604|{} finns redan i den här enhetens bibliotek
+605|{} lades till i den här enhetens bibliotek
+606|Ett material med det här namnet finns redan i biblioteket.
+607|{} sparades i materialbiblioteket
+608|Inställning
+609|Den här enheten
+610|Material
+611|Trä
+612|Metall
+613|Plast
+614|Papper och läder
+615|Sten och glas
+616|Övrigt
+617|Exportera biblioteket…
+618|Importera biblioteket…
+619|Markera vad som ska med i filen.
+620|Markera vad som ska hämtas från filen.
+621|Globala material
+622|Enheter
+623|Biblioteket sparades: {} material och {} enhet(er)
+624|Importerade {} material och {} enhet(er)
+625|Det här är inte en biblioteksfil från LightCreator.
+626|{} har materialinställningar som skiljer sig från {}. Välj vilka värden som ska behållas.
+627|Plywood
+628|MDF
+629|Kartong
+630|Papper
+631|Läder
+632|Filt
+633|Kork
+634|Akryl
+635|Akryl, svart eller mörk
+636|Skiffer / sten
+637|Anodiserad aluminium (belagd)
+638|Gummi
+639|Tyg
+640|Glas
+641|Trä (hårdträ)
+642|Taggar
+643|Tjocklek
+644|Taggar, separerade med kommatecken
+645|Redigera material
+646|Återställ inbyggda värden
+647|De inbyggda värdena har återställts.
+648|Det här materialet har inga inställningar för den här enhetens lasertyp
+649|Dubbelklicka på ett material för att redigera dess inställningar. Ändringar sparas på den här datorn.
+650|Bara svart eller vitt, delat vid halv ljusstyrka. Skarpt: bra för streckteckningar och text.
+651|Sprider avrundningsfelet till närliggande punkter. Ett bra allroundval för foton.
+652|Sprider felet över ett större område: mjukare toner, något långsammare.
+653|Som Jarvis, med skarpare detaljer.
+654|Håller högdagrar rena och kontrasten hög; förlorar en del av de mörkaste och ljusaste detaljerna.
+655|Ett fast 8×8-mönster av punkter: regelbundet och snabbt, utan brus.
+656|Inga punkter: varje pixel bränner med en effekt mellan minimum och lagrets effekt.
+657|Ta bort alla material
+658|Ta bort alla material på den här enheten? Huvudbibliotekets material visas i stället; när du ändrar ett sparas en kopia för den här enheten.
+659|Den här enhetens bibliotek visar nu huvudbiblioteket.
+660|Lageretiketter
+661|Lageretiketter…
+662|Etiketter som erbjuds för ett materials lager. Cut, Engrave och Score finns alltid.
+663|Ny etikett
+664|Lägg till eller ta bort etiketter för ett materials lager
+665|Lägg till

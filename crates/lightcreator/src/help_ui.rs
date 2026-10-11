@@ -13,7 +13,7 @@ impl App {
             return;
         }
         let mut open = true;
-        egui::Window::new(tr("Quick guide")).open(&mut open).default_size([640.0, 560.0]).resizable(true).show(ctx, |ui| {
+        crate::window_ui::popup(ctx, "w_help_ui_9", &tr("Quick guide"), [340.0, 220.0], &mut open, |ui| {
             ui.horizontal(|ui| {
                 ui.add(egui::TextEdit::singleline(&mut self.guide_filter).hint_text(tr("Search")).desired_width(220.0));
                 ui.hyperlink_to(tr("Project page on GitHub"), GITHUB_URL);

@@ -57,28 +57,61 @@ impl Tool {
 }
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.0.10";
+pub const APP_VERSION: &str = "v0.0.11";
 
 /// Tabs of the right-hand panel.
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
 pub enum SideTab {
     Properties,
     Layers,
     Device,
     Console,
     Clipart,
+    Materials,
     /// The camera picture; only listed while the stream is shown as a tab.
     Camera,
 }
 
 impl SideTab {
-    pub const ALL: [(SideTab, &'static str); 5] = [
+    pub const ALL: [(SideTab, &'static str); 6] = [
         (SideTab::Properties, "Properties"),
         (SideTab::Layers, "Layers"),
         (SideTab::Device, "Device"),
         (SideTab::Console, "Console"),
         (SideTab::Clipart, "Clipart"),
+        (SideTab::Materials, "Materials"),
     ];
+
+    pub fn id(self) -> &'static str {
+        match self {
+            SideTab::Properties => "properties",
+            SideTab::Layers => "layers",
+            SideTab::Device => "device",
+            SideTab::Console => "console",
+            SideTab::Clipart => "clipart",
+            SideTab::Materials => "materials",
+            SideTab::Camera => "camera",
+        }
+    }
+
+    /// The tabs in the order the user arranged them (`ids` comes from the settings); tabs it does not mention
+    /// keep their place at the end.
+    pub fn arranged(ids: &str) -> Vec<(SideTab, &'static str)> {
+        let mut out: Vec<(SideTab, &'static str)> = vec![];
+        for id in ids.split(',') {
+            if let Some(t) = SideTab::ALL.iter().find(|(t, _)| t.id() == id.trim()) {
+                if !out.contains(t) {
+                    out.push(*t);
+                }
+            }
+        }
+        for t in SideTab::ALL {
+            if !out.contains(&t) {
+                out.push(t);
+            }
+        }
+        out
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -122,6 +155,8 @@ pub struct App {
     /// A short message (text, until when) such as "file saved".
     pub toast: Option<(String, std::time::Instant)>,
     pub show_close_dlg: bool,
+    /// A question waiting for Yes / No, drawn by the application so it is in the chosen language.
+    pub confirm: Option<crate::session_ui::Confirm>,
     pub allow_close: bool,
     pub show_options: bool,
     /// Look for a newer release on GitHub when the program starts.
@@ -208,12 +243,42 @@ pub struct App {
     pub cam_index: u32,
     pub cam_error: String,
     pub cam_worker: Option<crate::camera::Worker>,
-    pub user_presets: Vec<lc_core::materials::Preset>,
+    /// Materials added to the program by the user, available for every device (on top of the built-in ones).
+    pub global_materials: Vec<lc_core::materials::Material>,
+    /// Labels the user added for the layers of materials (besides Cut, Engrave and Score).
+    pub layer_labels: Vec<String>,
+    pub show_labels: bool,
+    /// Height of the list in the Materials tab; the border to the editor can be dragged.
+    pub mat_list_h: f32,
+    pub label_new: String,
+    pub mat_dev_filter: String,
+    pub mat_dev_sel: Option<usize>,
+    pub mat_add_layer: usize,
+    pub mat_global_name: String,
+    /// The library window was opened to add materials to the device (from the Materials tab).
+    pub mat_add_mode: bool,
+    pub mat_merge: Option<crate::materials_ui::MergeDlg>,
+    /// More windows of differences, shown one after the other.
+    pub mat_merge_next: Vec<crate::materials_ui::MergeDlg>,
+    /// Category shown in the Materials tab (`None`: all).
+    pub mat_dev_cat: Option<String>,
+    /// Category shown in the Material library window (`None`: all).
+    pub mat_cat: Option<String>,
+    /// Category chosen for a material that is being saved (`None`: the one its name suggests).
+    pub mat_save_cat: Option<String>,
+    pub mat_new_cat: String,
+    /// The window that exports or imports a library file.
+    pub lib_dlg: Option<crate::materials_ui::LibDlg>,
+    /// The order of the tabs of the side panel.
+    pub tab_order: Vec<(SideTab, &'static str)>,
+    /// Width of the side panel as drawn in the last frame.
+    pub side_w: f32,
     pub mat_filter: String,
     pub mat_laser: Option<lc_core::LaserKind>,
-    pub mat_sel: Option<usize>,
+    pub mat_sel: Option<String>,
+    /// The window that edits a material of the main library.
+    pub mat_edit: Option<crate::materials_ui::MatEdit>,
     pub mat_name: String,
-    pub mat_op: String,
     pub offset_dist: f64,
     pub offset_keep: bool,
     pub lang: Lang,
@@ -251,7 +316,9 @@ impl App {
         let scheme = saved("scheme").and_then(|c| Scheme::from_id(&c)).unwrap_or(Scheme::LightDark);
         let profiles: Vec<lc_core::Device> = saved("profiles").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let active = saved("active_profile").and_then(|v| v.parse::<usize>().ok()).filter(|i| *i < profiles.len()).unwrap_or(0);
-        let user_presets: Vec<lc_core::materials::Preset> = saved("user_materials").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
+        let global_materials = crate::materials_ui::load_global(&|k| saved(k));
+        let mat_list_h = saved("mat_list_h").and_then(|v| v.parse::<f32>().ok()).filter(|h| (60.0..=700.0).contains(h)).unwrap_or(260.0);
+        let layer_labels: Vec<String> = saved("layer_labels").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let grid_prefs: crate::prefs::GridPrefs = saved("grid_prefs").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let show_grid = saved("grid_main_on").map(|v| v == "1").unwrap_or(true);
         let grid = saved("grid_main_mm").and_then(|v| v.parse::<f64>().ok()).filter(|g| *g >= 0.1).unwrap_or(10.0);
@@ -283,6 +350,7 @@ impl App {
             last_autosave: std::time::Instant::now(),
             toast: None,
             show_close_dlg: false,
+            confirm: None,
             allow_close: false,
             show_options: false,
             check_updates: saved("check_updates").map(|v| v != "0").unwrap_or(true),
@@ -358,12 +426,30 @@ impl App {
             cam_index: 0,
             cam_error: String::new(),
             cam_worker: None,
-            user_presets,
+            global_materials,
+            layer_labels,
+            show_labels: false,
+            mat_list_h,
+            label_new: String::new(),
+            mat_dev_filter: String::new(),
+            mat_dev_sel: None,
+            mat_add_layer: 0,
+            mat_global_name: String::new(),
+            mat_add_mode: false,
+            mat_merge: None,
+            mat_merge_next: vec![],
+            mat_dev_cat: None,
+            mat_cat: None,
+            mat_save_cat: None,
+            mat_new_cat: String::new(),
+            lib_dlg: None,
+            side_w: 0.0,
+            tab_order: SideTab::arranged(&saved("tab_order").unwrap_or_default()),
             mat_filter: String::new(),
             mat_laser: None,
             mat_sel: None,
+            mat_edit: None,
             mat_name: String::new(),
-            mat_op: "Cut".into(),
             offset_dist: -1.0,
             offset_keep: true,
             lang,
@@ -628,7 +714,15 @@ impl App {
         }
         match std::fs::read_to_string(&p).map_err(|e| e.to_string()).and_then(|s| Document::from_json(&s)) {
             Ok(d) => {
+                // The library of the device the file was saved with is merged into the library of this device.
+                let mut incoming = d.device.materials.clone();
+                if let Some(u) = &d.material {
+                    if !incoming.iter().any(|m| m.same_key(u)) {
+                        incoming.push(u.clone());
+                    }
+                }
                 self.doc = d;
+                let have_profile = self.profiles.get(self.active).is_some();
                 if let Some(p) = self.profiles.get(self.active) {
                     self.doc.device = p.clone();
                 }
@@ -641,6 +735,10 @@ impl App {
                 self.touch();
                 self.mark_saved();
                 self.view.need_fit = true;
+                if have_profile {
+                    let name = self.path.as_ref().and_then(|p| p.file_name()).map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
+                    self.import_incoming_materials(incoming, &name);
+                }
             }
             Err(e) => self.status = trf("Open failed: {}", &[&e]),
         }
@@ -1046,6 +1144,7 @@ impl App {
             }
             Act::MaterialLibrary => {
                 self.mat_laser = Some(self.doc.device.laser);
+                self.mat_add_mode = false;
                 self.show_materials = true;
             }
             Act::GridArray => self.show_array = true,
@@ -1542,7 +1641,7 @@ impl App {
 
         let mut open = self.show_offset;
         let mut apply = false;
-        egui::Window::new(tr("Offset shape")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+        crate::window_ui::popup(ctx, "offset_window", &tr("Offset shape"), [300.0, 190.0], &mut open, |ui| {
             egui::Grid::new("offs").num_columns(2).show(ui, |ui| {
                 ui.label(tr("Distance"));
                 drag_len(ui, self.doc.device.units, &mut self.offset_dist, 0.1, Some((-500.0, 500.0)));
@@ -1560,7 +1659,7 @@ impl App {
 
         let mut open = self.show_array;
         let mut apply = false;
-        egui::Window::new(tr("Grid array")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+        crate::window_ui::popup(ctx, "array_window", &tr("Grid array"), [260.0, 220.0], &mut open, |ui| {
             egui::Grid::new("arr").num_columns(2).show(ui, |ui| {
                 ui.label(tr("Columns"));
                 ui.add(egui::DragValue::new(&mut self.array.0).range(1..=100));
@@ -1585,9 +1684,7 @@ impl App {
 
         let mut open = self.show_about;
         if open {
-            let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 10, right: 10, top: 6, bottom: 8 });
-            egui::Window::new("about_window").title_bar(false).frame(frame).collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {
-                crate::window_ui::mini_title(ui, &tr("About LightCreator"), &mut open, |_| {});
+            crate::window_ui::popup(ctx, "about_window", &tr("About LightCreator"), [380.0, 300.0], &mut open, |ui| {
                 ui.horizontal(|ui| {
                     if let Some(logo) = &self.logo {
                         ui.image((logo.id(), egui::vec2(72.0, 72.0)));
@@ -1614,6 +1711,10 @@ impl App {
         self.online_clipart_window(ctx);
         self.round_window(ctx);
         self.materials_window(ctx);
+        self.material_edit_window(ctx);
+        self.labels_window(ctx);
+        self.merge_dialog(ctx);
+        self.library_dialog(ctx);
         self.overlay_window(ctx);
         self.prefs_window(ctx);
         self.preview_window(ctx);
@@ -1715,9 +1816,14 @@ impl App {
         }
         v.push(("grid_main_on", if self.show_grid { "1" } else { "0" }.into()));
         v.push(("grid_main_mm", self.grid.to_string()));
-        if let Ok(j) = serde_json::to_string(&self.user_presets) {
-            v.push(("user_materials", j));
+        v.push(("mat_list_h", self.mat_list_h.to_string()));
+        if let Ok(j) = serde_json::to_string(&self.layer_labels) {
+            v.push(("layer_labels", j));
         }
+        if let Ok(j) = serde_json::to_string(&self.global_materials) {
+            v.push(("global_materials", j));
+        }
+        v.push(("tab_order", self.tab_order.iter().map(|(t, _)| t.id()).collect::<Vec<_>>().join(",")));
         v
     }
 

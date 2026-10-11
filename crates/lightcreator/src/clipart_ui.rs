@@ -321,7 +321,7 @@ impl App {
         match &mut d {
             ClipDialog::Rename { id, name } => {
                 let mut done = false;
-                egui::Window::new(tr("Rename")).collapsible(false).resizable(false).open(&mut keep).show(ctx, |ui| {
+                crate::window_ui::popup(ctx, "clip_rename", &tr("Rename"), [300.0, 120.0], &mut keep, |ui| {
                     ui.add(egui::TextEdit::singleline(name).desired_width(220.0));
                     done = ui.button(tr("OK")).clicked();
                 });
@@ -333,7 +333,7 @@ impl App {
             ClipDialog::Move { id, choice, new_cat } => {
                 let mut done = false;
                 let title = if id.starts_with("builtin:") { tr("Save a copy in my clipart") } else { tr("Change category") };
-                egui::Window::new(title).collapsible(false).resizable(false).open(&mut keep).show(ctx, |ui| {
+                crate::window_ui::popup(ctx, "clip_move", &title, [320.0, 180.0], &mut keep, |ui| {
                     egui::ComboBox::from_id_salt("move_cat").width(200.0).selected_text(tr_owned(choice)).show_ui(ui, |ui| {
                         for c in &cats {
                             ui.selectable_value(choice, c.clone(), tr_owned(c));
@@ -364,7 +364,7 @@ impl App {
             }
             ClipDialog::Info { id } => {
                 let c: Option<Clip> = self.clip.lib.items.iter().find(|c| c.id == *id).cloned();
-                egui::Window::new(tr("Details")).collapsible(false).resizable(false).open(&mut keep).show(ctx, |ui| {
+                crate::window_ui::popup(ctx, "clip_details", &tr("Details"), [320.0, 220.0], &mut keep, |ui| {
                     if let Some(c) = &c {
                         egui::Grid::new("clip_info").num_columns(2).spacing([12.0, 4.0]).show(ui, |ui| {
                             for (k, v) in [(tr("Name"), c.name.clone()), (tr("Category"), tr_owned(&c.category)), (tr("Licence"), c.license.clone()), (tr("Author"), c.author.clone())] {
@@ -386,7 +386,7 @@ impl App {
             ClipDialog::Delete { id } => {
                 let mut yes = false;
                 let mut no = false;
-                egui::Window::new(tr("Delete…")).collapsible(false).resizable(false).open(&mut keep).show(ctx, |ui| {
+                crate::window_ui::popup(ctx, "clip_delete", &tr("Delete…"), [320.0, 160.0], &mut keep, |ui| {
                     ui.label(tr("Remove this picture from your clipart? The file on your disk is deleted."));
                     ui.horizontal(|ui| {
                         yes = ui.button(tr("Delete")).clicked();
@@ -508,7 +508,7 @@ impl App {
         let mut search = false;
         let mut save_hit = false;
         let mut save_url = false;
-        egui::Window::new(tr("Online clipart")).open(&mut open).default_size([560.0, 600.0]).resizable(true).show(ctx, |ui| {
+        crate::window_ui::popup(ctx, "w_clipart_ui_8", &tr("Online clipart"), [340.0, 220.0], &mut open, |ui| {
             ui.label(RichText::new(tr("Search open icon collections (Iconify). Pictures are saved on your disk, in a category of your choice.")).color(theme::text_dim()));
             ui.horizontal(|ui| {
                 let r = ui.add(egui::TextEdit::singleline(&mut o.query).hint_text(tr("e.g. cat, flower, gear")).desired_width(260.0));

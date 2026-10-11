@@ -78,6 +78,19 @@ impl Dither {
             Dither::Grayscale => "Grayscale",
         }
     }
+
+    /// A short description of what the method does.
+    pub fn hint(self) -> &'static str {
+        match self {
+            Dither::Threshold => "Black or white only, split at half brightness. Sharp: good for line art and text.",
+            Dither::FloydSteinberg => "Spreads the rounding error to the neighbouring dots. A good all-round choice for photos.",
+            Dither::Jarvis => "Spreads the error over a wider area: smoother tones, a little slower.",
+            Dither::Stucki => "Like Jarvis, with crisper detail.",
+            Dither::Atkinson => "Keeps highlights clean and contrast high; loses some of the darkest and lightest detail.",
+            Dither::Ordered => "A fixed 8×8 pattern of dots: regular and fast, without noise.",
+            Dither::Grayscale => "No dots: every pixel burns with a power between the minimum and the layer's power.",
+        }
+    }
 }
 
 fn d_min_power() -> f64 {
@@ -494,6 +507,16 @@ pub struct Device {
     /// Default speed of each of the 30 layers in mm/min, kept with the device and used for new documents.
     #[serde(default = "d_layer_speeds")]
     pub layer_speeds: Vec<f64>,
+    /// The material library of this device: materials with the settings of all their layers. It is stored with
+    /// the profile and with saved projects.
+    #[serde(default)]
+    pub materials: Vec<crate::materials::Material>,
+    /// The library has been filled from the built-in one (once; deleting materials does not refill it).
+    #[serde(default)]
+    pub materials_seeded: bool,
+    /// The library follows the main library: the materials above are only this device's own copies of changed ones.
+    #[serde(default)]
+    pub materials_inherit: bool,
 }
 
 impl Device {
@@ -563,6 +586,9 @@ impl Default for Device {
             camera_url: String::new(),
             camera_rotation: 0,
             layer_speeds: d_layer_speeds(),
+            materials: vec![],
+            materials_seeded: false,
+            materials_inherit: false,
         }
     }
 }
@@ -578,6 +604,10 @@ pub struct Document {
     pub order: Vec<usize>,
     #[serde(default)]
     next_group: u64,
+    /// The material whose settings were put into the layers of this design (it travels with the file, so the
+    /// design can be repeated on another machine).
+    #[serde(default)]
+    pub material: Option<crate::materials::Material>,
 }
 
 fn identity_order() -> Vec<usize> {
@@ -593,6 +623,7 @@ impl Default for Document {
             next_id: 1,
             order: identity_order(),
             next_group: 1,
+            material: None,
         }
     }
 }

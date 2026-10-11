@@ -8,21 +8,58 @@ use lc_core::{Dither, Kind, LayerMode, TextData, Xf, PALETTE};
 
 impl App {
     pub fn side_panel(&mut self, ui: &mut egui::Ui) {
+        self.side_w = ui.max_rect().width();
+        let mut tabs: Vec<(SideTab, &'static str)> = self.tab_order.clone();
+        let camera_tab = self.show_stream && self.stream_mode == crate::stream_ui::StreamMode::Tab;
+        if camera_tab {
+            tabs.push((SideTab::Camera, "Camera view"));
+        }
+        if self.side_tab == SideTab::Camera && !camera_tab {
+            self.side_tab = SideTab::Properties;
+        }
+        // Tabs can be dragged to another place; the order is kept in the settings.
+        let mut moved: Option<(usize, usize)> = None;
         ui.horizontal_wrapped(|ui| {
-            let mut tabs: Vec<(SideTab, &'static str)> = SideTab::ALL.to_vec();
-            let camera_tab = self.show_stream && self.stream_mode == crate::stream_ui::StreamMode::Tab;
-            if camera_tab {
-                tabs.push((SideTab::Camera, "Camera view"));
+            let mut rects: Vec<egui::Rect> = vec![];
+            let mut dragging: Option<usize> = None;
+            for (i, (t, label)) in tabs.iter().enumerate() {
+                let b = egui::Button::selectable(self.side_tab == *t, RichText::new(tr(label)).strong()).sense(egui::Sense::click_and_drag());
+                let r = ui.add(b);
+                if r.clicked() {
+                    self.side_tab = *t;
+                }
+                if r.dragged() {
+                    dragging = Some(i);
+                    ui.ctx().set_cursor_icon(egui::CursorIcon::Grabbing);
+                }
+                if r.drag_stopped() {
+                    moved = Some((i, usize::MAX));
+                }
+                rects.push(r.rect);
             }
-            if self.side_tab == SideTab::Camera && !camera_tab {
-                self.side_tab = SideTab::Properties;
-            }
-            for (t, label) in tabs {
-                if ui.selectable_label(self.side_tab == t, RichText::new(tr(label)).strong()).clicked() {
-                    self.side_tab = t;
+            // Where a dragged tab would land: next to the tab nearest to the pointer.
+            let pointer = ui.input(|i| i.pointer.interact_pos());
+            let dragged = dragging.or(moved.map(|m| m.0));
+            if let (Some(from), Some(p)) = (dragged, pointer) {
+                let dist = |r: &egui::Rect| r.distance_to_pos(p);
+                let to = (0..rects.len()).filter(|i| *i < self.tab_order.len()).min_by(|a, b| dist(&rects[*a]).total_cmp(&dist(&rects[*b])));
+                if let Some(to) = to {
+                    if dragging.is_some() && to != from {
+                        let x = if to > from { rects[to].right() + 2.0 } else { rects[to].left() - 2.0 };
+                        ui.painter().line_segment([egui::pos2(x, rects[to].top()), egui::pos2(x, rects[to].bottom())], egui::Stroke::new(2.0, theme::accent()));
+                    }
+                    if let Some(m) = &mut moved {
+                        m.1 = to;
+                    }
                 }
             }
         });
+        if let Some((from, to)) = moved {
+            if from < self.tab_order.len() && to < self.tab_order.len() && from != to {
+                let t = self.tab_order.remove(from);
+                self.tab_order.insert(to, t);
+            }
+        }
         ui.separator();
         match self.side_tab {
             SideTab::Properties => {
@@ -36,6 +73,9 @@ impl App {
             }
             SideTab::Console => self.console_panel(ui),
             SideTab::Clipart => self.clipart_panel(ui),
+            SideTab::Materials => {
+                egui::ScrollArea::vertical().id_salt("tab_materials").auto_shrink([false, false]).show(ui, |ui| self.materials_tab(ui));
+            }
             SideTab::Camera => {
                 egui::ScrollArea::vertical().id_salt("tab_camera").auto_shrink([false, false]).show(ui, |ui| self.stream_view(ui));
             }
@@ -110,11 +150,11 @@ impl App {
         let bw = (ui.available_width() - 12.0) / 3.0;
         egui::Grid::new("props_rotate").num_columns(3).spacing([6.0, 6.0]).show(ui, |ui| {
             ui.allocate_ui_with_layout(egui::vec2(bw, 24.0), egui::Layout::left_to_right(egui::Align::Center), |ui| {
-                ui.label(tr("Rotate"));
-                ui.add(egui::DragValue::new(&mut self.rot_input).suffix("°"));
+                // A label as well would not fit in every language; the section title says what this is.
+                ui.add(egui::DragValue::new(&mut self.rot_input).suffix("°")).on_hover_text(tr("Rotate"));
             });
             let ink = theme::text();
-            if ui.add_sized([bw, 24.0], egui::Button::image_and_text(crate::icons::slot(Some("check"), ink), tr("Apply"))).clicked() {
+            if ui.add_sized([bw, 24.0], egui::Button::image_and_text(crate::icons::slot(Some("check"), ink), tr("Apply")).truncate()).clicked() {
                 self.rotate_sel(self.rot_input);
             }
             if ui.add_sized([bw, 24.0], egui::Button::image_and_text(crate::icons::slot(Some("rotate-cw"), ink), "90°")).clicked() {
@@ -153,7 +193,7 @@ impl App {
         section_title(ui, "layers", &tr("Layer"));
         let first = self.doc.shape(self.sel[0]).map(|s| s.layer).unwrap_or(0);
         let mut layer = first;
-        ui.horizontal(|ui| {
+        ui.horizontal_wrapped(|ui| {
             let lc = PALETTE[self.doc.layers[layer].color.min(29)];
             let (r, _) = ui.allocate_exact_size(egui::vec2(16.0, 16.0), egui::Sense::hover());
             ui.painter().rect_filled(r, 3.0, Color32::from_rgb(lc[0], lc[1], lc[2]));
@@ -376,7 +416,7 @@ impl App {
         let has_images = self.doc.shapes.iter().any(|s| s.layer == i && s.is_image());
         let mut open = true;
         let title = trf("Layer options — {}", &[&self.doc.layers[i].name]);
-        egui::Window::new(title).id(egui::Id::new("layer_dialog")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+        crate::window_ui::popup(ctx, "layer_dialog", &title, [340.0, 220.0], &mut open, |ui| {
             let l = &mut self.doc.layers[i];
             egui::Grid::new("layer_head").num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
                 ui.label(tr("Name"));
@@ -433,7 +473,7 @@ impl App {
         });
         });
         ui.horizontal(|ui| {
-            let r = ui.add(egui::TextEdit::singleline(&mut self.console_input).desired_width(ui.available_width() - 70.0).hint_text(tr("send G-code / $ command")));
+            let r = ui.add(egui::TextEdit::singleline(&mut self.console_input).desired_width((ui.available_width() - 110.0).max(60.0)).hint_text(tr("send G-code / $ command")));
             let send = ui.button(tr("Send")).clicked() || (r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)));
             if send && self.connected && !self.console_input.trim().is_empty() {
                 self.link.send(Cmd::Line(self.console_input.trim().to_string()));
@@ -462,7 +502,7 @@ fn button_grid(ui: &mut egui::Ui, id: &str, cells: &[(&str, &str, &str)]) -> Opt
     let bw = (ui.available_width() - 12.0) / 3.0;
     egui::Grid::new(id).num_columns(3).spacing([6.0, 6.0]).show(ui, |ui| {
         for (i, (label, tip, icon)) in cells.iter().enumerate() {
-            let btn = egui::Button::image_and_text(crate::icons::slot(Some(icon), theme::text()), *label);
+            let btn = egui::Button::image_and_text(crate::icons::slot(Some(icon), theme::text()), *label).truncate();
             if ui.add_sized([bw, 24.0], btn).on_hover_text(*tip).clicked() {
                 clicked = Some(i);
             }
@@ -526,9 +566,11 @@ pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_cor
             ui.label(tr("Dithering"));
             egui::ComboBox::from_id_salt(("dither", id_scope)).selected_text(tr(l.dither.label())).show_ui(ui, |ui| {
                 for d in Dither::ALL {
-                    ui.selectable_value(&mut l.dither, d, tr(d.label()));
+                    ui.selectable_value(&mut l.dither, d, tr(d.label())).on_hover_text(tr(d.hint()));
                 }
-            });
+            })
+            .response
+            .on_hover_text(tr(l.dither.hint()));
             ui.end_row();
             ui.label(tr("Min power (%)"));
             let max = l.power;

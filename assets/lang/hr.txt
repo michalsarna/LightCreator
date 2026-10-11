@@ -571,3 +571,96 @@
 570|Pretvorite tekst u krivulje ili vektorizirajte sliku da biste uređivali njezine čvorove.
 571|Prvo odaberite oblik, a zatim uredite njegove čvorove.
 572|Srce (K)
+573|Dodano materijala: {} iz {}
+574|Razlike u biblioteci materijala
+575|{} sadrži postavke materijala koje se razlikuju od ovog uređaja. Odaberite vrijednosti koje želite zadržati.
+576|Dodano novih materijala: {}; već jednakih: {}.
+577|Zadrži sve moje
+578|Preuzmi sve iz datoteke
+579|Sloj {}: cijeli sloj
+580|nema
+581|Ostavi moju biblioteku nepromijenjenom
+582|Biblioteka ovog uređaja je ažurirana.
+583|Dodaj iz biblioteke…
+584|Kopira materijale iz ugrađene biblioteke u ovaj uređaj
+585|Biblioteka uređaja {}
+586|Ova je biblioteka prazna. Dodajte materijale iz ugrađene biblioteke ili spremite svoje slojeve kao materijal.
+587|Bilješka
+588|Oznaka
+589|Ukloni sloj
+590|Dodaj sloj
+591|Koristi postavke ovog sloja iz dizajna
+592|Primijeni na slojeve
+593|Stavlja u dizajn postavke svih njegovih slojeva
+594|{} primijenjeno na slojeve: {}
+595|Spremi slojeve dizajna kao materijal
+596|Sprema postavke slojeva korištenih u dizajnu
+597|{} spremljeno u biblioteku ovog uređaja
+598|Materijali dodani ovdje dostupni su za svaki uređaj. Vlastita biblioteka uređaja uređuje se na kartici Materijali.
+599|Dodali ste
+600|Ugrađen
+601|Dodaj ovom uređaju
+602|Spremi slojeve dizajna kao materijal za svaki uređaj
+603|Spremi u biblioteku
+604|{} je već u biblioteci ovog uređaja
+605|{} dodano u biblioteku ovog uređaja
+606|Materijal s ovim nazivom već postoji u biblioteci.
+607|{} spremljeno u biblioteku materijala
+608|Postavka
+609|Ovaj uređaj
+610|Materijali
+611|Drvo
+612|Metal
+613|Plastika
+614|Papir i koža
+615|Kamen i staklo
+616|Ostalo
+617|Izvezi biblioteku…
+618|Uvezi biblioteku…
+619|Označite što ide u datoteku.
+620|Označite što treba preuzeti iz datoteke.
+621|Globalni materijali
+622|Uređaji
+623|Biblioteka spremljena: materijala {} i uređaja {}
+624|Uvezeno materijala: {}, uređaja: {}
+625|Ovo nije datoteka biblioteke programa LightCreator.
+626|{} sadrži postavke materijala različite od {}. Odaberite vrijednosti koje se zadržavaju.
+627|Šperploča
+628|MDF
+629|Karton
+630|Papir
+631|Koža
+632|Filc
+633|Pluta
+634|Akril
+635|Akril, crni ili tamni
+636|Škriljevac / kamen
+637|Eloksirani aluminij (premazan)
+638|Guma
+639|Tkanina
+640|Staklo
+641|Drvo (tvrdo)
+642|Oznake
+643|Debljina
+644|Oznake, odvojene zarezima
+645|Uredi materijal
+646|Vrati ugrađene vrijednosti
+647|Ugrađene vrijednosti su vraćene.
+648|Ovaj materijal nema postavke za vrstu lasera ovog uređaja
+649|Dvaput kliknite materijal da biste uredili njegove postavke. Promjene se čuvaju na ovom računalu.
+650|Samo crno ili bijelo, podjela na pola svjetline. Oštro: dobro za crteže i tekst.
+651|Širi pogrešku zaokruživanja na susjedne točke. Dobar opći izbor za fotografije.
+652|Širi pogrešku na veće područje: glađi tonovi, malo sporije.
+653|Kao Jarvis, s oštrijim detaljima.
+654|Čuva čista svjetla i visok kontrast; gubi nešto najtamnijih i najsvjetlijih detalja.
+655|Fiksni uzorak točaka 8×8: pravilan i brz, bez šuma.
+656|Bez točaka: svaki piksel gori snagom između minimalne i snage sloja.
+657|Izbriši sve materijale
+658|Izbrisati sve materijale ovog uređaja? Umjesto njih prikazuju se materijali glavne biblioteke; kad jedan promijenite, za ovaj uređaj čuva se njegova kopija.
+659|Biblioteka ovog uređaja sada prikazuje glavnu biblioteku.
+660|Oznake slojeva
+661|Oznake slojeva…
+662|Oznake koje se nude za slojeve materijala. Cut, Engrave i Score uvijek postoje.
+663|Nova oznaka
+664|Dodaj ili ukloni oznake koje se nude za slojeve materijala
+665|Dodaj

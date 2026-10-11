@@ -571,3 +571,96 @@
 570|Convertiu el text en corbes, o vectoritzeu la imatge, per editar-ne els nodes.
 571|Seleccioneu primer una forma i després editeu-ne els nodes.
 572|Cor (K)
+573|S'han afegit {} material(s) de {}
+574|Diferències a la biblioteca de materials
+575|{} conté ajustos de materials diferents d'aquest dispositiu. Trieu els valors que cal conservar.
+576|S'han afegit {} materials nous; {} ja eren iguals.
+577|Conserva tots els meus
+578|Pren-ho tot del fitxer
+579|Capa {}: capa sencera
+580|no hi és
+581|Deixa la meva biblioteca tal com és
+582|S'ha actualitzat la biblioteca d'aquest dispositiu.
+583|Afegeix de la biblioteca…
+584|Copia materials de la biblioteca integrada a aquest dispositiu
+585|Biblioteca del dispositiu {}
+586|Aquesta biblioteca és buida. Afegiu materials de la biblioteca integrada o deseu les vostres capes com a material.
+587|Nota
+588|Etiqueta
+589|Treu la capa
+590|Afegeix una capa
+591|Utilitza els ajustos d'aquesta capa del disseny
+592|Aplica a les capes
+593|Posa al disseny els ajustos de totes les seves capes
+594|{} aplicat a {} capa(es)
+595|Desa les capes del disseny com a material
+596|Desa els ajustos de les capes utilitzades al disseny
+597|{} desat a la biblioteca d'aquest dispositiu
+598|Els materials afegits aquí estan disponibles per a tots els dispositius. La biblioteca pròpia d'un dispositiu s'edita a la pestanya Materials.
+599|Afegit per vós
+600|Integrat
+601|Afegeix a aquest dispositiu
+602|Desa les capes del disseny com a material per a tots els dispositius
+603|Desa a la biblioteca
+604|{} ja és a la biblioteca d'aquest dispositiu
+605|{} afegit a la biblioteca d'aquest dispositiu
+606|Ja existeix un material amb aquest nom a la biblioteca.
+607|{} desat a la biblioteca de materials
+608|Ajust
+609|Aquest dispositiu
+610|Materials
+611|Fusta
+612|Metall
+613|Plàstic
+614|Paper i cuir
+615|Pedra i vidre
+616|Altres
+617|Exporta la biblioteca…
+618|Importa la biblioteca…
+619|Marqueu què va al fitxer.
+620|Marqueu què cal agafar del fitxer.
+621|Materials globals
+622|Dispositius
+623|Biblioteca desada: {} material(s) i {} dispositiu(s)
+624|Importats {} material(s) i {} dispositiu(s)
+625|Aquest no és un fitxer de biblioteca de LightCreator.
+626|{} conté paràmetres de materials diferents dels de {}. Trieu els valors que voleu conservar.
+627|Contraplacat
+628|MDF
+629|Cartró
+630|Paper
+631|Cuir
+632|Feltre
+633|Suro
+634|Acrílic
+635|Acrílic, negre o fosc
+636|Pissarra / pedra
+637|Alumini anoditzat (recobert)
+638|Cautxú
+639|Tela
+640|Vidre
+641|Fusta (dura)
+642|Etiquetes
+643|Gruix
+644|Etiquetes, separades per comes
+645|Edita el material
+646|Restaura els valors integrats
+647|S'han restaurat els valors integrats.
+648|Aquest material no té paràmetres per al tipus de làser d'aquest dispositiu
+649|Feu doble clic en un material per editar-ne els paràmetres. Els canvis es guarden en aquest ordinador.
+650|Només blanc o negre, dividit a mitja lluminositat. Nítid: bo per a dibuixos de línia i text.
+651|Reparteix l'error d'arrodoniment als punts veïns. Una bona opció general per a fotos.
+652|Reparteix l'error per una àrea més gran: tons més suaus, una mica més lent.
+653|Com Jarvis, amb detalls més nítids.
+654|Manté netes les llums i alt el contrast; perd una mica dels detalls més foscos i més clars.
+655|Un patró fix de punts 8×8: regular i ràpid, sense soroll.
+656|Sense punts: cada píxel crema amb una potència entre el mínim i la potència de la capa.
+657|Elimina tots els materials
+658|Voleu eliminar tots els materials d'aquest dispositiu? Es mostraran els de la biblioteca principal; quan en canvieu un, se'n conservarà una còpia per a aquest dispositiu.
+659|La biblioteca d'aquest dispositiu ara mostra la biblioteca principal.
+660|Etiquetes de les capes
+661|Etiquetes de les capes…
+662|Etiquetes per triar per a les capes d'un material. Cut, Engrave i Score sempre hi són.
+663|Nova etiqueta
+664|Afegeix o elimina les etiquetes per a les capes d'un material
+665|Afegeix

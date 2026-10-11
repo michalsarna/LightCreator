@@ -571,3 +571,96 @@
 570|Převeďte text na křivky, nebo obrázek vektorizujte, abyste mohli upravovat jeho uzly.
 571|Nejprve vyberte tvar a poté upravte jeho uzly.
 572|Srdce (K)
+573|Přidáno materiálů: {} ze souboru {}
+574|Rozdíly v knihovně materiálů
+575|{} obsahuje nastavení materiálů, která se liší od tohoto zařízení. Vyberte hodnoty, které chcete ponechat.
+576|Přidáno nových materiálů: {}; shodných bylo: {}.
+577|Ponechat všechny moje
+578|Převzít vše ze souboru
+579|Vrstva {}: celá vrstva
+580|není
+581|Ponechat mou knihovnu beze změny
+582|Knihovna tohoto zařízení byla aktualizována.
+583|Přidat z knihovny…
+584|Zkopíruje materiály z vestavěné knihovny do tohoto zařízení
+585|Knihovna zařízení {}
+586|Tato knihovna je prázdná. Přidejte materiály z vestavěné knihovny nebo uložte své vrstvy jako materiál.
+587|Poznámka
+588|Popisek
+589|Odebrat vrstvu
+590|Přidat vrstvu
+591|Použije nastavení této vrstvy z návrhu
+592|Použít na vrstvy
+593|Vloží do návrhu nastavení všech jeho vrstev
+594|{} použito na vrstev: {}
+595|Uložit vrstvy návrhu jako materiál
+596|Uloží nastavení vrstev použitých v návrhu
+597|{} uloženo do knihovny tohoto zařízení
+598|Materiály přidané zde jsou k dispozici pro každé zařízení. Vlastní knihovnu zařízení upravíte na kartě Materiály.
+599|Přidáno vámi
+600|Vestavěný
+601|Přidat k tomuto zařízení
+602|Uložit vrstvy návrhu jako materiál pro každé zařízení
+603|Uložit do knihovny
+604|{} už je v knihovně tohoto zařízení
+605|{} přidáno do knihovny tohoto zařízení
+606|Materiál s tímto názvem už v knihovně existuje.
+607|{} uloženo do knihovny materiálů
+608|Nastavení
+609|Toto zařízení
+610|Materiály
+611|Dřevo
+612|Kov
+613|Plast
+614|Papír a kůže
+615|Kámen a sklo
+616|Ostatní
+617|Exportovat knihovnu…
+618|Importovat knihovnu…
+619|Zaškrtněte, co se uloží do souboru.
+620|Zaškrtněte, co se má převzít ze souboru.
+621|Globální materiály
+622|Zařízení
+623|Knihovna uložena: materiálů {} a zařízení {}
+624|Importováno materiálů: {}, zařízení: {}
+625|Toto není soubor knihovny LightCreator.
+626|{} obsahuje nastavení materiálů odlišná od {}. Vyberte hodnoty, které se mají zachovat.
+627|Překližka
+628|MDF
+629|Karton
+630|Papír
+631|Kůže
+632|Filc
+633|Korek
+634|Akryl
+635|Akryl, černý nebo tmavý
+636|Břidlice / kámen
+637|Eloxovaný hliník (potažený)
+638|Guma
+639|Látka
+640|Sklo
+641|Dřevo (tvrdé)
+642|Štítky
+643|Tloušťka
+644|Štítky oddělené čárkami
+645|Upravit materiál
+646|Obnovit vestavěné hodnoty
+647|Vestavěné hodnoty byly obnoveny.
+648|Tento materiál nemá nastavení pro typ laseru tohoto zařízení
+649|Dvojitým kliknutím na materiál upravíte jeho nastavení. Změny se uchovávají v tomto počítači.
+650|Jen černá nebo bílá, dělení v polovině jasu. Ostré: vhodné pro perokresbu a text.
+651|Rozděluje chybu zaokrouhlení na sousední body. Dobrá univerzální volba pro fotografie.
+652|Rozděluje chybu na větší oblast: jemnější tóny, o něco pomalejší.
+653|Jako Jarvis, s ostřejším detailem.
+654|Udržuje světla čistá a kontrast vysoký; ztrácí část nejtmavších a nejsvětlejších detailů.
+655|Pevný vzor bodů 8×8: pravidelný a rychlý, bez šumu.
+656|Žádné body: každý pixel vypaluje výkonem mezi minimem a výkonem vrstvy.
+657|Smazat všechny materiály
+658|Smazat všechny materiály tohoto zařízení? Místo nich se zobrazí materiály z hlavní knihovny; když některý změníte, uchová se jeho kopie pro toto zařízení.
+659|Knihovna tohoto zařízení nyní zobrazuje hlavní knihovnu.
+660|Štítky vrstev
+661|Štítky vrstev…
+662|Štítky nabízené pro vrstvy materiálu. Cut, Engrave a Score jsou vždy k dispozici.
+663|Nový štítek
+664|Přidat nebo odebrat štítky nabízené pro vrstvy materiálu
+665|Přidat

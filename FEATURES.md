@@ -73,6 +73,7 @@
 * **Export** submenu: SVG, G-code, and HPGL (`.plt`) / DXF. Native `.lcr` projects embed images.
 * **Layer list:** the three switches at the end of each row (output, visible, air pump) have icon headings above
   the list; the layer colour is shown next to the title of the cut settings.
+* **Tab order:** the tabs of the side panel can be dragged to another place; the order is kept in the settings and in backups.
 * **Side panel layout:** Properties is laid out as a table with sections separated by lines (position and size,
   rotation, mirroring, alignment, layer) and buttons of one size. Image settings of a layer show only when the layer
   holds bitmap images. In the Device tab the jog arrows, Home, Unlock, Pause and Resume are equal icon buttons (STOP
@@ -153,8 +154,38 @@
   or deleted from the right-click menu. They live in the application's data folder next to `app.ron`, in the `clipart` folder (the location per system is in the README).
 
 **Helpers**
-* **Material library:** starting settings for common materials and operations for diode and CO2 lasers,
-  apply to the active layer, save your own presets.
+* **Material libraries:** a material holds the settings of all the layers it needs (mode, speed, power, passes,
+  interval, scan angle, overscan, dithering, minimum power, air assist). There are three levels.
+  * The **built-in library** (starting values for typical 10 W diode and 40 W CO2 lasers) is the source for the rest.
+  * The **Material library…** window of the Laser menu is the only place that extends it: "Save the layers of the
+    design as a material for every device" adds a global material that every device can use. Built-in materials are read-only.
+  * Every device has its **own library**, shown in the **Materials** tab of the side panel and filled once from the
+    built-in and global materials that suit its laser type. In the tab you edit all the settings of every layer of a
+    material, add or remove layers, rename, delete, apply a material to the layers of the design and save the layers of
+    the design as a material; all of that is kept in the device library.
+  * Lists show name and tags in alternating rows with scroll arrows; a layer's label is picked from a list that the **Layer labels…** button of the library window extends. Questions (restore, delete all materials) are asked in the program's own language; pop-up windows share one style and resize both ways.
+  * The device library is saved in the device profile (and so in backups) and inside every saved project. When a
+    project file is opened, its library is merged into the library of the active device: new materials are added at
+    once, materials that differ open a window where, value by value, you choose to keep your own or take the one from
+    the file.
+  * A material is **one entry for both laser types** (diode and CO2 have their own settings under the same id, e.g.
+    `plywood-3`). Names such as "Plywood" are translated; the thickness is a separate value; there is a one-line note and
+    tags (Cut, Engrave...). The program's built-in values can be **changed on this computer**: double-click a material in the
+    Material library window (or Edit material) to set every layer, then Save; it is kept as a local copy that overrides the
+    built-in data, and *Restore built-in values* brings the original back. A device's library receives the variant for its
+    own laser type.
+  * Lists are grouped by category; a group folds up by its title (shown in the main colour), as in the clipart list.
+  * **Delete all materials** (Materials tab) empties the device's library and shows the main library instead; a material
+    that is changed there is kept as a copy for the device. Tags are suggested from those already in use, and hovering over
+    the dithering setting explains the chosen method.
+  * A saved project carries the device profile, the device library and the **material it was made with**.
+  * Every material has the **colour** and a **label** (the name of its purpose, e.g. Cut) of each layer, and a **category**
+    (Wood, Metal, Plastic, Paper and leather, Stone and glass, Other, or a category of your own). Applying a material sets
+    the settings, colour and name of its layers. The list in the Materials tab shows every layer with its colour and main
+    settings and can be filtered by category, as the clipart list can.
+  * **Export library… / Import library…** (Material library window and Materials tab) write and read one `.lcb` file with
+    the global materials and the devices with their libraries. A window lets you tick exactly what goes into the file or
+    is taken from it; materials that differ open the same window of differences.
 * **Camera overlay:** a photo or the live camera (build with `--features camera`) under the design, aligned
   with four draggable corners (perspective corrected), opacity, flip and rotate; saved per device.
 

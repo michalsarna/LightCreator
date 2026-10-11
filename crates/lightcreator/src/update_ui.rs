@@ -96,10 +96,7 @@ impl App {
         let Some(outcome) = &self.update.window else { return };
         let mut open = true;
         let mut go = false;
-        let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 10, right: 10, top: 6, bottom: 8 });
-        egui::Window::new("update_window").title_bar(false).frame(frame).collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {
-            ui.set_min_width(340.0);
-            crate::window_ui::mini_title(ui, &tr("Updates"), &mut open, |_| {});
+        crate::window_ui::popup(ctx, "update_window", &tr("Updates"), [360.0, 200.0], &mut open, |ui| {
             match outcome {
                 Outcome::Newer(tag) => {
                     ui.label(RichText::new(trf("A newer version is available: {}", &[tag])).strong());

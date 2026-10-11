@@ -571,3 +571,96 @@
 570|Ikkonverti t-test f'kurvi, jew vettorizza l-istampa, biex teditja n-nodi tagħha.
 571|Agħżel l-ewwel forma, imbagħad editja n-nodi tagħha.
 572|Qalb (K)
+573|Tiżdiedu {} materjal(i) minn {}
+574|Differenzi fil-librerija tal-materjali
+575|{} fih issettjar tal-materjali differenti minn dan it-tagħmir. Agħżel il-valuri li għandhom jinżammu.
+576|Tiżdiedu {} materjali ġodda; {} kienu diġà l-istess.
+577|Żomm il-kollha tiegħi
+578|Ħu kollha mill-fajl
+579|Saff {}: is-saff kollu
+580|mhux hemm
+581|Ħalli l-librerija tiegħi kif inhi
+582|Il-librerija ta' dan it-tagħmir ġiet aġġornata.
+583|Żid mil-librerija…
+584|Jikkopja materjali mil-librerija inkorporata għal dan it-tagħmir
+585|Librerija tat-tagħmir {}
+586|Din il-librerija hija vojta. Żid materjali mil-librerija inkorporata jew salva s-saffi tiegħek bħala materjal.
+587|Nota
+588|Tikketta
+589|Neħħi s-saff
+590|Żid saff
+591|Juża l-issettjar ta' dan is-saff fid-disinn
+592|Applika għas-saffi
+593|Iqiegħed fid-disinn l-issettjar tas-saffi kollha tiegħu
+594|{} applikat għal {} saff(i)
+595|Salva s-saffi tad-disinn bħala materjal
+596|Isalva l-issettjar tas-saffi użati fid-disinn
+597|{} salvat fil-librerija ta' dan it-tagħmir
+598|Il-materjali miżjuda hawn huma disponibbli għal kull tagħmir. Il-librerija tat-tagħmir innifsu tiġi editjata fit-tab Materjali.
+599|Miżjud minnek
+600|Inkorporat
+601|Żid ma' dan it-tagħmir
+602|Salva s-saffi tad-disinn bħala materjal għal kull tagħmir
+603|Salva fil-librerija
+604|{} diġà jinsab fil-librerija ta' dan it-tagħmir
+605|{} miżjud mal-librerija ta' dan it-tagħmir
+606|Materjal b'dan l-isem diġà jeżisti fil-librerija.
+607|{} salvat fil-librerija tal-materjali
+608|Issettjar
+609|Dan it-tagħmir
+610|Materjali
+611|Injam
+612|Metall
+613|Plastik
+614|Karta u ġilda
+615|Ġebel u ħġieġ
+616|Oħrajn
+617|Esporta l-librerija…
+618|Importa l-librerija…
+619|Immarka dak li jmur fil-fajl.
+620|Immarka dak li għandu jittieħed mill-fajl.
+621|Materjali globali
+622|Apparati
+623|Il-librerija ġiet salvata: {} materjal u {} apparat
+624|Importati {} materjal u {} apparat
+625|Din mhix fajl ta' librerija ta' LightCreator.
+626|{} fih issettings tal-materjali differenti minn {}. Agħżel il-valuri li għandhom jinżammu.
+627|Plywood
+628|MDF
+629|Kartun
+630|Karta
+631|Ġilda
+632|Feltru
+633|Sufra
+634|Akriliku
+635|Akriliku, iswed jew skur
+636|Lavanja / ġebel
+637|Aluminju anodizzat (miksi)
+638|Gomma
+639|Drapp
+640|Ħġieġ
+641|Injam (iebes)
+642|Tags
+643|Ħxuna
+644|Tags, separati b'virgoli
+645|Editja l-materjal
+646|Irrestawra l-valuri integrati
+647|Il-valuri integrati ġew irrestawrati.
+648|Dan il-materjal m'għandux settings għat-tip ta' lejżer ta' dan l-apparat
+649|Agħmel double-click fuq materjal biex teditja s-settings tiegħu. Il-bidliet jinżammu fuq dan il-kompjuter.
+650|Iswed jew abjad biss, maqsum f'nofs il-luminożità. Ħarxa: tajba għal disinji bil-linja u test.
+651|Jipproċessa l-iżball tat-tqarrib fuq il-punti ġirien. Għażla ġenerali tajba għar-ritratti.
+652|Jinfirex l-iżball fuq żona usa': ċrieki aktar bil-mod, ftit aktar bil-mod.
+653|Bħal Jarvis, b'dettalji aktar ċari.
+654|Iżomm id-dwal nodfa u l-kuntrast għoli; titlef xi dettalji mill-aktar skuri u mill-aktar ċari.
+655|Mudell fiss ta' punti 8×8: regolari u mgħaġġel, mingħajr storbju.
+656|L-ebda punti: kull pixel jaħraq b'qawwa bejn il-minimu u l-qawwa tas-saff.
+657|Ħassar il-materjali kollha
+658|Tħassar il-materjali kollha ta' dan l-apparat? Minflok jintwerew il-materjali tal-librerija ewlenija; meta tbiddel wieħed, tinżamm kopja għal dan l-apparat.
+659|Il-librerija ta' dan l-apparat issa turi l-librerija ewlenija.
+660|Tikketti tas-saffi
+661|Tikketti tas-saffi…
+662|Tikketti offruti għas-saffi ta' materjal. Cut, Engrave u Score dejjem jinsabu hemm.
+663|Tikketta ġdida
+664|Żid jew neħħi t-tikketti offruti għas-saffi ta' materjal
+665|Żid

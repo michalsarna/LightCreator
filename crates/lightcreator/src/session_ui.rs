@@ -85,6 +85,7 @@ impl App {
         self.update_tick(ctx);
         self.toast_ui(ctx);
         self.close_dialog(ctx);
+        self.confirm_dialog(ctx);
         self.options_window(ctx);
     }
 
@@ -163,7 +164,7 @@ impl App {
             return;
         }
         let mut open = true;
-        egui::Window::new(tr("Program options")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+        crate::window_ui::popup(ctx, "w_session_ui_1", &tr("Program options"), [340.0, 220.0], &mut open, |ui| {
             egui::Grid::new("program_options").num_columns(2).spacing([12.0, 8.0]).show(ui, |ui| {
                 ui.label(tr("Auto-save"));
                 ui.checkbox(&mut self.autosave_on, tr("Save the work automatically")).on_hover_text(tr("Work without a file name goes to a temporary folder; a file with a name is saved in place"));
@@ -177,6 +178,50 @@ impl App {
             });
         });
         self.show_options = open;
+    }
+}
+
+/// What a Yes answer does.
+pub enum ConfirmAct {
+    DeleteAllMaterials,
+    RestoreBackup(std::path::PathBuf),
+}
+
+pub struct Confirm {
+    pub title: String,
+    pub text: String,
+    pub act: ConfirmAct,
+}
+
+impl App {
+    fn confirm_dialog(&mut self, ctx: &egui::Context) {
+        let Some(c) = &self.confirm else { return };
+        let mut open = true;
+        let mut answer = None;
+        crate::window_ui::popup(ctx, "confirm_dialog", &c.title, [420.0, 150.0], &mut open, |ui| {
+            ui.label(RichText::new(c.text.as_str()).size(14.0));
+            ui.add_space(10.0);
+            ui.horizontal(|ui| {
+                if ui.button(RichText::new(tr("Yes")).strong()).clicked() {
+                    answer = Some(true);
+                }
+                if ui.button(tr("No")).clicked() {
+                    answer = Some(false);
+                }
+            });
+        });
+        if !open {
+            answer = Some(false);
+        }
+        let Some(yes) = answer else { return };
+        let Some(c) = self.confirm.take() else { return };
+        if !yes {
+            return;
+        }
+        match c.act {
+            ConfirmAct::DeleteAllMaterials => self.reset_device_library(),
+            ConfirmAct::RestoreBackup(path) => self.restore_backup_from(ctx, &path),
+        }
     }
 }
 

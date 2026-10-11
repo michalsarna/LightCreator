@@ -102,7 +102,7 @@ impl App {
         }
         let mut open = true;
         let text = d.text();
-        egui::Window::new(tr("Share over network (ser2net)")).open(&mut open).collapsible(false).resizable(false).show(ctx, |ui| {
+        crate::window_ui::popup(ctx, "w_ser2net_ui_4", &tr("Share over network (ser2net)"), [340.0, 220.0], &mut open, |ui| {
             match &d.installed {
                 Some(v) => ui.label(RichText::new(trf("ser2net found: {}", &[v])).color(Color32::from_rgb(0x2e, 0xa0, 0x4f))),
                 None => ui.label(RichText::new(tr("ser2net was not found. Install it first, for example: sudo apt install ser2net")).color(Color32::from_rgb(0xc0, 0x30, 0x30))),
