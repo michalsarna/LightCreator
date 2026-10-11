@@ -1437,7 +1437,11 @@ impl App {
             ui.separator();
             let ctx = ui.ctx().clone();
             for (act, icon, tip) in [(Act::New, "file-plus", "New"), (Act::Open, "folder-open", "Open…"), (Act::Save, "save", "Save")] {
-                let ink = if act == Act::Save { crate::window_ui::SAVE_GREEN } else { theme::text() };
+                let ink = match act {
+                    Act::Save => crate::window_ui::SAVE_GREEN,
+                    Act::New => crate::window_ui::NEW_BLUE,
+                    _ => theme::text(),
+                };
                 if icon_button_ink(ui, icon, &tr(tip), true, 28.0, ink) {
                     self.do_act(&ctx, act);
                 }

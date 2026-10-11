@@ -191,6 +191,8 @@ pub fn delete_button_enabled(ui: &mut egui::Ui, enabled: bool, text: &str) -> eg
 }
 
 pub const SAVE_GREEN: egui::Color32 = egui::Color32::from_rgb(0x2e, 0xa0, 0x4f);
+/// The icon of a new project on the tool bar: a lighter blue than the import buttons, to read on dark schemes too.
+pub const NEW_BLUE: egui::Color32 = egui::Color32::from_rgb(0x3b, 0x93, 0xf5);
 pub const IMPORT_BLUE: egui::Color32 = egui::Color32::from_rgb(0x2f, 0x6f, 0xc0);
 
 fn filled_button(ui: &mut egui::Ui, enabled: bool, text: egui::RichText, fill: egui::Color32) -> egui::Response {
