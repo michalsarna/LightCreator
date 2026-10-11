@@ -380,7 +380,8 @@ pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, scope: &str, cx: &mu
     let mut remove: Option<usize> = None;
     for (li, ml) in m.layers.iter_mut().enumerate() {
         let lname = cx.layers.get(ml.index).map(|l| l.name.clone()).unwrap_or_default();
-        let head = format!("{} ({})", ml.label, trf("Layer {}", &[&lname]));
+        // The label (Cut, Engrave…) is set below; the heading names only the layer.
+        let head = trf("Layer {}", &[&lname]);
         let swatch_colour = layer_colour(ml);
         let state = egui::collapsing_header::CollapsingState::load_with_default_open(ui.ctx(), ui.make_persistent_id((scope, "layer", li)), true);
         state.show_header(ui, |ui| {
