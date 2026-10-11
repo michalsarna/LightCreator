@@ -1052,3 +1052,5 @@
 1051|Veebiserver: sees, port {}
 1052|Veebiserver: väljas
 1053|Veebiserver: viga
+1054|Sinine (tume)
+1055|Sinine (hele)

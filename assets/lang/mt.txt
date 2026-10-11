@@ -1052,3 +1052,5 @@
 1051|Server tal-web: mixgħul, port {}
 1052|Server tal-web: mitfi
 1053|Server tal-web: żball
+1054|Blu (skur)
+1055|Blu (ċar)

@@ -1052,3 +1052,5 @@
 1051|Webserver: tændt, port {}
 1052|Webserver: slukket
 1053|Webserver: fejl
+1054|Blå (mørk)
+1055|Blå (lys)

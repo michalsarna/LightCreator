@@ -1052,3 +1052,5 @@
 1051|Spletni strežnik: vklopljen, vrata {}
 1052|Spletni strežnik: izklopljen
 1053|Spletni strežnik: napaka
+1054|Modra (temna)
+1055|Modra (svetla)

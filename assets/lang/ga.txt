@@ -1052,3 +1052,5 @@
 1051|Freastalaí gréasáin: ar siúl, port {}
 1052|Freastalaí gréasáin: múchta
 1053|Freastalaí gréasáin: earráid
+1054|Gorm (dorcha)
+1055|Gorm (éadrom)

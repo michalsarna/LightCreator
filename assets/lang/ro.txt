@@ -1052,3 +1052,5 @@
 1051|Server web: pornit, port {}
 1052|Server web: oprit
 1053|Server web: eroare
+1054|Albastru (închis)
+1055|Albastru (deschis)

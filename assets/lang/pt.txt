@@ -1052,3 +1052,5 @@
 1051|Servidor web: ligado, porta {}
 1052|Servidor web: desligado
 1053|Servidor web: erro
+1054|Azul (escuro)
+1055|Azul (claro)

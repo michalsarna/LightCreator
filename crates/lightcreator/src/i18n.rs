@@ -1345,6 +1345,9 @@ const TABLE: &[[&str; 7]] = &[
     ["Web server: on, port {}", "Serwer WWW: włączony, port {}", "Webserver: an, Port {}", "Server web: attivo, porta {}", "Verkkopalvelin: päällä, portti {}", "网络服务器：已开启，端口 {}", "वेब सर्वर: चालू, पोर्ट {}"],
     ["Web server: off", "Serwer WWW: wyłączony", "Webserver: aus", "Server web: spento", "Verkkopalvelin: pois", "网络服务器：已关闭", "वेब सर्वर: बंद"],
     ["Web server: error", "Serwer WWW: błąd", "Webserver: Fehler", "Server web: errore", "Verkkopalvelin: virhe", "网络服务器：错误", "वेब सर्वर: त्रुटि"],
+    // ---- theme names: blue ----
+    ["Blue (dark)", "niebieski (ciemny)", "Blau (dunkel)", "Blu (scuro)", "Sininen (tumma)", "蓝色 (深色)", "नीला (गहरा)"],
+    ["Blue (light)", "niebieski (jasny)", "Blau (hell)", "Blu (chiaro)", "Sininen (vaalea)", "蓝色 (浅色)", "नीला (हल्का)"],
 ];
 #[cfg(test)]
 mod tests {

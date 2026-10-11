@@ -11,10 +11,12 @@ pub enum Scheme {
     LightDark,
     MediumLight,
     Light,
+    BlueDark,
+    BlueLight,
 }
 
 impl Scheme {
-    pub const ALL: [Scheme; 4] = [Scheme::Dark, Scheme::LightDark, Scheme::MediumLight, Scheme::Light];
+    pub const ALL: [Scheme; 6] = [Scheme::Dark, Scheme::LightDark, Scheme::MediumLight, Scheme::Light, Scheme::BlueDark, Scheme::BlueLight];
 
     /// English label (translated through `i18n::tr`).
     pub fn label(self) -> &'static str {
@@ -23,6 +25,8 @@ impl Scheme {
             Scheme::LightDark => "Light Dark",
             Scheme::MediumLight => "Medium Light",
             Scheme::Light => "Light",
+            Scheme::BlueDark => "Blue (dark)",
+            Scheme::BlueLight => "Blue (light)",
         }
     }
     pub fn id(self) -> &'static str {
@@ -31,13 +35,15 @@ impl Scheme {
             Scheme::LightDark => "light-dark",
             Scheme::MediumLight => "medium-light",
             Scheme::Light => "light",
+            Scheme::BlueDark => "blue-dark",
+            Scheme::BlueLight => "blue-light",
         }
     }
     pub fn from_id(s: &str) -> Option<Scheme> {
         Scheme::ALL.into_iter().find(|x| x.id() == s)
     }
     pub fn is_dark(self) -> bool {
-        matches!(self, Scheme::Dark | Scheme::LightDark)
+        matches!(self, Scheme::Dark | Scheme::LightDark | Scheme::BlueDark)
     }
     fn index(self) -> u8 {
         Scheme::ALL.iter().position(|x| *x == self).unwrap_or(3) as u8
@@ -49,6 +55,8 @@ impl Scheme {
             Scheme::LightDark => LIGHT_DARK,
             Scheme::MediumLight => MEDIUM_LIGHT,
             Scheme::Light => LIGHT,
+            Scheme::BlueDark => tinted(DARK, BLUE, false),
+            Scheme::BlueLight => tinted(LIGHT, BLUE, true),
         }
     }
 }
@@ -161,6 +169,8 @@ fn tinted(base: Palette, hue: Hue, light: bool) -> Palette {
         input: shift(base.input, k / 2.0),
     }
 }
+
+const BLUE: Hue = Hue { tint: [0.25, 0.45, 0.95], accent: rgb(0x4a, 0x8f, 0xf0) };
 
 static CURRENT: AtomicU8 = AtomicU8::new(3);
 static PALETTES: OnceLock<Vec<Palette>> = OnceLock::new();

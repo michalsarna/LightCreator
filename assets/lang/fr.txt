@@ -1052,3 +1052,5 @@
 1051|Serveur web : actif, port {}
 1052|Serveur web : éteint
 1053|Serveur web : erreur
+1054|Bleu (sombre)
+1055|Bleu (clair)

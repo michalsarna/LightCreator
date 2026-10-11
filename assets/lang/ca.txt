@@ -1052,3 +1052,5 @@
 1051|Servidor web: actiu, port {}
 1052|Servidor web: apagat
 1053|Servidor web: error
+1054|Blau (fosc)
+1055|Blau (clar)

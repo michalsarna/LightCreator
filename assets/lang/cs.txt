@@ -1052,3 +1052,5 @@
 1051|Webový server: zapnut, port {}
 1052|Webový server: vypnut
 1053|Webový server: chyba
+1054|Modrý (tmavý)
+1055|Modrý (světlý)

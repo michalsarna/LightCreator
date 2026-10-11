@@ -1052,3 +1052,5 @@
 1051	Web server: on, port {}
 1052	Web server: off
 1053	Web server: error
+1054	Blue (dark)
+1055	Blue (light)

@@ -1052,3 +1052,5 @@
 1051|Webbserver: på, port {}
 1052|Webbserver: av
 1053|Webbserver: fel
+1054|Blå (mörk)
+1055|Blå (ljus)

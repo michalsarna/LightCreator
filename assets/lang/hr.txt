@@ -1052,3 +1052,5 @@
 1051|Web poslužitelj: uključen, port {}
 1052|Web poslužitelj: isključen
 1053|Web poslužitelj: greška
+1054|Plava (tamna)
+1055|Plava (svijetla)

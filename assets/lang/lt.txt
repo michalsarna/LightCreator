@@ -1052,3 +1052,5 @@
 1051|Žiniatinklio serveris: įjungtas, prievadas {}
 1052|Žiniatinklio serveris: išjungtas
 1053|Žiniatinklio serveris: klaida
+1054|Mėlyna (tamsi)
+1055|Mėlyna (šviesi)

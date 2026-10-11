@@ -1052,3 +1052,5 @@
 1051|Webserver: aan, poort {}
 1052|Webserver: uit
 1053|Webserver: fout
+1054|Blauw (donker)
+1055|Blauw (licht)

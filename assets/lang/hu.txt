@@ -1052,3 +1052,5 @@
 1051|Webszerver: be, port {}
 1052|Webszerver: ki
 1053|Webszerver: hiba
+1054|Kék (sötét)
+1055|Kék (világos)
