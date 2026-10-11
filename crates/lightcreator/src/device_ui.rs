@@ -1484,16 +1484,18 @@ impl App {
                 crate::icons::paint(ui, egui::Rect::from_center_size(rect.center(), egui::vec2(27.0, 27.0)), name, ink);
                 resp.on_hover_text(tip).clicked()
             };
+            let jog_tip = |a: &'static str, b: &'static str| if b.is_empty() { tr(a).to_string() } else { format!("{} + {}", tr(a), tr(b)) };
             let centre = |ui: &mut egui::Ui, total: f32| ui.add_space(((ui.available_width() - total) / 2.0).max(0.0));
             // While a job runs the machine must not be moved by hand: only pause, resume and stop stay available.
             ui.add_enabled_ui(!running, |ui| ui.horizontal(|ui| {
             centre(ui, 3.0 * size.x + 2.0 * 4.0);
             egui::Grid::new("jog").spacing([4.0, 4.0]).show(ui, |ui| {
-                ui.allocate_exact_size(size, egui::Sense::hover());
-                if icon(ui, "arrow-up", tr("Up").to_string(), None) {
-                    act = self.jog_action(0.0, -s);
+                // The four diagonals move both axes by one step at once.
+                for (name, a, b, dx, dy) in [("arrow-up-left", "Up", "Left", -s, -s), ("arrow-up", "Up", "", 0.0, -s), ("arrow-up-right", "Up", "Right", s, -s)] {
+                    if icon(ui, name, jog_tip(a, b), None) {
+                        act = self.jog_action(dx, dy);
+                    }
                 }
-                ui.allocate_exact_size(size, egui::Sense::hover());
                 ui.end_row();
                 if icon(ui, "arrow-left", tr("Left").to_string(), None) {
                     act = self.jog_action(-s, 0.0);
@@ -1505,9 +1507,10 @@ impl App {
                     act = self.jog_action(s, 0.0);
                 }
                 ui.end_row();
-                ui.allocate_exact_size(size, egui::Sense::hover());
-                if icon(ui, "arrow-down", tr("Down").to_string(), None) {
-                    act = self.jog_action(0.0, s);
+                for (name, a, b, dx, dy) in [("arrow-down-left", "Down", "Left", -s, s), ("arrow-down", "Down", "", 0.0, s), ("arrow-down-right", "Down", "Right", s, s)] {
+                    if icon(ui, name, jog_tip(a, b), None) {
+                        act = self.jog_action(dx, dy);
+                    }
                 }
                 ui.end_row();
             });
@@ -1750,6 +1753,23 @@ impl App {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn diagonal_jogs_move_both_axes_and_have_icons() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.connected = false;
+        for (dx, dy) in [(-5.0, -5.0), (5.0, -5.0), (-5.0, 5.0), (5.0, 5.0)] {
+            let Some(Action::Lines(l)) = a.jog_action(dx, dy) else { panic!("a jog") };
+            // The design's Y runs down the screen and the default zero is at the front: the machine's Y is flipped.
+            let (x, y) = (format!("X{}", if dx < 0.0 { "-5" } else { "5" }), format!("Y{}", if dy < 0.0 { "5" } else { "-5" }));
+            assert!(l[0].contains(&x) && l[0].contains(&y), "{dx},{dy}: {}", l[0]);
+        }
+        let names = crate::icons::all_names();
+        for n in ["arrow-up-left", "arrow-up-right", "arrow-down-left", "arrow-down-right"] {
+            assert!(names.contains(&n), "{n}");
+        }
+    }
 
     fn app() -> App {
         let ctx = egui::Context::default();
