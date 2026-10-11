@@ -8,7 +8,7 @@ use std::fmt::Write;
 /// Paths of one layer as the laser would trace them (hatching and rings included, images excluded).
 pub fn layer_paths(doc: &Document, li: usize) -> Vec<Polyline> {
     let layer = &doc.layers[li];
-    let polys: Vec<Polyline> = doc.shapes.iter().filter(|s| s.layer == li && !s.is_image()).flat_map(|s| s.polys()).collect();
+    let polys: Vec<Polyline> = doc.shapes.iter().filter(|s| s.layer == li && !s.is_image()).flat_map(|s| s.polys_tol(doc.device.gcode.flatten_tolerance.clamp(0.001, 5.0))).collect();
     let mut out = vec![];
     if matches!(layer.mode, LayerMode::Fill | LayerMode::FillAndLine) {
         out.extend(fill_lines(&polys, layer.interval, layer.angle, layer.bidirectional).into_iter().map(|(a, b)| Polyline::new(vec![a, b], false)));
@@ -22,12 +22,9 @@ pub fn layer_paths(doc: &Document, li: usize) -> Vec<Polyline> {
     out
 }
 
-fn out_y(dev: &Device, y: f64) -> f64 {
-    let y = y.clamp(0.0, dev.bed_h);
-    match dev.origin {
-        Origin::FrontLeft => dev.bed_h - y,
-        Origin::BackLeft => y,
-    }
+/// A design point as machine coordinates.
+fn out_xy(dev: &Device, q: &Pt) -> (f64, f64) {
+    dev.to_machine(*q)
 }
 
 /// Layers that have something to output.
@@ -57,7 +54,10 @@ pub fn hpgl(doc: &Document) -> String {
             if p.pts.len() < 2 {
                 continue;
             }
-            let pt = |q: &Pt| format!("{},{}", u(q.x.clamp(0.0, dev.bed_w)), u(out_y(dev, q.y)));
+            let pt = |q: &Pt| {
+                let (x, y) = out_xy(dev, q);
+                format!("{},{}", u(x), u(y))
+            };
             let _ = writeln!(s, "PU{};", pt(&p.pts[0]));
             let mut pd: Vec<String> = p.pts[1..].iter().map(pt).collect();
             if p.closed {
@@ -107,7 +107,8 @@ pub fn dxf(doc: &Document) -> String {
             }
             let _ = write!(s, "0\nPOLYLINE\n8\n{}\n66\n1\n70\n{}\n", name, if p.closed { 1 } else { 0 });
             for q in &p.pts {
-                let _ = write!(s, "0\nVERTEX\n8\n{}\n10\n{:.4}\n20\n{:.4}\n", name, q.x.clamp(0.0, dev.bed_w), out_y(dev, q.y));
+                let (x, y) = out_xy(dev, q);
+                let _ = write!(s, "0\nVERTEX\n8\n{}\n10\n{:.4}\n20\n{:.4}\n", name, x, y);
             }
             let _ = write!(s, "0\nSEQEND\n8\n{}\n", name);
         }

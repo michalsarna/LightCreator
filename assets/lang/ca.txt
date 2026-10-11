@@ -664,3 +664,315 @@
 663|Nova etiqueta
 664|Afegeix o elimina les etiquetes per a les capes d'un material
 665|Afegeix
+666|General
+667|Maquinari
+668|G-code
+669|Davant dreta
+670|Darrere dreta
+671|Inverteix els eixos
+672|Orientació del panell
+673|Nativa
+674|Girada a l'esquerra
+675|Girada a la dreta
+676|Marges
+677|Límits propis
+678|Límits de programari
+679|Franges a les vores de l'àrea de treball que la màquina no pot usar (pinces, marc); no s'hi pot col·locar ni moure res
+680|El capçal és a la vora de l'àrea permesa.
+681|Comprovació abans de la feina
+682|Continua igualment
+683|Corregiu primer els errors: amb ells no s'envia, emmarca ni exporta res.
+684|La capa {} grava amb potència 0 %.
+685|La capa {} té objectes però cap trajectòria (per exemple, línies obertes en una capa de farcit).
+686|Selecciona els objectes
+687|El marc és fora dels límits de programari.
+688|El marc és fora de l'àrea utilitzable (més enllà de l'àrea de treball o en un marge).
+689|La trajectòria de la capa {} surt de l'àrea permesa (overscan o moviments en buit).
+690|{} objecte(s) són fora dels límits de programari.
+691|{} objecte(s) són fora de l'àrea utilitzable (més enllà de l'àrea de treball o en un marge).
+692|Activa el mode làser ($32=1)
+693|El mode làser ($32) està desactivat.
+694|El controlador informa d'un problema
+695|El valor S màxim del controlador ($30) és {}, el perfil usa {}.
+696|Això escriu $32=1 a la configuració del controlador. Continuar?
+697|Usa el valor del controlador
+698|Amb valors diferents la potència al G-code no coincidirà amb els percentatges establerts.
+699|Amb el mode làser desactivat GRBL es comporta com un controlador d'eix: el làser pot disparar-se en moviments ràpids i la potència no segueix la velocitat.
+700|Velocitat màxima de tall
+701|Acceleració
+702|0 = sense límit. Les capes més ràpides reben un avís abans de la feina; l'estimació del temps usa com a màxim aquesta velocitat.
+703|0 = desconeguda. Amb un valor l'estimació del temps inclou les rampes d'arrencada i parada i el tauler de la capa suggereix un overscan.
+704|Suggerit: {} (la distància de frenada a aquesta velocitat i amb l'acceleració de la màquina)
+705|La capa {} és més ràpida que la velocitat màxima de tall de la màquina.
+706|Automàtic (del controlador)
+707|Dialecte de G-code
+708|Smoothieware: S s'escriu com a fracció de la potència plena (poseu S màx. a 1). La transmissió funciona com la de GRBL; res d'això s'ha provat en maquinari real.
+709|S'usa quan el dialecte és automàtic; un dialecte GRBL triat decideix ell mateix entre M3 i M4.
+710|Avançat
+711|Un camp de G-code a la pàgina Avançat conté un caràcter de control o és massa llarg.
+712|Ordres de l'air assist
+713|Final de la feina
+714|Apagat
+715|Encès
+716|Substitueix l'M2 final. El làser sempre s'apaga i el capçal es porta a l'origen (si està activat) abans. Buit = integrat.
+717|Substitueix les línies d'unitats, mode absolut, pla i mode làser. Buit = integrat.
+718|Restaura els valors per defecte
+719|Inici de la feina
+720|Un G-code erroni pot disparar el làser, fer topar el capçal amb els finals de cursa o malmetre el material. Proveu amb el làser apagat o a la potència mínima.
+721|Mode de potència
+722|Com el dispositiu
+723|Constant (M3)
+724|Dinàmica (M4)
+725|M4 (dinàmica) baixa la potència en els racons i en accelerar; M3 (constant) la manté. El G-code canvia entre ells quan les capes difereixen.
+726|Tolerància dels arcs
+727|Arcs (G2 / G3)
+728|Arcs: GRBL sol suportar G2 / G3, Marlin només si es compila amb ARC_SUPPORT, i Smoothieware té el seu propi comportament. Alguns controladors ignoren els arcs o els executen malament: proveu amb el làser apagat. Els arcs es fan servir per a contorns i anells, no per a línies d'escaneig ni imatges.
+729|Tolerància de les corbes
+730|Quant pot allunyar-se una corba aplanada (Bézier, text) de la corba real.
+731|Escriu les corbes com a arcs on encaixin
+732|El recompte omple la memòria intermèdia del controlador i és ràpid. El simple envia una línia i espera el seu ok: lent, però per a microprogramari que respon malament.
+733|Continua esperant
+734|Cap resposta del controlador des de fa {} s mentre s'executa una feina (estat: {}).
+735|No s'ha represa ni enviat res. La màquina pot ser lenta o la línia s'ha perdut; mireu la consola i trieu.
+736|Atura la feina
+737|Transmissió
+738|El controlador no respon
+739|Compta el buffer
+740|Simple (espera cada ok)
+741|Un nom de port, o l'identificador USB de fabricant i producte (VID:PID, hexadecimal): s'usa el port que té aquests identificadors.
+742|Vincula a aquest port
+743|Dispositiu USB vinculat
+744|Torna a connectar automàticament
+745|Tornant a connectar…
+746|Port o identificador USB
+747|Reconnexió
+748|Recorda els identificadors USB del port triat: si el nom canvia, el port es troba amb ells.
+749|Desvincula
+750|Quan l'enllaç cau tot sol, torna-ho a provar cada pocs segons fins que premeu Desconnecta.
+751|cap
+752|Després de connectar
+753|Esborra una alarma
+754|Esborrar l'alarma omet el homing: useu-ho només quan se sap que el capçal és en un lloc segur.
+755|Fes el homing de la màquina
+756|Homing {}
+757|Fa el homing només de l'eix {} ($H{})
+758|Les {} configuracions del fitxer ja són al controlador.
+759|Primer feu una còpia de la configuració. Per continuar, escriviu {}:
+760|Fes una còpia a un fitxer…
+761|No es pot fer servir el fitxer: {}
+762|Primer connecteu-vos a la màquina (pestanya Dispositiu).
+763|Connectat a: {}
+764|Configuració de fàbrica ($RST=$)…
+765|Marlin guarda la configuració en ordres pròpies (M92, M203, M204, ...): aquesta pàgina només mostra el que informa `M503`.
+766|Encara no s'ha llegit res.
+767|Llegeix la configuració ($$)
+768|Llegeix la configuració (M503)
+769|Esteu segur que voleu escriure $RST=$ al controlador?
+770|Restaura des d'un fitxer…
+771|Restaura la configuració de fàbrica
+772|Restaura la configuració des d'un fitxer
+773|Configuració desada a {}
+774|El controlador ja les té totes.
+775|Aquesta configuració és al controlador, no al perfil. Canvieu-ne una cada cop i apunteu el valor anterior: un valor erroni pot fer que la màquina es mogui una distància equivocada o dispari el làser.
+776|Aquesta configuració del fitxer difereix del controlador. No s'escriu res fins que premeu Escriu-ho tot.
+777|Això escriu $RST=$: tota la configuració del controlador torna als valors per defecte del microprogramari. Passos, recorreguts, velocitats, mode làser i homing canviaran.
+778|Escriu
+779|Voleu escriure ${} = {} al controlador? Ara és {}. Canvieu una configuració cada cop i apunteu el valor antic.
+780|Escriu una configuració
+781|Escriu-ho tot
+782|Voleu escriure {} configuracions al controlador? La màquina es comportarà com diu el fitxer.
+783|{} de {} configuracions difereixen després d'escriure:
+784|Valor
+785|Unitat
+786|Típic
+787|no és un número
+788|fora de rang
+789|Microprogramari ($$)
+790|0 = una de típica ({} W)
+791|0 = l'habitual ({} nm)
+792|Un feix feble i constant per ajustar l'alçada (mode de focus). 0 = sense mode de focus.
+793|Afegeix un capçal làser
+794|Punt del feix
+795|Potència de focus
+796|Velocitat del marc
+797|Capçal {}
+798|Potència òptica
+799|Freqüència PWM
+800|Freqüència PWM màxima
+801|Desplaçament del punter
+802|Amplada de l'impuls
+803|Interval d'amplada de l'impuls
+804|Elimina aquest capçal làser
+805|Mida del feix sobre el material (0 = desconeguda). Un interval de farcit menor fa que les línies veïnes se solapin.
+806|Els valors PWM es guarden al perfil i s'ofereixen com a variables per a macros; no s'envien al controlador.
+807|El número amb què el controlador coneix aquest capçal; s'escriu com a T<n> quan una capa usa un altre capçal. Ha de coincidir amb l'assignació del controlador.
+808|Número d'eina (T)
+809|Dos capçals làser tenen el mateix número d'eina.
+810|Longitud d'ona
+811|On és el punt vermell del punter respecte al feix (x a la dreta, y cap avall). L'usa l'alineació amb el punter de la pestanya Dispositiu.
+812|p. ex. Díode blau
+813|Capçal làser
+814|L'interval és menor que el punt del feix ({}): les línies veïnes se solapen.
+815|FEIX DE FOCUS ENCÈS: premeu per apagar
+816|Focus
+817|Encén un feix feble i constant per ajustar l'alçada del focus
+818|Feix de focus encès
+819|Feix de focus apagat
+820|Alinea amb el punter
+821|Prova en sec amb el punter
+822|Prova en sec amb el punter: {} línies, làser apagat
+823|Res a executar: no hi ha formes a les capes de sortida
+824|Recorre el camí de la feina desplaçat pel desplaçament del punter amb el làser apagat, per veure on aniria.
+825|Només en aquesta sessió: el marc i la prova en sec es desplacen enrere pel desplaçament del punt vermell del punter, de manera que el punt cau on cauria el feix. Les feines i el moviment manual mai es desplacen.
+826|Hook {}: {}
+827|Hooks
+828|G-code propi escrit a la feina: quan comença una capa, abans i després de cada objecte, quan acaba una capa. Amb hooks d'objecte una capa es grava objecte per objecte (i una vegada per passada).
+829|Variables: {}
+830|Inici de la capa
+831|Final de la capa
+832|Inici de l'objecte
+833|Final de l'objecte
+834|Una macro és el teu propi G-code: pot disparar el làser o moure el capçal. Executa-la només quan sàpigues què fa. Aquesta pregunta es fa una vegada per sessió.
+835|Afegeix una macro
+836|Elimina aquesta macro
+837|Nom de la macro
+838|Macro {}
+839|Macro {}: {}
+840|Macro {}: {} línies
+841|Macros
+842|Scripts amb nom que executes a mà des de la pestanya Dispositiu. Una ordre per línia; comentaris després de ; o entre parèntesis; @include(nom) insereix una altra macro. Es poden usar les variables de la màquina.
+843|Executa la macro {}
+844|Executa aquesta macro a la màquina
+845|Afegeix una zona
+846|Cercle
+847|Elimina aquesta zona
+848|Parts de l'àrea de treball on la màquina no ha d'entrar mai (una pinça, un fixador). Un moviment que toca una zona activa, també amb el làser apagat, atura Inicia, Marc i l'exportació. El programa no rodeja les zones.
+849|El marc toca la zona prohibida «{}».
+850|La trajectòria de la capa {} toca la zona prohibida «{}».
+851|Nom de la zona
+852|Zona {}
+853|Zones prohibides
+854|Mostra les zones prohibides
+855|Quant es mou Z a cada passada següent (negatiu és cap avall quan amunt és +Z). 0 = Z es queda.
+856|Z de la màquina a què va el capçal abans de la primera passada. 0 juntament amb 0 per passada = Z no es mou.
+857|Les altures Z de la capa {} són fora del recorregut de l'eix Z.
+858|La màquina té un eix Z
+859|Recorregut
+860|Amunt és la direcció Z negativa
+861|Z
+862|Eix Z
+863|Altura Z
+864|Z per passada
+865|Hi ha un accessori rotatiu connectat
+866|A gira {} graus per cada mil·límetre de la superfície.
+867|Totes les capes que es graven han de ser rotatives, o cap. El disseny no pot ser més alt que la circumferència de la peça.
+868|Primer demana una confirmació. Només canvia l'eix Y del controlador.
+869|Grava aquesta capa al rotatiu
+870|Mandril
+871|Circumferència
+872|GRBL 1.1 té tres eixos: l'eix A no està disponible, s'usa Y.
+873|Tipus
+874|Les capes marcades com a rotatives es graven a l'accessori. El model és senzill: un mandril gira pel diàmetre de la peça, els corrons mouen la superfície com la pròpia; una màquina real necessita proves.
+875|Microtrams del motor per a una volta completa del que mou (el mandril o un corró).
+876|Microtrams per volta
+877|Substitueix Y (el motor Y fa girar la peça)
+878|Diàmetre del corró
+879|Corrons
+880|Rotatiu
+881|Les capes rotatives i planes no poden estar en una mateixa feina: marqueu totes les capes que es graven com a rotatives, o cap.
+882|Rotació al G-code
+883|El controlador necessita {} passos per mm a l'eix Y ($101).
+884|El disseny de la capa {} és més alt que la circumferència de la peça.
+885|La circumferència de la peça: el disseny no pot ser més alt.
+886|Veritable eix A (graus)
+887|Diàmetre de la peça
+888|Escriu $101 al controlador…
+889|Com una caixa o un cilindre sobre la taula: els moviments per sobre o per sota de l'interval són lliures.
+890|Només a aquestes altures (Z)
+891|Un perfil en blanc
+892|Una còpia d'aquest perfil
+893|Afegeix un dispositiu
+894|Copiat a {}
+895|Exporta…
+896|S'ha importat el perfil {}
+897|Importa…
+898|Llegeix un perfil d'un fitxer
+899|Desa aquest perfil en un fitxer
+900|Perfil desat a {}
+901|Punts de partida: màquines generals amb números típics. Comproveu-los amb la documentació de la vostra màquina.
+902|Làser de díode GRBL 400 × 400
+903|Làser CO2 GRBL 300 × 200
+904|Conversió K40 (GRBL) 300 × 200
+905|Làser de díode Marlin 400 × 400
+906|Un làser de díode GRBL 1.1 en una taula de 400 × 400 mm, zero davant a l'esquerra, potència dinàmica.
+907|Un làser CO2 GRBL 1.1 en una taula de 300 × 200 mm, zero davant a l'esquerra.
+908|Un làser CO2 K40 amb placa GRBL: 300 × 200 mm, zero a la cantonada del darrere a l'esquerra (a dalt a l'esquerra).
+909|Un làser de díode amb microprogramari Marlin (funció làser, S 0–255) en una taula de 400 × 400 mm.
+910|Enrere
+911|Connexió (opcional)
+912|Acaba
+913|Si la màquina és connectada ara, es poden llegir del controlador l'àrea de treball i la velocitat.
+914|El mode làser ($32) i el valor S màxim ($30) del controlador no s'han llegit: es comproven en connectar.
+915|Nom i unitats
+916|Següent
+917|No hi ha marges ni límits de programari: tot el recorregut dels eixos és l'àrea de treball. Definiu-los a la pàgina Maquinari si hi molesta una pinça o un marc.
+918|Encara no hi ha port ni amfitrió: trieu-lo a la configuració del dispositiu abans de connectar.
+919|Res d'això s'ha provat a la vostra màquina: feu una primera prova amb el làser apagat o a la potència mínima.
+920|Trieu el punt de partida més proper. Tot es pot canviar després.
+921|Configura a mà…
+922|Configureu la màquina ({}/{})
+923|Omet
+924|Omet aquests passos i obre la configuració del dispositiu
+925|Resum
+926|S'ha afegit el dispositiu. Premeu Continua per començar.
+927|La configuració s'ha llegit del controlador.
+928|Quina màquina teniu?
+929|Val la pena comprovar
+930|no definit
+931|Afegeix un comptador
+932|Es compta des del temps en què les feines s'executen de debò (de l'inici al final o a Atura), no des d'estimacions. El total no es pot posar a zero.
+933|Nom del comptador (un tub, una lent, una corretja)
+934|Comptador {}
+935|Elimina aquest comptador
+936|Cal manteniment: {}
+937|Recorda després de
+938|Posa el comptador a zero
+939|Voleu tornar a començar el comptador «{}» de zero?
+940|Temps de treball total: {}
+941|Manteniment
+942|De la plantilla
+943|Les notes són més llargues de {} caràcters i no es poden desar.
+944|Les vostres notes (Markdown)
+945|p. ex. Configuracions que han funcionat: air assist 20 %, focus 12 mm
+946|Notes
+947|Activa
+948|Afegeix una càmera
+949|Adreça
+950|Auto
+951|Nom de la càmera
+952|Número de la càmera
+953|Càmera d'aquest ordinador
+954|Càmera {}
+955|Càmeres que vigilen la màquina. L'activa dona la imatge en directe. Una càmera només es pot activar amb una adreça vàlida.
+956|Coeficients de la distorsió de la lent (radial k1–k3, tangencial p1, p2) per a coordenades mesurades des del centre en unitats del costat més llarg de la imatge. Tots 0 = sense correcció. S'introdueixen a mà: no hi ha calibratge automàtic.
+957|Elimina aquesta càmera
+958|Per a una càmera d'aquest ordinador: demana el format YUYV sense comprimir si el sistema ho permet.
+959|Format
+960|Correcció de la lent
+961|Imatge en directe de la màquina: un flux MJPEG o l'adreça d'una instantània JPEG (http o https). RTSP no és compatible.
+962|Reducció de soroll
+963|No és una adreça http o https.
+964|Imatge
+965|Prefereix YUYV
+966|Activa o desactiva aquesta càmera
+967|L'adreça no és vàlida: cal una adreça http o https
+968|Balanç de blancs
+969|Afegeix un punt
+970|Alinea pels punts
+971|Elimina aquest punt
+972|Ajusta la imatge als punts (mínims quadrats) i mou els cantons en conseqüència.
+973|No hi ha prou punts, o estan en una recta.
+974|Parelles d'un punt de la imatge (píxels) i el lloc que té a l'àrea de treball (mm). Almenys 3, es recomanen 4; fixen l'alineació, perspectiva inclosa.
+975|Punts dels cantons actuals
+976|Punts de referència
+977|Substitueix els punts pels quatre cantons de la imatge i el lloc on són ara.

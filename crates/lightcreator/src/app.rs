@@ -57,7 +57,7 @@ impl Tool {
 }
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.0.11";
+pub const APP_VERSION: &str = "v0.1.2";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
@@ -157,12 +157,22 @@ pub struct App {
     pub show_close_dlg: bool,
     /// A question waiting for Yes / No, drawn by the application so it is in the chosen language.
     pub confirm: Option<crate::session_ui::Confirm>,
+    /// The issues found before a job was sent, framed or exported.
+    pub check_dlg: Option<crate::check_ui::CheckDlg>,
+    /// What the controller reported after connecting that does not look right.
+    pub fw_warn: Option<lc_core::controller::FwCheck>,
+    /// A running job waits for an answer while the machine stands still: seconds and machine state.
+    pub stall: Option<(u64, String)>,
+    /// The box the frame command traces.
+    pub frame_bounds: Option<lc_core::Rect>,
     pub allow_close: bool,
     pub show_options: bool,
     /// Look for a newer release on GitHub when the program starts.
     pub check_updates: bool,
     pub update: crate::update_ui::UpdateState,
     pub show_grid: bool,
+    /// Draw the no-go zones on the work area (kept between sessions).
+    pub zones_visible: bool,
     pub snap: bool,
     pub grid: f64,
     pub preview_on: bool,
@@ -289,8 +299,40 @@ pub struct App {
     // laser
     pub link: LaserLink,
     pub ports: Vec<String>,
+    /// The serial ports with their USB ids, refreshed together with `ports`.
+    pub port_info: Vec<crate::laser::PortInfo>,
+    /// The user asked for a connection (and has not asked to end it): a lost link may be re-opened by itself.
+    pub want_link: bool,
+    pub reconnect_at: Option<std::time::Instant>,
+    /// When the actions the device runs after connecting are due (clear the alarm, home).
+    pub connect_actions_at: Option<std::time::Instant>,
+    /// The firmware reported that it was built with single-axis homing (`$HX`, `$HY`).
+    pub single_axis_homing: bool,
+    /// The Firmware ($$) page.
+    pub fw: crate::firmware_ui::FwUi,
+    /// The window with the templates for a new device is open.
+    pub show_templates: bool,
+    /// The first-run setup is open at this step.
+    pub wizard: Option<usize>,
+    /// The wizard read the controller.
+    pub wizard_read: bool,
+    pub wizard_read_done: bool,
+    /// The user left the first-run setup: do not start it again this session.
+    pub wizard_skipped: bool,
+    /// The focus beam is on.
+    pub focus_on: bool,
+    /// The warning about macros has been answered in this session.
+    pub macros_ok: bool,
+    /// When the running job started (for the work time of the machine).
+    pub job_started: Option<std::time::Instant>,
+    /// The counters (by index) that have been announced as due in this session.
+    pub maintenance_notified: std::collections::HashSet<usize>,
+    /// For this session only: aim with the pointer dot (the frame and the dry run move back by its offset).
+    pub pointer_align: bool,
     pub connected: bool,
     pub machine: (String, f64, f64),
+    /// The Z position the controller last reported (NaN when it does not report one).
+    pub machine_z: f64,
     pub progress: (usize, usize),
     pub console: Vec<ConsoleLine>,
     pub side_tab: SideTab,
@@ -310,7 +352,8 @@ impl App {
 
     /// Build the app without a window: used by `new` and by the screenshot tests.
     pub fn build(ctx: &egui::Context, storage: Option<&dyn eframe::Storage>, native_menu: bool) -> Self {
-        let ports = laser::list_ports();
+        let port_info = laser::list_port_info();
+        let ports: Vec<String> = port_info.iter().map(|p| p.name.clone()).collect();
         let saved = |k: &str| storage.and_then(|st| st.get_string(k));
         let lang = saved("lang").and_then(|c| Lang::from_code(&c)).unwrap_or(Lang::En);
         let scheme = saved("scheme").and_then(|c| Scheme::from_id(&c)).unwrap_or(Scheme::LightDark);
@@ -351,11 +394,16 @@ impl App {
             toast: None,
             show_close_dlg: false,
             confirm: None,
+            check_dlg: None,
+            fw_warn: None,
+            stall: None,
+            frame_bounds: None,
             allow_close: false,
             show_options: false,
             check_updates: saved("check_updates").map(|v| v != "0").unwrap_or(true),
             update: Default::default(),
             show_grid,
+            zones_visible: saved("zones_visible").map(|v| v != "0").unwrap_or(true),
             snap: false,
             grid,
             preview_on: false,
@@ -459,8 +507,25 @@ impl App {
             native_menu: native_menu.then(|| crate::native_menu::NativeMenu::install(ctx)),
             link: LaserLink::spawn(ctx.clone()),
             ports,
+            port_info,
+            want_link: false,
+            reconnect_at: None,
+            connect_actions_at: None,
+            single_axis_homing: false,
+            fw: Default::default(),
+            show_templates: false,
+            wizard: None,
+            wizard_read: false,
+            wizard_read_done: false,
+            wizard_skipped: false,
+            focus_on: false,
+            macros_ok: false,
+            job_started: None,
+            maintenance_notified: Default::default(),
+            pointer_align: false,
             connected: false,
             machine: (tr("Disconnected").into(), 0.0, 0.0),
+            machine_z: f64::NAN,
             progress: (0, 0),
             console: vec![],
             side_tab: SideTab::Properties,
@@ -564,7 +629,7 @@ impl App {
         let Some(b) = self.sel_bounds() else { return };
         // A single object aligns to the bed, several align to each other.
         let target = if self.sel.len() == 1 {
-            Rect { min: Pt::new(0.0, 0.0), max: Pt::new(self.doc.device.bed_w, self.doc.device.bed_h) }
+            Rect { min: Pt::new(0.0, 0.0), max: { let (w, h) = self.doc.device.work_size(); Pt::new(w, h) } }
         } else {
             b
         };
@@ -628,7 +693,8 @@ impl App {
         if let Some(b) = self.sel_bounds() {
             self.checkpoint();
             let (c, d) = (b.center(), &self.doc.device);
-            let t = Xf::translate(d.bed_w / 2.0 - c.x, d.bed_h / 2.0 - c.y);
+            let (bw, bh) = d.work_size();
+            let t = Xf::translate(bw / 2.0 - c.x, bh / 2.0 - c.y);
             self.transform_selection(t);
         }
     }
@@ -793,6 +859,12 @@ impl App {
         }
     }
     pub fn export_gcode(&mut self) {
+        if self.guard(crate::check_ui::Pending::ExportGcode, None) {
+            self.export_gcode_now();
+        }
+    }
+    pub fn export_gcode_now(&mut self) {
+        self.stamp_job();
         if let Some(p) = rfd::FileDialog::new().add_filter("G-code", &["gcode", "nc"]).set_file_name("job.gcode").save_file() {
             let job = gcode::generate(&self.doc);
             self.status = match std::fs::write(&p, job.gcode) {
@@ -805,6 +877,11 @@ impl App {
     // ---------- laser ----------
     /// Export the vector job as HPGL (.plt) or DXF for file-fed controllers (Ruida / Trocen software).
     pub fn export_cam(&mut self) {
+        if self.guard(crate::check_ui::Pending::ExportCam, None) {
+            self.export_cam_now();
+        }
+    }
+    pub fn export_cam_now(&mut self) {
         let Some(p) = rfd::FileDialog::new().add_filter("HPGL plot", &["plt"]).add_filter("DXF", &["dxf"]).set_file_name("job.plt").save_file() else { return };
         let is_dxf = p.extension().is_some_and(|e| e.eq_ignore_ascii_case("dxf"));
         let data = if is_dxf { lc_core::export::dxf(&self.doc) } else { lc_core::export::hpgl(&self.doc) };
@@ -825,6 +902,25 @@ impl App {
             self.status = tr("Connect to a laser first (Laser panel)").into();
             return;
         }
+        if self.guard(crate::check_ui::Pending::Start, None) {
+            self.send_job_now();
+        }
+    }
+    /// Put the name of the file and the moment (UTC) where hooks can print them.
+    pub fn stamp_job(&mut self) {
+        let secs = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0);
+        let ymd = crate::backup_ui::ymd(secs);
+        self.doc.job_info = lc_core::JobInfo {
+            name: self.path.as_ref().and_then(|p| p.file_stem()).map(|s| s.to_string_lossy().into_owned()).unwrap_or_default(),
+            date: format!("{}-{}-{}", &ymd[..4], &ymd[4..6], &ymd[6..]),
+            time: format!("{:02}:{:02}", secs / 3600 % 24, secs / 60 % 60),
+        };
+    }
+
+    pub fn send_job_now(&mut self) {
+        self.focus_off();
+        self.stamp_job();
+        // The job is written for the design as it is: the pointer alignment never moves it.
         let job = gcode::generate(&self.doc);
         if job.moves.is_empty() {
             self.status = tr("Nothing to burn: no shapes on output layers").into();
@@ -872,7 +968,28 @@ impl App {
             self.status = tr("Connect to a laser first (Laser panel)").into();
             return;
         }
-        let g = gcode::frame_gcode(b, &self.doc.device, self.doc.device.frame_power, 40.0);
+        let b = self.aim(b);
+        if self.guard(crate::check_ui::Pending::Frame, Some(b)) {
+            self.frame_bounds = Some(b);
+            self.frame_now();
+        }
+    }
+
+    /// Where the head has to go for the pointer dot to land on `r`: with the pointer alignment on, the box is moved
+    /// back by the offset of the dot from the beam. Jobs and ordinary jogging are never moved.
+    pub fn aim(&self, r: lc_core::Rect) -> lc_core::Rect {
+        let h = self.doc.device.head(0);
+        if !self.pointer_align || !h.has_pointer_offset() {
+            return r;
+        }
+        let (dx, dy) = (-h.pointer_dx, -h.pointer_dy);
+        lc_core::Rect { min: Pt::new(r.min.x + dx, r.min.y + dy), max: Pt::new(r.max.x + dx, r.max.y + dy) }
+    }
+    /// Trace the box that was checked (or that is being framed again after the window of issues).
+    pub fn frame_now(&mut self) {
+        let Some(b) = self.frame_bounds else { return };
+        let h = self.doc.device.head(0);
+        let g = gcode::frame_gcode(b, &self.doc.device, h.frame_power, h.frame_speed);
         for l in laser::clean_gcode(&g) {
             self.link.send(Cmd::Line(l));
         }
@@ -884,7 +1001,40 @@ impl App {
         }
     }
 
+    /// Count the time a job really runs: from its start until the machine is idle again after the last line, or until
+    /// it is stopped or the link is lost.
+    pub fn job_clock_tick(&mut self) {
+        let running = self.progress.1 > 0 && self.progress.0 < self.progress.1;
+        if running && self.job_started.is_none() {
+            self.job_started = Some(std::time::Instant::now());
+        }
+        let Some(t0) = self.job_started else { return };
+        let finished = self.progress.1 > 0 && self.progress.0 >= self.progress.1 && self.machine.0.starts_with("Idle");
+        let stopped = self.progress.1 == 0 || !self.connected;
+        if finished || stopped {
+            self.job_started = None;
+            self.maintenance_add(t0.elapsed().as_secs_f64());
+        }
+    }
+
+    /// A job has run for `secs`: the machine's total and its counters grow, and what has become due is announced.
+    pub fn maintenance_add(&mut self, secs: f64) {
+        self.doc.device.maintenance.add_run(secs);
+        if let Some(p) = self.profiles.get_mut(self.active) {
+            p.maintenance = self.doc.device.maintenance.clone();
+        }
+        let due: Vec<(usize, String)> = self.doc.device.maintenance.counters.iter().enumerate().filter(|(_, c)| c.is_due()).map(|(i, c)| (i, c.name.clone())).collect();
+        for (i, name) in due {
+            if self.maintenance_notified.insert(i) {
+                let msg = trf("Maintenance due: {}", &[&name]);
+                self.status = msg.clone();
+                self.toast(msg);
+            }
+        }
+    }
+
     fn poll_laser(&mut self) {
+        self.job_clock_tick();
         for e in self.link.poll() {
             match e {
                 Evt::Log(s) => self.push_console(ConsoleLine::info(s)),
@@ -895,14 +1045,34 @@ impl App {
                     self.push_console(l)
                 }
                 Evt::Connected(c) => {
+                    let lost = self.connected && !c;
                     self.connected = c;
+                    // A link that dropped on its own (not by the user's Disconnect) comes back by itself when asked to.
+                    if lost && self.want_link && self.doc.device.connection.auto_reconnect {
+                        self.reconnect_at = Some(std::time::Instant::now() + std::time::Duration::from_secs(3));
+                    }
+                    if c {
+                        self.reconnect_at = None;
+                    }
                     self.read_on_connected(c);
                     if !c {
                         self.machine.0 = tr("Disconnected").into();
+                        self.fw_warn = None;
+                        self.stall = None;
+                        self.focus_on = false;
                     }
                 }
-                Evt::Status { state, x, y } => self.machine = (state, x, y),
-                Evt::Progress { done, total } => self.progress = (done, total),
+                Evt::Status { state, x, y, z } => {
+                    self.machine = (state, x, y);
+                    self.machine_z = z;
+                }
+                Evt::Progress { done, total } => {
+                    self.progress = (done, total);
+                    if done >= total {
+                        self.stall = None;
+                    }
+                }
+                Evt::Stalled { secs, state } => self.stall = Some((secs, state)),
             }
         }
     }
@@ -1032,6 +1202,7 @@ impl App {
             Act::ToggleSnap => Some(self.snap),
             Act::TogglePreview => Some(self.preview_on),
             Act::ToggleOverlay => Some(self.overlay.is_some() && self.overlay_visible),
+            Act::ToggleZones => Some(self.zones_visible),
             Act::ToggleAutoFit => Some(self.view.auto_fit),
             Act::SetLang(l) => Some(self.lang == l),
             Act::SetScheme(s) => Some(self.scheme == s),
@@ -1048,6 +1219,7 @@ impl App {
             Act::StartJob => self.can_start() && !self.job_running(),
             Act::CenterEachOther => self.sel.len() >= 2,
             Act::ToggleOverlay => self.overlay.is_some(),
+            Act::ToggleZones => !self.doc.device.zones.is_empty(),
             _ => true,
         }
     }
@@ -1136,19 +1308,20 @@ impl App {
                 }
             }
             Act::CameraView => {
-                if self.doc.device.camera_url.trim().is_empty() {
+                if self.doc.device.stream_url().is_none() {
                     self.status = tr("Set a camera URL in the device settings first.").to_string();
                 } else {
                     self.show_stream = true;
                 }
             }
             Act::MaterialLibrary => {
-                self.mat_laser = Some(self.doc.device.laser);
+                self.mat_laser = Some(self.doc.device.laser());
                 self.mat_add_mode = false;
                 self.show_materials = true;
             }
             Act::GridArray => self.show_array = true,
             Act::ToggleGrid => self.show_grid = !self.show_grid,
+            Act::ToggleZones => self.zones_visible = !self.zones_visible,
             Act::ToggleSnap => self.snap = !self.snap,
             Act::TogglePreview => self.preview_on = !self.preview_on,
             Act::FitBed => {
@@ -1321,7 +1494,7 @@ impl App {
             if window_toggle(ui, &tr("Preview…"), &tr("Open the preview window"), self.show_preview, true) {
                 self.show_preview = !self.show_preview;
             }
-            let has_camera = !self.doc.device.camera_url.trim().is_empty();
+            let has_camera = self.doc.device.stream_url().is_some();
             if has_camera && window_toggle(ui, &tr("Camera view"), &tr("Show the live camera picture of this machine"), self.show_stream, true) {
                 self.show_stream = !self.show_stream;
             }
@@ -1336,7 +1509,7 @@ impl App {
                     let stop = egui::Button::new(RichText::new(format!("   {}   ", tr("STOP").to_uppercase())).color(Color32::WHITE).strong())
                         .fill(Color32::from_rgb(0xc0, 0x30, 0x30));
                     if ui.add(stop).on_hover_text(tr("Abort the running job")).clicked() {
-                        self.link.send(Cmd::Abort);
+                        self.abort_job();
                     }
                 } else {
                     let go = egui::Button::new(RichText::new(format!("   {}   ", tr("Start").to_uppercase())).color(Color32::WHITE).strong()).fill(theme::accent());
@@ -1349,6 +1522,7 @@ impl App {
                 if ui.add_enabled(self.connected && !running, egui::Button::new(tr("Frame"))).on_hover_text(tip).clicked() {
                     self.frame();
                 }
+                self.focus_button(ui, false);
                 if ui.button(tr("Save G-code")).clicked() {
                     self.export_gcode();
                 }
@@ -1711,6 +1885,12 @@ impl App {
         self.online_clipart_window(ctx);
         self.round_window(ctx);
         self.materials_window(ctx);
+        self.check_window(ctx);
+        self.fw_window(ctx);
+        self.stall_window(ctx);
+        self.fw_windows(ctx);
+        self.template_window(ctx);
+        self.wizard_window(ctx);
         self.material_edit_window(ctx);
         self.labels_window(ctx);
         self.merge_dialog(ctx);
@@ -1730,6 +1910,14 @@ pub fn fmt_time(s: f64) -> String {
 }
 
 impl eframe::App for App {
+    fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
+        // The focus beam must not stay on when the program goes away; give the link thread a moment to send the line.
+        if self.focus_on {
+            self.focus_off();
+            std::thread::sleep(std::time::Duration::from_millis(200));
+        }
+    }
+
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
         for (k, v) in self.settings_pairs() {
             storage.set_string(k, v);
@@ -1815,6 +2003,7 @@ impl App {
             v.push(("grid_prefs", j));
         }
         v.push(("grid_main_on", if self.show_grid { "1" } else { "0" }.into()));
+        v.push(("zones_visible", if self.zones_visible { "1" } else { "0" }.into()));
         v.push(("grid_main_mm", self.grid.to_string()));
         v.push(("mat_list_h", self.mat_list_h.to_string()));
         if let Ok(j) = serde_json::to_string(&self.layer_labels) {
@@ -1856,6 +2045,7 @@ impl App {
         }
         self.update_space(space);
         self.read_tick(&ctx);
+        self.reconnect_tick(&ctx);
         self.overlay_poll_camera(&ctx);
         self.shortcuts(&ctx);
 

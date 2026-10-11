@@ -320,7 +320,7 @@ pub struct EditCx<'a> {
 }
 
 /// Everything about one material: name, thickness, category, tags, note and the settings of each layer.
-pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, salt: &str, cx: &mut EditCx) {
+pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, scope: &str, cx: &mut EditCx) {
     m.freeze_id();
     ui.horizontal_wrapped(|ui| {
         ui.add(egui::TextEdit::singleline(&mut m.name).desired_width((ui.available_width() - 130.0).clamp(80.0, 240.0)));
@@ -330,7 +330,7 @@ pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, salt: &str, cx: &mut
     ui.horizontal_wrapped(|ui| {
         ui.label(tr("Category"));
         let own = m.category();
-        egui::ComboBox::from_id_salt((salt, "category")).width(120.0).selected_text(cat_label(&own)).show_ui(ui, |ui| {
+        egui::ComboBox::from_id_salt((scope, "category")).width(120.0).selected_text(cat_label(&own)).show_ui(ui, |ui| {
             for c in &cx.cats {
                 if ui.selectable_label(own.eq_ignore_ascii_case(c), cat_label(c)).clicked() {
                     m.category = c.clone();
@@ -344,7 +344,7 @@ pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, salt: &str, cx: &mut
         }
     });
     // The tags are typed as one line; the text is kept between frames so that a comma can be typed.
-    let tags_id = ui.make_persistent_id((salt, "tags", m.key(), m.laser as u8));
+    let tags_id = ui.make_persistent_id((scope, "tags", m.key(), m.laser as u8));
     let mut text: String = ui.data_mut(|d| d.get_temp::<String>(tags_id)).unwrap_or_else(|| m.tags.iter().map(|t| tr_tag(t)).collect::<Vec<_>>().join(", "));
     ui.label(tr("Tags"));
     {
@@ -381,16 +381,16 @@ pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, salt: &str, cx: &mut
         let lname = cx.layers.get(ml.index).map(|l| l.name.clone()).unwrap_or_default();
         let head = format!("{} ({})", ml.label, trf("Layer {}", &[&lname]));
         let swatch_colour = layer_colour(ml);
-        let state = egui::collapsing_header::CollapsingState::load_with_default_open(ui.ctx(), ui.make_persistent_id((salt, "layer", li)), true);
+        let state = egui::collapsing_header::CollapsingState::load_with_default_open(ui.ctx(), ui.make_persistent_id((scope, "layer", li)), true);
         state.show_header(ui, |ui| {
             swatch(ui, swatch_colour);
             ui.label(RichText::new(head).strong());
         })
         .body(|ui| {
-            layer_spec_ui(ui, (salt, 0, li), &mut ml.spec, cx.units, cx.su);
+            layer_spec_ui(ui, (scope, 0, li), &mut ml.spec, cx.units, cx.su);
             ui.horizontal(|ui| {
                 ui.label(tr("Colour"));
-                colour_picker(ui, (salt, "colour", li), &mut ml.spec.colour, ml.index);
+                colour_picker(ui, (scope, "colour", li), &mut ml.spec.colour, ml.index);
             });
             ui.horizontal(|ui| {
                 ui.label(tr("Label"));
@@ -398,7 +398,7 @@ pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, salt: &str, cx: &mut
                 if !options.iter().any(|o| o.eq_ignore_ascii_case(&ml.label)) {
                     options.push(ml.label.clone());
                 }
-                egui::ComboBox::from_id_salt((salt, "label", li)).width(150.0).selected_text(tr_tag(&ml.label)).show_ui(ui, |ui| {
+                egui::ComboBox::from_id_salt((scope, "label", li)).width(150.0).selected_text(tr_tag(&ml.label)).show_ui(ui, |ui| {
                     for o in options {
                         if ui.selectable_label(o.eq_ignore_ascii_case(&ml.label), tr_tag(&o)).clicked() {
                             ml.label = o;
@@ -422,7 +422,7 @@ pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, salt: &str, cx: &mut
         if !free.contains(&pick) {
             pick = free.first().copied().unwrap_or(0);
         }
-        egui::ComboBox::from_id_salt((salt, "add_layer")).selected_text(cx.layers[pick].name.clone()).show_ui(ui, |ui| {
+        egui::ComboBox::from_id_salt((scope, "add_layer")).selected_text(cx.layers[pick].name.clone()).show_ui(ui, |ui| {
             for f in &free {
                 ui.selectable_value(&mut pick, *f, cx.layers[*f].name.clone());
             }
@@ -581,7 +581,7 @@ impl App {
     /// materials for its laser type with the device's own copies over them.
     pub fn view_of(&self, d: &lc_core::Device) -> Vec<Material> {
         if d.materials_inherit {
-            let main: Vec<Material> = self.main_library().into_iter().filter(|m| m.laser == d.laser).collect();
+            let main: Vec<Material> = self.main_library().into_iter().filter(|m| m.laser == d.laser()).collect();
             effective_library(&main, &d.materials)
         } else {
             d.materials.clone()
@@ -625,7 +625,7 @@ impl App {
         if self.doc.device.materials_seeded {
             return;
         }
-        let laser = self.doc.device.laser;
+        let laser = self.doc.device.laser();
         let main = self.main_library();
         add_missing(&mut self.doc.device.materials, &main, laser);
         self.doc.device.materials_seeded = true;
@@ -642,7 +642,7 @@ impl App {
         self.materialize(&mut dev);
         self.doc.device = dev;
         // Only what suits the laser of this device belongs in its library.
-        let laser = self.doc.device.laser;
+        let laser = self.doc.device.laser();
         let incoming: Vec<Material> = incoming.into_iter().filter(|m| m.laser == laser).collect();
         let plan = plan_merge(&self.doc.device.materials, &incoming);
         let added = plan.added.len();
@@ -758,7 +758,7 @@ impl App {
         ui.horizontal(|ui| {
             ui.add(egui::TextEdit::singleline(&mut self.mat_dev_filter).hint_text(tr("Search")).desired_width(120.0));
             if ui.button(tr("Add from library…")).on_hover_text(tr("Copy materials from the built-in library into this device")).clicked() {
-                self.mat_laser = Some(self.doc.device.laser);
+                self.mat_laser = Some(self.doc.device.laser());
                 self.mat_add_mode = true;
                 self.show_materials = true;
             }
@@ -910,7 +910,7 @@ impl App {
             used.push(self.active_layer);
         }
         let layers: Vec<(usize, &Layer)> = used.iter().map(|i| (*i, &self.doc.layers[*i])).collect();
-        Material::from_layers(name, self.doc.device.laser, &layers)
+        Material::from_layers(name, self.doc.device.laser(), &layers)
     }
 
     // ---------------------------------------------------------------------------------------------------------
@@ -929,7 +929,7 @@ impl App {
         let mut export = false;
         let mut import = false;
         let (units, _su) = (self.doc.device.units, self.doc.device.speed_unit);
-        let device_laser = self.doc.device.laser;
+        let device_laser = self.doc.device.laser();
         let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 10, right: 10, top: 6, bottom: 8 });
         egui::Window::new("material_library").title_bar(false).frame(frame).default_size([640.0, 540.0]).resizable(true).show(ctx, |ui| {
             crate::window_ui::mini_title(ui, &tr("Material library"), &mut open, |_| {});
@@ -1248,7 +1248,7 @@ impl App {
         };
         mats += merge(self, MergeTarget::Global, tr("Material library").to_string(), &file.global);
         for d in file.devices {
-            let found = self.profiles.iter().position(|p| p.name.trim().eq_ignore_ascii_case(d.name.trim()) && p.laser == d.laser);
+            let found = self.profiles.iter().position(|p| p.name.trim().eq_ignore_ascii_case(d.name.trim()) && p.laser() == d.laser());
             match found {
                 Some(i) => mats += merge(self, MergeTarget::Profile(i), d.name.clone(), &d.materials),
                 None => {

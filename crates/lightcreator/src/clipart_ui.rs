@@ -119,7 +119,7 @@ fn light_tile(ui: &mut egui::Ui, size: f32) -> (egui::Rect, egui::Response) {
 impl App {
     /// Place a picture on the active layer at the middle of the work area.
     pub fn place_clip(&mut self, svg: &[u8], label: &str) {
-        let (bw, bh) = (self.doc.device.bed_w, self.doc.device.bed_h);
+        let (bw, bh) = self.doc.device.work_size();
         self.checkpoint();
         match lc_core::clipart::import_clip(svg, &mut self.doc, self.active_layer, self.clip.size_mm, Pt::new(bw / 2.0, bh / 2.0)) {
             Ok(ids) => {
@@ -664,7 +664,7 @@ mod tests {
         assert!(!a.sel.is_empty());
         assert!(a.doc.shapes.iter().all(|s| s.layer == 5));
         let b = a.doc.bounds_of(&a.sel).unwrap();
-        assert!(b.center().dist(Pt::new(a.doc.device.bed_w / 2.0, a.doc.device.bed_h / 2.0)) < 1e-6);
+        assert!(b.center().dist(Pt::new(a.doc.device.work_size().0 / 2.0, a.doc.device.work_size().1 / 2.0)) < 1e-6);
         a.do_undo();
         assert!(a.doc.shapes.is_empty(), "one undo removes the whole picture");
         // A broken picture changes nothing and leaves no undo step behind.

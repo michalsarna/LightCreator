@@ -664,3 +664,315 @@
 663	New label
 664	Add or remove the labels offered for the layers of a material
 665	Add
+666	General
+667	Hardware
+668	G-code
+669	Front-right
+670	Back-right
+671	Invert axes
+672	Panel orientation
+673	Native
+674	Rotated left
+675	Rotated right
+676	Margins
+677	Own limits
+678	Software limits
+679	Strips along the edges of the work area that the machine cannot use (clamps, frame); nothing may be placed or moved there
+680	The head is at the edge of the allowed area.
+681	Check before the job
+682	Continue anyway
+683	Fix the errors first: nothing is sent, framed or exported with them.
+684	Layer {} burns at 0 % power.
+685	Layer {} has objects but no toolpath (open lines on a fill layer, for example).
+686	Select objects
+687	The frame is outside the software limits.
+688	The frame is outside the usable area (beyond the work area or in a margin).
+689	The toolpath of layer {} leaves the allowed area (overscan or travel moves).
+690	{} object(s) are outside the software limits.
+691	{} object(s) are outside the usable area (beyond the work area or in a margin).
+692	Enable laser mode ($32=1)
+693	Laser mode ($32) is off.
+694	The controller reports a problem
+695	The controller's maximum S value ($30) is {}, the profile uses {}.
+696	This writes $32=1 to the controller's settings. Continue?
+697	Use the value from the controller
+698	With different values the power in the G-code will not match the percentages you set.
+699	With laser mode off GRBL behaves like a spindle controller: the laser may fire during rapid moves and the power does not follow the speed.
+700	Max cutting speed
+701	Acceleration
+702	0 = no limit. Layers faster than this get a warning before the job; the time estimate uses at most this speed.
+703	0 = not known. With a value the time estimate includes the start and stop ramps and the layer panel suggests an overscan.
+704	Suggested: {} (the braking distance at this speed and the machine's acceleration)
+705	Layer {} is faster than the maximum cutting speed of the machine.
+706	Automatic (from the controller)
+707	G-code dialect
+708	Smoothieware: S is written as a fraction of the full power (set S-value max to 1). Streaming works like GRBL's; none of this has been tried on real hardware.
+709	Used when the dialect is automatic; a chosen GRBL dialect decides between M3 and M4 itself.
+710	Advanced
+711	A G-code field on the Advanced page has a control character or is too long.
+712	Air assist commands
+713	End of the job
+714	Off
+715	On
+716	Replaces the closing M2. The laser is always switched off and the head sent home (when set) before it. Empty = built in.
+717	Replaces the units, absolute mode, plane and laser mode lines. Empty = built in.
+718	Restore defaults
+719	Start of the job
+720	Wrong G-code can fire the laser, drive the head into the end stops or ruin the material. Test with the laser off or at the lowest power.
+721	Power mode
+722	Like the device
+723	Constant (M3)
+724	Dynamic (M4)
+725	M4 (dynamic) lowers the power in corners and while accelerating; M3 (constant) keeps it. The G-code switches between them when layers differ.
+726	Arc tolerance
+727	Arcs (G2 / G3)
+728	Arcs: GRBL usually handles G2 / G3, Marlin only when built with ARC_SUPPORT, and Smoothieware has its own behaviour. Some controllers ignore arcs or run them wrongly: test with the laser off. Arcs are used for outlines and rings, not for scan lines or images.
+729	Curve tolerance
+730	How far a flattened curve (Bézier, text) may stray from the true curve.
+731	Write curves as arcs where they fit
+732	Counting fills the controller's buffer and is fast. Simple sends one line and waits for its ok: slow, but for firmware that answers wrongly.
+733	Keep waiting
+734	No answer from the controller for {} s while a job is running (state: {}).
+735	Nothing was resumed or sent. The machine may just be slow, or the line was lost; look at the console, then choose.
+736	Stop the job
+737	Streaming
+738	The controller is not answering
+739	Count the buffer
+740	Simple (wait for each ok)
+741	A port name, or the USB vendor and product id (VID:PID, hexadecimal): the port that has these ids is used.
+742	Bind to this port
+743	Bound USB device
+744	Connect again automatically
+745	Connecting again…
+746	Port or USB id
+747	Reconnect
+748	Remember the USB ids of the chosen port: the port is found again by them when its name changes.
+749	Unbind
+750	When the link drops by itself, try again every few seconds until you press Disconnect.
+751	none
+752	After connecting
+753	Clear an alarm
+754	Clearing the alarm skips homing: use it only when the head is known to stand in a safe place.
+755	Home the machine
+756	Home {}
+757	Homes the {} axis only ($H{})
+758	All {} settings of the file are in the controller now.
+759	Back the settings up first. To go on, type {}:
+760	Back up to a file…
+761	Cannot use the file: {}
+762	Connect to the machine first (Device tab).
+763	Connected to: {}
+764	Factory settings ($RST=$)…
+765	Marlin keeps its settings in its own commands (M92, M203, M204, ...): this page only shows what `M503` reports.
+766	Nothing read yet.
+767	Read the settings ($$)
+768	Read the settings (M503)
+769	Really write $RST=$ to the controller?
+770	Restore from a file…
+771	Restore the factory settings
+772	Restore the settings from a file
+773	Saved the settings to {}
+774	The controller already has all of them.
+775	These settings live in the controller, not in the profile. Change one at a time and write down the previous value: a wrong value can make the machine move the wrong distance or fire the laser.
+776	These settings of the file differ from the controller. Nothing is written until you press Write all.
+777	This writes $RST=$: every setting of the controller goes back to the firmware's defaults. Step counts, travel, speeds, laser mode and homing will all change.
+778	Write
+779	Write ${} = {} to the controller? It is now {}. Change one setting at a time and note the old value.
+780	Write a setting
+781	Write all
+782	Write {} settings to the controller? The machine will behave as the file says.
+783	{} of {} settings differ after writing:
+784	Value
+785	Unit
+786	Typical
+787	not a number
+788	out of range
+789	Firmware ($$)
+790	0 = a typical one ({} W)
+791	0 = the usual one ({} nm)
+792	A weak steady beam to set the height by (focus mode). 0 = no focus mode.
+793	Add a laser head
+794	Beam spot
+795	Focus power
+796	Frame speed
+797	Head {}
+798	Optical power
+799	PWM frequency
+800	PWM maximum frequency
+801	Pointer offset
+802	Pulse width
+803	Pulse width range
+804	Remove this laser head
+805	Size of the beam on the material (0 = not known). A fill interval below it makes neighbouring lines overlap.
+806	The PWM values are kept with the profile and offered as variables for macros; they are not sent to the controller.
+807	The number the controller knows this head by; it is written as T<n> when a layer uses another head. It must match the mapping in the controller.
+808	Tool number (T)
+809	Two laser heads have the same tool number.
+810	Wavelength
+811	Where the red pointer dot is relative to the beam (x right, y down). Used by the pointer alignment in the Device tab.
+812	e.g. Blue diode
+813	Laser head
+814	The interval is smaller than the beam spot ({}): neighbouring lines overlap.
+815	FOCUS BEAM ON: press to switch off
+816	Focus
+817	Switch on a weak steady beam to set the focus height by
+818	Focus beam on
+819	Focus beam off
+820	Align to the pointer
+821	Dry run with the pointer
+822	Dry run with the pointer: {} lines, laser off
+823	Nothing to run: no shapes on output layers
+824	Runs the path of the job shifted by the pointer offset with the laser off, to see where it would go.
+825	This session only: the frame and the dry run move back by the offset of the red pointer dot, so the dot lands where the beam would. Jobs and jogging are never moved.
+826	Hook {}: {}
+827	Hooks
+828	Own G-code written into the job: when a layer starts, before and after each object, when a layer ends. With object hooks a layer is burnt object by object (and once per pass).
+829	Variables: {}
+830	Layer start
+831	Layer end
+832	Object start
+833	Object end
+834	A macro is your own G-code: it can fire the laser or move the head. Run it only when you know what it does. This question is asked once per session.
+835	Add a macro
+836	Delete this macro
+837	Macro name
+838	Macro {}
+839	Macro {}: {}
+840	Macro {}: {} lines
+841	Macros
+842	Named scripts you run by hand from the Device tab. One command per line; comments after ; or in brackets; @include(name) inserts another macro. Variables of the machine can be used.
+843	Run the macro {}
+844	Runs this macro on the machine
+845	Add a zone
+846	Circle
+847	Delete this zone
+848	Parts of the work area the machine must never enter (a clamp, a fixture). A move that touches an enabled zone, also one with the laser off, stops Start, Frame and export. The program does not route around zones.
+849	The frame touches the no-go zone "{}".
+850	The toolpath of layer {} touches the no-go zone "{}".
+851	Zone name
+852	Zone {}
+853	No-go zones
+854	Show no-go zones
+855	How far Z moves with each further pass (negative goes down on a machine where up is +Z). 0 = Z stays.
+856	Machine Z the head goes to before the first pass. 0 together with 0 per pass = Z is not moved.
+857	The Z heights of layer {} are outside the travel of the Z axis.
+858	The machine has a Z axis
+859	Travel
+860	Up is the negative Z direction
+861	Z
+862	Z axis
+863	Z height
+864	Z per pass
+865	A rotary attachment is connected
+866	A turns {} degrees for each millimetre on the surface.
+867	All burning layers must be rotary, or none. The design may not be higher than the way round the workpiece.
+868	Asks for a confirmation first. Only the Y axis of the controller changes.
+869	Burn this layer on the rotary
+870	Chuck
+871	Circumference
+872	GRBL 1.1 has three axes: the A axis is not available, Y is used.
+873	Kind
+874	Layers marked as rotary are burnt on the attachment. The model is simple: a chuck turns by the workpiece diameter, rollers move the surface like their own; a real machine needs testing.
+875	Microsteps of the motor for one full turn of what it drives (the chuck, or one roller).
+876	Microsteps per turn
+877	Replaces Y (the Y motor turns the work)
+878	Roller diameter
+879	Rollers
+880	Rotary
+881	Rotary layers and flat layers cannot be in one job: mark all the burning layers as rotary, or none.
+882	Rotation in the G-code
+883	The controller needs {} steps per mm on the Y axis ($101).
+884	The design on layer {} is higher than the way round the workpiece.
+885	The way round the workpiece: the design may not be higher.
+886	True A axis (degrees)
+887	Workpiece diameter
+888	Write $101 to the controller…
+889	Like a box or a cylinder standing on the table: moves above or below the range are free.
+890	Only at these heights (Z)
+891	A blank profile
+892	A copy of this profile
+893	Add a device
+894	Copied to {}
+895	Export…
+896	Imported the profile {}
+897	Import…
+898	Read a profile from a file
+899	Save this profile to a file
+900	Saved the profile to {}
+901	Starting points: general machines with typical numbers. Check them against your machine's documentation.
+902	GRBL diode laser 400 × 400
+903	GRBL CO2 laser 300 × 200
+904	K40 conversion (GRBL) 300 × 200
+905	Marlin diode laser 400 × 400
+906	A GRBL 1.1 diode laser on a 400 × 400 mm bed, front-left zero, dynamic power.
+907	A GRBL 1.1 CO2 laser on a 300 × 200 mm bed, front-left zero.
+908	A K40 CO2 laser with a GRBL controller board: 300 × 200 mm, zero at the back-left (top-left) corner.
+909	A Marlin firmware diode laser (laser feature, S 0–255) on a 400 × 400 mm bed.
+910	Back
+911	Connection (optional)
+912	Finish
+913	If the machine is connected now, its work area and speed can be read from the controller.
+914	Laser mode ($32) and the maximum S value ($30) of the controller were not read: they are checked when you connect.
+915	Name and units
+916	Next
+917	No margins or software limits are set: the whole axis range is the work area. Set them in the Hardware page if a clamp or a frame is in the way.
+918	No port or host is set yet: choose it in the device settings before connecting.
+919	Nothing here has been tried on your machine: run a first test with the laser off or at the lowest power.
+920	Pick the closest starting point. You can change everything later.
+921	Set up by hand…
+922	Set up your machine ({}/{})
+923	Skip
+924	Skip these steps and open the device settings
+925	Summary
+926	The device was added. Press Continue to start.
+927	The settings were read from the controller.
+928	What machine do you have?
+929	Worth checking
+930	not set
+931	Add a counter
+932	Counted from the time jobs really run (from start to the end or Stop), not from estimates. The total cannot be reset.
+933	Counter name (a tube, a lens, a belt)
+934	Counter {}
+935	Delete this counter
+936	Maintenance due: {}
+937	Remind after
+938	Reset the counter
+939	Start the counter "{}" again from zero?
+940	Total working time: {}
+941	Maintenance
+942	From the template
+943	The notes are longer than {} characters and cannot be saved.
+944	Your notes (Markdown)
+945	e.g. Settings that worked: air assist 20 %, focus 12 mm
+946	Notes
+947	Active
+948	Add a camera
+949	Address
+950	Auto
+951	Camera name
+952	Camera number
+953	Camera of this computer
+954	Camera {}
+955	Cameras that watch the machine. The active one gives the live picture. A camera can only be switched on when its address is valid.
+956	Coefficients of the lens distortion (radial k1–k3, tangential p1, p2) for coordinates measured from the centre in units of the longer side of the picture. All 0 = no correction. Entered by hand: there is no automatic calibration.
+957	Delete this camera
+958	For a camera of this computer: ask for the uncompressed YUYV format where the system allows it.
+959	Format
+960	Lens correction
+961	Live picture of the machine: an MJPEG stream or a JPEG snapshot address (http or https). RTSP is not supported.
+962	Noise reduction
+963	Not an http or https address.
+964	Picture
+965	Prefer YUYV
+966	Switch this camera on or off
+967	The address is not valid: an http or https address is needed
+968	White balance
+969	Add a point
+970	Align by the points
+971	Delete this point
+972	Fits the picture to the points (least squares) and moves the corners accordingly.
+973	Not enough points, or they lie on one line.
+974	Pairs of a point in the picture (pixels) and the place it has in the work area (mm). At least 3, 4 recommended; they fix the alignment, perspective included.
+975	Points from the current corners
+976	Reference points
+977	Replaces the points with the four corners of the picture and where they lie now.

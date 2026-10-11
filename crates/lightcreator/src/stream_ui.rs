@@ -51,7 +51,7 @@ impl App {
             self.stream = Some((url.to_string(), camera_stream::spawn(url.to_string(), ctx.clone())));
         }
         // The rotation is a device setting: a change shows up at once.
-        let rotation = self.doc.device.camera_rotation % 4;
+        let rotation = self.doc.device.camera_source().map_or(0, |c| c.rotation % 4);
         if self.stream_rot != rotation {
             self.stream_rot = rotation;
             self.stream_tex = None;
@@ -69,7 +69,8 @@ impl App {
             }
         }
         if let Some(f) = latest {
-            let (w, h, rgb) = rotate_rgb(&f.rgb, f.w, f.h, rotation);
+            let rgb = self.cam_process(f.rgb, f.w, f.h);
+            let (w, h, rgb) = rotate_rgb(&rgb, f.w, f.h, rotation);
             let img = egui::ColorImage::from_rgb([w as usize, h as usize], &rgb);
             match &mut self.stream_tex {
                 Some(t) if t.size() == [w as usize, h as usize] => t.set(img.clone(), egui::TextureOptions::LINEAR),
@@ -79,6 +80,15 @@ impl App {
                 self.overlay_set_image(ctx, img, &tr("Camera view"));
             }
         }
+    }
+
+    /// Apply the active camera's lens correction and picture adjustments to a frame (RGB bytes of `w × h`).
+    pub fn cam_process(&self, rgb: Vec<u8>, w: u32, h: u32) -> Vec<u8> {
+        let Some(cam) = self.doc.device.cameras.get(self.doc.device.active_camera) else { return rgb };
+        let (w, h) = (w as usize, h as usize);
+        let mut out = if cam.lens.is_none() { rgb } else { lc_core::camimg::undistort(&rgb, w, h, &cam.lens) };
+        lc_core::camimg::adjust(&mut out, w, h, &cam.image);
+        out
     }
 
     /// Picture and controls, shared by the three ways of showing the stream.
@@ -145,12 +155,12 @@ impl App {
             }
         }
         if !self.stream_err.is_empty() {
-            ui.label(RichText::new(trf("Stream error: {}", &[&self.stream_err.replace(self.doc.device.camera_url.trim(), "…")])).color(egui::Color32::from_rgb(0xc0, 0x30, 0x30)));
+            ui.label(RichText::new(trf("Stream error: {}", &[&self.stream_err.replace(self.doc.device.stream_url().unwrap_or("-"), "…")])).color(egui::Color32::from_rgb(0xc0, 0x30, 0x30)));
         }
     }
 
     pub fn stream_window(&mut self, ctx: &egui::Context) {
-        let url = self.doc.device.camera_url.trim().to_string();
+        let url = self.doc.device.stream_url().unwrap_or("").to_string();
         if !self.show_stream || url.is_empty() {
             if self.show_stream {
                 self.stream_closed();
@@ -249,7 +259,7 @@ mod tests {
     #[test]
     fn camera_tab_is_selected_again_after_the_view_was_switched_off_and_on() {
         let (mut a, ctx) = app_with_overlay();
-        a.doc.device.camera_url = "http://127.0.0.1:9/none.mjpg".into();
+        a.doc.device.cameras = vec![lc_core::CameraSource::url("Camera 1", "http://127.0.0.1:9/none.mjpg", 0)];
         a.stream_mode = StreamMode::Tab;
         a.show_stream = true;
         a.stream_window(&ctx);
@@ -267,7 +277,7 @@ mod tests {
     fn rotation_comes_from_the_device_and_resets_the_picture() {
         let (mut a, ctx) = app_with_overlay();
         a.stream_tex = Some(ctx.load_texture("t", egui::ColorImage::from_rgb([2, 1], &[0u8; 6]), egui::TextureOptions::LINEAR));
-        a.doc.device.camera_rotation = 1;
+        a.doc.device.cameras = vec![lc_core::CameraSource::url("Camera 1", "http://127.0.0.1:9/none.mjpg", 1)];
         a.stream_poll(&ctx, "http://127.0.0.1:9/none.mjpg");
         assert!(a.stream_tex.is_none(), "texture is rebuilt with the new rotation");
         assert_eq!(a.stream_rot, 1);

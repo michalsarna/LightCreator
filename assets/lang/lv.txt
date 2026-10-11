@@ -664,3 +664,315 @@
 663|Jauna etiķete
 664|Pievienot vai noņemt materiāla slāņiem piedāvātās etiķetes
 665|Pievienot
+666|Vispārīgi
+667|Aparatūra
+668|G-kods
+669|Priekšā labajā pusē
+670|Aizmugurē labajā pusē
+671|Apgriezt asis
+672|Paneļa orientācija
+673|Sākotnējā
+674|Pagriezta pa kreisi
+675|Pagriezta pa labi
+676|Malas
+677|Savi ierobežojumi
+678|Programmatūras ierobežojumi
+679|Joslas darba zonas malās, ko iekārta nevar izmantot (skavas, rāmis); tur nedrīkst novietot vai pārvietot neko
+680|Galviņa atrodas atļautās zonas malā.
+681|Pārbaude pirms darba
+682|Tomēr turpināt
+683|Vispirms izlabojiet kļūdas: ar tām nekas netiek sūtīts, ierāmēts vai eksportēts.
+684|Slānis {} dedzina ar 0 % jaudu.
+685|Slānim {} ir objekti, bet nav trajektorijas (piem., atvērtas līnijas aizpildes slānī).
+686|Atlasīt objektus
+687|Rāmis ir ārpus programmatūras ierobežojumiem.
+688|Rāmis ir ārpus izmantojamās zonas (ārpus darba zonas vai malā).
+689|Slāņa {} trajektorija iziet ārpus atļautās zonas (pārsniegums vai tukšgaitas).
+690|{} objekts/-i ir ārpus programmatūras ierobežojumiem.
+691|{} objekts/-i ir ārpus izmantojamās zonas (ārpus darba zonas vai malā).
+692|Ieslēgt lāzera režīmu ($32=1)
+693|Lāzera režīms ($32) ir izslēgts.
+694|Kontrolieris ziņo par problēmu
+695|Kontroliera maksimālā S vērtība ($30) ir {}, profils izmanto {}.
+696|Tas ieraksta $32=1 kontroliera iestatījumos. Turpināt?
+697|Izmantot kontroliera vērtību
+698|Ar atšķirīgām vērtībām jauda G-kodā neatbildīs iestatītajiem procentiem.
+699|Ar izslēgtu lāzera režīmu GRBL uzvedas kā vārpstas kontrolieris: lāzers var iedegties ātrajās kustībās, un jauda neseko ātrumam.
+700|Maks. griešanas ātrums
+701|Paātrinājums
+702|0 = bez ierobežojuma. Par šo ātrākiem slāņiem pirms darba tiek rādīts brīdinājums; laika aprēķins izmanto ne vairāk kā šo ātrumu.
+703|0 = nezināms. Ar vērtību laika aprēķins ietver starta un apstāšanās rampas, un slāņa panelis iesaka pārsniegumu.
+704|Ieteikts: {} (bremzēšanas ceļš šajā ātrumā un iekārtas paātrinājums)
+705|Slānis {} ir ātrāks par iekārtas maksimālo griešanas ātrumu.
+706|Automātiski (no kontroliera)
+707|G koda dialekts
+708|Smoothieware: S tiek rakstīts kā pilnas jaudas daļa (iestatiet S maks. uz 1). Straumēšana darbojas kā GRBL; nekas no šī nav izmēģināts uz īstas aparatūras.
+709|Izmanto, kad dialekts ir automātisks; izvēlētais GRBL dialekts pats izlemj starp M3 un M4.
+710|Papildu
+711|G koda lauks lapā Papildu satur vadības rakstzīmi vai ir pārāk garš.
+712|Gaisa palīdzības komandas
+713|Darba beigas
+714|Izslēgts
+715|Ieslēgts
+716|Aizstāj noslēdzošo M2. Lāzers pirms tam vienmēr tiek izslēgts un galviņa (ja iestatīts) nosūtīta uz sākumu. Tukšs = iebūvēts.
+717|Aizstāj vienību, absolūtā režīma, plaknes un lāzera režīma rindas. Tukšs = iebūvēts.
+718|Atjaunot noklusējumus
+719|Darba sākums
+720|Nepareizs G kods var iedegt lāzeru, ietriekt galviņu gala slēdžos vai sabojāt materiālu. Pārbaudiet ar izslēgtu lāzeru vai mazāko jaudu.
+721|Jaudas režīms
+722|Kā ierīcei
+723|Nemainīga (M3)
+724|Dinamiska (M4)
+725|M4 (dinamiska) samazina jaudu stūros un paātrinot; M3 (nemainīga) to saglabā. G kods pārslēdzas starp tiem, kad slāņi atšķiras.
+726|Loku pielaide
+727|Loki (G2 / G3)
+728|Loki: GRBL parasti atbalsta G2 / G3, Marlin tikai ar ARC_SUPPORT, un Smoothieware uzvedas pa savam. Daži kontrolieri ignorē lokus vai izpilda tos nepareizi: pārbaudiet ar izslēgtu lāzeru. Loki tiek izmantoti kontūrām un gredzeniem, nevis skenēšanas līnijām vai attēliem.
+729|Līkņu pielaide
+730|Cik daudz saplacināta līkne (Bézier, teksts) drīkst atšķirties no patiesās.
+731|Rakstīt līknes kā lokus, kur tie der
+732|Skaitīšana piepilda kontroliera buferi un ir ātra. Vienkāršais nosūta vienu rindu un gaida tās ok: lēns, bet programmaparatūrai, kas atbild nepareizi.
+733|Turpināt gaidīt
+734|Kontrolieris nav atbildējis {} s darba laikā (stāvoklis: {}).
+735|Nekas netika atsākts vai nosūtīts. Iekārta var būt vienkārši lēna vai rinda pazuda; apskatiet konsoli un izvēlieties.
+736|Apturēt darbu
+737|Straumēšana
+738|Kontrolieris neatbild
+739|Skaitīt buferi
+740|Vienkāršs (gaidīt katru ok)
+741|Porta nosaukums vai USB ražotāja un ražojuma ID (VID:PID, heksadecimāli): tiek izmantots ports ar šiem ID.
+742|Piesaistīt šim portam
+743|Piesaistīta USB ierīce
+744|Automātiski atkal savienoties
+745|Atkal savienojas…
+746|Ports vai USB ID
+747|Atkārtota savienošana
+748|Atcerēties izvēlētā porta USB ID: mainoties nosaukumam, ports tiek atrasts pēc tiem.
+749|Atsaistīt
+750|Kad savienojums pārtrūkst pats, mēģināt ik pēc dažām sekundēm, līdz nospiežat Atvienot.
+751|nav
+752|Pēc savienošanas
+753|Notīrīt trauksmi
+754|Trauksmes notīrīšana izlaiž bāzēšanu: lietojiet tikai tad, kad zināms, ka galviņa atrodas drošā vietā.
+755|Bāzēt iekārtu
+756|Bāzēt {}
+757|Bāzē tikai {} asi ($H{})
+758|Visi {} faila iestatījumi tagad ir kontrolierī.
+759|Vispirms izveidojiet iestatījumu rezerves kopiju. Lai turpinātu, ierakstiet {}:
+760|Rezerves kopija failā…
+761|Failu nevar izmantot: {}
+762|Vispirms savienojieties ar iekārtu (cilne Ierīce).
+763|Savienots ar: {}
+764|Rūpnīcas iestatījumi ($RST=$)…
+765|Marlin glabā iestatījumus savās komandās (M92, M203, M204, ...): šī lapa rāda tikai to, ko ziņo `M503`.
+766|Vēl nekas nav nolasīts.
+767|Nolasīt iestatījumus ($$)
+768|Nolasīt iestatījumus (M503)
+769|Vai tiešām ierakstīt $RST=$ kontrolierī?
+770|Atjaunot no faila…
+771|Atjaunot rūpnīcas iestatījumus
+772|Atjaunot iestatījumus no faila
+773|Iestatījumi saglabāti: {}
+774|Kontrolierim tie jau visi ir.
+775|Šie iestatījumi ir kontrolierī, nevis profilā. Mainiet tos pa vienam un pierakstiet iepriekšējo vērtību: nepareiza vērtība var likt iekārtai pārvietoties nepareizu attālumu vai iedegt lāzeru.
+776|Šie faila iestatījumi atšķiras no kontroliera. Nekas netiek rakstīts, kamēr nenospiežat Rakstīt visus.
+777|Tas ieraksta $RST=$: katrs kontroliera iestatījums atgriežas programmaparatūras noklusējumos. Soļi, gājiens, ātrumi, lāzera režīms un bāzēšana mainīsies.
+778|Rakstīt
+779|Vai ierakstīt ${} = {} kontrolierī? Tagad tas ir {}. Mainiet pa vienam iestatījumam un pierakstiet veco vērtību.
+780|Rakstīt iestatījumu
+781|Rakstīt visus
+782|Vai ierakstīt {} iestatījumus kontrolierī? Iekārta darbosies tā, kā teikts failā.
+783|Pēc rakstīšanas {} no {} iestatījumiem atšķiras:
+784|Vērtība
+785|Vienība
+786|Tipiska
+787|nav skaitlis
+788|ārpus diapazona
+789|Programmaparatūra ($$)
+790|0 = tipiska ({} W)
+791|0 = parastā ({} nm)
+792|Vājš vienmērīgs stars augstuma iestatīšanai (fokusa režīms). 0 = bez fokusa režīma.
+793|Pievienot lāzera galviņu
+794|Stara plankums
+795|Fokusa jauda
+796|Rāmja ātrums
+797|Galviņa {}
+798|Optiskā jauda
+799|PWM frekvence
+800|PWM maksimālā frekvence
+801|Rādītāja nobīde
+802|Impulsa platums
+803|Impulsa platuma diapazons
+804|Noņemt šo lāzera galviņu
+805|Stara izmērs uz materiāla (0 = nezināms). Mazāks aizpildes intervāls liek blakus līnijām pārklāties.
+806|PWM vērtības tiek glabātas profilā un piedāvātas kā makro mainīgie; tās netiek sūtītas kontrolierim.
+807|Numurs, ar kuru kontrolieris pazīst šo galviņu; tiek rakstīts kā T<n>, kad slānis izmanto citu galviņu. Tam jāsakrīt ar kartējumu kontrolierī.
+808|Instrumenta numurs (T)
+809|Divām lāzera galviņām ir viens un tas pats instrumenta numurs.
+810|Viļņa garums
+811|Kur ir sarkanais rādītāja punkts attiecībā pret staru (x pa labi, y uz leju). Izmanto izlīdzināšana pēc rādītāja cilnē Ierīce.
+812|piem. Zila diode
+813|Lāzera galviņa
+814|Intervāls ir mazāks par stara plankumu ({}): blakus līnijas pārklājas.
+815|FOKUSA STARS IESLĒGTS: nospiediet, lai izslēgtu
+816|Fokuss
+817|Ieslēdz vāju vienmērīgu staru fokusa augstuma iestatīšanai
+818|Fokusa stars ieslēgts
+819|Fokusa stars izslēgts
+820|Izlīdzināt pēc rādītāja
+821|Sausā darbināšana ar rādītāju
+822|Sausā darbināšana ar rādītāju: {} rindas, lāzers izslēgts
+823|Nav ko palaist: izvades slāņos nav formu
+824|Izskrien darba trajektoriju, pārbīdītu par rādītāja nobīdi, ar izslēgtu lāzeru, lai redzētu, kur tā ietu.
+825|Tikai šajā sesijā: rāmis un sausā darbināšana atkāpjas par sarkanā rādītāja punkta nobīdi, lai punkts nokristu tur, kur nokristu stars. Darbi un manuālā virzīšana netiek pārbīdīti nekad.
+826|Āķis {}: {}
+827|Āķi
+828|Pašu G kods, kas tiek ierakstīts darbā: kad sākas slānis, pirms un pēc katra objekta, kad slānis beidzas. Ar objektu āķiem slānis tiek dedzināts objekts pa objektam (un reizi katrā caurlaidē).
+829|Mainīgie: {}
+830|Slāņa sākums
+831|Slāņa beigas
+832|Objekta sākums
+833|Objekta beigas
+834|Makro ir jūsu paša G kods: tas var iedegt lāzeru vai pakustināt galviņu. Palaidiet to tikai tad, kad zināt, ko tas dara. Šis jautājums tiek uzdots vienreiz sesijā.
+835|Pievienot makro
+836|Dzēst šo makro
+837|Makro nosaukums
+838|Makro {}
+839|Makro {}: {}
+840|Makro {}: {} rindas
+841|Makro
+842|Nosauktas skripti, ko palaižat ar roku no cilnes Ierīce. Viena komanda rindā; komentāri pēc ; vai iekavās; @include(nosaukums) ievieto citu makro. Var izmantot iekārtas mainīgos.
+843|Palaist makro {}
+844|Palaiž šo makro uz iekārtas
+845|Pievienot zonu
+846|Aplis
+847|Dzēst šo zonu
+848|Darba zonas daļas, kurās iekārta nekad nedrīkst ieiet (skava, stiprinājums). Kustība, kas pieskaras ieslēgtai zonai, arī ar izslēgtu lāzeru, aptur Sākt, Rāmi un eksportu. Programma zonas neapiet.
+849|Rāmis skar aizliegto zonu “{}”.
+850|Slāņa {} trajektorija skar aizliegto zonu “{}”.
+851|Zonas nosaukums
+852|Zona {}
+853|Aizliegtās zonas
+854|Rādīt aizliegtās zonas
+855|Cik Z pārvietojas ar katru nākamo caurlaidi (negatīvs ir uz leju, ja uz augšu ir +Z). 0 = Z paliek.
+856|Iekārtas Z, uz kuru galviņa dodas pirms pirmās caurlaides. 0 kopā ar 0 uz caurlaidi = Z netiek kustināts.
+857|Slāņa {} Z augstumi ir ārpus Z ass gājiena.
+858|Iekārtai ir Z ass
+859|Gājiens
+860|Uz augšu ir negatīvais Z virziens
+861|Z
+862|Z ass
+863|Z augstums
+864|Z uz caurlaidi
+865|Pievienots rotācijas piederums
+866|A pagriežas par {} grādiem uz katru milimetru virsmas.
+867|Visiem dedzināmajiem slāņiem jābūt rotācijas, vai nevienam. Dizains nedrīkst būt augstāks par priekšmeta apkārtmēru.
+868|Vispirms lūdz apstiprinājumu. Mainās tikai kontroliera Y ass.
+869|Dedzināt šo slāni uz rotācijas
+870|Patrona
+871|Apkārtmērs
+872|GRBL 1.1 ir trīs asis: A ass nav pieejama, tiek izmantota Y.
+873|Veids
+874|Slāņi, kas atzīmēti kā rotācijas, tiek dedzināti uz piederuma. Modelis ir vienkāršs: patrona griežas pēc priekšmeta diametra, veltņi virsmu pārvieto kā savu; īstai iekārtai vajag izmēģinājumus.
+875|Motora mikrosoļi vienam pilnam tā dzenātā (patronas vai viena veltņa) apgriezienam.
+876|Mikrosoļu uz apgriezienu
+877|Aizstāj Y (Y motors griež priekšmetu)
+878|Veltņa diametrs
+879|Veltņi
+880|Rotācijas
+881|Rotācijas un plakanos slāņus nevar jaukt vienā darbā: atzīmējiet visus dedzināmos slāņus kā rotācijas, vai nevienu.
+882|Griešana G kodā
+883|Kontrolierim vajag {} soļus uz mm Y asī ($101).
+884|Dizains slānī {} ir augstāks par priekšmeta apkārtmēru.
+885|Priekšmeta apkārtmērs: dizains nedrīkst būt augstāks.
+886|Īstā A ass (grādi)
+887|Priekšmeta diametrs
+888|Ierakstīt $101 kontrolierī…
+889|Kā kaste vai cilindrs uz galda: kustības virs vai zem diapazona ir brīvas.
+890|Tikai šajos augstumos (Z)
+891|Tukšs profils
+892|Šī profila kopija
+893|Pievienot ierīci
+894|Nokopēts uz {}
+895|Eksportēt…
+896|Profils {} importēts
+897|Importēt…
+898|Nolasīt profilu no faila
+899|Saglabāt šo profilu failā
+900|Profils saglabāts: {}
+901|Sākumpunkti: vispārīgas iekārtas ar tipiskiem skaitļiem. Pārbaudiet tos pēc savas iekārtas dokumentācijas.
+902|GRBL diožu lāzers 400 × 400
+903|GRBL CO2 lāzers 300 × 200
+904|K40 pārbūve (GRBL) 300 × 200
+905|Marlin diožu lāzers 400 × 400
+906|GRBL 1.1 diožu lāzers uz 400 × 400 mm galda, nulle priekšā pa kreisi, dinamiska jauda.
+907|GRBL 1.1 CO2 lāzers uz 300 × 200 mm galda, nulle priekšā pa kreisi.
+908|K40 CO2 lāzers ar GRBL plati: 300 × 200 mm, nulle aizmugures kreisajā (augšējā kreisajā) stūrī.
+909|Diožu lāzers ar Marlin programmaparatūru (lāzera funkcija, S 0–255) uz 400 × 400 mm galda.
+910|Atpakaļ
+911|Savienojums (pēc izvēles)
+912|Pabeigt
+913|Ja iekārta tagad ir pievienota, tās darba zonu un ātrumu var nolasīt no kontroliera.
+914|Kontroliera lāzera režīms ($32) un lielākā S vērtība ($30) netika nolasīti: tie tiek pārbaudīti savienojoties.
+915|Nosaukums un vienības
+916|Tālāk
+917|Nav iestatītas malas vai programmatūras ierobežojumi: visa asu gājiena zona ir darba zona. Iestatiet tos lapā Aparatūra, ja traucē skava vai rāmis.
+918|Ports vai resursdators vēl nav iestatīts: izvēlieties to ierīces iestatījumos pirms savienošanas.
+919|Nekas šeit nav izmēģināts uz jūsu iekārtas: veiciet pirmo pārbaudi ar izslēgtu lāzeru vai mazāko jaudu.
+920|Izvēlieties tuvāko sākumpunktu. Visu var mainīt vēlāk.
+921|Iestatīt ar roku…
+922|Iestatiet savu iekārtu ({}/{})
+923|Izlaist
+924|Izlaist šos soļus un atvērt ierīces iestatījumus
+925|Kopsavilkums
+926|Ierīce pievienota. Nospiediet Turpināt, lai sāktu.
+927|Iestatījumi nolasīti no kontroliera.
+928|Kāda iekārta jums ir?
+929|Vērts pārbaudīt
+930|nav iestatīts
+931|Pievienot skaitītāju
+932|Skaita no laika, kad darbi patiešām darbojas (no sākuma līdz beigām vai Apturēšanai), nevis no aplēsēm. Kopsummu nevar atiestatīt.
+933|Skaitītāja nosaukums (caurule, lēca, siksna)
+934|Skaitītājs {}
+935|Dzēst šo skaitītāju
+936|Nepieciešama apkope: {}
+937|Atgādināt pēc
+938|Atiestatīt skaitītāju
+939|Sākt skaitītāju „{}” no jauna no nulles?
+940|Kopējais darba laiks: {}
+941|Apkope
+942|No sagataves
+943|Piezīmes ir garākas par {} rakstzīmēm un nevar tikt saglabātas.
+944|Jūsu piezīmes (Markdown)
+945|piem. Iestatījumi, kas darbojās: gaisa palīdzība 20 %, fokuss 12 mm
+946|Piezīmes
+947|Aktīva
+948|Pievienot kameru
+949|Adrese
+950|Auto
+951|Kameras nosaukums
+952|Kameras numurs
+953|Šī datora kamera
+954|Kamera {}
+955|Kameras, kas vēro iekārtu. Aktīvā dod tiešraides attēlu. Kameru var ieslēgt tikai ar derīgu adresi.
+956|Objektīva kropļojuma koeficienti (radiālie k1–k3, tangenciālie p1, p2) koordinātēm no centra attēla garākās malas vienībās. Visi 0 = bez korekcijas. Ievada ar roku: automātiskas kalibrēšanas nav.
+957|Dzēst šo kameru
+958|Šī datora kamerai: pieprasīt nesaspiesto YUYV formātu, ja sistēma atļauj.
+959|Formāts
+960|Objektīva korekcija
+961|Iekārtas tiešraides attēls: MJPEG straume vai JPEG momentuzņēmuma adrese (http vai https). RTSP netiek atbalstīts.
+962|Trokšņu samazināšana
+963|Tā nav http vai https adrese.
+964|Attēls
+965|Dot priekšroku YUYV
+966|Ieslēgt vai izslēgt šo kameru
+967|Adrese nav derīga: nepieciešama http vai https adrese
+968|Baltā balanss
+969|Pievienot punktu
+970|Līdzināt pēc punktiem
+971|Dzēst šo punktu
+972|Pielāgo attēlu punktiem (mazāko kvadrātu metode) un attiecīgi pārvieto stūrus.
+973|Par maz punktu, vai tie atrodas uz vienas taisnes.
+974|Pāri: punkts attēlā (pikseļi) un tā vieta darba zonā (mm). Vismaz 3, ieteicami 4; tie nosaka līdzinājumu, ieskaitot perspektīvu.
+975|Punkti no pašreizējiem stūriem
+976|Atsauces punkti
+977|Aizstāj punktus ar attēla četriem stūriem un to pašreizējo vietu.

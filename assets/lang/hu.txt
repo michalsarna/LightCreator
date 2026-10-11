@@ -664,3 +664,315 @@
 663|Új címke
 664|Az anyag rétegeihez felkínált címkék hozzáadása vagy törlése
 665|Hozzáadás
+666|Általános
+667|Hardver
+668|G-kód
+669|Elöl jobbra
+670|Hátul jobbra
+671|Tengelyek megfordítása
+672|Panel tájolása
+673|Eredeti
+674|Balra forgatva
+675|Jobbra forgatva
+676|Margók
+677|Saját korlátok
+678|Szoftveres korlátok
+679|A munkaterület szélén lévő sávok, amelyeket a gép nem használhat (szorítók, keret); oda nem szabad semmit helyezni vagy mozgatni
+680|A fej az engedélyezett terület szélén van.
+681|Ellenőrzés a munka előtt
+682|Folytatás mégis
+683|Előbb javítsa a hibákat: velük semmi sem kerül elküldésre, keretezésre vagy exportálásra.
+684|A(z) {} réteg 0 % teljesítménnyel éget.
+685|A(z) {} rétegen vannak objektumok, de nincs szerszámút (pl. nyitott vonalak egy kitöltő rétegen).
+686|Objektumok kijelölése
+687|A keret a szoftveres korlátokon kívül van.
+688|A keret a használható területen kívül van (a munkaterületen túl vagy margóban).
+689|A(z) {} réteg szerszámútja elhagyja az engedélyezett területet (túlfutás vagy üresjárati mozgások).
+690|{} objektum a szoftveres korlátokon kívül van.
+691|{} objektum a használható területen kívül van (a munkaterületen túl vagy margóban).
+692|Lézer mód bekapcsolása ($32=1)
+693|A lézer mód ($32) ki van kapcsolva.
+694|A vezérlő problémát jelez
+695|A vezérlő maximális S értéke ($30) {}, a profil {} értéket használ.
+696|Ez a $32=1 értéket írja a vezérlő beállításaiba. Folytatja?
+697|A vezérlő értékének használata
+698|Eltérő értékeknél a G-kódban a teljesítmény nem egyezik a beállított százalékokkal.
+699|Kikapcsolt lézer módban a GRBL orsóvezérlőként viselkedik: a lézer gyorsmozgásnál bekapcsolhat, és a teljesítmény nem követi a sebességet.
+700|Max. vágási sebesség
+701|Gyorsulás
+702|0 = nincs korlát. Az ennél gyorsabb rétegek figyelmeztetést kapnak a munka előtt; az időbecslés legfeljebb ezt a sebességet használja.
+703|0 = ismeretlen. Értékkel az időbecslés tartalmazza az indítási és fékezési rámpákat, és a rétegpanel túlfutást javasol.
+704|Javasolt: {} (a fékezési út ezen a sebességen és a gép gyorsulásával)
+705|A(z) {} réteg gyorsabb, mint a gép maximális vágási sebessége.
+706|Automatikus (a vezérlőtől)
+707|G-kód nyelvjárás
+708|Smoothieware: az S a teljes teljesítmény törtrészeként íródik (állítsa az S max értéket 1-re). A streamelés úgy működik, mint a GRBL-nél; ebből semmit sem próbáltak ki valódi hardveren.
+709|Automatikus nyelvjárásnál használatos; a kiválasztott GRBL nyelvjárás maga dönt az M3 és M4 között.
+710|Speciális
+711|A Speciális oldal egyik G-kód mezője vezérlőkaraktert tartalmaz vagy túl hosszú.
+712|Légsegéd parancsok
+713|A munka vége
+714|Ki
+715|Be
+716|Lecseréli a záró M2-t. A lézert előtte mindig kikapcsolja, a fejet pedig (ha be van állítva) hazaküldi. Üres = beépített.
+717|Lecseréli a mértékegység, az abszolút mód, a sík és a lézer mód sorait. Üres = beépített.
+718|Alapértékek visszaállítása
+719|A munka eleje
+720|A hibás G-kód begyújthatja a lézert, a végálláskapcsolóknak ütközhet a fej, vagy tönkreteheti az anyagot. Kikapcsolt lézerrel vagy a legkisebb teljesítménnyel tesztelje.
+721|Teljesítmény mód
+722|Mint az eszköz
+723|Állandó (M3)
+724|Dinamikus (M4)
+725|Az M4 (dinamikus) csökkenti a teljesítményt a sarkokban és gyorsításkor; az M3 (állandó) megtartja. A G-kód vált köztük, ha a rétegek eltérnek.
+726|Ívek tűrése
+727|Ívek (G2 / G3)
+728|Ívek: a GRBL általában kezeli a G2 / G3-at, a Marlin csak ARC_SUPPORT-tal fordítva, a Smoothieware pedig a maga módján. Egyes vezérlők figyelmen kívül hagyják az íveket vagy rosszul futtatják: tesztelje kikapcsolt lézerrel. Az íveket körvonalakhoz és gyűrűkhöz használjuk, nem szkennelő vonalakhoz vagy képekhez.
+729|Görbék tűrése
+730|Mennyire térhet el a lapított görbe (Bézier, szöveg) a valódi görbétől.
+731|A görbék írása ívként, ahol illeszkednek
+732|A számlálás megtölti a vezérlő pufferét, és gyors. Az egyszerű egy sort küld, és várja az ok-ját: lassú, de rosszul válaszoló firmware-hez.
+733|Várakozás folytatása
+734|A vezérlő {} másodperce nem válaszol munka közben (állapot: {}).
+735|Semmi sem folytatódott vagy lett elküldve. A gép lehet egyszerűen lassú, vagy a sor elveszett; nézze meg a konzolt, majd válasszon.
+736|Munka leállítása
+737|Streamelés
+738|A vezérlő nem válaszol
+739|Puffer számlálása
+740|Egyszerű (minden ok-ra vár)
+741|Egy portnév, vagy az USB gyártó- és termékazonosító (VID:PID, hexadecimálisan): az ilyen azonosítójú portot használja.
+742|Kötés ehhez a porthoz
+743|Kötött USB-eszköz
+744|Automatikus újracsatlakozás
+745|Újracsatlakozás…
+746|Port vagy USB-azonosító
+747|Újracsatlakozás
+748|Megjegyzi a kiválasztott port USB-azonosítóit: ha a neve megváltozik, ezekkel találja meg újra.
+749|Kötés feloldása
+750|Ha a kapcsolat magától megszakad, néhány másodpercenként újra próbálkozik, amíg a Szétkapcsolást meg nem nyomja.
+751|nincs
+752|Csatlakozás után
+753|Riasztás törlése
+754|A riasztás törlése kihagyja a referenciafutást: csak akkor használja, ha a fej biztosan biztonságos helyen áll.
+755|A gép referenciafutása
+756|{} referenciafutás
+757|Csak a(z) {} tengelyt referálja ($H{})
+758|A fájl mind a(z) {} beállítása most a vezérlőben van.
+759|Előbb mentse el a beállításokat. A folytatáshoz írja be: {}:
+760|Mentés fájlba…
+761|A fájl nem használható: {}
+762|Előbb csatlakozzon a géphez (Eszköz fül).
+763|Csatlakozva: {}
+764|Gyári beállítások ($RST=$)…
+765|A Marlin a beállításait saját parancsaiban tartja (M92, M203, M204, ...): ez az oldal csak az `M503` jelentését mutatja.
+766|Még nincs beolvasva semmi.
+767|Beállítások beolvasása ($$)
+768|Beállítások beolvasása (M503)
+769|Tényleg beírja a $RST=$ parancsot a vezérlőbe?
+770|Visszaállítás fájlból…
+771|Gyári beállítások visszaállítása
+772|Beállítások visszaállítása fájlból
+773|A beállítások mentve: {}
+774|A vezérlőben már mind megvan.
+775|Ezek a beállítások a vezérlőben vannak, nem a profilban. Egyesével módosítsa őket, és jegyezze fel a régi értéket: a rossz érték miatt a gép rossz távolságot mozoghat vagy a lézer begyulladhat.
+776|A fájl ezen beállításai eltérnek a vezérlőtől. Semmi sem íródik, amíg nem nyomja meg az Összes írása gombot.
+777|Ez a $RST=$-t írja: a vezérlő minden beállítása a firmware alapértékére áll vissza. A lépések, a futás, a sebességek, a lézer mód és a referenciafutás megváltozik.
+778|Írás
+779|Beírja a ${} = {} értéket a vezérlőbe? Jelenleg {}. Egyszerre egy beállítást módosítson, és jegyezze fel a régi értéket.
+780|Beállítás írása
+781|Összes írása
+782|Beír {} beállítást a vezérlőbe? A gép úgy viselkedik, ahogy a fájl mondja.
+783|Írás után {} / {} beállítás eltér:
+784|Érték
+785|Egység
+786|Tipikus
+787|nem szám
+788|tartományon kívül
+789|Firmware ($$)
+790|0 = egy tipikus ({} W)
+791|0 = a szokásos ({} nm)
+792|Gyenge, állandó sugár a magasság beállításához (fókusz mód). 0 = nincs fókusz mód.
+793|Lézerfej hozzáadása
+794|Sugárfolt
+795|Fókusz teljesítmény
+796|Keret sebessége
+797|{}. fej
+798|Optikai teljesítmény
+799|PWM frekvencia
+800|PWM maximális frekvencia
+801|Mutató eltolása
+802|Impulzusszélesség
+803|Impulzusszélesség tartomány
+804|A lézerfej eltávolítása
+805|A sugár mérete az anyagon (0 = ismeretlen). Ennél kisebb kitöltési távolság átfedi a szomszédos vonalakat.
+806|A PWM értékek a profilban maradnak, és változóként érhetők el makrókhoz; nem kerülnek a vezérlőre.
+807|A szám, amellyel a vezérlő ezt a fejet ismeri; T<n>-ként íródik, ha egy réteg másik fejet használ. Egyeznie kell a vezérlő leképezésével.
+808|Szerszámszám (T)
+809|Két lézerfejnek ugyanaz a szerszámszáma.
+810|Hullámhossz
+811|Hol van a piros mutatópont a sugárhoz képest (x jobbra, y lefelé). A Eszköz fül mutatóhoz igazítása használja.
+812|pl. Kék dióda
+813|Lézerfej
+814|A köz kisebb, mint a sugárfolt ({}): a szomszédos vonalak átfedik egymást.
+815|FÓKUSZSUGÁR BEKAPCSOLVA: kikapcsoláshoz nyomja meg
+816|Fókusz
+817|Bekapcsol egy gyenge, állandó sugarat a fókuszmagasság beállításához
+818|Fókuszsugár bekapcsolva
+819|Fókuszsugár kikapcsolva
+820|Igazítás a mutatóhoz
+821|Szárazfutás a mutatóval
+822|Szárazfutás a mutatóval: {} sor, lézer kikapcsolva
+823|Nincs mit futtatni: nincs alakzat a kimeneti rétegeken
+824|Végigfuttatja a munka útvonalát a mutató eltolásával eltolva, kikapcsolt lézerrel, hogy lássa, hová menne.
+825|Csak ebben a munkamenetben: a keret és a szárazfutás visszalép a piros mutatópont eltolásával, így a pont ott ér földet, ahol a sugár. A munkákat és a kézi mozgatást soha nem tolja el.
+826|Hook {}: {}
+827|Hookok
+828|Saját G-kód a munkába írva: egy réteg kezdetekor, minden objektum előtt és után, egy réteg végén. Objektum hookokkal a réteg objektumonként ég (és áthaladásonként egyszer).
+829|Változók: {}
+830|Réteg kezdete
+831|Réteg vége
+832|Objektum kezdete
+833|Objektum vége
+834|A makró a saját G-kódod: begyújthatja a lézert vagy mozgathatja a fejet. Csak akkor futtasd, ha tudod, mit csinál. Ezt munkamenetenként egyszer kérdezi.
+835|Makró hozzáadása
+836|Makró törlése
+837|Makró neve
+838|{}. makró
+839|{}. makró: {}
+840|{}. makró: {} sor
+841|Makrók
+842|Elnevezett szkriptek, amelyeket kézzel futtatsz az Eszköz fülről. Soronként egy parancs; megjegyzés ; után vagy zárójelben; az @include(név) másik makrót szúr be. A gép változói használhatók.
+843|{} makró futtatása
+844|Lefuttatja ezt a makrót a gépen
+845|Zóna hozzáadása
+846|Kör
+847|Zóna törlése
+848|A munkaterület azon részei, ahová a gép soha nem léphet be (szorító, rögzítő). Egy engedélyezett zónát érintő mozgás, kikapcsolt lézerrel is, megállítja az Indítást, a Keretet és az exportot. A program nem kerüli ki a zónákat.
+849|A keret érinti a tiltott zónát: „{}”.
+850|A(z) {} réteg szerszámútja érinti a tiltott zónát: „{}”.
+851|Zóna neve
+852|{}. zóna
+853|Tiltott zónák
+854|Tiltott zónák megjelenítése
+855|Mennyit mozog a Z minden további áthaladásnál (negatív lefelé, ha a fel +Z). 0 = a Z marad.
+856|A gép Z értéke, ahová a fej az első áthaladás előtt megy. A 0 és az áthaladásonkénti 0 együtt = a Z nem mozog.
+857|A(z) {} réteg Z magasságai a Z tengely útján kívül vannak.
+858|A gépnek van Z tengelye
+859|Út
+860|A fel a Z negatív iránya
+861|Z
+862|Z tengely
+863|Z magasság
+864|Z áthaladásonként
+865|Forgatóegység csatlakoztatva
+866|Az A a felület minden milliméterére {} fokot fordul.
+867|Minden égetett rétegnek forgatós kell lennie, vagy egyiknek sem. A terv nem lehet magasabb a munkadarab kerületénél.
+868|Előbb megerősítést kér. Csak a vezérlő Y tengelye változik.
+869|Ennek a rétegnek az égetése a forgatón
+870|Tokmány
+871|Kerület
+872|A GRBL 1.1-nek három tengelye van: az A tengely nem elérhető, az Y-t használja.
+873|Fajta
+874|A forgatósnak jelölt rétegek az egységen égnek. A modell egyszerű: a tokmány a munkadarab átmérője szerint fordul, a görgők úgy mozgatják a felületet, mint a sajátjukat; egy valódi gépet ki kell próbálni.
+875|A motor mikrolépései annak egy teljes fordulatához, amit hajt (a tokmány vagy egy görgő).
+876|Mikrolépés fordulatonként
+877|Az Y helyett (az Y motor forgatja a munkadarabot)
+878|Görgő átmérője
+879|Görgők
+880|Forgató
+881|Forgatós és sík rétegek nem lehetnek egy munkában: jelölje az összes égetett réteget forgatósnak, vagy egyiket sem.
+882|Forgatás a G-kódban
+883|A vezérlőnek {} lépés/mm kell az Y tengelyen ($101).
+884|A(z) {} réteg terve magasabb a munkadarab kerületénél.
+885|A munkadarab kerülete: a terv nem lehet magasabb.
+886|Valódi A tengely (fok)
+887|Munkadarab átmérője
+888|$101 beírása a vezérlőbe…
+889|Mint az asztalon álló doboz vagy henger: a tartomány feletti vagy alatti mozgások szabadok.
+890|Csak ezeken a magasságokon (Z)
+891|Üres profil
+892|Ennek a profilnak a másolata
+893|Eszköz hozzáadása
+894|Átmásolva ide: {}
+895|Exportálás…
+896|A(z) {} profil importálva
+897|Importálás…
+898|Profil beolvasása fájlból
+899|A profil mentése fájlba
+900|A profil mentve ide: {}
+901|Kiindulási pontok: általános gépek tipikus számokkal. Ellenőrizze őket a gép dokumentációjával.
+902|GRBL diódalézer 400 × 400
+903|GRBL CO2 lézer 300 × 200
+904|K40 átalakítás (GRBL) 300 × 200
+905|Marlin diódalézer 400 × 400
+906|GRBL 1.1 diódalézer 400 × 400 mm-es asztalon, nulla elöl balra, dinamikus teljesítmény.
+907|GRBL 1.1 CO2 lézer 300 × 200 mm-es asztalon, nulla elöl balra.
+908|K40 CO2 lézer GRBL vezérlőpanellel: 300 × 200 mm, nulla a bal hátsó (bal felső) sarokban.
+909|Marlin firmware-es diódalézer (lézer funkció, S 0–255) 400 × 400 mm-es asztalon.
+910|Vissza
+911|Kapcsolat (nem kötelező)
+912|Kész
+913|Ha a gép most csatlakoztatva van, a munkaterülete és sebessége kiolvasható a vezérlőből.
+914|A vezérlő lézer módját ($32) és legnagyobb S értékét ($30) nem olvastuk ki: csatlakozáskor ellenőrizzük.
+915|Név és mértékegységek
+916|Tovább
+917|Nincs margó vagy szoftveres korlát beállítva: a teljes tengelytartomány a munkaterület. Állítsa be a Hardver oldalon, ha szorító vagy keret zavar.
+918|Még nincs port vagy gazda beállítva: csatlakozás előtt válassza ki az eszközbeállításokban.
+919|Itt semmit sem próbáltak ki az Ön gépén: az első tesztet kikapcsolt lézerrel vagy a legkisebb teljesítménnyel végezze.
+920|Válassza a legközelebbi kiindulási pontot. Mindent később is megváltoztathat.
+921|Beállítás kézzel…
+922|Állítsa be a gépét ({}/{})
+923|Kihagyás
+924|Lépések kihagyása és az eszközbeállítások megnyitása
+925|Összegzés
+926|Az eszköz hozzáadva. A kezdéshez nyomja meg a Folytatás gombot.
+927|A beállításokat kiolvastuk a vezérlőből.
+928|Milyen gépe van?
+929|Érdemes ellenőrizni
+930|nincs beállítva
+931|Számláló hozzáadása
+932|A munkák tényleges futási idejéből számol (indítástól a végéig vagy a Leállításig), nem becslésből. Az összeg nem nullázható.
+933|A számláló neve (cső, lencse, szíj)
+934|{}. számláló
+935|A számláló törlése
+936|Karbantartás esedékes: {}
+937|Emlékeztető ennyi után
+938|Számláló nullázása
+939|Újrakezdi nulláról a(z) „{}” számlálót?
+940|Teljes üzemidő: {}
+941|Karbantartás
+942|A sablonból
+943|A jegyzetek hosszabbak {} karakternél, és nem menthetők.
+944|Saját jegyzetei (Markdown)
+945|pl. Bevált beállítások: légsegéd 20 %, fókusz 12 mm
+946|Jegyzetek
+947|Aktív
+948|Kamera hozzáadása
+949|Cím
+950|Auto
+951|Kamera neve
+952|Kamera száma
+953|Ennek a számítógépnek a kamerája
+954|{}. kamera
+955|A gépet figyelő kamerák. Az aktív adja az élő képet. Kamera csak érvényes címmel kapcsolható be.
+956|Az objektív torzításának együtthatói (radiális k1–k3, tangenciális p1, p2) a középponttól mért koordinátákra, a kép hosszabb oldalának egységeiben. Mind 0 = nincs korrekció. Kézzel adandók meg: nincs automatikus kalibrálás.
+957|Kamera törlése
+958|Ennek a számítógépnek a kamerájához: kéri a tömörítetlen YUYV formátumot, ha a rendszer engedi.
+959|Formátum
+960|Objektívkorrekció
+961|A gép élő képe: MJPEG-adatfolyam vagy JPEG-pillanatkép címe (http vagy https). Az RTSP nem támogatott.
+962|Zajcsökkentés
+963|Nem http vagy https cím.
+964|Kép
+965|YUYV előnyben
+966|A kamera be- vagy kikapcsolása
+967|A cím érvénytelen: http vagy https cím szükséges
+968|Fehéregyensúly
+969|Pont hozzáadása
+970|Igazítás a pontok szerint
+971|Pont törlése
+972|A képet a pontokhoz illeszti (legkisebb négyzetek), és ennek megfelelően mozgatja a sarkokat.
+973|Kevés pont, vagy egy egyenesen vannak.
+974|Párok: egy pont a képen (pixel) és helye a munkaterületen (mm). Legalább 3, 4 ajánlott; ezek határozzák meg az igazítást a perspektívával együtt.
+975|Pontok a jelenlegi sarkokból
+976|Referenciapontok
+977|A pontokat a kép négy sarkával és jelenlegi helyükkel váltja fel.

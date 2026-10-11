@@ -664,3 +664,315 @@
 663|Nova etiqueta
 664|Adicionar ou remover as etiquetas oferecidas para as camadas de um material
 665|Adicionar
+666|Geral
+667|Hardware
+668|G-code
+669|Frente direita
+670|Trás direita
+671|Inverter os eixos
+672|Orientação do painel
+673|Nativa
+674|Rodada para a esquerda
+675|Rodada para a direita
+676|Margens
+677|Limites próprios
+678|Limites de software
+679|Faixas nas bordas da área de trabalho que a máquina não pode usar (grampos, moldura); nada pode ser colocado ou movido ali
+680|O cabeçote está na borda da área permitida.
+681|Verificação antes do trabalho
+682|Continuar mesmo assim
+683|Corrija primeiro os erros: com eles nada é enviado, enquadrado ou exportado.
+684|A camada {} grava com potência 0 %.
+685|A camada {} tem objetos mas nenhum trajeto (por exemplo, linhas abertas numa camada de preenchimento).
+686|Selecionar objetos
+687|A moldura está fora dos limites de software.
+688|A moldura está fora da área utilizável (além da área de trabalho ou numa margem).
+689|O trajeto da camada {} sai da área permitida (overscan ou deslocamentos em vazio).
+690|{} objeto(s) estão fora dos limites de software.
+691|{} objeto(s) estão fora da área utilizável (além da área de trabalho ou numa margem).
+692|Ativar o modo laser ($32=1)
+693|O modo laser ($32) está desativado.
+694|O controlador relata um problema
+695|O valor S máximo do controlador ($30) é {}, o perfil usa {}.
+696|Isto grava $32=1 nas definições do controlador. Continuar?
+697|Usar o valor do controlador
+698|Com valores diferentes a potência no G-code não corresponderá às percentagens definidas.
+699|Com o modo laser desativado o GRBL comporta-se como um controlador de fuso: o laser pode disparar em movimentos rápidos e a potência não acompanha a velocidade.
+700|Velocidade máx. de corte
+701|Aceleração
+702|0 = sem limite. As camadas mais rápidas recebem um aviso antes do trabalho; a estimativa de tempo usa no máximo esta velocidade.
+703|0 = desconhecida. Com um valor a estimativa de tempo inclui as rampas de arranque e paragem e o painel da camada sugere um overscan.
+704|Sugerido: {} (a distância de travagem a esta velocidade e com a aceleração da máquina)
+705|A camada {} é mais rápida que a velocidade máxima de corte da máquina.
+706|Automático (do controlador)
+707|Dialeto de G-code
+708|Smoothieware: S é escrito como fração da potência total (defina S máx. como 1). A transmissão funciona como a do GRBL; nada disto foi testado em hardware real.
+709|Usado quando o dialeto é automático; um dialeto GRBL escolhido decide por si entre M3 e M4.
+710|Avançado
+711|Um campo de G-code na página Avançado tem um caractere de controlo ou é demasiado longo.
+712|Comandos do air assist
+713|Fim do trabalho
+714|Desligado
+715|Ligado
+716|Substitui o M2 final. O laser é sempre desligado e o cabeçote enviado à origem (se definido) antes. Vazio = incorporado.
+717|Substitui as linhas de unidades, modo absoluto, plano e modo laser. Vazio = incorporado.
+718|Repor predefinições
+719|Início do trabalho
+720|Um G-code errado pode disparar o laser, levar o cabeçote contra os fins de curso ou arruinar o material. Teste com o laser desligado ou à potência mínima.
+721|Modo de potência
+722|Como o dispositivo
+723|Constante (M3)
+724|Dinâmico (M4)
+725|M4 (dinâmico) reduz a potência nos cantos e ao acelerar; M3 (constante) mantém-na. O G-code alterna entre eles quando as camadas diferem.
+726|Tolerância dos arcos
+727|Arcos (G2 / G3)
+728|Arcos: o GRBL normalmente trata G2 / G3, o Marlin só quando compilado com ARC_SUPPORT, e o Smoothieware tem comportamento próprio. Alguns controladores ignoram os arcos ou executam-nos mal: teste com o laser desligado. Os arcos servem para contornos e anéis, não para linhas de varrimento nem imagens.
+729|Tolerância das curvas
+730|Quanto uma curva achatada (Bézier, texto) pode afastar-se da curva real.
+731|Escrever as curvas como arcos onde couberem
+732|A contagem enche o buffer do controlador e é rápida. O simples envia uma linha e espera pelo seu ok: lento, mas para firmware que responde mal.
+733|Continuar a esperar
+734|Sem resposta do controlador há {} s durante um trabalho (estado: {}).
+735|Nada foi retomado nem enviado. A máquina pode ser apenas lenta ou a linha perdeu-se; veja a consola e escolha.
+736|Parar o trabalho
+737|Transmissão
+738|O controlador não responde
+739|Contar o buffer
+740|Simples (esperar cada ok)
+741|Um nome de porta, ou o id USB de fabricante e produto (VID:PID, hexadecimal): usa-se a porta que tem estes id.
+742|Associar a esta porta
+743|Dispositivo USB associado
+744|Voltar a ligar automaticamente
+745|A ligar de novo…
+746|Porta ou id USB
+747|Religação
+748|Lembra os id USB da porta escolhida: se o nome mudar, a porta é encontrada de novo por eles.
+749|Desassociar
+750|Quando a ligação cai sozinha, tenta de novo a cada poucos segundos até premir Desligar.
+751|nenhum
+752|Depois de ligar
+753|Limpar um alarme
+754|Limpar o alarme salta o homing: use só quando se souber que o cabeçote está num local seguro.
+755|Fazer homing da máquina
+756|Homing {}
+757|Faz homing só do eixo {} ($H{})
+758|Todas as {} definições do ficheiro estão agora no controlador.
+759|Faça primeiro uma cópia das definições. Para continuar, escreva {}:
+760|Copiar para um ficheiro…
+761|Não é possível usar o ficheiro: {}
+762|Ligue-se primeiro à máquina (separador Dispositivo).
+763|Ligado a: {}
+764|Definições de fábrica ($RST=$)…
+765|O Marlin guarda as definições em comandos próprios (M92, M203, M204, ...): esta página só mostra o que o `M503` indica.
+766|Ainda nada lido.
+767|Ler as definições ($$)
+768|Ler as definições (M503)
+769|Escrever mesmo $RST=$ no controlador?
+770|Restaurar de um ficheiro…
+771|Restaurar as definições de fábrica
+772|Restaurar as definições de um ficheiro
+773|Definições guardadas em {}
+774|O controlador já tem todas.
+775|Estas definições estão no controlador, não no perfil. Altere uma de cada vez e anote o valor anterior: um valor errado pode fazer a máquina mover-se a distância errada ou disparar o laser.
+776|Estas definições do ficheiro diferem do controlador. Nada é escrito até premir Escrever tudo.
+777|Isto escreve $RST=$: todas as definições do controlador voltam aos valores do firmware. Passos, curso, velocidades, modo laser e homing mudarão.
+778|Escrever
+779|Escrever ${} = {} no controlador? Agora é {}. Altere uma definição de cada vez e anote o valor antigo.
+780|Escrever uma definição
+781|Escrever tudo
+782|Escrever {} definições no controlador? A máquina vai comportar-se como o ficheiro diz.
+783|{} de {} definições diferem depois de escrever:
+784|Valor
+785|Unidade
+786|Típico
+787|não é um número
+788|fora do intervalo
+789|Firmware ($$)
+790|0 = uma típica ({} W)
+791|0 = a habitual ({} nm)
+792|Um feixe fraco e constante para acertar a altura (modo de foco). 0 = sem modo de foco.
+793|Adicionar um cabeçote laser
+794|Ponto do feixe
+795|Potência de foco
+796|Velocidade da moldura
+797|Cabeçote {}
+798|Potência ótica
+799|Frequência PWM
+800|Frequência PWM máxima
+801|Deslocamento do ponteiro
+802|Largura do impulso
+803|Intervalo da largura do impulso
+804|Remover este cabeçote laser
+805|Tamanho do feixe no material (0 = desconhecido). Um intervalo de preenchimento menor faz as linhas vizinhas sobreporem-se.
+806|Os valores PWM ficam guardados no perfil e são oferecidos como variáveis para macros; não são enviados ao controlador.
+807|O número com que o controlador conhece este cabeçote; escreve-se T<n> quando uma camada usa outro cabeçote. Tem de coincidir com o mapeamento no controlador.
+808|Número da ferramenta (T)
+809|Dois cabeçotes laser têm o mesmo número de ferramenta.
+810|Comprimento de onda
+811|Onde está o ponto vermelho do ponteiro em relação ao feixe (x para a direita, y para baixo). Usado pelo alinhamento com o ponteiro do separador Dispositivo.
+812|p. ex. Díodo azul
+813|Cabeçote laser
+814|O intervalo é menor que o ponto do feixe ({}): as linhas vizinhas sobrepõem-se.
+815|FEIXE DE FOCO LIGADO: prima para desligar
+816|Foco
+817|Liga um feixe fraco e constante para acertar a altura do foco
+818|Feixe de foco ligado
+819|Feixe de foco desligado
+820|Alinhar com o ponteiro
+821|Ensaio a seco com o ponteiro
+822|Ensaio a seco com o ponteiro: {} linhas, laser desligado
+823|Nada a executar: não há formas nas camadas de saída
+824|Percorre o trajeto do trabalho deslocado pelo desvio do ponteiro com o laser desligado, para ver para onde iria.
+825|Só nesta sessão: a moldura e o ensaio a seco recuam pelo desvio do ponto vermelho do ponteiro, para que o ponto caia onde cairia o feixe. Os trabalhos e o movimento manual nunca são deslocados.
+826|Hook {}: {}
+827|Hooks
+828|G-code próprio escrito no trabalho: quando começa uma camada, antes e depois de cada objeto, quando acaba uma camada. Com hooks de objeto uma camada é gravada objeto a objeto (e uma vez por passagem).
+829|Variáveis: {}
+830|Início da camada
+831|Fim da camada
+832|Início do objeto
+833|Fim do objeto
+834|Uma macro é o seu próprio G-code: pode disparar o laser ou mover o cabeçote. Execute-a só quando souber o que faz. Esta pergunta é feita uma vez por sessão.
+835|Adicionar uma macro
+836|Eliminar esta macro
+837|Nome da macro
+838|Macro {}
+839|Macro {}: {}
+840|Macro {}: {} linhas
+841|Macros
+842|Scripts com nome que executa à mão no separador Dispositivo. Um comando por linha; comentários depois de ; ou entre parênteses; @include(nome) insere outra macro. Podem usar-se as variáveis da máquina.
+843|Executar a macro {}
+844|Executa esta macro na máquina
+845|Adicionar uma zona
+846|Círculo
+847|Eliminar esta zona
+848|Partes da área de trabalho em que a máquina nunca deve entrar (uma garra, uma fixação). Um movimento que toque numa zona ativa, também com o laser desligado, impede Iniciar, Moldura e a exportação. O programa não contorna zonas.
+849|A moldura toca a zona proibida «{}».
+850|O trajeto da camada {} toca a zona proibida «{}».
+851|Nome da zona
+852|Zona {}
+853|Zonas proibidas
+854|Mostrar as zonas proibidas
+855|Quanto Z se move em cada passagem seguinte (negativo é para baixo quando cima é +Z). 0 = Z fica.
+856|Z da máquina a que o cabeçote vai antes da primeira passagem. 0 junto com 0 por passagem = Z não se move.
+857|As alturas Z da camada {} estão fora do curso do eixo Z.
+858|A máquina tem um eixo Z
+859|Curso
+860|Cima é a direção Z negativa
+861|Z
+862|Eixo Z
+863|Altura Z
+864|Z por passagem
+865|Está ligado um acessório rotativo
+866|O A roda {} graus por cada milímetro da superfície.
+867|Todas as camadas gravadas têm de ser rotativas, ou nenhuma. O desenho não pode ser mais alto do que o perímetro da peça.
+868|Pede primeiro uma confirmação. Só muda o eixo Y do controlador.
+869|Gravar esta camada no rotativo
+870|Mandril
+871|Perímetro
+872|O GRBL 1.1 tem três eixos: o eixo A não está disponível, usa-se Y.
+873|Tipo
+874|As camadas marcadas como rotativas são gravadas no acessório. O modelo é simples: um mandril roda segundo o diâmetro da peça, os rolos movem a superfície como a sua própria; uma máquina real precisa de testes.
+875|Micropassos do motor para uma volta completa do que ele move (o mandril ou um rolo).
+876|Micropassos por volta
+877|Substitui Y (o motor Y roda a peça)
+878|Diâmetro do rolo
+879|Rolos
+880|Rotativo
+881|Camadas rotativas e planas não podem estar no mesmo trabalho: marque todas as camadas gravadas como rotativas, ou nenhuma.
+882|Rotação no G-code
+883|O controlador precisa de {} passos por mm no eixo Y ($101).
+884|O desenho da camada {} é mais alto do que o perímetro da peça.
+885|O perímetro da peça: o desenho não pode ser mais alto.
+886|Eixo A verdadeiro (graus)
+887|Diâmetro da peça
+888|Escrever $101 no controlador…
+889|Como uma caixa ou um cilindro sobre a mesa: os movimentos acima ou abaixo do intervalo são livres.
+890|Só a estas alturas (Z)
+891|Um perfil em branco
+892|Uma cópia deste perfil
+893|Adicionar um dispositivo
+894|Copiado para {}
+895|Exportar…
+896|Perfil {} importado
+897|Importar…
+898|Ler um perfil de um ficheiro
+899|Guardar este perfil num ficheiro
+900|Perfil guardado em {}
+901|Pontos de partida: máquinas gerais com números típicos. Confirme-os com a documentação da sua máquina.
+902|Laser de díodo GRBL 400 × 400
+903|Laser CO2 GRBL 300 × 200
+904|Conversão K40 (GRBL) 300 × 200
+905|Laser de díodo Marlin 400 × 400
+906|Um laser de díodo GRBL 1.1 numa mesa de 400 × 400 mm, zero à frente à esquerda, potência dinâmica.
+907|Um laser CO2 GRBL 1.1 numa mesa de 300 × 200 mm, zero à frente à esquerda.
+908|Um laser CO2 K40 com placa GRBL: 300 × 200 mm, zero no canto traseiro esquerdo (superior esquerdo).
+909|Um laser de díodo com firmware Marlin (função laser, S 0–255) numa mesa de 400 × 400 mm.
+910|Voltar
+911|Ligação (opcional)
+912|Concluir
+913|Se a máquina está ligada agora, a sua área de trabalho e velocidade podem ser lidas do controlador.
+914|O modo laser ($32) e o valor S máximo ($30) do controlador não foram lidos: são verificados ao ligar.
+915|Nome e unidades
+916|Seguinte
+917|Não há margens nem limites de software: todo o curso dos eixos é a área de trabalho. Defina-os na página Hardware se uma garra ou moldura estorvar.
+918|Ainda não há porta nem anfitrião: escolha-o nas definições do dispositivo antes de ligar.
+919|Nada disto foi testado na sua máquina: faça um primeiro teste com o laser desligado ou à potência mínima.
+920|Escolha o ponto de partida mais próximo. Tudo pode ser alterado depois.
+921|Configurar à mão…
+922|Configure a sua máquina ({}/{})
+923|Ignorar
+924|Ignorar estes passos e abrir as definições do dispositivo
+925|Resumo
+926|O dispositivo foi adicionado. Prima Continuar para começar.
+927|As definições foram lidas do controlador.
+928|Que máquina tem?
+929|Vale a pena verificar
+930|não definido
+931|Adicionar um contador
+932|Conta-se pelo tempo em que os trabalhos realmente correm (do início ao fim ou a Parar), não por estimativas. O total não pode ser reposto.
+933|Nome do contador (um tubo, uma lente, uma correia)
+934|Contador {}
+935|Eliminar este contador
+936|Manutenção devida: {}
+937|Lembrar após
+938|Repor o contador
+939|Recomeçar do zero o contador "{}"?
+940|Tempo total de trabalho: {}
+941|Manutenção
+942|Do modelo
+943|As notas têm mais de {} caracteres e não podem ser guardadas.
+944|As suas notas (Markdown)
+945|p. ex. Definições que funcionaram: air assist 20 %, foco 12 mm
+946|Notas
+947|Ativa
+948|Adicionar uma câmara
+949|Endereço
+950|Auto
+951|Nome da câmara
+952|Número da câmara
+953|Câmara deste computador
+954|Câmara {}
+955|Câmaras que vigiam a máquina. A ativa dá a imagem em direto. Uma câmara só pode ser ligada com um endereço válido.
+956|Coeficientes da distorção da lente (radial k1–k3, tangencial p1, p2) para coordenadas medidas a partir do centro em unidades do lado maior da imagem. Todos 0 = sem correção. Introduzidos à mão: não há calibração automática.
+957|Eliminar esta câmara
+958|Para uma câmara deste computador: pede o formato YUYV não comprimido quando o sistema permitir.
+959|Formato
+960|Correção da lente
+961|Imagem em direto da máquina: um fluxo MJPEG ou o endereço de um instantâneo JPEG (http ou https). RTSP não é suportado.
+962|Redução de ruído
+963|Não é um endereço http ou https.
+964|Imagem
+965|Preferir YUYV
+966|Ligar ou desligar esta câmara
+967|O endereço não é válido: é preciso um endereço http ou https
+968|Equilíbrio de brancos
+969|Adicionar um ponto
+970|Alinhar pelos pontos
+971|Eliminar este ponto
+972|Ajusta a imagem aos pontos (mínimos quadrados) e move os cantos em conformidade.
+973|Pontos insuficientes, ou estão numa linha.
+974|Pares de um ponto da imagem (pixéis) e o seu lugar na área de trabalho (mm). Pelo menos 3, recomendam-se 4; fixam o alinhamento, perspetiva incluída.
+975|Pontos dos cantos atuais
+976|Pontos de referência
+977|Substitui os pontos pelos quatro cantos da imagem e onde estão agora.

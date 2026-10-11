@@ -107,8 +107,29 @@
 * Start window to choose the device (machine profile) you work with; profiles are remembered.
 * A profile holds the controller (GRBL, Marlin, Ruida, Trocen), laser type (diode or CO2), units, work area,
   machine zero, S-value max, travel speed, baud rate, serial port, jog step and feed, frame power and the
-  camera alignment. The device configuration window groups the options into Device, Connection (serial port or TCP) and
-  Camera; the Device tab selects a device and shows all its settings.
+  camera alignment. The device configuration window is a resizable window with pages: General, Hardware, Laser, G-code, Connection (serial port or TCP) and Camera.
+  The Device tab selects a device and shows all its settings.
+* **Axes and limits:** machine zero in any of four corners, inverted axes and panel orientation (one design-to-machine
+  transform for jog, frame, G-code and file export); margins and optional software limits (hatched / outlined on the
+  canvas, jog stops at them); a **check before the job** blocks Start, Frame and export when something lies outside the
+  allowed area and asks for confirmation on warnings (0 % power, nothing to burn); after connecting GRBL is read once
+  and warned about laser mode off (`$32`) and a `$30` that differs from the profile.
+* **G-code per device:** maximum cutting speed and acceleration (ramped time estimate, speed warning), dialects (GRBL M3 /
+  M4, Marlin, Smoothieware), an Advanced page with own start / end of the job and air assist commands, power mode per
+  layer (M3 / M4), and optional arcs (G2 / G3) with their own tolerance and a setting for the curve flattening.
+* **Connection and firmware:** simple (one line at a time) or counting streaming, a report when a job waits for an answer
+  while the machine stands still, serial port bound to its USB ids with automatic reconnect, homing / clearing an alarm
+  after connecting, single-axis homing when the firmware has it, and a **Firmware ($$)** page (all GRBL settings with
+  meaning and typical values, checked and confirmed writes, backup / restore with read-back, typed-word factory reset;
+  `M503` text for Marlin).
+* **Laser heads:** several heads per device (tool number, laser type including fibre, wavelength, power, frame and focus
+  settings, beam spot, pointer offset, stored PWM values); layers choose a head, the G-code scales S by the head's S max
+  and writes `T<n>`; a focus beam with a safety off switch; pointer alignment and a laser-off dry run.
+* **Hooks, macros and no-go zones:** own G-code at the start and end of layers and objects with `{variables}`, named macros
+  with `@include` run from the Device tab, and rectangular / round no-go zones that block Start, Frame and export when
+  any move (also travel) touches them; all validated before they are kept.
+* **Z axis and rotary:** an optional Z axis (range, layer heights and a step per pass, Z jog, checked heights) and a rotary
+  attachment (chuck or rollers, Y or true A axis, steps per mm for `$101`, rotary layers, circumference check and marks).
 * **While a job runs** the Device tab locks jog, cancel jog, home, unlock and the jog options; pause, resume and STOP
   stay. Connect is green and Disconnect purple.
 * **Read from device:** the device configuration window can connect and read work area, S-value max, travel
@@ -122,6 +143,14 @@
   (asks for administrator rights through `pkexec`, keeps a backup of the old file, needs a confirmation). A
   local-only option is offered for use with an SSH tunnel, with a warning that the port is otherwise open to the
   network.
+* **Device templates and profiles:** generic templates (GRBL diode, GRBL CO2, K40 conversion, Marlin diode), a
+  first-run setup with an optional read from the controller, duplicate, export and import of a profile (format
+  version, strict validation, no port from the file).
+* **Maintenance and notes:** working time and own counters with limits (counted from the time jobs really run) and
+  per-device notes in Markdown with a preview.
+* **Cameras:** several cameras per device (http / https stream or a camera of this computer), picture settings
+  (brightness, contrast, white balance, noise reduction, YUYV), manual lens correction, and alignment of the overlay
+  by 3 or more reference points (least-squares perspective fit).
 * **Camera view:** give the device a camera URL (an MJPEG stream or a JPEG snapshot address, http or https) and a
   "Camera view" button appears next to the preview button. The picture can also be shown as the overlay on the
   work area. RTSP streams are not supported; use an MJPEG address (most camera software offers one). The view
@@ -219,4 +248,4 @@
   Linux) and in the native macOS menu bar (menu titles on macOS stay text, as the system requires).
 
 **Not yet implemented:** direct Ruida / Trocen binary protocols, scan angles for images, kerning and complex
-script shaping in text, lens-distortion correction for the camera.
+script shaping in text, automatic lens calibration for the camera (the lens correction is entered by hand).

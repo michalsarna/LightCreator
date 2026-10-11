@@ -664,3 +664,315 @@
 663|Tikketta ġdida
 664|Żid jew neħħi t-tikketti offruti għas-saffi ta' materjal
 665|Żid
+666|Ġenerali
+667|Hardware
+668|G-code
+669|Quddiem fuq il-lemin
+670|Wara fuq il-lemin
+671|Aqleb l-assi
+672|Orjentazzjoni tal-pannell
+673|Nattiva
+674|Mdawra lejn ix-xellug
+675|Mdawra lejn il-lemin
+676|Marġini
+677|Limiti proprji
+678|Limiti tas-software
+679|Strixxi mal-ġnub taż-żona tax-xogħol li l-magna ma tistax tuża (clamps, qafas); xejn ma jista' jitqiegħed jew jiċċaqlaq hemm
+680|Ir-ras hija fit-tarf taż-żona permessa.
+681|Kontroll qabel ix-xogħol
+682|Kompli xorta waħda
+683|Ikkoreġi l-iżbalji l-ewwel: magħhom ma jintbagħat, ma jiġi ffrejmjat u ma jiġi esportat xejn.
+684|Is-saff {} jaħraq b'qawwa ta' 0 %.
+685|Is-saff {} għandu oġġetti imma l-ebda mogħdija (eż. linji miftuħa fuq saff ta' mili).
+686|Agħżel l-oġġetti
+687|Il-qafas huwa barra mil-limiti tas-software.
+688|Il-qafas huwa barra miż-żona li tista' tintuża (lil hinn miż-żona tax-xogħol jew f'marġni).
+689|Il-mogħdija tas-saff {} titlaq miż-żona permessa (overscan jew movimenti vojta).
+690|{} oġġett/i huma barra mil-limiti tas-software.
+691|{} oġġett/i huma barra miż-żona li tista' tintuża (lil hinn miż-żona tax-xogħol jew f'marġni).
+692|Ixgħel il-modalità tal-laser ($32=1)
+693|Il-modalità tal-laser ($32) hija mitfija.
+694|Il-kontrollur jirrapporta problema
+695|Il-valur massimu S tal-kontrollur ($30) huwa {}, il-profil juża {}.
+696|Dan jikteb $32=1 fl-issettjar tal-kontrollur. Tkompli?
+697|Uża l-valur tal-kontrollur
+698|Bi valuri differenti l-qawwa fil-G-code mhux se taqbel mal-perċentwali li ssettjajt.
+699|Meta l-modalità tal-laser tkun mitfija GRBL iġib ruħu bħal kontrollur tal-ispindil: il-laser jista' jinxtegħel f'movimenti mgħaġġla u l-qawwa ma ssegwix il-veloċità.
+700|Veloċità massima tal-qtugħ
+701|Aċċelerazzjoni
+702|0 = bla limitu. Is-saffi aktar mgħaġġla minn dan jirċievu twissija qabel ix-xogħol; l-istima tal-ħin tuża l-aktar din il-veloċità.
+703|0 = mhux magħruf. B'valur l-istima tal-ħin tinkludi r-rampi tal-bidu u tal-waqfien u l-pannell tas-saff jissuġġerixxi overscan.
+704|Issuġġerit: {} (id-distanza tal-brejkijiet b'din il-veloċità u bl-aċċelerazzjoni tal-magna)
+705|Is-saff {} huwa aktar mgħaġġel mill-veloċità massima tal-qtugħ tal-magna.
+706|Awtomatiku (mill-kontrollur)
+707|Djalett tal-G-code
+708|Smoothieware: S jinkiteb bħala frazzjoni tal-qawwa sħiħa (issettja S max fuq 1). L-istreaming jaħdem bħal dak ta' GRBL; xejn minn dan ma ġie ppruvat fuq hardware reali.
+709|Jintuża meta d-djalett ikun awtomatiku; djalett GRBL magħżul jiddeċiedi waħdu bejn M3 u M4.
+710|Avvanzat
+711|Qasam tal-G-code fuq il-paġna Avvanzat fih karattru ta' kontroll jew huwa twil wisq.
+712|Kmandi tal-air assist
+713|Tmiem ix-xogħol
+714|Mitfi
+715|Mixgħul
+716|Jissostitwixxi l-M2 aħħari. Il-laser dejjem jintefa u r-ras tintbagħat id-dar (jekk issettjat) qabel. Vojt = integrat.
+717|Jissostitwixxi l-linji tal-unitajiet, il-modalità assoluta, il-pjan u l-modalità tal-laser. Vojt = integrat.
+718|Irrestawra l-valuri awtomatiċi
+719|Bidu tax-xogħol
+720|G-code ħażin jista' jaqbad il-laser, jibgħat ir-ras kontra l-limiti jew jeqred il-materjal. Ittestja bil-laser mitfi jew bl-inqas qawwa.
+721|Modalità tal-qawwa
+722|Bħall-apparat
+723|Kostanti (M3)
+724|Dinamika (M4)
+725|M4 (dinamika) ibaxxi l-qawwa fil-kantunieri u waqt l-aċċelerazzjoni; M3 (kostanti) iżżommha. Il-G-code jaqleb bejniethom meta s-saffi jkunu differenti.
+726|Tolleranza tal-arkijiet
+727|Arkijiet (G2 / G3)
+728|Arkijiet: GRBL normalment jittratta G2 / G3, Marlin biss meta jinbena b'ARC_SUPPORT, u Smoothieware għandu mġiba tiegħu. Xi kontrolluri jinjoraw l-arkijiet jew iwettquhom ħażin: ittestja bil-laser mitfi. L-arkijiet jintużaw għall-konturi u ċ-ċrieki, mhux għal linji tal-iskan jew immaġini.
+729|Tolleranza tal-kurvi
+730|Kemm tista' tiddevja kurva ċatta (Bézier, test) mill-kurva vera.
+731|Ikteb il-kurvi bħala arkijiet fejn jaqblu
+732|Il-għadd jimla l-buffer tal-kontrollur u huwa ċkejken. Is-sempliċi jibgħat linja waħda u jistenna l-ok tagħha: bil-mod, imma għal firmware li jwieġeb ħażin.
+733|Kompli stenna
+734|L-ebda tweġiba mill-kontrollur għal {} s waqt li jaħdem xogħol (stat: {}).
+735|Xejn ma kompla jew ma intbagħat. Il-magna tista' tkun sempliċement bil-mod jew il-linja ntilfet; ħares lejn il-console u agħżel.
+736|Waqqaf ix-xogħol
+737|Streaming
+738|Il-kontrollur mhux qed iwieġeb
+739|Għodd il-buffer
+740|Sempliċi (stenna kull ok)
+741|Isem ta' port, jew l-ID USB tal-manifattur u tal-prodott (VID:PID, eżadeċimali): jintuża l-port li għandu dawn l-ID.
+742|Qabbad ma' dan il-port
+743|Apparat USB marbut
+744|Qabbad mill-ġdid awtomatikament
+745|Qed jerġa' jikkonnettja…
+746|Port jew ID USB
+747|Rikonnessjoni
+748|Ftakar l-ID USB tal-port magħżul: meta ismu jinbidel, il-port jinstab mill-ġdid bihom.
+749|Ħoll ir-rabta
+750|Meta r-rabta tinqata' waħedha, erġa' pprova kull ftit sekondi sakemm tagħfas Skonnettja.
+751|xejn
+752|Wara l-konnessjoni
+753|Neħħi allarm
+754|It-tneħħija tal-allarm tbiddel il-homing: uża biss meta r-ras tkun taf li qiegħda f'post sigur.
+755|Agħmel homing tal-magna
+756|Homing {}
+757|Jagħmel homing tal-assi {} biss ($H{})
+758|L-{} issettjar kollha tal-fajl issa qegħdin fil-kontrollur.
+759|Ħu kopja tal-issettjar l-ewwel. Biex tkompli, ikteb {}:
+760|Ħu kopja f'fajl…
+761|Il-fajl ma jistax jintuża: {}
+762|Qabbad mal-magna l-ewwel (it-tab Apparat).
+763|Konness ma': {}
+764|Issettjar tal-fabbrika ($RST=$)…
+765|Marlin iżomm l-issettjar tiegħu fil-kmandi tiegħu stess (M92, M203, M204, ...): din il-paġna turi biss dak li jirrapporta `M503`.
+766|Għadu ma nqara xejn.
+767|Aqra l-issettjar ($$)
+768|Aqra l-issettjar (M503)
+769|Tassew tikteb $RST=$ fil-kontrollur?
+770|Irrestawra minn fajl…
+771|Irrestawra l-issettjar tal-fabbrika
+772|Irrestawra l-issettjar minn fajl
+773|Issettjar salvat f'{}
+774|Il-kontrollur diġà għandu kollha.
+775|Dawn l-issettjar jgħixu fil-kontrollur, mhux fil-profil. Biddel wieħed kull darba u ikteb il-valur ta' qabel: valur ħażin jista' jġiegħel il-magna titħarrek id-distanza ħażina jew tqabbad il-laser.
+776|Dawn l-issettjar tal-fajl huma differenti mill-kontrollur. Xejn ma jinkiteb sakemm ma tagħfasx Ikteb kollox.
+777|Dan jikteb $RST=$: kull issettjar tal-kontrollur jirritorna għall-valuri awtomatiċi tal-firmware. Il-passi, il-vjaġġ, il-veloċitajiet, il-modalità tal-laser u l-homing jinbidlu.
+778|Ikteb
+779|Tikteb ${} = {} fil-kontrollur? Issa huwa {}. Biddel issettjar wieħed kull darba u nota l-valur l-antik.
+780|Ikteb issettjar
+781|Ikteb kollox
+782|Tikteb {} issettjar fil-kontrollur? Il-magna se tġib ruħha kif jgħid il-fajl.
+783|{} minn {} issettjar huma differenti wara l-kitba:
+784|Valur
+785|Unità
+786|Tipiku
+787|mhux numru
+788|barra mill-medda
+789|Firmware ($$)
+790|0 = waħda tipika ({} W)
+791|0 = l-aktar komuni ({} nm)
+792|Raġġ dgħajjef kostanti biex tissettja l-għoli (modalità ta' fokus). 0 = l-ebda modalità ta' fokus.
+793|Żid ras tal-laser
+794|Tikka tar-raġġ
+795|Qawwa tal-fokus
+796|Veloċità tal-qafas
+797|Ras {}
+798|Qawwa ottika
+799|Frekwenza PWM
+800|Frekwenza massima PWM
+801|Spostament tal-indikatur
+802|Wisa' tal-impuls
+803|Firxa tal-wisa' tal-impuls
+804|Neħħi din ir-ras tal-laser
+805|Id-daqs tar-raġġ fuq il-materjal (0 = mhux magħruf). Intervall ta' mili iżgħar minnu jġiegħel il-linji ġirien jikkoinċidu.
+806|Il-valuri PWM jinżammu fil-profil u jiġu offruti bħala varjabbli għall-makro; ma jintbagħtux lill-kontrollur.
+807|In-numru li bih il-kontrollur jagħraf din ir-ras; jinkiteb bħala T<n> meta saff juża ras oħra. Irid jaqbel mal-mappa fil-kontrollur.
+808|Numru tal-għodda (T)
+809|Żewġ irjus tal-laser għandhom l-istess numru tal-għodda.
+810|Tul tal-mewġa
+811|Fejn hi t-tikka ħamra tal-indikatur relattiv għar-raġġ (x lejn il-lemin, y 'l isfel). Jintuża mill-allinjament mal-indikatur fit-tab Apparat.
+812|eż. Dijodu blu
+813|Ras tal-laser
+814|L-intervall huwa iżgħar mit-tikka tar-raġġ ({}): il-linji ġirien jikkoinċidu.
+815|IR-RAĠĠ TAL-FOKUS MIXGĦUL: agħfas biex tqffel
+816|Fokus
+817|Iqabbad raġġ dgħajjef kostanti biex tissettja l-għoli tal-fokus
+818|Raġġ tal-fokus mixgħul
+819|Raġġ tal-fokus mitfi
+820|Allinja mal-indikatur
+821|Tmexxija niexfa bl-indikatur
+822|Tmexxija niexfa bl-indikatur: {} linji, laser mitfi
+823|Xejn x'jitmexxa: l-ebda forma fuq is-saffi tal-output
+824|Tgħaddi mill-mogħdija tax-xogħol imċaqlqa bl-ispostament tal-indikatur bil-laser mitfi, biex tara fejn tmur.
+825|Għal din is-sessjoni biss: il-qafas u t-tmexxija niexfa jmorru lura bl-ispostament tat-tikka ħamra tal-indikatur, biex it-tikka tinżel fejn tinżel ir-raġġ. Ix-xogħlijiet u t-tħarrik manwali qatt ma jiċċaqalqu.
+826|Hook {}: {}
+827|Hooks
+828|G-code proprju miktub fix-xogħol: meta jibda saff, qabel u wara kull oġġett, meta jispiċċa saff. Bil-hooks tal-oġġetti saff jinħaraq oġġett b'oġġett (u darba għal kull passaġġ).
+829|Varjabbli: {}
+830|Bidu tas-saff
+831|Tmiem is-saff
+832|Bidu tal-oġġett
+833|Tmiem l-oġġett
+834|Makro huwa l-G-code proprju tiegħek: jista' jqabbad il-laser jew iċaqlaq ir-ras. Mexxih biss meta tkun taf x'jagħmel. Din il-mistoqsija titfaċċa darba għal kull sessjoni.
+835|Żid makro
+836|Ħassar din il-makro
+837|Isem il-makro
+838|Makro {}
+839|Makro {}: {}
+840|Makro {}: {} linji
+841|Makro
+842|Skripts bl-isem li tmexxi bl-id mit-tab Apparat. Kmand wieħed f'linja; kummenti wara ; jew bejn parentesi; @include(isem) iddaħħal makro oħra. Il-varjabbli tal-magna jistgħu jintużaw.
+843|Mexxi l-makro {}
+844|Imexxi din il-makro fuq il-magna
+845|Żid żona
+846|Ċirku
+847|Ħassar din iż-żona
+848|Partijiet taż-żona tax-xogħol li l-magna qatt ma għandha tidħol fihom (clamp, fixture). Moviment li jmiss żona attiva, anki bil-laser mitfi, iwaqqaf Ibda, Qafas u l-esportazzjoni. Il-programm ma jduru madwar iż-żoni.
+849|Il-qafas imiss iż-żona pprojbita "{}".
+850|Il-mogħdija tas-saff {} timmiss iż-żona pprojbita "{}".
+851|Isem iż-żona
+852|Żona {}
+853|Żoni pprojbiti
+854|Uri ż-żoni pprojbiti
+855|Kemm jiċċaqlaq Z ma' kull passaġġ ieħor (in-negattiv huwa 'l isfel meta 'l fuq huwa +Z). 0 = Z jibqa'.
+856|Z tal-magna li lejha tmur ir-ras qabel l-ewwel passaġġ. 0 flimkien ma' 0 għal kull passaġġ = Z ma jiċċaqlaqx.
+857|L-għoli Z tas-saff {} huma barra mill-vjaġġ tal-assi Z.
+858|Il-magna għandha assi Z
+859|Vjaġġ
+860|'L fuq huwa d-direzzjoni Z negattiva
+861|Z
+862|Assi Z
+863|Għoli Z
+864|Z għal kull passaġġ
+865|Hemm attachment rotatorju konness
+866|A iddur {} gradi għal kull millimetru fuq il-wiċċ.
+867|Is-saffi kollha li jinħarqu jridu jkunu rotatorji, jew l-ebda wieħed. Id-disinn ma jistax ikun itwal mill-ċirkonferenza tal-biċċa.
+868|L-ewwel jitlob konferma. Jinbidel biss l-assi Y tal-kontrollur.
+869|Aħraq dan is-saff fuq ir-rotatorju
+870|Chuck
+871|Ċirkonferenza
+872|GRBL 1.1 għandu tliet assi: l-assi A mhux disponibbli, jintuża Y.
+873|Tip
+874|Is-saffi mmarkati bħala rotatorji jinħarqu fuq l-attachment. Il-mudell huwa sempliċi: chuck iduru skont id-dijametru tal-biċċa, ir-rullijiet iċaqilqu l-wiċċ bħal tagħhom; magna vera teħtieġ ittestjar.
+875|Mikro-passi tal-mutur għal dawra sħiħa ta' dak li jmexxi (il-chuck jew rullu wieħed).
+876|Mikro-passi għal kull dawra
+877|Jissostitwixxi Y (il-mutur Y idawwar il-biċċa)
+878|Dijametru tar-rullu
+879|Rullijiet
+880|Rotatorju
+881|Saffi rotatorji u ċatti ma jistgħux ikunu fl-istess xogħol: immarka s-saffi kollha li jinħarqu bħala rotatorji, jew l-ebda wieħed.
+882|Rotazzjoni fil-G-code
+883|Il-kontrollur jeħtieġ {} passi għal kull mm fuq l-assi Y ($101).
+884|Id-disinn fuq is-saff {} huwa itwal mill-ċirkonferenza tal-biċċa.
+885|Iċ-ċirkonferenza tal-biċċa: id-disinn ma jistax ikun itwal.
+886|Assi A veru (gradi)
+887|Dijametru tal-biċċa
+888|Ikteb $101 fil-kontrollur…
+889|Bħal kaxxa jew ċilindru fuq il-mejda: il-movimenti 'l fuq jew 'l isfel mill-medda huma ħielsa.
+890|Biss f'dawn l-għoli (Z)
+891|Profil vojt
+892|Kopja ta' dan il-profil
+893|Żid apparat
+894|Ikkupjat fi {}
+895|Esporta…
+896|Il-profil {} ġie importat
+897|Importa…
+898|Aqra profil minn fajl
+899|Aħżen dan il-profil f'fajl
+900|Profil maħżun f'{}
+901|Punti tat-tluq: magni ġenerali b'numri tipiċi. Iċċekkjahom mad-dokumentazzjoni tal-magna tiegħek.
+902|Laser dijodu GRBL 400 × 400
+903|Laser CO2 GRBL 300 × 200
+904|Konverżjoni K40 (GRBL) 300 × 200
+905|Laser dijodu Marlin 400 × 400
+906|Laser dijodu GRBL 1.1 fuq mejda ta' 400 × 400 mm, żero quddiem fix-xellug, qawwa dinamika.
+907|Laser CO2 GRBL 1.1 fuq mejda ta' 300 × 200 mm, żero quddiem fix-xellug.
+908|Laser CO2 K40 b'bord GRBL: 300 × 200 mm, żero fil-kantuniera ta' wara fix-xellug (fuq fix-xellug).
+909|Laser dijodu b'firmware Marlin (funzjoni laser, S 0–255) fuq mejda ta' 400 × 400 mm.
+910|Lura
+911|Konnessjoni (mhux obbligatorja)
+912|Spiċċa
+913|Jekk il-magna hija konnessa issa, iż-żona tax-xogħol u l-veloċità tagħha jistgħu jinqraw mill-kontrollur.
+914|Il-modalità tal-laser ($32) u l-valur massimu S ($30) tal-kontrollur ma nqrawx: jiġu ċċekkjati meta tikkonnettja.
+915|Isem u unitajiet
+916|Li jmiss
+917|Ma hemm l-ebda marġni jew limiti tas-software: il-medda sħiħa tal-assi hija ż-żona tax-xogħol. Issettjahom fil-paġna Hardware jekk clamp jew qafas ikun fil-mogħdija.
+918|Għad ma hemmx port jew host: agħżlu fl-issettjar tal-apparat qabel tikkonnettja.
+919|Xejn hawnhekk ma ġie ppruvat fuq il-magna tiegħek: agħmel l-ewwel test bil-laser mitfi jew bl-inqas qawwa.
+920|Agħżel l-eqreb punt tat-tluq. Kollox jista' jinbidel aktar tard.
+921|Issettja bl-idejn…
+922|Issettja l-magna tiegħek ({}/{})
+923|Aqbeż
+924|Aqbeż dawn il-passi u fetaħ l-issettjar tal-apparat
+925|Sommarju
+926|L-apparat ġie miżjud. Agħfas Kompli biex tibda.
+927|L-issettjar inqara mill-kontrollur.
+928|X'magna għandek?
+929|Ta' min jiċċekkja
+930|mhux issettjat
+931|Żid kontatur
+932|Jingħadd mill-ħin li fih ix-xogħlijiet jaħdmu tassew (mill-bidu sat-tmiem jew Waqqaf), mhux minn stimi. It-total ma jistax jiġi rrisettjat.
+933|Isem il-kontatur (tubu, lenti, ċinturin)
+934|Kontatur {}
+935|Ħassar dan il-kontatur
+936|Meħtieġa manutenzjoni: {}
+937|Fakkar wara
+938|Irrisettja l-kontatur
+939|Terġa' tibda l-kontatur "{}" minn żero?
+940|Ħin totali tax-xogħol: {}
+941|Manutenzjoni
+942|Mit-template
+943|In-noti huma itwal minn {} karattru u ma jistgħux jinħażnu.
+944|In-noti tiegħek (Markdown)
+945|eż. Issettjar li ħadem: air assist 20 %, fokus 12 mm
+946|Noti
+947|Attiva
+948|Żid kamera
+949|Indirizz
+950|Awto
+951|Isem tal-kamera
+952|Numru tal-kamera
+953|Kamera ta' dan il-kompjuter
+954|Kamera {}
+955|Kameras li josservaw il-magna. Dik attiva tagħti x-xbieha dirett. Kamera tista' tinxtegħel biss b'indirizz validu.
+956|Koeffiċjenti tad-distorsjoni tal-lenti (radjali k1–k3, tanġenzjali p1, p2) għal koordinati mil-ċentru f'unitajiet tal-iktar ġenb twil tax-xbieha. Kollha 0 = l-ebda korrezzjoni. Jiddaħħlu bl-idejn: m'hemmx kalibrazzjoni awtomatika.
+957|Neħħi din il-kamera
+958|Għal kamera ta' dan il-kompjuter: itlob il-format YUYV mhux ikkompressat meta s-sistema tippermetti.
+959|Format
+960|Korrezzjoni tal-lenti
+961|Xbieha dirett tal-magna: fluss MJPEG jew indirizz ta' snapshot JPEG (http jew https). RTSP mhuwiex appoġġat.
+962|Tnaqqis tal-istorbju
+963|Mhuwiex indirizz http jew https.
+964|Xbieha
+965|Ippreferi YUYV
+966|Ixgħel jew itfi din il-kamera
+967|L-indirizz mhuwiex validu: meħtieġ indirizz http jew https
+968|Bilanċ tal-abjad
+969|Żid punt
+970|Allinja skont il-punti
+971|Neħħi dan il-punt
+972|Jadatta x-xbieha mal-punti (l-inqas kwadri) u jċaqlaq il-kantunieri skont dan.
+973|Punti mhux biżżejjed, jew jinsabu fuq linja waħda.
+974|Pari ta' punt fix-xbieha (pikseli) u l-post tiegħu fl-erja tax-xogħol (mm). Mill-inqas 3, 4 rakkomandati; jiffissaw l-allinjament, il-prospettiva inkluża.
+975|Punti mill-kantunieri attwali
+976|Punti ta' referenza
+977|Jissostitwixxi l-punti bl-erba' kantunieri tax-xbieha u fejn jinsabu issa.

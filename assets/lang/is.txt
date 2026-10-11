@@ -664,3 +664,315 @@
 663|Ný merking
 664|Bæta við eða fjarlægja merkingar fyrir lög efnis
 665|Bæta við
+666|Almennt
+667|Vélbúnaður
+668|G-kóði
+669|Fram til hægri
+670|Aftan til hægri
+671|Snúa ásum við
+672|Stefna spjaldsins
+673|Upprunaleg
+674|Snúið til vinstri
+675|Snúið til hægri
+676|Spássíur
+677|Eigin mörk
+678|Hugbúnaðarmörk
+679|Rendur á jaðri vinnusvæðisins sem vélin getur ekki notað (klemmur, rammi); ekkert má setja eða færa þar
+680|Hausinn er við jaðar leyfða svæðisins.
+681|Athugun fyrir verkið
+682|Halda áfram samt
+683|Lagaðu villurnar fyrst: með þeim er ekkert sent, rammað inn eða flutt út.
+684|Lag {} brennir með 0 % afli.
+685|Lag {} hefur hluti en enga braut (t.d. opnar línur á fyllingarlagi).
+686|Velja hluti
+687|Ramminn er utan hugbúnaðarmarka.
+688|Ramminn er utan nothæfs svæðis (utan vinnusvæðis eða í spássíu).
+689|Braut lags {} fer út fyrir leyfilegt svæði (yfirskönnun eða tómar hreyfingar).
+690|{} hlutur/hlutir eru utan hugbúnaðarmarka.
+691|{} hlutur/hlutir eru utan nothæfs svæðis (utan vinnusvæðis eða í spássíu).
+692|Kveikja á leysiham ($32=1)
+693|Leysihamur ($32) er slökktur.
+694|Stýringin tilkynnir vandamál
+695|Hæsta S-gildi stýringarinnar ($30) er {}, sniðið notar {}.
+696|Þetta skrifar $32=1 í stillingar stýringarinnar. Halda áfram?
+697|Nota gildi stýringarinnar
+698|Með mismunandi gildum passar aflið í G-kóða ekki við hlutföllin sem þú stillir.
+699|Þegar leysihamur er slökktur hegðar GRBL sér eins og snældustýring: leysirinn getur kviknað í hraðfærslum og aflið fylgir ekki hraðanum.
+700|Hámarks skurðhraði
+701|Hröðun
+702|0 = engin takmörk. Lög sem eru hraðari fá viðvörun fyrir verkið; tímaáætlunin notar í mesta lagi þennan hraða.
+703|0 = óþekkt. Með gildi inniheldur tímaáætlunin ræsi- og stöðvunarrampa og lagaspjaldið leggur til yfirskönnun.
+704|Tillaga: {} (hemlunarvegalengd á þessum hraða og með hröðun vélarinnar)
+705|Lag {} er hraðara en hámarks skurðhraði vélarinnar.
+706|Sjálfvirkt (frá stýringunni)
+707|G-kóða mállýska
+708|Smoothieware: S er skrifað sem brot af fullu afli (stilltu S-gildi hámark á 1). Straumun virkar eins og í GRBL; ekkert af þessu hefur verið prófað á raunverulegum vélbúnaði.
+709|Notað þegar mállýskan er sjálfvirk; valin GRBL-mállýska ákveður sjálf milli M3 og M4.
+710|Ítarlegt
+711|G-kóða reitur á síðunni Ítarlegt inniheldur stýristaf eða er of langur.
+712|Skipanir loftaðstoðar
+713|Lok verksins
+714|Af
+715|Á
+716|Kemur í stað lokaskipunarinnar M2. Leysirinn er alltaf slökktur og hausinn sendur heim (ef stillt) á undan. Autt = innbyggt.
+717|Kemur í stað lína fyrir einingar, algera stillingu, plan og leysiham. Autt = innbyggt.
+718|Endurheimta sjálfgefið
+719|Upphaf verksins
+720|Rangur G-kóði getur kveikt á leysinum, ekið hausnum í endastopp eða eyðilagt efnið. Prófaðu með slökktan leysi eða minnsta afl.
+721|Aflhamur
+722|Eins og tækið
+723|Fast (M3)
+724|Breytilegt (M4)
+725|M4 (breytilegt) lækkar aflið í hornum og við hröðun; M3 (fast) heldur því. G-kóðinn skiptir á milli þegar lög eru ólík.
+726|Vikmörk boga
+727|Bogar (G2 / G3)
+728|Bogar: GRBL ræður yfirleitt við G2 / G3, Marlin aðeins þegar það er byggt með ARC_SUPPORT og Smoothieware hegðar sér á eigin hátt. Sumar stýringar hunsa boga eða keyra þá rangt: prófaðu með slökktan leysi. Bogar eru notaðir fyrir útlínur og hringi, ekki skönnunarlínur eða myndir.
+729|Vikmörk ferla
+730|Hversu mikið flattur ferill (Bézier, texti) má víkja frá hinum rétta.
+731|Skrifa ferla sem boga þar sem þeir passa
+732|Talning fyllir biðminni stýringarinnar og er hröð. Einföld sendir eina línu og bíður eftir ok: hæg, en fyrir fastbúnað sem svarar rangt.
+733|Halda áfram að bíða
+734|Ekkert svar frá stýringunni í {} s meðan verk er í gangi (staða: {}).
+735|Ekkert var endurræst eða sent. Vélin getur bara verið hæg eða línan týnst; skoðaðu stjórnborðið og veldu.
+736|Stöðva verkið
+737|Streymi
+738|Stýringin svarar ekki
+739|Telja biðminnið
+740|Einföld (bíða eftir hverju ok)
+741|Heiti tengis eða USB auðkenni framleiðanda og vöru (VID:PID, sextándakerfi): tengið með þessum auðkennum er notað.
+742|Binda við þetta tengi
+743|Bundið USB-tæki
+744|Tengjast aftur sjálfkrafa
+745|Tengist aftur…
+746|Tengi eða USB auðkenni
+747|Endurtenging
+748|Muna USB auðkenni valda tengisins: tengið finnst aftur með þeim þegar nafni þess er breytt.
+749|Aftengja binding
+750|Þegar tengingin slitnar sjálf, reyna aftur á nokkurra sekúndna fresti þar til þú ýtir á Aftengja.
+751|ekkert
+752|Eftir tengingu
+753|Hreinsa viðvörun
+754|Að hreinsa viðvörun sleppir núllstillingu: notaðu aðeins þegar vitað er að hausinn er á öruggum stað.
+755|Núllstilla vélina
+756|Núllstilla {}
+757|Núllstillir aðeins {}-ásinn ($H{})
+758|Allar {} stillingar skrárinnar eru nú í stýringunni.
+759|Taktu fyrst afrit af stillingunum. Til að halda áfram skaltu slá inn {}:
+760|Afrita í skrá…
+761|Ekki er hægt að nota skrána: {}
+762|Tengstu fyrst við vélina (flipinn Tæki).
+763|Tengt við: {}
+764|Verksmiðjustillingar ($RST=$)…
+765|Marlin geymir stillingar sínar í eigin skipunum (M92, M203, M204, ...): þessi síða sýnir aðeins það sem `M503` skilar.
+766|Ekkert lesið enn.
+767|Lesa stillingar ($$)
+768|Lesa stillingar (M503)
+769|Skrifa $RST=$ í stýringuna í alvöru?
+770|Endurheimta úr skrá…
+771|Endurheimta verksmiðjustillingar
+772|Endurheimta stillingar úr skrá
+773|Stillingar vistaðar í {}
+774|Stýringin hefur þær allar nú þegar.
+775|Þessar stillingar eru í stýringunni, ekki í sniðinu. Breyttu einni í einu og skrifaðu niður fyrra gildið: rangt gildi getur látið vélina færast ranga vegalengd eða kveikt á leysinum.
+776|Þessar stillingar skrárinnar eru frábrugðnar stýringunni. Ekkert er skrifað fyrr en þú ýtir á Skrifa allt.
+777|Þetta skrifar $RST=$: hver stilling stýringarinnar fer aftur í sjálfgefin gildi fastbúnaðarins. Skref, færsla, hraði, leysiháttur og núllstilling breytast.
+778|Skrifa
+779|Skrifa ${} = {} í stýringuna? Nú er það {}. Breyttu einni stillingu í einu og skrifaðu niður gamla gildið.
+780|Skrifa stillingu
+781|Skrifa allt
+782|Skrifa {} stillingar í stýringuna? Vélin hagar sér eins og skráin segir.
+783|{} af {} stillingum eru ólíkar eftir skrif:
+784|Gildi
+785|Eining
+786|Dæmigert
+787|ekki tala
+788|utan sviðs
+789|Fastbúnaður ($$)
+790|0 = dæmigerður ({} W)
+791|0 = venjuleg ({} nm)
+792|Veikur stöðugur geisli til að stilla hæðina (fókushamur). 0 = enginn fókushamur.
+793|Bæta við leysihaus
+794|Geislablettur
+795|Fókusafl
+796|Rammahraði
+797|Haus {}
+798|Ljósafl
+799|PWM tíðni
+800|Hámarks PWM tíðni
+801|Færsla bendils
+802|Púlsbreidd
+803|Svið púlsbreiddar
+804|Fjarlægja þennan leysihaus
+805|Stærð geislans á efninu (0 = óþekkt). Fyllibil undir henni lætur nálægar línur skarast.
+806|PWM gildi eru geymd í sniðinu og boðin sem breytur fyrir fjölva; þau eru ekki send til stýringarinnar.
+807|Númerið sem stýringin þekkir þennan haus undir; skrifað sem T<n> þegar lag notar annan haus. Það verður að passa við varpið í stýringunni.
+808|Verkfæranúmer (T)
+809|Tveir leysihausar hafa sama verkfæranúmer.
+810|Bylgjulengd
+811|Hvar rauði bendilspunkturinn er miðað við geislann (x til hægri, y niður). Notað af bendilsstillingu í flipanum Tæki.
+812|t.d. Blá díóða
+813|Leysihaus
+814|Bilið er minna en geislabletturinn ({}): nálægar línur skarast.
+815|FÓKUSGEISLI KVEIKTUR: ýttu til að slökkva
+816|Fókus
+817|Kveikir á veikum stöðugum geisla til að stilla fókushæðina
+818|Fókusgeisli kveiktur
+819|Fókusgeisli slökktur
+820|Stilla eftir bendlinum
+821|Þurrkeyrsla með bendlinum
+822|Þurrkeyrsla með bendlinum: {} línur, slökkt á leysi
+823|Ekkert til að keyra: engin form á úttakslögum
+824|Keyrir braut verksins færða um færslu bendilsins með slökktum leysi til að sjá hvert hún færi.
+825|Aðeins í þessari lotu: ramminn og þurrkeyrslan færast til baka um færslu rauða bendilspunktsins svo punkturinn lendir þar sem geislinn myndi lenda. Verk og handfærsla eru aldrei færð.
+826|Krókur {}: {}
+827|Krókar
+828|Eigin G-kóði skrifaður í verkið: þegar lag byrjar, fyrir og eftir hvern hlut, þegar lag endar. Með hlutakrókum er lag brennt hlut fyrir hlut (og einu sinni í hverri umferð).
+829|Breytur: {}
+830|Upphaf lags
+831|Lok lags
+832|Upphaf hlutar
+833|Lok hlutar
+834|Fjölvi er þinn eigin G-kóði: hann getur kveikt á leysinum eða fært hausinn. Keyrðu hann aðeins þegar þú veist hvað hann gerir. Þessi spurning er borin upp einu sinni í lotu.
+835|Bæta við fjölva
+836|Eyða þessum fjölva
+837|Nafn fjölva
+838|Fjölvi {}
+839|Fjölvi {}: {}
+840|Fjölvi {}: {} línur
+841|Fjölvar
+842|Nefnd skriftur sem þú keyrir í höndunum úr flipanum Tæki. Ein skipun í línu; athugasemdir á eftir ; eða í svigum; @include(nafn) setur inn annan fjölva. Breytur vélarinnar má nota.
+843|Keyra fjölvann {}
+844|Keyrir þennan fjölva á vélinni
+845|Bæta við svæði
+846|Hringur
+847|Eyða þessu svæði
+848|Hlutar vinnusvæðisins sem vélin má aldrei fara inn í (klemma, festing). Hreyfing sem snertir virkt svæði, líka með slökktum leysi, stöðvar Ræsa, Ramma og útflutning. Forritið sneiðir ekki hjá svæðum.
+849|Ramminn snertir bannsvæðið „{}“.
+850|Braut lags {} snertir bannsvæðið „{}“.
+851|Heiti svæðis
+852|Svæði {}
+853|Bannsvæði
+854|Sýna bannsvæði
+855|Hversu mikið Z færist með hverri umferð í viðbót (neikvætt er niður þegar upp er +Z). 0 = Z helst.
+856|Z vélarinnar sem hausinn fer á fyrir fyrstu umferð. 0 ásamt 0 á umferð = Z er ekki hreyft.
+857|Z-hæðir lags {} eru utan færslu Z-ássins.
+858|Vélin er með Z-ás
+859|Færsla
+860|Upp er neikvæð Z-átt
+861|Z
+862|Z-ás
+863|Z-hæð
+864|Z á umferð
+865|Snúningstæki er tengt
+866|A snýst um {} gráður fyrir hvern millimetra á yfirborðinu.
+867|Öll brennd lög verða að vera snúningslög, eða ekkert. Hönnunin má ekki vera hærri en ummál hlutarins.
+868|Biður fyrst um staðfestingu. Aðeins Y-ás stýringarinnar breytist.
+869|Brenna þetta lag á snúningstækinu
+870|Patróna
+871|Ummál
+872|GRBL 1.1 hefur þrjá ása: A-ás er ekki tiltækur, Y er notað.
+873|Gerð
+874|Lög merkt sem snúningur eru brennd á tækinu. Líkanið er einfalt: patróna snýst eftir þvermáli hlutarins, rúllur færa yfirborðið eins og sitt eigið; raunveruleg vél þarf prófanir.
+875|Örskref mótorsins fyrir heilan snúning þess sem hann knýr (patrónuna eða eina rúllu).
+876|Örskref á snúning
+877|Kemur í stað Y (Y-mótorinn snýr hlutnum)
+878|Þvermál rúllu
+879|Rúllur
+880|Snúningur
+881|Snúnings- og flöt lög mega ekki vera í sama verki: merktu öll brennd lög sem snúning, eða ekkert.
+882|Snúningur í G-kóða
+883|Stýringin þarf {} skref á mm á Y-ásnum ($101).
+884|Hönnunin á lagi {} er hærri en ummál hlutarins.
+885|Ummál hlutarins: hönnunin má ekki vera hærri.
+886|Raunverulegur A-ás (gráður)
+887|Þvermál hlutar
+888|Skrifa $101 í stýringuna…
+889|Eins og kassi eða sívalningur á borðinu: hreyfingar yfir eða undir bilinu eru frjálsar.
+890|Aðeins í þessum hæðum (Z)
+891|Autt snið
+892|Afrit af þessu sniði
+893|Bæta við tæki
+894|Afritað í {}
+895|Flytja út…
+896|Sniðið {} flutt inn
+897|Flytja inn…
+898|Lesa snið úr skrá
+899|Vista þetta snið í skrá
+900|Snið vistað í {}
+901|Upphafspunktar: almennar vélar með dæmigerðum tölum. Berðu þá saman við gögn vélarinnar þinnar.
+902|GRBL díóðuleysir 400 × 400
+903|GRBL CO2 leysir 300 × 200
+904|K40 breyting (GRBL) 300 × 200
+905|Marlin díóðuleysir 400 × 400
+906|GRBL 1.1 díóðuleysir á 400 × 400 mm borði, núll fremst til vinstri, breytilegt afl.
+907|GRBL 1.1 CO2 leysir á 300 × 200 mm borði, núll fremst til vinstri.
+908|K40 CO2 leysir með GRBL stjórnborði: 300 × 200 mm, núll í aftara vinstra (efra vinstra) horni.
+909|Díóðuleysir með Marlin fastbúnaði (leysieiginleiki, S 0–255) á 400 × 400 mm borði.
+910|Til baka
+911|Tenging (valfrjáls)
+912|Ljúka
+913|Ef vélin er tengd núna má lesa vinnusvæði hennar og hraða úr stýringunni.
+914|Leysihamur ($32) og hæsta S-gildi ($30) stýringarinnar voru ekki lesin: þau eru athuguð við tengingu.
+915|Nafn og einingar
+916|Áfram
+917|Engar spássíur eða hugbúnaðarmörk eru stillt: allt ásasviðið er vinnusvæðið. Stilltu þau á síðunni Vélbúnaður ef klemma eða rammi er fyrir.
+918|Tengi eða hýsill er ekki stillt enn: veldu það í tækisstillingum áður en þú tengir.
+919|Ekkert hér hefur verið prófað á vélinni þinni: gerðu fyrstu prófun með slökktan leysi eða minnsta afl.
+920|Veldu næsta upphafspunkt. Öllu má breyta síðar.
+921|Stilla í höndunum…
+922|Stilltu vélina þína ({}/{})
+923|Sleppa
+924|Sleppa þessum skrefum og opna tækisstillingar
+925|Samantekt
+926|Tækinu var bætt við. Ýttu á Halda áfram til að byrja.
+927|Stillingarnar voru lesnar úr stýringunni.
+928|Hvaða vél áttu?
+929|Vert að athuga
+930|ekki stillt
+931|Bæta við teljara
+932|Talið er frá þeim tíma sem verk keyra í raun (frá ræsingu til loka eða Stöðvunar), ekki frá áætlunum. Ekki er hægt að núllstilla heildina.
+933|Heiti teljara (rör, linsa, reim)
+934|Teljari {}
+935|Eyða þessum teljara
+936|Viðhald á gjalddaga: {}
+937|Minna á eftir
+938|Núllstilla teljarann
+939|Byrja teljarann „{}“ aftur frá núlli?
+940|Heildarvinnutími: {}
+941|Viðhald
+942|Úr sniðmátinu
+943|Athugasemdirnar eru lengri en {} stafir og er ekki hægt að vista.
+944|Þínar athugasemdir (Markdown)
+945|t.d. Stillingar sem virkuðu: loftaðstoð 20 %, fókus 12 mm
+946|Athugasemdir
+947|Virk
+948|Bæta við myndavél
+949|Heimilisfang
+950|Sjálfvirkt
+951|Nafn myndavélar
+952|Númer myndavélar
+953|Myndavél þessarar tölvu
+954|Myndavél {}
+955|Myndavélar sem fylgjast með vélinni. Sú virka sýnir beina mynd. Aðeins er hægt að kveikja á myndavél með gildu heimilisfangi.
+956|Stuðlar linsubjögunar (geislægur k1–k3, snertilægur p1, p2) fyrir hnit frá miðju í einingum lengri hliðar myndarinnar. Allir 0 = engin leiðrétting. Slegið inn handvirkt: engin sjálfvirk kvörðun.
+957|Eyða þessari myndavél
+958|Fyrir myndavél þessarar tölvu: biðja um óþjappað YUYV snið þar sem kerfið leyfir.
+959|Snið
+960|Linsuleiðrétting
+961|Bein mynd af vélinni: MJPEG-straumur eða heimilisfang JPEG-skyndimyndar (http eða https). RTSP er ekki stutt.
+962|Hávaðaminnkun
+963|Ekki http- eða https-heimilisfang.
+964|Mynd
+965|Kjósa YUYV
+966|Kveikja eða slökkva á þessari myndavél
+967|Heimilisfangið er ógilt: http- eða https-heimilisfang þarf
+968|Hvítjöfnun
+969|Bæta við punkti
+970|Stilla eftir punktunum
+971|Eyða þessum punkti
+972|Aðlagar myndina að punktunum (minnstu ferningar) og færir hornin til samræmis.
+973|Of fáir punktar, eða þeir liggja á einni línu.
+974|Pör af punkti á myndinni (dílar) og stað hans á vinnusvæðinu (mm). Að minnsta kosti 3, 4 mælt með; þeir ákvarða stillinguna ásamt fjarvídd.
+975|Punktar úr núverandi hornum
+976|Viðmiðunarpunktar
+977|Skiptir punktunum út fyrir fjögur horn myndarinnar og stöðu þeirra núna.

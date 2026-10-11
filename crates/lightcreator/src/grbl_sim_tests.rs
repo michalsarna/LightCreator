@@ -74,7 +74,7 @@ impl Session {
     fn connect() -> Session {
         let sim = Sim::start();
         let link = LaserLink::spawn(eframe::egui::Context::default());
-        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port: sim.port }, controller: Controller::Grbl });
+        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port: sim.port }, controller: Controller::Grbl, streaming: lc_core::Streaming::Counting });
         let mut s = Session { link, seen: Seen::default(), _sim: sim };
         s.wait("connected", 5.0, |v| v.connected == Some(true));
         s
@@ -85,7 +85,7 @@ impl Session {
             match e {
                 Evt::Connected(c) => self.seen.connected = Some(c),
                 Evt::Traffic(l) if l.dir == Dir::Rx && !l.poll => self.seen.rx.push(l.text),
-                Evt::Status { state, x, y } => {
+                Evt::Status { state, x, y, .. } => {
                     self.seen.state = state;
                     self.seen.pos = (x, y);
                 }
@@ -266,4 +266,100 @@ fn grbl_sim_job_sent_right_after_connect_is_not_lost() {
     let job: Vec<String> = ["G21", "G90", "G0 X2 Y3", "M5"].iter().map(|l| l.to_string()).collect();
     s.run_job(job, 15.0);
     s.wait_idle_at(2.0, 3.0, 15.0);
+}
+
+/// The settings report of `$$`, as the lines GRBL printed before its `ok`.
+fn read_settings(s: &mut Session) -> Vec<String> {
+    let from = s.seen.rx.len();
+    s.link.send(Cmd::Line("$$".into()));
+    s.wait("settings report", 5.0, |v| v.rx[from..].iter().any(|l| l == "ok"));
+    s.seen.rx[from..].to_vec()
+}
+
+#[test]
+#[ignore = "needs grbl-sim: tools/grbl-sim/build.sh"]
+fn grbl_sim_starts_with_laser_mode_off_and_accepts_enabling_it() {
+    // What the app does after connecting: read `$$`, warn when `$32` is 0, and write `$32=1` once the user agrees.
+    let mut s = Session::connect();
+    s.wait_banner();
+    let dev = lc_core::Device::default();
+    let before = Controller::Grbl.parse_settings(&read_settings(&mut s)).check(&dev);
+    assert!(before.laser_mode_off, "grbl-sim's default is $32=0");
+    s.link.send(Cmd::Line("$32=1".into()));
+    let after = Controller::Grbl.parse_settings(&read_settings(&mut s));
+    assert_eq!(after.laser_mode, Some(true));
+    assert!(s.errors().is_empty(), "{:?}", s.errors());
+}
+
+#[test]
+#[ignore = "needs grbl-sim: tools/grbl-sim/build.sh"]
+fn grbl_sim_runs_a_job_with_arcs_and_ends_where_expected() {
+    let mut s = Session::connect();
+    s.wait_banner();
+    s.fast_machine();
+    let mut d = Document::default();
+    d.device.gcode.arcs = true;
+    d.layers[0].mode = LayerMode::Line;
+    d.add(0, Kind::Ellipse { w: 20.0, h: 20.0 }, Xf::translate(30.0, 30.0));
+    let job = crate::laser::clean_gcode(&gcode::generate(&d).gcode);
+    assert!(job.iter().any(|l| l.starts_with("G2 ") || l.starts_with("G3 ")), "the circle should have become arcs");
+    s.run_job(job, 60.0);
+    // The job ends with the way back to the machine's zero.
+    s.wait_idle_at(0.0, 0.0, 30.0);
+    assert!(s.errors().is_empty(), "GRBL rejected lines: {:?}", s.errors());
+}
+
+#[test]
+#[ignore = "needs grbl-sim: tools/grbl-sim/build.sh"]
+fn grbl_sim_settings_can_be_read_changed_backed_up_and_restored() {
+    use lc_core::grbl_settings as gs;
+    let mut s = Session::connect();
+    s.wait_banner();
+    // The whole report: the settings the page knows are all there.
+    let all = gs::parse_report(&read_settings(&mut s));
+    for id in [0, 1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 20, 21, 22, 23, 24, 25, 26, 27, 30, 31, 32, 100, 101, 102, 110, 111, 112, 120, 121, 122, 130, 131, 132] {
+        assert!(all.contains_key(&id), "${id} is missing from the report: {all:?}");
+    }
+    // Change one setting and read it back.
+    let old = all[&110].clone();
+    s.link.send(Cmd::Line(gs::write_line(110, "1234")));
+    let changed = gs::parse_report(&read_settings(&mut s));
+    assert!(gs::same_value(&changed[&110], "1234"), "{}", changed[&110]);
+    // The backup text holds it, reads back strictly, and restoring it brings the old value back.
+    let backup = gs::backup_text(&all, &[], "test");
+    let file = gs::parse_backup(&backup).expect("the backup is readable");
+    for (id, v) in &file {
+        s.link.send(Cmd::Line(gs::write_line(*id, v)));
+    }
+    let restored = gs::parse_report(&read_settings(&mut s));
+    assert!(gs::same_value(&restored[&110], &old), "{} vs {old}", restored[&110]);
+    assert!(s.errors().is_empty(), "{:?}", s.errors());
+}
+
+#[test]
+#[ignore = "needs grbl-sim: tools/grbl-sim/build.sh"]
+fn grbl_sim_focus_beam_switches_on_with_m3_and_off_with_m5() {
+    let mut s = Session::connect();
+    s.wait_banner();
+    // Laser mode on, as the focus beam is meant for it.
+    s.link.send(Cmd::Line("$32=1".into()));
+    let mut dev = lc_core::Device::default();
+    dev.heads[0].focus_power = 1.5;
+    let on = gcode::focus_gcode(&dev, true).expect("focus lines");
+    let off = gcode::focus_gcode(&dev, false).expect("off lines");
+    let parser_state = |s: &mut Session| {
+        let from = s.seen.rx.len();
+        s.link.send(Cmd::Line("$G".into()));
+        s.wait("parser state", 5.0, |v| v.rx[from..].iter().any(|l| l == "ok"));
+        s.seen.rx[from..].iter().find(|l| l.starts_with("[GC:")).cloned().unwrap_or_default()
+    };
+    for l in &on {
+        s.link.send(Cmd::Line(l.clone()));
+    }
+    assert!(parser_state(&mut s).contains("M3"), "the beam is on");
+    for l in &off {
+        s.link.send(Cmd::Line(l.clone()));
+    }
+    assert!(parser_state(&mut s).contains("M5"), "the beam is off");
+    assert!(s.errors().is_empty(), "{:?}", s.errors());
 }

@@ -20,9 +20,9 @@ impl Target {
         if !dev.has_target() {
             return None;
         }
-        Some(match dev.link {
-            lc_core::LinkKind::Serial => Target::Serial { port: dev.port.clone(), baud: dev.baud },
-            lc_core::LinkKind::Tcp => Target::Tcp { host: dev.host.trim().to_string(), port: dev.tcp_port },
+        Some(match dev.connection.link {
+            lc_core::LinkKind::Serial => Target::Serial { port: resolve_port(&dev.connection.port, &dev.connection.usb_id, &list_port_info()), baud: dev.connection.baud },
+            lc_core::LinkKind::Tcp => Target::Tcp { host: dev.connection.host.trim().to_string(), port: dev.connection.tcp_port },
         })
     }
     fn label(&self) -> String {
@@ -61,7 +61,7 @@ fn open_link(t: &Target) -> Result<(Box<dyn Link>, bool), String> {
 }
 
 pub enum Cmd {
-    Connect { target: Target, controller: Controller },
+    Connect { target: Target, controller: Controller, streaming: lc_core::Streaming },
     Disconnect,
     /// A single immediate line (jog, $H, ...), queued ahead of any running job.
     Line(String),
@@ -103,8 +103,10 @@ pub enum Evt {
     /// A line that crossed the serial port.
     Traffic(ConsoleLine),
     Connected(bool),
-    Status { state: String, x: f64, y: f64 },
+    Status { state: String, x: f64, y: f64, z: f64 },
     Progress { done: usize, total: usize },
+    /// A job is running, the controller has not answered for `secs` and the machine is not moving.
+    Stalled { secs: u64, state: String },
 }
 
 pub struct LaserLink {
@@ -114,9 +116,13 @@ pub struct LaserLink {
 
 impl LaserLink {
     pub fn spawn(ctx: eframe::egui::Context) -> Self {
+        Self::spawn_with(ctx, STALL_AFTER)
+    }
+    /// `stall` is how long a job may wait for an answer, with the machine standing still, before it is reported.
+    pub fn spawn_with(ctx: eframe::egui::Context, stall: Duration) -> Self {
         let (tx, wrx) = channel();
         let (wtx, rx) = channel();
-        std::thread::spawn(move || worker(wrx, wtx, ctx));
+        std::thread::spawn(move || worker(wrx, wtx, ctx, stall));
         Self { tx, rx }
     }
     pub fn send(&self, c: Cmd) {
@@ -131,8 +137,56 @@ impl LaserLink {
     }
 }
 
-pub fn list_ports() -> Vec<String> {
-    serialport::available_ports().map(|p| p.into_iter().map(|x| x.port_name).collect()).unwrap_or_default()
+/// A serial port with the USB ids of the device behind it, when it is a USB one.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct PortInfo {
+    pub name: String,
+    pub usb: Option<(u16, u16)>,
+}
+
+impl PortInfo {
+    /// "/dev/ttyUSB0 (1a86:7523)".
+    pub fn label(&self) -> String {
+        match self.usb {
+            Some((v, p)) => format!("{} ({:04x}:{:04x})", self.name, v, p),
+            None => self.name.clone(),
+        }
+    }
+}
+
+pub fn list_port_info() -> Vec<PortInfo> {
+    serialport::available_ports()
+        .map(|p| {
+            p.into_iter()
+                .map(|x| PortInfo {
+                    usb: match &x.port_type {
+                        serialport::SerialPortType::UsbPort(u) => Some((u.vid, u.pid)),
+                        _ => None,
+                    },
+                    name: x.port_name,
+                })
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+/// The port to open: `spec` is a port name, or `VID:PID`; `usb_id` is the USB device the profile is bound to. A bound
+/// profile keeps its port while that still has the right ids, and otherwise follows the ids to the port that has them
+/// now (the name changes after a restart or another socket).
+pub fn resolve_port(spec: &str, usb_id: &str, ports: &[PortInfo]) -> String {
+    let by_id = |id: (u16, u16)| ports.iter().find(|p| p.usb == Some(id)).map(|p| p.name.clone());
+    if let Some(id) = lc_core::parse_usb_id(spec) {
+        return by_id(id).unwrap_or_else(|| spec.to_string());
+    }
+    if let Some(id) = lc_core::parse_usb_id(usb_id) {
+        if ports.iter().any(|p| p.name == spec && p.usb == Some(id)) {
+            return spec.to_string();
+        }
+        if let Some(name) = by_id(id) {
+            return name;
+        }
+    }
+    spec.to_string()
 }
 
 /// Remove comments/blank lines so only real commands get streamed.
@@ -157,6 +211,8 @@ fn realtime_name(b: u8) -> String {
 const RX_BUFFER: usize = 120; // GRBL has 128 bytes; keep a margin.
 /// Longest wait for GRBL's start-up banner after a soft reset before streaming anyway.
 const BANNER_TIMEOUT: Duration = Duration::from_millis(2500);
+/// How long a running job may wait for an `ok` while the machine stands still before it is reported as stalled.
+const STALL_AFTER: Duration = Duration::from_secs(10);
 
 /// Why a line is in the queue; decides how its `ok` is shown in the console.
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -166,7 +222,7 @@ enum Kind {
     Poll,
 }
 
-fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
+fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context, stall_after: Duration) {
     let emit = |e: Evt| {
         let _ = tx.send(e);
         ctx.request_repaint();
@@ -183,15 +239,23 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
     // Set after a soft reset: GRBL drops everything it receives until it has restarted and printed its banner
     // (`Grbl 1.1h ['$' for help]`), so queued lines are held back until then.
     let mut restarting: Option<Instant> = None;
+    let mut simple = false;
+    // Since when a line has been waiting for its `ok`, and the machine state from the last status report.
+    let mut waiting_since: Option<Instant> = None;
+    let mut stall_reported = false;
+    let mut machine_state = String::new();
     loop {
         loop {
             match rx.try_recv() {
-                Ok(Cmd::Connect { target, controller: c }) => {
+                Ok(Cmd::Connect { target, controller: c, streaming }) => {
                     let label = target.label();
                     match open_link(&target) {
                         Ok((mut p, tcp)) => {
                             is_tcp = tcp;
                             controller = c;
+                            simple = streaming == lc_core::Streaming::Simple;
+                            waiting_since = None;
+                            stall_reported = false;
                             restarting = None;
                             if let Some(b) = c.on_connect() {
                                 let _ = p.write_all(&[b]);
@@ -275,13 +339,16 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                     emit(traffic(Dir::Rx, line, false));
                 } else if let Some((state, x, y)) = lc_core::controller::parse_status(&line) {
                     emit(traffic(Dir::Rx, line.clone(), true));
-                    emit(Evt::Status { state, x, y });
+                    machine_state = state.clone();
+                    emit(Evt::Status { state, x, y, z: lc_core::controller::parse_status_z(&line).unwrap_or(f64::NAN) });
                 } else if restarting.is_some() && (line == "ok" || line.starts_with("error")) {
                     // Start-up noise (e.g. `error:7` from an empty EEPROM) or a late reply to a line sent before the
                     // reset: not the acknowledgement of anything queued now.
                     emit(traffic(Dir::Rx, line, false));
                 } else if line == "ok" || line.starts_with("error") {
                     let kind = pending.pop_front().map(|(_, k)| k);
+                    waiting_since = (!pending.is_empty()).then(Instant::now);
+                    stall_reported = false;
                     emit(traffic(Dir::Rx, line.clone(), kind == Some(Kind::Poll)));
                     if kind == Some(Kind::Job) {
                         done += 1;
@@ -299,7 +366,8 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
             // Write while the controller's RX buffer has room.
             while let Some((l, _)) = queue.front().filter(|_| restarting.is_none()) {
                 let used: usize = pending.iter().map(|(n, _)| n).sum();
-                if used + l.len() + 1 > RX_BUFFER {
+                // Simple streaming keeps one line in flight; counting fills the controller's buffer.
+                if used + l.len() + 1 > RX_BUFFER || (simple && !pending.is_empty()) {
                     break;
                 }
                 let (l, kind) = queue.pop_front().unwrap();
@@ -308,7 +376,26 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
                     lost = true;
                     break;
                 }
+                if pending.is_empty() {
+                    waiting_since = Some(Instant::now());
+                }
                 pending.push_back((l.len() + 1, kind));
+            }
+            // A job that waits for an answer while the machine stands still: say so, ask for the state, and leave the
+            // decision to the user (nothing is resumed or sent on its own).
+            let moving = matches!(machine_state.split(':').next().unwrap_or(""), "Run" | "Hold" | "Home" | "Jog" | "Door" | "Check");
+            let running_job = total > 0 && done < total;
+            if let (Some(t), true) = (waiting_since, running_job && !pending.is_empty() && !moving && !stall_reported) {
+                if t.elapsed() >= stall_after {
+                    stall_reported = true;
+                    let secs = t.elapsed().as_secs();
+                    emit(Evt::Log(crate::i18n::trf("No answer from the controller for {} s while a job is running (state: {}).", &[&secs, &machine_state])));
+                    emit(Evt::Stalled { secs, state: machine_state.clone() });
+                    if let StatusPoll::Byte(b) = controller.status_poll() {
+                        let _ = p.write_all(&[b]);
+                        emit(traffic(Dir::Tx, (b as char).to_string(), true));
+                    }
+                }
             }
             if last_poll.elapsed() > Duration::from_millis(controller.poll_interval_ms()) {
                 last_poll = Instant::now();
@@ -338,6 +425,31 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context) {
 mod tests {
     use super::*;
     use std::net::TcpListener;
+
+    fn info(name: &str, usb: Option<(u16, u16)>) -> PortInfo {
+        PortInfo { name: name.into(), usb }
+    }
+
+    #[test]
+    fn ports_are_found_by_usb_id_when_their_names_change() {
+        let ports = vec![info("/dev/ttyUSB1", Some((0x1a86, 0x7523))), info("/dev/ttyACM0", Some((0x0403, 0x6001))), info("/dev/ttyS0", None)];
+        // The port field may itself be a VID:PID.
+        assert_eq!(resolve_port("0403:6001", "", &ports), "/dev/ttyACM0");
+        assert_eq!(resolve_port("1A86:7523", "", &ports), "/dev/ttyUSB1");
+        // A bound profile whose old name is gone (or now belongs to another device) follows the ids.
+        assert_eq!(resolve_port("/dev/ttyUSB0", "1a86:7523", &ports), "/dev/ttyUSB1");
+        assert_eq!(resolve_port("/dev/ttyACM0", "1a86:7523", &ports), "/dev/ttyUSB1");
+        // While the name still has the right ids it stays.
+        assert_eq!(resolve_port("/dev/ttyUSB1", "1a86:7523", &ports), "/dev/ttyUSB1");
+        // Without a binding the name is used as it is, also when it is not there.
+        assert_eq!(resolve_port("/dev/ttyUSB9", "", &ports), "/dev/ttyUSB9");
+        assert_eq!(resolve_port("0403:9999", "", &ports), "0403:9999");
+        // Nonsense ids are not ids.
+        assert_eq!(lc_core::parse_usb_id("zz:12"), None);
+        assert_eq!(lc_core::parse_usb_id("12345:1"), None);
+        assert_eq!(lc_core::parse_usb_id("0403:6001"), Some((0x0403, 0x6001)));
+        assert_eq!(info("COM3", Some((0x1a86, 0x7523))).label(), "COM3 (1a86:7523)");
+    }
 
     /// A stand-in for `ser2net` + GRBL: answers every line with `ok`, every `?` with a status report and a soft reset
     /// with the start-up banner.
@@ -392,7 +504,7 @@ mod tests {
         let port = listener.local_addr().unwrap().port();
         fake_grbl(listener, 1500);
         let link = LaserLink::spawn(eframe::egui::Context::default());
-        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port }, controller: Controller::Grbl });
+        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port }, controller: Controller::Grbl, streaming: lc_core::Streaming::Counting });
         assert!(wait_for(&link, 3.0, |e| matches!(e, Evt::Connected(true))), "connected");
         link.send(Cmd::Job(vec!["G21".into(), "G0 X5 Y5".into(), "M5".into()]));
         let mut done = false;
@@ -408,11 +520,121 @@ mod tests {
         assert!(wait_for(&link, 4.0, |e| matches!(e, Evt::Connected(false))), "connection lost detected");
     }
 
+    /// A controller that acknowledges lines slowly (or not at all) and reports how many lines it had in flight.
+    fn slow_grbl(listener: TcpListener, ack_delay_ms: u64, silent_from: Option<usize>, state: &'static str) -> std::sync::mpsc::Receiver<usize> {
+        let (tx, rx) = std::sync::mpsc::channel();
+        std::thread::spawn(move || {
+            let (mut s, _) = listener.accept().unwrap();
+            let _ = s.set_read_timeout(Some(Duration::from_millis(10)));
+            let start = Instant::now();
+            let (mut buf, mut chunk) = (Vec::<u8>::new(), [0u8; 64]);
+            let (mut inflight, mut seen, mut max) = (0usize, 0usize, 0usize);
+            let mut ack_at: Option<Instant> = None;
+            while start.elapsed() < Duration::from_secs(6) {
+                let read = s.read(&mut chunk);
+                // The worker closed the socket: done.
+                if matches!(read, Ok(0)) {
+                    break;
+                }
+                if let Ok(n) = read {
+                    for &b in &chunk[..n] {
+                        match b {
+                            b'?' => {
+                                let _ = s.write_all(format!("<{state}|MPos:0.000,0.000,0.000|FS:0,0>\n").as_bytes());
+                            }
+                            0x18 => {
+                                let _ = s.write_all(b"\r\nGrbl 1.1h ['$' for help]\r\n");
+                            }
+                            b'\n' => {
+                                buf.clear();
+                                seen += 1;
+                                inflight += 1;
+                                max = max.max(inflight);
+                                if ack_at.is_none() {
+                                    ack_at = Some(Instant::now() + Duration::from_millis(ack_delay_ms));
+                                }
+                            }
+                            _ => buf.push(b),
+                        }
+                    }
+                }
+                // Acknowledge the oldest line when its time has come, unless the controller has gone quiet.
+                if inflight > 0 && ack_at.is_some_and(|t| Instant::now() >= t) && silent_from.map_or(true, |n| seen <= n) {
+                    inflight -= 1;
+                    let _ = s.write_all(b"ok\n");
+                    ack_at = (inflight > 0).then(|| Instant::now() + Duration::from_millis(ack_delay_ms));
+                }
+            }
+            let _ = tx.send(max);
+        });
+        rx
+    }
+
+    fn run_job_on(streaming: lc_core::Streaming, lines: usize, ack_ms: u64) -> usize {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let max = slow_grbl(listener, ack_ms, None, "Idle");
+        let link = LaserLink::spawn(eframe::egui::Context::default());
+        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port }, controller: Controller::Grbl, streaming });
+        assert!(wait_for(&link, 3.0, |e| matches!(e, Evt::Connected(true))));
+        link.send(Cmd::Job((0..lines).map(|i| format!("G1 X{i}")).collect()));
+        let mut finished = false;
+        assert!(wait_for(&link, 6.0, |e| {
+            if let Evt::Progress { done, total } = e {
+                finished = *done == lines && *total == lines;
+            }
+            finished
+        }), "the job finishes");
+        link.send(Cmd::Disconnect);
+        max.recv_timeout(Duration::from_secs(8)).unwrap()
+    }
+
+    #[test]
+    fn counting_keeps_several_lines_in_flight_and_simple_keeps_one() {
+        assert!(run_job_on(lc_core::Streaming::Counting, 6, 40) > 1, "counting fills the buffer");
+        assert_eq!(run_job_on(lc_core::Streaming::Simple, 6, 40), 1, "simple waits for every ok");
+    }
+
+    #[test]
+    fn a_job_that_waits_with_the_machine_standing_still_is_reported_once() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let _max = slow_grbl(listener, 5, Some(2), "Idle");
+        let link = LaserLink::spawn_with(eframe::egui::Context::default(), Duration::from_millis(400));
+        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port }, controller: Controller::Grbl, streaming: lc_core::Streaming::Counting });
+        assert!(wait_for(&link, 3.0, |e| matches!(e, Evt::Connected(true))));
+        // The third and later lines are never acknowledged.
+        link.send(Cmd::Job((0..6).map(|i| format!("G1 X{i}")).collect()));
+        let mut stalled = 0;
+        let mut state = String::new();
+        wait_for(&link, 3.0, |e| {
+            if let Evt::Stalled { state: s, .. } = e {
+                stalled += 1;
+                state = s.clone();
+            }
+            false
+        });
+        assert_eq!(stalled, 1, "reported exactly once");
+        assert_eq!(state, "Idle");
+    }
+
+    #[test]
+    fn a_machine_that_is_moving_is_not_called_stalled() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let _max = slow_grbl(listener, 5, Some(2), "Run");
+        let link = LaserLink::spawn_with(eframe::egui::Context::default(), Duration::from_millis(400));
+        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port }, controller: Controller::Grbl, streaming: lc_core::Streaming::Counting });
+        assert!(wait_for(&link, 3.0, |e| matches!(e, Evt::Connected(true))));
+        link.send(Cmd::Job((0..6).map(|i| format!("G1 X{i}")).collect()));
+        assert!(!wait_for(&link, 2.0, |e| matches!(e, Evt::Stalled { .. })));
+    }
+
     #[test]
     fn unreachable_host_reports_an_error() {
         let link = LaserLink::spawn(eframe::egui::Context::default());
         // Port 1 on localhost is closed.
-        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port: 1 }, controller: Controller::Grbl });
+        link.send(Cmd::Connect { target: Target::Tcp { host: "127.0.0.1".into(), port: 1 }, controller: Controller::Grbl, streaming: lc_core::Streaming::Counting });
         assert!(wait_for(&link, 5.0, |e| matches!(e, Evt::Log(s) if s.contains("127.0.0.1:1"))));
     }
 }

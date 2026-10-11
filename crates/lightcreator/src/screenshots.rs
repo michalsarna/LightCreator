@@ -6,6 +6,7 @@ use crate::app::{App, Screen, SideTab, Tool};
 use crate::i18n::{self, Lang};
 use crate::laser::{ConsoleLine, Dir};
 use crate::theme::{self, Scheme};
+use egui_kittest::kittest::Queryable;
 use egui_kittest::Harness;
 use lc_core::{Device, ImageData, Kind, Origin, TextData, Units, Xf};
 use std::path::PathBuf;
@@ -72,14 +73,14 @@ fn render_screenshots() {
         diode.name = "Diode laser 400 × 400".into();
         let mut co2 = Device::default();
         co2.name = "CO2 K40 (300 × 200 mm)".into();
-        co2.bed_w = 300.0;
-        co2.bed_h = 200.0;
-        co2.origin = Origin::BackLeft;
+        co2.area.bed_w = 300.0;
+        co2.area.bed_h = 200.0;
+        co2.axes.origin = Origin::BackLeft;
         let mut inch = Device::default();
         inch.name = "Desktop engraver (inches)".into();
         inch.units = Units::Inch;
-        inch.bed_w = 17.0 * 25.4;
-        inch.bed_h = 12.0 * 25.4;
+        inch.area.bed_w = 17.0 * 25.4;
+        inch.area.bed_h = 12.0 * 25.4;
         a.profiles = vec![diode, co2, inch];
         a.start_sel = 0;
         a.cfg = None;
@@ -98,7 +99,7 @@ fn render_screenshots() {
         // Keep local paths and ports out of the pictures.
         a.status = "Imported 4 paths from badge.svg".into();
         a.ports = vec!["/dev/ttyUSB0".into()];
-        a.doc.device.port = "/dev/ttyUSB0".into();
+        a.doc.device.connection.port = "/dev/ttyUSB0".into();
     }
     h.run_steps(3);
     save(&mut h, "02-editor-properties.png");
@@ -138,10 +139,10 @@ fn render_screenshots() {
         a.side_tab = SideTab::Device;
         a.open_cfg_edit(0);
         if let Some(c) = a.cfg.as_mut() {
-            c.draft.link = lc_core::LinkKind::Tcp;
-            c.draft.host = "raspberrypi.local".into();
-            c.draft.tcp_port = 3333;
-            c.draft.camera_url = "http://raspberrypi.local:8080/stream.mjpg".into();
+            c.draft.connection.link = lc_core::LinkKind::Tcp;
+            c.draft.connection.host = "raspberrypi.local".into();
+            c.draft.connection.tcp_port = 3333;
+            c.draft.cameras = vec![lc_core::CameraSource::url("Camera 1", "http://raspberrypi.local:8080/stream.mjpg", 0)];
         }
     }
     save(&mut h, "05-device-config.png");
@@ -410,8 +411,7 @@ fn render_screenshots() {
         a.grid = 10.0;
         a.tool = Tool::Select;
         a.doc.shapes.clear();
-        a.doc.device.camera_url = "http://127.0.0.1:9/stream.mjpg".into();
-        a.doc.device.camera_rotation = 1;
+        a.doc.device.cameras = vec![lc_core::CameraSource::url("Camera 1", "http://127.0.0.1:9/stream.mjpg", 1)];
         a.stream_mode = crate::stream_ui::StreamMode::Tab;
         a.show_stream = true;
         a.side_tab = SideTab::Camera;
@@ -929,4 +929,118 @@ fn no_tab_widens_the_side_panel() {
     }
     i18n::set_lang(Lang::En);
     assert!(bad.is_empty(), "the side panel changes its width:\n{}", bad.join("\n"));
+}
+
+fn editor_harness() -> Shot {
+    let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.enter_editor(0);
+    }
+    h
+}
+
+/// Every page of the device window draws, and what was changed on them is saved with the profile.
+#[test]
+fn device_window_pages_open_and_save() {
+    use crate::device_ui::CfgPage;
+    let mut h = editor_harness();
+    app(&mut h).open_cfg_edit(0);
+    for p in CfgPage::visible(lc_core::Controller::Grbl) {
+        app(&mut h).cfg.as_mut().unwrap().page = p;
+        h.run_steps(3);
+    }
+    // The firmware page with a table to draw as well.
+    {
+        let a = app(&mut h);
+        a.connected = true;
+        a.fw.values = lc_core::grbl_settings::parse_report(&["$30=1000.000".to_string(), "$32=1".to_string(), "$110=3000.000".to_string(), "$130=400.000".to_string()]);
+        a.fw.typed.insert(110, "99999999".into());
+        a.cfg.as_mut().unwrap().page = CfgPage::Firmware;
+    }
+    h.run_steps(3);
+    {
+        let a = app(&mut h);
+        a.connected = false;
+        a.fw.values.clear();
+        a.fw.typed.clear();
+    }
+    {
+        let c = app(&mut h).cfg.as_mut().unwrap();
+        c.draft.area.bed_w = 123.0;
+        c.draft.heads[0].s_max = 500.0;
+        c.page = CfgPage::Laser;
+    }
+    h.run_steps(3);
+    h.get_by_label("Save").click();
+    h.run_steps(4);
+    let a = app(&mut h);
+    assert!(a.cfg.is_none(), "the window closes after Save");
+    assert_eq!((a.profiles[0].area.bed_w, a.profiles[0].heads[0].s_max), (123.0, 500.0));
+    assert_eq!(a.doc.device.area.bed_w, 123.0);
+}
+
+#[test]
+fn connection_page_only_for_controllers_with_a_link() {
+    use crate::device_ui::CfgPage;
+    assert!(CfgPage::visible(lc_core::Controller::Grbl).contains(&CfgPage::Connection));
+    assert!(!CfgPage::visible(lc_core::Controller::Ruida).contains(&CfgPage::Connection));
+}
+
+#[cfg(test)]
+mod resize_tests {
+    use super::*;
+    use eframe::egui::{self, Event, Id, PointerButton, Pos2};
+
+    fn about_rect(h: &Shot) -> eframe::egui::Rect {
+        h.ctx.memory(|m| m.area_rect(Id::new(Some("about_window")))).unwrap_or_else(|| panic!("about window shown; areas: {:?}", h.ctx.memory(|m| m.areas().visible_layer_ids())))
+    }
+
+    fn drag(h: &mut Shot, from: Pos2, to: Pos2) {
+        let m = egui::Modifiers::NONE;
+        h.event(Event::PointerMoved(from));
+        h.run_steps(2);
+        h.event(Event::PointerButton { pos: from, button: PointerButton::Primary, pressed: true, modifiers: m });
+        h.run_steps(2);
+        for k in 1..=5 {
+            h.event(Event::PointerMoved(from + (to - from) * (k as f32 / 5.0)));
+            h.run_steps(1);
+        }
+        h.event(Event::PointerButton { pos: to, button: PointerButton::Primary, pressed: false, modifiers: m });
+        h.run_steps(3);
+    }
+
+    #[test]
+    fn about_window_can_be_resized_both_ways() {
+        let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+            |ui, state: &mut Option<App>| {
+                let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+                a.draw(ui);
+            },
+            None,
+        );
+        h.run_steps(2);
+        app(&mut h).enter_editor(0);
+        app(&mut h).wizard = None;
+        h.run_steps(2);
+        app(&mut h).show_about = true;
+        h.run_steps(4);
+        let r0 = about_rect(&h);
+        // Grow from the bottom-right corner.
+        drag(&mut h, r0.right_bottom() - egui::vec2(1.0, 1.0), r0.right_bottom() + egui::vec2(120.0, 90.0));
+        let r1 = about_rect(&h);
+        assert!(r1.width() > r0.width() + 80.0 && r1.height() > r0.height() + 60.0, "grow: {r0:?} -> {r1:?}");
+        // Shrink it again.
+        drag(&mut h, r1.right_bottom() - egui::vec2(1.0, 1.0), r1.right_bottom() - egui::vec2(100.0, 70.0));
+        let r2 = about_rect(&h);
+        assert!(r2.width() < r1.width() - 60.0, "shrink: {r1:?} -> {r2:?}");
+    }
 }

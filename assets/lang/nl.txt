@@ -664,3 +664,315 @@
 663|Nieuw label
 664|Labels voor de lagen van een materiaal toevoegen of verwijderen
 665|Toevoegen
+666|Algemeen
+667|Hardware
+668|G-code
+669|Rechtsvoor
+670|Rechtsachter
+671|Assen omkeren
+672|Paneeloriëntatie
+673|Standaard
+674|Naar links gedraaid
+675|Naar rechts gedraaid
+676|Marges
+677|Eigen grenzen
+678|Softwarematige grenzen
+679|Stroken langs de randen van het werkgebied die de machine niet kan gebruiken (klemmen, frame); daar mag niets worden geplaatst of verplaatst
+680|De kop staat aan de rand van het toegestane gebied.
+681|Controle vóór de opdracht
+682|Toch doorgaan
+683|Herstel eerst de fouten: daarmee wordt niets verzonden, omkaderd of geëxporteerd.
+684|Laag {} brandt met 0 % vermogen.
+685|Laag {} heeft objecten maar geen gereedschapspad (bijvoorbeeld open lijnen op een vullaag).
+686|Objecten selecteren
+687|Het kader ligt buiten de softwarematige grenzen.
+688|Het kader ligt buiten het bruikbare gebied (voorbij het werkgebied of in een marge).
+689|Het gereedschapspad van laag {} verlaat het toegestane gebied (overscan of verplaatsingen zonder laser).
+690|{} object(en) liggen buiten de softwarematige grenzen.
+691|{} object(en) liggen buiten het bruikbare gebied (voorbij het werkgebied of in een marge).
+692|Lasermodus inschakelen ($32=1)
+693|De lasermodus ($32) staat uit.
+694|De besturing meldt een probleem
+695|De maximale S-waarde van de besturing ($30) is {}, het profiel gebruikt {}.
+696|Dit schrijft $32=1 naar de instellingen van de besturing. Doorgaan?
+697|Waarde van de besturing gebruiken
+698|Bij verschillende waarden komt het vermogen in de G-code niet overeen met de ingestelde percentages.
+699|Met lasermodus uit gedraagt GRBL zich als een spilbesturing: de laser kan afgaan bij snelle verplaatsingen en het vermogen volgt de snelheid niet.
+700|Max. snijsnelheid
+701|Versnelling
+702|0 = geen limiet. Lagen die sneller zijn krijgen vóór de opdracht een waarschuwing; de tijdschatting gebruikt hooguit deze snelheid.
+703|0 = onbekend. Met een waarde bevat de tijdschatting de start- en stopramps en stelt het lagenpaneel een overscan voor.
+704|Voorstel: {} (de remweg bij deze snelheid en de versnelling van de machine)
+705|Laag {} is sneller dan de maximale snijsnelheid van de machine.
+706|Automatisch (van de besturing)
+707|G-code-dialect
+708|Smoothieware: S wordt geschreven als fractie van het volle vermogen (zet S-max op 1). Streamen werkt zoals bij GRBL; niets hiervan is op echte hardware geprobeerd.
+709|Gebruikt als het dialect automatisch is; een gekozen GRBL-dialect beslist zelf tussen M3 en M4.
+710|Geavanceerd
+711|Een G-codeveld op de pagina Geavanceerd bevat een stuurteken of is te lang.
+712|Air-assistopdrachten
+713|Einde van de opdracht
+714|Uit
+715|Aan
+716|Vervangt de afsluitende M2. De laser wordt daarvoor altijd uitgeschakeld en de kop (indien ingesteld) naar huis gestuurd. Leeg = ingebouwd.
+717|Vervangt de regels voor eenheden, absolute modus, vlak en lasermodus. Leeg = ingebouwd.
+718|Standaardwaarden herstellen
+719|Begin van de opdracht
+720|Foute G-code kan de laser afvuren, de kop tegen de eindstops laten rijden of het materiaal verpesten. Test met de laser uit of op het laagste vermogen.
+721|Vermogensmodus
+722|Zoals het apparaat
+723|Constant (M3)
+724|Dynamisch (M4)
+725|M4 (dynamisch) verlaagt het vermogen in hoeken en bij het optrekken; M3 (constant) behoudt het. De G-code schakelt ertussen als lagen verschillen.
+726|Boogtolerantie
+727|Bogen (G2 / G3)
+728|Bogen: GRBL ondersteunt G2 / G3 meestal, Marlin alleen als gebouwd met ARC_SUPPORT, en Smoothieware heeft eigen gedrag. Sommige besturingen negeren bogen of voeren ze verkeerd uit: test met de laser uit. Bogen worden gebruikt voor contouren en ringen, niet voor scanlijnen of afbeeldingen.
+729|Krommetolerantie
+730|Hoever een afgevlakte kromme (Bézier, tekst) mag afwijken van de echte.
+731|Krommen als bogen schrijven waar ze passen
+732|Tellen vult de buffer van de besturing en is snel. Eenvoudig stuurt één regel en wacht op zijn ok: traag, maar voor firmware die verkeerd antwoordt.
+733|Blijf wachten
+734|Al {} s geen antwoord van de besturing tijdens een opdracht (toestand: {}).
+735|Er is niets hervat of verstuurd. De machine kan gewoon traag zijn of de regel is zoekgeraakt; kijk in de console en kies.
+736|Opdracht stoppen
+737|Streamen
+738|De besturing antwoordt niet
+739|De buffer tellen
+740|Eenvoudig (op elke ok wachten)
+741|Een poortnaam, of het USB-leveranciers- en product-id (VID:PID, hexadecimaal): de poort met deze id's wordt gebruikt.
+742|Aan deze poort binden
+743|Gebonden USB-apparaat
+744|Automatisch opnieuw verbinden
+745|Opnieuw verbinden…
+746|Poort of USB-id
+747|Opnieuw verbinden
+748|Onthoud de USB-id's van de gekozen poort: bij een andere naam wordt de poort daarmee teruggevonden.
+749|Binding opheffen
+750|Als de verbinding vanzelf wegvalt, om de paar seconden opnieuw proberen tot je op Verbinding verbreken drukt.
+751|geen
+752|Na het verbinden
+753|Een alarm wissen
+754|Het alarm wissen slaat het homen over: gebruik het alleen als de kop zeker op een veilige plek staat.
+755|De machine homen
+756|Home {}
+757|Homet alleen de {}-as ($H{})
+758|Alle {} instellingen uit het bestand staan nu in de besturing.
+759|Maak eerst een back-up van de instellingen. Typ {} om door te gaan:
+760|Back-up naar een bestand…
+761|Het bestand kan niet worden gebruikt: {}
+762|Verbind eerst met de machine (tabblad Apparaat).
+763|Verbonden met: {}
+764|Fabrieksinstellingen ($RST=$)…
+765|Marlin bewaart zijn instellingen in eigen opdrachten (M92, M203, M204, ...): deze pagina toont alleen wat `M503` meldt.
+766|Nog niets gelezen.
+767|Instellingen lezen ($$)
+768|Instellingen lezen (M503)
+769|$RST=$ echt naar de besturing schrijven?
+770|Herstellen uit een bestand…
+771|Fabrieksinstellingen herstellen
+772|Instellingen herstellen uit een bestand
+773|Instellingen opgeslagen in {}
+774|De besturing heeft ze al allemaal.
+775|Deze instellingen staan in de besturing, niet in het profiel. Wijzig ze één voor één en noteer de vorige waarde: een verkeerde waarde kan de machine een verkeerde afstand laten rijden of de laser laten afgaan.
+776|Deze instellingen uit het bestand verschillen van de besturing. Er wordt niets geschreven tot je op Alles schrijven drukt.
+777|Dit schrijft $RST=$: elke instelling van de besturing gaat terug naar de standaardwaarden van de firmware. Stappen, verplaatsing, snelheden, lasermodus en homing veranderen.
+778|Schrijven
+779|${} = {} naar de besturing schrijven? Nu is het {}. Wijzig één instelling tegelijk en noteer de oude waarde.
+780|Een instelling schrijven
+781|Alles schrijven
+782|{} instellingen naar de besturing schrijven? De machine gedraagt zich zoals het bestand zegt.
+783|{} van {} instellingen verschillen na het schrijven:
+784|Waarde
+785|Eenheid
+786|Typisch
+787|is geen getal
+788|buiten het bereik
+789|Firmware ($$)
+790|0 = een typische ({} W)
+791|0 = de gebruikelijke ({} nm)
+792|Een zwakke, constante straal om de hoogte mee in te stellen (focusmodus). 0 = geen focusmodus.
+793|Laserkop toevoegen
+794|Straalpunt
+795|Focusvermogen
+796|Kadersnelheid
+797|Kop {}
+798|Optisch vermogen
+799|PWM-frequentie
+800|Maximale PWM-frequentie
+801|Aanwijzerverschuiving
+802|Pulsbreedte
+803|Bereik pulsbreedte
+804|Deze laserkop verwijderen
+805|Grootte van de straal op het materiaal (0 = onbekend). Een kleiner vulinterval laat naburige lijnen overlappen.
+806|De PWM-waarden worden in het profiel bewaard en aangeboden als variabelen voor macro's; ze worden niet naar de besturing gestuurd.
+807|Het nummer waaronder de besturing deze kop kent; het wordt als T<n> geschreven als een laag een andere kop gebruikt. Het moet overeenkomen met de toewijzing in de besturing.
+808|Gereedschapsnummer (T)
+809|Twee laserkoppen hebben hetzelfde gereedschapsnummer.
+810|Golflengte
+811|Waar de rode aanwijzerstip zich ten opzichte van de straal bevindt (x naar rechts, y omlaag). Gebruikt door het uitlijnen op de aanwijzer in het tabblad Apparaat.
+812|bijv. Blauwe diode
+813|Laserkop
+814|Het interval is kleiner dan het straalpunt ({}): naburige lijnen overlappen.
+815|FOCUSSTRAAL AAN: druk om uit te schakelen
+816|Focus
+817|Schakelt een zwakke, constante straal in om de focushoogte mee in te stellen
+818|Focusstraal aan
+819|Focusstraal uit
+820|Uitlijnen op de aanwijzer
+821|Proefrun met de aanwijzer
+822|Proefrun met de aanwijzer: {} regels, laser uit
+823|Niets om uit te voeren: geen vormen op uitvoerlagen
+824|Doorloopt het pad van de opdracht, verschoven met de aanwijzerverschuiving, met de laser uit, om te zien waar het heen zou gaan.
+825|Alleen in deze sessie: het kader en de proefrun schuiven terug met de verschuiving van de rode aanwijzerstip, zodat de stip landt waar de straal zou landen. Opdrachten en handmatig verplaatsen worden nooit verschoven.
+826|Hook {}: {}
+827|Hooks
+828|Eigen G-code die in de opdracht wordt geschreven: als een laag begint, voor en na elk object, als een laag eindigt. Met objecthooks wordt een laag object voor object gebrand (en één keer per doorgang).
+829|Variabelen: {}
+830|Begin van de laag
+831|Einde van de laag
+832|Begin van het object
+833|Einde van het object
+834|Een macro is je eigen G-code: hij kan de laser afvuren of de kop bewegen. Voer hem alleen uit als je weet wat hij doet. Deze vraag wordt één keer per sessie gesteld.
+835|Macro toevoegen
+836|Deze macro verwijderen
+837|Macronaam
+838|Macro {}
+839|Macro {}: {}
+840|Macro {}: {} regels
+841|Macro's
+842|Benoemde scripts die je met de hand uitvoert vanuit het tabblad Apparaat. Eén opdracht per regel; commentaar na ; of tussen haakjes; @include(naam) voegt een andere macro in. Variabelen van de machine zijn bruikbaar.
+843|Macro {} uitvoeren
+844|Voert deze macro uit op de machine
+845|Zone toevoegen
+846|Cirkel
+847|Deze zone verwijderen
+848|Delen van het werkgebied waar de machine nooit in mag komen (een klem, een bevestiging). Een beweging die een actieve zone raakt, ook met de laser uit, stopt Start, Kader en export. Het programma gaat niet om zones heen.
+849|Het kader raakt de verboden zone "{}".
+850|Het gereedschapspad van laag {} raakt de verboden zone "{}".
+851|Zonenaam
+852|Zone {}
+853|Verboden zones
+854|Verboden zones tonen
+855|Hoever Z met elke volgende doorgang beweegt (negatief is omlaag als omhoog +Z is). 0 = Z blijft.
+856|Machine-Z waar de kop naartoe gaat vóór de eerste doorgang. 0 samen met 0 per doorgang = Z wordt niet bewogen.
+857|De Z-hoogten van laag {} liggen buiten de slag van de Z-as.
+858|De machine heeft een Z-as
+859|Slag
+860|Omhoog is de negatieve Z-richting
+861|Z
+862|Z-as
+863|Z-hoogte
+864|Z per doorgang
+865|Er is een rotatieopzetstuk aangesloten
+866|A draait {} graden voor elke millimeter op het oppervlak.
+867|Alle gebrande lagen moeten rotatielagen zijn, of geen. Het ontwerp mag niet hoger zijn dan de omtrek van het werkstuk.
+868|Vraagt eerst om bevestiging. Alleen de Y-as van de besturing verandert.
+869|Deze laag branden op de rotatie
+870|Klauwplaat
+871|Omtrek
+872|GRBL 1.1 heeft drie assen: de A-as is niet beschikbaar, Y wordt gebruikt.
+873|Soort
+874|Lagen die als rotatie zijn gemarkeerd worden op het opzetstuk gebrand. Het model is eenvoudig: een klauwplaat draait met de diameter van het werkstuk, rollen verplaatsen het oppervlak als hun eigen; een echte machine moet worden getest.
+875|Microstappen van de motor voor één volledige omwenteling van wat hij aandrijft (de klauwplaat of één rol).
+876|Microstappen per omwenteling
+877|Vervangt Y (de Y-motor draait het werkstuk)
+878|Rolldiameter
+879|Rollen
+880|Rotatie
+881|Rotatie- en vlakke lagen kunnen niet in één opdracht zitten: markeer alle gebrande lagen als rotatie, of geen.
+882|Rotatie in de G-code
+883|De besturing heeft {} stappen per mm op de Y-as nodig ($101).
+884|Het ontwerp op laag {} is hoger dan de omtrek van het werkstuk.
+885|De omtrek van het werkstuk: het ontwerp mag niet hoger zijn.
+886|Echte A-as (graden)
+887|Werkstukdiameter
+888|$101 naar de besturing schrijven…
+889|Als een doos of cilinder op de tafel: bewegingen boven of onder het bereik zijn vrij.
+890|Alleen op deze hoogten (Z)
+891|Een leeg profiel
+892|Een kopie van dit profiel
+893|Apparaat toevoegen
+894|Gekopieerd naar {}
+895|Exporteren…
+896|Profiel {} geïmporteerd
+897|Importeren…
+898|Een profiel uit een bestand lezen
+899|Dit profiel in een bestand opslaan
+900|Profiel opgeslagen in {}
+901|Beginpunten: algemene machines met typische getallen. Controleer ze aan de hand van de documentatie van je machine.
+902|GRBL-diodelaser 400 × 400
+903|GRBL-CO2-laser 300 × 200
+904|K40-ombouw (GRBL) 300 × 200
+905|Marlin-diodelaser 400 × 400
+906|Een GRBL 1.1-diodelaser op een bed van 400 × 400 mm, nul vooraan links, dynamisch vermogen.
+907|Een GRBL 1.1-CO2-laser op een bed van 300 × 200 mm, nul vooraan links.
+908|Een K40-CO2-laser met GRBL-bord: 300 × 200 mm, nul in de linkerachterhoek (linksboven).
+909|Een diodelaser met Marlin-firmware (laserfunctie, S 0–255) op een bed van 400 × 400 mm.
+910|Terug
+911|Verbinding (optioneel)
+912|Voltooien
+913|Als de machine nu is aangesloten, kunnen het werkgebied en de snelheid uit de besturing worden gelezen.
+914|De lasermodus ($32) en de maximale S-waarde ($30) van de besturing zijn niet gelezen: ze worden gecontroleerd bij het verbinden.
+915|Naam en eenheden
+916|Volgende
+917|Er zijn geen marges of softwarematige grenzen ingesteld: het hele asbereik is het werkgebied. Stel ze in op de pagina Hardware als een klem of frame in de weg zit.
+918|Er is nog geen poort of host ingesteld: kies die in de apparaatinstellingen vóór het verbinden.
+919|Niets hier is op je machine geprobeerd: doe een eerste test met de laser uit of op het laagste vermogen.
+920|Kies het dichtstbijzijnde beginpunt. Alles kan later worden gewijzigd.
+921|Handmatig instellen…
+922|Stel je machine in ({}/{})
+923|Overslaan
+924|Deze stappen overslaan en de apparaatinstellingen openen
+925|Samenvatting
+926|Het apparaat is toegevoegd. Druk op Doorgaan om te beginnen.
+927|De instellingen zijn uit de besturing gelezen.
+928|Welke machine heb je?
+929|Het controleren waard
+930|niet ingesteld
+931|Teller toevoegen
+932|Geteld wordt de tijd dat opdrachten echt lopen (van start tot einde of Stop), niet naar schatting. Het totaal kan niet worden gereset.
+933|Naam van de teller (een buis, een lens, een riem)
+934|Teller {}
+935|Deze teller verwijderen
+936|Onderhoud nodig: {}
+937|Herinner na
+938|De teller resetten
+939|De teller "{}" opnieuw vanaf nul laten beginnen?
+940|Totale werktijd: {}
+941|Onderhoud
+942|Uit de sjabloon
+943|De notities zijn langer dan {} tekens en kunnen niet worden opgeslagen.
+944|Je notities (Markdown)
+945|bijv. Instellingen die werkten: air assist 20 %, focus 12 mm
+946|Notities
+947|Actief
+948|Camera toevoegen
+949|Adres
+950|Auto
+951|Cameranaam
+952|Cameranummer
+953|Camera van deze computer
+954|Camera {}
+955|Camera's die de machine in de gaten houden. De actieve geeft het live beeld. Een camera kan alleen worden ingeschakeld met een geldig adres.
+956|Coëfficiënten van de lensvervorming (radiaal k1–k3, tangentieel p1, p2) voor coördinaten gemeten vanuit het midden in eenheden van de langste zijde van het beeld. Alle 0 = geen correctie. Met de hand ingevoerd: er is geen automatische kalibratie.
+957|Deze camera verwijderen
+958|Voor een camera van deze computer: vraag om het ongecomprimeerde YUYV-formaat als het systeem dat toestaat.
+959|Formaat
+960|Lenscorrectie
+961|Live beeld van de machine: een MJPEG-stream of het adres van een JPEG-momentopname (http of https). RTSP wordt niet ondersteund.
+962|Ruisonderdrukking
+963|Geen http- of https-adres.
+964|Beeld
+965|YUYV voorkeur
+966|Deze camera in- of uitschakelen
+967|Het adres is ongeldig: een http- of https-adres is nodig
+968|Witbalans
+969|Punt toevoegen
+970|Uitlijnen op de punten
+971|Dit punt verwijderen
+972|Past het beeld aan op de punten (kleinste kwadraten) en verplaatst de hoeken dienovereenkomstig.
+973|Te weinig punten, of ze liggen op één lijn.
+974|Paren van een punt in het beeld (pixels) en zijn plaats in het werkgebied (mm). Minstens 3, 4 aanbevolen; ze leggen de uitlijning vast, perspectief inbegrepen.
+975|Punten van de huidige hoeken
+976|Referentiepunten
+977|Vervangt de punten door de vier hoeken van het beeld en waar ze nu liggen.

@@ -184,6 +184,17 @@ impl App {
 /// What a Yes answer does.
 pub enum ConfirmAct {
     DeleteAllMaterials,
+    EnableLaserMode,
+    /// Write `$id=value` to the controller.
+    WriteSetting(u32, String),
+    /// Write the settings of a backup file.
+    ImportSettings(Vec<(u32, String)>),
+    /// `$RST=$`.
+    ResetSettings,
+    /// Run the macro of this name.
+    RunMacro(String),
+    /// Start counter number `i` of the profile again.
+    ResetCounter(usize),
     RestoreBackup(std::path::PathBuf),
 }
 
@@ -194,6 +205,50 @@ pub struct Confirm {
 }
 
 impl App {
+    /// What a Yes answer does.
+    pub fn do_confirmed(&mut self, ctx: &egui::Context, act: ConfirmAct) {
+        match act {
+            ConfirmAct::DeleteAllMaterials => self.reset_device_library(),
+            ConfirmAct::WriteSetting(id, v) => {
+                self.link.send(crate::laser::Cmd::Line(lc_core::grbl_settings::write_line(id, &v)));
+                self.fw.reread_at = Some(std::time::Instant::now() + std::time::Duration::from_millis(600));
+            }
+            ConfirmAct::ImportSettings(settings) => self.fw_write_all(settings),
+            ConfirmAct::ResetCounter(i) => {
+                let active = self.active;
+                if let Some(c) = &mut self.cfg {
+                    c.draft.maintenance.reset(i);
+                    // What is reset in the profile being edited is reset in the profile itself.
+                    if let Some(live) = c.idx.and_then(|k| self.profiles.get_mut(k)) {
+                        live.maintenance.reset(i);
+                    }
+                    if c.idx == Some(active) && self.screen == crate::app::Screen::Editor {
+                        self.doc.device.maintenance.reset(i);
+                    }
+                }
+                self.maintenance_notified.remove(&i);
+            }
+            ConfirmAct::RunMacro(name) => {
+                self.macros_ok = true;
+                self.run_macro(&name);
+            }
+            ConfirmAct::ResetSettings => {
+                self.link.send(crate::laser::Cmd::Line("$RST=$".into()));
+                self.fw.values.clear();
+                self.fw.typed.clear();
+                self.fw.report.clear();
+                self.fw.reread_at = Some(std::time::Instant::now() + std::time::Duration::from_millis(2500));
+            }
+            ConfirmAct::EnableLaserMode => {
+                self.link.send(crate::laser::Cmd::Line("$32=1".into()));
+                if let Some(w) = &mut self.fw_warn {
+                    w.laser_mode_off = false;
+                }
+            }
+            ConfirmAct::RestoreBackup(path) => self.restore_backup_from(ctx, &path),
+        }
+    }
+
     fn confirm_dialog(&mut self, ctx: &egui::Context) {
         let Some(c) = &self.confirm else { return };
         let mut open = true;
@@ -218,10 +273,7 @@ impl App {
         if !yes {
             return;
         }
-        match c.act {
-            ConfirmAct::DeleteAllMaterials => self.reset_device_library(),
-            ConfirmAct::RestoreBackup(path) => self.restore_backup_from(ctx, &path),
-        }
+        self.do_confirmed(ctx, c.act);
     }
 }
 

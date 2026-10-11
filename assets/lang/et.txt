@@ -664,3 +664,315 @@
 663|Uus silt
 664|Lisa või eemalda materjali kihtidele pakutavaid silte
 665|Lisa
+666|Üldine
+667|Riistvara
+668|G-kood
+669|Ees paremal
+670|Taga paremal
+671|Pööra teljed ümber
+672|Paneeli suund
+673|Algne
+674|Pööratud vasakule
+675|Pööratud paremale
+676|Veerised
+677|Oma piirid
+678|Tarkvaralised piirid
+679|Tööala servade ribad, mida masin ei saa kasutada (klambrid, raam); sinna ei tohi midagi asetada ega liigutada
+680|Pea on lubatud ala serval.
+681|Kontroll enne tööd
+682|Jätka ikkagi
+683|Paranda esmalt vead: nendega ei saadeta, raamita ega eksportita midagi.
+684|Kiht {} põletab 0 % võimsusega.
+685|Kihil {} on objekte, kuid pole tööteed (nt avatud jooned täitekihil).
+686|Vali objektid
+687|Raam on tarkvaraliste piiride väljas.
+688|Raam on kasutatava ala väljas (tööalast väljas või veeriselt).
+689|Kihi {} tööte väljub lubatud alalt (ületus või tühiliigutused).
+690|{} objekti on tarkvaraliste piiride väljas.
+691|{} objekti on kasutatava ala väljas (tööalast väljas või veeriselt).
+692|Lülita lasterrežiim sisse ($32=1)
+693|Lasterrežiim ($32) on välja lülitatud.
+694|Kontroller teatab probleemist
+695|Kontrolleri maksimaalne S-väärtus ($30) on {}, profiil kasutab {}.
+696|See kirjutab kontrolleri seadetesse $32=1. Kas jätkata?
+697|Kasuta kontrolleri väärtust
+698|Erinevate väärtuste korral ei vasta G-koodi võimsus seatud protsentidele.
+699|Väljalülitatud lasterrežiimil käitub GRBL nagu spindlikontroller: laser võib kiirliigutustel süttida ja võimsus ei järgi kiirust.
+700|Maks lõikekiirus
+701|Kiirendus
+702|0 = piirangut pole. Sellest kiiremad kihid saavad enne tööd hoiatuse; ajahinnang kasutab kõige rohkem seda kiirust.
+703|0 = teadmata. Väärtusega sisaldab ajahinnang kiirenduse ja pidurduse lävesid ja kihipaneel soovitab ületust.
+704|Soovitus: {} (pidurdusteekond sellel kiirusel ja masina kiirendusel)
+705|Kiht {} on kiirem kui masina maksimaalne lõikekiirus.
+706|Automaatne (kontrollerist)
+707|G-koodi murre
+708|Smoothieware: S kirjutatakse täisvõimsuse murdosana (määra S-väärtuse maks 1). Voogedastus töötab nagu GRBL-is; midagi sellest pole päris riistvaral proovitud.
+709|Kasutatakse, kui murre on automaatne; valitud GRBL-i murre otsustab M3 ja M4 vahel ise.
+710|Täpsemad
+711|Lehe „Täpsemad“ G-koodi väli sisaldab juhtmärki või on liiga pikk.
+712|Õhuabi käsud
+713|Töö lõpp
+714|Väljas
+715|Sees
+716|Asendab lõpu M2. Laser lülitatakse alati enne välja ja pea saadetakse (kui seatud) koju. Tühi = sisseehitatud.
+717|Asendab ühikute, absoluutrežiimi, tasandi ja lasterežiimi read. Tühi = sisseehitatud.
+718|Taasta vaikeväärtused
+719|Töö algus
+720|Vale G-kood võib lasteri süüdata, juhtida pea piirikutesse või materjali rikkuda. Testi välja lülitatud laseriga või väikseima võimsusega.
+721|Võimsusrežiim
+722|Nagu seade
+723|Püsiv (M3)
+724|Dünaamiline (M4)
+725|M4 (dünaamiline) vähendab võimsust nurkades ja kiirendamisel; M3 (püsiv) hoiab selle. G-kood vahetab neid, kui kihid erinevad.
+726|Kaarte tolerants
+727|Kaared (G2 / G3)
+728|Kaared: GRBL tavaliselt toetab G2 / G3, Marlin ainult ARC_SUPPORT-iga ehitatuna ja Smoothieware käitub omamoodi. Mõned kontrollerid eiravad kaari või täidavad neid valesti: testi välja lülitatud laseriga. Kaari kasutatakse kontuuride ja rõngaste jaoks, mitte skaneerimisjoonte ega piltide jaoks.
+729|Kõverate tolerants
+730|Kui palju võib lamendatud kõver (Bézier, tekst) tegelikust kõverast kalduda.
+731|Kirjuta kõverad kaartena, kus need sobivad
+732|Loendamine täidab kontrolleri puhvri ja on kiire. Lihtne saadab ühe rea ja ootab selle ok-d: aeglane, kuid valesti vastavale püsivarale.
+733|Jätka ootamist
+734|Kontroller ei ole töö ajal vastanud {} s (olek: {}).
+735|Midagi ei jätkatud ega saadetud. Masin võib olla lihtsalt aeglane või rida läks kaduma; vaata konsooli ja vali.
+736|Peata töö
+737|Voogedastus
+738|Kontroller ei vasta
+739|Loenda puhvrit
+740|Lihtne (oota iga ok-d)
+741|Pordi nimi või USB tootja ja toote tunnus (VID:PID, kuueteistkümnendsüsteemis): kasutatakse porti, millel on need tunnused.
+742|Seo selle pordiga
+743|Seotud USB-seade
+744|Ühenda automaatselt uuesti
+745|Ühendan uuesti…
+746|Port või USB-tunnus
+747|Taasühendus
+748|Jäta meelde valitud pordi USB-tunnused: kui selle nimi muutub, leitakse port nende järgi.
+749|Eemalda sidumine
+750|Kui ühendus katkeb iseenesest, proovi mõne sekundi tagant uuesti, kuni vajutad Katkesta.
+751|puudub
+752|Pärast ühendamist
+753|Tühista alarm
+754|Alarmi tühistamine jätab kodustamise vahele: kasuta ainult siis, kui pea on teadaolevalt turvalises kohas.
+755|Kodusta masin
+756|Kodusta {}
+757|Kodustab ainult {}-telje ($H{})
+758|Kõik faili {} seadet on nüüd kontrolleris.
+759|Tee seadetest esmalt varukoopia. Jätkamiseks kirjuta {}:
+760|Varunda faili…
+761|Faili ei saa kasutada: {}
+762|Ühendu esmalt masinaga (vaheleht Seade).
+763|Ühendatud: {}
+764|Tehaseseaded ($RST=$)…
+765|Marlin hoiab oma seadeid omaenda käskudes (M92, M203, M204, ...): see leht näitab ainult, mida `M503` teatab.
+766|Midagi pole veel loetud.
+767|Loe seaded ($$)
+768|Loe seaded (M503)
+769|Kas tõesti kirjutada $RST=$ kontrollerisse?
+770|Taasta failist…
+771|Taasta tehaseseaded
+772|Taasta seaded failist
+773|Seaded salvestatud: {}
+774|Kontrolleris on need juba kõik olemas.
+775|Need seaded asuvad kontrolleris, mitte profiilis. Muuda neid ühekaupa ja pane vana väärtus kirja: vale väärtus võib panna masina liikuma vale vahemaa või lasteri süütama.
+776|Faili need seaded erinevad kontrollerist. Midagi ei kirjutata, kuni vajutad Kirjuta kõik.
+777|See kirjutab $RST=$: kõik kontrolleri seaded lähevad tagasi püsivara vaikeväärtustele. Sammud, käik, kiirused, lasterežiim ja kodustamine muutuvad.
+778|Kirjuta
+779|Kas kirjutada ${} = {} kontrollerisse? Praegu on see {}. Muuda ühte seadet korraga ja pane vana väärtus kirja.
+780|Kirjuta seade
+781|Kirjuta kõik
+782|Kas kirjutada {} seadet kontrollerisse? Masin käitub nii, nagu fail ütleb.
+783|{} seadet {}-st erineb pärast kirjutamist:
+784|Väärtus
+785|Ühik
+786|Tüüpiline
+787|pole arv
+788|vahemikust väljas
+789|Püsivara ($$)
+790|0 = tüüpiline ({} W)
+791|0 = tavaline ({} nm)
+792|Nõrk ühtlane kiir kõrguse seadmiseks (fookusrežiim). 0 = fookusrežiimi pole.
+793|Lisa laserpea
+794|Kiire täpp
+795|Fookuse võimsus
+796|Raami kiirus
+797|Pea {}
+798|Optiline võimsus
+799|PWM sagedus
+800|PWM maksimaalne sagedus
+801|Osuti nihe
+802|Impulsi laius
+803|Impulsi laiuse vahemik
+804|Eemalda see laserpea
+805|Kiire suurus materjalil (0 = teadmata). Sellest väiksem täiteintervall paneb naaberjooned kattuma.
+806|PWM väärtused hoitakse profiilis ja pakutakse makrodele muutujatena; neid ei saadeta kontrollerisse.
+807|Number, mille all kontroller seda pead tunneb; kirjutatakse T<n>, kui kiht kasutab teist pead. Peab klappima kontrolleri vastendusega.
+808|Tööriista number (T)
+809|Kahel laserpeal on sama tööriista number.
+810|Lainepikkus
+811|Kus on punane osutipunkt kiire suhtes (x paremale, y alla). Kasutab vahelehe Seade osutiga joondamine.
+812|nt Sinine diood
+813|Laserpea
+814|Vahe on väiksem kui kiire täpp ({}): naaberjooned kattuvad.
+815|FOOKUSKIIR SEES: vajuta väljalülitamiseks
+816|Fookus
+817|Lülitab sisse nõrga ühtlase kiire fookuskõrguse seadmiseks
+818|Fookuskiir sees
+819|Fookuskiir väljas
+820|Joonda osutiga
+821|Kuivkäitus osutiga
+822|Kuivkäitus osutiga: {} rida, laser väljas
+823|Pole midagi käivitada: väljundkihtidel pole kujundeid
+824|Käib läbi töö raja, nihutatud osuti nihke võrra, laser väljas, et näha, kuhu see läheks.
+825|Ainult selles seansis: raam ja kuivkäitus nihkuvad tagasi punase osutipunkti nihke võrra, nii et punkt langeb sinna, kuhu kiir langeks. Töid ja käsiliigutust ei nihutata kunagi.
+826|Hook {}: {}
+827|Hookid
+828|Oma G-kood, mis kirjutatakse töösse: kui kiht algab, enne ja pärast iga objekti, kui kiht lõpeb. Objektihookidega põletatakse kiht objekt objekti haaval (ja kord läbimise kohta).
+829|Muutujad: {}
+830|Kihi algus
+831|Kihi lõpp
+832|Objekti algus
+833|Objekti lõpp
+834|Makro on sinu enda G-kood: see võib lasteri süüdata või pead liigutada. Käivita seda ainult siis, kui tead, mida see teeb. Seda küsitakse üks kord seansi kohta.
+835|Lisa makro
+836|Kustuta see makro
+837|Makro nimi
+838|Makro {}
+839|Makro {}: {}
+840|Makro {}: {} rida
+841|Makrod
+842|Nimega skriptid, mida käivitad käsitsi vahelehelt Seade. Üks käsk real; kommentaarid pärast ; või sulgudes; @include(nimi) lisab teise makro. Masina muutujaid saab kasutada.
+843|Käivita makro {}
+844|Käivitab selle makro masinal
+845|Lisa tsoon
+846|Ring
+847|Kustuta see tsoon
+848|Tööala osad, kuhu masin ei tohi kunagi siseneda (klamber, kinnitus). Liigutus, mis puudutab lubatud tsooni, ka laseriga väljas, peatab Alustamise, Raami ja ekspordi. Programm tsoonidest mööda ei sõida.
+849|Raam puudutab keelutsooni „{}“.
+850|Kihi {} tööte puudutab keelutsooni „{}“.
+851|Tsooni nimi
+852|Tsoon {}
+853|Keelutsoonid
+854|Näita keelutsoone
+855|Kui palju Z liigub iga järgmise läbimisega (negatiivne on alla, kui üles on +Z). 0 = Z jääb.
+856|Masina Z, kuhu pea enne esimest läbimist läheb. 0 koos 0 läbimise kohta = Z-d ei liigutata.
+857|Kihi {} Z-kõrgused on Z-telje käigust väljas.
+858|Masinal on Z-telg
+859|Käik
+860|Üles on Z negatiivne suund
+861|Z
+862|Z-telg
+863|Z-kõrgus
+864|Z läbimise kohta
+865|Pöörlemisseade on ühendatud
+866|A pöörleb {} kraadi iga pinna millimeetri kohta.
+867|Kõik põletatavad kihid peavad olema pöörlevad või mitte ükski. Kujundus ei tohi olla kõrgem kui töödeldava eseme ümbermõõt.
+868|Küsib esmalt kinnitust. Muutub ainult kontrolleri Y-telg.
+869|Põleta see kiht pöörlemisseadmel
+870|Padrun
+871|Ümbermõõt
+872|GRBL 1.1-l on kolm telge: A-telg pole saadaval, kasutatakse Y-d.
+873|Liik
+874|Pöörlevaks märgitud kihid põletatakse seadmel. Mudel on lihtne: padrun pöörleb eseme läbimõõdu järgi, rullid liigutavad pinda nagu enda oma; päris masin vajab proovimist.
+875|Mootori mikrosammud ühe täispöörde kohta sellest, mida see ajab (padrun või üks rull).
+876|Mikrosammu pöörde kohta
+877|Asendab Y (Y-mootor pöörab eset)
+878|Rulli läbimõõt
+879|Rullid
+880|Pöörlev
+881|Pöörlevaid ja lamedaid kihte ei saa ühes töös segada: märgi kõik põletatavad kihid pöörlevaks või mitte ühtegi.
+882|Pöörlemine G-koodis
+883|Kontroller vajab Y-teljel {} sammu mm kohta ($101).
+884|Kihi {} kujundus on kõrgem kui eseme ümbermõõt.
+885|Eseme ümbermõõt: kujundus ei tohi olla kõrgem.
+886|Päris A-telg (kraadid)
+887|Eseme läbimõõt
+888|Kirjuta $101 kontrollerisse…
+889|Nagu laual seisev kast või silinder: liikumised vahemikust kõrgemal või madalamal on vabad.
+890|Ainult nendel kõrgustel (Z)
+891|Tühi profiil
+892|Selle profiili koopia
+893|Lisa seade
+894|Kopeeritud: {}
+895|Ekspordi…
+896|Profiil {} imporditud
+897|Impordi…
+898|Loe profiil failist
+899|Salvesta see profiil faili
+900|Profiil salvestatud: {}
+901|Lähtepunktid: üldised masinad tüüpiliste arvudega. Kontrolli neid oma masina dokumentatsiooniga.
+902|GRBL-i dioodlaser 400 × 400
+903|GRBL-i CO2-laser 300 × 200
+904|K40 ümberehitus (GRBL) 300 × 200
+905|Marlini dioodlaser 400 × 400
+906|GRBL 1.1 dioodlaser 400 × 400 mm laual, null ees vasakul, dünaamiline võimsus.
+907|GRBL 1.1 CO2-laser 300 × 200 mm laual, null ees vasakul.
+908|K40 CO2-laser GRBL-i juhtplaadiga: 300 × 200 mm, null tagumises vasakus (vasakul ülal) nurgas.
+909|Marlini püsivaraga dioodlaser (lasrifunktsioon, S 0–255) 400 × 400 mm laual.
+910|Tagasi
+911|Ühendus (valikuline)
+912|Valmis
+913|Kui masin on praegu ühendatud, saab selle tööala ja kiiruse kontrollerist lugeda.
+914|Kontrolleri lasterežiimi ($32) ja suurimat S-väärtust ($30) ei loetud: need kontrollitakse ühendamisel.
+915|Nimi ja ühikud
+916|Edasi
+917|Veeriseid ega tarkvarapiire pole seatud: kogu telgede ulatus on tööala. Sea need lehel Riistvara, kui klamber või raam segab.
+918|Porti ega hosti pole veel seatud: vali see enne ühendamist seadme seadetes.
+919|Midagi siin pole sinu masinal proovitud: tee esimene test välja lülitatud laseri või väikseima võimsusega.
+920|Vali lähim lähtepunkt. Kõike saab hiljem muuta.
+921|Sea käsitsi…
+922|Seadista oma masin ({}/{})
+923|Jäta vahele
+924|Jäta need sammud vahele ja ava seadme seaded
+925|Kokkuvõte
+926|Seade lisati. Alustamiseks vajuta Jätka.
+927|Seaded loeti kontrollerist.
+928|Mis masin sul on?
+929|Tasub kontrollida
+930|pole seatud
+931|Lisa loendur
+932|Loetakse ajast, mil tööd tegelikult jooksevad (algusest lõpuni või Peatamiseni), mitte hinnangutest. Kogusummat ei saa nullida.
+933|Loenduri nimi (toru, lääts, rihm)
+934|Loendur {}
+935|Kustuta see loendur
+936|Hooldus on vajalik: {}
+937|Tuleta meelde pärast
+938|Nulli loendur
+939|Kas alustada loendurit „{}“ uuesti nullist?
+940|Kogu tööaeg: {}
+941|Hooldus
+942|Mallist
+943|Märkmed on pikemad kui {} märki ja neid ei saa salvestada.
+944|Sinu märkmed (Markdown)
+945|nt Toiminud seaded: õhuabi 20 %, fookus 12 mm
+946|Märkmed
+947|Aktiivne
+948|Lisa kaamera
+949|Aadress
+950|Auto
+951|Kaamera nimi
+952|Kaamera number
+953|Selle arvuti kaamera
+954|Kaamera {}
+955|Masinat jälgivad kaamerad. Aktiivne annab reaalajapildi. Kaamera saab sisse lülitada ainult kehtiva aadressiga.
+956|Objektiivi moonutuse koefitsiendid (radiaalne k1–k3, tangentsiaalne p1, p2) keskpunktist mõõdetud koordinaatidele pildi pikema külje ühikutes. Kõik 0 = korrektuuri pole. Sisestatakse käsitsi: automaatset kalibreerimist pole.
+957|Kustuta see kaamera
+958|Selle arvuti kaamera jaoks: küsi pakkimata YUYV-vormingut, kui süsteem lubab.
+959|Vorming
+960|Objektiivi korrektsioon
+961|Masina reaalajapilt: MJPEG-voog või JPEG-hetkepildi aadress (http või https). RTSP-d ei toetata.
+962|Müra vähendamine
+963|See pole http- ega https-aadress.
+964|Pilt
+965|Eelista YUYV-d
+966|Lülita see kaamera sisse või välja
+967|Aadress ei kehti: vaja on http- või https-aadressi
+968|Valge tasakaal
+969|Lisa punkt
+970|Joonda punktide järgi
+971|Kustuta see punkt
+972|Sobitab pildi punktidega (vähimruutude meetod) ja nihutab nurki vastavalt.
+973|Punkte on liiga vähe või need asuvad ühel sirgel.
+974|Paarid: punkt pildil (pikslites) ja selle koht tööalas (mm). Vähemalt 3, soovitatav 4; need määravad joonduse koos perspektiiviga.
+975|Punktid praegustest nurkadest
+976|Võrdluspunktid
+977|Asendab punktid pildi nelja nurga ja nende praeguste kohtadega.

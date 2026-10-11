@@ -55,7 +55,7 @@ impl App {
     /// Read a picture file and open the import dialog.
     pub fn open_image_dialog(&mut self, p: std::path::PathBuf) {
         let name = p.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default();
-        let (bw, bh) = (self.doc.device.bed_w, self.doc.device.bed_h);
+        let (bw, bh) = self.doc.device.work_size();
         let longest = (bw.min(bh) * 0.5).clamp(10.0, 200.0);
         match std::fs::read(&p).map_err(|e| e.to_string()).and_then(|b| ImageData::from_bytes(&b, &name, longest)) {
             Ok(im) => self.img_dlg = Some(ImgDlg::new(None, im)),
@@ -179,7 +179,7 @@ impl App {
                     }
                 }
                 None => {
-                    let (bw, bh) = (self.doc.device.bed_w, self.doc.device.bed_h);
+                    let (bw, bh) = self.doc.device.work_size();
                     self.checkpoint();
                     let (w, h) = (im.w, im.h);
                     let name = im.name.clone();

@@ -664,3 +664,315 @@
 663|Etichetă nouă
 664|Adaugă sau elimină etichetele oferite pentru straturile unui material
 665|Adaugă
+666|General
+667|Hardware
+668|Cod G
+669|Față dreapta
+670|Spate dreapta
+671|Inversează axele
+672|Orientarea panoului
+673|Nativă
+674|Rotit la stânga
+675|Rotit la dreapta
+676|Margini
+677|Limite proprii
+678|Limite software
+679|Benzi de-a lungul marginilor zonei de lucru pe care mașina nu le poate folosi (cleme, cadru); acolo nu se poate plasa sau muta nimic
+680|Capul este la marginea zonei permise.
+681|Verificare înainte de lucrare
+682|Continuă oricum
+683|Corectați mai întâi erorile: cu ele nu se trimite, nu se încadrează și nu se exportă nimic.
+684|Stratul {} arde cu putere 0 %.
+685|Stratul {} are obiecte, dar nu are traseu (de exemplu, linii deschise pe un strat de umplere).
+686|Selectează obiectele
+687|Cadrul este în afara limitelor software.
+688|Cadrul este în afara zonei utilizabile (dincolo de zona de lucru sau într-o margine).
+689|Traseul stratului {} iese din zona permisă (overscan sau deplasări în gol).
+690|{} obiect(e) sunt în afara limitelor software.
+691|{} obiect(e) sunt în afara zonei utilizabile (dincolo de zona de lucru sau într-o margine).
+692|Activează modul laser ($32=1)
+693|Modul laser ($32) este oprit.
+694|Controlerul raportează o problemă
+695|Valoarea S maximă a controlerului ($30) este {}, profilul folosește {}.
+696|Aceasta scrie $32=1 în setările controlerului. Continuați?
+697|Folosește valoarea din controler
+698|Cu valori diferite puterea din G-code nu va corespunde procentelor setate.
+699|Cu modul laser oprit GRBL se comportă ca un controler de ax: laserul se poate aprinde la deplasări rapide, iar puterea nu urmează viteza.
+700|Viteza max. de tăiere
+701|Accelerație
+702|0 = fără limită. Straturile mai rapide primesc un avertisment înainte de lucrare; estimarea timpului folosește cel mult această viteză.
+703|0 = necunoscută. Cu o valoare estimarea timpului include rampele de pornire și oprire, iar panoul stratului sugerează un overscan.
+704|Sugerat: {} (distanța de frânare la această viteză și cu accelerația mașinii)
+705|Stratul {} este mai rapid decât viteza maximă de tăiere a mașinii.
+706|Automat (de la controler)
+707|Dialect G-code
+708|Smoothieware: S se scrie ca fracție din puterea maximă (setați S max la 1). Transmisia funcționează ca la GRBL; nimic din asta nu a fost încercat pe hardware real.
+709|Folosit când dialectul este automat; un dialect GRBL ales decide singur între M3 și M4.
+710|Avansat
+711|Un câmp G-code din pagina Avansat conține un caracter de control sau este prea lung.
+712|Comenzi air assist
+713|Sfârșitul lucrării
+714|Oprit
+715|Pornit
+716|Înlocuiește M2 final. Laserul este întotdeauna oprit și capul trimis acasă (dacă e setat) înainte. Gol = încorporat.
+717|Înlocuiește liniile de unități, mod absolut, plan și mod laser. Gol = încorporat.
+718|Restaurează valorile implicite
+719|Începutul lucrării
+720|Un G-code greșit poate declanșa laserul, lovi capul de limitatoare sau strica materialul. Testați cu laserul oprit sau la puterea minimă.
+721|Mod de putere
+722|Ca dispozitivul
+723|Constantă (M3)
+724|Dinamică (M4)
+725|M4 (dinamică) reduce puterea în colțuri și la accelerare; M3 (constantă) o păstrează. G-code-ul comută între ele când straturile diferă.
+726|Toleranța arcelor
+727|Arce (G2 / G3)
+728|Arce: GRBL gestionează de obicei G2 / G3, Marlin doar dacă e compilat cu ARC_SUPPORT, iar Smoothieware are comportament propriu. Unele controlere ignoră arcele sau le execută greșit: testați cu laserul oprit. Arcele se folosesc pentru contururi și inele, nu pentru linii de scanare sau imagini.
+729|Toleranța curbelor
+730|Cât se poate abate o curbă aplatizată (Bézier, text) de la cea reală.
+731|Scrie curbele ca arce acolo unde se potrivesc
+732|Numărarea umple bufferul controlerului și este rapidă. Simplu trimite o linie și așteaptă ok-ul ei: lent, dar pentru firmware care răspunde greșit.
+733|Continuă să aștepți
+734|Niciun răspuns de la controler de {} s în timpul unei lucrări (stare: {}).
+735|Nimic nu a fost reluat sau trimis. Mașina poate fi doar lentă sau linia s-a pierdut; priviți consola și alegeți.
+736|Oprește lucrarea
+737|Transmisie
+738|Controlerul nu răspunde
+739|Numără bufferul
+740|Simplu (așteaptă fiecare ok)
+741|Un nume de port, sau id-ul USB de producător și produs (VID:PID, hexazecimal): se folosește portul care are aceste id-uri.
+742|Leagă de acest port
+743|Dispozitiv USB legat
+744|Reconectează automat
+745|Se reconectează…
+746|Port sau id USB
+747|Reconectare
+748|Reține id-urile USB ale portului ales: când numele se schimbă, portul este regăsit prin ele.
+749|Dezleagă
+750|Când legătura cade singură, încearcă din nou la câteva secunde până apăsați Deconectează.
+751|niciunul
+752|După conectare
+753|Șterge o alarmă
+754|Ștergerea alarmei omite homing-ul: folosiți doar când se știe că capul stă într-un loc sigur.
+755|Fă homing mașinii
+756|Homing {}
+757|Face homing doar axei {} ($H{})
+758|Toate cele {} setări din fișier sunt acum în controler.
+759|Faceți mai întâi o copie a setărilor. Pentru a continua, tastați {}:
+760|Salvează într-un fișier…
+761|Fișierul nu poate fi folosit: {}
+762|Conectați-vă mai întâi la mașină (fila Dispozitiv).
+763|Conectat la: {}
+764|Setări din fabrică ($RST=$)…
+765|Marlin își ține setările în comenzi proprii (M92, M203, M204, ...): această pagină arată doar ce raportează `M503`.
+766|Încă nu s-a citit nimic.
+767|Citește setările ($$)
+768|Citește setările (M503)
+769|Scrieți cu adevărat $RST=$ în controler?
+770|Restaurează dintr-un fișier…
+771|Restaurează setările din fabrică
+772|Restaurează setările dintr-un fișier
+773|Setări salvate în {}
+774|Controlerul le are deja pe toate.
+775|Aceste setări sunt în controler, nu în profil. Schimbați-le pe rând și notați valoarea veche: o valoare greșită poate face mașina să se miște la o distanță greșită sau să tragă laserul.
+776|Aceste setări din fișier diferă de controler. Nu se scrie nimic până nu apăsați Scrie tot.
+777|Aceasta scrie $RST=$: fiecare setare a controlerului revine la valorile implicite ale firmware-ului. Pașii, cursa, vitezele, modul laser și homing se vor schimba.
+778|Scrie
+779|Scrieți ${} = {} în controler? Acum este {}. Schimbați o setare pe rând și notați valoarea veche.
+780|Scrie o setare
+781|Scrie tot
+782|Scrieți {} setări în controler? Mașina se va comporta cum spune fișierul.
+783|{} din {} setări diferă după scriere:
+784|Valoare
+785|Unitate
+786|Tipic
+787|nu este un număr
+788|în afara intervalului
+789|Firmware ($$)
+790|0 = una tipică ({} W)
+791|0 = cea obișnuită ({} nm)
+792|Un fascicul slab și constant pentru reglarea înălțimii (mod de focalizare). 0 = fără mod de focalizare.
+793|Adaugă un cap laser
+794|Punctul fasciculului
+795|Puterea de focalizare
+796|Viteza cadrului
+797|Capul {}
+798|Putere optică
+799|Frecvența PWM
+800|Frecvența PWM maximă
+801|Decalajul indicatorului
+802|Lățimea impulsului
+803|Intervalul lățimii impulsului
+804|Elimină acest cap laser
+805|Dimensiunea fasciculului pe material (0 = necunoscută). Un interval de umplere mai mic face ca liniile vecine să se suprapună.
+806|Valorile PWM sunt păstrate în profil și oferite ca variabile pentru macro-uri; nu sunt trimise controlerului.
+807|Numărul sub care controlerul cunoaște acest cap; se scrie T<n> când un strat folosește alt cap. Trebuie să se potrivească cu maparea din controler.
+808|Număr de unealtă (T)
+809|Două capete laser au același număr de unealtă.
+810|Lungime de undă
+811|Unde este punctul roșu al indicatorului față de fascicul (x spre dreapta, y în jos). Folosit de alinierea la indicator din fila Dispozitiv.
+812|ex. Diodă albastră
+813|Cap laser
+814|Intervalul este mai mic decât punctul fasciculului ({}): liniile vecine se suprapun.
+815|FASCICULUL DE FOCALIZARE ESTE PORNIT: apăsați pentru a opri
+816|Focalizare
+817|Pornește un fascicul slab și constant pentru reglarea înălțimii focalizării
+818|Fascicul de focalizare pornit
+819|Fascicul de focalizare oprit
+820|Aliniază după indicator
+821|Rulare uscată cu indicatorul
+822|Rulare uscată cu indicatorul: {} linii, laser oprit
+823|Nimic de rulat: nu există forme pe straturile de ieșire
+824|Parcurge traseul lucrării decalat cu decalajul indicatorului, cu laserul oprit, ca să se vadă unde ar merge.
+825|Doar în această sesiune: cadrul și rularea uscată se mută înapoi cu decalajul punctului roșu al indicatorului, astfel încât punctul să cadă unde ar cădea fasciculul. Lucrările și mișcarea manuală nu sunt mutate niciodată.
+826|Hook {}: {}
+827|Hook-uri
+828|G-code propriu scris în lucrare: când începe un strat, înainte și după fiecare obiect, când se termină un strat. Cu hook-uri de obiect, un strat este ars obiect cu obiect (și o dată pe trecere).
+829|Variabile: {}
+830|Începutul stratului
+831|Sfârșitul stratului
+832|Începutul obiectului
+833|Sfârșitul obiectului
+834|O macro este propriul tău G-code: poate trage laserul sau muta capul. Rulează-l doar când știi ce face. Întrebarea se pune o dată pe sesiune.
+835|Adaugă un macro
+836|Șterge acest macro
+837|Numele macro-ului
+838|Macro {}
+839|Macro {}: {}
+840|Macro {}: {} linii
+841|Macro-uri
+842|Scripturi cu nume pe care le rulezi manual din fila Dispozitiv. O comandă pe linie; comentarii după ; sau între paranteze; @include(nume) inserează alt macro. Se pot folosi variabilele mașinii.
+843|Rulează macro-ul {}
+844|Rulează acest macro pe mașină
+845|Adaugă o zonă
+846|Cerc
+847|Șterge această zonă
+848|Părți ale zonei de lucru în care mașina nu trebuie să intre niciodată (o clemă, un dispozitiv de fixare). O mișcare care atinge o zonă activă, chiar și cu laserul oprit, oprește Pornire, Cadru și exportul. Programul nu ocolește zonele.
+849|Cadrul atinge zona interzisă „{}”.
+850|Traseul stratului {} atinge zona interzisă „{}”.
+851|Numele zonei
+852|Zona {}
+853|Zone interzise
+854|Arată zonele interzise
+855|Cât se mișcă Z la fiecare trecere următoare (negativ înseamnă în jos când sus este +Z). 0 = Z rămâne.
+856|Z al mașinii la care merge capul înainte de prima trecere. 0 împreună cu 0 pe trecere = Z nu se mișcă.
+857|Înălțimile Z ale stratului {} sunt în afara cursei axei Z.
+858|Mașina are o axă Z
+859|Cursă
+860|Sus este direcția Z negativă
+861|Z
+862|Axa Z
+863|Înălțime Z
+864|Z pe trecere
+865|Este conectat un accesoriu rotativ
+866|A se rotește cu {} grade pentru fiecare milimetru pe suprafață.
+867|Toate straturile arse trebuie să fie rotative, sau niciunul. Desenul nu poate fi mai înalt decât circumferința piesei.
+868|Cere mai întâi o confirmare. Se schimbă doar axa Y a controlerului.
+869|Arde acest strat pe rotativ
+870|Mandrină
+871|Circumferință
+872|GRBL 1.1 are trei axe: axa A nu este disponibilă, se folosește Y.
+873|Tip
+874|Straturile marcate ca rotative sunt arse pe accesoriu. Modelul este simplu: o mandrină se rotește după diametrul piesei, rolele mută suprafața ca pe a lor; o mașină reală necesită teste.
+875|Micropașii motorului pentru o rotație completă a ceea ce antrenează (mandrina sau o rolă).
+876|Micropași pe rotație
+877|Înlocuiește Y (motorul Y rotește piesa)
+878|Diametrul rolei
+879|Role
+880|Rotativ
+881|Straturile rotative și plate nu pot fi în aceeași lucrare: marcați toate straturile arse ca rotative, sau niciunul.
+882|Rotația în G-code
+883|Controlerul are nevoie de {} pași pe mm pe axa Y ($101).
+884|Desenul de pe stratul {} este mai înalt decât circumferința piesei.
+885|Circumferința piesei: desenul nu poate fi mai înalt.
+886|Axa A adevărată (grade)
+887|Diametrul piesei
+888|Scrie $101 în controler…
+889|Ca o cutie sau un cilindru pe masă: mișcările deasupra sau sub interval sunt libere.
+890|Doar la aceste înălțimi (Z)
+891|Un profil gol
+892|O copie a acestui profil
+893|Adaugă un dispozitiv
+894|Copiat în {}
+895|Exportă…
+896|Profilul {} a fost importat
+897|Importă…
+898|Citește un profil dintr-un fișier
+899|Salvează acest profil într-un fișier
+900|Profil salvat în {}
+901|Puncte de plecare: mașini generale cu numere tipice. Verificați-le cu documentația mașinii dumneavoastră.
+902|Laser cu diodă GRBL 400 × 400
+903|Laser CO2 GRBL 300 × 200
+904|Conversie K40 (GRBL) 300 × 200
+905|Laser cu diodă Marlin 400 × 400
+906|Un laser cu diodă GRBL 1.1 pe o masă de 400 × 400 mm, zero în față stânga, putere dinamică.
+907|Un laser CO2 GRBL 1.1 pe o masă de 300 × 200 mm, zero în față stânga.
+908|Un laser CO2 K40 cu placă GRBL: 300 × 200 mm, zero în colțul din spate stânga (sus stânga).
+909|Un laser cu diodă cu firmware Marlin (funcție laser, S 0–255) pe o masă de 400 × 400 mm.
+910|Înapoi
+911|Conexiune (opțional)
+912|Terminat
+913|Dacă mașina este conectată acum, zona ei de lucru și viteza pot fi citite din controler.
+914|Modul laser ($32) și valoarea S maximă ($30) a controlerului nu au fost citite: se verifică la conectare.
+915|Nume și unități
+916|Înainte
+917|Nu sunt setate margini sau limite software: întreaga cursă a axelor este zona de lucru. Setați-le în pagina Hardware dacă o clemă sau un cadru stă în cale.
+918|Nu este încă setat un port sau o gazdă: alegeți-l în setările dispozitivului înainte de conectare.
+919|Nimic de aici nu a fost încercat pe mașina dumneavoastră: faceți un prim test cu laserul oprit sau la puterea minimă.
+920|Alegeți cel mai apropiat punct de plecare. Totul se poate schimba mai târziu.
+921|Configurează manual…
+922|Configurați-vă mașina ({}/{})
+923|Omite
+924|Omite acești pași și deschide setările dispozitivului
+925|Rezumat
+926|Dispozitivul a fost adăugat. Apăsați Continuă pentru a începe.
+927|Setările au fost citite din controler.
+928|Ce mașină aveți?
+929|Merită verificat
+930|nesetat
+931|Adaugă un contor
+932|Se numără din timpul în care lucrările rulează cu adevărat (de la pornire până la sfârșit sau Stop), nu din estimări. Totalul nu poate fi resetat.
+933|Numele contorului (un tub, o lentilă, o curea)
+934|Contor {}
+935|Șterge acest contor
+936|Este necesară întreținerea: {}
+937|Amintește după
+938|Resetează contorul
+939|Reîncepeți contorul „{}” de la zero?
+940|Timp total de funcționare: {}
+941|Întreținere
+942|Din șablon
+943|Notele sunt mai lungi de {} caractere și nu pot fi salvate.
+944|Notele dumneavoastră (Markdown)
+945|ex. Setări care au mers: air assist 20 %, focalizare 12 mm
+946|Note
+947|Activă
+948|Adaugă o cameră
+949|Adresă
+950|Auto
+951|Numele camerei
+952|Numărul camerei
+953|Camera acestui calculator
+954|Camera {}
+955|Camere care supraveghează mașina. Cea activă dă imaginea live. O cameră poate fi pornită doar cu o adresă validă.
+956|Coeficienți ai distorsiunii obiectivului (radială k1–k3, tangențială p1, p2) pentru coordonate măsurate de la centru în unități ale laturii mai lungi a imaginii. Toți 0 = fără corecție. Se introduc manual: nu există calibrare automată.
+957|Șterge această cameră
+958|Pentru o cameră a acestui calculator: cere formatul YUYV necomprimat dacă sistemul permite.
+959|Format
+960|Corecția obiectivului
+961|Imagine live a mașinii: un flux MJPEG sau adresa unei instantanee JPEG (http sau https). RTSP nu este acceptat.
+962|Reducerea zgomotului
+963|Nu este o adresă http sau https.
+964|Imagine
+965|Preferă YUYV
+966|Pornește sau oprește această cameră
+967|Adresa nu este validă: este nevoie de o adresă http sau https
+968|Balansul de alb
+969|Adaugă un punct
+970|Aliniază după puncte
+971|Șterge acest punct
+972|Potrivește imaginea la puncte (cele mai mici pătrate) și mută colțurile în consecință.
+973|Prea puține puncte sau sunt pe o singură dreaptă.
+974|Perechi dintr-un punct al imaginii (pixeli) și locul lui în zona de lucru (mm). Cel puțin 3, 4 recomandate; fixează alinierea, inclusiv perspectiva.
+975|Puncte din colțurile curente
+976|Puncte de referință
+977|Înlocuiește punctele cu cele patru colțuri ale imaginii și locul unde sunt acum.

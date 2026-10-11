@@ -664,3 +664,315 @@
 663|Lipéad nua
 664|Cuir lipéid do shraitheanna ábhair leis nó bain iad
 665|Cuir leis
+666|Ginearálta
+667|Crua-earraí
+668|G-code
+669|Tosach ar dheis
+670|Cúl ar dheis
+671|Inbhéartaigh na haiseanna
+672|Treoshuíomh an phainéil
+673|Dúchasach
+674|Rothlaithe ar chlé
+675|Rothlaithe ar dheis
+676|Imill
+677|Teorainneacha féin
+678|Teorainneacha bogearraí
+679|Stríoca ar imeall an limistéir oibre nach féidir leis an meaisín a úsáid (clampaí, fráma); ní féidir aon rud a chur ná a bhogadh ann
+680|Tá an ceann ag imeall an limistéir cheadaithe.
+681|Seiceáil roimh an obair
+682|Lean ar aghaidh ar aon nós
+683|Ceartaigh na hearráidí ar dtús: leo, ní sheoltar, ní fhráimeáiltear ná ní onnmhairítear aon rud.
+684|Dónn sraith {} ag cumhacht 0 %.
+685|Tá réada ag sraith {} ach níl cosán uirlise ann (m.sh. línte oscailte ar shraith líonta).
+686|Roghnaigh réada
+687|Tá an fráma lasmuigh de theorainneacha na bogearraí.
+688|Tá an fráma lasmuigh den limistéar inúsáidte (taobh amuigh den limistéar oibre nó i marcáil).
+689|Fágann cosán uirlise shraith {} an limistéar ceadaithe (overscan nó gluaiseachtaí folamh).
+690|Tá {} réad lasmuigh de theorainneacha na bogearraí.
+691|Tá {} réad lasmuigh den limistéar inúsáidte (taobh amuigh den limistéar oibre nó i marcáil).
+692|Cumasaigh an mód léasair ($32=1)
+693|Tá an mód léasair ($32) as.
+694|Tuairiscíonn an rialaitheoir fadhb
+695|Is é uasluach S an rialaitheora ($30) ná {}, úsáideann an phróifíl {}.
+696|Scríobhann sé seo $32=1 i socruithe an rialaitheora. Lean ar aghaidh?
+697|Úsáid luach an rialaitheora
+698|Le luachanna difriúla ní chomhfhreagróidh an chumhacht sa G-code do na céatadáin a shocraigh tú.
+699|Nuair atá an mód léasair as, iompraíonn GRBL mar rialaitheoir fearsaid: féadfaidh an léasair lasadh le linn gluaiseachtaí tapa agus ní leanann an chumhacht an luas.
+700|Uasluas gearrtha
+701|Luasghéarú
+702|0 = gan teorainn. Faigheann sraitheanna níos tapúla rabhadh roimh an obair; úsáideann an meastachán ama an luas seo ar a mhéad.
+703|0 = anaithnid. Le luach áirítear rampaí tosaithe agus stoptha sa mheastachán ama agus molann painéal na sraithe overscan.
+704|Molta: {} (an fad brecála ag an luas seo agus le luasghéarú an mheaisín)
+705|Tá sraith {} níos tapúla ná uasluas gearrtha an mheaisín.
+706|Uathoibríoch (ón rialaitheoir)
+707|Canúint G-code
+708|Smoothieware: scríobhtar S mar chodán den chumhacht iomlán (socraigh uasluach S ar 1). Oibríonn sruthú mar a dhéanann GRBL; níor triaileadh aon cheann de seo ar fheabhsmhaoin fhíor.
+709|Úsáidtear nuair atá an chanúint uathoibríoch; cinneann canúint GRBL roghnaithe idir M3 agus M4 í féin.
+710|Casta
+711|Tá carachtar rialaithe i réimse G-code ar an leathanach Casta nó tá sé rófhada.
+712|Orduithe air assist
+713|Deireadh na hoibre
+714|As
+715|Air
+716|Cuireann sé an M2 deiridh ina áit. Múchtar an léasair i gcónaí agus seoltar an ceann abhaile (más socraithe) roimhe. Folamh = ionsuite.
+717|Cuireann sé línte aonad, mód absalóideach, plána agus mód léasair ina n-áit. Folamh = ionsuite.
+718|Athchóirigh na réamhshocruithe
+719|Tús na hoibre
+720|Is féidir le G-code mícheart an léasair a lasadh, an ceann a thiomáint isteach sna stopanna ceann scríbe nó an t-ábhar a mhilleadh. Triail leis an léasair múchta nó ag an gcumhacht is ísle.
+721|Mód cumhachta
+722|Mar an gléas
+723|Seasmhach (M3)
+724|Dinimiciúil (M4)
+725|Laghdaíonn M4 (dinimiciúil) an chumhacht i gcúinní agus le linn luasghéaraithe; coimeádann M3 (seasmhach) í. Athraíonn an G-code eatarthu nuair a bhíonn sraitheanna difriúil.
+726|Caoinfhulaingt na gcaor
+727|Caoirí (G2 / G3)
+728|Caoirí: láimhseálann GRBL G2 / G3 de ghnáth, Marlin ach amháin nuair a tógadh le ARC_SUPPORT, agus tá a iompar féin ag Smoothieware. Déanann roinnt rialaitheoirí neamhaird de chaoirí nó rithtear go mícheart iad: déan tástáil le léasair múchta. Úsáidtear caoirí le haghaidh imlínte agus fáinní, ní le haghaidh línte scanta ná íomhánna.
+729|Caoinfhulaingt cuair
+730|An méid is féidir le cuar cothrom (Bézier, téacs) imeacht ón gcuar fíor.
+731|Scríobh cuair mar chaoirí nuair a oireann siad
+732|Líonann comhaireamh maolán an rialaitheora agus tá sé tapa. Seolann simplí líne amháin agus fanann sé lena ok: mall, ach d'earraí dochta a fhreagraíonn go mícheart.
+733|Lean ort ag fanacht
+734|Gan freagra ón rialaitheoir le {} s le linn oibre (staid: {}).
+735|Níor atosaíodh ná níor seoladh aon rud. B'fhéidir go bhfuil an meaisín mall nó go bhfuil an líne caillte; féach ar an gconsól agus roghnaigh.
+736|Stop an obair
+737|Sruthú
+738|Níl an rialaitheoir ag freagairt
+739|Comhairigh an maolán
+740|Simplí (fan le gach ok)
+741|Ainm poirt, nó aitheantas USB déantóra agus táirge (VID:PID, heicsidheachúil): úsáidtear an port a bhfuil na haitheantais seo aige.
+742|Ceangail leis an bport seo
+743|Gléas USB ceangailte
+744|Athcheangail go huathoibríoch
+745|Ag athcheangal…
+746|Port nó aitheantas USB
+747|Athcheangal
+748|Cuimhnigh ar aitheantais USB an phoirt roghnaithe: aimsítear an port arís leo nuair a athraíonn a ainm.
+749|Dícheangail
+750|Nuair a thiteann an nasc as féin, triail arís gach cúpla soicind go dtí go mbrúnn tú Dícheangail.
+751|gan aon cheann
+752|Tar éis ceangal
+753|Glan aláram
+754|Seachnaíonn glanadh an ailárim an bhaile: ná húsáid ach nuair is eol go bhfuil an ceann in áit shábháilte.
+755|Cuir an meaisín abhaile
+756|Baile {}
+757|Cuireann sé ais {} amháin abhaile ($H{})
+758|Tá na {} socruithe uile ón gcomhad sa rialaitheoir anois.
+759|Cuir cúltaca de na socruithe ar dtús. Chun leanúint ar aghaidh, clóscríobh {}:
+760|Cúltaca go comhad…
+761|Ní féidir an comhad a úsáid: {}
+762|Ceangail leis an meaisín ar dtús (cluaisín Gléas).
+763|Ceangailte le: {}
+764|Socruithe monarchan ($RST=$)…
+765|Coinníonn Marlin a shocruithe ina orduithe féin (M92, M203, M204, ...): ní thaispeánann an leathanach seo ach an méid a thuairiscíonn `M503`.
+766|Níor léadh aon rud go fóill.
+767|Léigh na socruithe ($$)
+768|Léigh na socruithe (M503)
+769|An scríobh $RST=$ chuig an rialaitheoir i ndáiríre?
+770|Athchóirigh ó chomhad…
+771|Athchóirigh socruithe monarchan
+772|Athchóirigh socruithe ó chomhad
+773|Socruithe sábháilte i {}
+774|Tá siad uile ag an rialaitheoir cheana.
+775|Tá na socruithe seo sa rialaitheoir, ní sa phróifíl. Athraigh ceann amháin ag an am agus nótáil an luach roimhe: d'fhéadfadh luach mícheart an meaisín a bhogadh an fad mícheart nó an léasair a lasadh.
+776|Tá na socruithe seo den chomhad difriúil ón rialaitheoir. Ní scríobhtar aon rud go dtí go mbrúnn tú Scríobh uile.
+777|Scríobhann sé seo $RST=$: filleann gach socrú den rialaitheoir ar réamhshocruithe an dochtearraí. Athróidh céimeanna, taisteal, luasanna, mód léasair agus baile.
+778|Scríobh
+779|An scríobh ${} = {} chuig an rialaitheoir? Is {} anois é. Athraigh socrú amháin ag an am agus nótáil an seanluach.
+780|Scríobh socrú
+781|Scríobh uile
+782|An scríobh {} socrú chuig an rialaitheoir? Beidh an meaisín ag obair mar a deir an comhad.
+783|Tá {} as {} socrú difriúil tar éis scríobh:
+784|Luach
+785|Aonad
+786|Tipiciúil
+787|ní uimhir é
+788|lasmuigh den raon
+789|Dochtearraí ($$)
+790|0 = ceann tipiciúil ({} W)
+791|0 = an ceann gnách ({} nm)
+792|Bíoma lag seasmhach chun an airde a shocrú (mód fócais). 0 = gan mód fócais.
+793|Cuir ceann léasair leis
+794|Spota an bhíoma
+795|Cumhacht fócais
+796|Luas an fhráma
+797|Ceann {}
+798|Cumhacht optúil
+799|Minicíocht PWM
+800|Uasmhinicíocht PWM
+801|Fritháireamh an phointeora
+802|Leithead an bhíoma
+803|Raon leithead an bhíoma
+804|Bain an ceann léasair seo
+805|Méid an bhíoma ar an ábhar (0 = anaithnid). Cuireann eatramh líonta níos lú línte comharsanacha ag forluí.
+806|Coinnítear luachanna PWM sa phróifíl agus tairgtear iad mar athróga do mhacraí; ní sheoltar chuig an rialaitheoir iad.
+807|An uimhir lena n-aithníonn an rialaitheoir an ceann seo; scríobhtar mar T<n> í nuair a úsáideann sraith ceann eile. Caithfidh sí comhoiriúnú leis an mapáil sa rialaitheoir.
+808|Uimhir uirlise (T)
+809|Tá an uimhir uirlise chéanna ag dhá cheann léasair.
+810|Tonnfhad
+811|Cá bhfuil an ponc dearg pointeora i gcoibhneas leis an mbíoma (x ar dheis, y síos). Úsáidtear é le haghaidh ailíniú pointeora sa chluaisín Gléas.
+812|m.sh. Dé-óid ghorm
+813|Ceann léasair
+814|Tá an t-eatramh níos lú ná spota an bhíoma ({}): tá línte comharsanacha ag forluí.
+815|BÍOMA FÓCAIS AIR: brúigh chun múchadh
+816|Fócas
+817|Lasann sé bíoma lag seasmhach chun airde an fhócais a shocrú
+818|Bíoma fócais air
+819|Bíoma fócais as
+820|Ailínigh leis an bpointeoir
+821|Rith tirim leis an bpointeoir
+822|Rith tirim leis an bpointeoir: {} líne, léasair múchta
+823|Níl aon rud le rith: níl cruthanna ar na sraitheanna aschuir
+824|Ritheann sé cosán na hoibre aistrithe de réir fhritháireamh an phointeora agus an léasair múchta, chun a fheiceáil cá rachadh sé.
+825|Don seisiún seo amháin: bogann an fráma agus an rith tirim ar ais de réir fhritháireamh an phoint dheirg pointeora, ionas go dtiteann an ponc san áit a dtitfeadh an bíoma. Ní bhogtar oibreacha ná gluaiseacht láimhe riamh.
+826|Crúca {}: {}
+827|Crúcaí
+828|G-code féin a scríobhtar isteach san obair: nuair a thosaíonn sraith, roimh gach réad agus ina dhiaidh, nuair a chríochnaíonn sraith. Le crúcaí réada dóitear sraith réad ar réad (agus uair amháin in aghaidh gach pas).
+829|Athróga: {}
+830|Tús na sraithe
+831|Deireadh na sraithe
+832|Tús an réada
+833|Deireadh an réada
+834|Is é do G-code féin é macra: féadfaidh sé an léasair a lasadh nó an ceann a bhogadh. Ná rith é ach nuair is eol duit cad a dhéanann sé. Fiafraítear an cheist seo uair amháin in aghaidh an tseisiúin.
+835|Cuir macra leis
+836|Scrios an macra seo
+837|Ainm an mhacra
+838|Macra {}
+839|Macra {}: {}
+840|Macra {}: {} líne
+841|Macraí
+842|Scripteanna ainmnithe a rithfidh tú de láimh ón gcluaisín Gléas. Ordú amháin in aghaidh na líne; tuairimí tar éis ; nó idir lúibíní; cuireann @include(ainm) macra eile isteach. Is féidir athróga an mheaisín a úsáid.
+843|Rith an macra {}
+844|Ritheann sé an macra seo ar an meaisín
+845|Cuir crios leis
+846|Ciorcal
+847|Scrios an crios seo
+848|Codanna den limistéar oibre nach gcaithfidh an meaisín dul isteach iontu go deo (clampa, daingneán). Stopann gluaiseacht a leagann lámh ar chrios gníomhach, fiú le léasair múchta, Tosaigh, Fráma agus onnmhairiú. Ní théann an clár timpeall ar chriosanna.
+849|Leagann an fráma lámh ar an gcrios toirmiscthe "{}".
+850|Leagann cosán uirlise shraith {} lámh ar an gcrios toirmiscthe "{}".
+851|Ainm an chriosa
+852|Crios {}
+853|Criosanna toirmiscthe
+854|Taispeáin criosanna toirmiscthe
+855|An méid a bhogann Z le gach pas eile (is síos é diúltach nuair is +Z é suas). 0 = fanann Z.
+856|Z an mheaisín a théann an ceann chuige roimh an gcéad phas. 0 in éineacht le 0 in aghaidh an phais = ní bhogtar Z.
+857|Tá airde Z na sraithe {} lasmuigh de thaisteal an ais Z.
+858|Tá ais Z ag an meaisín
+859|Taisteal
+860|Is é suas an treo diúltach Z
+861|Z
+862|Ais Z
+863|Airde Z
+864|Z in aghaidh an phais
+865|Tá ceangaltán rothlach ceangailte
+866|Casann A {} céim do gach milliméadar ar an dromchla.
+867|Caithfidh na sraitheanna dóite go léir a bheith rothlach, nó aon cheann. Ní féidir leis an dearadh a bheith níos airde ná imlíne an phíosa.
+868|Iarrann sé deimhniú ar dtús. Ní athraíonn ach ais Y an rialaitheora.
+869|Dóigh an tsraith seo ar an rothlach
+870|Chuck
+871|Imlíne
+872|Tá trí ais ag GRBL 1.1: níl an ais A ar fáil, úsáidtear Y.
+873|Cineál
+874|Dóitear na sraitheanna a mharcáiltear rothlach ar an gceangaltán. Tá an tsamhail simplí: casann chuck de réir trastomhas an phíosa, bogann rollóirí an dromchla mar a ndromchla féin; teastaíonn tástáil ó mheaisín fíor.
+875|Micreaghlais an mhótair do chasadh iomlán an ruda a thiomáineann sé (an chuck nó rollóir amháin).
+876|Micreaghlais in aghaidh an chasta
+877|Cuireann sé Y ina áit (casann an mótar Y an píosa)
+878|Trastomhas an rollóra
+879|Rollóirí
+880|Rothlach
+881|Ní féidir sraitheanna rothlacha agus cothroma a bheith in obair amháin: marcáil na sraitheanna dóite go léir mar rothlach, nó aon cheann.
+882|Rothlú sa G-code
+883|Teastaíonn {} céim in aghaidh an mm ón rialaitheoir ar an ais Y ($101).
+884|Tá an dearadh ar shraith {} níos airde ná imlíne an phíosa.
+885|Imlíne an phíosa: ní féidir leis an dearadh a bheith níos airde.
+886|Fíor-ais A (céimeanna)
+887|Trastomhas an phíosa
+888|Scríobh $101 chuig an rialaitheoir…
+889|Cosúil le bosca nó sorcóir ina sheasamh ar an mbord: tá gluaiseachtaí os cionn nó faoi bhun an raoin saor.
+890|Ag na hairde seo amháin (Z)
+891|Próifíl folamh
+892|Cóip den phróifíl seo
+893|Cuir gléas leis
+894|Cóipeáilte chuig {}
+895|Onnmhairigh…
+896|Iompórtáladh an phróifíl {}
+897|Iompórtáil…
+898|Léigh próifíl ó chomhad
+899|Sábháil an phróifíl seo i gcomhad
+900|Próifíl sábháilte i {}
+901|Pointí tosaigh: meaisíní ginearálta le huimhreacha tipiciúla. Seiceáil iad le doiciméadú do mheaisín.
+902|Léasair dé-óid GRBL 400 × 400
+903|Léasair CO2 GRBL 300 × 200
+904|Tiontú K40 (GRBL) 300 × 200
+905|Léasair dé-óid Marlin 400 × 400
+906|Léasair dé-óid GRBL 1.1 ar leaba 400 × 400 mm, nialas ag an tosach ar chlé, cumhacht dhinimiciúil.
+907|Léasair CO2 GRBL 1.1 ar leaba 300 × 200 mm, nialas ag an tosach ar chlé.
+908|Léasair CO2 K40 le bord GRBL: 300 × 200 mm, nialas sa chúinne cúil ar chlé (barr ar chlé).
+909|Léasair dé-óid le dochtearraí Marlin (gné léasair, S 0–255) ar leaba 400 × 400 mm.
+910|Ar ais
+911|Nasc (roghnach)
+912|Críochnaigh
+913|Má tá an meaisín ceangailte anois, is féidir a limistéar oibre agus a luas a léamh ón rialaitheoir.
+914|Níor léadh mód léasair ($32) agus uasluach S ($30) an rialaitheora: seiceáiltear iad nuair a cheanglaíonn tú.
+915|Ainm agus aonaid
+916|Ar aghaidh
+917|Níl imill ná teorainneacha bogearraí socraithe: is é raon iomlán na n-aiseanna an limistéar oibre. Socraigh iad ar an leathanach Crua-earraí má tá clampa nó fráma sa bhealach.
+918|Níl port ná óstach socraithe fós: roghnaigh é i socruithe an ghléis sula gceanglaíonn tú.
+919|Níor triaileadh aon rud anseo ar do mheaisín: déan céad tástáil le léasair múchta nó ag an gcumhacht is ísle.
+920|Roghnaigh an pointe tosaigh is gaire. Is féidir gach rud a athrú ina dhiaidh.
+921|Socraigh de láimh…
+922|Socraigh do mheaisín ({}/{})
+923|Scipeáil
+924|Scipeáil na céimeanna seo agus oscail socruithe an ghléis
+925|Achoimre
+926|Cuireadh an gléas leis. Brúigh Lean ar aghaidh chun tosú.
+927|Léadh na socruithe ón rialaitheoir.
+928|Cén meaisín atá agat?
+929|Fiú a sheiceáil
+930|gan socrú
+931|Cuir comhaire leis
+932|Áirítear ón am a ritheann na hoibreacha i ndáiríre (ón tús go dtí an deireadh nó Stop), ní ó mheastacháin. Ní féidir an iomlán a athshocrú.
+933|Ainm an chomhairigh (feadán, lionsa, crios)
+934|Comhaire {}
+935|Scrios an comhaire seo
+936|Is gá cothabháil: {}
+937|Meabhraigh tar éis
+938|Athshocraigh an comhaire
+939|An dtosóidh tú an comhaire "{}" arís ó nialas?
+940|Iomlán an ama oibre: {}
+941|Cothabháil
+942|As an teimpléad
+943|Tá na nótaí níos faide ná {} carachtar agus ní féidir iad a shábháil.
+944|Do chuid nótaí (Markdown)
+945|m.sh. Socruithe a d'oibrigh: air assist 20 %, fócas 12 mm
+946|Nótaí
+947|Gníomhach
+948|Cuir ceamara leis
+949|Seoladh
+950|Uath
+951|Ainm an cheamara
+952|Uimhir an cheamara
+953|Ceamara an ríomhaire seo
+954|Ceamara {}
+955|Ceamaraí a choimeádann súil ar an meaisín. Tugann an ceann gníomhach an pictiúr beo. Ní féidir ceamara a chur ar siúl ach le seoladh bailí.
+956|Comhéifeachtaí díchumtha an lionsa (gathach k1–k3, tadhlaíoch p1, p2) do chomhordanáidí ón lár in aonaid de thaobh is faide an phictiúir. Gach 0 = gan ceartú. Cuirtear isteach de láimh iad: níl calabrú uathoibríoch ann.
+957|Scrios an ceamara seo
+958|Do cheamara den ríomhaire seo: iarr an fhormáid YUYV neamhchomhbhrúite nuair a cheadaíonn an córas.
+959|Formáid
+960|Ceartú lionsa
+961|Pictiúr beo den mheaisín: sruth MJPEG nó seoladh seat JPEG (http nó https). Ní thacaítear le RTSP.
+962|Laghdú torainn
+963|Ní seoladh http ná https é.
+964|Pictiúr
+965|Roghnaigh YUYV
+966|Cuir an ceamara seo air nó as
+967|Níl an seoladh bailí: tá seoladh http nó https de dhíth
+968|Cothromaíocht bhán
+969|Cuir pointe leis
+970|Ailínigh de réir na bpointí
+971|Scrios an pointe seo
+972|Oiriúnaíonn sé an pictiúr do na pointí (uasmhéid chearnóg is lú) agus bogann sé na coirnéil dá réir.
+973|Pointí easnamhacha, nó tá siad ar líne amháin.
+974|Péirí de phointe sa phictiúr (picteilíní) agus a áit sa limistéar oibre (mm). 3 ar a laghad, moltar 4; socraíonn siad an t-ailíniú, peirspictíocht san áireamh.
+975|Pointí ó na coirnéil reatha
+976|Pointí tagartha
+977|Cuireann sé ceithre choirnéal an phictiúir agus a n-áit anois in ionad na bpointí.

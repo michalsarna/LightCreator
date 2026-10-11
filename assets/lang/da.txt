@@ -664,3 +664,315 @@
 663|Ny etiket
 664|Tilføj eller fjern etiketter til et materiales lag
 665|Tilføj
+666|Generelt
+667|Hardware
+668|G-kode
+669|Forrest til højre
+670|Bagest til højre
+671|Vend akserne
+672|Panelets orientering
+673|Oprindelig
+674|Drejet til venstre
+675|Drejet til højre
+676|Margener
+677|Egne grænser
+678|Softwaregrænser
+679|Striber langs arbejdsfladens kanter, som maskinen ikke kan bruge (klemmer, ramme); intet må placeres eller flyttes der
+680|Hovedet er ved kanten af det tilladte område.
+681|Kontrol før opgaven
+682|Fortsæt alligevel
+683|Ret fejlene først: med dem sendes, indrammes eller eksporteres intet.
+684|Lag {} brænder med 0 % effekt.
+685|Lag {} har objekter men ingen værktøjssti (f.eks. åbne linjer på et fyldlag).
+686|Vælg objekter
+687|Rammen er uden for softwaregrænserne.
+688|Rammen er uden for det brugbare område (uden for arbejdsfladen eller i en margen).
+689|Værktøjsstien for lag {} forlader det tilladte område (overscan eller tomgangsbevægelser).
+690|{} objekt(er) er uden for softwaregrænserne.
+691|{} objekt(er) er uden for det brugbare område (uden for arbejdsfladen eller i en margen).
+692|Aktivér lasertilstand ($32=1)
+693|Lasertilstand ($32) er slået fra.
+694|Styringen melder et problem
+695|Styringens maksimale S-værdi ($30) er {}, profilen bruger {}.
+696|Dette skriver $32=1 i styringens indstillinger. Fortsæt?
+697|Brug værdien fra styringen
+698|Med forskellige værdier passer effekten i G-koden ikke med de procenter, du har sat.
+699|Med lasertilstand slået fra opfører GRBL sig som en spindelstyring: laseren kan tænde ved ilgange, og effekten følger ikke hastigheden.
+700|Maks. skærehastighed
+701|Acceleration
+702|0 = ingen grænse. Lag, der er hurtigere end dette, får en advarsel før opgaven; tidsestimatet bruger højst denne hastighed.
+703|0 = ukendt. Med en værdi indeholder tidsestimatet start- og stoprampe, og lagpanelet foreslår en overscan.
+704|Foreslået: {} (bremselængden ved denne hastighed og maskinens acceleration)
+705|Lag {} er hurtigere end maskinens maksimale skærehastighed.
+706|Automatisk (fra styringen)
+707|G-kodedialekt
+708|Smoothieware: S skrives som en brøkdel af fuld effekt (sæt S-værdi maks. til 1). Streaming fungerer som i GRBL; intet af dette er prøvet på ægte hardware.
+709|Bruges når dialekten er automatisk; en valgt GRBL-dialekt afgør selv mellem M3 og M4.
+710|Avanceret
+711|Et G-kodefelt på siden Avanceret har et kontroltegn eller er for langt.
+712|Air assist-kommandoer
+713|Slut på opgaven
+714|Fra
+715|Til
+716|Erstatter den afsluttende M2. Laseren slukkes altid, og hovedet sendes hjem (hvis sat) før den. Tom = indbygget.
+717|Erstatter linjerne for enheder, absolut tilstand, plan og lasertilstand. Tom = indbygget.
+718|Gendan standard
+719|Start på opgaven
+720|Forkert G-kode kan affyre laseren, køre hovedet ind i endestoppene eller ødelægge materialet. Test med laseren slukket eller på laveste effekt.
+721|Effekttilstand
+722|Som enheden
+723|Konstant (M3)
+724|Dynamisk (M4)
+725|M4 (dynamisk) sænker effekten i hjørner og under acceleration; M3 (konstant) bevarer den. G-koden skifter mellem dem, når lag er forskellige.
+726|Buetolerance
+727|Buer (G2 / G3)
+728|Buer: GRBL håndterer normalt G2 / G3, Marlin kun når det er bygget med ARC_SUPPORT, og Smoothieware har sin egen adfærd. Nogle styringer ignorerer buer eller kører dem forkert: test med laseren slukket. Buer bruges til konturer og ringe, ikke til scanlinjer eller billeder.
+729|Kurvetolerance
+730|Hvor langt en fladtrykt kurve (Bézier, tekst) må afvige fra den rigtige.
+731|Skriv kurver som buer, hvor de passer
+732|Optælling fylder styringens buffer og er hurtig. Enkel sender én linje og venter på dens ok: langsom, men til firmware, der svarer forkert.
+733|Bliv ved med at vente
+734|Intet svar fra styringen i {} s under en opgave (tilstand: {}).
+735|Intet blev genoptaget eller sendt. Maskinen kan bare være langsom, eller linjen gik tabt; se i konsollen og vælg.
+736|Stop opgaven
+737|Streaming
+738|Styringen svarer ikke
+739|Tæl bufferen
+740|Enkel (vent på hvert ok)
+741|Et portnavn eller USB-leverandør- og produkt-id (VID:PID, hexadecimalt): porten med disse id'er bruges.
+742|Bind til denne port
+743|Bundet USB-enhed
+744|Opret forbindelse igen automatisk
+745|Forbinder igen…
+746|Port eller USB-id
+747|Gentilslut
+748|Husk USB-id'erne for den valgte port: porten findes igen med dem, når navnet ændres.
+749|Fjern binding
+750|Når forbindelsen falder af sig selv, prøv igen hvert par sekunder, til du trykker Afbryd.
+751|ingen
+752|Efter tilslutning
+753|Ryd en alarm
+754|Rydning af alarmen springer homing over: brug det kun, når hovedet vides at stå et sikkert sted.
+755|Homing af maskinen
+756|Home {}
+757|Homer kun {}-aksen ($H{})
+758|Alle {} indstillinger fra filen er nu i styringen.
+759|Tag først en sikkerhedskopi af indstillingerne. For at fortsætte skriv {}:
+760|Sikkerhedskopiér til en fil…
+761|Filen kan ikke bruges: {}
+762|Opret først forbindelse til maskinen (fanen Enhed).
+763|Forbundet til: {}
+764|Fabriksindstillinger ($RST=$)…
+765|Marlin gemmer sine indstillinger i egne kommandoer (M92, M203, M204, ...): denne side viser kun, hvad `M503` melder.
+766|Intet læst endnu.
+767|Læs indstillingerne ($$)
+768|Læs indstillingerne (M503)
+769|Skal $RST=$ virkelig skrives til styringen?
+770|Gendan fra en fil…
+771|Gendan fabriksindstillingerne
+772|Gendan indstillingerne fra en fil
+773|Indstillingerne gemt i {}
+774|Styringen har allerede dem alle.
+775|Disse indstillinger ligger i styringen, ikke i profilen. Ændr dem én ad gangen og noter den gamle værdi: en forkert værdi kan få maskinen til at flytte sig forkert eller affyre laseren.
+776|Disse indstillinger i filen afviger fra styringen. Intet skrives, før du trykker Skriv alle.
+777|Dette skriver $RST=$: hver indstilling i styringen går tilbage til firmwarens standard. Trin, vandring, hastigheder, lasertilstand og homing ændres.
+778|Skriv
+779|Skal ${} = {} skrives til styringen? Nu er den {}. Ændr én indstilling ad gangen og noter den gamle værdi.
+780|Skriv en indstilling
+781|Skriv alle
+782|Skal {} indstillinger skrives til styringen? Maskinen opfører sig, som filen siger.
+783|{} af {} indstillinger afviger efter skrivning:
+784|Værdi
+785|Enhed
+786|Typisk
+787|er ikke et tal
+788|uden for området
+789|Firmware ($$)
+790|0 = en typisk ({} W)
+791|0 = den sædvanlige ({} nm)
+792|En svag, jævn stråle til at indstille højden efter (fokustilstand). 0 = ingen fokustilstand.
+793|Tilføj et laserhoved
+794|Strålepunkt
+795|Fokuseffekt
+796|Rammehastighed
+797|Hoved {}
+798|Optisk effekt
+799|PWM-frekvens
+800|Maksimal PWM-frekvens
+801|Pegepunktets forskydning
+802|Pulsbredde
+803|Pulsbreddeområde
+804|Fjern dette laserhoved
+805|Strålens størrelse på materialet (0 = ukendt). Et fyldinterval under den får nabolinjer til at overlappe.
+806|PWM-værdierne gemmes i profilen og tilbydes som variabler til makroer; de sendes ikke til styringen.
+807|Det nummer, styringen kender dette hoved under; det skrives som T<n>, når et lag bruger et andet hoved. Det skal passe til tildelingen i styringen.
+808|Værktøjsnummer (T)
+809|To laserhoveder har samme værktøjsnummer.
+810|Bølgelængde
+811|Hvor den røde pegepunkt er i forhold til strålen (x til højre, y nedad). Bruges af pegeindstillingen i fanen Enhed.
+812|f.eks. Blå diode
+813|Laserhoved
+814|Intervallet er mindre end strålepunktet ({}): nabolinjer overlapper.
+815|FOKUSSTRÅLE TIL: tryk for at slukke
+816|Fokus
+817|Tænder en svag, jævn stråle til at indstille fokushøjden
+818|Fokusstråle tændt
+819|Fokusstråle slukket
+820|Ret ind efter pegepunktet
+821|Tørkørsel med pegepunktet
+822|Tørkørsel med pegepunktet: {} linjer, laser slukket
+823|Intet at køre: ingen former på udlagene
+824|Kører jobbets sti forskudt med pegepunktets forskydning med laseren slukket for at se, hvor den ville gå hen.
+825|Kun i denne session: rammen og tørkørslen flyttes tilbage med den røde prikkens forskydning, så prikken lander, hvor strålen ville. Job og manuel kørsel flyttes aldrig.
+826|Hook {}: {}
+827|Hooks
+828|Eget G-kode skrevet ind i opgaven: når et lag begynder, før og efter hvert objekt, når et lag slutter. Med objekthooks brændes et lag objekt for objekt (og én gang pr. gennemløb).
+829|Variabler: {}
+830|Lagstart
+831|Lagslut
+832|Objektstart
+833|Objektslut
+834|En makro er din egen G-kode: den kan affyre laseren eller flytte hovedet. Kør den kun, når du ved, hvad den gør. Spørgsmålet stilles én gang pr. session.
+835|Tilføj en makro
+836|Slet denne makro
+837|Makronavn
+838|Makro {}
+839|Makro {}: {}
+840|Makro {}: {} linjer
+841|Makroer
+842|Navngivne scripts, du kører i hånden fra fanen Enhed. Én kommando pr. linje; kommentarer efter ; eller i parentes; @include(navn) indsætter en anden makro. Maskinens variabler kan bruges.
+843|Kør makroen {}
+844|Kører denne makro på maskinen
+845|Tilføj en zone
+846|Cirkel
+847|Slet denne zone
+848|Dele af arbejdsfladen, maskinen aldrig må komme ind i (en klemme, en fiksering). En bevægelse, der rører en aktiv zone, også med laseren slukket, stopper Start, Ramme og eksport. Programmet kører ikke uden om zoner.
+849|Rammen rører forbudszonen "{}".
+850|Værktøjsstien for lag {} rører forbudszonen "{}".
+851|Zonenavn
+852|Zone {}
+853|Forbudszoner
+854|Vis forbudszoner
+855|Hvor langt Z flytter sig for hvert yderligere gennemløb (negativ er nedad, når op er +Z). 0 = Z bliver.
+856|Maskinens Z, som hovedet kører til før det første gennemløb. 0 sammen med 0 pr. gennemløb = Z flyttes ikke.
+857|Z-højderne for lag {} ligger uden for Z-aksens vandring.
+858|Maskinen har en Z-akse
+859|Vandring
+860|Op er den negative Z-retning
+861|Z
+862|Z-akse
+863|Z-højde
+864|Z pr. gennemløb
+865|En rotationstilbehør er tilsluttet
+866|A drejer {} grader for hver millimeter på overfladen.
+867|Alle brændte lag skal være rotationslag, eller ingen. Designet må ikke være højere end emnets omkreds.
+868|Beder først om en bekræftelse. Kun styringens Y-akse ændres.
+869|Brænd dette lag på rotationen
+870|Spændepatron
+871|Omkreds
+872|GRBL 1.1 har tre akser: A-aksen er ikke tilgængelig, Y bruges.
+873|Slags
+874|Lag markeret som rotation brændes på tilbehøret. Modellen er enkel: en patron drejer med emnets diameter, ruller flytter overfladen som deres egen; en rigtig maskine kræver afprøvning.
+875|Motorens mikrotrin for en hel omdrejning af det, den driver (patronen eller én rulle).
+876|Mikrotrin pr. omdrejning
+877|Erstatter Y (Y-motoren drejer emnet)
+878|Rullediameter
+879|Ruller
+880|Rotation
+881|Rotations- og flade lag kan ikke være i ét job: marker alle brændte lag som rotation, eller ingen.
+882|Rotation i G-koden
+883|Styringen skal bruge {} trin pr. mm på Y-aksen ($101).
+884|Designet på lag {} er højere end emnets omkreds.
+885|Emnets omkreds: designet må ikke være højere.
+886|Ægte A-akse (grader)
+887|Emnets diameter
+888|Skriv $101 til styringen…
+889|Som en kasse eller en cylinder på bordet: bevægelser over eller under området er frie.
+890|Kun i disse højder (Z)
+891|En tom profil
+892|En kopi af denne profil
+893|Tilføj en enhed
+894|Kopieret til {}
+895|Eksportér…
+896|Profilen {} importeret
+897|Importér…
+898|Læs en profil fra en fil
+899|Gem denne profil i en fil
+900|Profilen gemt i {}
+901|Udgangspunkter: almindelige maskiner med typiske tal. Tjek dem mod din maskines dokumentation.
+902|GRBL-diodelaser 400 × 400
+903|GRBL-CO2-laser 300 × 200
+904|K40-ombygning (GRBL) 300 × 200
+905|Marlin-diodelaser 400 × 400
+906|En GRBL 1.1-diodelaser på et 400 × 400 mm bord, nul foran til venstre, dynamisk effekt.
+907|En GRBL 1.1-CO2-laser på et 300 × 200 mm bord, nul foran til venstre.
+908|En K40 CO2-laser med GRBL-kontrolkort: 300 × 200 mm, nul i det bageste venstre (øverste venstre) hjørne.
+909|En diodelaser med Marlin-firmware (laserfunktion, S 0–255) på et 400 × 400 mm bord.
+910|Tilbage
+911|Forbindelse (valgfri)
+912|Færdig
+913|Hvis maskinen er tilsluttet nu, kan dens arbejdsflade og hastighed læses fra styringen.
+914|Styringens lasertilstand ($32) og maksimale S-værdi ($30) blev ikke læst: de tjekkes, når du opretter forbindelse.
+915|Navn og enheder
+916|Næste
+917|Der er ikke sat margener eller softwaregrænser: hele akseområdet er arbejdsfladen. Sæt dem på siden Hardware, hvis en klemme eller ramme er i vejen.
+918|Der er endnu ikke sat en port eller vært: vælg den i enhedsindstillingerne, før du forbinder.
+919|Intet her er prøvet på din maskine: lav en første test med laseren slukket eller på laveste effekt.
+920|Vælg det nærmeste udgangspunkt. Alt kan ændres senere.
+921|Opsæt i hånden…
+922|Opsæt din maskine ({}/{})
+923|Spring over
+924|Spring disse trin over og åbn enhedsindstillingerne
+925|Oversigt
+926|Enheden blev tilføjet. Tryk på Fortsæt for at starte.
+927|Indstillingerne blev læst fra styringen.
+928|Hvilken maskine har du?
+929|Værd at tjekke
+930|ikke sat
+931|Tilføj en tæller
+932|Tælles fra den tid, opgaver virkelig kører (fra start til slut eller Stop), ikke fra skøn. Summen kan ikke nulstilles.
+933|Tællernavn (et rør, en linse, en rem)
+934|Tæller {}
+935|Slet denne tæller
+936|Vedligeholdelse påkrævet: {}
+937|Påmind efter
+938|Nulstil tælleren
+939|Start tælleren "{}" forfra fra nul?
+940|Samlet driftstid: {}
+941|Vedligeholdelse
+942|Fra skabelonen
+943|Noterne er længere end {} tegn og kan ikke gemmes.
+944|Dine noter (Markdown)
+945|f.eks. Indstillinger der virkede: air assist 20 %, fokus 12 mm
+946|Noter
+947|Aktiv
+948|Tilføj et kamera
+949|Adresse
+950|Auto
+951|Kameranavn
+952|Kameranummer
+953|Kamera på denne computer
+954|Kamera {}
+955|Kameraer, der overvåger maskinen. Det aktive giver live-billedet. Et kamera kan kun tændes med en gyldig adresse.
+956|Koefficienter for linsens forvrængning (radial k1–k3, tangentiel p1, p2) for koordinater målt fra midten i enheder af billedets længste side. Alle 0 = ingen korrektion. Indtastes i hånden: der er ingen automatisk kalibrering.
+957|Slet dette kamera
+958|For et kamera på denne computer: bed om det ukomprimerede YUYV-format, hvor systemet tillader det.
+959|Format
+960|Linsekorrektion
+961|Maskinens live-billede: en MJPEG-strøm eller adressen på et JPEG-snapshot (http eller https). RTSP understøttes ikke.
+962|Støjreduktion
+963|Ikke en http- eller https-adresse.
+964|Billede
+965|Foretræk YUYV
+966|Tænd eller sluk dette kamera
+967|Adressen er ugyldig: der skal bruges en http- eller https-adresse
+968|Hvidbalance
+969|Tilføj et punkt
+970|Juster efter punkterne
+971|Slet dette punkt
+972|Tilpasser billedet til punkterne (mindste kvadraters metode) og flytter hjørnerne tilsvarende.
+973|For få punkter, eller de ligger på en linje.
+974|Par af et punkt i billedet (pixels) og dets sted i arbejdsområdet (mm). Mindst 3, 4 anbefales; de fastlægger justeringen inklusive perspektiv.
+975|Punkter fra de nuværende hjørner
+976|Referencepunkter
+977|Erstatter punkterne med billedets fire hjørner og deres nuværende placering.

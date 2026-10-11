@@ -664,3 +664,315 @@
 663|Nauja žyma
 664|Pridėti arba pašalinti medžiagos sluoksniams siūlomas žymas
 665|Pridėti
+666|Bendra
+667|Aparatinė įranga
+668|G-kodas
+669|Priekyje dešinėje
+670|Gale dešinėje
+671|Apversti ašis
+672|Skydelio orientacija
+673|Įprasta
+674|Pasukta kairėn
+675|Pasukta dešinėn
+676|Paraštės
+677|Savi apribojimai
+678|Programiniai apribojimai
+679|Darbo srities pakraščių juostos, kurių staklės negali naudoti (spaustukai, rėmas); ten nieko negalima dėti ar perkelti
+680|Galvutė yra leidžiamos srities pakraštyje.
+681|Patikra prieš darbą
+682|Vis tiek tęsti
+683|Pirmiausia ištaisykite klaidas: su jomis niekas nesiunčiama, neapibrėžiama ir neeksportuojama.
+684|Sluoksnis {} degina 0 % galia.
+685|Sluoksnyje {} yra objektų, bet nėra trajektorijos (pvz., atviros linijos užpildymo sluoksnyje).
+686|Pasirinkti objektus
+687|Rėmelis už programinių apribojimų ribų.
+688|Rėmelis už naudojamos srities ribų (už darbo srities arba paraštėje).
+689|Sluoksnio {} trajektorija išeina už leidžiamos srities (viršijimas arba tuščios eigos).
+690|{} objektas (-ai) už programinių apribojimų ribų.
+691|{} objektas (-ai) už naudojamos srities ribų (už darbo srities arba paraštėje).
+692|Įjungti lazerio režimą ($32=1)
+693|Lazerio režimas ($32) išjungtas.
+694|Valdiklis praneša apie problemą
+695|Maksimali valdiklio S vertė ($30) yra {}, profilis naudoja {}.
+696|Tai įrašo $32=1 į valdiklio nustatymus. Tęsti?
+697|Naudoti valdiklio vertę
+698|Esant skirtingoms vertėms galia G-kode neatitiks nustatytų procentų.
+699|Išjungus lazerio režimą GRBL elgiasi kaip suklio valdiklis: lazeris gali įsijungti greitų judesių metu, o galia neseka greičio.
+700|Maks. pjovimo greitis
+701|Pagreitis
+702|0 = be ribos. Sluoksniai, greitesni už šią vertę, prieš darbą gauna įspėjimą; laiko įvertis naudoja daugiausia šį greitį.
+703|0 = nežinoma. Su verte laiko įvertis apima pradžios ir sustojimo rampas, o sluoksnio skydelis siūlo viršijimą.
+704|Siūloma: {} (stabdymo kelias šiuo greičiu ir staklių pagreičiu)
+705|Sluoksnis {} greitesnis už didžiausią staklių pjovimo greitį.
+706|Automatiškai (iš valdiklio)
+707|G kodo tarmė
+708|Smoothieware: S rašomas kaip dalis pilnos galios (S maks. nustatykite į 1). Srautinis siuntimas veikia kaip GRBL; nieko iš to nebuvo išbandyta su tikra įranga.
+709|Naudojama, kai tarmė automatinė; pasirinkta GRBL tarmė pati nusprendžia tarp M3 ir M4.
+710|Papildoma
+711|G kodo laukas puslapyje Papildoma turi valdymo simbolį arba per ilgas.
+712|Oro pagalbos komandos
+713|Darbo pabaiga
+714|Išjungta
+715|Įjungta
+716|Pakeičia baigiamąjį M2. Lazeris prieš tai visada išjungiamas, o galvutė (jei nustatyta) grąžinama į nulį. Tuščia = įtaisyta.
+717|Pakeičia vienetų, absoliutaus režimo, plokštumos ir lazerio režimo eilutes. Tuščia = įtaisyta.
+718|Atkurti numatytuosius
+719|Darbo pradžia
+720|Klaidingas G kodas gali įjungti lazerį, trenkti galvutę į ribotuvus arba sugadinti medžiagą. Išbandykite išjungę lazerį arba mažiausia galia.
+721|Galios režimas
+722|Kaip įrenginys
+723|Pastovi (M3)
+724|Dinaminė (M4)
+725|M4 (dinaminė) sumažina galią kampuose ir greitėjant; M3 (pastovi) ją išlaiko. G kodas perjungia tarp jų, kai sluoksniai skiriasi.
+726|Lankų tolerancija
+727|Lankai (G2 / G3)
+728|Lankai: GRBL paprastai palaiko G2 / G3, Marlin tik sukompiliuotas su ARC_SUPPORT, o Smoothieware elgiasi savaip. Kai kurie valdikliai ignoruoja lankus arba vykdo juos klaidingai: išbandykite išjungę lazerį. Lankai naudojami kontūrams ir žiedams, o ne skenavimo linijoms ar paveikslams.
+729|Kreivių tolerancija
+730|Kiek suplotoji kreivė (Bézier, tekstas) gali nukrypti nuo tikrosios.
+731|Rašyti kreives kaip lankus, kur jos tinka
+732|Skaičiavimas užpildo valdiklio buferį ir yra greitas. Paprastas siunčia vieną eilutę ir laukia jos ok: lėtas, bet skirtas programinei įrangai, kuri atsako klaidingai.
+733|Toliau laukti
+734|Valdiklis neatsako {} s vykdant darbą (būsena: {}).
+735|Niekas nebuvo tęsiama ar siunčiama. Staklės gali būti tiesiog lėtos arba eilutė dingo; pažiūrėkite į konsolę ir pasirinkite.
+736|Sustabdyti darbą
+737|Srautinis siuntimas
+738|Valdiklis neatsako
+739|Skaičiuoti buferį
+740|Paprastas (laukti kiekvieno ok)
+741|Prievado pavadinimas arba USB gamintojo ir gaminio ID (VID:PID, šešioliktainis): naudojamas prievadas su šiais ID.
+742|Susieti su šiuo prievadu
+743|Susietas USB įrenginys
+744|Automatiškai prisijungti iš naujo
+745|Jungiamasi iš naujo…
+746|Prievadas arba USB ID
+747|Pakartotinis prisijungimas
+748|Įsiminti pasirinkto prievado USB ID: pasikeitus pavadinimui prievadas randamas pagal juos.
+749|Atsieti
+750|Kai ryšys nutrūksta pats, bandyti kas kelias sekundes, kol paspausite Atsijungti.
+751|nėra
+752|Prisijungus
+753|Panaikinti aliarmą
+754|Aliarmo panaikinimas praleidžia bazavimą: naudokite tik tada, kai žinoma, kad galvutė yra saugioje vietoje.
+755|Bazuoti staklės
+756|Bazuoti {}
+757|Bazuoja tik {} ašį ($H{})
+758|Visi {} failo nustatymai dabar yra valdiklyje.
+759|Pirmiausia sukurkite nustatymų atsarginę kopiją. Norėdami tęsti, įveskite {}:
+760|Atsarginė kopija į failą…
+761|Failo naudoti negalima: {}
+762|Pirmiausia prisijunkite prie staklių (skirtukas Įrenginys).
+763|Prisijungta prie: {}
+764|Gamykliniai nustatymai ($RST=$)…
+765|Marlin saugo nustatymus savo komandose (M92, M203, M204, ...): šis puslapis rodo tik tai, ką praneša `M503`.
+766|Dar nieko neperskaityta.
+767|Skaityti nustatymus ($$)
+768|Skaityti nustatymus (M503)
+769|Tikrai įrašyti $RST=$ į valdiklį?
+770|Atkurti iš failo…
+771|Atkurti gamyklinius nustatymus
+772|Atkurti nustatymus iš failo
+773|Nustatymai išsaugoti: {}
+774|Valdiklis jau turi visus.
+775|Šie nustatymai yra valdiklyje, ne profilyje. Keiskite po vieną ir užsirašykite ankstesnę vertę: bloga vertė gali priversti stakles judėti netinkamą atstumą arba uždegti lazerį.
+776|Šie failo nustatymai skiriasi nuo valdiklio. Niekas neįrašoma, kol nepaspausite Įrašyti visus.
+777|Tai įrašo $RST=$: kiekvienas valdiklio nustatymas grįžta į programinės įrangos numatytąsias vertes. Pasikeis žingsniai, eiga, greičiai, lazerio režimas ir bazavimas.
+778|Įrašyti
+779|Įrašyti ${} = {} į valdiklį? Dabar yra {}. Keiskite po vieną nustatymą ir užsirašykite seną vertę.
+780|Įrašyti nustatymą
+781|Įrašyti visus
+782|Įrašyti {} nustatymų į valdiklį? Staklės elgsis taip, kaip sako failas.
+783|Po įrašymo skiriasi {} iš {} nustatymų:
+784|Vertė
+785|Vienetas
+786|Tipinė
+787|ne skaičius
+788|už ribų
+789|Programinė įranga ($$)
+790|0 = tipinė ({} W)
+791|0 = įprasta ({} nm)
+792|Silpnas pastovus spindulys aukščiui nustatyti (fokusavimo režimas). 0 = be fokusavimo režimo.
+793|Pridėti lazerio galvutę
+794|Spindulio dėmė
+795|Fokusavimo galia
+796|Rėmelio greitis
+797|Galvutė {}
+798|Optinė galia
+799|PWM dažnis
+800|Didžiausias PWM dažnis
+801|Rodyklės poslinkis
+802|Impulso plotis
+803|Impulso pločio ribos
+804|Pašalinti šią lazerio galvutę
+805|Spindulio dydis ant medžiagos (0 = nežinomas). Mažesnis užpildymo intervalas priverčia gretimas linijas persidengti.
+806|PWM vertės saugomos profilyje ir siūlomos kaip makrokomandų kintamieji; jos nesiunčiamos valdikliui.
+807|Numeris, kuriuo valdiklis pažįsta šią galvutę; rašomas kaip T<n>, kai sluoksnis naudoja kitą galvutę. Turi sutapti su susiejimu valdiklyje.
+808|Įrankio numeris (T)
+809|Dvi lazerio galvutės turi tą patį įrankio numerį.
+810|Bangos ilgis
+811|Kur raudonas rodyklės taškas spindulio atžvilgiu (x į dešinę, y žemyn). Naudoja lygiavimas pagal rodyklę skirtuke Įrenginys.
+812|pvz. Mėlynas diodas
+813|Lazerio galvutė
+814|Intervalas mažesnis už spindulio dėmę ({}): gretimos linijos persidengia.
+815|FOKUSAVIMO SPINDULYS ĮJUNGTAS: paspauskite, kad išjungtumėte
+816|Fokusas
+817|Įjungia silpną pastovų spindulį fokusavimo aukščiui nustatyti
+818|Fokusavimo spindulys įjungtas
+819|Fokusavimo spindulys išjungtas
+820|Lygiuoti pagal rodyklę
+821|Sausas paleidimas su rodykle
+822|Sausas paleidimas su rodykle: {} eilučių, lazeris išjungtas
+823|Nėra ką paleisti: išvesties sluoksniuose nėra figūrų
+824|Pereina darbo trajektoriją, pastumtą rodyklės poslinkiu, išjungus lazerį, kad būtų matyti, kur ji eitų.
+825|Tik šioje sesijoje: rėmelis ir sausas paleidimas pasislenka atgal raudono rodyklės taško poslinkiu, todėl taškas nukrenta ten, kur kristų spindulys. Darbai ir rankinis judinimas niekada nestumiami.
+826|Kablys {}: {}
+827|Kabliai
+828|Savas G kodas, įrašomas į darbą: kai prasideda sluoksnis, prieš ir po kiekvieno objekto, kai sluoksnis baigiasi. Su objektų kabliais sluoksnis deginamas objektas po objekto (ir kartą per praėjimą).
+829|Kintamieji: {}
+830|Sluoksnio pradžia
+831|Sluoksnio pabaiga
+832|Objekto pradžia
+833|Objekto pabaiga
+834|Makrokomanda yra jūsų paties G kodas: ji gali uždegti lazerį arba pajudinti galvutę. Vykdykite ją tik žinodami, ką ji daro. Šis klausimas užduodamas kartą per sesiją.
+835|Pridėti makrokomandą
+836|Ištrinti šią makrokomandą
+837|Makrokomandos pavadinimas
+838|Makrokomanda {}
+839|Makrokomanda {}: {}
+840|Makrokomanda {}: {} eilučių
+841|Makrokomandos
+842|Pavadinti scenarijai, kuriuos vykdote rankiniu būdu skirtuke Įrenginys. Viena komanda eilutėje; komentarai po ; arba skliaustuose; @include(pavadinimas) įterpia kitą makrokomandą. Galima naudoti staklių kintamuosius.
+843|Vykdyti makrokomandą {}
+844|Vykdo šią makrokomandą staklėse
+845|Pridėti zoną
+846|Apskritimas
+847|Ištrinti šią zoną
+848|Darbo srities dalys, į kurias stakles niekada negali įeiti (spaustukas, įtaisas). Judesys, palietęs įjungtą zoną, net su išjungtu lazeriu, sustabdo Pradėti, Rėmelį ir eksportą. Programa zonų neapeina.
+849|Rėmelis liečia uždraustą zoną „{}“.
+850|Sluoksnio {} trajektorija liečia uždraustą zoną „{}“.
+851|Zonos pavadinimas
+852|Zona {}
+853|Uždraustos zonos
+854|Rodyti uždraustas zonas
+855|Kiek Z pasislenka su kiekvienu kitu praėjimu (neigiamas reiškia žemyn, kai aukštyn yra +Z). 0 = Z lieka.
+856|Staklių Z, į kurį galvutė nuvyksta prieš pirmąjį praėjimą. 0 kartu su 0 per praėjimą = Z nejudinamas.
+857|Sluoksnio {} Z aukščiai už Z ašies eigos ribų.
+858|Staklės turi Z ašį
+859|Eiga
+860|Aukštyn yra neigiama Z kryptis
+861|Z
+862|Z ašis
+863|Z aukštis
+864|Z per praėjimą
+865|Prijungtas sukimo priedas
+866|A pasisuka {} laipsnių kiekvienam paviršiaus milimetrui.
+867|Visi deginami sluoksniai turi būti sukimosi, arba nė vienas. Dizainas negali būti aukštesnis už ruošinio apskritimo ilgį.
+868|Pirmiausia prašo patvirtinimo. Keičiasi tik valdiklio Y ašis.
+869|Deginti šį sluoksnį ant sukimo priedo
+870|Griebtuvas
+871|Apimtis
+872|GRBL 1.1 turi tris ašis: A ašis nepasiekiama, naudojama Y.
+873|Rūšis
+874|Sukimosi sluoksniais pažymėti sluoksniai deginami ant priedo. Modelis paprastas: griebtuvas sukasi pagal ruošinio skersmenį, ritinėliai paviršių judina kaip savo; tikrą įrenginį reikia išbandyti.
+875|Variklio mikrožingsniai vienam pilnam to, ką jis suka, apsisukimui (griebtuvo ar vieno ritinėlio).
+876|Mikrožingsnių per apsisukimą
+877|Pakeičia Y (Y variklis suka ruošinį)
+878|Ritinėlio skersmuo
+879|Ritinėliai
+880|Sukimosi
+881|Sukimosi ir plokščių sluoksnių negalima maišyti viename darbe: pažymėkite visus deginamus sluoksnius kaip sukimosi, arba nė vieno.
+882|Sukimas G kode
+883|Valdikliui reikia {} žingsnių mm Y ašyje ($101).
+884|Dizainas sluoksnyje {} aukštesnis už ruošinio apimtį.
+885|Ruošinio apimtis: dizainas negali būti aukštesnis.
+886|Tikra A ašis (laipsniai)
+887|Ruošinio skersmuo
+888|Įrašyti $101 į valdiklį…
+889|Kaip dėžė ar cilindras ant stalo: judesiai virš ar žemiau intervalo laisvi.
+890|Tik šiuose aukščiuose (Z)
+891|Tuščias profilis
+892|Šio profilio kopija
+893|Pridėti įrenginį
+894|Nukopijuota į {}
+895|Eksportuoti…
+896|Profilis {} importuotas
+897|Importuoti…
+898|Nuskaityti profilį iš failo
+899|Išsaugoti šį profilį faile
+900|Profilis išsaugotas: {}
+901|Pradiniai taškai: bendrosios staklės su tipiniais skaičiais. Patikrinkite juos pagal savo staklių dokumentaciją.
+902|GRBL diodinis lazeris 400 × 400
+903|GRBL CO2 lazeris 300 × 200
+904|K40 pertvarkymas (GRBL) 300 × 200
+905|Marlin diodinis lazeris 400 × 400
+906|GRBL 1.1 diodinis lazeris ant 400 × 400 mm stalo, nulis priekyje kairėje, dinaminė galia.
+907|GRBL 1.1 CO2 lazeris ant 300 × 200 mm stalo, nulis priekyje kairėje.
+908|K40 CO2 lazeris su GRBL plokšte: 300 × 200 mm, nulis galiniame kairiajame (viršutiniame kairiajame) kampe.
+909|Diodinis lazeris su Marlin programine įranga (lazerio funkcija, S 0–255) ant 400 × 400 mm stalo.
+910|Atgal
+911|Ryšys (neprivaloma)
+912|Baigti
+913|Jei staklės dabar prijungtos, jų darbo sritį ir greitį galima nuskaityti iš valdiklio.
+914|Valdiklio lazerio režimas ($32) ir didžiausia S vertė ($30) nebuvo nuskaityti: jie patikrinami prisijungus.
+915|Pavadinimas ir vienetai
+916|Toliau
+917|Nenustatytos paraštės ar programiniai apribojimai: visa ašių eiga yra darbo sritis. Nustatykite juos puslapyje Aparatinė įranga, jei trukdo spaustukas ar rėmas.
+918|Prievadas ar mazgas dar nenustatytas: pasirinkite jį įrenginio nustatymuose prieš jungiantis.
+919|Čia niekas nebuvo išbandyta jūsų staklėse: atlikite pirmąjį bandymą išjungę lazerį arba mažiausia galia.
+920|Pasirinkite artimiausią pradžios tašką. Viską galima vėliau keisti.
+921|Nustatyti rankiniu būdu…
+922|Nustatykite savo stakles ({}/{})
+923|Praleisti
+924|Praleisti šiuos žingsnius ir atidaryti įrenginio nustatymus
+925|Santrauka
+926|Įrenginys pridėtas. Paspauskite Tęsti, kad pradėtumėte.
+927|Nustatymai nuskaityti iš valdiklio.
+928|Kokias stakles turite?
+929|Verta patikrinti
+930|nenustatyta
+931|Pridėti skaitiklį
+932|Skaičiuojama pagal laiką, kurį darbai iš tikrųjų vyksta (nuo pradžios iki pabaigos ar Stabdymo), o ne pagal įverčius. Sumos nulinti negalima.
+933|Skaitiklio pavadinimas (vamzdis, lęšis, diržas)
+934|Skaitiklis {}
+935|Ištrinti šį skaitiklį
+936|Reikia techninės priežiūros: {}
+937|Priminti po
+938|Nulinti skaitiklį
+939|Pradėti skaitiklį „{}“ iš naujo nuo nulio?
+940|Bendras darbo laikas: {}
+941|Techninė priežiūra
+942|Iš šablono
+943|Pastabos ilgesnės nei {} simbolių ir negali būti išsaugotos.
+944|Jūsų pastabos (Markdown)
+945|pvz. Veikusios nuostatos: oro pagalba 20 %, fokusas 12 mm
+946|Pastabos
+947|Aktyvi
+948|Pridėti kamerą
+949|Adresas
+950|Auto
+951|Kameros pavadinimas
+952|Kameros numeris
+953|Šio kompiuterio kamera
+954|Kamera {}
+955|Kameros, stebinčios mašiną. Aktyvi duoda gyvą vaizdą. Kamerą galima įjungti tik su tinkamu adresu.
+956|Objektyvo iškraipymo koeficientai (radialiniai k1–k3, tangentiniai p1, p2) koordinatėms nuo centro vaizdo ilgesniosios kraštinės vienetais. Visi 0 = be pataisos. Įvedama ranka: automatinio kalibravimo nėra.
+957|Ištrinti šią kamerą
+958|Šio kompiuterio kamerai: prašyti nesuspausto YUYV formato, jei sistema leidžia.
+959|Formatas
+960|Objektyvo korekcija
+961|Gyvas mašinos vaizdas: MJPEG srautas arba JPEG nuotraukos adresas (http arba https). RTSP nepalaikomas.
+962|Triukšmo mažinimas
+963|Tai nėra http ar https adresas.
+964|Vaizdas
+965|Teikti pirmenybę YUYV
+966|Įjungti arba išjungti šią kamerą
+967|Adresas netinkamas: reikia http arba https adreso
+968|Baltos spalvos balansas
+969|Pridėti tašką
+970|Lygiuoti pagal taškus
+971|Ištrinti šį tašką
+972|Pritaiko vaizdą prie taškų (mažiausių kvadratų metodas) ir atitinkamai perkelia kampus.
+973|Per mažai taškų arba jie yra vienoje tiesėje.
+974|Poros: taškas vaizde (pikseliai) ir jo vieta darbo srityje (mm). Bent 3, rekomenduojami 4; jie nustato lygiavimą, įskaitant perspektyvą.
+975|Taškai iš dabartinių kampų
+976|Atskaitos taškai
+977|Pakeičia taškus keturiais vaizdo kampais ir jų dabartine vieta.

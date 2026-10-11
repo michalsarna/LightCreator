@@ -23,7 +23,7 @@ pub enum Action {
 impl Controller {
     pub fn status_poll(self) -> StatusPoll {
         match self {
-            Controller::Grbl => StatusPoll::Byte(b'?'),
+            Controller::Grbl | Controller::Smoothieware => StatusPoll::Byte(b'?'),
             Controller::Marlin => StatusPoll::Line("M114"),
             _ => StatusPoll::None,
         }
@@ -37,7 +37,7 @@ impl Controller {
     }
     pub fn home(self) -> Action {
         match self {
-            Controller::Grbl => Action::Lines(vec!["$H".into()]),
+            Controller::Grbl | Controller::Smoothieware => Action::Lines(vec!["$H".into()]),
             Controller::Marlin => Action::Lines(vec!["G28 X Y".into()]),
             _ => Action::None,
         }
@@ -46,20 +46,20 @@ impl Controller {
     pub fn unlock(self) -> Action {
         match self {
             Controller::Grbl => Action::Lines(vec!["$X".into()]),
-            Controller::Marlin => Action::Lines(vec!["M999".into()]),
+            Controller::Marlin | Controller::Smoothieware => Action::Lines(vec!["M999".into()]),
             _ => Action::None,
         }
     }
     pub fn pause(self) -> Action {
         match self {
-            Controller::Grbl => Action::Byte(b'!'),
+            Controller::Grbl | Controller::Smoothieware => Action::Byte(b'!'),
             Controller::Marlin => Action::Lines(vec!["M25".into()]),
             _ => Action::None,
         }
     }
     pub fn resume(self) -> Action {
         match self {
-            Controller::Grbl => Action::Byte(b'~'),
+            Controller::Grbl | Controller::Smoothieware => Action::Byte(b'~'),
             Controller::Marlin => Action::Lines(vec!["M24".into()]),
             _ => Action::None,
         }
@@ -75,7 +75,15 @@ impl Controller {
     pub fn jog(self, dx: f64, dy: f64, feed: f64) -> Action {
         match self {
             Controller::Grbl => Action::Lines(vec![format!("$J=G91 G21 X{dx} Y{dy} F{feed}")]),
-            Controller::Marlin => Action::Lines(vec!["G91".into(), format!("G0 X{dx} Y{dy} F{feed}"), "G90".into()]),
+            Controller::Marlin | Controller::Smoothieware => Action::Lines(vec!["G91".into(), format!("G0 X{dx} Y{dy} F{feed}"), "G90".into()]),
+            _ => Action::None,
+        }
+    }
+    /// Jog the Z axis by `dz` millimetres at `feed` mm/min.
+    pub fn jog_z(self, dz: f64, feed: f64) -> Action {
+        match self {
+            Controller::Grbl => Action::Lines(vec![format!("$J=G91 G21 Z{dz} F{feed}")]),
+            Controller::Marlin | Controller::Smoothieware => Action::Lines(vec!["G91".into(), format!("G0 Z{dz} F{feed}"), "G90".into()]),
             _ => Action::None,
         }
     }
@@ -89,7 +97,7 @@ impl Controller {
     /// Emergency stop / abort byte, if the controller has a realtime one.
     pub fn abort_byte(self) -> Option<u8> {
         match self {
-            Controller::Grbl => Some(0x18),
+            Controller::Grbl | Controller::Smoothieware => Some(0x18),
             _ => None,
         }
     }
@@ -102,8 +110,44 @@ impl Controller {
     }
 }
 
+/// The Z position of a status report, when it has one (`MPos:1,2,3` of GRBL and Smoothieware, `Z:3.00` of Marlin).
+pub fn parse_status_z(line: &str) -> Option<f64> {
+    if let Some(inner) = line.strip_prefix('<').and_then(|l| l.strip_suffix('>')) {
+        let sep = if inner.contains('|') { '|' } else { ',' };
+        let parts: Vec<&str> = inner.split(sep).collect();
+        let at = parts.iter().position(|p| p.starts_with("MPos:") || p.starts_with("WPos:"))?;
+        let first = parts[at].split(':').nth(1)?;
+        // GRBL: "MPos:x,y,z" in one part; Smoothieware: the values are separate parts.
+        let nums: Vec<f64> = if sep == '|' { first.split(',').filter_map(|s| s.parse().ok()).collect() } else { std::iter::once(first).chain(parts[at + 1..].iter().copied()).take(3).filter_map(|s| s.parse().ok()).collect() };
+        return nums.get(2).copied();
+    }
+    if line.starts_with("X:") {
+        return line.split_whitespace().find_map(|t| t.strip_prefix("Z:")).and_then(|v| v.parse::<f64>().ok());
+    }
+    None
+}
+
+/// The option letters GRBL reports in its build info (`$I`): `[OPT:VH,15,128]` gives `"VH"`.
+pub fn grbl_options(lines: &[String]) -> Option<String> {
+    lines.iter().find_map(|l| l.trim().strip_prefix("[OPT:")).map(|o| o.split([',', ']']).next().unwrap_or("").to_string())
+}
+
+/// Was this GRBL built with `$HX` / `$HY` / `$HZ` (single-axis homing, option letter `H`)?
+pub fn single_axis_homing(options: &str) -> bool {
+    options.contains('H')
+}
+
 /// Parse a status report into (state, x, y). GRBL: `<Idle|MPos:1,2,0|...>`; Marlin: `X:1.00 Y:2.00 Z:0.00 ...`.
 pub fn parse_status(line: &str) -> Option<(String, f64, f64)> {
+    // Smoothieware: `<Idle,MPos:1.0000,2.0000,3.0000,WPos:...>` (commas everywhere).
+    if let Some(inner) = line.strip_prefix('<').and_then(|l| l.strip_suffix('>')).filter(|l| !l.contains('|') && l.contains(',')) {
+        let parts: Vec<&str> = inner.split(',').collect();
+        let state = parts.first()?.to_string();
+        let at = parts.iter().position(|p| p.starts_with("MPos:") || p.starts_with("WPos:"))?;
+        let x = parts[at].split(':').nth(1)?.parse::<f64>().ok()?;
+        let y = parts.get(at + 1)?.parse::<f64>().ok()?;
+        return Some((state, x, y));
+    }
     if let Some(inner) = line.strip_prefix('<').and_then(|l| l.strip_suffix('>')) {
         let mut parts = inner.split('|');
         let state = parts.next()?.to_string();
@@ -135,6 +179,33 @@ pub struct Reading {
     /// mm/min
     pub travel_speed: Option<f64>,
     pub dynamic_power: Option<bool>,
+    /// GRBL `$32`: laser mode on. Without it GRBL treats the laser like a spindle.
+    pub laser_mode: Option<bool>,
+}
+
+/// What a controller reports that does not agree with the profile or is unsafe.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct FwCheck {
+    /// GRBL's laser mode (`$32`) is off.
+    pub laser_mode_off: bool,
+    /// `$30` of the controller when it differs from the S max of the profile.
+    pub s_max: Option<f64>,
+}
+
+impl FwCheck {
+    pub fn is_clean(&self) -> bool {
+        !self.laser_mode_off && self.s_max.is_none()
+    }
+}
+
+impl Reading {
+    /// Compare what the controller reported with the profile of the device.
+    pub fn check(&self, dev: &crate::doc::Device) -> FwCheck {
+        FwCheck {
+            laser_mode_off: self.laser_mode == Some(false),
+            s_max: self.s_max.filter(|v| (*v - dev.s_max()).abs() > 1e-6),
+        }
+    }
 }
 
 impl Reading {
@@ -166,7 +237,10 @@ impl Controller {
                         "110" => r.travel_speed = Some(v),
                         "130" => r.bed_w = Some(v),
                         "131" => r.bed_h = Some(v),
-                        "32" => r.dynamic_power = Some(v >= 1.0),
+                        "32" => {
+                            r.dynamic_power = Some(v >= 1.0);
+                            r.laser_mode = Some(v >= 1.0);
+                        }
                         _ => {}
                     }
                 }

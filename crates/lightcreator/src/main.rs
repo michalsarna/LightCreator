@@ -1,10 +1,13 @@
 mod app;
 mod camera;
+mod check_ui;
 mod camera_stream;
 mod clip_net;
 mod clipart_ui;
 mod canvas;
 mod device_ui;
+mod firmware_ui;
+mod focus_ui;
 mod fonts;
 #[cfg(test)]
 mod grbl_sim_tests;
@@ -15,6 +18,7 @@ mod icons;
 mod image_ui;
 mod laser;
 mod materials_ui;
+mod markdown_ui;
 mod menu;
 mod nodes;
 #[cfg(target_os = "macos")]
@@ -34,6 +38,7 @@ mod update_ui;
 mod backup_ui;
 mod units_ui;
 mod window_ui;
+mod wizard_ui;
 
 const ICON_256: &[u8] = include_bytes!("../../../assets/icons/icon-256.png");
 const ICON_512: &[u8] = include_bytes!("../../../assets/icons/icon-512.png");

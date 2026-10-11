@@ -242,7 +242,7 @@ impl App {
         let (resp, painter) = ui.allocate_painter(avail, Sense::click_and_drag());
         let rect = resp.rect;
         let o = rect.min;
-        let (bw, bh) = (self.doc.device.bed_w, self.doc.device.bed_h);
+        let (bw, bh) = self.doc.device.work_size();
 
         self.canvas_avail = (rect.width(), rect.height());
         self.canvas_origin = rect.min;
@@ -324,12 +324,76 @@ impl App {
             }
         }
         painter.rect_stroke(bed, 0.0, Stroke::new(1.0, Color32::from_gray(0x99)), egui::StrokeKind::Outside);
+        // Strips the machine cannot use are hatched; software limits are outlined.
+        {
+            let u = self.doc.device.usable_rect();
+            let to_screen = |r: lc_core::Rect| egui::Rect::from_min_max(self.w2s(o, r.min), self.w2s(o, r.max));
+            let usable = to_screen(u);
+            let ink = Color32::from_rgba_unmultiplied(0xc0, 0x30, 0x30, 70);
+            let hatch = |painter: &egui::Painter, r: egui::Rect| {
+                if r.width() < 0.5 || r.height() < 0.5 {
+                    return;
+                }
+                painter.rect_filled(r, 0.0, Color32::from_rgba_unmultiplied(0xc0, 0x30, 0x30, 25));
+                let p = painter.with_clip_rect(r);
+                let step = 8.0;
+                let mut k = -r.height();
+                while k < r.width() {
+                    p.line_segment([egui::pos2(r.left() + k, r.bottom()), egui::pos2(r.left() + k + r.height(), r.top())], Stroke::new(1.0, ink));
+                    k += step;
+                }
+            };
+            for strip in [
+                egui::Rect::from_min_max(bed.min, egui::pos2(bed.max.x, usable.min.y)),
+                egui::Rect::from_min_max(egui::pos2(bed.min.x, usable.max.y), bed.max),
+                egui::Rect::from_min_max(egui::pos2(bed.min.x, usable.min.y), egui::pos2(usable.min.x, usable.max.y)),
+                egui::Rect::from_min_max(egui::pos2(usable.max.x, usable.min.y), egui::pos2(bed.max.x, usable.max.y)),
+            ] {
+                hatch(&painter, strip);
+            }
+            if self.doc.device.area.soft_limits.is_some() {
+                let l = to_screen(self.doc.device.allowed_rect());
+                painter.rect_stroke(l, 0.0, Stroke::new(1.5, Color32::from_rgb(0xe8, 0x8a, 0x1f)), egui::StrokeKind::Middle);
+            }
+        }
+        // A rotary attachment: the design wraps round the workpiece, so the way round is marked where it repeats.
+        if self.doc.device.rotary.enabled {
+            let circ = self.doc.device.rotary.circumference();
+            if circ > 1.0 {
+                let mut k = 1.0;
+                while circ * k < bh {
+                    let y = self.w2s(o, Pt::new(0.0, circ * k)).y;
+                    painter.line_segment([egui::pos2(bed.min.x, y), egui::pos2(bed.max.x, y)], Stroke::new(1.0, Color32::from_rgb(0x2e, 0xa0, 0xc0)));
+                    k += 1.0;
+                }
+                let y = self.w2s(o, Pt::new(0.0, circ)).y;
+                if circ < bh {
+                    painter.text(egui::pos2(bed.min.x + 4.0, y - 2.0), egui::Align2::LEFT_BOTTOM, format!("{} {}", crate::i18n::tr("Circumference"), crate::units_ui::fmt_len(self.doc.device.units, circ, 1)), egui::FontId::proportional(11.0), Color32::from_rgb(0x2e, 0xa0, 0xc0));
+                }
+            }
+        }
+        // No-go zones: red areas the machine must not enter (switched off in the View menu).
+        if self.zones_visible {
+            for z in &self.doc.device.zones {
+                let (fill, edge) = if z.enabled { (Color32::from_rgba_unmultiplied(0xc0, 0x30, 0x30, 70), Color32::from_rgb(0xc0, 0x30, 0x30)) } else { (Color32::from_rgba_unmultiplied(0x90, 0x90, 0x90, 30), Color32::from_gray(0x90)) };
+                let b = z.shape.bounds();
+                match z.shape {
+                    lc_core::ZoneShape::Rect { .. } => {
+                        let r = egui::Rect::from_min_max(self.w2s(o, b.min), self.w2s(o, b.max));
+                        painter.rect_filled(r, 0.0, fill);
+                        painter.rect_stroke(r, 0.0, Stroke::new(1.5, edge), egui::StrokeKind::Middle);
+                    }
+                    lc_core::ZoneShape::Circle { x, y, r } => {
+                        let c = self.w2s(o, Pt::new(x, y));
+                        painter.circle(c, r.abs() as f32 * self.view.zoom, fill, Stroke::new(1.5, edge));
+                    }
+                }
+                let at = self.w2s(o, Pt::new(b.min.x, b.min.y));
+                painter.text(at + egui::vec2(4.0, 2.0), egui::Align2::LEFT_TOP, &z.name, egui::FontId::proportional(11.0), edge);
+            }
+        }
         // Origin marker (machine zero)
-        let zero = match self.doc.device.origin {
-            lc_core::Origin::FrontLeft => Pt::new(0.0, bh),
-            lc_core::Origin::BackLeft => Pt::new(0.0, 0.0),
-        };
-        painter.circle_filled(self.w2s(o, zero), 4.0, theme::accent());
+        painter.circle_filled(self.w2s(o, self.doc.device.home_point()), 4.0, theme::accent());
 
         // ---- camera overlay (under the design) ----
         if self.overlay_visible {

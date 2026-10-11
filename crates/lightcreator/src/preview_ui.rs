@@ -129,7 +129,7 @@ impl App {
         let units = self.doc.device.units;
         let bed_fill = self.bed_fill();
         let line_w = self.grid_prefs.line_width;
-        let (bw, bh) = (self.doc.device.bed_w, self.doc.device.bed_h);
+        let (bw, bh) = self.doc.device.work_size();
         let Some((_, job)) = self.pv.job.take() else { return };
         // A slim frame: the default window margin leaves a wide empty strip under the totals.
         let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 8, right: 8, top: 6, bottom: 3 });

@@ -664,3 +664,315 @@
 663|Nova oznaka
 664|Dodaj ili ukloni oznake koje se nude za slojeve materijala
 665|Dodaj
+666|Općenito
+667|Hardver
+668|G-kod
+669|Prednje desno
+670|Stražnje desno
+671|Obrni osi
+672|Orijentacija ploče
+673|Izvorna
+674|Okrenuto ulijevo
+675|Okrenuto udesno
+676|Margine
+677|Vlastita ograničenja
+678|Softverska ograničenja
+679|Trake uz rubove radne površine koje stroj ne može koristiti (stege, okvir); tamo se ništa ne smije postaviti ni pomaknuti
+680|Glava je na rubu dopuštenog područja.
+681|Provjera prije posla
+682|Ipak nastavi
+683|Prvo ispravite pogreške: s njima se ništa ne šalje, ne uokviruje ni izvozi.
+684|Sloj {} gori snagom 0 %.
+685|Sloj {} ima objekte, ali nema putanju (npr. otvorene linije na sloju ispune).
+686|Odaberi objekte
+687|Okvir je izvan softverskih ograničenja.
+688|Okvir je izvan upotrebljivog područja (izvan radne površine ili u margini).
+689|Putanja sloja {} izlazi iz dopuštenog područja (overscan ili prazni hodovi).
+690|{} objekt(a) je izvan softverskih ograničenja.
+691|{} objekt(a) je izvan upotrebljivog područja (izvan radne površine ili u margini).
+692|Uključi laserski način ($32=1)
+693|Laserski način ($32) je isključen.
+694|Upravljač prijavljuje problem
+695|Najveća S vrijednost upravljača ($30) je {}, profil koristi {}.
+696|Ovo zapisuje $32=1 u postavke upravljača. Nastaviti?
+697|Koristi vrijednost iz upravljača
+698|Uz različite vrijednosti snaga u G-kodu neće odgovarati postavljenim postocima.
+699|S isključenim laserskim načinom GRBL se ponaša kao upravljač vretena: laser se može upaliti pri brzim pomacima, a snaga ne prati brzinu.
+700|Maks. brzina rezanja
+701|Ubrzanje
+702|0 = bez ograničenja. Slojevi brži od ove vrijednosti dobivaju upozorenje prije posla; procjena vremena koristi najviše ovu brzinu.
+703|0 = nepoznato. S vrijednošću procjena vremena uključuje rampe pokretanja i zaustavljanja, a ploča sloja predlaže overscan.
+704|Predloženo: {} (put kočenja pri ovoj brzini i ubrzanju stroja)
+705|Sloj {} je brži od najveće brzine rezanja stroja.
+706|Automatski (iz upravljača)
+707|Dijalekt G-koda
+708|Smoothieware: S se zapisuje kao razlomak pune snage (postavite S maks. na 1). Strujanje radi kao kod GRBL-a; ništa od ovoga nije isprobano na stvarnom hardveru.
+709|Koristi se kad je dijalekt automatski; odabrani GRBL dijalekt sam odlučuje između M3 i M4.
+710|Napredno
+711|Polje G-koda na stranici Napredno sadrži kontrolni znak ili je predugo.
+712|Naredbe za air assist
+713|Kraj posla
+714|Isključeno
+715|Uključeno
+716|Zamjenjuje završni M2. Laser se prije toga uvijek isključuje, a glava šalje na nulu (ako je postavljeno). Prazno = ugrađeno.
+717|Zamjenjuje retke jedinica, apsolutnog načina, ravnine i laserskog načina. Prazno = ugrađeno.
+718|Vrati zadano
+719|Početak posla
+720|Pogrešan G-kod može upaliti laser, zabiti glavu u krajnje prekidače ili uništiti materijal. Testirajte s isključenim laserom ili na najmanjoj snazi.
+721|Način snage
+722|Kao uređaj
+723|Stalna (M3)
+724|Dinamička (M4)
+725|M4 (dinamička) smanjuje snagu u kutovima i pri ubrzanju; M3 (stalna) je zadržava. G-kod prebacuje između njih kad se slojevi razlikuju.
+726|Tolerancija lukova
+727|Lukovi (G2 / G3)
+728|Lukovi: GRBL obično podržava G2 / G3, Marlin samo ako je izgrađen s ARC_SUPPORT, a Smoothieware ima vlastito ponašanje. Neki upravljači zanemaruju lukove ili ih pogrešno izvode: testirajte s isključenim laserom. Lukovi se koriste za konture i prstenove, ne za linije skeniranja ni slike.
+729|Tolerancija krivulja
+730|Koliko spljoštena krivulja (Bézier, tekst) smije odstupati od prave.
+731|Zapisuj krivulje kao lukove gdje pristaju
+732|Brojanje puni međuspremnik upravljača i brzo je. Jednostavno šalje jedan redak i čeka njegov ok: sporo, ali za firmware koji odgovara pogrešno.
+733|Nastavi čekati
+734|Upravljač ne odgovara {} s tijekom posla (stanje: {}).
+735|Ništa nije nastavljeno ni poslano. Stroj je možda samo spor ili je redak izgubljen; pogledajte konzolu pa odaberite.
+736|Zaustavi posao
+737|Strujanje
+738|Upravljač ne odgovara
+739|Broji međuspremnik
+740|Jednostavno (čekaj svaki ok)
+741|Naziv porta ili USB identifikator proizvođača i proizvoda (VID:PID, heksadecimalno): koristi se port s tim identifikatorima.
+742|Veži uz ovaj port
+743|Vezani USB uređaj
+744|Automatski se ponovno spoji
+745|Ponovno spajanje…
+746|Port ili USB id
+747|Ponovno spajanje
+748|Zapamti USB identifikatore odabranog porta: kad mu se promijeni naziv, port se pronalazi po njima.
+749|Odvezi
+750|Kad veza sama pukne, pokušavaj svakih nekoliko sekundi dok ne pritisnete Odspoji.
+751|nema
+752|Nakon spajanja
+753|Obriši alarm
+754|Brisanje alarma preskače referenciranje: koristite samo kad je poznato da glava stoji na sigurnom mjestu.
+755|Referenciraj stroj
+756|Referenciraj {}
+757|Referencira samo os {} ($H{})
+758|Svih {} postavki iz datoteke sada je u upravljaču.
+759|Najprije napravite sigurnosnu kopiju postavki. Za nastavak upišite {}:
+760|Spremi sigurnosnu kopiju u datoteku…
+761|Datoteka se ne može koristiti: {}
+762|Najprije se spojite na stroj (kartica Uređaj).
+763|Spojeno na: {}
+764|Tvorničke postavke ($RST=$)…
+765|Marlin čuva postavke u vlastitim naredbama (M92, M203, M204, ...): ova stranica samo prikazuje što javlja `M503`.
+766|Još ništa nije pročitano.
+767|Pročitaj postavke ($$)
+768|Pročitaj postavke (M503)
+769|Zaista upisati $RST=$ u upravljač?
+770|Vrati iz datoteke…
+771|Vrati tvorničke postavke
+772|Vrati postavke iz datoteke
+773|Postavke spremljene u {}
+774|Upravljač ih već sve ima.
+775|Ove postavke žive u upravljaču, ne u profilu. Mijenjajte jednu po jednu i zapišite prethodnu vrijednost: pogrešna vrijednost može natjerati stroj da se pomakne pogrešnu udaljenost ili upaliti laser.
+776|Ove postavke iz datoteke razlikuju se od upravljača. Ništa se ne upisuje dok ne pritisnete Upiši sve.
+777|Ovo upisuje $RST=$: svaka postavka upravljača vraća se na zadane vrijednosti firmwarea. Koraci, hodovi, brzine, laserski način i referenciranje promijenit će se.
+778|Upiši
+779|Upisati ${} = {} u upravljač? Sada je {}. Mijenjajte jednu postavku po jednu i zapišite staru vrijednost.
+780|Upis postavke
+781|Upiši sve
+782|Upisati {} postavki u upravljač? Stroj će se ponašati kako kaže datoteka.
+783|{} od {} postavki razlikuje se nakon upisa:
+784|Vrijednost
+785|Jedinica
+786|Tipično
+787|nije broj
+788|izvan raspona
+789|Firmware ($$)
+790|0 = tipična ({} W)
+791|0 = uobičajena ({} nm)
+792|Slab stalan snop za namještanje visine (način fokusa). 0 = bez načina fokusa.
+793|Dodaj lasersku glavu
+794|Točka snopa
+795|Snaga fokusa
+796|Brzina okvira
+797|Glava {}
+798|Optička snaga
+799|PWM frekvencija
+800|Maksimalna PWM frekvencija
+801|Pomak pokazivača
+802|Širina impulsa
+803|Raspon širine impulsa
+804|Ukloni ovu laserski glavu
+805|Veličina snopa na materijalu (0 = nepoznato). Manji razmak ispune uzrokuje preklapanje susjednih linija.
+806|PWM vrijednosti čuvaju se u profilu i nude kao varijable za makronaredbe; ne šalju se upravljaču.
+807|Broj pod kojim upravljač poznaje ovu glavu; piše se kao T<n> kad sloj koristi drugu glavu. Mora odgovarati preslikavanju u upravljaču.
+808|Broj alata (T)
+809|Dvije laserske glave imaju isti broj alata.
+810|Valna duljina
+811|Gdje je crvena točka pokazivača u odnosu na snop (x desno, y dolje). Koristi je poravnanje po pokazivaču na kartici Uređaj.
+812|npr. Plava dioda
+813|Laserska glava
+814|Razmak je manji od točke snopa ({}): susjedne linije se preklapaju.
+815|FOKUSNI SNOP UKLJUČEN: pritisnite za isključivanje
+816|Fokus
+817|Uključuje slab stalan snop za namještanje visine fokusa
+818|Fokusni snop uključen
+819|Fokusni snop isključen
+820|Poravnaj prema pokazivaču
+821|Suhi hod s pokazivačem
+822|Suhi hod s pokazivačem: {} redaka, laser isključen
+823|Nema što pokrenuti: nema oblika na izlaznim slojevima
+824|Prolazi putanju posla pomaknutu za pomak pokazivača s isključenim laserom da se vidi kamo bi išla.
+825|Samo u ovoj sesiji: okvir i suhi hod pomiču se unatrag za pomak crvene točke pokazivača pa točka pada tamo gdje bi pao snop. Poslovi i ručno pomicanje nikad se ne pomiču.
+826|Hook {}: {}
+827|Hookovi
+828|Vlastiti G-kod upisan u posao: kad sloj počne, prije i poslije svakog objekta, kad sloj završi. S hookovima objekata sloj se pali objekt po objekt (i jednom po prolazu).
+829|Varijable: {}
+830|Početak sloja
+831|Kraj sloja
+832|Početak objekta
+833|Kraj objekta
+834|Makro je vaš vlastiti G-kod: može upaliti laser ili pomaknuti glavu. Pokrenite ga samo kad znate što radi. Ovo se pitanje postavlja jednom po sesiji.
+835|Dodaj makro
+836|Izbriši ovaj makro
+837|Naziv makroa
+838|Makro {}
+839|Makro {}: {}
+840|Makro {}: {} redaka
+841|Makroi
+842|Imenovane skripte koje ručno pokrećete s kartice Uređaj. Jedna naredba po retku; komentari nakon ; ili u zagradama; @include(naziv) umeće drugi makro. Mogu se koristiti varijable stroja.
+843|Pokreni makro {}
+844|Pokreće ovaj makro na stroju
+845|Dodaj zonu
+846|Krug
+847|Izbriši ovu zonu
+848|Dijelovi radne površine u koje stroj nikad ne smije ući (stega, držač). Pomak koji dodiruje uključenu zonu, i s isključenim laserom, zaustavlja Pokreni, Okvir i izvoz. Program ne zaobilazi zone.
+849|Okvir dodiruje zabranjenu zonu „{}”.
+850|Putanja sloja {} dodiruje zabranjenu zonu „{}”.
+851|Naziv zone
+852|Zona {}
+853|Zabranjene zone
+854|Prikaži zabranjene zone
+855|Koliko se Z pomiče sa svakim sljedećim prolazom (negativno je prema dolje kad je gore +Z). 0 = Z ostaje.
+856|Z stroja na koji glava ide prije prvog prolaza. 0 zajedno s 0 po prolazu = Z se ne pomiče.
+857|Z visine sloja {} izvan su hoda osi Z.
+858|Stroj ima os Z
+859|Hod
+860|Gore je negativni smjer Z
+861|Z
+862|Os Z
+863|Z visina
+864|Z po prolazu
+865|Spojen je rotacijski dodatak
+866|A se okreće za {} stupnjeva za svaki milimetar na površini.
+867|Svi sloj koji se pale moraju biti rotacijski, ili nijedan. Dizajn ne smije biti viši od opsega obratka.
+868|Najprije traži potvrdu. Mijenja se samo os Y upravljača.
+869|Pali ovaj sloj na rotaciji
+870|Stezna glava
+871|Opseg
+872|GRBL 1.1 ima tri osi: os A nije dostupna, koristi se Y.
+873|Vrsta
+874|Slojevi označeni kao rotacijski pale se na dodatku. Model je jednostavan: stezna glava se okreće prema promjeru obratka, valjci pomiču površinu kao vlastitu; pravi stroj treba isprobati.
+875|Mikrokoraci motora za jedan puni okret onoga što pokreće (stezne glave ili jednog valjka).
+876|Mikrokoraka po okretu
+877|Zamjenjuje Y (motor Y okreće obradak)
+878|Promjer valjka
+879|Valjci
+880|Rotacijski
+881|Rotacijski i ravni slojevi ne mogu biti u istom poslu: označite sve slojeve koji se pale kao rotacijske, ili nijedan.
+882|Rotacija u G-kodu
+883|Upravljaču treba {} koraka po mm na osi Y ($101).
+884|Dizajn na sloju {} viši je od opsega obratka.
+885|Opseg obratka: dizajn ne smije biti viši.
+886|Prava os A (stupnjevi)
+887|Promjer obratka
+888|Upiši $101 u upravljač…
+889|Kao kutija ili valjak na stolu: pomaci iznad ili ispod raspona slobodni su.
+890|Samo na ovim visinama (Z)
+891|Prazan profil
+892|Kopija ovog profila
+893|Dodaj uređaj
+894|Kopirano u {}
+895|Izvezi…
+896|Uvezen je profil {}
+897|Uvezi…
+898|Pročitaj profil iz datoteke
+899|Spremi ovaj profil u datoteku
+900|Profil spremljen u {}
+901|Polazišta: opći strojevi s tipičnim brojevima. Provjerite ih prema dokumentaciji svog stroja.
+902|GRBL diodni laser 400 × 400
+903|GRBL CO2 laser 300 × 200
+904|K40 preinaka (GRBL) 300 × 200
+905|Marlin diodni laser 400 × 400
+906|GRBL 1.1 diodni laser na stolu 400 × 400 mm, nula sprijeda lijevo, dinamična snaga.
+907|GRBL 1.1 CO2 laser na stolu 300 × 200 mm, nula sprijeda lijevo.
+908|K40 CO2 laser s GRBL pločom: 300 × 200 mm, nula u stražnjem lijevom (gornjem lijevom) kutu.
+909|Diodni laser s Marlin firmwareom (laserska funkcija, S 0–255) na stolu 400 × 400 mm.
+910|Natrag
+911|Veza (neobavezno)
+912|Završi
+913|Ako je stroj sada spojen, njegovo radno područje i brzina mogu se pročitati iz upravljača.
+914|Laserski način ($32) i najveća S vrijednost ($30) upravljača nisu pročitani: provjeravaju se pri spajanju.
+915|Naziv i jedinice
+916|Dalje
+917|Nisu postavljene margine ni softverska ograničenja: cijeli hod osi je radno područje. Postavite ih na stranici Hardver ako smeta stega ili okvir.
+918|Port ili poslužitelj još nisu postavljeni: odaberite ga u postavkama uređaja prije spajanja.
+919|Ništa ovdje nije isprobano na vašem stroju: napravite prvi test s isključenim laserom ili na najmanjoj snazi.
+920|Odaberite najbliže polazište. Sve se može promijeniti poslije.
+921|Postavi ručno…
+922|Postavite svoj stroj ({}/{})
+923|Preskoči
+924|Preskoči ove korake i otvori postavke uređaja
+925|Sažetak
+926|Uređaj je dodan. Pritisnite Nastavi za početak.
+927|Postavke su pročitane iz upravljača.
+928|Koji stroj imate?
+929|Vrijedi provjeriti
+930|nije postavljeno
+931|Dodaj brojač
+932|Broji se iz vremena u kojem poslovi doista rade (od početka do kraja ili Zaustavi), a ne iz procjena. Ukupno se ne može poništiti.
+933|Naziv brojača (cijev, leća, remen)
+934|Brojač {}
+935|Izbriši ovaj brojač
+936|Potrebno održavanje: {}
+937|Podsjeti nakon
+938|Poništi brojač
+939|Pokrenuti brojač „{}” ponovno od nule?
+940|Ukupno vrijeme rada: {}
+941|Održavanje
+942|Iz predloška
+943|Bilješke su dulje od {} znakova i ne mogu se spremiti.
+944|Vaše bilješke (Markdown)
+945|npr. Postavke koje su radile: air assist 20 %, fokus 12 mm
+946|Bilješke
+947|Aktivna
+948|Dodaj kameru
+949|Adresa
+950|Auto
+951|Naziv kamere
+952|Broj kamere
+953|Kamera ovog računala
+954|Kamera {}
+955|Kamere koje nadziru stroj. Aktivna daje sliku uživo. Kamera se može uključiti samo s važećom adresom.
+956|Koeficijenti izobličenja leće (radijalni k1–k3, tangencijalni p1, p2) za koordinate od središta u jedinicama duže stranice slike. Svi 0 = bez korekcije. Unose se ručno: nema automatske kalibracije.
+957|Izbriši ovu kameru
+958|Za kameru ovog računala: zatraži nekomprimirani format YUYV ako sustav dopušta.
+959|Format
+960|Korekcija leće
+961|Slika stroja uživo: MJPEG tok ili adresa JPEG snimke (http ili https). RTSP nije podržan.
+962|Smanjenje šuma
+963|Nije http ni https adresa.
+964|Slika
+965|Preferiraj YUYV
+966|Uključi ili isključi ovu kameru
+967|Adresa nije valjana: potrebna je http ili https adresa
+968|Ravnoteža bijele
+969|Dodaj točku
+970|Poravnaj prema točkama
+971|Izbriši ovu točku
+972|Prilagođava sliku točkama (najmanji kvadrati) i pomiče kutove u skladu s tim.
+973|Premalo točaka ili leže na jednom pravcu.
+974|Parovi točke na slici (pikseli) i njezina mjesta u radnom području (mm). Najmanje 3, preporuka 4; određuju poravnanje uključujući perspektivu.
+975|Točke iz trenutnih kutova
+976|Referentne točke
+977|Zamjenjuje točke s četiri kuta slike i mjestom gdje su sada.

@@ -664,3 +664,315 @@
 663|Nový štítok
 664|Pridať alebo odstrániť štítky ponúkané pre vrstvy materiálu
 665|Pridať
+666|Všeobecné
+667|Hardvér
+668|G-kód
+669|Vpredu vpravo
+670|Vzadu vpravo
+671|Obrátiť osi
+672|Orientácia panelu
+673|Pôvodná
+674|Otočené vľavo
+675|Otočené vpravo
+676|Okraje
+677|Vlastné limity
+678|Softvérové limity
+679|Pásy pozdĺž okrajov pracovnej plochy, ktoré stroj nemôže využiť (svorky, rám); nič tam nemožno umiestniť ani presunúť
+680|Hlava je na okraji povolenej oblasti.
+681|Kontrola pred úlohou
+682|Napriek tomu pokračovať
+683|Najprv opravte chyby: s nimi sa nič neodošle, neobrysuje ani nevyexportuje.
+684|Vrstva {} páli s výkonom 0 %.
+685|Vrstva {} má objekty, ale žiadnu dráhu (napríklad otvorené čiary na vrstve výplne).
+686|Vybrať objekty
+687|Rámik je mimo softvérových limitov.
+688|Rámik je mimo použiteľnej oblasti (za pracovnou plochou alebo v okraji).
+689|Dráha vrstvy {} opúšťa povolenú oblasť (prejazd alebo pohyby naprázdno).
+690|{} objekt(ov) je mimo softvérových limitov.
+691|{} objekt(ov) je mimo použiteľnej oblasti (za pracovnou plochou alebo v okraji).
+692|Zapnúť laserový režim ($32=1)
+693|Laserový režim ($32) je vypnutý.
+694|Riadiaca jednotka hlási problém
+695|Maximálna hodnota S riadiacej jednotky ($30) je {}, profil používa {}.
+696|Tým sa do nastavení riadiacej jednotky zapíše $32=1. Pokračovať?
+697|Použiť hodnotu z riadiacej jednotky
+698|Pri rôznych hodnotách nebude výkon v G-kóde zodpovedať nastaveným percentám.
+699|S vypnutým laserovým režimom sa GRBL správa ako riadenie vretena: laser sa môže zapnúť pri rýchlych pohyboch a výkon nesleduje rýchlosť.
+700|Max. rýchlosť rezania
+701|Zrýchlenie
+702|0 = bez obmedzenia. Vrstvy rýchlejšie než táto hodnota dostanú pred úlohou varovanie; odhad času použije najviac túto rýchlosť.
+703|0 = neznáme. S hodnotou odhad času zahŕňa rozbehové a brzdné rampy a panel vrstvy navrhne presah (overscan).
+704|Odporúčané: {} (brzdná dráha pri tejto rýchlosti a zrýchlení stroja)
+705|Vrstva {} je rýchlejšia než maximálna rezná rýchlosť stroja.
+706|Automaticky (z riadiacej jednotky)
+707|Dialekt G-kódu
+708|Smoothieware: S sa zapisuje ako zlomok plného výkonu (nastavte S max na 1). Streamovanie funguje ako pri GRBL; nič z toho nebolo vyskúšané na skutočnom hardvéri.
+709|Používa sa pri automatickom dialekte; zvolený dialekt GRBL si medzi M3 a M4 rozhodne sám.
+710|Pokročilé
+711|Pole G-kódu na stránke Pokročilé obsahuje riadiaci znak alebo je príliš dlhé.
+712|Príkazy pre air assist
+713|Koniec úlohy
+714|Vyp.
+715|Zap.
+716|Nahrádza záverečné M2. Laser sa pred ním vždy vypne a hlava sa (ak je nastavené) vráti do nuly. Prázdne = vstavané.
+717|Nahrádza riadky jednotiek, absolútneho režimu, roviny a laserového režimu. Prázdne = vstavané.
+718|Obnoviť predvolené
+719|Začiatok úlohy
+720|Chybný G-kód môže zapáliť laser, naraziť hlavou na koncové dorazy alebo zničiť materiál. Testujte s vypnutým laserom alebo na najmenší výkon.
+721|Režim výkonu
+722|Ako zariadenie
+723|Stály (M3)
+724|Dynamický (M4)
+725|M4 (dynamický) znižuje výkon v rohoch a pri zrýchľovaní; M3 (stály) ho zachováva. G-kód medzi nimi prepína, keď sa vrstvy líšia.
+726|Tolerancia oblúkov
+727|Oblúky (G2 / G3)
+728|Oblúky: GRBL zvyčajne zvláda G2 / G3, Marlin len pri zostavení s ARC_SUPPORT a Smoothieware sa správa po svojom. Niektoré riadiace jednotky oblúky ignorujú alebo vykonávajú zle: testujte s vypnutým laserom. Oblúky sa používajú pre obrysy a prstence, nie pre skenovacie čiary ani obrázky.
+729|Tolerancia kriviek
+730|O koľko sa môže sploštená krivka (Bézier, text) odchýliť od skutočnej.
+731|Zapisovať krivky ako oblúky, kde sa hodia
+732|Počítanie napĺňa vyrovnávaciu pamäť riadiacej jednotky a je rýchle. Jednoduchý režim pošle jeden riadok a čaká na jeho ok: pomalý, ale pre firmvér, ktorý odpovedá zle.
+733|Ďalej čakať
+734|Riadiaca jednotka neodpovedá {} s počas úlohy (stav: {}).
+735|Nič nebolo obnovené ani odoslané. Stroj môže byť len pomalý alebo sa riadok stratil; pozrite do konzoly a rozhodnite.
+736|Zastaviť úlohu
+737|Streamovanie
+738|Riadiaca jednotka neodpovedá
+739|Počítať vyrovnávaciu pamäť
+740|Jednoduchý (čakať na každé ok)
+741|Názov portu, alebo USB identifikátor výrobcu a produktu (VID:PID, hexadecimálne): použije sa port s týmito identifikátormi.
+742|Previazať s týmto portom
+743|Previazané zariadenie USB
+744|Automaticky sa znova pripojiť
+745|Pripájam znova…
+746|Port alebo USB id
+747|Opätovné pripojenie
+748|Zapamätať USB identifikátory zvoleného portu: pri zmene jeho názvu sa port podľa nich znova nájde.
+749|Zrušiť väzbu
+750|Keď spojenie samo spadne, skúšať to každých pár sekúnd, kým nestlačíte Odpojiť.
+751|žiadne
+752|Po pripojení
+753|Zrušiť alarm
+754|Zrušenie alarmu preskočí referenciu: použite len vtedy, keď viete, že hlava stojí na bezpečnom mieste.
+755|Referencovať stroj
+756|Referencovať {}
+757|Referencuje iba os {} ($H{})
+758|Všetkých {} nastavení zo súboru je teraz v riadiacej jednotke.
+759|Najprv nastavenia zálohujte. Pokračujte zadaním {}:
+760|Zálohovať do súboru…
+761|Súbor nemožno použiť: {}
+762|Najprv sa pripojte k stroju (karta Zariadenie).
+763|Pripojené k: {}
+764|Továrenské nastavenia ($RST=$)…
+765|Marlin drží nastavenia vo vlastných príkazoch (M92, M203, M204, ...): táto stránka len ukazuje, čo hlási `M503`.
+766|Zatiaľ nič neprečítané.
+767|Prečítať nastavenia ($$)
+768|Prečítať nastavenia (M503)
+769|Naozaj zapísať $RST=$ do riadiacej jednotky?
+770|Obnoviť zo súboru…
+771|Obnoviť továrenské nastavenia
+772|Obnoviť nastavenia zo súboru
+773|Nastavenia uložené do {}
+774|Riadiaca jednotka ich už má všetky.
+775|Tieto nastavenia sú v riadiacej jednotke, nie v profile. Meňte ich po jednom a poznamenajte si predchádzajúcu hodnotu: zlá hodnota môže stroj nechať ísť o zlú vzdialenosť alebo zapáliť laser.
+776|Tieto nastavenia zo súboru sa líšia od riadiacej jednotky. Nič sa nezapíše, kým nestlačíte Zapísať všetko.
+777|Tým sa zapíše $RST=$: každé nastavenie riadiacej jednotky sa vráti na predvolené hodnoty firmvéru. Zmenia sa kroky, dráhy, rýchlosti, laserový režim aj referencovanie.
+778|Zapísať
+779|Zapísať ${} = {} do riadiacej jednotky? Teraz je {}. Meňte jedno nastavenie po druhom a poznamenajte si starú hodnotu.
+780|Zápis nastavenia
+781|Zapísať všetko
+782|Zapísať {} nastavení do riadiacej jednotky? Stroj sa bude správať podľa súboru.
+783|{} z {} nastavení sa po zápise líši:
+784|Hodnota
+785|Jednotka
+786|Typická
+787|nie je číslo
+788|mimo rozsahu
+789|Firmvér ($$)
+790|0 = typická ({} W)
+791|0 = obvyklá ({} nm)
+792|Slabý stály lúč na nastavenie výšky (režim zaostrenia). 0 = bez režimu zaostrenia.
+793|Pridať laserovú hlavu
+794|Stopa lúča
+795|Výkon zaostrenia
+796|Rýchlosť rámika
+797|Hlava {}
+798|Optický výkon
+799|Frekvencia PWM
+800|Maximálna frekvencia PWM
+801|Posun ukazovateľa
+802|Šírka impulzu
+803|Rozsah šírky impulzu
+804|Odobrať túto laserovú hlavu
+805|Veľkosť lúča na materiáli (0 = neznáma). Menší rozstup výplne spôsobí prekrývanie susedných čiar.
+806|Hodnoty PWM sa ukladajú v profile a ponúkajú sa ako premenné pre makrá; neposielajú sa do riadiacej jednotky.
+807|Číslo, pod ktorým riadiaca jednotka túto hlavu pozná; zapisuje sa ako T<n>, keď vrstva používa inú hlavu. Musí zodpovedať mapovaniu v riadiacej jednotke.
+808|Číslo nástroja (T)
+809|Dve laserové hlavy majú rovnaké číslo nástroja.
+810|Vlnová dĺžka
+811|Kde je červený bod ukazovateľa voči lúču (x doprava, y nadol). Používa ho zarovnanie podľa ukazovateľa na karte Zariadenie.
+812|napr. Modrá dióda
+813|Laserová hlava
+814|Rozstup je menší než stopa lúča ({}): susedné čiary sa prekrývajú.
+815|ZAOSTROVACÍ LÚČ ZAPNUTÝ: stlačením vypnete
+816|Zaostriť
+817|Zapne slabý stály lúč na nastavenie výšky zaostrenia
+818|Zaostrovací lúč zapnutý
+819|Zaostrovací lúč vypnutý
+820|Zarovnať podľa ukazovateľa
+821|Skúšobný chod s ukazovateľom
+822|Skúšobný chod s ukazovateľom: {} riadkov, laser vypnutý
+823|Nie je čo spustiť: na výstupných vrstvách nie sú tvary
+824|Prejde dráhu úlohy posunutú o posun ukazovateľa s vypnutým laserom, aby bolo vidieť, kam by išla.
+825|Len v tejto relácii: rámik a skúšobný chod sa posunú späť o posun červeného bodu ukazovateľa, takže bod dopadne tam, kam by dopadol lúč. Úlohy a ručný pojazd sa nikdy neposúvajú.
+826|Hook {}: {}
+827|Hooky
+828|Vlastný G-kód zapísaný do úlohy: keď sa vrstva začína, pred a po každom objekte, keď vrstva končí. S hookmi objektov sa vrstva páli objekt po objekte (a raz za prechod).
+829|Premenné: {}
+830|Začiatok vrstvy
+831|Koniec vrstvy
+832|Začiatok objektu
+833|Koniec objektu
+834|Makro je váš vlastný G-kód: môže zapáliť laser alebo pohnúť hlavou. Spúšťajte ho len vtedy, keď viete, čo robí. Táto otázka sa kladie raz za reláciu.
+835|Pridať makro
+836|Zmazať toto makro
+837|Názov makra
+838|Makro {}
+839|Makro {}: {}
+840|Makro {}: {} riadkov
+841|Makrá
+842|Pomenované skripty spúšťané ručne z karty Zariadenie. Jeden príkaz na riadok; komentáre za ; alebo v zátvorkách; @include(názov) vloží iné makro. Možno použiť premenné stroja.
+843|Spustiť makro {}
+844|Spustí toto makro na stroji
+845|Pridať zónu
+846|Kruh
+847|Zmazať túto zónu
+848|Časti pracovnej plochy, do ktorých stroj nikdy nesmie vstúpiť (svorka, upínač). Pohyb, ktorý sa dotkne zapnutej zóny, aj s vypnutým laserom, zastaví Štart, Rámik aj export. Program zóny neobchádza.
+849|Rámik sa dotýka zakázanej zóny „{}“.
+850|Dráha vrstvy {} sa dotýka zakázanej zóny „{}“.
+851|Názov zóny
+852|Zóna {}
+853|Zakázané zóny
+854|Zobraziť zakázané zóny
+855|O koľko sa Z posunie pri každom ďalšom prechode (záporné je nadol, keď nahor je +Z). 0 = Z zostáva.
+856|Z stroja, na ktoré hlava pred prvým prechodom ide. 0 spolu s 0 na prechod = Z sa nehýbe.
+857|Výšky Z vrstvy {} sú mimo dráhy osi Z.
+858|Stroj má os Z
+859|Dráha
+860|Nahor je záporný smer Z
+861|Z
+862|Os Z
+863|Výška Z
+864|Z na prechod
+865|Je pripojený rotačný nástavec
+866|A sa otočí o {} stupňov na každý milimeter povrchu.
+867|Všetky pálené vrstvy musia byť rotačné, alebo žiadna. Návrh nesmie byť vyšší ako obvod obrobku.
+868|Najprv žiada o potvrdenie. Mení sa len os Y riadiacej jednotky.
+869|Páliť túto vrstvu na rotačnom nástavci
+870|Skľučovadlo
+871|Obvod
+872|GRBL 1.1 má tri osi: os A nie je k dispozícii, použije sa Y.
+873|Druh
+874|Vrstvy označené ako rotačné sa pália na nástavci. Model je jednoduchý: skľučovadlo sa otáča podľa priemeru obrobku, valčeky posúvajú povrch ako svoj vlastný; skutočný stroj vyžaduje skúšky.
+875|Mikrokroky motora na jednu celú otáčku toho, čo poháňa (skľučovadla alebo jedného valčeka).
+876|Mikrokrokov na otáčku
+877|Nahrádza Y (motor Y otáča obrobkom)
+878|Priemer valčeka
+879|Valčeky
+880|Rotačný
+881|Rotačné a ploché vrstvy nemôžu byť v jednej úlohe: označte všetky pálené vrstvy ako rotačné, alebo žiadnu.
+882|Otáčanie v G-kóde
+883|Riadiaca jednotka potrebuje {} krokov na mm na osi Y ($101).
+884|Návrh na vrstve {} je vyšší ako obvod obrobku.
+885|Obvod obrobku: návrh nesmie byť vyšší.
+886|Skutočná os A (stupne)
+887|Priemer obrobku
+888|Zapísať $101 do riadiacej jednotky…
+889|Ako škatuľa alebo valec na stole: pohyby nad rozsahom alebo pod ním sú voľné.
+890|Len v týchto výškach (Z)
+891|Prázdny profil
+892|Kópia tohto profilu
+893|Pridať zariadenie
+894|Skopírované do {}
+895|Exportovať…
+896|Profil {} importovaný
+897|Importovať…
+898|Načítať profil zo súboru
+899|Uložiť tento profil do súboru
+900|Profil uložený do {}
+901|Východiskové body: všeobecné stroje s typickými číslami. Overte ich v dokumentácii svojho stroja.
+902|Diódový laser GRBL 400 × 400
+903|Laser CO2 GRBL 300 × 200
+904|Prestavba K40 (GRBL) 300 × 200
+905|Diódový laser Marlin 400 × 400
+906|Diódový laser GRBL 1.1 na stole 400 × 400 mm, nula vpredu vľavo, dynamický výkon.
+907|Laser CO2 GRBL 1.1 na stole 300 × 200 mm, nula vpredu vľavo.
+908|Laser CO2 K40 s riadiacou doskou GRBL: 300 × 200 mm, nula v ľavom zadnom (ľavom hornom) rohu.
+909|Diódový laser s firmvérom Marlin (funkcia laseru, S 0–255) na stole 400 × 400 mm.
+910|Späť
+911|Pripojenie (voliteľné)
+912|Dokončiť
+913|Ak je stroj práve pripojený, jeho pracovnú plochu a rýchlosť možno prečítať z riadiacej jednotky.
+914|Laserový režim ($32) a maximálna hodnota S ($30) riadiacej jednotky neboli prečítané: skontrolujú sa pri pripojení.
+915|Názov a jednotky
+916|Ďalej
+917|Nie sú nastavené okraje ani softvérové limity: celý rozsah osí je pracovná plocha. Nastavte ich na stránke Hardware, ak prekáža svorka alebo rám.
+918|Zatiaľ nie je nastavený port ani hostiteľ: vyberte ho v nastaveniach zariadenia pred pripojením.
+919|Nič z toho nebolo vyskúšané na vašom stroji: urobte prvý test s vypnutým laserom alebo na najmenší výkon.
+920|Vyberte najbližší východiskový bod. Všetko možno neskôr zmeniť.
+921|Nastaviť ručne…
+922|Nastavte svoj stroj ({}/{})
+923|Preskočiť
+924|Preskočiť tieto kroky a otvoriť nastavenia zariadenia
+925|Súhrn
+926|Zariadenie bolo pridané. Stlačte Pokračovať.
+927|Nastavenia boli prečítané z riadiacej jednotky.
+928|Aký máte stroj?
+929|Stojí za kontrolu
+930|nenastavené
+931|Pridať počítadlo
+932|Počíta sa z času, keď úlohy skutočne bežia (od štartu do konca alebo Stopu), nie z odhadov. Súčet sa nedá vynulovať.
+933|Názov počítadla (trubica, šošovka, remeň)
+934|Počítadlo {}
+935|Zmazať toto počítadlo
+936|Treba údržbu: {}
+937|Pripomenúť po
+938|Vynulovať počítadlo
+939|Začať počítadlo „{}“ znova od nuly?
+940|Celkový čas prevádzky: {}
+941|Údržba
+942|Zo šablóny
+943|Poznámky sú dlhšie než {} znakov a nemožno ich uložiť.
+944|Vaše poznámky (Markdown)
+945|napr. Nastavenia, ktoré fungovali: air assist 20 %, zaostrenie 12 mm
+946|Poznámky
+947|Aktívna
+948|Pridať kameru
+949|Adresa
+950|Auto
+951|Názov kamery
+952|Číslo kamery
+953|Kamera tohto počítača
+954|Kamera {}
+955|Kamery sledujúce stroj. Aktívna poskytuje živý obraz. Kameru možno zapnúť len s platnou adresou.
+956|Koeficienty skreslenia objektívu (radiálne k1–k3, tangenciálne p1, p2) pre súradnice od stredu v jednotkách dlhšej strany obrazu. Všetky 0 = bez korekcie. Zadávajú sa ručne: automatická kalibrácia neexistuje.
+957|Odstrániť túto kameru
+958|Pre kameru tohto počítača: požiadať o nekomprimovaný formát YUYV, ak to systém dovolí.
+959|Formát
+960|Korekcia objektívu
+961|Živý obraz stroja: prúd MJPEG alebo adresa snímky JPEG (http alebo https). RTSP nie je podporované.
+962|Potlačenie šumu
+963|Nie je to adresa http ani https.
+964|Obraz
+965|Uprednostniť YUYV
+966|Zapnúť alebo vypnúť túto kameru
+967|Adresa nie je platná: je potrebná adresa http alebo https
+968|Vyváženie bielej
+969|Pridať bod
+970|Zarovnať podľa bodov
+971|Odstrániť tento bod
+972|Prispôsobí obraz bodom (metóda najmenších štvorcov) a podľa toho posunie rohy.
+973|Málo bodov, alebo ležia na jednej priamke.
+974|Dvojice bodu v obraze (pixely) a jeho miesta v pracovnej oblasti (mm). Aspoň 3, odporúčané 4; určujú zarovnanie vrátane perspektívy.
+975|Body z aktuálnych rohov
+976|Referenčné body
+977|Nahradí body štyrmi rohmi obrazu a miestami, kde teraz ležia.

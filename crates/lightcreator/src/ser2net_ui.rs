@@ -2,7 +2,6 @@
 //! can be reached remotely, for example from LightCreator on another machine ("Network (TCP)" connection).
 use crate::app::App;
 use crate::i18n::{tr, trf};
-use crate::laser;
 use crate::theme;
 use eframe::egui::{self, Color32, RichText};
 use lc_core::ser2net::{config, shell_safe, version_from_output, Settings, Version};
@@ -69,13 +68,13 @@ impl App {
         let installed = run("ser2net", &["-v"]);
         let version = installed.as_deref().and_then(version_from_output).unwrap_or(Version::V4);
         let addresses: Vec<String> = if cfg!(target_os = "linux") { run("hostname", &["-I"]).unwrap_or_default().split_whitespace().map(|s| s.to_string()).collect() } else { vec![] };
-        self.ports = laser::list_ports();
+        self.refresh_ports();
         let dev = &self.doc.device;
         self.ser2net = Some(Ser2NetDlg {
             version,
-            serial_port: if dev.port.is_empty() { self.ports.first().cloned().unwrap_or_else(|| "/dev/ttyUSB0".into()) } else { dev.port.clone() },
-            baud: dev.baud,
-            tcp_port: dev.tcp_port,
+            serial_port: if dev.connection.port.is_empty() { self.ports.first().cloned().unwrap_or_else(|| "/dev/ttyUSB0".into()) } else { dev.connection.port.clone() },
+            baud: dev.connection.baud,
+            tcp_port: dev.connection.tcp_port,
             local_only: false,
             kick: true,
             installed,
@@ -119,7 +118,7 @@ impl App {
                     });
                     ui.add(egui::TextEdit::singleline(&mut d.serial_port).desired_width(140.0));
                     if ui.button(tr("Refresh")).clicked() {
-                        self.ports = laser::list_ports();
+                        self.refresh_ports();
                     }
                 });
                 ui.end_row();

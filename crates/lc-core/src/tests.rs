@@ -51,7 +51,7 @@ fn inner_cut_before_outer() {
 #[test]
 fn y_flip_for_front_left_origin() {
     let mut d = square_doc(LayerMode::Line);
-    d.device.bed_h = 100.0;
+    d.device.area.bed_h = 100.0;
     let job = gcode::generate(&d);
     assert!(job.gcode.contains("Y95.000"), "{}", job.gcode);
 }
@@ -100,7 +100,7 @@ fn old_device_json_gets_new_fields() {
     let d: Device = serde_json::from_str(old).unwrap();
     assert_eq!(d.controller, Controller::Grbl);
     assert_eq!(d.jog_step, 5.0);
-    assert!(d.port.is_empty());
+    assert!(d.connection.port.is_empty());
 }
 
 #[test]
@@ -411,8 +411,8 @@ fn automatic_shapes() {
 fn jobs_start_and_end_at_the_machine_origin() {
     for (origin, home) in [(Origin::FrontLeft, Pt::new(0.0, 400.0)), (Origin::BackLeft, Pt::new(0.0, 0.0))] {
         let mut d = Document::default();
-        d.device.origin = origin;
-        d.device.return_home = true;
+        d.device.axes.origin = origin;
+        d.device.gcode.return_home = true;
         d.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(50.0, 50.0));
         assert_eq!(d.device.home_point(), home);
         let job = gcode::generate(&d);
@@ -430,7 +430,7 @@ fn jobs_start_and_end_at_the_machine_origin() {
 fn old_devices_get_link_defaults() {
     let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
     let d: Device = serde_json::from_str(old).unwrap();
-    assert_eq!((d.link, d.tcp_port, d.camera_url.is_empty()), (LinkKind::Serial, 3333, true));
+    assert_eq!((d.connection.link, d.connection.tcp_port, d.cameras.is_empty()), (LinkKind::Serial, 3333, true));
     assert!(!d.has_target());
 }
 
@@ -455,12 +455,12 @@ fn ser2net_configs() {
 #[test]
 fn camera_rotation_is_stored_with_the_device() {
     let mut d = Device::default();
-    d.camera_rotation = 3;
+    d.cameras = vec![CameraSource::url("A", "http://a/x", 3)];
     let back: Device = serde_json::from_str(&serde_json::to_string(&d).unwrap()).unwrap();
-    assert_eq!(back.camera_rotation, 3);
+    assert_eq!(back.cameras[0].rotation, 3);
     assert_eq!(back, d);
     let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
-    assert_eq!(serde_json::from_str::<Device>(old).unwrap().camera_rotation, 0);
+    assert_eq!(serde_json::from_str::<Device>(old).unwrap().cameras.len(), 0);
 }
 
 #[test]
@@ -936,4 +936,1068 @@ fn a_document_remembers_the_material_it_was_made_with() {
     assert_eq!(back.material, doc.material);
     // Old files have none.
     assert!(Document::from_json(&Document::default().to_json().replace(",\"material\":null", "")).unwrap().material.is_none());
+}
+
+/// A profile exactly as v0.0.11 wrote it: every setting is a flat field.
+const OLD_PROFILE: &str = r#"{"name":"Old CO2","units":"Inch","speed_unit":"PerMinute","controller":"Marlin","laser":"Co2","bed_w":300.0,"bed_h":200.0,"origin":"BackLeft","s_max":255.0,"dynamic_power":false,"travel_speed":4500.0,"return_home":false,"baud":250000,"port":"/dev/ttyUSB3","jog_step":2.5,"jog_feed":1800.0,"frame_power":1.5,"camera":null,"link":"Tcp","host":"pi.local","tcp_port":4000,"camera_url":"http://pi.local:8080/stream","camera_rotation":2,"layer_speeds":[1200.0],"materials":[],"materials_seeded":true,"materials_inherit":false}"#;
+
+#[test]
+fn old_flat_profile_is_read_into_the_groups() {
+    let d: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert_eq!((d.area.bed_w, d.area.bed_h, d.axes.origin), (300.0, 200.0, Origin::BackLeft));
+    assert_eq!((d.speeds.travel_speed, d.gcode.dynamic_power, d.gcode.return_home), (4500.0, false, false));
+    assert_eq!((d.connection.baud, d.connection.port.as_str(), d.connection.link, d.connection.host.as_str(), d.connection.tcp_port), (250000, "/dev/ttyUSB3", LinkKind::Tcp, "pi.local", 4000));
+    assert_eq!(d.heads.len(), 1);
+    assert_eq!((d.heads[0].s_max, d.heads[0].frame_power, d.heads[0].laser), (255.0, 1.5, LaserKind::Co2));
+    assert_eq!((d.controller, d.units, d.jog_step, d.cameras[0].rotation, d.materials_seeded), (Controller::Marlin, Units::Inch, 2.5, 2, true));
+}
+
+#[test]
+fn new_profile_round_trips_and_a_minimal_old_one_gets_defaults() {
+    let d: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    let json = serde_json::to_string(&d).unwrap();
+    assert!(json.contains("\"heads\"") && json.contains("\"area\""));
+    let back: Device = serde_json::from_str(&json).unwrap();
+    assert_eq!(back, d);
+    let tiny: Device = serde_json::from_str(r#"{"name":"x","bed_w":100.0,"bed_h":80.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#).unwrap();
+    assert_eq!((tiny.area.bed_w, tiny.heads.len(), tiny.connection.tcp_port, tiny.layer_speeds.len()), (100.0, 1, 3333, 30));
+}
+
+#[test]
+fn a_profile_without_heads_gets_one() {
+    let mut v: serde_json::Value = serde_json::to_value(Device::default()).unwrap();
+    v["heads"] = serde_json::json!([]);
+    let d: Device = serde_json::from_value(v).unwrap();
+    assert_eq!(d.heads.len(), 1);
+}
+
+fn axes_device(origin: Origin, flip_x: bool, flip_y: bool, orientation: Orientation) -> Device {
+    let mut d = Device::default();
+    d.area = Area { bed_w: 300.0, bed_h: 200.0, ..Area::default() };
+    d.axes = Axes { origin, flip_x, flip_y, orientation, ..Axes::default() };
+    d
+}
+
+#[test]
+fn machine_transform_round_trips_for_every_corner_flip_and_orientation() {
+    let pts = [Pt::new(0.0, 0.0), Pt::new(12.5, 7.25), Pt::new(100.0, 150.0), Pt::new(199.0, 1.0)];
+    for origin in Origin::ALL {
+        for (fx, fy) in [(false, false), (true, false), (false, true), (true, true)] {
+            for o in Orientation::ALL {
+                let d = axes_device(origin, fx, fy, o);
+                let (w, h) = d.work_size();
+                for p in pts {
+                    let p = Pt::new(p.x.min(w), p.y.min(h));
+                    let (x, y) = d.to_machine(p);
+                    assert!(x >= -1e-9 && x <= 300.0 + 1e-9 && y >= -1e-9 && y <= 200.0 + 1e-9, "{origin:?} {fx} {fy} {o:?}: {x},{y}");
+                    assert!(d.from_machine(x, y).dist(p) < 1e-9, "{origin:?} {fx} {fy} {o:?}");
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn zero_is_at_the_chosen_corner_of_the_design() {
+    // Design y points down: "front" is the bottom edge.
+    let at = |origin| axes_device(origin, false, false, Orientation::Native).home_point();
+    assert_eq!(at(Origin::FrontLeft), Pt::new(0.0, 200.0));
+    assert_eq!(at(Origin::BackLeft), Pt::new(0.0, 0.0));
+    assert_eq!(at(Origin::FrontRight), Pt::new(300.0, 200.0));
+    assert_eq!(at(Origin::BackRight), Pt::new(300.0, 0.0));
+    // Inverting X moves the zero to the other side.
+    assert_eq!(axes_device(Origin::FrontLeft, true, false, Orientation::Native).home_point(), Pt::new(300.0, 200.0));
+}
+
+#[test]
+fn turned_panel_swaps_the_design_size_and_maps_the_corners() {
+    let left = axes_device(Origin::FrontLeft, false, false, Orientation::RotateLeft);
+    assert_eq!(left.work_size(), (200.0, 300.0));
+    // A quarter turn to the right takes the machine's top-left corner to the design's top-right corner.
+    let right = axes_device(Origin::BackLeft, false, false, Orientation::RotateRight);
+    assert_eq!(right.work_size(), (200.0, 300.0));
+    assert_eq!(right.to_machine(Pt::new(200.0, 0.0)), (0.0, 0.0));
+    assert_eq!(right.home_point(), Pt::new(200.0, 0.0));
+    assert_eq!(left.to_machine(Pt::new(0.0, 0.0)), (300.0, 200.0));
+}
+
+#[test]
+fn margins_and_soft_limits_cut_down_the_allowed_area() {
+    let mut d = axes_device(Origin::FrontLeft, false, false, Orientation::Native);
+    assert_eq!((d.usable_rect().min, d.usable_rect().max), (Pt::new(0.0, 0.0), Pt::new(300.0, 200.0)));
+    d.area.margins = Margins { left: 10.0, top: 5.0, right: 20.0, bottom: 15.0 };
+    let u = d.usable_rect();
+    assert_eq!((u.min, u.max), (Pt::new(10.0, 5.0), Pt::new(280.0, 185.0)));
+    // Soft limits are kept inside the usable area, whatever order the corners are given in.
+    d.area.soft_limits = Some(SoftLimits { x0: 250.0, y0: 100.0, x1: 50.0, y1: 400.0 });
+    let a = d.allowed_rect();
+    assert_eq!((a.min, a.max), (Pt::new(50.0, 100.0), Pt::new(250.0, 185.0)));
+    // Margins larger than the area leave an empty (not inverted) rectangle.
+    d.area.margins = Margins { left: 400.0, top: 0.0, right: 400.0, bottom: 0.0 };
+    assert!(d.usable_rect().max.x >= d.usable_rect().min.x);
+}
+
+#[test]
+fn jog_stops_at_the_allowed_area_and_follows_the_axes() {
+    let mut d = axes_device(Origin::FrontLeft, false, false, Orientation::Native);
+    d.area.margins = Margins { left: 10.0, top: 10.0, right: 10.0, bottom: 10.0 };
+    // Machine (20, 20) is design (20, 180). Up (design y -5) is machine Y +5, as GRBL expects.
+    assert_eq!(d.limited_jog(Some((20.0, 20.0)), 0.0, -5.0), (0.0, 5.0));
+    // 5 mm from the left margin a 20 mm step to the left is shortened to the 10 mm that are left.
+    assert_eq!(d.limited_jog(Some((20.0, 20.0)), -20.0, 0.0), (-10.0, 0.0));
+    // At the bottom margin (machine Y 10) going further down is not allowed at all.
+    assert_eq!(d.limited_jog(Some((100.0, 10.0)), 0.0, 5.0), (0.0, 0.0));
+    // Unknown position: no limiting.
+    assert_eq!(d.limited_jog(None, 0.0, 5.0), (0.0, -5.0));
+    assert_eq!(d.limited_jog(Some((f64::NAN, f64::NAN)), 7.0, 0.0), (7.0, 0.0));
+    // A head outside the area may move back in, but not further out.
+    assert_eq!(d.limited_jog(Some((2.0, 100.0)), 5.0, 0.0), (5.0, 0.0));
+    assert_eq!(d.limited_jog(Some((2.0, 100.0)), -5.0, 0.0), (0.0, 0.0));
+}
+
+fn check_doc(x: f64, y: f64) -> Document {
+    let mut d = Document::default();
+    d.device = axes_device(Origin::FrontLeft, false, false, Orientation::Native);
+    d.layers[0].mode = LayerMode::Line;
+    d.add(0, Kind::Rect { w: 20.0, h: 10.0 }, Xf::translate(x, y));
+    d
+}
+
+fn kinds(d: &Document) -> Vec<check::IssueKind> {
+    check::job_check(d).into_iter().map(|i| i.kind).collect()
+}
+
+#[test]
+fn job_inside_the_area_has_no_issues_even_with_the_zero_in_a_margin() {
+    let mut d = check_doc(100.0, 100.0);
+    assert!(check::job_check(&d).is_empty());
+    // The way back to the zero (a corner of the machine) ends inside the margin: that is not an error.
+    d.device.area.margins = Margins { left: 5.0, top: 5.0, right: 5.0, bottom: 5.0 };
+    assert!(check::job_check(&d).is_empty(), "{:?}", check::job_check(&d));
+}
+
+#[test]
+fn objects_outside_the_area_the_margins_or_the_limits_are_errors_and_name_the_objects() {
+    let d = check_doc(295.0, 100.0);
+    let issues = check::job_check(&d);
+    assert_eq!(issues.len(), 1);
+    assert_eq!((issues[0].level, issues[0].kind), (check::Level::Error, check::IssueKind::OutsideArea));
+    assert_eq!(issues[0].shapes, vec![d.shapes[0].id]);
+    // Inside the work area but in a margin.
+    let mut m = check_doc(2.0, 100.0);
+    m.device.area.margins.left = 5.0;
+    assert_eq!(kinds(&m), vec![check::IssueKind::OutsideArea]);
+    // Inside the usable area but outside the software limits.
+    let mut l = check_doc(100.0, 100.0);
+    l.device.area.soft_limits = Some(SoftLimits { x0: 0.0, y0: 0.0, x1: 110.0, y1: 200.0 });
+    assert_eq!(kinds(&l), vec![check::IssueKind::OutsideLimits]);
+    // Within the tolerance (0.01 mm) is fine.
+    let t = check_doc(300.0 - 20.0 + 0.005, 100.0);
+    assert!(check::job_check(&t).is_empty());
+    // Objects on layers that do not output are not checked.
+    let mut off = check_doc(295.0, 100.0);
+    off.layers[0].output = false;
+    assert!(check::job_check(&off).is_empty());
+}
+
+#[test]
+fn overscan_that_leaves_the_area_is_reported_for_the_layer() {
+    let mut d = check_doc(0.0, 100.0);
+    d.layers[0].mode = LayerMode::Fill;
+    d.layers[0].interval = 1.0;
+    d.layers[0].overscan = 3.0;
+    let issues = check::job_check(&d);
+    assert!(issues.iter().any(|i| i.kind == check::IssueKind::MoveOutside && i.layer == Some(0)), "{issues:?}");
+    d.layers[0].overscan = 0.0;
+    assert!(check::job_check(&d).is_empty());
+}
+
+#[test]
+fn zero_power_and_empty_toolpaths_are_warnings() {
+    let mut d = check_doc(100.0, 100.0);
+    d.layers[0].power = 0.0;
+    let issues = check::job_check(&d);
+    assert_eq!(issues.iter().map(|i| (i.level, i.kind)).collect::<Vec<_>>(), vec![(check::Level::Warning, check::IssueKind::ZeroPower)]);
+    assert!(!check::has_error(&issues));
+    // A fill layer that holds only an open line burns nothing.
+    let mut f = Document::default();
+    f.device = axes_device(Origin::FrontLeft, false, false, Orientation::Native);
+    f.layers[0].mode = LayerMode::Fill;
+    f.add(0, Kind::Path(vec![Polyline::new(vec![Pt::new(0.0, 0.0), Pt::new(10.0, 0.0)], false)]), Xf::translate(50.0, 50.0));
+    assert_eq!(kinds(&f), vec![check::IssueKind::NothingToBurn]);
+}
+
+#[test]
+fn frame_outside_the_area_is_an_error() {
+    let dev = axes_device(Origin::FrontLeft, false, false, Orientation::Native);
+    let r = |x0, y0, x1, y1| Rect { min: Pt::new(x0, y0), max: Pt::new(x1, y1) };
+    assert!(check::check_frame(&dev, r(10.0, 10.0, 50.0, 50.0)).is_empty());
+    let e = check::check_frame(&dev, r(10.0, 10.0, 350.0, 50.0));
+    assert_eq!((e.len(), e[0].kind, e[0].level), (1, check::IssueKind::OutsideArea, check::Level::Error));
+}
+
+#[test]
+fn controller_report_is_compared_with_the_profile() {
+    let lines: Vec<String> = ["$30=255", "$32=0", "$110=3000", "ok"].iter().map(|s| s.to_string()).collect();
+    let r = Controller::Grbl.parse_settings(&lines);
+    assert_eq!((r.s_max, r.laser_mode), (Some(255.0), Some(false)));
+    let dev = Device::default(); // S max 1000
+    let c = r.check(&dev);
+    assert!(c.laser_mode_off);
+    assert_eq!(c.s_max, Some(255.0));
+    // Laser mode on and the same S max: nothing to say.
+    let ok: Vec<String> = ["$30=1000", "$32=1"].iter().map(|s| s.to_string()).collect();
+    assert!(Controller::Grbl.parse_settings(&ok).check(&dev).is_clean());
+    // A controller that did not report the values raises nothing.
+    assert!(Controller::Grbl.parse_settings(&[]).check(&dev).is_clean());
+}
+
+fn long_line_doc(speed: f64) -> Document {
+    let mut d = Document::default();
+    d.device.area = Area { bed_w: 300.0, bed_h: 200.0, ..Area::default() };
+    d.device.axes.origin = Origin::BackLeft;
+    d.device.gcode.return_home = false;
+    d.layers[0].mode = LayerMode::Line;
+    d.layers[0].speed = speed;
+    d.layers[0].power = 50.0;
+    // One open 100 mm line from the machine's zero: no travel move before it.
+    d.add(0, Kind::Path(vec![Polyline::new(vec![Pt::new(0.0, 0.0), Pt::new(100.0, 0.0)], false)]), Xf::IDENTITY);
+    d
+}
+
+#[test]
+fn estimate_without_limits_is_distance_over_speed() {
+    let job = gcode::generate(&long_line_doc(10.0));
+    assert!((job.est_seconds - 10.0).abs() < 1e-6, "{}", job.est_seconds);
+}
+
+#[test]
+fn estimate_with_acceleration_adds_the_ramps_and_caps_the_speed() {
+    let mut d = long_line_doc(10.0);
+    d.device.speeds.acceleration = 10.0;
+    // 100 mm at 10 mm/s with 10 mm/s²: 10 s cruise + 1 s of ramps.
+    assert!((gcode::generate(&d).est_seconds - 11.0).abs() < 1e-6);
+    // The machine cannot go faster than 600 mm/min = 10 mm/s whatever the layer says.
+    let mut fast = long_line_doc(40.0);
+    fast.device.speeds.acceleration = 10.0;
+    fast.device.speeds.max_cut_speed = 600.0;
+    assert!((gcode::generate(&fast).est_seconds - 11.0).abs() < 1e-6);
+    // A move too short to reach the speed is a triangle: 1 mm at a = 10 mm/s² takes 2 * sqrt(1 / 10) s.
+    let mut short = long_line_doc(10.0);
+    short.shapes[0].kind = Kind::Path(vec![Polyline::new(vec![Pt::new(0.0, 0.0), Pt::new(1.0, 0.0)], false)]);
+    short.device.speeds.acceleration = 10.0;
+    assert!((gcode::generate(&short).est_seconds - 2.0 * (0.1f64).sqrt()).abs() < 1e-6);
+    // Move durations still add up to the total.
+    let job = gcode::generate(&d);
+    assert!((job.moves.iter().map(|m| m.dur).sum::<f64>() - job.est_seconds).abs() < 1e-9);
+}
+
+#[test]
+fn a_run_of_short_segments_ramps_once_and_a_layer_above_the_maximum_warns() {
+    let mut d = long_line_doc(10.0);
+    d.shapes[0].kind = Kind::Path(vec![Polyline::new((0..=100).map(|i| Pt::new(i as f64, 0.0)).collect(), false)]);
+    d.device.speeds.acceleration = 10.0;
+    assert!((gcode::generate(&d).est_seconds - 11.0).abs() < 1e-6);
+    d.device.speeds.max_cut_speed = 300.0; // 5 mm/s
+    d.layers[0].speed = 10.0;
+    assert!(check::job_check(&d).iter().any(|i| i.kind == check::IssueKind::SpeedAboveMax && i.level == check::Level::Warning));
+    d.device.speeds.max_cut_speed = 0.0;
+    assert!(!check::job_check(&d).iter().any(|i| i.kind == check::IssueKind::SpeedAboveMax));
+    assert_eq!(d.device.suggested_overscan(10.0), Some(5.0));
+    assert_eq!(Device::default().suggested_overscan(10.0), None);
+}
+
+#[test]
+fn dialect_follows_the_controller_unless_chosen() {
+    let mut d = Device::default();
+    assert_eq!(d.dialect(), Dialect::GrblDynamic);
+    d.gcode.dynamic_power = false;
+    assert_eq!(d.dialect(), Dialect::Grbl);
+    d.controller = Controller::Marlin;
+    assert_eq!(d.dialect(), Dialect::Marlin);
+    d.controller = Controller::Smoothieware;
+    assert_eq!(d.dialect(), Dialect::Smoothieware);
+    d.gcode.dialect = Some(Dialect::GrblDynamic);
+    assert_eq!(d.dialect(), Dialect::GrblDynamic);
+    assert!(Controller::Smoothieware.is_serial() && Controller::ALL.contains(&Controller::Smoothieware));
+}
+
+#[test]
+fn smoothieware_status_reports_are_read() {
+    let (state, x, y) = controller::parse_status("<Idle,MPos:12.5000,7.2500,0.0000,WPos:12.5000,7.2500,0.0000>").unwrap();
+    assert_eq!((state.as_str(), x, y), ("Idle", 12.5, 7.25));
+    // GRBL 1.1 reports still go the old way.
+    let (state, x, y) = controller::parse_status("<Run|MPos:1.000,2.000,0.000|FS:500,0>").unwrap();
+    assert_eq!((state.as_str(), x, y), ("Run", 1.0, 2.0));
+}
+
+#[test]
+fn arc_fit_stays_within_the_tolerance_and_leaves_straight_runs_alone() {
+    let tol = 0.01;
+    // A quarter circle of 30 mm radius, finely flattened: one arc.
+    let quarter: Vec<Pt> = (0..=60).map(|i| {
+        let t = i as f64 / 60.0 * std::f64::consts::FRAC_PI_2;
+        Pt::new(30.0 * t.cos(), 30.0 * t.sin())
+    }).collect();
+    let pieces = arcs::fit(&quarter, tol);
+    assert_eq!(pieces.len(), 1, "{pieces:?}");
+    let arcs::Piece::Arc { end, center } = pieces[0] else { panic!("an arc is expected") };
+    assert_eq!(end, 60);
+    assert!(center.dist(Pt::new(0.0, 0.0)) < 1e-6);
+    // Straight lines never become arcs, whatever the number of points.
+    let straight: Vec<Pt> = (0..20).map(|i| Pt::new(i as f64, 2.0 * i as f64)).collect();
+    assert!(arcs::fit(&straight, tol).iter().all(|p| matches!(p, arcs::Piece::Line { .. })));
+    // A line, an arc and a line: the pieces tile the path and every point is within the tolerance of its piece.
+    let mut mixed: Vec<Pt> = (0..5).map(|i| Pt::new(-20.0 + 4.0 * i as f64, 30.0)).collect();
+    mixed.extend((0..=40).map(|i| {
+        let t = std::f64::consts::FRAC_PI_2 - i as f64 / 40.0 * std::f64::consts::FRAC_PI_2;
+        Pt::new(30.0 * t.cos(), 30.0 * t.sin())
+    }).skip(1));
+    mixed.extend((1..6).map(|i| Pt::new(30.0, -4.0 * i as f64)));
+    let pieces = arcs::fit(&mixed, tol);
+    let mut at = 0;
+    for p in &pieces {
+        match *p {
+            arcs::Piece::Line { end } => assert_eq!(end, at + 1),
+            arcs::Piece::Arc { end, center } => {
+                let r = center.dist(mixed[at]);
+                for q in &mixed[at..=end] {
+                    assert!((center.dist(*q) - r).abs() <= tol + 1e-9, "point off the arc by {}", (center.dist(*q) - r).abs());
+                }
+                assert!(end - at >= 3);
+            }
+        }
+        at = match *p { arcs::Piece::Line { end } | arcs::Piece::Arc { end, .. } => end };
+    }
+    assert_eq!(at, mixed.len() - 1);
+    assert!(pieces.iter().any(|p| matches!(p, arcs::Piece::Arc { .. })));
+    // A tiny wiggle bigger than the tolerance is kept as lines.
+    let zig: Vec<Pt> = (0..10).map(|i| Pt::new(i as f64, if i % 2 == 0 { 0.0 } else { 0.5 })).collect();
+    assert!(arcs::fit(&zig, tol).iter().all(|p| matches!(p, arcs::Piece::Line { .. })));
+}
+
+/// Machine positions after every G0 / G1 / G2 / G3 line, with the arcs as (start, end, centre, clockwise).
+fn parse_arcs(gcode: &str) -> Vec<((f64, f64), (f64, f64), (f64, f64), bool)> {
+    let word = |l: &str, c: char| l.split_whitespace().find_map(|t| t.strip_prefix(c)).and_then(|v| v.parse::<f64>().ok());
+    let mut pos = (0.0, 0.0);
+    let mut out = vec![];
+    for l in gcode.lines() {
+        let l = l.split(';').next().unwrap_or("").trim();
+        if !(l.starts_with("G0") || l.starts_with("G1") || l.starts_with("G2") || l.starts_with("G3")) {
+            continue;
+        }
+        let end = (word(l, 'X').unwrap_or(pos.0), word(l, 'Y').unwrap_or(pos.1));
+        if l.starts_with("G2 ") || l.starts_with("G3 ") {
+            out.push((pos, end, (pos.0 + word(l, 'I').unwrap(), pos.1 + word(l, 'J').unwrap()), l.starts_with("G2 ")));
+        }
+        pos = end;
+    }
+    out
+}
+
+fn circle_doc(arcs_on: bool) -> Document {
+    let mut d = Document::default();
+    d.device.area = Area { bed_w: 300.0, bed_h: 200.0, ..Area::default() };
+    d.device.gcode.arcs = arcs_on;
+    d.layers[0].mode = LayerMode::Line;
+    d.add(0, Kind::Ellipse { w: 40.0, h: 40.0 }, Xf::translate(100.0, 80.0));
+    d
+}
+
+#[test]
+fn circle_becomes_a_few_arcs_in_the_right_direction_for_every_axis_setup() {
+    // Off by default: no arcs, many short lines.
+    assert!(parse_arcs(&gcode::generate(&circle_doc(false)).gcode).is_empty());
+    for origin in Origin::ALL {
+        for (fx, fy) in [(false, false), (true, false), (false, true)] {
+            for o in Orientation::ALL {
+                let mut d = circle_doc(true);
+                d.device.axes = Axes { origin, flip_x: fx, flip_y: fy, orientation: o, ..Axes::default() };
+                let job = gcode::generate(&d);
+                let arcs_found = parse_arcs(&job.gcode);
+                assert!(!arcs_found.is_empty() && arcs_found.len() < 8, "{origin:?} {fx} {fy} {o:?}: {} arcs", arcs_found.len());
+                let mut checked = 0;
+                for (s, e, c, cw) in &arcs_found {
+                    let r = ((s.0 - c.0).powi(2) + (s.1 - c.1).powi(2)).sqrt();
+                    let re = ((e.0 - c.0).powi(2) + (e.1 - c.1).powi(2)).sqrt();
+                    assert!((r - 20.0).abs() < 0.02 && (re - r).abs() < 0.02, "radius {r} / {re}");
+                    // The circle's own path: take the moves of the job that lie between the arc's ends and check
+                    // on which side of the chord the path bulges; that must agree with G2 / G3.
+                    let (sd, ed) = (d.device.from_machine(s.0, s.1), d.device.from_machine(e.0, e.1));
+                    let mid = job.moves.iter().filter(|m| m.laser).find(|m| m.a.dist(sd) < 0.02).map(|m| m.b);
+                    let Some(next) = mid else { continue };
+                    // Machine direction of travel around the centre from the start through the first path point.
+                    let n = d.device.to_machine(next);
+                    let turn = (s.0 - c.0) * (n.1 - c.1) - (s.1 - c.1) * (n.0 - c.0);
+                    assert_eq!(turn < 0.0, *cw, "{origin:?} {fx} {fy} {o:?} start {sd:?} end {ed:?}");
+                    checked += 1;
+                }
+                assert!(checked > 0, "{origin:?} {fx} {fy} {o:?}: no arc could be checked");
+            }
+        }
+    }
+}
+
+#[test]
+fn grbl_settings_report_validation_and_backup() {
+    use crate::grbl_settings as gs;
+    let lines: Vec<String> = ["$0=10", "$30=1000.000", "$32=0", "$110=3000.000", "$130=400.000", "ok", "[VER:1.1h.20190825:]", "$x=1", "$131="].iter().map(|s| s.to_string()).collect();
+    let v = gs::parse_report(&lines);
+    assert_eq!(v.len(), 5);
+    assert_eq!(v[&110], "3000.000");
+    // Writing: ranges, masks, flags and numbers that are not numbers.
+    assert_eq!(gs::validate(110, " 5000 "), Ok("5000".into()));
+    assert_eq!(gs::validate(11, "0.02"), Ok("0.02".into()));
+    assert_eq!(gs::validate(110, "abc"), Err("not a number"));
+    assert_eq!(gs::validate(110, "NaN"), Err("not a number"));
+    assert_eq!(gs::validate(0, "1"), Err("out of range"));
+    assert_eq!(gs::validate(32, "2"), Err("out of range"));
+    assert_eq!(gs::validate(32, "1"), Ok("1".into()));
+    assert_eq!(gs::validate(3, "7"), Ok("7".into()));
+    assert_eq!(gs::validate(3, "8"), Err("out of range"));
+    assert_eq!(gs::validate(3, "1.5"), Err("out of range"));
+    assert_eq!(gs::write_line(110, "5000"), "$110=5000");
+    // Backup text round-trips and is read strictly.
+    let text = gs::backup_text(&v, &["[VER:1.1h.20190825:]".to_string()], "2026-10-11");
+    assert!(text.starts_with("; LightCreator backup") && text.contains("$110=3000.000"));
+    let back = gs::parse_backup(&text).unwrap();
+    assert_eq!(back.len(), 5);
+    assert!(back.contains(&(110, "3000".into())));
+    assert!(gs::parse_backup("$110=1\n$110=2\n").unwrap_err().contains("twice"));
+    assert!(gs::parse_backup("G1 X1").unwrap_err().contains("line 1"));
+    assert!(gs::parse_backup("$110=zz").unwrap_err().contains("line 1"));
+    assert!(gs::parse_backup("; only comments\n").is_err());
+    assert!(gs::parse_backup(&"$1=1\n".repeat(10_000)).is_err());
+    assert!(gs::same_value("500", "500.000") && !gs::same_value("500", "501"));
+    // The table: the critical ones, and no setting twice.
+    let critical: Vec<u32> = gs::SETTINGS.iter().filter(|s| s.critical).map(|s| s.id).collect();
+    assert_eq!(critical, vec![30, 31, 32, 130, 131, 132]);
+    let mut ids: Vec<u32> = gs::SETTINGS.iter().map(|s| s.id).collect();
+    ids.dedup();
+    assert_eq!(ids.len(), gs::SETTINGS.len());
+}
+
+#[test]
+fn laser_heads_keep_their_settings_and_old_profiles_get_defaults() {
+    let d: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    let h = &d.heads[0];
+    // What an old profile did not have comes with sensible defaults.
+    assert_eq!((h.tool, h.frame_speed, h.focus_power, h.spot_x, h.pointer_dx), (0, 40.0, 0.0, 0.0, 0.0));
+    assert_eq!((h.wavelength(), h.power_w()), (10_600, 40.0));
+    assert!(!h.has_pointer_offset());
+    // A head with everything set survives a round trip through JSON.
+    let mut dev = Device::default();
+    dev.heads[0] = LaserHead { name: "Blue".into(), tool: 0, laser: LaserKind::Diode, wavelength_nm: 450, optical_power_w: 20.0, focus_power: 1.5, spot_x: 0.08, spot_y: 0.1, pointer_dx: 12.0, pointer_dy: -3.5, ..LaserHead::default() };
+    dev.heads.push(LaserHead { name: "Fibre".into(), tool: 1, laser: LaserKind::Fiber, pwm_freq_hz: 30_000.0, pulse_width_us: 4.0, ..LaserHead::default() });
+    let back: Device = serde_json::from_str(&serde_json::to_string(&dev).unwrap()).unwrap();
+    assert_eq!(back, dev);
+    assert_eq!((back.heads[1].wavelength(), back.heads[0].wavelength()), (1064, 450));
+    assert!(back.heads[0].has_pointer_offset() && LaserKind::Fiber.has_pwm() && !LaserKind::Diode.has_pwm());
+    // Tool numbers must differ; one head never clashes with itself.
+    assert!(!back.has_duplicate_tools());
+    let mut clash = back.clone();
+    clash.heads[1].tool = 0;
+    assert!(clash.has_duplicate_tools() && !Device::default().has_duplicate_tools());
+    // A head the profile does not have falls back to the first.
+    assert_eq!(dev.head(7).name, "Blue");
+}
+
+#[test]
+fn without_power_keeps_the_path_and_zeroes_every_s_of_a_move() {
+    let g = "; job\nM4 S0\nG0 X1.000 Y2.000\nG1 X5.000 Y2.000 S600 F1200 ; cut\nG2 X6.000 Y3.000 I0.500 J0.500 S300\nG1 X9.000\nM5\n";
+    let off = gcode::without_power(g);
+    assert_eq!(off, "; job\nM4 S0\nG0 X1.000 Y2.000\nG1 X5.000 Y2.000 S0 F1200 ; cut\nG2 X6.000 Y3.000 I0.500 J0.500 S0\nG1 X9.000\nM5\n");
+    // Moves and everything else are untouched; the shifted copy moves every shape.
+    let mut d = Document::default();
+    d.add(0, Kind::Rect { w: 4.0, h: 4.0 }, Xf::translate(10.0, 10.0));
+    let s = gcode::shifted(&d, -3.0, 2.0);
+    assert_eq!(s.shapes[0].bounds().unwrap().min, Pt::new(7.0, 12.0));
+    assert_eq!(d.shapes[0].bounds().unwrap().min, Pt::new(10.0, 10.0));
+}
+
+fn macro_dev(macros: &[(&str, &str)]) -> Device {
+    let mut d = Device::default();
+    d.name = "Test laser".into();
+    d.area = Area { bed_w: 300.0, bed_h: 200.0, ..Area::default() };
+    d.macros = macros.iter().map(|(n, c)| Macro { name: n.to_string(), code: c.to_string() }).collect();
+    d
+}
+
+#[test]
+fn a_macro_is_expanded_without_comments_with_includes_and_variables() {
+    let d = macro_dev(&[
+        ("Park", "G90 ; absolute\n(move away)\nG0 X{work_width} Y0 (corner)\n\n@include(Beep)\nM5"),
+        ("Beep", "M300 S440 P100 ; beep\nM117 {machine_name}"),
+    ]);
+    assert_eq!(hooks::expand(&d, "Park").unwrap(), vec!["G90", "G0 X300 Y0", "M300 S440 P100", "M117 Test laser", "M5"]);
+    // Names are found whatever the case; unknown ones are told apart from empty ones.
+    assert!(hooks::expand(&d, "park").is_ok());
+    assert_eq!(hooks::expand(&d, "Nope"), Err(hooks::MacroError::Unknown("Nope".into())));
+    assert_eq!(hooks::expand(&macro_dev(&[("Empty", "; only a comment\n(and another)")]), "Empty"), Err(hooks::MacroError::Empty));
+    assert_eq!(hooks::validate_macros(&d), None);
+    assert_eq!(hooks::strip_comments("G1 X(a;b)5 ; tail"), "G1 X5");
+}
+
+#[test]
+fn includes_that_loop_or_go_too_deep_are_refused() {
+    let d = macro_dev(&[("A", "@include(B)"), ("B", "@include(A)")]);
+    assert!(matches!(hooks::expand(&d, "A"), Err(hooks::MacroError::Cycle(_))));
+    assert!(hooks::validate_macros(&d).is_some());
+    let selfie = macro_dev(&[("Self", "@include(self)")]);
+    assert!(matches!(hooks::expand(&selfie, "Self"), Err(hooks::MacroError::Cycle(_))));
+    // A chain of ten macros is deeper than the limit of eight; one of eight is fine.
+    let chain = |n: usize| -> Device {
+        let ms: Vec<(String, String)> = (0..n).map(|i| (format!("m{i}"), if i + 1 < n { format!("@include(m{})", i + 1) } else { "G4 P1".to_string() })).collect();
+        let refs: Vec<(&str, &str)> = ms.iter().map(|(a, b)| (a.as_str(), b.as_str())).collect();
+        macro_dev(&refs)
+    };
+    assert_eq!(hooks::expand(&chain(10), "m0"), Err(hooks::MacroError::TooDeep));
+    assert_eq!(hooks::expand(&chain(8), "m0").unwrap(), vec!["G4 P1"]);
+}
+
+#[test]
+fn bad_macros_cannot_be_kept() {
+    let bad = |code: &str| hooks::validate_macros(&macro_dev(&[("X", code)])).is_some();
+    assert!(bad("G1 X{layer_name}"), "a job variable");
+    assert!(bad("G1 X{nope}"), "an unknown variable");
+    assert!(bad("G1 X{work_width"), "an open brace");
+    assert!(bad("@include Beep"), "an include without brackets");
+    assert!(bad("@include(Missing)"));
+    assert!(bad("G1 X1\u{7}"), "a control character");
+    assert!(bad(&format!("G1 X{}", "1".repeat(120))), "a line over 100 characters");
+    assert!(bad(&"G4 P1\n".repeat(70)), "more than 60 lines in a macro");
+    assert!(!bad("G4 P1"));
+    // Names: not empty, not used twice, not absurd.
+    let named = |names: &[&str]| hooks::validate_macros(&macro_dev(&names.iter().map(|n| (*n, "G4 P1")).collect::<Vec<_>>())).is_some();
+    assert!(named(&[""]) && named(&["a", "A"]) && named(&["a(b)"]) && named(&[&"n".repeat(41)]));
+    assert!(!named(&["Home", "Park"]));
+    // Macros ride along in the profile; old profiles have none.
+    let d = macro_dev(&[("Park", "G0 X0 Y0")]);
+    let back: Device = serde_json::from_str(&serde_json::to_string(&d).unwrap()).unwrap();
+    assert_eq!(back.macros, d.macros);
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert!(old.macros.is_empty());
+}
+
+fn rect_zone() -> ZoneShape {
+    ZoneShape::Rect { x: 10.0, y: 10.0, w: 20.0, h: 10.0 } // (10,10) to (30,20)
+}
+
+#[test]
+fn segments_against_a_rectangular_zone_including_the_edge_cases() {
+    let z = rect_zone();
+    let hit = |a: (f64, f64), b: (f64, f64)| zones::segment_hits(&z, Pt::new(a.0, a.1), Pt::new(b.0, b.1));
+    assert!(!hit((0.0, 0.0), (5.0, 5.0)), "far away");
+    assert!(!hit((0.0, 25.0), (40.0, 25.0)), "passes below");
+    assert!(!hit((0.0, 9.99), (40.0, 9.99)), "parallel, just outside");
+    assert!(hit((0.0, 15.0), (40.0, 15.0)), "straight through");
+    assert!(hit((15.0, 12.0), (25.0, 18.0)), "completely inside");
+    assert!(hit((0.0, 15.0), (12.0, 15.0)), "ends inside");
+    assert!(hit((0.0, 10.0), (40.0, 10.0)), "runs along the edge");
+    assert!(hit((10.0, 0.0), (10.0, 10.0)), "just touches a corner");
+    assert!(hit((0.0, 0.0), (10.0, 10.0)), "touches the corner from outside");
+    assert!(!hit((0.0, 0.0), (9.9, 9.9)), "stops short of the corner");
+    assert!(hit((20.0, 15.0), (20.0, 15.0)), "a point inside");
+    assert!(!hit((5.0, 5.0), (5.0, 5.0)), "a point outside");
+    assert!(hit((0.0, 0.0), (40.0, 30.0)), "diagonal across a corner region: through");
+    assert!(!hit((0.0, 12.0), (9.0, 30.0)), "diagonal that misses");
+    // A rectangle given with a negative size is the same rectangle.
+    assert!(zones::segment_hits(&ZoneShape::Rect { x: 30.0, y: 20.0, w: -20.0, h: -10.0 }, Pt::new(0.0, 15.0), Pt::new(40.0, 15.0)));
+}
+
+#[test]
+fn segments_against_a_round_zone() {
+    let z = ZoneShape::Circle { x: 50.0, y: 50.0, r: 10.0 };
+    let hit = |a: (f64, f64), b: (f64, f64)| zones::segment_hits(&z, Pt::new(a.0, a.1), Pt::new(b.0, b.1));
+    assert!(hit((0.0, 50.0), (100.0, 50.0)), "through the middle");
+    assert!(hit((0.0, 40.0), (100.0, 40.0)), "tangent: touching counts");
+    assert!(!hit((0.0, 39.9), (100.0, 39.9)), "just outside");
+    assert!(hit((45.0, 50.0), (55.0, 52.0)), "inside");
+    assert!(hit((0.0, 0.0), (50.0, 45.0)), "ends inside");
+    assert!(!hit((0.0, 0.0), (30.0, 30.0)), "stops before");
+    assert!(hit((50.0, 50.0), (50.0, 50.0)));
+    assert_eq!(z_bounds(), (40.0, 40.0, 60.0, 60.0));
+}
+
+fn z_bounds() -> (f64, f64, f64, f64) {
+    let b = ZoneShape::Circle { x: 50.0, y: 50.0, r: 10.0 }.bounds();
+    (b.min.x, b.min.y, b.max.x, b.max.y)
+}
+
+fn zoned_doc() -> Document {
+    let mut d = check_doc(100.0, 100.0);
+    d.device.zones = vec![Zone { name: "Clamp".into(), enabled: true, shape: ZoneShape::Rect { x: 140.0, y: 60.0, w: 40.0, h: 30.0 }, z_range: None }];
+    d
+}
+
+#[test]
+fn a_zone_in_the_way_of_any_move_is_an_error_naming_the_zone_and_the_layer() {
+    // The rectangle sits at (100,100): the zone is not on its outline ...
+    let mut d = zoned_doc();
+    assert!(check::job_check(&d).is_empty(), "{:?}", check::job_check(&d));
+    // ... but the way back to the machine's zero (front-left: bottom-left of the design) is a move too: put a zone on it.
+    d.device.zones.push(Zone { name: "Way home".into(), enabled: true, shape: ZoneShape::Circle { x: 50.0, y: 150.0, r: 5.0 }, z_range: None });
+    let issues = check::job_check(&d);
+    let hit: Vec<_> = issues.iter().filter(|i| i.kind == check::IssueKind::NoGoZone).collect();
+    assert_eq!(hit.len(), 1, "{issues:?}");
+    assert_eq!((hit[0].zone, hit[0].level), (Some(1), check::Level::Error));
+    assert_eq!(hit[0].layer, Some(0));
+    // A zone on the outline itself.
+    let mut on = zoned_doc();
+    on.device.zones[0].shape = ZoneShape::Rect { x: 110.0, y: 95.0, w: 5.0, h: 20.0 };
+    assert!(check::job_check(&on).iter().any(|i| i.kind == check::IssueKind::NoGoZone && i.zone == Some(0)));
+    // Switched off, it is not a zone.
+    on.device.zones[0].enabled = false;
+    assert!(!check::job_check(&on).iter().any(|i| i.kind == check::IssueKind::NoGoZone));
+}
+
+#[test]
+fn the_frame_may_not_touch_a_zone_either_and_zones_travel_with_the_profile() {
+    let d = zoned_doc();
+    let r = |x0, y0, x1, y1| Rect { min: Pt::new(x0, y0), max: Pt::new(x1, y1) };
+    assert!(check::check_frame(&d.device, r(100.0, 100.0, 120.0, 110.0)).is_empty());
+    // A frame that encloses the zone has its edges clear of it: only the edges are traced.
+    assert!(check::check_frame(&d.device, r(100.0, 40.0, 200.0, 110.0)).is_empty());
+    let hit = check::check_frame(&d.device, r(100.0, 70.0, 160.0, 110.0));
+    assert!(hit.iter().any(|i| i.kind == check::IssueKind::NoGoZone && i.zone == Some(0)), "{hit:?}");
+    let back: Device = serde_json::from_str(&serde_json::to_string(&d.device).unwrap()).unwrap();
+    assert_eq!(back.zones, d.device.zones);
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert!(old.zones.is_empty());
+}
+
+#[test]
+fn z_heights_outside_the_travel_are_an_error_and_status_reports_give_z() {
+    let mut d = check_doc(100.0, 100.0);
+    d.device.axes.has_z = true;
+    d.device.axes.z_min = 0.0;
+    d.device.axes.z_max = 30.0;
+    d.layers[0].passes = 3;
+    d.layers[0].z_start = 20.0;
+    d.layers[0].z_step = -5.0;
+    assert!(check::job_check(&d).is_empty());
+    d.layers[0].z_step = -10.0; // 20, 10, 0: still in the travel
+    assert!(check::job_check(&d).is_empty());
+    d.layers[0].z_step = -12.0; // 20, 8, -4: below the travel
+    assert!(check::job_check(&d).iter().any(|i| i.kind == check::IssueKind::ZOutOfRange && i.layer == Some(0) && i.level == check::Level::Error));
+    d.layers[0].z_step = 5.0; // 20, 25, 30
+    assert!(check::job_check(&d).is_empty());
+    d.layers[0].z_start = 40.0;
+    assert!(check::job_check(&d).iter().any(|i| i.kind == check::IssueKind::ZOutOfRange));
+    // Without a Z axis the heights mean nothing.
+    d.device.axes.has_z = false;
+    assert!(check::job_check(&d).is_empty());
+    // Z in the reports of the controllers.
+    assert_eq!(controller::parse_status_z("<Idle|MPos:1.000,2.000,3.500|FS:0,0>"), Some(3.5));
+    assert_eq!(controller::parse_status_z("X:1.00 Y:2.00 Z:7.25 E:0.00 Count X:80"), Some(7.25));
+    assert_eq!(controller::parse_status_z("<Idle,MPos:1.0000,2.0000,4.5000,WPos:1.0000,2.0000,4.5000>"), Some(4.5));
+    assert_eq!(controller::parse_status_z("ok"), None);
+    assert_eq!(controller::parse_status_z("<Idle|FS:0,0>"), None);
+    // Z axis settings live in the profile; old ones have no axis.
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert!(!old.axes.has_z);
+}
+
+#[test]
+fn rotary_formulas_for_a_chuck_and_for_rollers_worked_out_by_hand() {
+    use std::f64::consts::PI;
+    // A chuck: the work is 50 mm across, the motor turns it: one turn = 6400 microsteps = pi * 50 = 157.0796 mm.
+    let chuck = Rotary { enabled: true, mode: RotaryMode::ReplaceY, kind: RotaryKind::Chuck, diameter: 50.0, roller_diameter: 30.0, microsteps_per_rev: 6400.0 };
+    assert!((chuck.circumference() - 157.0796).abs() < 1e-3);
+    assert!((chuck.steps_per_mm() - 40.7437).abs() < 1e-3, "{}", chuck.steps_per_mm()); // 6400 / 157.0796
+    assert!((chuck.degrees_per_mm() - 2.29183).abs() < 1e-4); // 360 / 157.0796
+    // A quarter of the way round is 39.27 mm and 90 degrees.
+    assert!((39.2699 * chuck.degrees_per_mm() - 90.0).abs() < 1e-3);
+    // Rollers: the work (80 mm) lies on 30 mm rollers; the surface moves like the roller's surface (94.2478 mm a turn).
+    let roller = Rotary { kind: RotaryKind::Roller, diameter: 80.0, roller_diameter: 30.0, ..chuck.clone() };
+    assert!((roller.steps_per_mm() - 67.906).abs() < 1e-3, "{}", roller.steps_per_mm()); // 6400 / (pi * 30)
+    assert!((roller.degrees_per_mm() - 3.81972).abs() < 1e-4); // 360 / (pi * 30)
+    // ... but the way round the work is its own: pi * 80 = 251.327 mm.
+    assert!((roller.circumference() - 251.327).abs() < 1e-3);
+    assert_eq!(roller.drive_diameter(), 30.0);
+    // Zero diameters do not divide by zero.
+    let none = Rotary { diameter: 0.0, ..chuck };
+    assert_eq!((none.steps_per_mm(), none.degrees_per_mm(), none.circumference()), (0.0, 0.0, 0.0));
+    let _ = PI;
+}
+
+fn rotary_check_doc(rot: &[bool], heights: &[f64]) -> Document {
+    let mut d = Document::default();
+    d.device.area = Area { bed_w: 300.0, bed_h: 300.0, ..Area::default() };
+    d.device.rotary = Rotary { enabled: true, diameter: 50.0, ..Rotary::default() }; // 157.08 mm round
+    for (i, (r, h)) in rot.iter().zip(heights).enumerate() {
+        d.layers[i].rotary = *r;
+        d.layers[i].mode = LayerMode::Line;
+        d.add(i, Kind::Rect { w: 20.0, h: *h }, Xf::translate(20.0 + 40.0 * i as f64, 20.0));
+    }
+    d
+}
+
+#[test]
+fn rotary_and_flat_layers_do_not_mix_and_the_design_must_fit_round_the_work() {
+    let kinds = |d: &Document| check::job_check(d).into_iter().map(|i| i.kind).collect::<Vec<_>>();
+    // All rotary and low enough: fine.
+    assert!(kinds(&rotary_check_doc(&[true, true], &[100.0, 150.0])).is_empty());
+    // One flat layer next to a rotary one.
+    assert!(kinds(&rotary_check_doc(&[true, false], &[100.0, 50.0])).contains(&check::IssueKind::RotaryMix));
+    // Higher than the circumference (157.08 mm).
+    let too_tall = rotary_check_doc(&[true], &[160.0]);
+    let issues = check::job_check(&too_tall);
+    assert!(issues.iter().any(|i| i.kind == check::IssueKind::RotaryTooTall && i.layer == Some(0) && i.level == check::Level::Error && !i.shapes.is_empty()), "{issues:?}");
+    // Exactly round is allowed (within the tolerance).
+    assert!(!kinds(&rotary_check_doc(&[true], &[157.0])).contains(&check::IssueKind::RotaryTooTall));
+    // All flat layers on a machine with a rotary switched on are only flat jobs.
+    assert!(kinds(&rotary_check_doc(&[false, false], &[250.0, 10.0])).is_empty());
+    // With the rotary switched off the flags mean nothing.
+    let mut off = rotary_check_doc(&[true, false], &[100.0, 50.0]);
+    off.device.rotary.enabled = false;
+    assert!(kinds(&off).is_empty());
+    // The fourth-axis mode falls back to Y on GRBL, and stays on Marlin.
+    let mut dev = Device::default();
+    dev.rotary.mode = RotaryMode::TrueA;
+    assert_eq!(dev.rotary_mode(), RotaryMode::ReplaceY);
+    dev.controller = Controller::Marlin;
+    assert_eq!(dev.rotary_mode(), RotaryMode::TrueA);
+    // Old profiles have no rotary.
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert!(!old.rotary.enabled);
+}
+
+#[test]
+fn a_zone_with_a_height_range_only_stops_moves_at_those_heights_and_only_with_a_z_axis() {
+    // The zone is a box 0-10 mm high standing on the table where the design's outline runs.
+    let mut d = check_doc(100.0, 100.0);
+    d.device.zones = vec![Zone { name: "Box".into(), enabled: true, shape: ZoneShape::Rect { x: 105.0, y: 95.0, w: 5.0, h: 20.0 }, z_range: Some((0.0, 10.0)) }];
+    let hit = |d: &Document| check::job_check(d).iter().any(|i| i.kind == check::IssueKind::NoGoZone);
+    // No Z axis: the range means nothing, the zone is a plain area.
+    assert!(hit(&d));
+    d.device.axes.has_z = true;
+    d.device.axes.z_max = 100.0;
+    // A layer that does not say where Z is: the box is assumed to be in the way.
+    assert!(hit(&d));
+    // Moving at 30 mm, above the box: free. At 5 mm and 0 mm, the box is hit.
+    d.layers[0].z_start = 30.0;
+    assert!(!hit(&d));
+    d.layers[0].z_start = 5.0;
+    assert!(hit(&d));
+    d.layers[0].z_start = 10.0; // the end of the range counts
+    assert!(hit(&d));
+    d.layers[0].z_start = 10.5;
+    assert!(!hit(&d));
+    // Two passes, the second one going down into the box.
+    d.layers[0].passes = 2;
+    d.layers[0].z_start = 20.0;
+    d.layers[0].z_step = -15.0;
+    assert!(hit(&d));
+    // The range is kept in the profile; old zones have none.
+    let back: Device = serde_json::from_str(&serde_json::to_string(&d.device).unwrap()).unwrap();
+    assert_eq!(back.zones[0].z_range, Some((0.0, 10.0)));
+    let no_range: Zone = serde_json::from_str(r#"{"name":"x","shape":{"Rect":{"x":0.0,"y":0.0,"w":1.0,"h":1.0}}}"#).unwrap();
+    assert!(no_range.enabled && no_range.z_range.is_none());
+}
+
+#[test]
+fn every_template_makes_a_valid_profile_with_its_own_numbers() {
+    for t in profiles::TEMPLATES {
+        let d = profiles::template(t.id);
+        assert_eq!(profiles::validate(&d), Ok(()), "{}", t.id);
+        assert!(d.name.contains(&t.name[..4]) || !d.name.is_empty());
+    }
+    let co2 = profiles::template("grbl-co2-300x200");
+    assert_eq!((co2.area.bed_w, co2.area.bed_h, co2.laser()), (300.0, 200.0, LaserKind::Co2));
+    let k40 = profiles::template("grbl-k40-300x200");
+    assert_eq!((k40.axes.origin, k40.laser()), (Origin::BackLeft, LaserKind::Co2));
+    assert!(k40.template_notes.contains("top-left"));
+    let marlin = profiles::template("marlin-diode");
+    assert_eq!((marlin.controller, marlin.s_max()), (Controller::Marlin, 255.0));
+    // An unknown id is the plain GRBL diode machine.
+    assert_eq!(profiles::template("nope").controller, Controller::Grbl);
+    // Names are distinct, so the list can be told apart.
+    let mut names: Vec<&str> = profiles::TEMPLATES.iter().map(|t| t.name).collect();
+    names.dedup();
+    assert_eq!(names.len(), profiles::TEMPLATES.len());
+}
+
+#[test]
+fn copies_get_a_free_name() {
+    let taken = vec!["Laser".to_string(), "Laser (copy)".to_string()];
+    assert_eq!(profiles::copy_name("Laser", &[]), "Laser (copy)");
+    assert_eq!(profiles::copy_name("Laser", &taken), "Laser (copy 2)");
+    assert_eq!(profiles::copy_name(" Laser ", &taken), "Laser (copy 2)");
+}
+
+#[test]
+fn a_profile_file_round_trips_without_the_port_and_old_files_are_read() {
+    let mut d = profiles::template("grbl-k40-300x200");
+    d.connection.port = "/dev/tty.usbserial-1410".into();
+    d.connection.usb_id = "1a86:7523".into();
+    d.macros = vec![Macro { name: "Park".into(), code: "G0 X0 Y0".into() }];
+    d.zones = vec![Zone { name: "Clamp".into(), enabled: true, shape: ZoneShape::Circle { x: 10.0, y: 10.0, r: 5.0 }, z_range: None }];
+    let text = profiles::export_profile(&d, "v0.0.11");
+    assert!(text.contains("\"format\": 1") && !text.contains("usbserial"), "the port stays at home");
+    let back = profiles::import_profile(&text).unwrap();
+    d.connection.port.clear();
+    assert_eq!(back, d);
+    // A bare profile, as the program keeps it, is accepted too (older exports).
+    let bare = profiles::import_profile(&serde_json::to_string(&d).unwrap()).unwrap();
+    assert_eq!(bare, d);
+    // An even older flat profile.
+    let flat = profiles::import_profile(OLD_PROFILE).unwrap();
+    assert_eq!(flat.area.bed_w, 300.0);
+}
+
+#[test]
+fn a_bad_profile_file_gives_a_clear_message_and_never_a_panic() {
+    let ok = profiles::export_profile(&Device::default(), "v0.0.11");
+    let err = |t: &str| profiles::import_profile(t).unwrap_err();
+    assert!(err("hello").contains("not a profile file"));
+    assert!(err("").contains("not a profile file"));
+    assert!(err("{\"profile\": 5}").contains("cannot be read"));
+    assert!(err(&"x".repeat(profiles::MAX_PROFILE_FILE + 1)).contains("larger"));
+    // A newer format is refused with the reason.
+    let newer = ok.replace("\"format\": 1", "\"format\": 9");
+    assert!(err(&newer).contains("newer version"));
+    // Values out of range.
+    let edit = |f: &dyn Fn(&mut serde_json::Value)| -> String {
+        let mut v: serde_json::Value = serde_json::from_str(&ok).unwrap();
+        f(&mut v);
+        profiles::import_profile(&v.to_string()).unwrap_err()
+    };
+    assert!(edit(&|v| v["profile"]["area"]["bed_w"] = 1e9.into()).contains("work area"));
+    assert!(edit(&|v| v["profile"]["area"]["bed_h"] = (-5.0).into()).contains("work area"));
+    assert!(edit(&|v| v["profile"]["name"] = "".into()).contains("name"));
+    assert!(edit(&|v| v["profile"]["name"] = "x".repeat(200).into()).contains("name"));
+    assert!(edit(&|v| v["profile"]["name"] = "a\u{7}b".into()).contains("name"));
+    assert!(edit(&|v| v["profile"]["heads"][0]["s_max"] = 0.0.into()).contains("laser head"));
+    assert!(edit(&|v| v["profile"]["connection"]["baud"] = 5.into()).contains("connection"));
+    assert!(edit(&|v| v["profile"]["connection"]["usb_id"] = "nonsense".into()).contains("connection"));
+    assert!(edit(&|v| v["profile"]["gcode"]["preamble"] = "G21\u{1b}[2J".into()).contains("G-code"));
+    assert!(edit(&|v| v["profile"]["gcode"]["hooks"]["layer_start"] = serde_json::json!({"enabled": true, "code": "M117 {nope}"})).contains("hook"));
+    assert!(edit(&|v| v["profile"]["macros"] = serde_json::json!([{"name": "A", "code": "@include(A)"}])).contains("macro"));
+    assert!(edit(&|v| v["profile"]["zones"] = serde_json::json!([{"name": "z", "shape": {"Circle": {"x": 0.0, "y": 0.0, "r": 1e12}}}])).contains("zone"));
+    assert!(edit(&|v| v["profile"]["jog_step"] = 0.0.into()).contains("jog"));
+    // Unknown fields are ignored, and a name with a path is just a name.
+    let mut v: serde_json::Value = serde_json::from_str(&ok).unwrap();
+    v["profile"]["something_new"] = "from a later version".into();
+    v["profile"]["name"] = "../../etc/passwd".into();
+    v["profile"]["connection"]["port"] = "/etc/passwd".into();
+    let d = profiles::import_profile(&v.to_string()).unwrap();
+    assert!(d.connection.port.is_empty(), "no path from the file reaches a port");
+}
+
+#[test]
+fn maintenance_counts_resets_and_is_cleared_for_imports() {
+    let mut m = Maintenance { total_secs: 0.0, counters: vec![Counter { name: "Tube".into(), secs: 0.0, threshold_hours: Some(1.0) }, Counter { name: "Belt".into(), secs: 0.0, threshold_hours: None }] };
+    m.add_run(1800.0);
+    m.add_run(f64::NAN);
+    m.add_run(-5.0);
+    assert_eq!((m.total_secs, m.counters[0].secs, m.counters[1].secs), (1800.0, 1800.0, 1800.0));
+    assert!(m.due().is_empty());
+    m.add_run(1800.0);
+    assert_eq!(m.due().iter().map(|c| c.name.as_str()).collect::<Vec<_>>(), vec!["Tube"], "one hour of the limit is reached, the counter without a limit is never due");
+    m.reset(0);
+    m.reset(9);
+    assert_eq!((m.total_secs, m.counters[0].secs, m.counters[1].secs), (3600.0, 0.0, 3600.0));
+    // A profile carries them; a file made from it starts them again, and old profiles have none.
+    let mut d = Device::default();
+    d.maintenance = m;
+    let back: Device = serde_json::from_str(&serde_json::to_string(&d).unwrap()).unwrap();
+    assert_eq!(back.maintenance, d.maintenance);
+    let imported = profiles::import_profile(&profiles::export_profile(&d, "v0.0.11")).unwrap();
+    assert_eq!((imported.maintenance.total_secs, imported.maintenance.counters[1].secs, imported.maintenance.counters[0].name.as_str()), (0.0, 0.0, "Tube"));
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert_eq!(old.maintenance, Maintenance::default());
+}
+
+#[test]
+fn notes_live_in_the_profile_and_are_limited_in_imported_files() {
+    let mut d = Device::default();
+    d.notes = "# Tube\n- replaced in 2026".into();
+    let back: Device = serde_json::from_str(&serde_json::to_string(&d).unwrap()).unwrap();
+    assert_eq!(back.notes, d.notes);
+    let imported = profiles::import_profile(&profiles::export_profile(&d, "v0.0.11")).unwrap();
+    assert_eq!(imported.notes, d.notes);
+    d.notes = "x".repeat(profiles::MAX_NOTES + 1);
+    assert!(profiles::validate(&d).unwrap_err().contains("notes"));
+    d.notes = "a\u{7}b".into();
+    assert!(profiles::validate(&d).is_err());
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert!(old.notes.is_empty());
+}
+
+fn gradient_rgb(w: usize, h: usize) -> Vec<u8> {
+    (0..w * h).flat_map(|i| [(i % w * 255 / w.max(1)) as u8, (i / w * 255 / h.max(1)) as u8, 128]).collect()
+}
+
+#[test]
+fn picture_adjustments_change_nothing_by_default_and_do_what_they_say() {
+    let img = gradient_rgb(8, 6);
+    let mut same = img.clone();
+    camimg::adjust(&mut same, 8, 6, &ImageSettings::default());
+    assert_eq!(same, img);
+    // Brightness +100 adds 255, -100 subtracts it.
+    let mut bright = img.clone();
+    camimg::adjust(&mut bright, 8, 6, &ImageSettings { brightness: 20, ..Default::default() });
+    assert_eq!(bright[2], 128 + 51);
+    let mut dark = img.clone();
+    camimg::adjust(&mut dark, 8, 6, &ImageSettings { brightness: -100, ..Default::default() });
+    assert!(dark.iter().all(|v| *v == 0));
+    // Contrast pushes values away from the middle: mid grey stays, lighter gets lighter, darker darker.
+    let mut c = vec![128u8, 128, 128, 200, 200, 200, 60, 60, 60];
+    camimg::adjust(&mut c, 3, 1, &ImageSettings { contrast: 100, ..Default::default() });
+    assert_eq!(&c[0..3], &[128, 128, 128]);
+    assert!(c[3] > 200 && c[6] < 60, "{c:?}");
+    // White balance: a warm (2800 K) light is cooled, so blue gains on red; 6500 K is daylight and changes nothing.
+    let mut warm = vec![200u8, 150, 100];
+    camimg::adjust(&mut warm, 1, 1, &ImageSettings { white_balance: Some(2800), ..Default::default() });
+    assert!(warm[0] < 200 && warm[2] >= 100, "{warm:?}");
+    let mut day = vec![200u8, 150, 100];
+    camimg::adjust(&mut day, 1, 1, &ImageSettings { white_balance: Some(6500), ..Default::default() });
+    assert!(day.iter().zip([200u8, 150, 100]).all(|(a, b)| (*a as i32 - b as i32).abs() <= 4), "{day:?}");
+    // Denoising smooths a lone bright pixel and leaves flat areas alone.
+    let mut dot = vec![0u8; 5 * 5 * 3];
+    dot[(2 * 5 + 2) * 3..(2 * 5 + 2) * 3 + 3].copy_from_slice(&[255, 255, 255]);
+    camimg::adjust(&mut dot, 5, 5, &ImageSettings { denoise: 0.9, ..Default::default() });
+    assert!(dot[(2 * 5 + 2) * 3] < 100 && dot[(2 * 5 + 1) * 3] > 0);
+    let mut flat = vec![90u8; 6 * 6 * 3];
+    camimg::adjust(&mut flat, 6, 6, &ImageSettings { denoise: 0.95, ..Default::default() });
+    assert!(flat.iter().all(|v| *v == 90));
+    // Values outside the ranges are clamped; garbage cannot panic.
+    let wild = ImageSettings { brightness: 9999, contrast: 9999, white_balance: Some(1), denoise: f32::NAN, prefer_yuyv: false }.clamped();
+    assert_eq!((wild.brightness, wild.contrast, wild.white_balance, wild.denoise), (100, 100, Some(2500), 0.0));
+    let mut tiny = vec![1u8, 2, 3];
+    camimg::adjust(&mut tiny, 1, 1, &ImageSettings { denoise: 0.9, brightness: 5, ..Default::default() });
+    camimg::adjust(&mut tiny, 100, 100, &ImageSettings { brightness: 5, ..Default::default() }); // buffer too small: ignored
+}
+
+#[test]
+fn lens_correction_with_zero_coefficients_is_the_identity_and_barrel_distortion_is_undone() {
+    let img = gradient_rgb(40, 30);
+    assert_eq!(camimg::undistort(&img, 40, 30, &Lens::default()), img);
+    // Insane coefficients are ignored, not applied.
+    assert_eq!(camimg::undistort(&img, 40, 30, &Lens { k1: f64::NAN, ..Default::default() }), img);
+    assert_eq!(camimg::undistort(&img, 40, 30, &Lens { k1: 99.0, ..Default::default() }), img);
+    assert_eq!(camimg::undistort(&[], 0, 0, &Lens { k1: 0.1, ..Default::default() }), Vec::<u8>::new());
+    // A stretch of the picture: with k1 > 0 the corner of the result is taken from further out, so it goes black or
+    // changes, while the centre keeps its colour.
+    let lens = Lens { k1: 0.25, ..Default::default() };
+    let out = camimg::undistort(&img, 40, 30, &lens);
+    assert_eq!(out.len(), img.len());
+    let centre = (15 * 40 + 20) * 3;
+    assert!((out[centre] as i32 - img[centre] as i32).abs() <= 8, "the centre stays");
+    assert_ne!(&out[0..3], &img[0..3], "the corner moves");
+    // The mapping in the middle of a side: undistorting a picture made with the same model brings it back.
+    let (w, h) = (60usize, 60usize);
+    let f = w as f64;
+    let src: Vec<u8> = (0..w * h).flat_map(|i| {
+        let (x, y) = ((i % w) as f64, (i / w) as f64);
+        // A smooth pattern, so interpolation is accurate.
+        let v = (128.0 + 100.0 * ((x * 0.15).sin() * (y * 0.12).cos())) as u8;
+        [v, v, v]
+    }).collect();
+    let l = Lens { k1: 0.05, ..Default::default() };
+    let once = camimg::undistort(&src, w, h, &l);
+    // A point of the result samples the source at its distorted place: check one point by hand.
+    let (x, y) = (45usize, 20usize);
+    let (xn, yn) = ((x as f64 + 0.5 - 30.0) / f, (y as f64 + 0.5 - 30.0) / f);
+    let r2 = xn * xn + yn * yn;
+    let (sx, sy) = (xn * (1.0 + l.k1 * r2) * f + 30.0 - 0.5, yn * (1.0 + l.k1 * r2) * f + 30.0 - 0.5);
+    let expect = src[(sy.round() as usize * w + sx.round() as usize) * 3] as i32;
+    assert!((once[(y * w + x) * 3] as i32 - expect).abs() <= 12, "{} vs {expect}", once[(y * w + x) * 3]);
+}
+
+#[test]
+fn homography_from_reference_points_recovers_the_transform() {
+    let mm = |u: f64, v: f64| (u * 0.5 + 10.0, v * 0.5 + 20.0); // a scale and a shift
+    let pts = |list: &[(f64, f64)]| -> Vec<RefPoint> { list.iter().map(|p| RefPoint { px: *p, mm: mm(p.0, p.1) }).collect() };
+    // Three points: an affine map is enough.
+    let h3 = camimg::homography(&pts(&[(0.0, 0.0), (640.0, 0.0), (0.0, 480.0)])).unwrap();
+    let (x, y) = camimg::apply(&h3, (320.0, 240.0)).unwrap();
+    assert!((x - 170.0).abs() < 1e-6 && (y - 140.0).abs() < 1e-6, "{x},{y}");
+    // Four points of a perspective view: the map sends them where they should go and recovers the others.
+    let persp = |u: f64, v: f64| {
+        let w = 1.0 + 0.0008 * u + 0.0005 * v;
+        ((0.3 * u + 0.05 * v + 7.0) / w, (0.02 * u + 0.28 * v + 3.0) / w)
+    };
+    let corners = [(0.0, 0.0), (640.0, 0.0), (640.0, 480.0), (0.0, 480.0)];
+    let four: Vec<RefPoint> = corners.iter().map(|p| RefPoint { px: *p, mm: persp(p.0, p.1) }).collect();
+    let h = camimg::homography(&four).unwrap();
+    for q in [(100.0, 100.0), (320.0, 240.0), (600.0, 50.0)] {
+        let (x, y) = camimg::apply(&h, q).unwrap();
+        let (ex, ey) = persp(q.0, q.1);
+        assert!((x - ex).abs() < 1e-6 && (y - ey).abs() < 1e-6, "{q:?}: {x},{y} vs {ex},{ey}");
+    }
+    // More than four points are fitted in the least-squares sense (a point that is a little off does not break it).
+    let mut five = four.clone();
+    five.push(RefPoint { px: (320.0, 240.0), mm: { let p = persp(320.0, 240.0); (p.0 + 0.05, p.1 - 0.05) } });
+    let h5 = camimg::homography(&five).unwrap();
+    let (x, y) = camimg::apply(&h5, (100.0, 100.0)).unwrap();
+    let (ex, ey) = persp(100.0, 100.0);
+    assert!((x - ex).abs() < 0.2 && (y - ey).abs() < 0.2);
+    // Not enough or degenerate points give nothing.
+    assert!(camimg::homography(&pts(&[(0.0, 0.0), (10.0, 0.0)])).is_none());
+    assert!(camimg::homography(&pts(&[(0.0, 0.0), (10.0, 10.0), (20.0, 20.0)])).is_none(), "three points on a line");
+    assert!(camimg::homography(&[RefPoint { px: (f64::NAN, 0.0), mm: (0.0, 0.0) }; 4]).is_none());
+    // The corners of the overlay from the map, and reference points from the corners, are each other's inverse.
+    let c = camimg::corners(&h, 640.0, 480.0).unwrap();
+    for (p, q) in c.iter().zip(corners.iter().map(|q| persp(q.0, q.1))) {
+        assert!(p.dist(Pt::new(q.0, q.1)) < 1e-6);
+    }
+    let back = camimg::points_from_corners(&c, 640.0, 480.0);
+    let h2 = camimg::homography(&back).unwrap();
+    let (x, y) = camimg::apply(&h2, (250.0, 90.0)).unwrap();
+    let (ex, ey) = persp(250.0, 90.0);
+    assert!((x - ex).abs() < 1e-6 && (y - ey).abs() < 1e-6);
+}
+
+#[test]
+fn cameras_of_a_device_migrate_validate_and_travel_with_the_profile() {
+    // The single camera of an older profile becomes the first camera.
+    let mut v: serde_json::Value = serde_json::from_str(OLD_PROFILE).unwrap();
+    let d: Device = serde_json::from_value(v.clone()).unwrap();
+    assert_eq!(d.cameras.len(), 1);
+    assert_eq!((d.cameras[0].name.as_str(), d.cameras[0].rotation, d.cameras[0].enabled), ("Camera 1", 2, true));
+    assert_eq!(d.stream_url(), Some("http://pi.local:8080/stream"));
+    // No camera in the profile: none.
+    v["camera_url"] = "".into();
+    assert!(serde_json::from_value::<Device>(v).unwrap().cameras.is_empty());
+    // Only the active, enabled and valid camera streams.
+    let mut d = Device::default();
+    d.cameras = vec![CameraSource::url("A", "http://a/x", 0), CameraSource::url("B", "https://b/y.mjpg", 1)];
+    assert_eq!(d.stream_url(), Some("http://a/x"));
+    d.active_camera = 1;
+    assert_eq!((d.stream_url(), d.camera_source().unwrap().rotation), (Some("https://b/y.mjpg"), 1));
+    d.cameras[1].enabled = false;
+    assert_eq!(d.stream_url(), None);
+    d.cameras[1].enabled = true;
+    d.cameras[1].kind = CameraKind::Url("rtsp://b/y".into());
+    assert_eq!(d.stream_url(), None, "RTSP is not supported");
+    d.cameras[1].kind = CameraKind::Local(0);
+    assert!(d.camera_source().is_some() && d.stream_url().is_none(), "a local camera has no address");
+    d.active_camera = 9;
+    assert!(d.camera_source().is_none());
+    // Addresses.
+    for ok in ["http://pi.local:8080/stream.mjpg", "https://h/p?q=1", " http://h "] {
+        assert!(camimg::valid_url(ok), "{ok}");
+    }
+    for bad in ["", "rtsp://h/x", "http://", "http://:80", "ftp://h", "http://a b", "http://h/\u{7}", "javascript:alert(1)", "pi.local"] {
+        assert!(!camimg::valid_url(bad), "{bad}");
+    }
+    // A profile with cameras round-trips and an import refuses a camera that is on with a bad address.
+    d.active_camera = 0;
+    d.cameras[1].kind = CameraKind::Url("http://b/y".into());
+    d.cameras[0].image = ImageSettings { brightness: 10, contrast: 20, white_balance: Some(5000), denoise: 0.5, prefer_yuyv: true };
+    d.cameras[0].lens = Lens { k1: -0.1, p1: 0.001, ..Default::default() };
+    d.cameras[0].reference = vec![RefPoint { px: (1.0, 2.0), mm: (3.0, 4.0) }];
+    let back = profiles::import_profile(&profiles::export_profile(&d, "v0.0.11")).unwrap();
+    assert_eq!(back.cameras, d.cameras);
+    let mut bad = serde_json::to_value(&d).unwrap();
+    bad["cameras"][0]["kind"] = serde_json::json!({"Url": "rtsp://x"});
+    assert!(profiles::import_profile(&serde_json::json!({"format": 1, "profile": bad}).to_string()).unwrap_err().contains("camera"));
+    let mut wild = serde_json::to_value(&d).unwrap();
+    wild["cameras"][0]["image"]["brightness"] = 5000.into();
+    assert!(profiles::import_profile(&serde_json::json!({"format": 1, "profile": wild}).to_string()).unwrap_err().contains("camera"));
+    let mut lens = serde_json::to_value(&d).unwrap();
+    lens["cameras"][0]["lens"]["k1"] = 50.0.into();
+    assert!(profiles::import_profile(&serde_json::json!({"format": 1, "profile": lens}).to_string()).is_err());
 }
