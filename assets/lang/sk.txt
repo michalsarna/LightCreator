@@ -674,3 +674,8 @@
 673|Pôvodná
 674|Otočené vľavo
 675|Otočené vpravo
+676|Okraje
+677|Vlastné limity
+678|Softvérové limity
+679|Pásy pozdĺž okrajov pracovnej plochy, ktoré stroj nemôže využiť (svorky, rám); nič tam nemožno umiestniť ani presunúť
+680|Hlava je na okraji povolenej oblasti.

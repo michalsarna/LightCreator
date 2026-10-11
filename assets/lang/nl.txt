@@ -674,3 +674,8 @@
 673|Standaard
 674|Naar links gedraaid
 675|Naar rechts gedraaid
+676|Marges
+677|Eigen grenzen
+678|Softwarematige grenzen
+679|Stroken langs de randen van het werkgebied die de machine niet kan gebruiken (klemmen, frame); daar mag niets worden geplaatst of verplaatst
+680|De kop staat aan de rand van het toegestane gebied.

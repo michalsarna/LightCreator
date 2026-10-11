@@ -292,6 +292,34 @@ impl App {
                                     ui.label(tr("Work area Y"));
                                     drag_len(ui, u, &mut d.area.bed_h, 1.0, Some((10.0, 5000.0)));
                                     ui.end_row();
+                                    ui.label(tr("Margins"));
+                                    ui.vertical(|ui| {
+                                        for (name, v) in [("Left", &mut d.area.margins.left), ("Top", &mut d.area.margins.top), ("Right", &mut d.area.margins.right), ("Bottom", &mut d.area.margins.bottom)] {
+                                            ui.horizontal(|ui| {
+                                                ui.label(tr(name));
+                                                drag_len(ui, u, v, 0.5, Some((0.0, 500.0)));
+                                            });
+                                        }
+                                    })
+                                    .response
+                                    .on_hover_text(tr("Strips along the edges of the work area that the machine cannot use (clamps, frame); nothing may be placed or moved there"));
+                                    ui.end_row();
+                                    ui.label(tr("Software limits"));
+                                    ui.vertical(|ui| {
+                                        let mut on = d.area.soft_limits.is_some();
+                                        if ui.checkbox(&mut on, tr("Own limits")).changed() {
+                                            d.area.soft_limits = if on { Some(lc_core::SoftLimits { x0: 0.0, y0: 0.0, x1: d.work_size().0, y1: d.work_size().1 }) } else { None };
+                                        }
+                                        if let Some(l) = &mut d.area.soft_limits {
+                                            for (name, v) in [("Left", &mut l.x0), ("Top", &mut l.y0), ("Right", &mut l.x1), ("Bottom", &mut l.y1)] {
+                                                ui.horizontal(|ui| {
+                                                    ui.label(tr(name));
+                                                    drag_len(ui, u, v, 0.5, Some((0.0, 5000.0)));
+                                                });
+                                            }
+                                        }
+                                    });
+                                    ui.end_row();
                                     ui.label(tr("Machine zero (0,0)"));
                                     egui::ComboBox::from_id_salt("origin").selected_text(tr(d.axes.origin.label())).show_ui(ui, |ui| {
                                         for o in Origin::ALL {
@@ -444,6 +472,18 @@ impl App {
         } else if !cancel {
             self.cfg = Some(cfg);
         }
+    }
+
+    /// A jog step in the design's directions (x right, y down), kept inside the allowed area. `None` when there is no room.
+    fn jog_action(&mut self, dx: f64, dy: f64) -> Option<Action> {
+        let dev = &self.doc.device;
+        let at = (self.connected && self.machine.1.is_finite()).then_some((self.machine.1, self.machine.2));
+        let (mx, my) = dev.limited_jog(at, dx, dy);
+        if mx == 0.0 && my == 0.0 {
+            self.status = tr("The head is at the edge of the allowed area.").to_string();
+            return None;
+        }
+        Some(dev.controller.jog(mx, my, dev.jog_feed))
     }
 
     /// Short description for the status bar / logs.
@@ -613,7 +653,7 @@ impl App {
         }));
         ui.separator();
         ui.add_enabled_ui(self.connected, |ui| {
-            let (s, f) = (self.doc.device.jog_step, self.doc.device.jog_feed);
+            let s = self.doc.device.jog_step;
             // Arrow keys and the controls below are buttons of one size.
             let size = egui::vec2(60.0, 48.0);
             let icon = |ui: &mut egui::Ui, name: &str, tip: String, accent: Option<Color32>| -> bool {
@@ -638,23 +678,23 @@ impl App {
             egui::Grid::new("jog").spacing([4.0, 4.0]).show(ui, |ui| {
                 ui.allocate_exact_size(size, egui::Sense::hover());
                 if icon(ui, "arrow-up", tr("Up").to_string(), None) {
-                    act = Some(ctrl.jog(0.0, s, f));
+                    act = self.jog_action(0.0, -s);
                 }
                 ui.allocate_exact_size(size, egui::Sense::hover());
                 ui.end_row();
                 if icon(ui, "arrow-left", tr("Left").to_string(), None) {
-                    act = Some(ctrl.jog(-s, 0.0, f));
+                    act = self.jog_action(-s, 0.0);
                 }
                 if icon(ui, "square", tr("Cancel jog").to_string(), Some(Color32::from_rgb(0xe8, 0x8a, 0x1f))) {
                     act = Some(ctrl.cancel_jog());
                 }
                 if icon(ui, "arrow-right", tr("Right").to_string(), None) {
-                    act = Some(ctrl.jog(s, 0.0, f));
+                    act = self.jog_action(s, 0.0);
                 }
                 ui.end_row();
                 ui.allocate_exact_size(size, egui::Sense::hover());
                 if icon(ui, "arrow-down", tr("Down").to_string(), None) {
-                    act = Some(ctrl.jog(0.0, -s, f));
+                    act = self.jog_action(0.0, s);
                 }
                 ui.end_row();
             });

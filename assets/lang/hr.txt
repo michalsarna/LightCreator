@@ -674,3 +674,8 @@
 673|Izvorna
 674|Okrenuto ulijevo
 675|Okrenuto udesno
+676|Margine
+677|Vlastita ograničenja
+678|Softverska ograničenja
+679|Trake uz rubove radne površine koje stroj ne može koristiti (stege, okvir); tamo se ništa ne smije postaviti ni pomaknuti
+680|Glava je na rubu dopuštenog područja.

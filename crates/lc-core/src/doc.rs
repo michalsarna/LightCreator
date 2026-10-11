@@ -514,16 +514,39 @@ impl Default for Axes {
     }
 }
 
+/// Strips along the edges of the work area that the machine cannot use (clamps, a frame), in design millimetres.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct Margins {
+    pub left: f64,
+    pub top: f64,
+    pub right: f64,
+    pub bottom: f64,
+}
+
+/// An own rectangle the machine may not leave, in design millimetres (a software limit).
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+pub struct SoftLimits {
+    pub x0: f64,
+    pub y0: f64,
+    pub x1: f64,
+    pub y1: f64,
+}
+
 /// The work area of the machine, millimetres.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Area {
     pub bed_w: f64,
     pub bed_h: f64,
+    #[serde(default)]
+    pub margins: Margins,
+    /// Optional own limits; they are kept inside the usable area.
+    #[serde(default)]
+    pub soft_limits: Option<SoftLimits>,
 }
 
 impl Default for Area {
     fn default() -> Self {
-        Area { bed_w: 400.0, bed_h: 400.0 }
+        Area { bed_w: 400.0, bed_h: 400.0, margins: Margins::default(), soft_limits: None }
     }
 }
 
@@ -694,7 +717,7 @@ impl From<DeviceWire> for Device {
     fn from(w: DeviceWire) -> Device {
         let d = Device::default();
         let axes = w.axes.unwrap_or(Axes { origin: w.origin.unwrap_or(d.axes.origin), ..Axes::default() });
-        let area = w.area.unwrap_or(Area { bed_w: w.bed_w.unwrap_or(d.area.bed_w), bed_h: w.bed_h.unwrap_or(d.area.bed_h) });
+        let area = w.area.unwrap_or(Area { bed_w: w.bed_w.unwrap_or(d.area.bed_w), bed_h: w.bed_h.unwrap_or(d.area.bed_h), ..Area::default() });
         let speeds = w.speeds.unwrap_or(Speeds { travel_speed: w.travel_speed.unwrap_or(d.speeds.travel_speed) });
         let gcode = w.gcode.unwrap_or(GcodeCfg { dynamic_power: w.dynamic_power.unwrap_or(true), return_home: w.return_home.unwrap_or(true) });
         let connection = w.connection.unwrap_or(Connection {
@@ -753,6 +776,49 @@ impl Device {
             Orientation::Native => (self.area.bed_w, self.area.bed_h),
             Orientation::RotateLeft | Orientation::RotateRight => (self.area.bed_h, self.area.bed_w),
         }
+    }
+
+    /// The usable area in design coordinates: the work area minus the margins (never negative in size).
+    pub fn usable_rect(&self) -> Rect {
+        let (w, h) = self.work_size();
+        let m = self.area.margins;
+        let x0 = m.left.clamp(0.0, w);
+        let y0 = m.top.clamp(0.0, h);
+        Rect { min: Pt::new(x0, y0), max: Pt::new((w - m.right).clamp(x0, w), (h - m.bottom).clamp(y0, h)) }
+    }
+
+    /// The area jobs and moves may use: the usable area, cut down to the software limits when there are some.
+    pub fn allowed_rect(&self) -> Rect {
+        let u = self.usable_rect();
+        let Some(l) = self.area.soft_limits else { return u };
+        let (x0, x1) = (l.x0.min(l.x1).max(u.min.x), l.x0.max(l.x1).min(u.max.x));
+        let (y0, y1) = (l.y0.min(l.y1).max(u.min.y), l.y0.max(l.y1).min(u.max.y));
+        Rect { min: Pt::new(x0, y0), max: Pt::new(x1.max(x0), y1.max(y0)) }
+    }
+
+    /// A move of `(dx, dy)` in the design's directions as the change of the machine's X and Y.
+    pub fn machine_delta(&self, dx: f64, dy: f64) -> (f64, f64) {
+        let a = self.to_machine(Pt::new(0.0, 0.0));
+        let b = self.to_machine(Pt::new(dx, dy));
+        (b.0 - a.0, b.1 - a.1)
+    }
+
+    /// A jog of `(dx, dy)` in the design's directions, shortened so the head stays inside the allowed area. `at` is the
+    /// machine's position when it is known. Returns the change of the machine's X and Y (zero when there is no room).
+    pub fn limited_jog(&self, at: Option<(f64, f64)>, dx: f64, dy: f64) -> (f64, f64) {
+        let (mut dx, mut dy) = (dx, dy);
+        if let Some((mx, my)) = at.filter(|(x, y)| x.is_finite() && y.is_finite()) {
+            let p = self.from_machine(mx, my);
+            let r = self.allowed_rect();
+            let t = Pt::new((p.x + dx).clamp(r.min.x, r.max.x), (p.y + dy).clamp(r.min.y, r.max.y));
+            // A head that stands outside (never homed, or limits changed) may always move back in.
+            dx = if p.x < r.min.x - 1e-6 || p.x > r.max.x + 1e-6 { if (dx > 0.0) == (p.x < r.min.x) { dx } else { 0.0 } } else { t.x - p.x };
+            dy = if p.y < r.min.y - 1e-6 || p.y > r.max.y + 1e-6 { if (dy > 0.0) == (p.y < r.min.y) { dy } else { 0.0 } } else { t.y - p.y };
+        }
+        if dx.abs() < 1e-9 && dy.abs() < 1e-9 {
+            return (0.0, 0.0);
+        }
+        self.machine_delta(dx, dy)
     }
 
     /// A design point (millimetres, y down, within `work_size`) as the machine's X and Y coordinate.

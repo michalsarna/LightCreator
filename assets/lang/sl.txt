@@ -674,3 +674,8 @@
 673|Izvirna
 674|Zasukano levo
 675|Zasukano desno
+676|Robovi
+677|Lastne omejitve
+678|Programske omejitve
+679|Pasovi ob robovih delovnega območja, ki jih stroj ne more uporabljati (spenjalci, okvir); tam se ne sme nič postaviti ali premakniti
+680|Glava je na robu dovoljenega območja.

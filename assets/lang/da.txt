@@ -674,3 +674,8 @@
 673|Oprindelig
 674|Drejet til venstre
 675|Drejet til højre
+676|Margener
+677|Egne grænser
+678|Softwaregrænser
+679|Striber langs arbejdsfladens kanter, som maskinen ikke kan bruge (klemmer, ramme); intet må placeres eller flyttes der
+680|Hovedet er ved kanten af det tilladte område.

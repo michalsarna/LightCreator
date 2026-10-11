@@ -674,3 +674,8 @@
 673|Native
 674|Tourné à gauche
 675|Tourné à droite
+676|Marges
+677|Limites propres
+678|Limites logicielles
+679|Bandes le long des bords de la zone de travail que la machine ne peut pas utiliser (pinces, cadre) ; rien ne peut y être placé ni déplacé
+680|La tête est au bord de la zone autorisée.

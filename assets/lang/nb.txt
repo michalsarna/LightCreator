@@ -674,3 +674,8 @@
 673|Original
 674|Rotert til venstre
 675|Rotert til høyre
+676|Marger
+677|Egne grenser
+678|Programvaregrenser
+679|Striper langs kantene av arbeidsflaten som maskinen ikke kan bruke (klemmer, ramme); ingenting kan plasseres eller flyttes der
+680|Hodet er ved kanten av det tillatte området.

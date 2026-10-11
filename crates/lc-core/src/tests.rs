@@ -973,7 +973,7 @@ fn a_profile_without_heads_gets_one() {
 
 fn axes_device(origin: Origin, flip_x: bool, flip_y: bool, orientation: Orientation) -> Device {
     let mut d = Device::default();
-    d.area = Area { bed_w: 300.0, bed_h: 200.0 };
+    d.area = Area { bed_w: 300.0, bed_h: 200.0, ..Area::default() };
     d.axes = Axes { origin, flip_x, flip_y, orientation };
     d
 }
@@ -1019,4 +1019,38 @@ fn turned_panel_swaps_the_design_size_and_maps_the_corners() {
     assert_eq!(right.to_machine(Pt::new(200.0, 0.0)), (0.0, 0.0));
     assert_eq!(right.home_point(), Pt::new(200.0, 0.0));
     assert_eq!(left.to_machine(Pt::new(0.0, 0.0)), (300.0, 200.0));
+}
+
+#[test]
+fn margins_and_soft_limits_cut_down_the_allowed_area() {
+    let mut d = axes_device(Origin::FrontLeft, false, false, Orientation::Native);
+    assert_eq!((d.usable_rect().min, d.usable_rect().max), (Pt::new(0.0, 0.0), Pt::new(300.0, 200.0)));
+    d.area.margins = Margins { left: 10.0, top: 5.0, right: 20.0, bottom: 15.0 };
+    let u = d.usable_rect();
+    assert_eq!((u.min, u.max), (Pt::new(10.0, 5.0), Pt::new(280.0, 185.0)));
+    // Soft limits are kept inside the usable area, whatever order the corners are given in.
+    d.area.soft_limits = Some(SoftLimits { x0: 250.0, y0: 100.0, x1: 50.0, y1: 400.0 });
+    let a = d.allowed_rect();
+    assert_eq!((a.min, a.max), (Pt::new(50.0, 100.0), Pt::new(250.0, 185.0)));
+    // Margins larger than the area leave an empty (not inverted) rectangle.
+    d.area.margins = Margins { left: 400.0, top: 0.0, right: 400.0, bottom: 0.0 };
+    assert!(d.usable_rect().max.x >= d.usable_rect().min.x);
+}
+
+#[test]
+fn jog_stops_at_the_allowed_area_and_follows_the_axes() {
+    let mut d = axes_device(Origin::FrontLeft, false, false, Orientation::Native);
+    d.area.margins = Margins { left: 10.0, top: 10.0, right: 10.0, bottom: 10.0 };
+    // Machine (20, 20) is design (20, 180). Up (design y -5) is machine Y +5, as GRBL expects.
+    assert_eq!(d.limited_jog(Some((20.0, 20.0)), 0.0, -5.0), (0.0, 5.0));
+    // 5 mm from the left margin a 20 mm step to the left is shortened to the 10 mm that are left.
+    assert_eq!(d.limited_jog(Some((20.0, 20.0)), -20.0, 0.0), (-10.0, 0.0));
+    // At the bottom margin (machine Y 10) going further down is not allowed at all.
+    assert_eq!(d.limited_jog(Some((100.0, 10.0)), 0.0, 5.0), (0.0, 0.0));
+    // Unknown position: no limiting.
+    assert_eq!(d.limited_jog(None, 0.0, 5.0), (0.0, -5.0));
+    assert_eq!(d.limited_jog(Some((f64::NAN, f64::NAN)), 7.0, 0.0), (7.0, 0.0));
+    // A head outside the area may move back in, but not further out.
+    assert_eq!(d.limited_jog(Some((2.0, 100.0)), 5.0, 0.0), (5.0, 0.0));
+    assert_eq!(d.limited_jog(Some((2.0, 100.0)), -5.0, 0.0), (0.0, 0.0));
 }

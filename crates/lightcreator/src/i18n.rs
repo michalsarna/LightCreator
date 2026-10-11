@@ -927,6 +927,12 @@ const TABLE: &[[&str; 7]] = &[
     ["Native", "Natywna", "Nativ", "Nativo", "Alkuperäinen", "原始", "मूल"],
     ["Rotated left", "Obrót w lewo", "Nach links gedreht", "Ruotato a sinistra", "Käännetty vasemmalle", "向左旋转", "बाएँ घुमाया"],
     ["Rotated right", "Obrót w prawo", "Nach rechts gedreht", "Ruotato a destra", "Käännetty oikealle", "向右旋转", "दाएँ घुमाया"],
+    // ---- margins and limits ----
+    ["Margins", "Marginesy", "Ränder", "Margini", "Marginaalit", "边距", "हाशिए"],
+    ["Own limits", "Własne limity", "Eigene Grenzen", "Limiti propri", "Omat rajat", "自定义限位", "अपनी सीमाएँ"],
+    ["Software limits", "Limity programowe", "Software-Grenzen", "Limiti software", "Ohjelmistorajat", "软件限位", "सॉफ़्टवेयर सीमाएँ"],
+    ["Strips along the edges of the work area that the machine cannot use (clamps, frame); nothing may be placed or moved there", "Pasy wzdłuż krawędzi pola roboczego, których maszyna nie może użyć (zaciski, rama); nic nie może tam być umieszczone ani przesunięte", "Streifen am Rand der Arbeitsfläche, die die Maschine nicht nutzen kann (Klemmen, Rahmen); dort darf nichts platziert oder bewegt werden", "Strisce lungo i bordi dell'area di lavoro che la macchina non può usare (morsetti, telaio); lì non si può mettere né spostare nulla", "Työalueen reunojen kaistat, joita kone ei voi käyttää (puristimet, kehys); sinne ei saa sijoittaa eikä siirtää mitään", "工作区边缘机器无法使用的区域（夹具、框架）；那里不能放置或移动任何内容", "कार्य क्षेत्र के किनारों की वे पट्टियाँ जिन्हें मशीन उपयोग नहीं कर सकती (क्लैंप, फ़्रेम); वहाँ कुछ रखा या खिसकाया नहीं जा सकता"],
+    ["The head is at the edge of the allowed area.", "Głowica jest na krawędzi dozwolonego obszaru.", "Der Kopf ist am Rand des erlaubten Bereichs.", "La testa è al bordo dell'area consentita.", "Pää on sallitun alueen reunalla.", "机头已到允许区域的边缘。", "हेड अनुमत क्षेत्र के किनारे पर है।"],
 ];
 #[cfg(test)]
 mod tests {

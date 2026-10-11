@@ -674,3 +674,8 @@
 673|Nattiva
 674|Mdawra lejn ix-xellug
 675|Mdawra lejn il-lemin
+676|Marġini
+677|Limiti proprji
+678|Limiti tas-software
+679|Strixxi mal-ġnub taż-żona tax-xogħol li l-magna ma tistax tuża (clamps, qafas); xejn ma jista' jitqiegħed jew jiċċaqlaq hemm
+680|Ir-ras hija fit-tarf taż-żona permessa.

@@ -674,3 +674,8 @@
 673|Nativa
 674|Girada a la izquierda
 675|Girada a la derecha
+676|Márgenes
+677|Límites propios
+678|Límites de software
+679|Franjas en los bordes del área de trabajo que la máquina no puede usar (pinzas, marco); no se puede colocar ni mover nada ahí
+680|El cabezal está en el borde del área permitida.

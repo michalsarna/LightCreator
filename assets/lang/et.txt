@@ -674,3 +674,8 @@
 673|Algne
 674|Pööratud vasakule
 675|Pööratud paremale
+676|Veerised
+677|Oma piirid
+678|Tarkvaralised piirid
+679|Tööala servade ribad, mida masin ei saa kasutada (klambrid, raam); sinna ei tohi midagi asetada ega liigutada
+680|Pea on lubatud ala serval.

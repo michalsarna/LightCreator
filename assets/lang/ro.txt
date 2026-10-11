@@ -674,3 +674,8 @@
 673|Nativă
 674|Rotit la stânga
 675|Rotit la dreapta
+676|Margini
+677|Limite proprii
+678|Limite software
+679|Benzi de-a lungul marginilor zonei de lucru pe care mașina nu le poate folosi (cleme, cadru); acolo nu se poate plasa sau muta nimic
+680|Capul este la marginea zonei permise.

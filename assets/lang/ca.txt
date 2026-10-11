@@ -674,3 +674,8 @@
 673|Nativa
 674|Girada a l'esquerra
 675|Girada a la dreta
+676|Marges
+677|Límits propis
+678|Límits de programari
+679|Franges a les vores de l'àrea de treball que la màquina no pot usar (pinces, marc); no s'hi pot col·locar ni moure res
+680|El capçal és a la vora de l'àrea permesa.

@@ -674,3 +674,8 @@
 673|Upprunaleg
 674|Snúið til vinstri
 675|Snúið til hægri
+676|Spássíur
+677|Eigin mörk
+678|Hugbúnaðarmörk
+679|Rendur á jaðri vinnusvæðisins sem vélin getur ekki notað (klemmur, rammi); ekkert má setja eða færa þar
+680|Hausinn er við jaðar leyfða svæðisins.

@@ -674,3 +674,8 @@
 673|Nativa
 674|Rodada para a esquerda
 675|Rodada para a direita
+676|Margens
+677|Limites próprios
+678|Limites de software
+679|Faixas nas bordas da área de trabalho que a máquina não pode usar (grampos, moldura); nada pode ser colocado ou movido ali
+680|O cabeçote está na borda da área permitida.

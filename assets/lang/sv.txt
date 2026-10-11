@@ -674,3 +674,8 @@
 673|Standard
 674|Roterad åt vänster
 675|Roterad åt höger
+676|Marginaler
+677|Egna gränser
+678|Programvarugränser
+679|Remsor längs arbetsytans kanter som maskinen inte kan använda (klämmor, ram); inget får placeras eller flyttas där
+680|Huvudet är vid kanten av det tillåtna området.

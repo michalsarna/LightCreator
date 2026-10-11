@@ -324,6 +324,38 @@ impl App {
             }
         }
         painter.rect_stroke(bed, 0.0, Stroke::new(1.0, Color32::from_gray(0x99)), egui::StrokeKind::Outside);
+        // Strips the machine cannot use are hatched; software limits are outlined.
+        {
+            let u = self.doc.device.usable_rect();
+            let to_screen = |r: lc_core::Rect| egui::Rect::from_min_max(self.w2s(o, r.min), self.w2s(o, r.max));
+            let usable = to_screen(u);
+            let ink = Color32::from_rgba_unmultiplied(0xc0, 0x30, 0x30, 70);
+            let hatch = |painter: &egui::Painter, r: egui::Rect| {
+                if r.width() < 0.5 || r.height() < 0.5 {
+                    return;
+                }
+                painter.rect_filled(r, 0.0, Color32::from_rgba_unmultiplied(0xc0, 0x30, 0x30, 25));
+                let p = painter.with_clip_rect(r);
+                let step = 8.0;
+                let mut k = -r.height();
+                while k < r.width() {
+                    p.line_segment([egui::pos2(r.left() + k, r.bottom()), egui::pos2(r.left() + k + r.height(), r.top())], Stroke::new(1.0, ink));
+                    k += step;
+                }
+            };
+            for strip in [
+                egui::Rect::from_min_max(bed.min, egui::pos2(bed.max.x, usable.min.y)),
+                egui::Rect::from_min_max(egui::pos2(bed.min.x, usable.max.y), bed.max),
+                egui::Rect::from_min_max(egui::pos2(bed.min.x, usable.min.y), egui::pos2(usable.min.x, usable.max.y)),
+                egui::Rect::from_min_max(egui::pos2(usable.max.x, usable.min.y), egui::pos2(bed.max.x, usable.max.y)),
+            ] {
+                hatch(&painter, strip);
+            }
+            if self.doc.device.area.soft_limits.is_some() {
+                let l = to_screen(self.doc.device.allowed_rect());
+                painter.rect_stroke(l, 0.0, Stroke::new(1.5, Color32::from_rgb(0xe8, 0x8a, 0x1f)), egui::StrokeKind::Middle);
+            }
+        }
         // Origin marker (machine zero)
         painter.circle_filled(self.w2s(o, self.doc.device.home_point()), 4.0, theme::accent());
 

@@ -674,3 +674,8 @@
 673|Įprasta
 674|Pasukta kairėn
 675|Pasukta dešinėn
+676|Paraštės
+677|Savi apribojimai
+678|Programiniai apribojimai
+679|Darbo srities pakraščių juostos, kurių staklės negali naudoti (spaustukai, rėmas); ten nieko negalima dėti ar perkelti
+680|Galvutė yra leidžiamos srities pakraštyje.

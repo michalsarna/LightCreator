@@ -674,3 +674,8 @@
 673|Eredeti
 674|Balra forgatva
 675|Jobbra forgatva
+676|Margók
+677|Saját korlátok
+678|Szoftveres korlátok
+679|A munkaterület szélén lévő sávok, amelyeket a gép nem használhat (szorítók, keret); oda nem szabad semmit helyezni vagy mozgatni
+680|A fej az engedélyezett terület szélén van.

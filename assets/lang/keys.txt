@@ -674,3 +674,8 @@
 673	Native
 674	Rotated left
 675	Rotated right
+676	Margins
+677	Own limits
+678	Software limits
+679	Strips along the edges of the work area that the machine cannot use (clamps, frame); nothing may be placed or moved there
+680	The head is at the edge of the allowed area.

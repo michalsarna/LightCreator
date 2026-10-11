@@ -674,3 +674,8 @@
 673|Sākotnējā
 674|Pagriezta pa kreisi
 675|Pagriezta pa labi
+676|Malas
+677|Savi ierobežojumi
+678|Programmatūras ierobežojumi
+679|Joslas darba zonas malās, ko iekārta nevar izmantot (skavas, rāmis); tur nedrīkst novietot vai pārvietot neko
+680|Galviņa atrodas atļautās zonas malā.

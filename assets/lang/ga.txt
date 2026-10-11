@@ -674,3 +674,8 @@
 673|Dúchasach
 674|Rothlaithe ar chlé
 675|Rothlaithe ar dheis
+676|Imill
+677|Teorainneacha féin
+678|Teorainneacha bogearraí
+679|Stríoca ar imeall an limistéir oibre nach féidir leis an meaisín a úsáid (clampaí, fráma); ní féidir aon rud a chur ná a bhogadh ann
+680|Tá an ceann ag imeall an limistéir cheadaithe.
