@@ -158,6 +158,9 @@ impl App {
         if let Some(l) = get("layer_labels").and_then(|j| serde_json::from_str(&j).ok()) {
             self.layer_labels = l;
         }
+        if let Some(h) = get("mat_list_h").and_then(|v| v.parse::<f32>().ok()).filter(|h| (60.0..=700.0).contains(h)) {
+            self.mat_list_h = h;
+        }
         if let Some(o) = get("tab_order") {
             self.tab_order = crate::app::SideTab::arranged(o);
         }

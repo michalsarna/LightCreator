@@ -317,6 +317,7 @@ impl App {
         let profiles: Vec<lc_core::Device> = saved("profiles").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let active = saved("active_profile").and_then(|v| v.parse::<usize>().ok()).filter(|i| *i < profiles.len()).unwrap_or(0);
         let global_materials = crate::materials_ui::load_global(&|k| saved(k));
+        let mat_list_h = saved("mat_list_h").and_then(|v| v.parse::<f32>().ok()).filter(|h| (60.0..=700.0).contains(h)).unwrap_or(260.0);
         let layer_labels: Vec<String> = saved("layer_labels").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let grid_prefs: crate::prefs::GridPrefs = saved("grid_prefs").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let show_grid = saved("grid_main_on").map(|v| v == "1").unwrap_or(true);
@@ -428,7 +429,7 @@ impl App {
             global_materials,
             layer_labels,
             show_labels: false,
-            mat_list_h: 260.0,
+            mat_list_h,
             label_new: String::new(),
             mat_dev_filter: String::new(),
             mat_dev_sel: None,
@@ -1815,6 +1816,7 @@ impl App {
         }
         v.push(("grid_main_on", if self.show_grid { "1" } else { "0" }.into()));
         v.push(("grid_main_mm", self.grid.to_string()));
+        v.push(("mat_list_h", self.mat_list_h.to_string()));
         if let Ok(j) = serde_json::to_string(&self.layer_labels) {
             v.push(("layer_labels", j));
         }
