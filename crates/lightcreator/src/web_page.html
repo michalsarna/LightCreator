@@ -20,7 +20,8 @@ section{background:var(--panel);border:1px solid var(--border);border-radius:8px
 h2{margin:0 0 8px;font-size:13px;color:var(--dim);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:8px;justify-content:space-between}
 .view{background:var(--panel-dark);border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:200px}
 #camview{aspect-ratio:4/3;width:100%}
-#camview img{width:100%;height:100%;object-fit:contain;display:block}
+#camview{position:relative}
+#camview img{width:100%;height:100%;object-fit:contain;display:block;flex:none}
 .nocam{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--dim);padding:20px;text-align:center}
 .nocam svg{width:min(40%,180px);height:auto;stroke:var(--dim)}
 button{font-size:15px;padding:9px 12px;border:0;border-radius:6px;background:var(--widget);color:var(--text);cursor:pointer;touch-action:manipulation}
@@ -46,7 +47,7 @@ button.stop{background:var(--stop);color:#fff;font-weight:bold}
 <header><b>LightCreator</b><span id="dev"></span><span id="state"></span><span id="pos"></span><span id="time"></span><span class="bar"><i id="bar"></i></span><span class="sp"></span>
 <label>Theme <select id="theme"></select></label></header>
 <main>
-<section id="cam"><h2><span>Camera</span><select id="camsel" hidden></select></h2><div class="view" id="camview"></div></section>
+<section id="cam"><h2><span>Camera</span><span class="row" style="flex:0 0 auto;gap:6px"><select id="rotsel" title="Rotate the picture" hidden></select><select id="camsel" hidden></select></span></h2><div class="view" id="camview"></div></section>
 <section id="ctl"><h2>Control</h2>
 <div class="row"><button class="stop" onclick="cmd('stop')">STOP</button><button onclick="cmd('home')">Home</button><button onclick="cmd('cancel-jog')">Cancel jog</button></div>
 <div class="pad" id="pad"></div>
@@ -100,6 +101,25 @@ $('pvbox').addEventListener('pointermove',e=>{if(!isFull()||!ptr.has(e.pointerId
  else if(ptr.size===2){const [a,b]=[...ptr.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);const r=$('pvbox').getBoundingClientRect();if(lastD)zoom(d/lastD,(a[0]+b[0])/2-r.left,(a[1]+b[1])/2-r.top);lastD=d;}});
 const up=e=>{ptr.delete(e.pointerId);lastD=0;};
 $('pvbox').addEventListener('pointerup',up);$('pvbox').addEventListener('pointercancel',up);
+// ---- the camera: turned like in the program (its setting is the default), or as you choose ----
+let curCam=null;
+const norm=d=>((d%360)+360)%360;
+function rotKey(){return 'lc-rot-'+(curCam?curCam.index:0);}
+function wantRot(){const s=localStorage.getItem(rotKey());return s===null||s===''?norm(curCam?curCam.rotation:0):norm(parseInt(s,10)||0);}
+function layoutCam(){
+ const v=$('camview'),i=v.querySelector('img');if(!i||!curCam)return;
+ const turn=norm(wantRot()-(curCam.url?0:curCam.rotated||0)),odd=turn%180!==0;
+ const cw=v.clientWidth,ch=v.clientHeight;
+ i.style.width=(odd?ch:cw)+'px';i.style.height=(odd?cw:ch)+'px';i.style.transform='rotate('+turn+'deg)';
+}
+function fillRot(){
+ const s=$('rotsel');s.hidden=!curCam;if(!curCam)return;s.innerHTML='';
+ const mk=(v,t)=>{const o=document.createElement('option');o.value=v;o.textContent=t;s.appendChild(o);};
+ mk('','As in the program ('+norm(curCam.rotation)+'°)');[0,90,180,270].forEach(d=>mk(String(d),d+'°'));
+ s.value=localStorage.getItem(rotKey())||'';
+ s.onchange=()=>{if(s.value==='')localStorage.removeItem(rotKey());else localStorage.setItem(rotKey(),s.value);layoutCam();};
+}
+window.addEventListener('resize',layoutCam);
 // ---- the camera ----
 const NOCAM='<div class="nocam"><svg viewBox="0 0 64 64" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 18h10l4-6h20l4 6h10a2 2 0 0 1 2 2v28a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V20a2 2 0 0 1 2-2z"/><circle cx="32" cy="34" r="9"/><path d="M6 6l52 52" stroke="#e8573f"/></svg><div>No camera</div></div>';
 let rev=-1,camsig='';
@@ -119,9 +139,9 @@ async function tick(){
    const list=cams.cameras||[];const sel=$('camsel');sel.innerHTML='';
    list.forEach(c=>{const o=document.createElement('option');o.value=c.index;o.textContent=c.name+(c.enabled?'':' (off)');if(c.active)o.selected=true;sel.appendChild(o);});
    sel.hidden=list.length===0;sel.onchange=()=>fetch('/api/camera/select?index='+sel.value,{method:'POST'});
-   const v=$('camview');const a=list.find(c=>c.active&&c.enabled);v.innerHTML='';
-   if(a&&a.url){const i=document.createElement('img');i.src=a.url;v.appendChild(i);}
-   else if(a){const i=document.createElement('img');i.id='snap';i.onload=()=>setTimeout(snap,400);i.onerror=()=>setTimeout(snap,2000);v.appendChild(i);snap();}
+   const v=$('camview');const a=list.find(c=>c.active&&c.enabled);v.innerHTML='';curCam=a||null;fillRot();
+   if(a&&a.url){const i=document.createElement('img');i.src=a.url;v.appendChild(i);layoutCam();}
+   else if(a){const i=document.createElement('img');i.id='snap';i.onload=()=>setTimeout(snap,400);i.onerror=()=>setTimeout(snap,2000);v.appendChild(i);layoutCam();snap();}
    else v.innerHTML=NOCAM;
   }
  }catch(e){$('state').textContent='no connection to the program';}

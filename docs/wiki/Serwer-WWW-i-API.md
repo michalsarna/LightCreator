@@ -13,6 +13,8 @@
 
 Na komputerze strona ma dwie kolumny: po lewej, na dwóch trzecich szerokości, **kamera** (lista wybiera aktywną kamerę, co zmienia aktywną kamerę urządzenia; bez kamery jest duża przekreślona kamera), po prawej, na jednej trzeciej, **panel sterowania** (STOP, Home, Cancel jog i osiem strzałek przesuwania, jeden krok przesuwania urządzenia), a pod nim **projekt** jako obraz. Dwukrotne kliknięcie obrazu (albo przycisk pełnego ekranu) powiększa go na całe okno, z przyciskami przybliżania, oddalania, przesuwania i resetowania widoku; działają też kółko myszy, przeciąganie i szczypanie dwoma palcami, a Esc zamyka widok.
 
+Obraz z kamery jest obrócony tak jak w programie: domyślnie obowiązuje *Camera rotation* z ustawień urządzenia (0°, 90°, 180°, 270° w prawo), a lista nad obrazem pozwala wybrać inny obrót, który przeglądarka zapamiętuje dla każdej kamery. `GET /api/cameras` podaje dla kamery `rotation` oraz `rotated` (ile z tego obrotu ma już zdjęcie).
+
 Na telefonie strona ma jedną kolumnę: status, kamera, projekt, a na dole panel sterowania.
 
 ## API

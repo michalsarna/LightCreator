@@ -450,7 +450,7 @@ mod tests {
         assert!(get(srv.addr, "/api/cameras").1.contains("http://a/x"));
         let (c, page) = get(srv.addr, "/");
         assert!(c == 200 && page.contains("LightCreator") && page.contains("STOP"));
-        for marker in ["grid-template-areas", "@media (max-width:800px)", "dblclick", "resetView", "No camera", "/api/themes", "lc-theme"] {
+        for marker in ["grid-template-areas", "@media (max-width:800px)", "dblclick", "resetView", "rotsel", "rotated", "No camera", "/api/themes", "lc-theme"] {
             assert!(page.contains(marker), "the page lacks {marker}");
         }
         assert!(page.find("id=\"cam\"").unwrap() < page.find("id=\"ctl\"").unwrap() && page.find("id=\"ctl\"").unwrap() < page.find("id=\"prev\"").unwrap());

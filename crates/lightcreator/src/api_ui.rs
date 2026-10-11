@@ -100,6 +100,10 @@ impl App {
                 // The address of a camera that has one; a camera of this computer only has the snapshot.
                 "url": match &c.kind { lc_core::CameraKind::Url(u) if c.enabled && c.is_valid() => json!(u.trim()), _ => json!(null) },
                 "snapshot": "/api/camera.jpg",
+                // The turn set for this camera in the program, in degrees clockwise ...
+                "rotation": (c.rotation % 4) as u32 * 90,
+                // ... and how much of it is already in the snapshot (the program turns its picture; a camera's own address is raw).
+                "rotated": match &c.kind { lc_core::CameraKind::Url(u) if c.enabled && c.is_valid() && !u.trim().is_empty() => 0, _ => (c.rotation % 4) as u32 * 90 },
             })).collect::<Vec<_>>(),
         });
         if let Ok(mut s) = shared.status.lock() {
@@ -264,6 +268,22 @@ mod tests {
         a.api.last_publish = None;
         a.api_tick(&ctx);
         assert_eq!(*shared.access.lock().unwrap(), "other");
+    }
+
+    #[test]
+    fn the_cameras_carry_their_turn_and_how_much_of_it_is_in_the_snapshot() {
+        let (mut a, ctx) = app();
+        a.api_on = true;
+        let mut own = lc_core::CameraSource::url("Own", "http://a/x", 1);
+        own.enabled = true;
+        let mut local = lc_core::CameraSource::url("Local", "", 3);
+        local.kind = lc_core::CameraKind::Local(0);
+        a.doc.device.cameras = vec![own, local];
+        a.api_tick(&ctx);
+        let shared = a.api.server.as_ref().unwrap().shared.clone();
+        let c = shared.cameras.lock().unwrap().clone();
+        assert_eq!((c["cameras"][0]["rotation"].as_u64(), c["cameras"][0]["rotated"].as_u64()), (Some(90), Some(0)), "the camera's own address is raw");
+        assert_eq!((c["cameras"][1]["rotation"].as_u64(), c["cameras"][1]["rotated"].as_u64()), (Some(270), Some(270)), "the program turns its own picture");
     }
 
     #[test]
