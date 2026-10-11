@@ -724,3 +724,9 @@
 723	Constant (M3)
 724	Dynamic (M4)
 725	M4 (dynamic) lowers the power in corners and while accelerating; M3 (constant) keeps it. The G-code switches between them when layers differ.
+726	Arc tolerance
+727	Arcs (G2 / G3)
+728	Arcs: GRBL usually handles G2 / G3, Marlin only when built with ARC_SUPPORT, and Smoothieware has its own behaviour. Some controllers ignore arcs or run them wrongly: test with the laser off. Arcs are used for outlines and rings, not for scan lines or images.
+729	Curve tolerance
+730	How far a flattened curve (Bézier, text) may stray from the true curve.
+731	Write curves as arcs where they fit

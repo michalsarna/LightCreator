@@ -724,3 +724,9 @@
 723|Kostanti (M3)
 724|Dinamika (M4)
 725|M4 (dinamika) ibaxxi l-qawwa fil-kantunieri u waqt l-aċċelerazzjoni; M3 (kostanti) iżżommha. Il-G-code jaqleb bejniethom meta s-saffi jkunu differenti.
+726|Tolleranza tal-arkijiet
+727|Arkijiet (G2 / G3)
+728|Arkijiet: GRBL normalment jittratta G2 / G3, Marlin biss meta jinbena b'ARC_SUPPORT, u Smoothieware għandu mġiba tiegħu. Xi kontrolluri jinjoraw l-arkijiet jew iwettquhom ħażin: ittestja bil-laser mitfi. L-arkijiet jintużaw għall-konturi u ċ-ċrieki, mhux għal linji tal-iskan jew immaġini.
+729|Tolleranza tal-kurvi
+730|Kemm tista' tiddevja kurva ċatta (Bézier, test) mill-kurva vera.
+731|Ikteb il-kurvi bħala arkijiet fejn jaqblu

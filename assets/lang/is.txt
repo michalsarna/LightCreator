@@ -724,3 +724,9 @@
 723|Fast (M3)
 724|Breytilegt (M4)
 725|M4 (breytilegt) lækkar aflið í hornum og við hröðun; M3 (fast) heldur því. G-kóðinn skiptir á milli þegar lög eru ólík.
+726|Vikmörk boga
+727|Bogar (G2 / G3)
+728|Bogar: GRBL ræður yfirleitt við G2 / G3, Marlin aðeins þegar það er byggt með ARC_SUPPORT og Smoothieware hegðar sér á eigin hátt. Sumar stýringar hunsa boga eða keyra þá rangt: prófaðu með slökktan leysi. Bogar eru notaðir fyrir útlínur og hringi, ekki skönnunarlínur eða myndir.
+729|Vikmörk ferla
+730|Hversu mikið flattur ferill (Bézier, texti) má víkja frá hinum rétta.
+731|Skrifa ferla sem boga þar sem þeir passa

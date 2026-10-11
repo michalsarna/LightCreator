@@ -724,3 +724,9 @@
 723|Constant (M3)
 724|Dynamique (M4)
 725|M4 (dynamique) réduit la puissance dans les angles et à l'accélération ; M3 (constant) la maintient. Le G-code passe de l'un à l'autre quand les calques diffèrent.
+726|Tolérance des arcs
+727|Arcs (G2 / G3)
+728|Arcs : GRBL gère généralement G2 / G3, Marlin seulement s'il est compilé avec ARC_SUPPORT, et Smoothieware a son propre comportement. Certains contrôleurs ignorent les arcs ou les exécutent mal : testez avec le laser éteint. Les arcs servent pour les contours et les anneaux, pas pour les lignes de balayage ni les images.
+729|Tolérance des courbes
+730|De combien une courbe aplatie (Bézier, texte) peut s'écarter de la vraie.
+731|Écrire les courbes en arcs là où elles s'y prêtent

@@ -724,3 +724,9 @@
 723|Állandó (M3)
 724|Dinamikus (M4)
 725|Az M4 (dinamikus) csökkenti a teljesítményt a sarkokban és gyorsításkor; az M3 (állandó) megtartja. A G-kód vált köztük, ha a rétegek eltérnek.
+726|Ívek tűrése
+727|Ívek (G2 / G3)
+728|Ívek: a GRBL általában kezeli a G2 / G3-at, a Marlin csak ARC_SUPPORT-tal fordítva, a Smoothieware pedig a maga módján. Egyes vezérlők figyelmen kívül hagyják az íveket vagy rosszul futtatják: tesztelje kikapcsolt lézerrel. Az íveket körvonalakhoz és gyűrűkhöz használjuk, nem szkennelő vonalakhoz vagy képekhez.
+729|Görbék tűrése
+730|Mennyire térhet el a lapított görbe (Bézier, szöveg) a valódi görbétől.
+731|A görbék írása ívként, ahol illeszkednek

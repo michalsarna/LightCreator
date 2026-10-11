@@ -1,4 +1,5 @@
 //! LightCreator core: geometry, document model, SVG I/O and G-code generation.
+pub mod arcs;
 pub mod bezier;
 pub mod check;
 pub mod clipart;

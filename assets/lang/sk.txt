@@ -724,3 +724,9 @@
 723|Stály (M3)
 724|Dynamický (M4)
 725|M4 (dynamický) znižuje výkon v rohoch a pri zrýchľovaní; M3 (stály) ho zachováva. G-kód medzi nimi prepína, keď sa vrstvy líšia.
+726|Tolerancia oblúkov
+727|Oblúky (G2 / G3)
+728|Oblúky: GRBL zvyčajne zvláda G2 / G3, Marlin len pri zostavení s ARC_SUPPORT a Smoothieware sa správa po svojom. Niektoré riadiace jednotky oblúky ignorujú alebo vykonávajú zle: testujte s vypnutým laserom. Oblúky sa používajú pre obrysy a prstence, nie pre skenovacie čiary ani obrázky.
+729|Tolerancia kriviek
+730|O koľko sa môže sploštená krivka (Bézier, text) odchýliť od skutočnej.
+731|Zapisovať krivky ako oblúky, kde sa hodia

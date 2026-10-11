@@ -724,3 +724,9 @@
 723|Constante (M3)
 724|Dinâmico (M4)
 725|M4 (dinâmico) reduz a potência nos cantos e ao acelerar; M3 (constante) mantém-na. O G-code alterna entre eles quando as camadas diferem.
+726|Tolerância dos arcos
+727|Arcos (G2 / G3)
+728|Arcos: o GRBL normalmente trata G2 / G3, o Marlin só quando compilado com ARC_SUPPORT, e o Smoothieware tem comportamento próprio. Alguns controladores ignoram os arcos ou executam-nos mal: teste com o laser desligado. Os arcos servem para contornos e anéis, não para linhas de varrimento nem imagens.
+729|Tolerância das curvas
+730|Quanto uma curva achatada (Bézier, texto) pode afastar-se da curva real.
+731|Escrever as curvas como arcos onde couberem

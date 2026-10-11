@@ -724,3 +724,9 @@
 723|Stalna (M3)
 724|Dinamična (M4)
 725|M4 (dinamična) zmanjša moč v vogalih in pri pospeševanju; M3 (stalna) jo ohrani. G-koda preklaplja med njima, ko se plasti razlikujejo.
+726|Toleranca lokov
+727|Loki (G2 / G3)
+728|Loki: GRBL običajno podpira G2 / G3, Marlin le, če je zgrajen z ARC_SUPPORT, Smoothieware pa se obnaša po svoje. Nekateri krmilniki loke prezrejo ali jih izvedejo napačno: preizkusite z izklopljenim laserjem. Loki se uporabljajo za obrise in obroče, ne za skenirne črte ali slike.
+729|Toleranca krivulj
+730|Koliko sme poravnana krivulja (Bézier, besedilo) odstopati od prave.
+731|Krivulje zapiši kot loke, kjer ustrezajo

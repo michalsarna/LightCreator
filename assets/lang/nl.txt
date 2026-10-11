@@ -724,3 +724,9 @@
 723|Constant (M3)
 724|Dynamisch (M4)
 725|M4 (dynamisch) verlaagt het vermogen in hoeken en bij het optrekken; M3 (constant) behoudt het. De G-code schakelt ertussen als lagen verschillen.
+726|Boogtolerantie
+727|Bogen (G2 / G3)
+728|Bogen: GRBL ondersteunt G2 / G3 meestal, Marlin alleen als gebouwd met ARC_SUPPORT, en Smoothieware heeft eigen gedrag. Sommige besturingen negeren bogen of voeren ze verkeerd uit: test met de laser uit. Bogen worden gebruikt voor contouren en ringen, niet voor scanlijnen of afbeeldingen.
+729|Krommetolerantie
+730|Hoever een afgevlakte kromme (Bézier, tekst) mag afwijken van de echte.
+731|Krommen als bogen schrijven waar ze passen

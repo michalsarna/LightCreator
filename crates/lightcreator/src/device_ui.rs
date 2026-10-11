@@ -387,7 +387,20 @@ impl App {
                                     ui.label(tr("Return to origin"));
                                     ui.checkbox(&mut d.gcode.return_home, "");
                                     ui.end_row();
+                                    ui.label(tr("Arcs (G2 / G3)"));
+                                    ui.checkbox(&mut d.gcode.arcs, tr("Write curves as arcs where they fit"));
+                                    ui.end_row();
+                                    ui.label(tr("Arc tolerance"));
+                                    drag_len(ui, u, &mut d.gcode.arc_tolerance, 0.001, Some((0.001, 1.0)));
+                                    ui.end_row();
+                                    ui.label(tr("Curve tolerance"));
+                                    drag_len(ui, u, &mut d.gcode.flatten_tolerance, 0.005, Some((0.005, 1.0))).on_hover_text(tr("How far a flattened curve (Bézier, text) may stray from the true curve."));
+                                    ui.end_row();
                                 });
+                                if d.gcode.arcs {
+                                    ui.add_space(6.0);
+                                    ui.label(RichText::new(tr("Arcs: GRBL usually handles G2 / G3, Marlin only when built with ARC_SUPPORT, and Smoothieware has its own behaviour. Some controllers ignore arcs or run them wrongly: test with the laser off. Arcs are used for outlines and rings, not for scan lines or images.")).color(Color32::from_rgb(0xe8, 0x8a, 0x1f)));
+                                }
                                 if d.dialect() == lc_core::Dialect::Smoothieware {
                                     ui.add_space(6.0);
                                     ui.label(RichText::new(tr("Smoothieware: S is written as a fraction of the full power (set S-value max to 1). Streaming works like GRBL's; none of this has been tried on real hardware.")).color(theme::text_dim()));

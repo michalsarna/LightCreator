@@ -724,3 +724,9 @@
 723|Constant (M3)
 724|Dinàmica (M4)
 725|M4 (dinàmica) baixa la potència en els racons i en accelerar; M3 (constant) la manté. El G-code canvia entre ells quan les capes difereixen.
+726|Tolerància dels arcs
+727|Arcs (G2 / G3)
+728|Arcs: GRBL sol suportar G2 / G3, Marlin només si es compila amb ARC_SUPPORT, i Smoothieware té el seu propi comportament. Alguns controladors ignoren els arcs o els executen malament: proveu amb el làser apagat. Els arcs es fan servir per a contorns i anells, no per a línies d'escaneig ni imatges.
+729|Tolerància de les corbes
+730|Quant pot allunyar-se una corba aplanada (Bézier, text) de la corba real.
+731|Escriu les corbes com a arcs on encaixin

@@ -290,3 +290,21 @@ fn grbl_sim_starts_with_laser_mode_off_and_accepts_enabling_it() {
     assert_eq!(after.laser_mode, Some(true));
     assert!(s.errors().is_empty(), "{:?}", s.errors());
 }
+
+#[test]
+#[ignore = "needs grbl-sim: tools/grbl-sim/build.sh"]
+fn grbl_sim_runs_a_job_with_arcs_and_ends_where_expected() {
+    let mut s = Session::connect();
+    s.wait_banner();
+    s.fast_machine();
+    let mut d = Document::default();
+    d.device.gcode.arcs = true;
+    d.layers[0].mode = LayerMode::Line;
+    d.add(0, Kind::Ellipse { w: 20.0, h: 20.0 }, Xf::translate(30.0, 30.0));
+    let job = crate::laser::clean_gcode(&gcode::generate(&d).gcode);
+    assert!(job.iter().any(|l| l.starts_with("G2 ") || l.starts_with("G3 ")), "the circle should have become arcs");
+    s.run_job(job, 60.0);
+    // The job ends with the way back to the machine's zero.
+    s.wait_idle_at(0.0, 0.0, 30.0);
+    assert!(s.errors().is_empty(), "GRBL rejected lines: {:?}", s.errors());
+}

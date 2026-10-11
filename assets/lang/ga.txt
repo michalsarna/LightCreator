@@ -724,3 +724,9 @@
 723|Seasmhach (M3)
 724|Dinimiciúil (M4)
 725|Laghdaíonn M4 (dinimiciúil) an chumhacht i gcúinní agus le linn luasghéaraithe; coimeádann M3 (seasmhach) í. Athraíonn an G-code eatarthu nuair a bhíonn sraitheanna difriúil.
+726|Caoinfhulaingt na gcaor
+727|Caoirí (G2 / G3)
+728|Caoirí: láimhseálann GRBL G2 / G3 de ghnáth, Marlin ach amháin nuair a tógadh le ARC_SUPPORT, agus tá a iompar féin ag Smoothieware. Déanann roinnt rialaitheoirí neamhaird de chaoirí nó rithtear go mícheart iad: déan tástáil le léasair múchta. Úsáidtear caoirí le haghaidh imlínte agus fáinní, ní le haghaidh línte scanta ná íomhánna.
+729|Caoinfhulaingt cuair
+730|An méid is féidir le cuar cothrom (Bézier, téacs) imeacht ón gcuar fíor.
+731|Scríobh cuair mar chaoirí nuair a oireann siad

@@ -724,3 +724,9 @@
 723|Constantă (M3)
 724|Dinamică (M4)
 725|M4 (dinamică) reduce puterea în colțuri și la accelerare; M3 (constantă) o păstrează. G-code-ul comută între ele când straturile diferă.
+726|Toleranța arcelor
+727|Arce (G2 / G3)
+728|Arce: GRBL gestionează de obicei G2 / G3, Marlin doar dacă e compilat cu ARC_SUPPORT, iar Smoothieware are comportament propriu. Unele controlere ignoră arcele sau le execută greșit: testați cu laserul oprit. Arcele se folosesc pentru contururi și inele, nu pentru linii de scanare sau imagini.
+729|Toleranța curbelor
+730|Cât se poate abate o curbă aplatizată (Bézier, text) de la cea reală.
+731|Scrie curbele ca arce acolo unde se potrivesc

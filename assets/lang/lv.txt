@@ -724,3 +724,9 @@
 723|Nemainīga (M3)
 724|Dinamiska (M4)
 725|M4 (dinamiska) samazina jaudu stūros un paātrinot; M3 (nemainīga) to saglabā. G kods pārslēdzas starp tiem, kad slāņi atšķiras.
+726|Loku pielaide
+727|Loki (G2 / G3)
+728|Loki: GRBL parasti atbalsta G2 / G3, Marlin tikai ar ARC_SUPPORT, un Smoothieware uzvedas pa savam. Daži kontrolieri ignorē lokus vai izpilda tos nepareizi: pārbaudiet ar izslēgtu lāzeru. Loki tiek izmantoti kontūrām un gredzeniem, nevis skenēšanas līnijām vai attēliem.
+729|Līkņu pielaide
+730|Cik daudz saplacināta līkne (Bézier, teksts) drīkst atšķirties no patiesās.
+731|Rakstīt līknes kā lokus, kur tie der

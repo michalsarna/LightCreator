@@ -1230,3 +1230,121 @@ fn smoothieware_status_reports_are_read() {
     let (state, x, y) = controller::parse_status("<Run|MPos:1.000,2.000,0.000|FS:500,0>").unwrap();
     assert_eq!((state.as_str(), x, y), ("Run", 1.0, 2.0));
 }
+
+fn circle_pts(cx: f64, cy: f64, r: f64, n: usize, closed: bool) -> Vec<Pt> {
+    let mut v: Vec<Pt> = (0..n).map(|i| {
+        let t = i as f64 / n as f64 * std::f64::consts::TAU;
+        Pt::new(cx + r * t.cos(), cy + r * t.sin())
+    }).collect();
+    if closed {
+        v.push(v[0]);
+    }
+    v
+}
+
+#[test]
+fn arc_fit_stays_within_the_tolerance_and_leaves_straight_runs_alone() {
+    let tol = 0.01;
+    // A quarter circle of 30 mm radius, finely flattened: one arc.
+    let quarter: Vec<Pt> = (0..=60).map(|i| {
+        let t = i as f64 / 60.0 * std::f64::consts::FRAC_PI_2;
+        Pt::new(30.0 * t.cos(), 30.0 * t.sin())
+    }).collect();
+    let pieces = arcs::fit(&quarter, tol);
+    assert_eq!(pieces.len(), 1, "{pieces:?}");
+    let arcs::Piece::Arc { end, center } = pieces[0] else { panic!("an arc is expected") };
+    assert_eq!(end, 60);
+    assert!(center.dist(Pt::new(0.0, 0.0)) < 1e-6);
+    // Straight lines never become arcs, whatever the number of points.
+    let straight: Vec<Pt> = (0..20).map(|i| Pt::new(i as f64, 2.0 * i as f64)).collect();
+    assert!(arcs::fit(&straight, tol).iter().all(|p| matches!(p, arcs::Piece::Line { .. })));
+    // A line, an arc and a line: the pieces tile the path and every point is within the tolerance of its piece.
+    let mut mixed: Vec<Pt> = (0..5).map(|i| Pt::new(-20.0 + 4.0 * i as f64, 30.0)).collect();
+    mixed.extend((0..=40).map(|i| {
+        let t = std::f64::consts::FRAC_PI_2 - i as f64 / 40.0 * std::f64::consts::FRAC_PI_2;
+        Pt::new(30.0 * t.cos(), 30.0 * t.sin())
+    }).skip(1));
+    mixed.extend((1..6).map(|i| Pt::new(30.0, -4.0 * i as f64)));
+    let pieces = arcs::fit(&mixed, tol);
+    let mut at = 0;
+    for p in &pieces {
+        match *p {
+            arcs::Piece::Line { end } => assert_eq!(end, at + 1),
+            arcs::Piece::Arc { end, center } => {
+                let r = center.dist(mixed[at]);
+                for q in &mixed[at..=end] {
+                    assert!((center.dist(*q) - r).abs() <= tol + 1e-9, "point off the arc by {}", (center.dist(*q) - r).abs());
+                }
+                assert!(end - at >= 3);
+            }
+        }
+        at = match *p { arcs::Piece::Line { end } | arcs::Piece::Arc { end, .. } => end };
+    }
+    assert_eq!(at, mixed.len() - 1);
+    assert!(pieces.iter().any(|p| matches!(p, arcs::Piece::Arc { .. })));
+    // A tiny wiggle bigger than the tolerance is kept as lines.
+    let zig: Vec<Pt> = (0..10).map(|i| Pt::new(i as f64, if i % 2 == 0 { 0.0 } else { 0.5 })).collect();
+    assert!(arcs::fit(&zig, tol).iter().all(|p| matches!(p, arcs::Piece::Line { .. })));
+}
+
+/// Machine positions after every G0 / G1 / G2 / G3 line, with the arcs as (start, end, centre, clockwise).
+fn parse_arcs(gcode: &str) -> Vec<((f64, f64), (f64, f64), (f64, f64), bool)> {
+    let word = |l: &str, c: char| l.split_whitespace().find_map(|t| t.strip_prefix(c)).and_then(|v| v.parse::<f64>().ok());
+    let mut pos = (0.0, 0.0);
+    let mut out = vec![];
+    for l in gcode.lines() {
+        let l = l.split(';').next().unwrap_or("").trim();
+        if !(l.starts_with("G0") || l.starts_with("G1") || l.starts_with("G2") || l.starts_with("G3")) {
+            continue;
+        }
+        let end = (word(l, 'X').unwrap_or(pos.0), word(l, 'Y').unwrap_or(pos.1));
+        if l.starts_with("G2 ") || l.starts_with("G3 ") {
+            out.push((pos, end, (pos.0 + word(l, 'I').unwrap(), pos.1 + word(l, 'J').unwrap()), l.starts_with("G2 ")));
+        }
+        pos = end;
+    }
+    out
+}
+
+fn circle_doc(arcs_on: bool) -> Document {
+    let mut d = Document::default();
+    d.device.area = Area { bed_w: 300.0, bed_h: 200.0, ..Area::default() };
+    d.device.gcode.arcs = arcs_on;
+    d.layers[0].mode = LayerMode::Line;
+    d.add(0, Kind::Ellipse { w: 40.0, h: 40.0 }, Xf::translate(100.0, 80.0));
+    d
+}
+
+#[test]
+fn circle_becomes_a_few_arcs_in_the_right_direction_for_every_axis_setup() {
+    // Off by default: no arcs, many short lines.
+    assert!(parse_arcs(&gcode::generate(&circle_doc(false)).gcode).is_empty());
+    for origin in Origin::ALL {
+        for (fx, fy) in [(false, false), (true, false), (false, true)] {
+            for o in Orientation::ALL {
+                let mut d = circle_doc(true);
+                d.device.axes = Axes { origin, flip_x: fx, flip_y: fy, orientation: o };
+                let job = gcode::generate(&d);
+                let arcs_found = parse_arcs(&job.gcode);
+                assert!(!arcs_found.is_empty() && arcs_found.len() < 8, "{origin:?} {fx} {fy} {o:?}: {} arcs", arcs_found.len());
+                let mut checked = 0;
+                for (s, e, c, cw) in &arcs_found {
+                    let r = ((s.0 - c.0).powi(2) + (s.1 - c.1).powi(2)).sqrt();
+                    let re = ((e.0 - c.0).powi(2) + (e.1 - c.1).powi(2)).sqrt();
+                    assert!((r - 20.0).abs() < 0.02 && (re - r).abs() < 0.02, "radius {r} / {re}");
+                    // The circle's own path: take the moves of the job that lie between the arc's ends and check
+                    // on which side of the chord the path bulges; that must agree with G2 / G3.
+                    let (sd, ed) = (d.device.from_machine(s.0, s.1), d.device.from_machine(e.0, e.1));
+                    let mid = job.moves.iter().filter(|m| m.laser).find(|m| m.a.dist(sd) < 0.02).map(|m| m.b);
+                    let Some(next) = mid else { continue };
+                    // Machine direction of travel around the centre from the start through the first path point.
+                    let n = d.device.to_machine(next);
+                    let turn = (s.0 - c.0) * (n.1 - c.1) - (s.1 - c.1) * (n.0 - c.0);
+                    assert_eq!(turn < 0.0, *cw, "{origin:?} {fx} {fy} {o:?} start {sd:?} end {ed:?}");
+                    checked += 1;
+                }
+                assert!(checked > 0, "{origin:?} {fx} {fy} {o:?}: no arc could be checked");
+            }
+        }
+    }
+}

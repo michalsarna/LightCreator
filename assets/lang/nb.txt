@@ -724,3 +724,9 @@
 723|Konstant (M3)
 724|Dynamisk (M4)
 725|M4 (dynamisk) senker effekten i hjørner og under akselerasjon; M3 (konstant) beholder den. G-koden bytter mellom dem når lag er forskjellige.
+726|Buetoleranse
+727|Buer (G2 / G3)
+728|Buer: GRBL takler vanligvis G2 / G3, Marlin bare når det er bygget med ARC_SUPPORT, og Smoothieware har sin egen oppførsel. Noen kontrollere ignorerer buer eller kjører dem feil: test med laseren av. Buer brukes til konturer og ringer, ikke til skannelinjer eller bilder.
+729|Kurvetoleranse
+730|Hvor langt en flatet kurve (Bézier, tekst) kan avvike fra den ekte.
+731|Skriv kurver som buer der de passer

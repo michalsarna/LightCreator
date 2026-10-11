@@ -130,13 +130,21 @@ impl<'a> Writer<'a> {
 
     /// Linear move with the laser at `power` percent and `speed` mm/s.
     fn line(&mut self, p: Pt, power: f64, speed: f64) {
+        let (x, y) = self.map(p);
+        let mut l = format!("G1 X{:.3} Y{:.3}", x, y);
+        self.modal(&mut l, power, speed);
+        self.out.push_str(&l);
+        self.out.push('\n');
+        self.record(p, power, speed);
+    }
+
+    /// The `S` and `F` words that changed since the last move.
+    fn modal(&mut self, l: &mut String, power: f64, speed: f64) {
         let raw = power / 100.0 * self.dev.s_max();
         // Smoothieware takes a fraction of the full power, so it keeps decimals; the others take whole numbers.
         let smooth = self.dev.dialect() == Dialect::Smoothieware;
         let s = if smooth { (raw * 1000.0).round() / 1000.0 } else { raw.round() };
         let f = (speed * 60.0).round();
-        let (x, y) = self.map(p);
-        let mut l = format!("G1 X{:.3} Y{:.3}", x, y);
         if self.s != Some(s) {
             if smooth {
                 let _ = write!(l, " S{}", s);
@@ -149,8 +157,10 @@ impl<'a> Writer<'a> {
             let _ = write!(l, " F{}", f as i64);
             self.f = Some(f);
         }
-        self.out.push_str(&l);
-        self.out.push('\n');
+    }
+
+    /// Book-keeping of a move to `p` for the preview, the time and the cut length.
+    fn record(&mut self, p: Pt, power: f64, speed: f64) {
         let d = p.dist(self.pos);
         self.moves.push(Move { a: self.pos, b: p, laser: power > 0.0, layer: self.layer, op: self.op, dur: d / speed.max(0.1), speed });
         self.seconds += d / speed.max(0.1);
@@ -158,6 +168,45 @@ impl<'a> Writer<'a> {
             self.cut_len += d;
         }
         self.pos = p;
+    }
+
+    /// Trace `pts` (the first point is where the head is): as lines, or, when the device wants arcs, as arcs and
+    /// lines that stay within the arc tolerance of the path.
+    fn stroke(&mut self, pts: &[Pt], power: f64, speed: f64) {
+        if !self.dev.gcode.arcs || pts.len() < 2 {
+            for q in &pts[1..] {
+                self.line(*q, power, speed);
+            }
+            return;
+        }
+        let mut from = 0;
+        for piece in crate::arcs::fit(pts, self.dev.gcode.arc_tolerance.max(1e-4)) {
+            match piece {
+                crate::arcs::Piece::Line { end } => self.line(pts[end], power, speed),
+                crate::arcs::Piece::Arc { end, center } => {
+                    self.arc(&pts[from..=end], center, power, speed);
+                }
+            }
+            from = match piece {
+                crate::arcs::Piece::Line { end } | crate::arcs::Piece::Arc { end, .. } => end,
+            };
+        }
+    }
+
+    /// One `G2` / `G3` along `pts` (start, points on the way, end) around `center`.
+    fn arc(&mut self, pts: &[Pt], center: Pt, power: f64, speed: f64) {
+        let (start, mid, end) = (pts[0], pts[pts.len() / 2], pts[pts.len() - 1]);
+        // The direction in the machine's own coordinates: mirrored axes turn a clockwise arc into a counter-clockwise one.
+        let (s, m, e) = (self.map(start), self.map(mid), self.map(end));
+        let cross = (m.0 - s.0) * (e.1 - s.1) - (m.1 - s.1) * (e.0 - s.0);
+        let c = self.map(center);
+        let mut l = format!("{} X{:.3} Y{:.3} I{:.3} J{:.3}", if cross < 0.0 { "G2" } else { "G3" }, e.0, e.1, c.0 - s.0, c.1 - s.1);
+        self.modal(&mut l, power, speed);
+        self.out.push_str(&l);
+        self.out.push('\n');
+        for p in &pts[1..] {
+            self.record(*p, power, speed);
+        }
     }
 }
 
@@ -297,7 +346,8 @@ pub fn generate(doc: &Document) -> Job {
         if !layer.output {
             continue;
         }
-        let polys: Vec<Polyline> = doc.shapes.iter().filter(|s| s.layer == li && !s.is_image()).flat_map(|s| s.polys()).collect();
+        let tol = dev.gcode.flatten_tolerance.clamp(0.001, 5.0);
+        let polys: Vec<Polyline> = doc.shapes.iter().filter(|s| s.layer == li && !s.is_image()).flat_map(|s| s.polys_tol(tol)).collect();
         let images: Vec<&Shape> = doc.shapes.iter().filter(|s| s.layer == li && s.is_image()).collect();
         if polys.is_empty() && images.is_empty() {
             continue;
@@ -336,12 +386,11 @@ pub fn generate(doc: &Document) -> Job {
                 let rings = crate::ops::inset_rings(&polys, layer.interval, 10_000);
                 for p in order_paths(rings, w.pos) {
                     w.travel(p.pts[0]);
-                    for q in &p.pts[1..] {
-                        w.line(*q, layer.power, layer.speed);
-                    }
+                    let mut pts = p.pts.clone();
                     if p.closed {
-                        w.line(p.pts[0], layer.power, layer.speed);
+                        pts.push(p.pts[0]);
                     }
+                    w.stroke(&pts, layer.power, layer.speed);
                 }
             }
             if matches!(layer.mode, LayerMode::Fill | LayerMode::FillAndLine) {
@@ -366,12 +415,11 @@ pub fn generate(doc: &Document) -> Job {
                 w.begin_op(li, OpKind::Line, pn, pt);
                 for p in order_paths(polys.clone(), w.pos) {
                     w.travel(p.pts[0]);
-                    for q in &p.pts[1..] {
-                        w.line(*q, layer.power, layer.speed);
-                    }
+                    let mut pts = p.pts.clone();
                     if p.closed {
-                        w.line(p.pts[0], layer.power, layer.speed);
+                        pts.push(p.pts[0]);
                     }
+                    w.stroke(&pts, layer.power, layer.speed);
                 }
             }
         }

@@ -724,3 +724,9 @@
 723|Püsiv (M3)
 724|Dünaamiline (M4)
 725|M4 (dünaamiline) vähendab võimsust nurkades ja kiirendamisel; M3 (püsiv) hoiab selle. G-kood vahetab neid, kui kihid erinevad.
+726|Kaarte tolerants
+727|Kaared (G2 / G3)
+728|Kaared: GRBL tavaliselt toetab G2 / G3, Marlin ainult ARC_SUPPORT-iga ehitatuna ja Smoothieware käitub omamoodi. Mõned kontrollerid eiravad kaari või täidavad neid valesti: testi välja lülitatud laseriga. Kaari kasutatakse kontuuride ja rõngaste jaoks, mitte skaneerimisjoonte ega piltide jaoks.
+729|Kõverate tolerants
+730|Kui palju võib lamendatud kõver (Bézier, tekst) tegelikust kõverast kalduda.
+731|Kirjuta kõverad kaartena, kus need sobivad

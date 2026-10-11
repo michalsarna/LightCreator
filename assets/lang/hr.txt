@@ -724,3 +724,9 @@
 723|Stalna (M3)
 724|Dinamička (M4)
 725|M4 (dinamička) smanjuje snagu u kutovima i pri ubrzanju; M3 (stalna) je zadržava. G-kod prebacuje između njih kad se slojevi razlikuju.
+726|Tolerancija lukova
+727|Lukovi (G2 / G3)
+728|Lukovi: GRBL obično podržava G2 / G3, Marlin samo ako je izgrađen s ARC_SUPPORT, a Smoothieware ima vlastito ponašanje. Neki upravljači zanemaruju lukove ili ih pogrešno izvode: testirajte s isključenim laserom. Lukovi se koriste za konture i prstenove, ne za linije skeniranja ni slike.
+729|Tolerancija krivulja
+730|Koliko spljoštena krivulja (Bézier, tekst) smije odstupati od prave.
+731|Zapisuj krivulje kao lukove gdje pristaju

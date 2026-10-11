@@ -8,7 +8,7 @@ use std::fmt::Write;
 /// Paths of one layer as the laser would trace them (hatching and rings included, images excluded).
 pub fn layer_paths(doc: &Document, li: usize) -> Vec<Polyline> {
     let layer = &doc.layers[li];
-    let polys: Vec<Polyline> = doc.shapes.iter().filter(|s| s.layer == li && !s.is_image()).flat_map(|s| s.polys()).collect();
+    let polys: Vec<Polyline> = doc.shapes.iter().filter(|s| s.layer == li && !s.is_image()).flat_map(|s| s.polys_tol(doc.device.gcode.flatten_tolerance.clamp(0.001, 5.0))).collect();
     let mut out = vec![];
     if matches!(layer.mode, LayerMode::Fill | LayerMode::FillAndLine) {
         out.extend(fill_lines(&polys, layer.interval, layer.angle, layer.bidirectional).into_iter().map(|(a, b)| Polyline::new(vec![a, b], false)));

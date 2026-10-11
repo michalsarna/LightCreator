@@ -104,6 +104,11 @@ fn d_layer_speeds() -> Vec<f64> {
     vec![DEFAULT_LAYER_SPEED_MM_MIN; 30]
 }
 
+/// Millimetres by which a flattened curve may differ from the true one, unless the device says otherwise.
+pub const DEFAULT_FLATTEN_TOL: f64 = 0.05;
+/// Default distance an arc may stray from the path it replaces.
+pub const DEFAULT_ARC_TOL: f64 = 0.01;
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Layer {
     pub name: String,
@@ -213,6 +218,10 @@ pub struct Shape {
 
 impl Shape {
     pub fn local_polys(&self) -> Vec<Polyline> {
+        self.local_polys_tol(DEFAULT_FLATTEN_TOL)
+    }
+    /// The outlines with curves flattened to within `tol` millimetres.
+    pub fn local_polys_tol(&self, tol: f64) -> Vec<Polyline> {
         match &self.kind {
             Kind::Rect { w, h } => vec![Polyline::new(
                 vec![Pt::new(0.0, 0.0), Pt::new(*w, 0.0), Pt::new(*w, *h), Pt::new(0.0, *h)],
@@ -229,13 +238,16 @@ impl Shape {
                 vec![Polyline::new(pts, true)]
             }
             Kind::Path(p) => p.clone(),
-            Kind::Bezier(cs) => cs.iter().map(|c| c.flatten(0.05)).collect(),
+            Kind::Bezier(cs) => cs.iter().map(|c| c.flatten(tol)).collect(),
             Kind::Image(im) => vec![Polyline::new(vec![Pt::new(0.0, 0.0), Pt::new(im.w, 0.0), Pt::new(im.w, im.h), Pt::new(0.0, im.h)], true)],
-            Kind::Text(t) => crate::text::contours(t).iter().map(|c| c.flatten(0.05)).collect(),
+            Kind::Text(t) => crate::text::contours(t).iter().map(|c| c.flatten(tol)).collect(),
         }
     }
     pub fn polys(&self) -> Vec<Polyline> {
-        self.local_polys().iter().map(|p| p.transformed(&self.xf)).collect()
+        self.polys_tol(DEFAULT_FLATTEN_TOL)
+    }
+    pub fn polys_tol(&self, tol: f64) -> Vec<Polyline> {
+        self.local_polys_tol(tol).iter().map(|p| p.transformed(&self.xf)).collect()
     }
     pub fn bounds(&self) -> Option<Rect> {
         self.polys().iter().filter_map(|p| p.bounds()).reduce(Rect::union)
@@ -650,11 +662,38 @@ pub struct GcodeCfg {
     pub air_on: String,
     #[serde(default)]
     pub air_off: String,
+    /// Write curves as arcs (`G2` / `G3`) where they fit. Off by default: not every firmware does arcs well.
+    #[serde(default)]
+    pub arcs: bool,
+    /// How far an arc may stray from the path it replaces, millimetres.
+    #[serde(default = "d_arc_tol")]
+    pub arc_tolerance: f64,
+    /// How far a flattened curve (Bézier, text) may stray from the true curve, millimetres.
+    #[serde(default = "d_flatten_tol")]
+    pub flatten_tolerance: f64,
+}
+
+fn d_arc_tol() -> f64 {
+    DEFAULT_ARC_TOL
+}
+fn d_flatten_tol() -> f64 {
+    DEFAULT_FLATTEN_TOL
 }
 
 impl Default for GcodeCfg {
     fn default() -> Self {
-        GcodeCfg { dynamic_power: true, return_home: true, dialect: None, preamble: String::new(), postscript: String::new(), air_on: String::new(), air_off: String::new() }
+        GcodeCfg {
+            dynamic_power: true,
+            return_home: true,
+            dialect: None,
+            preamble: String::new(),
+            postscript: String::new(),
+            air_on: String::new(),
+            air_off: String::new(),
+            arcs: false,
+            arc_tolerance: DEFAULT_ARC_TOL,
+            flatten_tolerance: DEFAULT_FLATTEN_TOL,
+        }
     }
 }
 

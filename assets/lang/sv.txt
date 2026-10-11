@@ -724,3 +724,9 @@
 723|Konstant (M3)
 724|Dynamiskt (M4)
 725|M4 (dynamiskt) sänker effekten i hörn och vid acceleration; M3 (konstant) behåller den. G-koden växlar mellan dem när lager skiljer sig.
+726|Bågtolerans
+727|Bågar (G2 / G3)
+728|Bågar: GRBL hanterar vanligen G2 / G3, Marlin bara när det är byggt med ARC_SUPPORT, och Smoothieware har eget beteende. Vissa styrenheter ignorerar bågar eller kör dem fel: testa med lasern avstängd. Bågar används för konturer och ringar, inte för skannlinjer eller bilder.
+729|Kurvtolerans
+730|Hur långt en tillplattad kurva (Bézier, text) får avvika från den riktiga.
+731|Skriv kurvor som bågar där de passar

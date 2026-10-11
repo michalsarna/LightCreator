@@ -724,3 +724,9 @@
 723|Pastovi (M3)
 724|Dinaminė (M4)
 725|M4 (dinaminė) sumažina galią kampuose ir greitėjant; M3 (pastovi) ją išlaiko. G kodas perjungia tarp jų, kai sluoksniai skiriasi.
+726|Lankų tolerancija
+727|Lankai (G2 / G3)
+728|Lankai: GRBL paprastai palaiko G2 / G3, Marlin tik sukompiliuotas su ARC_SUPPORT, o Smoothieware elgiasi savaip. Kai kurie valdikliai ignoruoja lankus arba vykdo juos klaidingai: išbandykite išjungę lazerį. Lankai naudojami kontūrams ir žiedams, o ne skenavimo linijoms ar paveikslams.
+729|Kreivių tolerancija
+730|Kiek suplotoji kreivė (Bézier, tekstas) gali nukrypti nuo tikrosios.
+731|Rašyti kreives kaip lankus, kur jos tinka

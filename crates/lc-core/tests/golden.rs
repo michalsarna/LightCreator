@@ -160,3 +160,22 @@ fn layers_switch_between_constant_and_dynamic_power() {
     let t = gcode_for(dynamic_layer, device(&[("dynamic_power", false.into())]));
     assert!(t.contains("M4 ; dynamic power") && !t.contains("M3 ; constant power"));
 }
+
+#[test]
+fn arcs_for_circles_when_asked() {
+    let mut doc = Document::default();
+    doc.layers[0].mode = LayerMode::Line;
+    doc.layers[0].speed = 20.0;
+    doc.layers[0].power = 60.0;
+    doc.add(0, Kind::Ellipse { w: 40.0, h: 40.0 }, Xf::translate(100.0, 80.0));
+    doc.add(0, Kind::Rect { w: 20.0, h: 10.0 }, Xf::translate(30.0, 40.0));
+    let mut dev = device(&[]);
+    dev.gcode.arcs = true;
+    let text = gcode_for(doc.clone(), dev.clone());
+    check("grbl_m4_arcs", &text);
+    assert!(text.contains("G2 ") || text.contains("G3 "));
+    // The rectangle stays four straight lines.
+    assert!(text.lines().any(|l| l.starts_with("G1 X") && l.contains("Y160")));
+    // Without the option the same document has no arcs, and the files of the other tests are untouched.
+    assert!(!gcode_for(doc, device(&[])).contains("G2 "));
+}
