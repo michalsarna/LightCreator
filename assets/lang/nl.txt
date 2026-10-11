@@ -976,3 +976,4 @@
 975|Punten van de huidige hoeken
 976|Referentiepunten
 977|Vervangt de punten door de vier hoeken van het beeld en waar ze nu liggen.
+978|Uitlijnen op objecten

@@ -976,3 +976,4 @@
 975|Punts dels cantons actuals
 976|Punts de referència
 977|Substitueix els punts pels quatre cantons de la imatge i el lloc on són ara.
+978|Encaixa als objectes

@@ -976,3 +976,4 @@
 975|Punkti no pašreizējiem stūriem
 976|Atsauces punkti
 977|Aizstāj punktus ar attēla četriem stūriem un to pašreizējo vietu.
+978|Pieķerties objektiem

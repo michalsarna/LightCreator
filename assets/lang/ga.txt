@@ -976,3 +976,4 @@
 975|Pointí ó na coirnéil reatha
 976|Pointí tagartha
 977|Cuireann sé ceithre choirnéal an phictiúir agus a n-áit anois in ionad na bpointí.
+978|Teaglaim le réada

@@ -976,3 +976,4 @@
 975|Punkter från de nuvarande hörnen
 976|Referenspunkter
 977|Ersätter punkterna med bildens fyra hörn och var de ligger nu.
+978|Fäst mot objekt

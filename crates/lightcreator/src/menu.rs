@@ -79,6 +79,7 @@ pub enum Act {
     ShareSer2net,
     ToggleOverlay,
     ToggleZones,
+    ToggleSnapObjects,
     Frame,
     StartJob,
     About,
@@ -216,6 +217,7 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
             vec![
                 Item(Act::ToggleGrid, "Grid", None),
                 Item(Act::ToggleSnap, "Snap to grid", None),
+                Item(Act::ToggleSnapObjects, "Snap to objects", None),
                 Item(Act::TogglePreview, "Toolpath preview", None),
                 Item(Act::PreviewWindow, "Preview window…", None),
                 Item(Act::ZoomIn, "Zoom in", key("CmdOrCtrl+=", "Ctrl++")),

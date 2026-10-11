@@ -138,6 +138,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::GridArray => "grid-3x3",
         Act::ToggleGrid => "grid-3x3",
         Act::ToggleSnap => "magnet",
+        Act::ToggleSnapObjects => "target",
         Act::TogglePreview => "route",
         Act::PreviewWindow => "play",
         Act::FitBed | Act::ToggleAutoFit => "scan",

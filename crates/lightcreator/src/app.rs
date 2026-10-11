@@ -174,6 +174,11 @@ pub struct App {
     /// Draw the no-go zones on the work area (kept between sessions).
     pub zones_visible: bool,
     pub snap: bool,
+    /// Snap a moved selection to the edges and centres of the other objects (guides are drawn while it holds).
+    pub snap_objects: bool,
+    /// Boxes of the objects a drag can snap to (taken when the drag starts) and the guide lines now shown.
+    pub snap_targets: Option<Vec<Rect>>,
+    pub snap_guides: (Option<f64>, Option<f64>),
     pub grid: f64,
     pub preview_on: bool,
     pub preview: Option<(u64, gcode::Job)>,
@@ -405,6 +410,9 @@ impl App {
             show_grid,
             zones_visible: saved("zones_visible").map(|v| v != "0").unwrap_or(true),
             snap: false,
+            snap_objects: saved("snap_objects").map(|v| v == "1").unwrap_or(false),
+            snap_targets: None,
+            snap_guides: (None, None),
             grid,
             preview_on: false,
             preview: None,
@@ -1200,6 +1208,7 @@ impl App {
         match a {
             Act::ToggleGrid => Some(self.show_grid),
             Act::ToggleSnap => Some(self.snap),
+            Act::ToggleSnapObjects => Some(self.snap_objects),
             Act::TogglePreview => Some(self.preview_on),
             Act::ToggleOverlay => Some(self.overlay.is_some() && self.overlay_visible),
             Act::ToggleZones => Some(self.zones_visible),
@@ -1323,6 +1332,7 @@ impl App {
             Act::ToggleGrid => self.show_grid = !self.show_grid,
             Act::ToggleZones => self.zones_visible = !self.zones_visible,
             Act::ToggleSnap => self.snap = !self.snap,
+            Act::ToggleSnapObjects => self.snap_objects = !self.snap_objects,
             Act::TogglePreview => self.preview_on = !self.preview_on,
             Act::FitBed => {
                 self.view.need_fit = true;
@@ -1482,6 +1492,9 @@ impl App {
             }
             if toggle_icon(ui, "magnet", &tr("Snap to grid"), self.snap) {
                 self.snap = !self.snap;
+            }
+            if toggle_icon(ui, "target", &tr("Snap to objects"), self.snap_objects) {
+                self.snap_objects = !self.snap_objects;
             }
             ui.separator();
             // Green while the toolpaths are shown, grey otherwise.
@@ -2026,6 +2039,7 @@ impl App {
             v.push(("grid_prefs", j));
         }
         v.push(("grid_main_on", if self.show_grid { "1" } else { "0" }.into()));
+        v.push(("snap_objects", if self.snap_objects { "1" } else { "0" }.into()));
         v.push(("zones_visible", if self.zones_visible { "1" } else { "0" }.into()));
         v.push(("grid_main_mm", self.grid.to_string()));
         v.push(("mat_list_h", self.mat_list_h.to_string()));
@@ -2232,6 +2246,24 @@ mod recent_tests {
         a.do_act(&ctx, Act::ClearRecent);
         assert!(a.recent.is_empty());
         let _ = std::fs::remove_dir_all(&dir);
+    }
+}
+
+#[cfg(test)]
+mod snap_objects_tests {
+    use super::*;
+
+    #[test]
+    fn snapping_to_objects_is_a_saved_switch() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.enter_editor(0);
+        a.screen = Screen::Editor;
+        assert_eq!(a.act_checked(Act::ToggleSnapObjects), Some(false));
+        a.do_act(&ctx, Act::ToggleSnapObjects);
+        assert_eq!(a.act_checked(Act::ToggleSnapObjects), Some(true));
+        assert!(a.settings_pairs().iter().any(|(k, v)| *k == "snap_objects" && v == "1"));
+        assert!(a.act_enabled(Act::ToggleSnapObjects));
     }
 }
 

@@ -976,3 +976,4 @@
 975|Točke iz trenutnih vogalov
 976|Referenčne točke
 977|Točke zamenja s štirimi vogali slike in mestom, kjer so zdaj.
+978|Pripni na predmete

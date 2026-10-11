@@ -976,3 +976,4 @@
 975|Body z aktuálnych rohov
 976|Referenčné body
 977|Nahradí body štyrmi rohmi obrazu a miestami, kde teraz ležia.
+978|Prichytávať k objektom

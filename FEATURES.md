@@ -41,7 +41,7 @@
   picture to show (a saved photo, or the live camera while its window is open) and then switches it on the work area.
   Start / STOP are written in capitals.
 * **Control bar:** name of the current tool in a box of fixed width, New / Open / Save icons, switches for the grid,
-  the secondary grid and snapping (icons, highlighted while on) and the Toolpaths button, green while the toolpaths
+  the secondary grid, snapping to the grid and snapping to other objects (while moving, edges and centres join with a guide line) (icons, highlighted while on) and the Toolpaths button, green while the toolpaths
   are shown and grey otherwise. Toolpaths are drawn in layer colours darkened or lightened until they stand out from
   the work area.
 * **Tool bar groups:** selecting and node editing, then the tools that insert new objects (shapes, line,

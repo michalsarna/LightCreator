@@ -976,3 +976,4 @@
 975	Points from the current corners
 976	Reference points
 977	Replaces the points with the four corners of the picture and where they lie now.
+978	Snap to objects

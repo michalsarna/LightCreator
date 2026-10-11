@@ -976,3 +976,4 @@
 975|Punkter fra de nuværende hjørner
 976|Referencepunkter
 977|Erstatter punkterne med billedets fire hjørner og deres nuværende placering.
+978|Fastgør til objekter

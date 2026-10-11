@@ -149,6 +149,9 @@ impl App {
         if let Some(v) = get("grid_main_on") {
             self.show_grid = v != "0";
         }
+        if let Some(v) = get("snap_objects") {
+            self.snap_objects = v == "1";
+        }
         if let Some(v) = get("zones_visible") {
             self.zones_visible = v != "0";
         }

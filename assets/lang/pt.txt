@@ -976,3 +976,4 @@
 975|Pontos dos cantos atuais
 976|Pontos de referência
 977|Substitui os pontos pelos quatro cantos da imagem e onde estão agora.
+978|Ajustar aos objetos

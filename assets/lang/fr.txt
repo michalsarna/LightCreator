@@ -976,3 +976,4 @@
 975|Points depuis les coins actuels
 976|Points de référence
 977|Remplace les points par les quatre coins de l'image et l'endroit où ils sont maintenant.
+978|Aimanter aux objets

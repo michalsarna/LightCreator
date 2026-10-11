@@ -1257,6 +1257,8 @@ const TABLE: &[[&str; 7]] = &[
     ["Points from the current corners", "Punkty z obecnych narożników", "Punkte aus den aktuellen Ecken", "Punti dagli angoli attuali", "Pisteet nykyisistä kulmista", "由当前角点生成点", "वर्तमान कोनों से बिंदु"],
     ["Reference points", "Punkty odniesienia", "Referenzpunkte", "Punti di riferimento", "Vertailupisteet", "参考点", "संदर्भ बिंदु"],
     ["Replaces the points with the four corners of the picture and where they lie now.", "Zastępuje punkty czterema narożnikami obrazu i miejscami, w których teraz leżą.", "Ersetzt die Punkte durch die vier Bildecken und ihre jetzige Lage.", "Sostituisce i punti con i quattro angoli dell'immagine e la posizione che hanno ora.", "Korvaa pisteet kuvan neljällä kulmalla ja niiden nykyisillä paikoilla.", "用图像的四个角及其当前位置替换这些点。", "बिंदुओं को चित्र के चार कोनों और उनकी वर्तमान स्थिति से बदल देता है।"],
+    // ---- snap to objects ----
+    ["Snap to objects", "Przyciągaj do obiektów", "An Objekten einrasten", "Aggancia agli oggetti", "Kohdista objekteihin", "对齐对象", "ऑब्जेक्ट पर स्नैप करें"],
 ];
 #[cfg(test)]
 mod tests {

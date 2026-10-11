@@ -976,3 +976,4 @@
 975|Pontok a jelenlegi sarkokból
 976|Referenciapontok
 977|A pontokat a kép négy sarkával és jelenlegi helyükkel váltja fel.
+978|Igazítás az objektumokhoz

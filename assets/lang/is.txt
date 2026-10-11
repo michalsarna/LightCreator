@@ -976,3 +976,4 @@
 975|Punktar úr núverandi hornum
 976|Viðmiðunarpunktar
 977|Skiptir punktunum út fyrir fjögur horn myndarinnar og stöðu þeirra núna.
+978|Grípa í hluti

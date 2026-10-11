@@ -976,3 +976,4 @@
 975|Puncte din colțurile curente
 976|Puncte de referință
 977|Înlocuiește punctele cu cele patru colțuri ale imaginii și locul unde sunt acum.
+978|Aliniere la obiecte

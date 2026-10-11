@@ -976,3 +976,4 @@
 975|Punktid praegustest nurkadest
 976|Võrdluspunktid
 977|Asendab punktid pildi nelja nurga ja nende praeguste kohtadega.
+978|Joonda objektidele

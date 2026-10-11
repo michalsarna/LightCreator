@@ -976,3 +976,4 @@
 975|Puntos de las esquinas actuales
 976|Puntos de referencia
 977|Sustituye los puntos por las cuatro esquinas de la imagen y donde están ahora.
+978|Ajustar a los objetos

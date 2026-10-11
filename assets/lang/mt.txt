@@ -976,3 +976,4 @@
 975|Punti mill-kantunieri attwali
 976|Punti ta' referenza
 977|Jissostitwixxi l-punti bl-erba' kantunieri tax-xbieha u fejn jinsabu issa.
+978|Aqbad mal-oġġetti

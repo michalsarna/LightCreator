@@ -976,3 +976,4 @@
 975|Taškai iš dabartinių kampų
 976|Atskaitos taškai
 977|Pakeičia taškus keturiais vaizdo kampais ir jų dabartine vieta.
+978|Prilipti prie objektų

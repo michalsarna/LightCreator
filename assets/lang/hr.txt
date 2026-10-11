@@ -976,3 +976,4 @@
 975|Točke iz trenutnih kutova
 976|Referentne točke
 977|Zamjenjuje točke s četiri kuta slike i mjestom gdje su sada.
+978|Prianjanje uz objekte
