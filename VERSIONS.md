@@ -2,6 +2,24 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.0.11
+
+**Materials**
+* A material holds the settings of all the layers it needs (mode, speed, power, passes, interval, angle, overscan,
+  dithering, minimum power, air assist) together with each layer's colour and label, a category, tags and a note.
+* One material serves both laser types, has an id and a translated name; the built-in values can be changed locally
+  (double-click to edit) and restored. Libraries: built-in, local main library, and one per device in the new
+  **Materials** tab. "Delete all materials" shows the main library again with per-device copies on edit.
+* Saved projects carry the device profile, its library and the material used; opening one merges the library with a
+  window of differences. Libraries are exported and imported as `.lcb` files with a choice of what goes in.
+* Category folding as in the clipart list, category filter, tag suggestions, layer labels picked from a list that you
+  can extend, striped name-and-tag lists with scroll arrows, and a draggable border between list and editor.
+
+**Interface**
+* Side-panel tabs can be dragged into any order; the side panel no longer widens by itself.
+* Questions are asked in the program's own language; pop-up windows share one style and resize both ways.
+* Camera view: no more large bottom margin in its own window; the side tab is selected again when it is turned back on.
+
 ## v0.0.10
 
 **Languages**
