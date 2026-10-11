@@ -117,6 +117,11 @@
 * **G-code per device:** maximum cutting speed and acceleration (ramped time estimate, speed warning), dialects (GRBL M3 /
   M4, Marlin, Smoothieware), an Advanced page with own start / end of the job and air assist commands, power mode per
   layer (M3 / M4), and optional arcs (G2 / G3) with their own tolerance and a setting for the curve flattening.
+* **Connection and firmware:** simple (one line at a time) or counting streaming, a report when a job waits for an answer
+  while the machine stands still, serial port bound to its USB ids with automatic reconnect, homing / clearing an alarm
+  after connecting, single-axis homing when the firmware has it, and a **Firmware ($$)** page (all GRBL settings with
+  meaning and typical values, checked and confirmed writes, backup / restore with read-back, typed-word factory reset;
+  `M503` text for Marlin).
 * **While a job runs** the Device tab locks jog, cancel jog, home, unlock and the jog options; pause, resume and STOP
   stay. Connect is green and Disconnect purple.
 * **Read from device:** the device configuration window can connect and read work area, S-value max, travel
