@@ -2214,6 +2214,15 @@ mod recent_tests {
 
 #[cfg(test)]
 mod version_tests {
+    /// Without eframe's `links` feature `open_url` does nothing at all: the download button of the update window,
+    /// the GitHub menu entry and every hyperlink would silently do nothing (issue #24).
+    #[test]
+    fn links_can_be_opened_in_the_browser() {
+        let toml = include_str!("../Cargo.toml");
+        let eframe = toml.lines().find(|l| l.trim_start().starts_with("eframe")).expect("eframe dependency");
+        assert!(eframe.contains("\"links\""), "{eframe}");
+    }
+
     /// The version shown in About, the Cargo version, the newest VERSIONS.md section and the supported
     /// version in SECURITY.md must all name the same release.
     #[test]
