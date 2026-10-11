@@ -788,3 +788,26 @@
 787|ne skaičius
 788|už ribų
 789|Programinė įranga ($$)
+790|0 = tipinė ({} W)
+791|0 = įprasta ({} nm)
+792|Silpnas pastovus spindulys aukščiui nustatyti (fokusavimo režimas). 0 = be fokusavimo režimo.
+793|Pridėti lazerio galvutę
+794|Spindulio dėmė
+795|Fokusavimo galia
+796|Rėmelio greitis
+797|Galvutė {}
+798|Optinė galia
+799|PWM dažnis
+800|Didžiausias PWM dažnis
+801|Rodyklės poslinkis
+802|Impulso plotis
+803|Impulso pločio ribos
+804|Pašalinti šią lazerio galvutę
+805|Spindulio dydis ant medžiagos (0 = nežinomas). Mažesnis užpildymo intervalas priverčia gretimas linijas persidengti.
+806|PWM vertės saugomos profilyje ir siūlomos kaip makrokomandų kintamieji; jos nesiunčiamos valdikliui.
+807|Numeris, kuriuo valdiklis pažįsta šią galvutę; rašomas kaip T<n>, kai sluoksnis naudoja kitą galvutę. Turi sutapti su susiejimu valdiklyje.
+808|Įrankio numeris (T)
+809|Dvi lazerio galvutės turi tą patį įrankio numerį.
+810|Bangos ilgis
+811|Kur raudonas rodyklės taškas spindulio atžvilgiu (x į dešinę, y žemyn). Naudoja lygiavimas pagal rodyklę skirtuke Įrenginys.
+812|pvz. Mėlynas diodas

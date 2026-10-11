@@ -788,3 +788,26 @@
 787|ní uimhir é
 788|lasmuigh den raon
 789|Dochtearraí ($$)
+790|0 = ceann tipiciúil ({} W)
+791|0 = an ceann gnách ({} nm)
+792|Bíoma lag seasmhach chun an airde a shocrú (mód fócais). 0 = gan mód fócais.
+793|Cuir ceann léasair leis
+794|Spota an bhíoma
+795|Cumhacht fócais
+796|Luas an fhráma
+797|Ceann {}
+798|Cumhacht optúil
+799|Minicíocht PWM
+800|Uasmhinicíocht PWM
+801|Fritháireamh an phointeora
+802|Leithead an bhíoma
+803|Raon leithead an bhíoma
+804|Bain an ceann léasair seo
+805|Méid an bhíoma ar an ábhar (0 = anaithnid). Cuireann eatramh líonta níos lú línte comharsanacha ag forluí.
+806|Coinnítear luachanna PWM sa phróifíl agus tairgtear iad mar athróga do mhacraí; ní sheoltar chuig an rialaitheoir iad.
+807|An uimhir lena n-aithníonn an rialaitheoir an ceann seo; scríobhtar mar T<n> í nuair a úsáideann sraith ceann eile. Caithfidh sí comhoiriúnú leis an mapáil sa rialaitheoir.
+808|Uimhir uirlise (T)
+809|Tá an uimhir uirlise chéanna ag dhá cheann léasair.
+810|Tonnfhad
+811|Cá bhfuil an ponc dearg pointeora i gcoibhneas leis an mbíoma (x ar dheis, y síos). Úsáidtear é le haghaidh ailíniú pointeora sa chluaisín Gléas.
+812|m.sh. Dé-óid ghorm

@@ -1376,3 +1376,28 @@ fn grbl_settings_report_validation_and_backup() {
     ids.dedup();
     assert_eq!(ids.len(), gs::SETTINGS.len());
 }
+
+#[test]
+fn laser_heads_keep_their_settings_and_old_profiles_get_defaults() {
+    let d: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    let h = &d.heads[0];
+    // What an old profile did not have comes with sensible defaults.
+    assert_eq!((h.tool, h.frame_speed, h.focus_power, h.spot_x, h.pointer_dx), (0, 40.0, 0.0, 0.0, 0.0));
+    assert_eq!((h.wavelength(), h.power_w()), (10_600, 40.0));
+    assert!(!h.has_pointer_offset());
+    // A head with everything set survives a round trip through JSON.
+    let mut dev = Device::default();
+    dev.heads[0] = LaserHead { name: "Blue".into(), tool: 0, laser: LaserKind::Diode, wavelength_nm: 450, optical_power_w: 20.0, focus_power: 1.5, spot_x: 0.08, spot_y: 0.1, pointer_dx: 12.0, pointer_dy: -3.5, ..LaserHead::default() };
+    dev.heads.push(LaserHead { name: "Fibre".into(), tool: 1, laser: LaserKind::Fiber, pwm_freq_hz: 30_000.0, pulse_width_us: 4.0, ..LaserHead::default() });
+    let back: Device = serde_json::from_str(&serde_json::to_string(&dev).unwrap()).unwrap();
+    assert_eq!(back, dev);
+    assert_eq!((back.heads[1].wavelength(), back.heads[0].wavelength()), (1064, 450));
+    assert!(back.heads[0].has_pointer_offset() && LaserKind::Fiber.has_pwm() && !LaserKind::Diode.has_pwm());
+    // Tool numbers must differ; one head never clashes with itself.
+    assert!(!back.has_duplicate_tools());
+    let mut clash = back.clone();
+    clash.heads[1].tool = 0;
+    assert!(clash.has_duplicate_tools() && !Device::default().has_duplicate_tools());
+    // A head the profile does not have falls back to the first.
+    assert_eq!(dev.head(7).name, "Blue");
+}

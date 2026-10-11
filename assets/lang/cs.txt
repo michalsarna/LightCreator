@@ -788,3 +788,26 @@
 787|není číslo
 788|mimo rozsah
 789|Firmware ($$)
+790|0 = typická ({} W)
+791|0 = obvyklá ({} nm)
+792|Slabý stálý paprsek k nastavení výšky (režim zaostření). 0 = bez režimu zaostření.
+793|Přidat laserovou hlavu
+794|Stopa paprsku
+795|Výkon zaostření
+796|Rychlost rámečku
+797|Hlava {}
+798|Optický výkon
+799|Frekvence PWM
+800|Maximální frekvence PWM
+801|Posun ukazatele
+802|Šířka impulsu
+803|Rozsah šířky impulsu
+804|Odebrat tuto laserovou hlavu
+805|Velikost paprsku na materiálu (0 = neznámá). Menší rozteč výplně způsobí překrývání sousedních čar.
+806|Hodnoty PWM se ukládají v profilu a nabízejí se jako proměnné pro makra; neposílají se do řídicí jednotky.
+807|Číslo, pod nímž řídicí jednotka tuto hlavu zná; zapisuje se jako T<n>, když vrstva používá jinou hlavu. Musí odpovídat mapování v řídicí jednotce.
+808|Číslo nástroje (T)
+809|Dvě laserové hlavy mají stejné číslo nástroje.
+810|Vlnová délka
+811|Kde je červená tečka ukazatele vůči paprsku (x doprava, y dolů). Používá ji zarovnání podle ukazatele na kartě Zařízení.
+812|např. Modrá dioda

@@ -788,3 +788,26 @@
 787|pole arv
 788|vahemikust väljas
 789|Püsivara ($$)
+790|0 = tüüpiline ({} W)
+791|0 = tavaline ({} nm)
+792|Nõrk ühtlane kiir kõrguse seadmiseks (fookusrežiim). 0 = fookusrežiimi pole.
+793|Lisa laserpea
+794|Kiire täpp
+795|Fookuse võimsus
+796|Raami kiirus
+797|Pea {}
+798|Optiline võimsus
+799|PWM sagedus
+800|PWM maksimaalne sagedus
+801|Osuti nihe
+802|Impulsi laius
+803|Impulsi laiuse vahemik
+804|Eemalda see laserpea
+805|Kiire suurus materjalil (0 = teadmata). Sellest väiksem täiteintervall paneb naaberjooned kattuma.
+806|PWM väärtused hoitakse profiilis ja pakutakse makrodele muutujatena; neid ei saadeta kontrollerisse.
+807|Number, mille all kontroller seda pead tunneb; kirjutatakse T<n>, kui kiht kasutab teist pead. Peab klappima kontrolleri vastendusega.
+808|Tööriista number (T)
+809|Kahel laserpeal on sama tööriista number.
+810|Lainepikkus
+811|Kus on punane osutipunkt kiire suhtes (x paremale, y alla). Kasutab vahelehe Seade osutiga joondamine.
+812|nt Sinine diood

@@ -788,3 +788,26 @@
 787|är inte ett tal
 788|utanför intervallet
 789|Firmware ($$)
+790|0 = en typisk ({} W)
+791|0 = den vanliga ({} nm)
+792|En svag, jämn stråle för att ställa in höjden (fokusläge). 0 = inget fokusläge.
+793|Lägg till ett laserhuvud
+794|Strålpunkt
+795|Fokuseffekt
+796|Ramhastighet
+797|Huvud {}
+798|Optisk effekt
+799|PWM-frekvens
+800|Högsta PWM-frekvens
+801|Pekarförskjutning
+802|Pulsbredd
+803|Pulsbreddsintervall
+804|Ta bort det här laserhuvudet
+805|Strålens storlek på materialet (0 = okänd). Ett fyllintervall under den får grannlinjer att överlappa.
+806|PWM-värdena sparas i profilen och erbjuds som variabler för makron; de skickas inte till styrenheten.
+807|Numret styrenheten känner det här huvudet under; skrivs som T<n> när ett lager använder ett annat huvud. Det måste stämma med mappningen i styrenheten.
+808|Verktygsnummer (T)
+809|Två laserhuvuden har samma verktygsnummer.
+810|Våglängd
+811|Var den röda pekarpunkten är i förhållande till strålen (x åt höger, y nedåt). Används av pekarjusteringen i fliken Enhet.
+812|t.ex. Blå diod

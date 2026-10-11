@@ -788,3 +788,26 @@
 787|nav skaitlis
 788|ārpus diapazona
 789|Programmaparatūra ($$)
+790|0 = tipiska ({} W)
+791|0 = parastā ({} nm)
+792|Vājš vienmērīgs stars augstuma iestatīšanai (fokusa režīms). 0 = bez fokusa režīma.
+793|Pievienot lāzera galviņu
+794|Stara plankums
+795|Fokusa jauda
+796|Rāmja ātrums
+797|Galviņa {}
+798|Optiskā jauda
+799|PWM frekvence
+800|PWM maksimālā frekvence
+801|Rādītāja nobīde
+802|Impulsa platums
+803|Impulsa platuma diapazons
+804|Noņemt šo lāzera galviņu
+805|Stara izmērs uz materiāla (0 = nezināms). Mazāks aizpildes intervāls liek blakus līnijām pārklāties.
+806|PWM vērtības tiek glabātas profilā un piedāvātas kā makro mainīgie; tās netiek sūtītas kontrolierim.
+807|Numurs, ar kuru kontrolieris pazīst šo galviņu; tiek rakstīts kā T<n>, kad slānis izmanto citu galviņu. Tam jāsakrīt ar kartējumu kontrolierī.
+808|Instrumenta numurs (T)
+809|Divām lāzera galviņām ir viens un tas pats instrumenta numurs.
+810|Viļņa garums
+811|Kur ir sarkanais rādītāja punkts attiecībā pret staru (x pa labi, y uz leju). Izmanto izlīdzināšana pēc rādītāja cilnē Ierīce.
+812|piem. Zila diode

@@ -788,3 +788,26 @@
 787|nu este un număr
 788|în afara intervalului
 789|Firmware ($$)
+790|0 = una tipică ({} W)
+791|0 = cea obișnuită ({} nm)
+792|Un fascicul slab și constant pentru reglarea înălțimii (mod de focalizare). 0 = fără mod de focalizare.
+793|Adaugă un cap laser
+794|Punctul fasciculului
+795|Puterea de focalizare
+796|Viteza cadrului
+797|Capul {}
+798|Putere optică
+799|Frecvența PWM
+800|Frecvența PWM maximă
+801|Decalajul indicatorului
+802|Lățimea impulsului
+803|Intervalul lățimii impulsului
+804|Elimină acest cap laser
+805|Dimensiunea fasciculului pe material (0 = necunoscută). Un interval de umplere mai mic face ca liniile vecine să se suprapună.
+806|Valorile PWM sunt păstrate în profil și oferite ca variabile pentru macro-uri; nu sunt trimise controlerului.
+807|Numărul sub care controlerul cunoaște acest cap; se scrie T<n> când un strat folosește alt cap. Trebuie să se potrivească cu maparea din controler.
+808|Număr de unealtă (T)
+809|Două capete laser au același număr de unealtă.
+810|Lungime de undă
+811|Unde este punctul roșu al indicatorului față de fascicul (x spre dreapta, y în jos). Folosit de alinierea la indicator din fila Dispozitiv.
+812|ex. Diodă albastră

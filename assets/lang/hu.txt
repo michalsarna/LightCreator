@@ -788,3 +788,26 @@
 787|nem szám
 788|tartományon kívül
 789|Firmware ($$)
+790|0 = egy tipikus ({} W)
+791|0 = a szokásos ({} nm)
+792|Gyenge, állandó sugár a magasság beállításához (fókusz mód). 0 = nincs fókusz mód.
+793|Lézerfej hozzáadása
+794|Sugárfolt
+795|Fókusz teljesítmény
+796|Keret sebessége
+797|{}. fej
+798|Optikai teljesítmény
+799|PWM frekvencia
+800|PWM maximális frekvencia
+801|Mutató eltolása
+802|Impulzusszélesség
+803|Impulzusszélesség tartomány
+804|A lézerfej eltávolítása
+805|A sugár mérete az anyagon (0 = ismeretlen). Ennél kisebb kitöltési távolság átfedi a szomszédos vonalakat.
+806|A PWM értékek a profilban maradnak, és változóként érhetők el makrókhoz; nem kerülnek a vezérlőre.
+807|A szám, amellyel a vezérlő ezt a fejet ismeri; T<n>-ként íródik, ha egy réteg másik fejet használ. Egyeznie kell a vezérlő leképezésével.
+808|Szerszámszám (T)
+809|Két lézerfejnek ugyanaz a szerszámszáma.
+810|Hullámhossz
+811|Hol van a piros mutatópont a sugárhoz képest (x jobbra, y lefelé). A Eszköz fül mutatóhoz igazítása használja.
+812|pl. Kék dióda

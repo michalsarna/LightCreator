@@ -788,3 +788,26 @@
 787|is geen getal
 788|buiten het bereik
 789|Firmware ($$)
+790|0 = een typische ({} W)
+791|0 = de gebruikelijke ({} nm)
+792|Een zwakke, constante straal om de hoogte mee in te stellen (focusmodus). 0 = geen focusmodus.
+793|Laserkop toevoegen
+794|Straalpunt
+795|Focusvermogen
+796|Kadersnelheid
+797|Kop {}
+798|Optisch vermogen
+799|PWM-frequentie
+800|Maximale PWM-frequentie
+801|Aanwijzerverschuiving
+802|Pulsbreedte
+803|Bereik pulsbreedte
+804|Deze laserkop verwijderen
+805|Grootte van de straal op het materiaal (0 = onbekend). Een kleiner vulinterval laat naburige lijnen overlappen.
+806|De PWM-waarden worden in het profiel bewaard en aangeboden als variabelen voor macro's; ze worden niet naar de besturing gestuurd.
+807|Het nummer waaronder de besturing deze kop kent; het wordt als T<n> geschreven als een laag een andere kop gebruikt. Het moet overeenkomen met de toewijzing in de besturing.
+808|Gereedschapsnummer (T)
+809|Twee laserkoppen hebben hetzelfde gereedschapsnummer.
+810|Golflengte
+811|Waar de rode aanwijzerstip zich ten opzichte van de straal bevindt (x naar rechts, y omlaag). Gebruikt door het uitlijnen op de aanwijzer in het tabblad Apparaat.
+812|bijv. Blauwe diode

@@ -788,3 +788,26 @@
 787|no es un número
 788|fuera de rango
 789|Firmware ($$)
+790|0 = una típica ({} W)
+791|0 = la habitual ({} nm)
+792|Un haz débil y constante para ajustar la altura (modo de enfoque). 0 = sin modo de enfoque.
+793|Añadir un cabezal láser
+794|Punto del haz
+795|Potencia de enfoque
+796|Velocidad del marco
+797|Cabezal {}
+798|Potencia óptica
+799|Frecuencia PWM
+800|Frecuencia PWM máxima
+801|Desplazamiento del puntero
+802|Ancho de pulso
+803|Intervalo del ancho de pulso
+804|Quitar este cabezal láser
+805|Tamaño del haz sobre el material (0 = desconocido). Un intervalo de relleno menor hace que las líneas vecinas se solapen.
+806|Los valores PWM se guardan en el perfil y se ofrecen como variables para macros; no se envían al controlador.
+807|El número con el que el controlador conoce este cabezal; se escribe como T<n> cuando una capa usa otro cabezal. Debe coincidir con la asignación del controlador.
+808|Número de herramienta (T)
+809|Dos cabezales láser tienen el mismo número de herramienta.
+810|Longitud de onda
+811|Dónde está el punto rojo del puntero respecto al haz (x a la derecha, y hacia abajo). Lo usa la alineación con el puntero de la pestaña Dispositivo.
+812|p. ej. Diodo azul

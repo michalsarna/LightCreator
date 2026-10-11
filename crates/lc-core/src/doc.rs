@@ -482,15 +482,38 @@ pub enum LaserKind {
     #[default]
     Diode,
     Co2,
+    /// Fibre laser (marking and engraving metals).
+    Fiber,
 }
 
 impl LaserKind {
-    pub const ALL: [LaserKind; 2] = [LaserKind::Diode, LaserKind::Co2];
+    pub const ALL: [LaserKind; 3] = [LaserKind::Diode, LaserKind::Co2, LaserKind::Fiber];
     pub fn label(self) -> &'static str {
         match self {
             LaserKind::Diode => "Diode",
             LaserKind::Co2 => "CO2",
+            LaserKind::Fiber => "Fiber",
         }
+    }
+    /// The usual wavelength of this kind of laser, nanometres.
+    pub fn default_wavelength(self) -> u32 {
+        match self {
+            LaserKind::Diode => 445,
+            LaserKind::Co2 => 10_600,
+            LaserKind::Fiber => 1064,
+        }
+    }
+    /// A typical optical power, watts (the libraries assume these for diode and CO2).
+    pub fn default_power(self) -> f64 {
+        match self {
+            LaserKind::Diode => 10.0,
+            LaserKind::Co2 => 40.0,
+            LaserKind::Fiber => 20.0,
+        }
+    }
+    /// Does this kind of laser have settings of a pulse width modulation (CO2 tubes and fibre sources do)?
+    pub fn has_pwm(self) -> bool {
+        !matches!(self, LaserKind::Diode)
     }
 }
 
@@ -807,18 +830,100 @@ pub fn parse_usb_id(text: &str) -> Option<(u16, u16)> {
 pub struct LaserHead {
     #[serde(default)]
     pub name: String,
+    /// The tool number (`T<n>`) the controller knows this head by; unique among the heads.
+    #[serde(default)]
+    pub tool: u32,
     /// GRBL `$30`, the S value that equals 100% power.
     pub s_max: f64,
     /// Laser power (percent) while framing; 0 keeps the laser off.
     #[serde(default)]
     pub frame_power: f64,
+    /// Speed of the frame, mm/s.
+    #[serde(default = "d_frame_speed")]
+    pub frame_speed: f64,
+    /// Power (percent) of the focus beam, a weak steady spot to set the height by; 0 = no focus mode.
+    #[serde(default)]
+    pub focus_power: f64,
+    /// Size of the beam on the material, millimetres (0 = not known).
+    #[serde(default)]
+    pub spot_x: f64,
+    #[serde(default)]
+    pub spot_y: f64,
+    /// The colour of this head in the program.
+    #[serde(default = "d_head_colour")]
+    pub colour: [u8; 3],
     #[serde(default)]
     pub laser: LaserKind,
+    /// Wavelength in nanometres; 0 = the usual one of the laser type.
+    #[serde(default)]
+    pub wavelength_nm: u32,
+    /// Optical power in watts; 0 = a typical one of the laser type.
+    #[serde(default)]
+    pub optical_power_w: f64,
+    /// Pulse width modulation of CO2 and fibre sources. These are kept and offered as variables for macros; they
+    /// are not sent to the controller.
+    #[serde(default)]
+    pub pwm_freq_hz: f64,
+    #[serde(default)]
+    pub pwm_max_freq_hz: f64,
+    #[serde(default)]
+    pub pulse_width_us: f64,
+    #[serde(default)]
+    pub pulse_min_us: f64,
+    #[serde(default)]
+    pub pulse_max_us: f64,
+    /// Where the red pointer dot is relative to the beam, millimetres in the design's directions (x right, y down).
+    #[serde(default)]
+    pub pointer_dx: f64,
+    #[serde(default)]
+    pub pointer_dy: f64,
+}
+
+fn d_frame_speed() -> f64 {
+    40.0
+}
+fn d_head_colour() -> [u8; 3] {
+    [0xff, 0x7a, 0x1a]
 }
 
 impl Default for LaserHead {
     fn default() -> Self {
-        LaserHead { name: String::new(), s_max: 1000.0, frame_power: 0.0, laser: LaserKind::Diode }
+        LaserHead {
+            name: String::new(),
+            tool: 0,
+            s_max: 1000.0,
+            frame_power: 0.0,
+            frame_speed: 40.0,
+            focus_power: 0.0,
+            spot_x: 0.0,
+            spot_y: 0.0,
+            colour: d_head_colour(),
+            laser: LaserKind::Diode,
+            wavelength_nm: 0,
+            optical_power_w: 0.0,
+            pwm_freq_hz: 0.0,
+            pwm_max_freq_hz: 0.0,
+            pulse_width_us: 0.0,
+            pulse_min_us: 0.0,
+            pulse_max_us: 0.0,
+            pointer_dx: 0.0,
+            pointer_dy: 0.0,
+        }
+    }
+}
+
+impl LaserHead {
+    /// The wavelength, nanometres: the set one or the usual one of the laser type.
+    pub fn wavelength(&self) -> u32 {
+        if self.wavelength_nm > 0 { self.wavelength_nm } else { self.laser.default_wavelength() }
+    }
+    /// The optical power, watts: the set one or a typical one of the laser type.
+    pub fn power_w(&self) -> f64 {
+        if self.optical_power_w > 0.0 { self.optical_power_w } else { self.laser.default_power() }
+    }
+    /// Does the pointer sit away from the beam?
+    pub fn has_pointer_offset(&self) -> bool {
+        self.pointer_dx.abs() > 1e-9 || self.pointer_dy.abs() > 1e-9
     }
 }
 
@@ -935,7 +1040,7 @@ impl From<DeviceWire> for Device {
         });
         let mut heads = w.heads.unwrap_or_default();
         if heads.is_empty() {
-            heads.push(LaserHead { name: String::new(), s_max: w.s_max.unwrap_or(1000.0), frame_power: w.frame_power.unwrap_or(0.0), laser: w.laser.unwrap_or_default() });
+            heads.push(LaserHead { s_max: w.s_max.unwrap_or(1000.0), frame_power: w.frame_power.unwrap_or(0.0), laser: w.laser.unwrap_or_default(), ..LaserHead::default() });
         }
         Device {
             name: w.name,
@@ -1093,6 +1198,11 @@ impl Device {
     pub fn head_mut(&mut self, i: usize) -> &mut LaserHead {
         let i = if i < self.heads.len() { i } else { 0 };
         &mut self.heads[i]
+    }
+
+    /// Do two heads share a tool number? (Only matters with more than one head.)
+    pub fn has_duplicate_tools(&self) -> bool {
+        self.heads.iter().enumerate().any(|(i, h)| self.heads[..i].iter().any(|o| o.tool == h.tool))
     }
 
     /// The laser type of the first head (the one the material library follows).

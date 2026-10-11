@@ -788,3 +788,26 @@
 787|mhux numru
 788|barra mill-medda
 789|Firmware ($$)
+790|0 = waħda tipika ({} W)
+791|0 = l-aktar komuni ({} nm)
+792|Raġġ dgħajjef kostanti biex tissettja l-għoli (modalità ta' fokus). 0 = l-ebda modalità ta' fokus.
+793|Żid ras tal-laser
+794|Tikka tar-raġġ
+795|Qawwa tal-fokus
+796|Veloċità tal-qafas
+797|Ras {}
+798|Qawwa ottika
+799|Frekwenza PWM
+800|Frekwenza massima PWM
+801|Spostament tal-indikatur
+802|Wisa' tal-impuls
+803|Firxa tal-wisa' tal-impuls
+804|Neħħi din ir-ras tal-laser
+805|Id-daqs tar-raġġ fuq il-materjal (0 = mhux magħruf). Intervall ta' mili iżgħar minnu jġiegħel il-linji ġirien jikkoinċidu.
+806|Il-valuri PWM jinżammu fil-profil u jiġu offruti bħala varjabbli għall-makro; ma jintbagħtux lill-kontrollur.
+807|In-numru li bih il-kontrollur jagħraf din ir-ras; jinkiteb bħala T<n> meta saff juża ras oħra. Irid jaqbel mal-mappa fil-kontrollur.
+808|Numru tal-għodda (T)
+809|Żewġ irjus tal-laser għandhom l-istess numru tal-għodda.
+810|Tul tal-mewġa
+811|Fejn hi t-tikka ħamra tal-indikatur relattiv għar-raġġ (x lejn il-lemin, y 'l isfel). Jintuża mill-allinjament mal-indikatur fit-tab Apparat.
+812|eż. Dijodu blu

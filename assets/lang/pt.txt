@@ -788,3 +788,26 @@
 787|não é um número
 788|fora do intervalo
 789|Firmware ($$)
+790|0 = uma típica ({} W)
+791|0 = a habitual ({} nm)
+792|Um feixe fraco e constante para acertar a altura (modo de foco). 0 = sem modo de foco.
+793|Adicionar um cabeçote laser
+794|Ponto do feixe
+795|Potência de foco
+796|Velocidade da moldura
+797|Cabeçote {}
+798|Potência ótica
+799|Frequência PWM
+800|Frequência PWM máxima
+801|Deslocamento do ponteiro
+802|Largura do impulso
+803|Intervalo da largura do impulso
+804|Remover este cabeçote laser
+805|Tamanho do feixe no material (0 = desconhecido). Um intervalo de preenchimento menor faz as linhas vizinhas sobreporem-se.
+806|Os valores PWM ficam guardados no perfil e são oferecidos como variáveis para macros; não são enviados ao controlador.
+807|O número com que o controlador conhece este cabeçote; escreve-se T<n> quando uma camada usa outro cabeçote. Tem de coincidir com o mapeamento no controlador.
+808|Número da ferramenta (T)
+809|Dois cabeçotes laser têm o mesmo número de ferramenta.
+810|Comprimento de onda
+811|Onde está o ponto vermelho do ponteiro em relação ao feixe (x para a direita, y para baixo). Usado pelo alinhamento com o ponteiro do separador Dispositivo.
+812|p. ex. Díodo azul

@@ -788,3 +788,26 @@
 787|no és un número
 788|fora de rang
 789|Microprogramari ($$)
+790|0 = una de típica ({} W)
+791|0 = l'habitual ({} nm)
+792|Un feix feble i constant per ajustar l'alçada (mode de focus). 0 = sense mode de focus.
+793|Afegeix un capçal làser
+794|Punt del feix
+795|Potència de focus
+796|Velocitat del marc
+797|Capçal {}
+798|Potència òptica
+799|Freqüència PWM
+800|Freqüència PWM màxima
+801|Desplaçament del punter
+802|Amplada de l'impuls
+803|Interval d'amplada de l'impuls
+804|Elimina aquest capçal làser
+805|Mida del feix sobre el material (0 = desconeguda). Un interval de farcit menor fa que les línies veïnes se solapin.
+806|Els valors PWM es guarden al perfil i s'ofereixen com a variables per a macros; no s'envien al controlador.
+807|El número amb què el controlador coneix aquest capçal; s'escriu com a T<n> quan una capa usa un altre capçal. Ha de coincidir amb l'assignació del controlador.
+808|Número d'eina (T)
+809|Dos capçals làser tenen el mateix número d'eina.
+810|Longitud d'ona
+811|On és el punt vermell del punter respecte al feix (x a la dreta, y cap avall). L'usa l'alineació amb el punter de la pestanya Dispositiu.
+812|p. ex. Díode blau

@@ -51,6 +51,8 @@ pub struct CfgEdit {
     pub idx: Option<usize>,
     pub draft: Device,
     pub page: CfgPage,
+    /// The laser head shown on the Laser page.
+    pub head: usize,
 }
 
 /// The pages of the device configuration window.
@@ -116,12 +118,12 @@ impl App {
     pub fn open_cfg_new(&mut self) {
         let mut draft = Device::default();
         draft.name = String::new();
-        self.cfg = Some(CfgEdit { idx: None, draft, page: CfgPage::General });
+        self.cfg = Some(CfgEdit { idx: None, draft, page: CfgPage::General, head: 0 });
     }
 
     pub fn open_cfg_edit(&mut self, idx: usize) {
         if let Some(d) = self.profiles.get(idx) {
-            self.cfg = Some(CfgEdit { idx: Some(idx), draft: d.clone(), page: CfgPage::General });
+            self.cfg = Some(CfgEdit { idx: Some(idx), draft: d.clone(), page: CfgPage::General, head: 0 });
         }
     }
 
@@ -256,6 +258,7 @@ impl App {
         let reading = self.read_cfg.is_some();
         let mut cfg_open = true;
         let mut fw_acts: Vec<crate::firmware_ui::FwAct> = vec![];
+        let mut cfg_head = cfg.head;
         crate::window_ui::popup(ctx, "device_cfg", &title, [720.0, 500.0], &mut cfg_open, |ui| {
             if must_create {
                 ui.label(RichText::new(tr("Create at least one device profile to continue.")).color(theme::text_dim()));
@@ -381,21 +384,110 @@ impl App {
                                 });
                             }
                             CfgPage::Laser => {
+                                let mut head = cfg_head.min(d.heads.len() - 1);
+                                ui.horizontal_wrapped(|ui| {
+                                    for (i, h) in d.heads.iter().enumerate() {
+                                        let name = if h.name.trim().is_empty() { trf("Head {}", &[&(i + 1)]) } else { h.name.clone() };
+                                        let (r, _) = ui.allocate_exact_size(egui::vec2(10.0, 10.0), egui::Sense::hover());
+                                        ui.painter().rect_filled(r, 2.0, Color32::from_rgb(h.colour[0], h.colour[1], h.colour[2]));
+                                        if ui.selectable_label(head == i, name).clicked() {
+                                            head = i;
+                                        }
+                                    }
+                                    if ui.small_button("+").on_hover_text(tr("Add a laser head")).clicked() {
+                                        let tool = d.heads.iter().map(|h| h.tool).max().unwrap_or(0) + 1;
+                                        let mut h = d.heads[head].clone();
+                                        h.name = String::new();
+                                        h.tool = tool;
+                                        d.heads.push(h);
+                                        head = d.heads.len() - 1;
+                                    }
+                                    if ui.add_enabled(d.heads.len() > 1, egui::Button::new("−").small()).on_hover_text(tr("Remove this laser head")).clicked() {
+                                        d.heads.remove(head);
+                                        head = head.saturating_sub(1).min(d.heads.len() - 1);
+                                    }
+                                });
+                                ui.add_space(4.0);
+                                let multi = d.heads.len() > 1;
+                                let h = &mut d.heads[head];
                                 egui::Grid::new("dev_laser").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                                    ui.label(tr("Name"));
+                                    ui.add(egui::TextEdit::singleline(&mut h.name).hint_text(tr("e.g. Blue diode")));
+                                    ui.end_row();
+                                    if multi {
+                                        ui.label(tr("Tool number (T)"));
+                                        ui.add(egui::DragValue::new(&mut h.tool).range(0..=99)).on_hover_text(tr("The number the controller knows this head by; it is written as T<n> when a layer uses another head. It must match the mapping in the controller."));
+                                        ui.end_row();
+                                    }
+                                    ui.label(tr("Colour"));
+                                    ui.color_edit_button_srgb(&mut h.colour);
+                                    ui.end_row();
                                     ui.label(tr("Laser type"));
-                                    egui::ComboBox::from_id_salt("laser_kind").selected_text(d.heads[0].laser.label()).show_ui(ui, |ui| {
+                                    egui::ComboBox::from_id_salt("laser_kind").selected_text(h.laser.label()).show_ui(ui, |ui| {
                                         for k in LaserKind::ALL {
-                                            ui.selectable_value(&mut d.heads[0].laser, k, k.label());
+                                            ui.selectable_value(&mut h.laser, k, k.label());
                                         }
                                     });
                                     ui.end_row();
+                                    ui.label(tr("Wavelength"));
+                                    ui.add(egui::DragValue::new(&mut h.wavelength_nm).range(0..=20000).suffix(" nm")).on_hover_text(trf("0 = the usual one ({} nm)", &[&h.laser.default_wavelength()]));
+                                    ui.end_row();
+                                    ui.label(tr("Optical power"));
+                                    ui.add(egui::DragValue::new(&mut h.optical_power_w).range(0.0..=1000.0).suffix(" W")).on_hover_text(trf("0 = a typical one ({} W)", &[&h.laser.default_power()]));
+                                    ui.end_row();
                                     ui.label(tr("S-value max ($30)"));
-                                    ui.add(egui::DragValue::new(&mut d.heads[0].s_max).range(1.0..=100000.0));
+                                    ui.add(egui::DragValue::new(&mut h.s_max).range(1.0..=100000.0));
                                     ui.end_row();
                                     ui.label(tr("Frame power"));
-                                    ui.add(egui::DragValue::new(&mut d.heads[0].frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
+                                    ui.add(egui::DragValue::new(&mut h.frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
                                     ui.end_row();
+                                    ui.label(tr("Frame speed"));
+                                    drag_speed(ui, u, su, false, &mut h.frame_speed, 0.5, Some((1.0, 1000.0)));
+                                    ui.end_row();
+                                    ui.label(tr("Focus power"));
+                                    ui.add(egui::DragValue::new(&mut h.focus_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("A weak steady beam to set the height by (focus mode). 0 = no focus mode."));
+                                    ui.end_row();
+                                    ui.label(tr("Beam spot"));
+                                    ui.horizontal(|ui| {
+                                        drag_len(ui, u, &mut h.spot_x, 0.005, Some((0.0, 5.0)));
+                                        ui.label("×");
+                                        drag_len(ui, u, &mut h.spot_y, 0.005, Some((0.0, 5.0)));
+                                    })
+                                    .response
+                                    .on_hover_text(tr("Size of the beam on the material (0 = not known). A fill interval below it makes neighbouring lines overlap."));
+                                    ui.end_row();
+                                    ui.label(tr("Pointer offset"));
+                                    ui.horizontal(|ui| {
+                                        drag_len(ui, u, &mut h.pointer_dx, 0.1, Some((-200.0, 200.0)));
+                                        ui.label("×");
+                                        drag_len(ui, u, &mut h.pointer_dy, 0.1, Some((-200.0, 200.0)));
+                                    })
+                                    .response
+                                    .on_hover_text(tr("Where the red pointer dot is relative to the beam (x right, y down). Used by the pointer alignment in the Device tab."));
+                                    ui.end_row();
+                                    if h.laser.has_pwm() {
+                                        ui.label(tr("PWM frequency"));
+                                        ui.add(egui::DragValue::new(&mut h.pwm_freq_hz).range(0.0..=1_000_000.0).suffix(" Hz"));
+                                        ui.end_row();
+                                        ui.label(tr("PWM maximum frequency"));
+                                        ui.add(egui::DragValue::new(&mut h.pwm_max_freq_hz).range(0.0..=1_000_000.0).suffix(" Hz"));
+                                        ui.end_row();
+                                        ui.label(tr("Pulse width"));
+                                        ui.add(egui::DragValue::new(&mut h.pulse_width_us).range(0.0..=100_000.0).suffix(" µs"));
+                                        ui.end_row();
+                                        ui.label(tr("Pulse width range"));
+                                        ui.horizontal(|ui| {
+                                            ui.add(egui::DragValue::new(&mut h.pulse_min_us).range(0.0..=100_000.0).suffix(" µs"));
+                                            ui.label("–");
+                                            ui.add(egui::DragValue::new(&mut h.pulse_max_us).range(0.0..=100_000.0).suffix(" µs"));
+                                        });
+                                        ui.end_row();
+                                    }
                                 });
+                                if h.laser.has_pwm() {
+                                    ui.label(RichText::new(tr("The PWM values are kept with the profile and offered as variables for macros; they are not sent to the controller.")).color(theme::text_dim()));
+                                }
+                                cfg_head = head;
                             }
                             CfgPage::Gcode => {
                                 egui::Grid::new("dev_gcode").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
@@ -571,9 +663,14 @@ impl App {
                 });
             });
             cfg.page = page;
+            cfg.head = cfg_head;
             ui.add_space(8.0);
             let bad_gcode = !cfg.draft.gcode.invalid_fields().is_empty();
-            let valid = !cfg.draft.name.trim().is_empty() && !bad_gcode;
+            let dup_tools = cfg.draft.has_duplicate_tools();
+            let valid = !cfg.draft.name.trim().is_empty() && !bad_gcode && !dup_tools;
+            if dup_tools {
+                ui.label(RichText::new(tr("Two laser heads have the same tool number.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
+            }
             if bad_gcode {
                 ui.label(RichText::new(tr("A G-code field on the Advanced page has a control character or is too long.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
             }

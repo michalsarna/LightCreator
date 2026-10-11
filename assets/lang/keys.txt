@@ -788,3 +788,26 @@
 787	not a number
 788	out of range
 789	Firmware ($$)
+790	0 = a typical one ({} W)
+791	0 = the usual one ({} nm)
+792	A weak steady beam to set the height by (focus mode). 0 = no focus mode.
+793	Add a laser head
+794	Beam spot
+795	Focus power
+796	Frame speed
+797	Head {}
+798	Optical power
+799	PWM frequency
+800	PWM maximum frequency
+801	Pointer offset
+802	Pulse width
+803	Pulse width range
+804	Remove this laser head
+805	Size of the beam on the material (0 = not known). A fill interval below it makes neighbouring lines overlap.
+806	The PWM values are kept with the profile and offered as variables for macros; they are not sent to the controller.
+807	The number the controller knows this head by; it is written as T<n> when a layer uses another head. It must match the mapping in the controller.
+808	Tool number (T)
+809	Two laser heads have the same tool number.
+810	Wavelength
+811	Where the red pointer dot is relative to the beam (x right, y down). Used by the pointer alignment in the Device tab.
+812	e.g. Blue diode

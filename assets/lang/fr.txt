@@ -788,3 +788,26 @@
 787|n'est pas un nombre
 788|hors plage
 789|Micrologiciel ($$)
+790|0 = une typique ({} W)
+791|0 = la valeur habituelle ({} nm)
+792|Un faisceau faible et constant pour régler la hauteur (mode de mise au point). 0 = pas de mode de mise au point.
+793|Ajouter une tête laser
+794|Point du faisceau
+795|Puissance de mise au point
+796|Vitesse du cadre
+797|Tête {}
+798|Puissance optique
+799|Fréquence PWM
+800|Fréquence PWM maximale
+801|Décalage du pointeur
+802|Largeur d'impulsion
+803|Plage de largeur d'impulsion
+804|Retirer cette tête laser
+805|Taille du faisceau sur le matériau (0 = inconnue). Un intervalle de remplissage plus petit fait se chevaucher les lignes voisines.
+806|Les valeurs PWM sont conservées dans le profil et proposées comme variables pour les macros ; elles ne sont pas envoyées au contrôleur.
+807|Le numéro sous lequel le contrôleur connaît cette tête ; il est écrit T<n> quand un calque utilise une autre tête. Il doit correspondre à l'affectation dans le contrôleur.
+808|Numéro d'outil (T)
+809|Deux têtes laser ont le même numéro d'outil.
+810|Longueur d'onde
+811|Où se trouve le point rouge du pointeur par rapport au faisceau (x vers la droite, y vers le bas). Utilisé par l'alignement sur le pointeur de l'onglet Appareil.
+812|p. ex. Diode bleue

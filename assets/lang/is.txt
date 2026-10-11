@@ -788,3 +788,26 @@
 787|ekki tala
 788|utan sviðs
 789|Fastbúnaður ($$)
+790|0 = dæmigerður ({} W)
+791|0 = venjuleg ({} nm)
+792|Veikur stöðugur geisli til að stilla hæðina (fókushamur). 0 = enginn fókushamur.
+793|Bæta við leysihaus
+794|Geislablettur
+795|Fókusafl
+796|Rammahraði
+797|Haus {}
+798|Ljósafl
+799|PWM tíðni
+800|Hámarks PWM tíðni
+801|Færsla bendils
+802|Púlsbreidd
+803|Svið púlsbreiddar
+804|Fjarlægja þennan leysihaus
+805|Stærð geislans á efninu (0 = óþekkt). Fyllibil undir henni lætur nálægar línur skarast.
+806|PWM gildi eru geymd í sniðinu og boðin sem breytur fyrir fjölva; þau eru ekki send til stýringarinnar.
+807|Númerið sem stýringin þekkir þennan haus undir; skrifað sem T<n> þegar lag notar annan haus. Það verður að passa við varpið í stýringunni.
+808|Verkfæranúmer (T)
+809|Tveir leysihausar hafa sama verkfæranúmer.
+810|Bylgjulengd
+811|Hvar rauði bendilspunkturinn er miðað við geislann (x til hægri, y niður). Notað af bendilsstillingu í flipanum Tæki.
+812|t.d. Blá díóða

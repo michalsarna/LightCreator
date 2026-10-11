@@ -788,3 +788,26 @@
 787|nie je číslo
 788|mimo rozsahu
 789|Firmvér ($$)
+790|0 = typická ({} W)
+791|0 = obvyklá ({} nm)
+792|Slabý stály lúč na nastavenie výšky (režim zaostrenia). 0 = bez režimu zaostrenia.
+793|Pridať laserovú hlavu
+794|Stopa lúča
+795|Výkon zaostrenia
+796|Rýchlosť rámika
+797|Hlava {}
+798|Optický výkon
+799|Frekvencia PWM
+800|Maximálna frekvencia PWM
+801|Posun ukazovateľa
+802|Šírka impulzu
+803|Rozsah šírky impulzu
+804|Odobrať túto laserovú hlavu
+805|Veľkosť lúča na materiáli (0 = neznáma). Menší rozstup výplne spôsobí prekrývanie susedných čiar.
+806|Hodnoty PWM sa ukladajú v profile a ponúkajú sa ako premenné pre makrá; neposielajú sa do riadiacej jednotky.
+807|Číslo, pod ktorým riadiaca jednotka túto hlavu pozná; zapisuje sa ako T<n>, keď vrstva používa inú hlavu. Musí zodpovedať mapovaniu v riadiacej jednotke.
+808|Číslo nástroja (T)
+809|Dve laserové hlavy majú rovnaké číslo nástroja.
+810|Vlnová dĺžka
+811|Kde je červený bod ukazovateľa voči lúču (x doprava, y nadol). Používa ho zarovnanie podľa ukazovateľa na karte Zariadenie.
+812|napr. Modrá dióda

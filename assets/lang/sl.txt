@@ -788,3 +788,26 @@
 787|ni število
 788|izven območja
 789|Strojna programska oprema ($$)
+790|0 = tipična ({} W)
+791|0 = običajna ({} nm)
+792|Šibek stalen žarek za nastavitev višine (način ostrenja). 0 = brez načina ostrenja.
+793|Dodaj lasersko glavo
+794|Pega žarka
+795|Moč ostrenja
+796|Hitrost okvirja
+797|Glava {}
+798|Optična moč
+799|Frekvenca PWM
+800|Največja frekvenca PWM
+801|Odmik kazalca
+802|Širina impulza
+803|Obseg širine impulza
+804|Odstrani to lasersko glavo
+805|Velikost žarka na materialu (0 = neznano). Manjši razmik polnila povzroči prekrivanje sosednjih črt.
+806|Vrednosti PWM se hranijo v profilu in so na voljo kot spremenljivke za makre; ne pošiljajo se krmilniku.
+807|Številka, pod katero krmilnik pozna to glavo; zapiše se kot T<n>, ko plast uporablja drugo glavo. Ujemati se mora s preslikavo v krmilniku.
+808|Številka orodja (T)
+809|Dve laserski glavi imata isto številko orodja.
+810|Valovna dolžina
+811|Kje je rdeča pika kazalca glede na žarek (x desno, y navzdol). Uporablja jo poravnava s kazalcem v zavihku Naprava.
+812|npr. Modra dioda

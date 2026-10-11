@@ -788,3 +788,26 @@
 787|nije broj
 788|izvan raspona
 789|Firmware ($$)
+790|0 = tipična ({} W)
+791|0 = uobičajena ({} nm)
+792|Slab stalan snop za namještanje visine (način fokusa). 0 = bez načina fokusa.
+793|Dodaj lasersku glavu
+794|Točka snopa
+795|Snaga fokusa
+796|Brzina okvira
+797|Glava {}
+798|Optička snaga
+799|PWM frekvencija
+800|Maksimalna PWM frekvencija
+801|Pomak pokazivača
+802|Širina impulsa
+803|Raspon širine impulsa
+804|Ukloni ovu laserski glavu
+805|Veličina snopa na materijalu (0 = nepoznato). Manji razmak ispune uzrokuje preklapanje susjednih linija.
+806|PWM vrijednosti čuvaju se u profilu i nude kao varijable za makronaredbe; ne šalju se upravljaču.
+807|Broj pod kojim upravljač poznaje ovu glavu; piše se kao T<n> kad sloj koristi drugu glavu. Mora odgovarati preslikavanju u upravljaču.
+808|Broj alata (T)
+809|Dvije laserske glave imaju isti broj alata.
+810|Valna duljina
+811|Gdje je crvena točka pokazivača u odnosu na snop (x desno, y dolje). Koristi je poravnanje po pokazivaču na kartici Uređaj.
+812|npr. Plava dioda
