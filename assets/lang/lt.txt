@@ -832,3 +832,14 @@
 831|Sluoksnio pabaiga
 832|Objekto pradžia
 833|Objekto pabaiga
+834|Makrokomanda yra jūsų paties G kodas: ji gali uždegti lazerį arba pajudinti galvutę. Vykdykite ją tik žinodami, ką ji daro. Šis klausimas užduodamas kartą per sesiją.
+835|Pridėti makrokomandą
+836|Ištrinti šią makrokomandą
+837|Makrokomandos pavadinimas
+838|Makrokomanda {}
+839|Makrokomanda {}: {}
+840|Makrokomanda {}: {} eilučių
+841|Makrokomandos
+842|Pavadinti scenarijai, kuriuos vykdote rankiniu būdu skirtuke Įrenginys. Viena komanda eilutėje; komentarai po ; arba skliaustuose; @include(pavadinimas) įterpia kitą makrokomandą. Galima naudoti staklių kintamuosius.
+843|Vykdyti makrokomandą {}
+844|Vykdo šią makrokomandą staklėse

@@ -1414,3 +1414,67 @@ fn without_power_keeps_the_path_and_zeroes_every_s_of_a_move() {
     assert_eq!(s.shapes[0].bounds().unwrap().min, Pt::new(7.0, 12.0));
     assert_eq!(d.shapes[0].bounds().unwrap().min, Pt::new(10.0, 10.0));
 }
+
+fn macro_dev(macros: &[(&str, &str)]) -> Device {
+    let mut d = Device::default();
+    d.name = "Test laser".into();
+    d.area = Area { bed_w: 300.0, bed_h: 200.0, ..Area::default() };
+    d.macros = macros.iter().map(|(n, c)| Macro { name: n.to_string(), code: c.to_string() }).collect();
+    d
+}
+
+#[test]
+fn a_macro_is_expanded_without_comments_with_includes_and_variables() {
+    let d = macro_dev(&[
+        ("Park", "G90 ; absolute\n(move away)\nG0 X{work_width} Y0 (corner)\n\n@include(Beep)\nM5"),
+        ("Beep", "M300 S440 P100 ; beep\nM117 {machine_name}"),
+    ]);
+    assert_eq!(hooks::expand(&d, "Park").unwrap(), vec!["G90", "G0 X300 Y0", "M300 S440 P100", "M117 Test laser", "M5"]);
+    // Names are found whatever the case; unknown ones are told apart from empty ones.
+    assert!(hooks::expand(&d, "park").is_ok());
+    assert_eq!(hooks::expand(&d, "Nope"), Err(hooks::MacroError::Unknown("Nope".into())));
+    assert_eq!(hooks::expand(&macro_dev(&[("Empty", "; only a comment\n(and another)")]), "Empty"), Err(hooks::MacroError::Empty));
+    assert_eq!(hooks::validate_macros(&d), None);
+    assert_eq!(hooks::strip_comments("G1 X(a;b)5 ; tail"), "G1 X5");
+}
+
+#[test]
+fn includes_that_loop_or_go_too_deep_are_refused() {
+    let d = macro_dev(&[("A", "@include(B)"), ("B", "@include(A)")]);
+    assert!(matches!(hooks::expand(&d, "A"), Err(hooks::MacroError::Cycle(_))));
+    assert!(hooks::validate_macros(&d).is_some());
+    let selfie = macro_dev(&[("Self", "@include(self)")]);
+    assert!(matches!(hooks::expand(&selfie, "Self"), Err(hooks::MacroError::Cycle(_))));
+    // A chain of ten macros is deeper than the limit of eight; one of eight is fine.
+    let chain = |n: usize| -> Device {
+        let ms: Vec<(String, String)> = (0..n).map(|i| (format!("m{i}"), if i + 1 < n { format!("@include(m{})", i + 1) } else { "G4 P1".to_string() })).collect();
+        let refs: Vec<(&str, &str)> = ms.iter().map(|(a, b)| (a.as_str(), b.as_str())).collect();
+        macro_dev(&refs)
+    };
+    assert_eq!(hooks::expand(&chain(10), "m0"), Err(hooks::MacroError::TooDeep));
+    assert_eq!(hooks::expand(&chain(8), "m0").unwrap(), vec!["G4 P1"]);
+}
+
+#[test]
+fn bad_macros_cannot_be_kept() {
+    let bad = |code: &str| hooks::validate_macros(&macro_dev(&[("X", code)])).is_some();
+    assert!(bad("G1 X{layer_name}"), "a job variable");
+    assert!(bad("G1 X{nope}"), "an unknown variable");
+    assert!(bad("G1 X{work_width"), "an open brace");
+    assert!(bad("@include Beep"), "an include without brackets");
+    assert!(bad("@include(Missing)"));
+    assert!(bad("G1 X1\u{7}"), "a control character");
+    assert!(bad(&format!("G1 X{}", "1".repeat(120))), "a line over 100 characters");
+    assert!(bad(&"G4 P1\n".repeat(70)), "more than 60 lines in a macro");
+    assert!(!bad("G4 P1"));
+    // Names: not empty, not used twice, not absurd.
+    let named = |names: &[&str]| hooks::validate_macros(&macro_dev(&names.iter().map(|n| (*n, "G4 P1")).collect::<Vec<_>>())).is_some();
+    assert!(named(&[""]) && named(&["a", "A"]) && named(&["a(b)"]) && named(&[&"n".repeat(41)]));
+    assert!(!named(&["Home", "Park"]));
+    // Macros ride along in the profile; old profiles have none.
+    let d = macro_dev(&[("Park", "G0 X0 Y0")]);
+    let back: Device = serde_json::from_str(&serde_json::to_string(&d).unwrap()).unwrap();
+    assert_eq!(back.macros, d.macros);
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert!(old.macros.is_empty());
+}

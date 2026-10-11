@@ -832,3 +832,14 @@
 831|Sfârșitul stratului
 832|Începutul obiectului
 833|Sfârșitul obiectului
+834|O macro este propriul tău G-code: poate trage laserul sau muta capul. Rulează-l doar când știi ce face. Întrebarea se pune o dată pe sesiune.
+835|Adaugă un macro
+836|Șterge acest macro
+837|Numele macro-ului
+838|Macro {}
+839|Macro {}: {}
+840|Macro {}: {} linii
+841|Macro-uri
+842|Scripturi cu nume pe care le rulezi manual din fila Dispozitiv. O comandă pe linie; comentarii după ; sau între paranteze; @include(nume) inserează alt macro. Se pot folosi variabilele mașinii.
+843|Rulează macro-ul {}
+844|Rulează acest macro pe mașină

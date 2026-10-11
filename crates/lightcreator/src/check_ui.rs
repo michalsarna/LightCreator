@@ -395,3 +395,55 @@ mod stamp_tests {
         assert!(!a.doc.to_json().contains("badge"));
     }
 }
+
+#[cfg(test)]
+mod macro_tests {
+    use super::*;
+    use crate::session_ui::ConfirmAct;
+
+    fn app() -> App {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.screen = crate::app::Screen::Editor;
+        let mut d = lc_core::Device::default();
+        d.macros = vec![lc_core::Macro { name: "Park".into(), code: "G0 X0 Y0 ; park\nM5".into() }];
+        a.profiles = vec![d];
+        a.enter_editor(0);
+        a.connected = true;
+        a
+    }
+
+    #[test]
+    fn the_first_run_of_a_macro_in_a_session_asks_and_later_ones_do_not() {
+        let mut a = app();
+        a.request_macro("Park");
+        let c = a.confirm.take().expect("the first run asks");
+        assert!(matches!(c.act, ConfirmAct::RunMacro(ref n) if n == "Park"));
+        assert!(!a.macros_ok);
+        a.do_confirmed(&egui::Context::default(), c.act);
+        assert!(a.macros_ok);
+        // The console tells what was sent; the second run does not ask.
+        let before = a.console.len();
+        a.request_macro("Park");
+        assert!(a.confirm.is_none());
+        assert!(a.console.len() > before);
+    }
+
+    #[test]
+    fn nothing_runs_without_a_connection_or_during_a_job_and_errors_are_reported() {
+        let mut a = app();
+        a.macros_ok = true;
+        a.connected = false;
+        let n = a.console.len();
+        a.run_macro("Park");
+        assert_eq!(a.console.len(), n);
+        a.connected = true;
+        a.progress = (2, 10);
+        a.run_macro("Park");
+        assert_eq!(a.console.len(), n);
+        a.progress = (0, 0);
+        a.run_macro("Missing");
+        assert!(a.status.contains("Missing"), "{}", a.status);
+        assert_eq!(a.console.len(), n);
+    }
+}

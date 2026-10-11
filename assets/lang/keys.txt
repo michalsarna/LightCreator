@@ -832,3 +832,14 @@
 831	Layer end
 832	Object start
 833	Object end
+834	A macro is your own G-code: it can fire the laser or move the head. Run it only when you know what it does. This question is asked once per session.
+835	Add a macro
+836	Delete this macro
+837	Macro name
+838	Macro {}
+839	Macro {}: {}
+840	Macro {}: {} lines
+841	Macros
+842	Named scripts you run by hand from the Device tab. One command per line; comments after ; or in brackets; @include(name) inserts another macro. Variables of the machine can be used.
+843	Run the macro {}
+844	Runs this macro on the machine

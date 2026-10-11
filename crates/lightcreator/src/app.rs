@@ -310,6 +310,8 @@ pub struct App {
     pub fw: crate::firmware_ui::FwUi,
     /// The focus beam is on.
     pub focus_on: bool,
+    /// The warning about macros has been answered in this session.
+    pub macros_ok: bool,
     /// For this session only: aim with the pointer dot (the frame and the dry run move back by its offset).
     pub pointer_align: bool,
     pub connected: bool,
@@ -494,6 +496,7 @@ impl App {
             single_axis_homing: false,
             fw: Default::default(),
             focus_on: false,
+            macros_ok: false,
             pointer_align: false,
             connected: false,
             machine: (tr("Disconnected").into(), 0.0, 0.0),

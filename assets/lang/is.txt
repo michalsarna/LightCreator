@@ -832,3 +832,14 @@
 831|Lok lags
 832|Upphaf hlutar
 833|Lok hlutar
+834|Fjölvi er þinn eigin G-kóði: hann getur kveikt á leysinum eða fært hausinn. Keyrðu hann aðeins þegar þú veist hvað hann gerir. Þessi spurning er borin upp einu sinni í lotu.
+835|Bæta við fjölva
+836|Eyða þessum fjölva
+837|Nafn fjölva
+838|Fjölvi {}
+839|Fjölvi {}: {}
+840|Fjölvi {}: {} línur
+841|Fjölvar
+842|Nefnd skriftur sem þú keyrir í höndunum úr flipanum Tæki. Ein skipun í línu; athugasemdir á eftir ; eða í svigum; @include(nafn) setur inn annan fjölva. Breytur vélarinnar má nota.
+843|Keyra fjölvann {}
+844|Keyrir þennan fjölva á vélinni

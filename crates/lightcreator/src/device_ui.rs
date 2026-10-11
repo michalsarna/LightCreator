@@ -666,6 +666,25 @@ impl App {
                                     ui.add_enabled(h.enabled, egui::TextEdit::multiline(&mut h.code).font(egui::TextStyle::Monospace).desired_rows(2).desired_width(f32::INFINITY));
                                 }
                                 ui.label(RichText::new(trf("Variables: {}", &[&lc_core::hooks::JOB_VARS.iter().map(|v| format!("{{{v}}}")).collect::<Vec<_>>().join(" ")])).small().color(theme::text_dim()));
+                                ui.add_space(8.0);
+                                ui.label(RichText::new(tr("Macros")).strong());
+                                ui.label(RichText::new(tr("Named scripts you run by hand from the Device tab. One command per line; comments after ; or in brackets; @include(name) inserts another macro. Variables of the machine can be used.")).color(theme::text_dim()));
+                                let mut remove = None;
+                                for (i, m) in d.macros.iter_mut().enumerate() {
+                                    ui.horizontal(|ui| {
+                                        ui.add(egui::TextEdit::singleline(&mut m.name).hint_text(tr("Macro name")).desired_width(200.0));
+                                        if ui.small_button("✕").on_hover_text(tr("Delete this macro")).clicked() {
+                                            remove = Some(i);
+                                        }
+                                    });
+                                    ui.add(egui::TextEdit::multiline(&mut m.code).font(egui::TextStyle::Monospace).desired_rows(3).desired_width(f32::INFINITY));
+                                }
+                                if let Some(i) = remove {
+                                    d.macros.remove(i);
+                                }
+                                if ui.button(tr("Add a macro")).clicked() {
+                                    d.macros.push(lc_core::Macro { name: trf("Macro {}", &[&(d.macros.len() + 1)]), code: String::new() });
+                                }
                                 ui.add_space(6.0);
                                 if ui.button(tr("Restore defaults")).clicked() {
                                     d.gcode.reset_custom();
@@ -683,8 +702,12 @@ impl App {
             if let Some((name, why)) = &hook_problem {
                 ui.label(RichText::new(trf("Hook {}: {}", &[name, why])).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
             }
+            let macro_problem = lc_core::hooks::validate_macros(&cfg.draft);
+            if let Some((name, why)) = &macro_problem {
+                ui.label(RichText::new(trf("Macro {}: {}", &[name, why])).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
+            }
             let dup_tools = cfg.draft.has_duplicate_tools();
-            let valid = !cfg.draft.name.trim().is_empty() && !bad_gcode && !dup_tools && hook_problem.is_none();
+            let valid = !cfg.draft.name.trim().is_empty() && !bad_gcode && !dup_tools && hook_problem.is_none() && macro_problem.is_none();
             if dup_tools {
                 ui.label(RichText::new(tr("Two laser heads have the same tool number.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
             }
@@ -763,6 +786,36 @@ impl App {
             Err(issues) => {
                 self.check_dlg = Some(crate::check_ui::CheckDlg { issues, pending: crate::check_ui::Pending::DryRun });
             }
+        }
+    }
+
+    /// Run a macro: the first time in a session the user is warned that it can fire the laser or move the head.
+    pub fn request_macro(&mut self, name: &str) {
+        if self.macros_ok {
+            self.run_macro(name);
+        } else {
+            self.confirm = Some(crate::session_ui::Confirm {
+                title: trf("Run the macro {}", &[&name]),
+                text: tr("A macro is your own G-code: it can fire the laser or move the head. Run it only when you know what it does. This question is asked once per session.").to_string(),
+                act: crate::session_ui::ConfirmAct::RunMacro(name.to_string()),
+            });
+        }
+    }
+
+    /// Send the lines of a macro to the machine.
+    pub fn run_macro(&mut self, name: &str) {
+        if !self.connected || self.job_running() {
+            return;
+        }
+        match lc_core::hooks::expand(&self.doc.device, name) {
+            Ok(lines) => {
+                self.focus_off();
+                self.push_console(crate::laser::ConsoleLine::info(trf("Macro {}: {} lines", &[&name, &lines.len()])));
+                for l in lines {
+                    self.link.send(Cmd::Line(l));
+                }
+            }
+            Err(e) => self.status = trf("Macro {}: {}", &[&name, &e.to_string()]),
         }
     }
 
@@ -1059,6 +1112,17 @@ impl App {
             }
             ui.add_space(4.0);
             self.focus_button(ui, true);
+            if !self.doc.device.macros.is_empty() {
+                ui.add_space(4.0);
+                ui.label(RichText::new(tr("Macros")).strong());
+                ui.horizontal_wrapped(|ui| {
+                    for m in self.doc.device.macros.clone() {
+                        if ui.add_enabled(self.connected && !running, egui::Button::new(&m.name)).on_hover_text(tr("Runs this macro on the machine")).clicked() {
+                            self.request_macro(&m.name);
+                        }
+                    }
+                });
+            }
             if self.doc.device.head(0).has_pointer_offset() {
                 ui.add_space(4.0);
                 ui.checkbox(&mut self.pointer_align, tr("Align to the pointer")).on_hover_text(tr("This session only: the frame and the dry run move back by the offset of the red pointer dot, so the dot lands where the beam would. Jobs and jogging are never moved."));

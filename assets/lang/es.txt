@@ -832,3 +832,14 @@
 831|Fin de capa
 832|Inicio de objeto
 833|Fin de objeto
+834|Una macro es su propio G-code: puede disparar el láser o mover el cabezal. Ejecútela solo cuando sepa qué hace. Esta pregunta se hace una vez por sesión.
+835|Añadir una macro
+836|Eliminar esta macro
+837|Nombre de la macro
+838|Macro {}
+839|Macro {}: {}
+840|Macro {}: {} líneas
+841|Macros
+842|Scripts con nombre que ejecuta a mano desde la pestaña Dispositivo. Un comando por línea; comentarios tras ; o entre paréntesis; @include(nombre) inserta otra macro. Se pueden usar las variables de la máquina.
+843|Ejecutar la macro {}
+844|Ejecuta esta macro en la máquina

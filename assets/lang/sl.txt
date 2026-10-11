@@ -832,3 +832,14 @@
 831|Konec plasti
 832|Začetek objekta
 833|Konec objekta
+834|Makro je vaša lastna G-koda: lahko prižge laser ali premakne glavo. Zaženite ga le, ko veste, kaj dela. To vprašanje se postavi enkrat na sejo.
+835|Dodaj makro
+836|Izbriši ta makro
+837|Ime makra
+838|Makro {}
+839|Makro {}: {}
+840|Makro {}: {} vrstic
+841|Makri
+842|Imenovane skripte, ki jih ročno zaženete iz zavihka Naprava. En ukaz na vrstico; komentarji za ; ali v oklepajih; @include(ime) vstavi drug makro. Uporabite lahko spremenljivke stroja.
+843|Zaženi makro {}
+844|Zažene ta makro na stroju

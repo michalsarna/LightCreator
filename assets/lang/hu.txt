@@ -832,3 +832,14 @@
 831|Réteg vége
 832|Objektum kezdete
 833|Objektum vége
+834|A makró a saját G-kódod: begyújthatja a lézert vagy mozgathatja a fejet. Csak akkor futtasd, ha tudod, mit csinál. Ezt munkamenetenként egyszer kérdezi.
+835|Makró hozzáadása
+836|Makró törlése
+837|Makró neve
+838|{}. makró
+839|{}. makró: {}
+840|{}. makró: {} sor
+841|Makrók
+842|Elnevezett szkriptek, amelyeket kézzel futtatsz az Eszköz fülről. Soronként egy parancs; megjegyzés ; után vagy zárójelben; az @include(név) másik makrót szúr be. A gép változói használhatók.
+843|{} makró futtatása
+844|Lefuttatja ezt a makrót a gépen

@@ -191,6 +191,8 @@ pub enum ConfirmAct {
     ImportSettings(Vec<(u32, String)>),
     /// `$RST=$`.
     ResetSettings,
+    /// Run the macro of this name.
+    RunMacro(String),
     RestoreBackup(std::path::PathBuf),
 }
 
@@ -210,6 +212,10 @@ impl App {
                 self.fw.reread_at = Some(std::time::Instant::now() + std::time::Duration::from_millis(600));
             }
             ConfirmAct::ImportSettings(settings) => self.fw_write_all(settings),
+            ConfirmAct::RunMacro(name) => {
+                self.macros_ok = true;
+                self.run_macro(&name);
+            }
             ConfirmAct::ResetSettings => {
                 self.link.send(crate::laser::Cmd::Line("$RST=$".into()));
                 self.fw.values.clear();

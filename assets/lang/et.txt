@@ -832,3 +832,14 @@
 831|Kihi lõpp
 832|Objekti algus
 833|Objekti lõpp
+834|Makro on sinu enda G-kood: see võib lasteri süüdata või pead liigutada. Käivita seda ainult siis, kui tead, mida see teeb. Seda küsitakse üks kord seansi kohta.
+835|Lisa makro
+836|Kustuta see makro
+837|Makro nimi
+838|Makro {}
+839|Makro {}: {}
+840|Makro {}: {} rida
+841|Makrod
+842|Nimega skriptid, mida käivitad käsitsi vahelehelt Seade. Üks käsk real; kommentaarid pärast ; või sulgudes; @include(nimi) lisab teise makro. Masina muutujaid saab kasutada.
+843|Käivita makro {}
+844|Käivitab selle makro masinal

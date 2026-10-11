@@ -133,7 +133,7 @@ fn snippet_limits() {
     assert!(snippet_ok("") && snippet_ok("G21\n\n; comment\nM3 S0\n"));
     assert!(!snippet_ok("G1\tX1")); // tabs are control characters too
     assert!(!snippet_ok(&"G0 X1\n".repeat(61)));
-    assert!(!snippet_ok(&"X".repeat(201)));
+    assert!(!snippet_ok(&"X".repeat(101)));
     assert!(!snippet_ok(&format!("{}\n", "G1 ; ".repeat(500))));
     let mut c = GcodeCfg::default();
     c.air_on = "M7".into();
@@ -218,7 +218,7 @@ fn hooked_doc() -> (Document, Device) {
     dev.name = "Golden".into();
     dev.gcode.hooks.layer_start = Hook { enabled: true, code: "M117 {layer_name} {layer_index}/{total_layers}\n; {job_name} {date} {time}".into() };
     dev.gcode.hooks.layer_end = Hook { enabled: true, code: "M117 done {layer_name}".into() };
-    dev.gcode.hooks.object_start = Hook { enabled: true, code: "; start {workpiece_name} {workpiece_index}/{total_workpieces} on {machine_name} {work_width}x{work_height} T{tool_number}".into() };
+    dev.gcode.hooks.object_start = Hook { enabled: true, code: "; start {workpiece_name} {workpiece_index}/{total_workpieces} on {machine_name}\n; {work_width}x{work_height} T{tool_number}".into() };
     dev.gcode.hooks.object_end = Hook { enabled: true, code: "; end {workpiece_index}".into() };
     (doc, dev)
 }
@@ -238,7 +238,7 @@ fn hooks_run_in_order_with_their_variables() {
     );
     assert!(text.contains("M117 C00 1/2") && text.contains("M117 C01 2/2"));
     assert!(text.contains("; badge 2026-10-11 14:05"));
-    assert!(text.contains("; start Rectangle 1/3 on Golden 300x200 T0") && text.contains("; start Ellipse 2/3") && text.contains("; start Rectangle 3/3"));
+    assert!(text.contains("; start Rectangle 1/3 on Golden") && text.contains("; 300x200 T0") && text.contains("; start Ellipse 2/3") && text.contains("; start Rectangle 3/3"));
     assert!(text.contains("; end 1") && text.contains("M117 done C01"));
 }
 

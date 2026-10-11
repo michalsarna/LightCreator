@@ -832,3 +832,14 @@
 831|Konec vrstvy
 832|Začátek objektu
 833|Konec objektu
+834|Makro je váš vlastní G-kód: může zapálit laser nebo pohnout hlavou. Spouštějte ho jen tehdy, když víte, co dělá. Tato otázka se klade jednou za relaci.
+835|Přidat makro
+836|Smazat toto makro
+837|Název makra
+838|Makro {}
+839|Makro {}: {}
+840|Makro {}: {} řádků
+841|Makra
+842|Pojmenované skripty spouštěné ručně z karty Zařízení. Jeden příkaz na řádek; komentáře za ; nebo v závorkách; @include(název) vloží jiné makro. Lze použít proměnné stroje.
+843|Spustit makro {}
+844|Spustí toto makro na stroji

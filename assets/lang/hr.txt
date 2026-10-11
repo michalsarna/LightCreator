@@ -832,3 +832,14 @@
 831|Kraj sloja
 832|Početak objekta
 833|Kraj objekta
+834|Makro je vaš vlastiti G-kod: može upaliti laser ili pomaknuti glavu. Pokrenite ga samo kad znate što radi. Ovo se pitanje postavlja jednom po sesiji.
+835|Dodaj makro
+836|Izbriši ovaj makro
+837|Naziv makroa
+838|Makro {}
+839|Makro {}: {}
+840|Makro {}: {} redaka
+841|Makroi
+842|Imenovane skripte koje ručno pokrećete s kartice Uređaj. Jedna naredba po retku; komentari nakon ; ili u zagradama; @include(naziv) umeće drugi makro. Mogu se koristiti varijable stroja.
+843|Pokreni makro {}
+844|Pokreće ovaj makro na stroju

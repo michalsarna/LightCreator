@@ -832,3 +832,14 @@
 831|Deireadh na sraithe
 832|Tús an réada
 833|Deireadh an réada
+834|Is é do G-code féin é macra: féadfaidh sé an léasair a lasadh nó an ceann a bhogadh. Ná rith é ach nuair is eol duit cad a dhéanann sé. Fiafraítear an cheist seo uair amháin in aghaidh an tseisiúin.
+835|Cuir macra leis
+836|Scrios an macra seo
+837|Ainm an mhacra
+838|Macra {}
+839|Macra {}: {}
+840|Macra {}: {} líne
+841|Macraí
+842|Scripteanna ainmnithe a rithfidh tú de láimh ón gcluaisín Gléas. Ordú amháin in aghaidh na líne; tuairimí tar éis ; nó idir lúibíní; cuireann @include(ainm) macra eile isteach. Is féidir athróga an mheaisín a úsáid.
+843|Rith an macra {}
+844|Ritheann sé an macra seo ar an meaisín

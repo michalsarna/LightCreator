@@ -8,7 +8,8 @@ M4 S0
 M117 C00 1/2
 ; badge 2026-10-11 14:05
 ; hook object_start
-; start Rectangle 1/3 on Golden 300x200 T0
+; start Rectangle 1/3 on Golden
+; 300x200 T0
 G0 X30.000 Y150.000
 G1 X30.000 Y160.000 S600 F1200
 G1 X50.000 Y160.000
@@ -17,7 +18,8 @@ G1 X30.000 Y150.000
 ; hook object_end
 ; end 1
 ; hook object_start
-; start Ellipse 2/3 on Golden 300x200 T0
+; start Ellipse 2/3 on Golden
+; 300x200 T0
 G0 X80.007 Y153.706
 G1 X80.000 Y154.000
 G1 X80.007 Y154.294
@@ -156,7 +158,8 @@ M117 done C00
 M117 C01 2/2
 ; badge 2026-10-11 14:05
 ; hook object_start
-; start Rectangle 3/3 on Golden 300x200 T0
+; start Rectangle 3/3 on Golden
+; 300x200 T0
 G0 X120.000 Y155.000
 G1 X120.000 Y160.000 S1000 F1000
 G1 X125.000 Y160.000

@@ -832,3 +832,14 @@
 831|Slāņa beigas
 832|Objekta sākums
 833|Objekta beigas
+834|Makro ir jūsu paša G kods: tas var iedegt lāzeru vai pakustināt galviņu. Palaidiet to tikai tad, kad zināt, ko tas dara. Šis jautājums tiek uzdots vienreiz sesijā.
+835|Pievienot makro
+836|Dzēst šo makro
+837|Makro nosaukums
+838|Makro {}
+839|Makro {}: {}
+840|Makro {}: {} rindas
+841|Makro
+842|Nosauktas skripti, ko palaižat ar roku no cilnes Ierīce. Viena komanda rindā; komentāri pēc ; vai iekavās; @include(nosaukums) ievieto citu makro. Var izmantot iekārtas mainīgos.
+843|Palaist makro {}
+844|Palaiž šo makro uz iekārtas

@@ -832,3 +832,14 @@
 831|Einde van de laag
 832|Begin van het object
 833|Einde van het object
+834|Een macro is je eigen G-code: hij kan de laser afvuren of de kop bewegen. Voer hem alleen uit als je weet wat hij doet. Deze vraag wordt één keer per sessie gesteld.
+835|Macro toevoegen
+836|Deze macro verwijderen
+837|Macronaam
+838|Macro {}
+839|Macro {}: {}
+840|Macro {}: {} regels
+841|Macro's
+842|Benoemde scripts die je met de hand uitvoert vanuit het tabblad Apparaat. Eén opdracht per regel; commentaar na ; of tussen haakjes; @include(naam) voegt een andere macro in. Variabelen van de machine zijn bruikbaar.
+843|Macro {} uitvoeren
+844|Voert deze macro uit op de machine

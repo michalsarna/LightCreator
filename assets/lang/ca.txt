@@ -832,3 +832,14 @@
 831|Final de la capa
 832|Inici de l'objecte
 833|Final de l'objecte
+834|Una macro és el teu propi G-code: pot disparar el làser o moure el capçal. Executa-la només quan sàpigues què fa. Aquesta pregunta es fa una vegada per sessió.
+835|Afegeix una macro
+836|Elimina aquesta macro
+837|Nom de la macro
+838|Macro {}
+839|Macro {}: {}
+840|Macro {}: {} línies
+841|Macros
+842|Scripts amb nom que executes a mà des de la pestanya Dispositiu. Una ordre per línia; comentaris després de ; o entre parèntesis; @include(nom) insereix una altra macro. Es poden usar les variables de la màquina.
+843|Executa la macro {}
+844|Executa aquesta macro a la màquina

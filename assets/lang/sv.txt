@@ -832,3 +832,14 @@
 831|Lagrets slut
 832|Objektets början
 833|Objektets slut
+834|Ett makro är din egen G-kod: det kan avfyra lasern eller flytta huvudet. Kör det bara när du vet vad det gör. Frågan ställs en gång per session.
+835|Lägg till ett makro
+836|Ta bort det här makrot
+837|Makronamn
+838|Makro {}
+839|Makro {}: {}
+840|Makro {}: {} rader
+841|Makron
+842|Namngivna skript som du kör för hand från fliken Enhet. Ett kommando per rad; kommentarer efter ; eller inom parentes; @include(namn) lägger in ett annat makro. Maskinens variabler kan användas.
+843|Kör makrot {}
+844|Kör det här makrot på maskinen

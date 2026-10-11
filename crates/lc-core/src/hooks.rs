@@ -82,3 +82,127 @@ pub fn device_value(dev: &Device, name: &str, tool: usize) -> Option<String> {
         _ => return None,
     })
 }
+
+/// How deep `@include` may go.
+pub const MAX_INCLUDE_DEPTH: usize = 8;
+/// The longest a line may be once it is made, characters (the controller's buffer is 128 bytes).
+pub const MAX_LINE: usize = 100;
+/// The most lines a macro may come to with its includes.
+pub const MAX_MACRO_LINES: usize = 500;
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum MacroError {
+    /// A macro with this name does not exist (an `@include` of it, or a run of it).
+    Unknown(String),
+    /// A macro includes itself, directly or through others.
+    Cycle(String),
+    TooDeep,
+    TooLong,
+    /// A line that is too long, has a control character or a bad `@include`.
+    BadLine(String),
+    BadVariable(String),
+    Empty,
+}
+
+impl std::fmt::Display for MacroError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            MacroError::Unknown(n) => write!(f, "no macro called \"{n}\""),
+            MacroError::Cycle(n) => write!(f, "\"{n}\" includes itself"),
+            MacroError::TooDeep => write!(f, "includes go deeper than {MAX_INCLUDE_DEPTH} levels"),
+            MacroError::TooLong => write!(f, "more than {MAX_MACRO_LINES} lines"),
+            MacroError::BadLine(l) => write!(f, "bad line \"{l}\""),
+            MacroError::BadVariable(v) => write!(f, "{v}"),
+            MacroError::Empty => write!(f, "nothing to run"),
+        }
+    }
+}
+
+/// A line of a macro without its comments (`;` to the end, and `( ... )` anywhere), trimmed.
+pub fn strip_comments(line: &str) -> String {
+    let mut out = String::new();
+    let mut depth = 0u32;
+    for c in line.chars() {
+        match c {
+            ';' if depth == 0 => break,
+            '(' => depth += 1,
+            ')' if depth > 0 => depth -= 1,
+            _ if depth == 0 => out.push(c),
+            _ => {}
+        }
+    }
+    out.trim().to_string()
+}
+
+fn find<'a>(dev: &'a Device, name: &str) -> Option<&'a Macro> {
+    dev.macros.iter().find(|m| m.name.trim().eq_ignore_ascii_case(name.trim()))
+}
+
+fn expand_into(dev: &Device, m: &Macro, stack: &mut Vec<String>, out: &mut Vec<String>) -> Result<(), MacroError> {
+    let key = m.name.trim().to_lowercase();
+    if stack.contains(&key) {
+        return Err(MacroError::Cycle(m.name.trim().to_string()));
+    }
+    if stack.len() >= MAX_INCLUDE_DEPTH {
+        return Err(MacroError::TooDeep);
+    }
+    stack.push(key);
+    if !snippet_ok(&m.code) {
+        return Err(MacroError::BadLine(m.name.clone()));
+    }
+    for raw in m.code.lines() {
+        // `@include(name)` keeps its brackets; only the `;` comment is cut before it is read.
+        let head = raw.split(';').next().unwrap_or("").trim();
+        if let Some(rest) = head.strip_prefix("@include") {
+            let name = rest.trim().strip_prefix('(').and_then(|r| r.strip_suffix(')')).ok_or_else(|| MacroError::BadLine(head.to_string()))?;
+            let inner = find(dev, name).ok_or_else(|| MacroError::Unknown(name.trim().to_string()))?;
+            expand_into(dev, inner, stack, out)?;
+            continue;
+        }
+        let line = strip_comments(raw);
+        if line.is_empty() {
+            continue;
+        }
+        check_variables(&line, MACRO_VARS).map_err(MacroError::BadVariable)?;
+        let line = substitute(&line, &|v| device_value(dev, v, 0));
+        if line.chars().count() > MAX_LINE || line.chars().any(|c| c.is_control()) {
+            return Err(MacroError::BadLine(line.chars().take(40).collect()));
+        }
+        out.push(line);
+        if out.len() > MAX_MACRO_LINES {
+            return Err(MacroError::TooLong);
+        }
+    }
+    stack.pop();
+    Ok(())
+}
+
+/// The lines to send for the macro called `name`: comments and blank lines gone, `@include`s and variables filled in.
+pub fn expand(dev: &Device, name: &str) -> Result<Vec<String>, MacroError> {
+    let m = find(dev, name).ok_or_else(|| MacroError::Unknown(name.to_string()))?;
+    let mut out = vec![];
+    expand_into(dev, m, &mut vec![], &mut out)?;
+    if out.is_empty() {
+        return Err(MacroError::Empty);
+    }
+    Ok(out)
+}
+
+/// The first thing wrong with the macros of a device: a name that is empty or used twice, or a macro that cannot be
+/// expanded. A macro with nothing in it is not an error.
+pub fn validate_macros(dev: &Device) -> Option<(String, String)> {
+    for (i, m) in dev.macros.iter().enumerate() {
+        let name = m.name.trim();
+        if name.is_empty() || name.chars().count() > 40 || name.chars().any(|c| c.is_control()) || name.contains(['(', ')']) {
+            return Some((m.name.clone(), "the name is empty, too long or has a bracket".into()));
+        }
+        if dev.macros[..i].iter().any(|o| o.name.trim().eq_ignore_ascii_case(name)) {
+            return Some((m.name.clone(), "the name is used twice".into()));
+        }
+        match expand(dev, name) {
+            Ok(_) | Err(MacroError::Empty) => {}
+            Err(e) => return Some((m.name.clone(), e.to_string())),
+        }
+    }
+    None
+}

@@ -832,3 +832,14 @@
 831|Fin du calque
 832|Début de l'objet
 833|Fin de l'objet
+834|Une macro est votre propre G-code : elle peut déclencher le laser ou déplacer la tête. Ne l'exécutez que si vous savez ce qu'elle fait. Cette question est posée une fois par session.
+835|Ajouter une macro
+836|Supprimer cette macro
+837|Nom de la macro
+838|Macro {}
+839|Macro {} : {}
+840|Macro {} : {} lignes
+841|Macros
+842|Scripts nommés que vous lancez à la main depuis l'onglet Appareil. Une commande par ligne ; commentaires après ; ou entre parenthèses ; @include(nom) insère une autre macro. Les variables de la machine sont utilisables.
+843|Exécuter la macro {}
+844|Exécute cette macro sur la machine

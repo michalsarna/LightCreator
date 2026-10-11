@@ -791,7 +791,7 @@ impl Hooks {
 
 /// Longest text and line, and most lines, of an own piece of G-code.
 pub const SNIPPET_MAX_LEN: usize = 2000;
-pub const SNIPPET_MAX_LINE: usize = 200;
+pub const SNIPPET_MAX_LINE: usize = 100;
 pub const SNIPPET_MAX_LINES: usize = 60;
 
 /// Is `text` fit to be written into a job? Blank lines and comments are fine; control characters and absurd sizes
@@ -1036,6 +1036,15 @@ pub struct Device {
     pub materials_seeded: bool,
     /// The library follows the main library: the materials above are only this device's own copies of changed ones.
     pub materials_inherit: bool,
+    /// Own G-code scripts that are run by hand from the Device tab.
+    pub macros: Vec<Macro>,
+}
+
+/// A named script of own G-code, run by hand.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct Macro {
+    pub name: String,
+    pub code: String,
 }
 
 /// What a device profile looks like in a file: the groups, or the flat fields of older versions.
@@ -1072,6 +1081,8 @@ struct DeviceWire {
     materials_seeded: bool,
     #[serde(default)]
     materials_inherit: bool,
+    #[serde(default)]
+    macros: Vec<Macro>,
     // Flat fields of profiles saved before the groups existed.
     origin: Option<Origin>,
     bed_w: Option<f64>,
@@ -1132,6 +1143,7 @@ impl From<DeviceWire> for Device {
             materials: w.materials,
             materials_seeded: w.materials_seeded,
             materials_inherit: w.materials_inherit,
+            macros: w.macros,
         }
     }
 }
@@ -1324,6 +1336,7 @@ impl Default for Device {
             materials: vec![],
             materials_seeded: false,
             materials_inherit: false,
+            macros: vec![],
         }
     }
 }

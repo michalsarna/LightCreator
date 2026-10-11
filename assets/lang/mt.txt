@@ -832,3 +832,14 @@
 831|Tmiem is-saff
 832|Bidu tal-oġġett
 833|Tmiem l-oġġett
+834|Makro huwa l-G-code proprju tiegħek: jista' jqabbad il-laser jew iċaqlaq ir-ras. Mexxih biss meta tkun taf x'jagħmel. Din il-mistoqsija titfaċċa darba għal kull sessjoni.
+835|Żid makro
+836|Ħassar din il-makro
+837|Isem il-makro
+838|Makro {}
+839|Makro {}: {}
+840|Makro {}: {} linji
+841|Makro
+842|Skripts bl-isem li tmexxi bl-id mit-tab Apparat. Kmand wieħed f'linja; kummenti wara ; jew bejn parentesi; @include(isem) iddaħħal makro oħra. Il-varjabbli tal-magna jistgħu jintużaw.
+843|Mexxi l-makro {}
+844|Imexxi din il-makro fuq il-magna
