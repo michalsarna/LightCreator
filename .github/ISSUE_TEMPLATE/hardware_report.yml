@@ -1,0 +1,78 @@
+name: Hardware test report
+description: Tell us how LightCreator worked (or did not) with your laser
+title: "[Hardware]: "
+labels: ["hardware"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Most of LightCreator has not been run on real machines yet, so reports from your laser are very valuable,
+        working or not. Always test at low power first.
+  - type: input
+    id: machine
+    attributes:
+      label: Machine
+      description: Make and model, laser type and power.
+      placeholder: "Example: diode laser, 10 W, 400 x 400 mm"
+    validations:
+      required: true
+  - type: dropdown
+    id: controller
+    attributes:
+      label: Controller
+      options:
+        - GRBL
+        - Marlin
+        - Ruida (file export)
+        - Trocen (file export)
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: firmware
+    attributes:
+      label: Firmware version and settings
+      description: For GRBL, the Grbl banner and $30 / $32 values if you know them.
+      placeholder: "GRBL 1.1h, $30=1000, $32=1"
+    validations:
+      required: true
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection
+      options:
+        - USB serial
+        - Network (TCP, for example ser2net)
+        - File export only
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: LightCreator version and operating system
+      placeholder: v0.0.11 on Linux
+    validations:
+      required: true
+  - type: checkboxes
+    id: worked
+    attributes:
+      label: What worked?
+      options:
+        - label: Connecting
+        - label: Jogging and homing
+        - label: Framing
+        - label: Line (cut) jobs
+        - label: Fill or image engraving
+        - label: Pause, resume and stop
+        - label: Reading settings from the device
+  - type: textarea
+    id: problems
+    attributes:
+      label: What did not work, or looked wrong?
+      description: Describe differences between what the program showed and what the machine did.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console output
+      description: Relevant lines from the Console tab (errors, alarms).
+      render: shell

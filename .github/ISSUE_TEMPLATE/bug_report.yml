@@ -1,0 +1,90 @@
+name: Bug report
+description: Something does not work as expected
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a problem. Please do not paste passwords or other private data.
+        For security problems use the private reporting link on the issue chooser page instead.
+  - type: input
+    id: version
+    attributes:
+      label: LightCreator version
+      description: Shown in Help → About, for example v0.0.11.
+      placeholder: v0.0.11
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How did you install it?
+      options:
+        - Windows installer
+        - macOS disk image (.dmg)
+        - Debian / Ubuntu package (.deb)
+        - Archive (.zip / .tar.gz)
+        - Built from source
+    validations:
+      required: true
+  - type: dropdown
+    id: controller
+    attributes:
+      label: Controller (if a machine is involved)
+      options:
+        - Not related to a machine
+        - GRBL
+        - Marlin
+        - Ruida (file export)
+        - Trocen (file export)
+    validations:
+      required: true
+  - type: input
+    id: firmware
+    attributes:
+      label: Firmware and connection
+      description: Only if a machine is involved, for example "GRBL 1.1h, USB serial" or "GRBL via ser2net (TCP)".
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you expect and what did you get instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open ...
+        2. Click ...
+        3. See ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console output or G-code excerpt
+      description: From the Console tab, or the first lines of the exported G-code. Attach files (project, SVG) below if they help.
+      render: shell
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Before you send
+      options:
+        - label: I searched the existing issues and did not find this problem reported.
+          required: true
+        - label: If a laser was running, I was supervising it and tested at low power.
+          required: true
