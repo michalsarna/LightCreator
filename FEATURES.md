@@ -125,6 +125,9 @@
 * **Laser heads:** several heads per device (tool number, laser type including fibre, wavelength, power, frame and focus
   settings, beam spot, pointer offset, stored PWM values); layers choose a head, the G-code scales S by the head's S max
   and writes `T<n>`; a focus beam with a safety off switch; pointer alignment and a laser-off dry run.
+* **Hooks, macros and no-go zones:** own G-code at the start and end of layers and objects with `{variables}`, named macros
+  with `@include` run from the Device tab, and rectangular / round no-go zones that block Start, Frame and export when
+  any move (also travel) touches them; all validated before they are kept.
 * **While a job runs** the Device tab locks jog, cancel jog, home, unlock and the jog options; pause, resume and STOP
   stay. Connect is green and Disconnect purple.
 * **Read from device:** the device configuration window can connect and read work area, S-value max, travel
