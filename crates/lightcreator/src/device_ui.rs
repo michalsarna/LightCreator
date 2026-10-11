@@ -119,6 +119,7 @@ impl App {
         self.pointer_align = false;
         // The first-run setup belongs to the start screen.
         self.wizard = None;
+        self.load_camera_view();
         self.seed_device_library();
         self.touch();
         self.view.need_fit = true;

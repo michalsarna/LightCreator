@@ -322,3 +322,41 @@ pub fn corners(h: &Homography, w: f64, ht: f64) -> Option<[Pt; 4]> {
 pub fn points_from_corners(c: &[Pt; 4], w: f64, h: f64) -> Vec<RefPoint> {
     [(0.0, 0.0), (w, 0.0), (w, h), (0.0, h)].iter().zip(c).map(|(px, p)| RefPoint { px: *px, mm: (p.x, p.y) }).collect()
 }
+
+/// How the camera view of a device opens: the same way every time.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct CameraView {
+    /// 0 = floating window, 1 = separate window, 2 = tab of the side panel.
+    #[serde(default)]
+    pub mode: u8,
+    /// 1.0 = the whole picture.
+    #[serde(default = "one")]
+    pub zoom: f32,
+    /// Position and size of the floating window, and of the separate window, as the program last saw them.
+    #[serde(default)]
+    pub float_pos: Option<[f32; 2]>,
+    #[serde(default)]
+    pub float_size: Option<[f32; 2]>,
+    #[serde(default)]
+    pub win_pos: Option<[f32; 2]>,
+    #[serde(default)]
+    pub win_size: Option<[f32; 2]>,
+}
+
+fn one() -> f32 {
+    1.0
+}
+
+impl Default for CameraView {
+    fn default() -> Self {
+        CameraView { mode: 0, zoom: 1.0, float_pos: None, float_size: None, win_pos: None, win_size: None }
+    }
+}
+
+impl CameraView {
+    /// Are the numbers sane (for a profile that comes from a file)?
+    pub fn is_valid(&self) -> bool {
+        let pair = |p: &Option<[f32; 2]>, lo: f32, hi: f32| p.is_none_or(|v| v.iter().all(|x| x.is_finite() && *x >= lo && *x <= hi));
+        self.mode <= 2 && self.zoom.is_finite() && (1.0..=8.0).contains(&self.zoom) && pair(&self.float_pos, -20_000.0, 20_000.0) && pair(&self.win_pos, -20_000.0, 20_000.0) && pair(&self.float_size, 100.0, 20_000.0) && pair(&self.win_size, 100.0, 20_000.0)
+    }
+}

@@ -28,7 +28,7 @@ pub mod trace;
 pub mod zones;
 
 pub use bezier::*;
-pub use camimg::{CameraKind, CameraSource, ImageSettings, Lens, RefPoint};
+pub use camimg::{CameraKind, CameraSource, CameraView, ImageSettings, Lens, RefPoint};
 pub use doc::*;
 pub use geom::*;
 pub use image::{Adjust, ImageData};

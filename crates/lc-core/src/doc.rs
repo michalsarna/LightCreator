@@ -1087,6 +1087,8 @@ pub struct Device {
     pub cameras: Vec<CameraSource>,
     /// The camera whose picture is shown (an index into `cameras`).
     pub active_camera: usize,
+    /// How the camera view opens (mode, zoom, window places).
+    pub camera_view: crate::camimg::CameraView,
     /// Legacy: older versions kept a default speed for each of the 30 layers here. The settings of the layers now
     /// belong to the project and to the materials of the device's library; this list is read and kept, not used.
     pub layer_speeds: Vec<f64>,
@@ -1312,6 +1314,8 @@ struct DeviceWire {
     cameras: Vec<CameraSource>,
     #[serde(default)]
     active_camera: usize,
+    #[serde(default)]
+    camera_view: crate::camimg::CameraView,
     #[serde(default = "d_layer_speeds")]
     layer_speeds: Vec<f64>,
     #[serde(default)]
@@ -1388,6 +1392,7 @@ impl From<DeviceWire> for Device {
             camera: w.camera,
             cameras: if w.cameras.is_empty() && !w.camera_url.trim().is_empty() { vec![CameraSource::url("Camera 1", w.camera_url.trim(), w.camera_rotation)] } else { w.cameras },
             active_camera: w.active_camera,
+            camera_view: w.camera_view,
             layer_speeds: w.layer_speeds,
             materials: w.materials,
             materials_seeded: w.materials_seeded,
@@ -1604,6 +1609,7 @@ impl Default for Device {
             camera: None,
             cameras: vec![],
             active_camera: 0,
+            camera_view: Default::default(),
             layer_speeds: d_layer_speeds(),
             materials: vec![],
             materials_seeded: false,

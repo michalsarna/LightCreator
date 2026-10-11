@@ -2124,3 +2124,20 @@ fn image_layers_burn_only_the_images_and_may_scan_at_an_angle() {
     v.layers[1].mode = LayerMode::Image;
     assert!(!gcode::generate(&v).gcode.contains("G1 X"), "{}", gcode::generate(&v).gcode);
 }
+
+#[test]
+fn the_camera_view_is_stored_with_the_device_and_checked_on_import() {
+    let mut d = Device::default();
+    assert_eq!(d.camera_view, CameraView::default());
+    d.camera_view = CameraView { mode: 1, zoom: 2.5, float_pos: Some([10.0, 20.0]), float_size: Some([640.0, 480.0]), win_pos: Some([-300.0, 40.0]), win_size: Some([800.0, 600.0]) };
+    let back = profiles::import_profile(&profiles::export_profile(&d, "v0.1.2")).unwrap();
+    assert_eq!(back.camera_view, d.camera_view);
+    // Older profiles have the default view.
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert_eq!(old.camera_view, CameraView::default());
+    for bad in [CameraView { mode: 3, ..Default::default() }, CameraView { zoom: 0.2, ..Default::default() }, CameraView { zoom: f32::NAN, ..Default::default() }, CameraView { float_size: Some([5.0, 5.0]), ..Default::default() }, CameraView { win_pos: Some([f32::INFINITY, 0.0]), ..Default::default() }] {
+        let mut x = Device::default();
+        x.camera_view = bad;
+        assert!(profiles::import_profile(&profiles::export_profile(&x, "v0.1.2")).is_err());
+    }
+}

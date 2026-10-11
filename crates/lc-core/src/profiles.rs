@@ -142,6 +142,9 @@ pub fn validate(d: &Device) -> Result<(), String> {
     if d.axes.z_min > d.axes.z_max || !between(d.axes.z_min, -10_000.0, 10_000.0) || !between(d.axes.z_max, -10_000.0, 10_000.0) {
         return bad("the Z travel");
     }
+    if !d.camera_view.is_valid() {
+        return bad("the camera view");
+    }
     if d.cameras.len() > 8 || d.active_camera > 8 {
         return bad("the number of cameras");
     }
