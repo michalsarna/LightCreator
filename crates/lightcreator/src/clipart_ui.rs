@@ -278,7 +278,7 @@ impl App {
                     ui.close();
                 }
                 ui.separator();
-                if ui.button(tr("Delete…")).clicked() {
+                if crate::window_ui::delete_button(ui, &tr("Delete…")).clicked() {
                     *action = Some(Action::Dialog(ClipDialog::Delete { id: id.clone() }));
                     ui.close();
                 }
@@ -389,7 +389,7 @@ impl App {
                 crate::window_ui::popup(ctx, "clip_delete", &tr("Delete…"), [320.0, 160.0], &mut keep, |ui| {
                     ui.label(tr("Remove this picture from your clipart? The file on your disk is deleted."));
                     ui.horizontal(|ui| {
-                        yes = ui.button(tr("Delete")).clicked();
+                        yes = crate::window_ui::delete_button(ui, &tr("Delete")).clicked();
                         no = ui.button(tr("Cancel")).clicked();
                     });
                 });

@@ -110,7 +110,7 @@ impl App {
                     self.overlay_load_file(ctx);
                     changed = true;
                 }
-                if self.overlay.is_some() && ui.button(tr("Remove")).clicked() {
+                if self.overlay.is_some() && crate::window_ui::delete_button(ui, &tr("Remove")).clicked() {
                     self.overlay = None;
                     self.cam_worker = None;
                 }
@@ -192,7 +192,7 @@ impl App {
                                 ui.label("mm");
                                 ui.add(egui::DragValue::new(&mut r.mm.0).speed(0.5));
                                 ui.add(egui::DragValue::new(&mut r.mm.1).speed(0.5));
-                                if ui.small_button("✕").on_hover_text(tr("Delete this point")).clicked() {
+                                if crate::window_ui::delete_icon(ui, &tr("Delete this point")).clicked() {
                                     del = Some(i);
                                 }
                             });

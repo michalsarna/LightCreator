@@ -408,7 +408,7 @@ pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, scope: &str, cx: &mu
                     }
                 });
             });
-            let del = egui::Button::new(RichText::new(tr("Remove layer")).color(Color32::WHITE)).fill(Color32::from_rgb(0xc0, 0x30, 0x30));
+            let del = egui::Button::image_and_text(crate::icons::slot(Some("trash"), Color32::WHITE), RichText::new(tr("Remove layer")).color(Color32::WHITE)).fill(Color32::from_rgb(0xc0, 0x30, 0x30));
             if ui.add(del).clicked() {
                 remove = Some(li);
             }
@@ -551,7 +551,7 @@ impl App {
             ui.add_space(4.0);
             for (i, l) in self.layer_labels.iter().enumerate() {
                 ui.horizontal(|ui| {
-                    if ui.small_button("✕").on_hover_text(tr("Delete")).clicked() {
+                    if crate::window_ui::delete_icon(ui, &tr("Delete")).clicked() {
                         remove = Some(i);
                     }
                     ui.label(l);
@@ -820,7 +820,7 @@ impl App {
                 if ui.add(go).on_hover_text(tr("Puts the settings of all its layers into the design")).clicked() {
                     apply = true;
                 }
-                if ui.button(tr("Delete")).clicked() {
+                if crate::window_ui::delete_button(ui, &tr("Delete")).clicked() {
                     delete = true;
                 }
             });
@@ -881,7 +881,7 @@ impl App {
             if ui.button(tr("Import library…")).clicked() {
                 self.start_library_import();
             }
-            if ui.button(tr("Delete all materials")).on_hover_text(tr("Delete all materials of this device? The materials of the main library are shown instead; when you change one, a copy is kept for this device.")).clicked() {
+            if crate::window_ui::delete_button(ui, &tr("Delete all materials")).on_hover_text(tr("Delete all materials of this device? The materials of the main library are shown instead; when you change one, a copy is kept for this device.")).clicked() {
                 self.confirm = Some(crate::session_ui::Confirm {
                     title: tr("Delete all materials").to_string(),
                     text: tr("Delete all materials of this device? The materials of the main library are shown instead; when you change one, a copy is kept for this device.").to_string(),
@@ -1009,7 +1009,9 @@ impl App {
                     Some(k) => (tr("Delete"), local_key(k)),
                     None => (tr("Delete"), false),
                 };
-                if ui.add_enabled(can, egui::Button::new(text)).clicked() {
+                let restore = matches!(&sel, Some(k) if builtin_key(k));
+                let clicked = if restore { ui.add_enabled(can, egui::Button::new(text)).clicked() } else { crate::window_ui::delete_button_enabled(ui, can, &text).clicked() };
+                if clicked {
                     delete = sel.clone();
                 }
             });

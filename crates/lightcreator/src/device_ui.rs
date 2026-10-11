@@ -345,7 +345,7 @@ impl App {
                 self.import_profile_dialog();
             }
             if self.confirm_delete && has {
-                if ui.button(RichText::new(tr("Confirm delete")).color(Color32::from_rgb(0xc0, 0x30, 0x30))).clicked() {
+                if crate::window_ui::delete_button(ui, &tr("Confirm delete")).clicked() {
                     self.profiles.remove(self.start_sel);
                     self.confirm_delete = false;
                     self.active = 0;
@@ -353,7 +353,7 @@ impl App {
                 if ui.button(tr("Cancel")).clicked() {
                     self.confirm_delete = false;
                 }
-            } else if ui.add_enabled(has, egui::Button::new(tr("Delete"))).clicked() {
+            } else if crate::window_ui::delete_button_enabled(ui, has, &tr("Delete")).clicked() {
                 self.confirm_delete = true;
             }
         });
@@ -544,7 +544,7 @@ impl App {
                                         d.heads.push(h);
                                         head = d.heads.len() - 1;
                                     }
-                                    if ui.add_enabled(d.heads.len() > 1, egui::Button::new("−").small()).on_hover_text(tr("Remove this laser head")).clicked() {
+                                    if ui.add_enabled_ui(d.heads.len() > 1, |ui| crate::window_ui::delete_icon(ui, &tr("Remove this laser head"))).inner.clicked() {
                                         d.heads.remove(head);
                                         head = head.saturating_sub(1).min(d.heads.len() - 1);
                                     }
@@ -949,7 +949,7 @@ impl App {
                                         if ui.button(tr("Reset")).clicked() {
                                             reset = Some(i);
                                         }
-                                        if ui.small_button("✕").on_hover_text(tr("Delete this counter")).clicked() {
+                                        if crate::window_ui::delete_icon(ui, &tr("Delete this counter")).clicked() {
                                             remove = Some(i);
                                         }
                                     });
@@ -983,7 +983,7 @@ impl App {
                                             let b = z.shape.bounds();
                                             z.shape = if want_rect { lc_core::ZoneShape::Rect { x: b.min.x, y: b.min.y, w: b.width(), h: b.height() } } else { lc_core::ZoneShape::Circle { x: b.center().x, y: b.center().y, r: (b.width().max(b.height())) / 2.0 } };
                                         }
-                                        if ui.small_button("✕").on_hover_text(tr("Delete this zone")).clicked() {
+                                        if crate::window_ui::delete_icon(ui, &tr("Delete this zone")).clicked() {
                                             remove = Some(i);
                                         }
                                     });
@@ -1076,7 +1076,7 @@ impl App {
                                 for (i, m) in d.macros.iter_mut().enumerate() {
                                     ui.horizontal(|ui| {
                                         ui.add(egui::TextEdit::singleline(&mut m.name).hint_text(tr("Macro name")).desired_width(200.0));
-                                        if ui.small_button("✕").on_hover_text(tr("Delete this macro")).clicked() {
+                                        if crate::window_ui::delete_icon(ui, &tr("Delete this macro")).clicked() {
                                             remove = Some(i);
                                         }
                                     });

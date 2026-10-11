@@ -257,7 +257,9 @@ impl App {
             ui.label(RichText::new(c.text.as_str()).size(14.0));
             ui.add_space(10.0);
             ui.horizontal(|ui| {
-                if ui.button(RichText::new(tr("Yes")).strong()).clicked() {
+                // Deleting everything is answered with a red button with a bin.
+                let yes = if matches!(c.act, ConfirmAct::DeleteAllMaterials) { crate::window_ui::delete_button(ui, &tr("Yes")) } else { ui.button(RichText::new(tr("Yes")).strong()) };
+                if yes.clicked() {
                     answer = Some(true);
                 }
                 if ui.button(tr("No")).clicked() {

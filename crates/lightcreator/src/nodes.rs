@@ -206,7 +206,7 @@ impl App {
             let at = self.active_seg.map(|s| (s, 0.5));
             self.nodes_insert(at);
         }
-        if ui.add_enabled(has_nodes, egui::Button::new(tr("Delete node"))).clicked() {
+        if crate::window_ui::delete_button_enabled(ui, has_nodes, &tr("Delete node")).clicked() {
             self.delete_nodes();
         }
         ui.add(egui::DragValue::new(&mut self.fillet_radius).range(0.05..=500.0).speed(0.1).suffix(" mm")).on_hover_text(tr("Radius for rounding"));
