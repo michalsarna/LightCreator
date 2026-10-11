@@ -887,3 +887,5 @@
 886|Prava os A (stupnjevi)
 887|Promjer obratka
 888|Upiši $101 u upravljač…
+889|Kao kutija ili valjak na stolu: pomaci iznad ili ispod raspona slobodni su.
+890|Samo na ovim visinama (Z)

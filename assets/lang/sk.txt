@@ -887,3 +887,5 @@
 886|Skutočná os A (stupne)
 887|Priemer obrobku
 888|Zapísať $101 do riadiacej jednotky…
+889|Ako škatuľa alebo valec na stole: pohyby nad rozsahom alebo pod ním sú voľné.
+890|Len v týchto výškach (Z)

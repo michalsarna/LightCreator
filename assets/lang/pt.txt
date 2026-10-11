@@ -887,3 +887,5 @@
 886|Eixo A verdadeiro (graus)
 887|Diâmetro da peça
 888|Escrever $101 no controlador…
+889|Como uma caixa ou um cilindro sobre a mesa: os movimentos acima ou abaixo do intervalo são livres.
+890|Só a estas alturas (Z)

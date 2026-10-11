@@ -887,3 +887,5 @@
 886	True A axis (degrees)
 887	Workpiece diameter
 888	Write $101 to the controller…
+889	Like a box or a cylinder standing on the table: moves above or below the range are free.
+890	Only at these heights (Z)

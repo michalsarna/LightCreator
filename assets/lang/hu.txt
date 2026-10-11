@@ -887,3 +887,5 @@
 886|Valódi A tengely (fok)
 887|Munkadarab átmérője
 888|$101 beírása a vezérlőbe…
+889|Mint az asztalon álló doboz vagy henger: a tartomány feletti vagy alatti mozgások szabadok.
+890|Csak ezeken a magasságokon (Z)

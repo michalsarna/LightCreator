@@ -887,3 +887,5 @@
 886|Päris A-telg (kraadid)
 887|Eseme läbimõõt
 888|Kirjuta $101 kontrollerisse…
+889|Nagu laual seisev kast või silinder: liikumised vahemikust kõrgemal või madalamal on vabad.
+890|Ainult nendel kõrgustel (Z)

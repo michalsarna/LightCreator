@@ -887,3 +887,5 @@
 886|Raunverulegur A-ás (gráður)
 887|Þvermál hlutar
 888|Skrifa $101 í stýringuna…
+889|Eins og kassi eða sívalningur á borðinu: hreyfingar yfir eða undir bilinu eru frjálsar.
+890|Aðeins í þessum hæðum (Z)

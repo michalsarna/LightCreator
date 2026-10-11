@@ -1526,7 +1526,7 @@ fn z_bounds() -> (f64, f64, f64, f64) {
 
 fn zoned_doc() -> Document {
     let mut d = check_doc(100.0, 100.0);
-    d.device.zones = vec![Zone { name: "Clamp".into(), enabled: true, shape: ZoneShape::Rect { x: 140.0, y: 60.0, w: 40.0, h: 30.0 } }];
+    d.device.zones = vec![Zone { name: "Clamp".into(), enabled: true, shape: ZoneShape::Rect { x: 140.0, y: 60.0, w: 40.0, h: 30.0 }, z_range: None }];
     d
 }
 
@@ -1536,7 +1536,7 @@ fn a_zone_in_the_way_of_any_move_is_an_error_naming_the_zone_and_the_layer() {
     let mut d = zoned_doc();
     assert!(check::job_check(&d).is_empty(), "{:?}", check::job_check(&d));
     // ... but the way back to the machine's zero (front-left: bottom-left of the design) is a move too: put a zone on it.
-    d.device.zones.push(Zone { name: "Way home".into(), enabled: true, shape: ZoneShape::Circle { x: 50.0, y: 150.0, r: 5.0 } });
+    d.device.zones.push(Zone { name: "Way home".into(), enabled: true, shape: ZoneShape::Circle { x: 50.0, y: 150.0, r: 5.0 }, z_range: None });
     let issues = check::job_check(&d);
     let hit: Vec<_> = issues.iter().filter(|i| i.kind == check::IssueKind::NoGoZone).collect();
     assert_eq!(hit.len(), 1, "{issues:?}");
@@ -1661,4 +1661,37 @@ fn rotary_and_flat_layers_do_not_mix_and_the_design_must_fit_round_the_work() {
     // Old profiles have no rotary.
     let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
     assert!(!old.rotary.enabled);
+}
+
+#[test]
+fn a_zone_with_a_height_range_only_stops_moves_at_those_heights_and_only_with_a_z_axis() {
+    // The zone is a box 0-10 mm high standing on the table where the design's outline runs.
+    let mut d = check_doc(100.0, 100.0);
+    d.device.zones = vec![Zone { name: "Box".into(), enabled: true, shape: ZoneShape::Rect { x: 105.0, y: 95.0, w: 5.0, h: 20.0 }, z_range: Some((0.0, 10.0)) }];
+    let hit = |d: &Document| check::job_check(d).iter().any(|i| i.kind == check::IssueKind::NoGoZone);
+    // No Z axis: the range means nothing, the zone is a plain area.
+    assert!(hit(&d));
+    d.device.axes.has_z = true;
+    d.device.axes.z_max = 100.0;
+    // A layer that does not say where Z is: the box is assumed to be in the way.
+    assert!(hit(&d));
+    // Moving at 30 mm, above the box: free. At 5 mm and 0 mm, the box is hit.
+    d.layers[0].z_start = 30.0;
+    assert!(!hit(&d));
+    d.layers[0].z_start = 5.0;
+    assert!(hit(&d));
+    d.layers[0].z_start = 10.0; // the end of the range counts
+    assert!(hit(&d));
+    d.layers[0].z_start = 10.5;
+    assert!(!hit(&d));
+    // Two passes, the second one going down into the box.
+    d.layers[0].passes = 2;
+    d.layers[0].z_start = 20.0;
+    d.layers[0].z_step = -15.0;
+    assert!(hit(&d));
+    // The range is kept in the profile; old zones have none.
+    let back: Device = serde_json::from_str(&serde_json::to_string(&d.device).unwrap()).unwrap();
+    assert_eq!(back.zones[0].z_range, Some((0.0, 10.0)));
+    let no_range: Zone = serde_json::from_str(r#"{"name":"x","shape":{"Rect":{"x":0.0,"y":0.0,"w":1.0,"h":1.0}}}"#).unwrap();
+    assert!(no_range.enabled && no_range.z_range.is_none());
 }

@@ -887,3 +887,5 @@
 886|Prava os A (stopinje)
 887|Premer obdelovanca
 888|Zapiši $101 v krmilnik…
+889|Kot škatla ali valj na mizi: premiki nad ali pod razponom so prosti.
+890|Samo na teh višinah (Z)

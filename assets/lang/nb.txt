@@ -887,3 +887,5 @@
 886|Ekte A-akse (grader)
 887|Emnets diameter
 888|Skriv $101 til kontrolleren…
+889|Som en eske eller sylinder på bordet: bevegelser over eller under området er frie.
+890|Bare på disse høydene (Z)

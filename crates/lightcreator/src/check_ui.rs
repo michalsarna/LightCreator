@@ -466,7 +466,7 @@ mod zone_tests {
         let mut a = App::build(&ctx, None, false);
         a.screen = crate::app::Screen::Editor;
         let mut d = lc_core::Device::default();
-        d.zones = vec![Zone { name: "Clamp".into(), enabled: true, shape: ZoneShape::Rect { x: 100.0, y: 100.0, w: 30.0, h: 30.0 } }];
+        d.zones = vec![Zone { name: "Clamp".into(), enabled: true, shape: ZoneShape::Rect { x: 100.0, y: 100.0, w: 30.0, h: 30.0 }, z_range: None }];
         a.profiles = vec![d];
         a.enter_editor(0);
         a.connected = true;

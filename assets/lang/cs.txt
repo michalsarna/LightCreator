@@ -887,3 +887,5 @@
 886|Skutečná osa A (stupně)
 887|Průměr obrobku
 888|Zapsat $101 do řídicí jednotky…
+889|Jako krabice nebo válec stojící na stole: pohyby nad rozsahem nebo pod ním jsou volné.
+890|Jen v těchto výškách (Z)

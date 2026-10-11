@@ -76,7 +76,7 @@ pub fn check_frame(dev: &Device, bounds: Rect) -> Vec<Issue> {
     let corners = [a, Pt::new(b.x, a.y), b, Pt::new(a.x, b.y), a];
     let mut hit: Vec<usize> = vec![];
     for w in corners.windows(2) {
-        for z in crate::zones::zones_hit(dev, w[0], w[1]) {
+        for z in crate::zones::zones_hit(dev, w[0], w[1], &[]) {
             if !hit.contains(&z) {
                 hit.push(z);
             }
@@ -146,7 +146,8 @@ pub fn job_check(doc: &Document) -> Vec<Issue> {
     if dev.zones.iter().any(|z| z.enabled) {
         let mut seen: Vec<(usize, usize)> = vec![];
         for m in &job.moves {
-            for z in crate::zones::zones_hit(dev, m.a, m.b) {
+            let levels = doc.layers.get(m.layer).map(|l| l.z_levels()).unwrap_or_default();
+            for z in crate::zones::zones_hit(dev, m.a, m.b, &levels) {
                 if !seen.contains(&(z, m.layer)) {
                     seen.push((z, m.layer));
                     out.push(Issue { level: Level::Error, kind: IssueKind::NoGoZone, shapes: vec![], layer: Some(m.layer), zone: Some(z) });

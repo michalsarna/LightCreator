@@ -887,3 +887,5 @@
 886|Vrai axe A (degrés)
 887|Diamètre de la pièce
 888|Écrire $101 dans le contrôleur…
+889|Comme une boîte ou un cylindre posé sur la table : les déplacements au-dessus ou au-dessous de la plage sont libres.
+890|Seulement à ces hauteurs (Z)

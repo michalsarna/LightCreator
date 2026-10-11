@@ -887,3 +887,5 @@
 886|Ægte A-akse (grader)
 887|Emnets diameter
 888|Skriv $101 til styringen…
+889|Som en kasse eller en cylinder på bordet: bevægelser over eller under området er frie.
+890|Kun i disse højder (Z)

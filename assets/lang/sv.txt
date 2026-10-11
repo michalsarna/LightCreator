@@ -887,3 +887,5 @@
 886|Riktig A-axel (grader)
 887|Arbetsstyckets diameter
 888|Skriv $101 till styrenheten…
+889|Som en låda eller en cylinder på bordet: rörelser ovanför eller under intervallet är fria.
+890|Bara på dessa höjder (Z)

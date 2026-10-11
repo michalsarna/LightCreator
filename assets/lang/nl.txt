@@ -887,3 +887,5 @@
 886|Echte A-as (graden)
 887|Werkstukdiameter
 888|$101 naar de besturing schrijven…
+889|Als een doos of cilinder op de tafel: bewegingen boven of onder het bereik zijn vrij.
+890|Alleen op deze hoogten (Z)

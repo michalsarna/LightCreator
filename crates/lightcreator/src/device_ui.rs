@@ -697,6 +697,7 @@ impl App {
                                 ui.label(RichText::new(tr("Parts of the work area the machine must never enter (a clamp, a fixture). A move that touches an enabled zone, also one with the laser off, stops Start, Frame and export. The program does not route around zones.")).color(theme::text_dim()));
                                 ui.add_space(4.0);
                                 let mut remove = None;
+                                let has_z = d.axes.has_z;
                                 for (i, z) in d.zones.iter_mut().enumerate() {
                                     ui.horizontal_wrapped(|ui| {
                                         ui.checkbox(&mut z.enabled, "");
@@ -715,6 +716,20 @@ impl App {
                                             remove = Some(i);
                                         }
                                     });
+                                    if has_z {
+                                        ui.horizontal_wrapped(|ui| {
+                                            ui.add_space(24.0);
+                                            let mut limited = z.z_range.is_some();
+                                            if ui.checkbox(&mut limited, tr("Only at these heights (Z)")).on_hover_text(tr("Like a box or a cylinder standing on the table: moves above or below the range are free.")).changed() {
+                                                z.z_range = if limited { Some((0.0, 10.0)) } else { None };
+                                            }
+                                            if let Some((lo, hi)) = &mut z.z_range {
+                                                ui.add(egui::DragValue::new(lo).speed(0.5).suffix(" mm"));
+                                                ui.label("–");
+                                                ui.add(egui::DragValue::new(hi).speed(0.5).suffix(" mm"));
+                                            }
+                                        });
+                                    }
                                     ui.horizontal_wrapped(|ui| {
                                         ui.add_space(24.0);
                                         match &mut z.shape {
@@ -737,7 +752,7 @@ impl App {
                                     d.zones.remove(i);
                                 }
                                 if ui.button(tr("Add a zone")).clicked() {
-                                    d.zones.push(lc_core::Zone { name: trf("Zone {}", &[&(d.zones.len() + 1)]), enabled: true, shape: lc_core::ZoneShape::Rect { x: 10.0, y: 10.0, w: 50.0, h: 30.0 } });
+                                    d.zones.push(lc_core::Zone { name: trf("Zone {}", &[&(d.zones.len() + 1)]), enabled: true, shape: lc_core::ZoneShape::Rect { x: 10.0, y: 10.0, w: 50.0, h: 30.0 }, z_range: None });
                                 }
                             }
                             CfgPage::Firmware => {

@@ -1161,6 +1161,9 @@ const TABLE: &[[&str; 7]] = &[
     ["True A axis (degrees)", "Prawdziwa oś A (stopnie)", "Echte A-Achse (Grad)", "Vero asse A (gradi)", "Oikea A-akseli (asteet)", "真正的 A 轴（度）", "सच्चा A अक्ष (अंश)"],
     ["Workpiece diameter", "Średnica przedmiotu", "Werkstückdurchmesser", "Diametro del pezzo", "Kappaleen halkaisija", "工件直径", "वस्तु का व्यास"],
     ["Write $101 to the controller…", "Zapisz $101 w sterowniku…", "$101 in die Steuerung schreiben…", "Scrivi $101 nel controller…", "Kirjoita $101 ohjaimeen…", "把 $101 写入控制器…", "$101 कंट्रोलर में लिखें…"],
+    // ---- zone heights ----
+    ["Like a box or a cylinder standing on the table: moves above or below the range are free.", "Jak pudełko lub walec stojący na stole: ruchy powyżej lub poniżej zakresu są wolne.", "Wie eine Kiste oder ein Zylinder auf dem Tisch: Bewegungen über oder unter dem Bereich sind frei.", "Come una scatola o un cilindro appoggiato sul tavolo: i movimenti sopra o sotto l'intervallo sono liberi.", "Kuin pöydällä seisova laatikko tai sylinteri: liikkeet alueen ylä- tai alapuolella ovat vapaita.", "就像立在台面上的盒子或圆柱：范围之上或之下的移动不受限制。", "मेज़ पर खड़े डिब्बे या बेलन की तरह: सीमा के ऊपर या नीचे की चालें मुक्त हैं।"],
+    ["Only at these heights (Z)", "Tylko na tych wysokościach (Z)", "Nur auf diesen Höhen (Z)", "Solo a queste altezze (Z)", "Vain näillä korkeuksilla (Z)", "仅在这些高度 (Z)", "केवल इन ऊँचाइयों पर (Z)"],
 ];
 #[cfg(test)]
 mod tests {

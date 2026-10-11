@@ -887,3 +887,5 @@
 886|Assi A veru (gradi)
 887|Dijametru tal-biċċa
 888|Ikteb $101 fil-kontrollur…
+889|Bħal kaxxa jew ċilindru fuq il-mejda: il-movimenti 'l fuq jew 'l isfel mill-medda huma ħielsa.
+890|Biss f'dawn l-għoli (Z)

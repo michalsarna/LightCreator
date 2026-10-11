@@ -887,3 +887,5 @@
 886|Veritable eix A (graus)
 887|Diàmetre de la peça
 888|Escriu $101 al controlador…
+889|Com una caixa o un cilindre sobre la taula: els moviments per sobre o per sota de l'interval són lliures.
+890|Només a aquestes altures (Z)

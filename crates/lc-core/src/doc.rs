@@ -1183,6 +1183,10 @@ pub struct Zone {
     #[serde(default = "d_true")]
     pub enabled: bool,
     pub shape: ZoneShape,
+    /// With a Z axis: the zone only stops what happens at a height inside this range (machine Z, both ends included),
+    /// like a box or a cylinder standing on the table. `None` = at every height.
+    #[serde(default)]
+    pub z_range: Option<(f64, f64)>,
 }
 
 fn d_true() -> bool {

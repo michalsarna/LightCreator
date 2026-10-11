@@ -887,3 +887,5 @@
 886|Fíor-ais A (céimeanna)
 887|Trastomhas an phíosa
 888|Scríobh $101 chuig an rialaitheoir…
+889|Cosúil le bosca nó sorcóir ina sheasamh ar an mbord: tá gluaiseachtaí os cionn nó faoi bhun an raoin saor.
+890|Ag na hairde seo amháin (Z)

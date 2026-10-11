@@ -887,3 +887,5 @@
 886|Eje A verdadero (grados)
 887|Diámetro de la pieza
 888|Escribir $101 en el controlador…
+889|Como una caja o un cilindro sobre la mesa: los movimientos por encima o por debajo del rango son libres.
+890|Solo a estas alturas (Z)

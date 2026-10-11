@@ -887,3 +887,5 @@
 886|Axa A adevărată (grade)
 887|Diametrul piesei
 888|Scrie $101 în controler…
+889|Ca o cutie sau un cilindru pe masă: mișcările deasupra sau sub interval sunt libere.
+890|Doar la aceste înălțimi (Z)

@@ -887,3 +887,5 @@
 886|Tikra A ašis (laipsniai)
 887|Ruošinio skersmuo
 888|Įrašyti $101 į valdiklį…
+889|Kaip dėžė ar cilindras ant stalo: judesiai virš ar žemiau intervalo laisvi.
+890|Tik šiuose aukščiuose (Z)

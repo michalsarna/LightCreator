@@ -887,3 +887,5 @@
 886|Īstā A ass (grādi)
 887|Priekšmeta diametrs
 888|Ierakstīt $101 kontrolierī…
+889|Kā kaste vai cilindrs uz galda: kustības virs vai zem diapazona ir brīvas.
+890|Tikai šajos augstumos (Z)
