@@ -6,7 +6,7 @@
 
 ## Layers
 * 30 colour layers. Each has a **mode** (Line, Fill, Fill + Line, Offset fill), speed, power, passes, interval, scan angle, overscan, bidirectional scanning, and output / visibility switches.
-* New layers start at 100 % power and 1000 mm/min. The speed of each layer is kept in the **device profile**: a speed you set for a layer becomes its default for that device and for new documents. Speeds are shown per second or per minute (device option *Speed units*), in mm or inches.
+* New layers start at 100 % power and 1000 mm/min. The settings of the layers belong to the **project**: the project file carries them together with the device profile and the material it was made with. What you want to reuse is saved as a **material** in the library of the device; the device profile itself no longer keeps layer speeds (older profiles still contain the old list, which is ignored). Speeds are shown per second or per minute (device option *Speed units*), in mm or inches.
 * **Air assist:** each layer has an *Air pump on* switch. The G-code turns the pump on (`M8`; on Marlin the fan) when a layer that wants it starts, off when a layer without it starts, and off at the end.
 * The colour strip at the bottom shows layer names. Double-click a name (there or in the **Layers** tab) to open the layer options window.
 * The three switches at the end of each row, headed by icons, are output (burn), visible and air pump. *Image settings* (dithering, minimum power) show only for layers that hold bitmaps.

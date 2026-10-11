@@ -120,10 +120,6 @@ impl App {
         // The first-run setup belongs to the start screen.
         self.wizard = None;
         self.seed_device_library();
-        // An empty new document takes the layer speeds of the device; a loaded one keeps its own.
-        if self.doc.shapes.is_empty() && self.path.is_none() {
-            self.apply_layer_speeds();
-        }
         self.touch();
         self.view.need_fit = true;
         self.screen = Screen::Editor;

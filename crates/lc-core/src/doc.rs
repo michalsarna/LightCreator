@@ -1066,7 +1066,8 @@ pub struct Device {
     pub cameras: Vec<CameraSource>,
     /// The camera whose picture is shown (an index into `cameras`).
     pub active_camera: usize,
-    /// Default speed of each of the 30 layers in mm/min, kept with the device and used for new documents.
+    /// Legacy: older versions kept a default speed for each of the 30 layers here. The settings of the layers now
+    /// belong to the project and to the materials of the device's library; this list is read and kept, not used.
     pub layer_speeds: Vec<f64>,
     /// The material library of this device: materials with the settings of all their layers. It is stored with
     /// the profile and with saved projects.
