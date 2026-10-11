@@ -220,7 +220,7 @@
   guide exists in English and Polish; the other languages show the English text there.
 * The status bar shows the state of the device and of the web server (off, on with the port, error). Save buttons are
   green, import buttons blue and delete buttons red.
-* Colour schemes: Dark, Light Dark, Medium Light, Light.
+* Colour schemes (14): Dark, Light Dark, Medium Light, Light, and a dark and a light one in blue, green, purple, brown and orange (the greys and the accent take the colour).
 * Application icon in every place the platform supports.
 * All interface icons (tool bar, menus, context menu, buttons) are SVG files and all text fonts (Noto Sans,
   Noto Sans Mono, Noto Sans SC, Noto Sans Devanagari) are font files from the `assets` folder, embedded in the
