@@ -979,7 +979,7 @@ mod resize_tests {
         );
         h.run_steps(2);
         app(&mut h).enter_editor(0);
-        app(&mut h).wizard = None;
+        app(&mut h).add_dev = None;
         h.run_steps(2);
         app(&mut h).show_about = true;
         h.run_steps(4);

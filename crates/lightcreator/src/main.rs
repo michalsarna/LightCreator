@@ -42,7 +42,7 @@ mod update_ui;
 mod backup_ui;
 mod units_ui;
 mod window_ui;
-mod wizard_ui;
+mod add_device_ui;
 
 const ICON_256: &[u8] = include_bytes!("../../../assets/icons/icon-256.png");
 const ICON_512: &[u8] = include_bytes!("../../../assets/icons/icon-512.png");

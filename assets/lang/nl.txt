@@ -1046,3 +1046,6 @@
 1045|Leer 2 mm
 1046|Nieuw, leeg materiaal
 1047|Multiplex 3 mm
+1048|Voeg een materiaal toe, bijv. berkenmultiplex 3 mm (optioneel)
+1049|Camera's die de machine in de gaten houden. De aangevinkte geeft het live beeld; een andere aanvinken schakelt de eerste uit.
+1050|Deze camera inschakelen: hij geeft het live beeld

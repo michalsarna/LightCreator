@@ -1,51 +1,7 @@
-//! Device profiles: general starting points, copying, and a file format for moving one profile between computers.
+//! Device profiles: copying, and a file format for moving one profile between computers.
 //! A file is data from outside: it is checked strictly and nothing in it is trusted.
 use crate::camimg::CameraKind;
 use crate::doc::*;
-
-/// A starting point for a new device. Only general machines: the numbers are typical, not those of a brand.
-pub struct Template {
-    pub id: &'static str,
-    pub name: &'static str,
-    pub desc: &'static str,
-}
-
-pub const TEMPLATES: &[Template] = &[
-    Template { id: "grbl-diode-400", name: "GRBL diode laser 400 × 400", desc: "A GRBL 1.1 diode laser on a 400 × 400 mm bed, front-left zero, dynamic power." },
-    Template { id: "grbl-co2-300x200", name: "GRBL CO2 laser 300 × 200", desc: "A GRBL 1.1 CO2 laser on a 300 × 200 mm bed, front-left zero." },
-    Template { id: "grbl-k40-300x200", name: "K40 conversion (GRBL) 300 × 200", desc: "A K40 CO2 laser with a GRBL controller board: 300 × 200 mm, zero at the back-left (top-left) corner." },
-    Template { id: "marlin-diode", name: "Marlin diode laser 400 × 400", desc: "A Marlin firmware diode laser (laser feature, S 0–255) on a 400 × 400 mm bed." },
-];
-
-/// The profile of a template, or the default one for an unknown id. These are starting points: check them against the
-/// machine's own documentation.
-pub fn template(id: &str) -> Device {
-    let mut d = Device::default();
-    match id {
-        "grbl-co2-300x200" => {
-            d.name = "GRBL CO2 laser 300 × 200".into();
-            d.area = Area { bed_w: 300.0, bed_h: 200.0, ..Area::default() };
-            d.heads[0].laser = LaserKind::Co2;
-        }
-        "grbl-k40-300x200" => {
-            d.name = "K40 conversion (GRBL) 300 × 200".into();
-            d.area = Area { bed_w: 300.0, bed_h: 200.0, ..Area::default() };
-            d.axes.origin = Origin::BackLeft;
-            d.heads[0].laser = LaserKind::Co2;
-            d.template_notes = "A K40 with a GRBL board usually homes to the top-left corner (here: back-left). Check the work area and the direction of the axes on your machine, and run a test with the laser off.".into();
-        }
-        "marlin-diode" => {
-            d.name = "Marlin diode laser 400 × 400".into();
-            d.controller = Controller::Marlin;
-            d.heads[0].s_max = 255.0;
-        }
-        _ => {
-            d.name = "GRBL diode laser 400 × 400".into();
-        }
-    }
-    d.add_starter_materials();
-    d
-}
 
 /// A profile that starts a new life (a copy, an import): the work times begin at zero, the counters keep their names
 /// and limits.
@@ -178,7 +134,9 @@ pub fn validate(d: &Device) -> Result<(), String> {
             return bad("a reference point");
         }
         // An address that is not usable cannot be switched on.
-        if c.enabled && !c.is_valid() {
+        // (A camera that is on but has no address yet is fine: it just shows nothing.)
+        let empty_url = matches!(&c.kind, CameraKind::Url(u) if u.trim().is_empty());
+        if c.enabled && !c.is_valid() && !empty_url {
             return Err("a camera is switched on but its address is not valid".into());
         }
     }

@@ -1046,3 +1046,6 @@
 1045|Leathar 2 mm
 1046|Ábhar nua folamh
 1047|Plaicearrach 3 mm
+1048|Cuir ábhar leis, m.sh. plaicearrach beithe 3 mm (roghnach)
+1049|Ceamaraí a choimeádann súil ar an meaisín. Tugann an ceann ticeáilte an pictiúr beo; múchann ticeáil ceann eile an chéad cheann.
+1050|Cuir an ceamara seo air: tugann sé an pictiúr beo

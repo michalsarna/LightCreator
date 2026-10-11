@@ -1497,28 +1497,6 @@ fn a_zone_with_a_height_range_only_stops_moves_at_those_heights_and_only_with_a_
 }
 
 #[test]
-fn every_template_makes_a_valid_profile_with_its_own_numbers() {
-    for t in profiles::TEMPLATES {
-        let d = profiles::template(t.id);
-        assert_eq!(profiles::validate(&d), Ok(()), "{}", t.id);
-        assert!(d.name.contains(&t.name[..4]) || !d.name.is_empty());
-    }
-    let co2 = profiles::template("grbl-co2-300x200");
-    assert_eq!((co2.area.bed_w, co2.area.bed_h, co2.laser()), (300.0, 200.0, LaserKind::Co2));
-    let k40 = profiles::template("grbl-k40-300x200");
-    assert_eq!((k40.axes.origin, k40.laser()), (Origin::BackLeft, LaserKind::Co2));
-    assert!(k40.template_notes.contains("top-left"));
-    let marlin = profiles::template("marlin-diode");
-    assert_eq!((marlin.controller, marlin.s_max()), (Controller::Marlin, 255.0));
-    // An unknown id is the plain GRBL diode machine.
-    assert_eq!(profiles::template("nope").controller, Controller::Grbl);
-    // Names are distinct, so the list can be told apart.
-    let mut names: Vec<&str> = profiles::TEMPLATES.iter().map(|t| t.name).collect();
-    names.dedup();
-    assert_eq!(names.len(), profiles::TEMPLATES.len());
-}
-
-#[test]
 fn copies_get_a_free_name() {
     let taken = vec!["Laser".to_string(), "Laser (copy)".to_string()];
     assert_eq!(profiles::copy_name("Laser", &[]), "Laser (copy)");
@@ -1528,7 +1506,10 @@ fn copies_get_a_free_name() {
 
 #[test]
 fn a_profile_file_round_trips_without_the_port_and_old_files_are_read() {
-    let mut d = profiles::template("grbl-k40-300x200");
+    let mut d = Device::default();
+    d.name = "K40".into();
+    d.axes.origin = Origin::BackLeft;
+    d.heads[0].laser = LaserKind::Co2;
     d.connection.port = "/dev/tty.usbserial-1410".into();
     d.connection.usb_id = "1a86:7523".into();
     d.macros = vec![Macro { name: "Park".into(), code: "G0 X0 Y0".into() }];
@@ -1952,10 +1933,6 @@ fn every_device_has_a_material_and_old_profiles_get_the_default_one() {
     x.active_material = 7;
     x.ensure_materials();
     assert_eq!((x.materials.len(), x.active_material), (1, 0));
-    // Templates carry one too.
-    for t in profiles::TEMPLATES {
-        assert!(!profiles::template(t.id).materials.is_empty(), "{}", t.id);
-    }
 }
 
 #[test]
@@ -2046,7 +2023,8 @@ fn materials_travel_with_the_profile_and_with_the_project_and_are_checked_on_imp
 
 #[test]
 fn a_new_device_comes_with_starter_materials_for_its_laser_and_a_new_material_is_empty() {
-    let diode = profiles::template("grbl-diode-400");
+    let mut diode = Device::default();
+    diode.add_starter_materials();
     let names: Vec<&str> = diode.materials.iter().map(|m| m.name.as_str()).collect();
     assert_eq!(names, [materials::DEFAULT_MATERIAL, "Plywood 3 mm", "Cardboard", "Leather 2 mm", "Paper"]);
     assert!(diode.materials[0].layers.is_empty(), "the default one is empty");
@@ -2055,7 +2033,9 @@ fn a_new_device_comes_with_starter_materials_for_its_laser_and_a_new_material_is
         assert_eq!((m.layers[0].settings.mode, m.layers[1].settings.mode), (LayerMode::Fill, LayerMode::Line));
         assert!(m.layers.iter().all(|l| l.settings.speed > 0.0 && l.settings.power > 0.0 && l.settings.power <= 100.0));
     }
-    let co2 = profiles::template("grbl-co2-300x200");
+    let mut co2 = Device::default();
+    co2.heads[0].laser = LaserKind::Co2;
+    co2.add_starter_materials();
     assert!(co2.materials.iter().any(|m| m.name == "Acrylic 3 mm"));
     assert!(!diode.materials.iter().any(|m| m.name == "Acrylic 3 mm"), "a diode laser does not cut clear acrylic");
     // Changing the laser type of a device that still has its starters gives it those of the other type...
@@ -2081,4 +2061,22 @@ fn a_new_device_comes_with_starter_materials_for_its_laser_and_a_new_material_is
     assert_eq!(d.device.materials[i].layers.len(), 1, "only the layer in use");
     assert!(d.layers[1].same_settings(&Layer::new(1)), "reset to the defaults");
     assert_eq!(d.device.materials[0].layer(1).unwrap().settings.speed, 3.0, "the first material keeps its own");
+}
+
+#[test]
+fn one_camera_is_on_at_a_time_and_a_new_one_without_an_address_is_allowed() {
+    let mut d = Device::default();
+    d.cameras = vec![CameraSource::url("A", "http://a/x", 0), CameraSource::url("B", "http://b/y", 0), CameraSource::url("C", "", 0)];
+    d.activate_camera(1);
+    assert_eq!((d.active_camera, d.cameras.iter().map(|c| c.enabled).collect::<Vec<_>>()), (1, vec![false, true, false]));
+    assert_eq!(d.stream_url(), Some("http://b/y"));
+    d.activate_camera(7);
+    assert_eq!(d.active_camera, 1, "no such camera");
+    // A camera that is on but has no address yet shows nothing and is still a valid profile.
+    d.activate_camera(2);
+    assert_eq!(d.stream_url(), None);
+    assert!(profiles::import_profile(&profiles::export_profile(&d, "v0.1.2")).is_ok());
+    // A bad address that is on is still refused.
+    d.cameras[2].kind = CameraKind::Url("rtsp://x".into());
+    assert!(profiles::import_profile(&profiles::export_profile(&d, "v0.1.2")).is_err());
 }

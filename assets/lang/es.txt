@@ -1046,3 +1046,6 @@
 1045|Cuero 2 mm
 1046|Material nuevo, vacío
 1047|Contrachapado 3 mm
+1048|Añade un material, p. ej. contrachapado de abedul 3 mm (opcional)
+1049|Cámaras que vigilan la máquina. La marcada da la imagen en vivo; marcar otra apaga la primera.
+1050|Activar esta cámara: da la imagen en vivo

@@ -1046,3 +1046,6 @@
 1045|Usnje 2 mm
 1046|Nov, prazen material
 1047|Vezana plošča 3 mm
+1048|Dodajte material, npr. brezova vezana plošča 3 mm (neobvezno)
+1049|Kamere, ki nadzirajo stroj. Označena daje sliko v živo; označitev druge izklopi prvo.
+1050|Vklopi to kamero: daje sliko v živo

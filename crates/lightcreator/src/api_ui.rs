@@ -147,7 +147,7 @@ impl App {
             }
             Command::SelectCamera(i) => {
                 if i < self.doc.device.cameras.len() {
-                    self.doc.device.active_camera = i;
+                    self.doc.device.activate_camera(i);
                     self.sync_profile();
                 }
             }

@@ -1046,3 +1046,6 @@
 1045|Bőr 2 mm
 1046|Új, üres anyag
 1047|Rétegelt lemez 3 mm
+1048|Adj hozzá anyagot, pl. nyírfa rétegelt lemez 3 mm (nem kötelező)
+1049|A gépet figyelő kamerák. A bejelölt adja az élő képet; egy másik bejelölése kikapcsolja az elsőt.
+1050|Kamera bekapcsolása: ez adja az élő képet

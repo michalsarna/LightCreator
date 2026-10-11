@@ -1046,3 +1046,6 @@
 1045	Leather 2 mm
 1046	New, empty material
 1047	Plywood 3 mm
+1048	Add a material, e.g. Birch plywood 3 mm (optional)
+1049	Cameras that watch the machine. The one that is ticked gives the live picture; ticking another switches the first off.
+1050	Switch this camera on: it gives the live picture

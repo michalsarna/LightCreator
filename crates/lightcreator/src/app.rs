@@ -296,12 +296,14 @@ pub struct App {
     pub fw: crate::firmware_ui::FwUi,
     /// The window with the templates for a new device is open.
     /// The first-run setup is open at this step.
-    pub wizard: Option<usize>,
-    /// The wizard read the controller.
-    pub wizard_read: bool,
-    pub wizard_read_done: bool,
+    pub add_dev: Option<usize>,
+    /// The name of a material to add to the device being added (optional).
+    pub add_dev_material: String,
+    /// The add-device window read the controller.
+    pub add_dev_read: bool,
+    pub add_dev_read_done: bool,
     /// The user left the first-run setup: do not start it again this session.
-    pub wizard_skipped: bool,
+    pub add_dev_skipped: bool,
     /// The focus beam is on.
     pub focus_on: bool,
     /// The warning about macros has been answered in this session.
@@ -484,10 +486,11 @@ impl App {
             connect_actions_at: None,
             single_axis_homing: false,
             fw: Default::default(),
-            wizard: None,
-            wizard_read: false,
-            wizard_read_done: false,
-            wizard_skipped: false,
+            add_dev: None,
+            add_dev_material: String::new(),
+            add_dev_read: false,
+            add_dev_read_done: false,
+            add_dev_skipped: false,
             focus_on: false,
             macros_ok: false,
             job_started: None,
@@ -1873,7 +1876,7 @@ impl App {
         self.fw_window(ctx);
         self.stall_window(ctx);
         self.fw_windows(ctx);
-        self.wizard_window(ctx);
+        self.add_device_window(ctx);
         self.overlay_window(ctx);
         self.prefs_window(ctx);
         self.preview_window(ctx);

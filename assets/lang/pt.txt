@@ -1046,3 +1046,6 @@
 1045|Couro 2 mm
 1046|Novo material vazio
 1047|Contraplacado 3 mm
+1048|Adicione um material, p. ex. contraplacado de bétula 3 mm (opcional)
+1049|Câmaras que vigiam a máquina. A assinalada dá a imagem em direto; assinalar outra desliga a primeira.
+1050|Ligar esta câmara: dá a imagem em direto

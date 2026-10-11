@@ -118,7 +118,7 @@ impl App {
         self.doc.device = dev;
         self.pointer_align = false;
         // The first-run setup belongs to the start screen.
-        self.wizard = None;
+        self.add_dev = None;
         self.load_camera_view();
         // A new, empty document takes the layers of the device's selected material; a loaded one keeps its own.
         if self.doc.shapes.is_empty() && self.path.is_none() {
@@ -197,10 +197,10 @@ impl App {
     pub fn start_screen(&mut self, ui: &mut egui::Ui) {
         // No profile yet: the user must create one before anything else. The first run goes through a short setup.
         if self.profiles.is_empty() && self.cfg.is_none() {
-            if self.wizard_skipped {
+            if self.add_dev_skipped {
                 self.open_cfg_new();
             } else {
-                self.start_wizard();
+                self.start_add_device();
             }
         }
         let ctx = ui.ctx().clone();
@@ -292,7 +292,7 @@ impl App {
                 go = true;
             }
             if ui.button(tr("Add device…")).clicked() {
-                self.start_wizard();
+                self.start_add_device();
             }
             if ui.add_enabled(has, egui::Button::new(tr("Edit…"))).clicked() {
                 self.open_cfg_edit(self.start_sel);
@@ -334,7 +334,7 @@ impl App {
             }
         }
         // The first-run setup has its own window on the same draft.
-        if self.wizard.is_some() {
+        if self.add_dev.is_some() {
             return;
         }
         let Some(mut cfg) = self.cfg.take() else { return };
@@ -713,22 +713,21 @@ impl App {
                                 });
                             }
                             CfgPage::Camera => {
-                                ui.label(RichText::new(tr("Cameras that watch the machine. The active one gives the live picture. A camera can only be switched on when its address is valid.")).color(theme::text_dim()));
+                                ui.label(RichText::new(tr("Cameras that watch the machine. The one that is ticked gives the live picture; ticking another switches the first off.")).color(theme::text_dim()));
                                 let mut remove = None;
+                                let mut toggle: Option<(usize, bool)> = None;
                                 let n = d.cameras.len();
                                 for i in 0..n {
                                     let active = d.active_camera == i;
                                     let c = &mut d.cameras[i];
                                     egui::Frame::group(ui.style()).show(ui, |ui| {
                                         ui.horizontal_wrapped(|ui| {
-                                            let ok = c.is_valid();
-                                            if ui.add_enabled(ok || c.enabled, egui::Checkbox::new(&mut c.enabled, "")).on_hover_text(if ok { tr("Switch this camera on or off") } else { tr("The address is not valid: an http or https address is needed") }).changed() && !ok {
-                                                c.enabled = false;
+                                            // The tick before the name switches this camera on (and the others off): it is the one in use.
+                                            let mut on = active && c.enabled;
+                                            if ui.checkbox(&mut on, "").on_hover_text(tr("Switch this camera on: it gives the live picture")).changed() {
+                                                toggle = Some((i, on));
                                             }
                                             ui.add(egui::TextEdit::singleline(&mut c.name).hint_text(tr("Camera name")).desired_width(150.0));
-                                            if ui.radio(active, tr("Active")).clicked() {
-                                                d.active_camera = i;
-                                            }
                                             if crate::window_ui::delete_icon(ui, &tr("Delete this camera")).clicked() {
                                                 remove = Some(i);
                                             }
@@ -816,6 +815,13 @@ impl App {
                                             });
                                         });
                                     });
+                                }
+                                if let Some((i, on)) = toggle {
+                                    if on {
+                                        d.activate_camera(i);
+                                    } else if let Some(c) = d.cameras.get_mut(i) {
+                                        c.enabled = false;
+                                    }
                                 }
                                 if let Some(i) = remove {
                                     d.cameras.remove(i);
@@ -1714,17 +1720,17 @@ impl App {
                 d.gcode.dynamic_power = v;
             }
         }
-        if self.wizard.is_some() {
-            self.wizard_read_done = true;
+        if self.add_dev.is_some() {
+            self.add_dev_read_done = true;
         }
         self.status = trf("Read {} values from the device", &[&n]);
     }
 }
 
-/// A new, switched-off camera at the end of the list. It is the one being set up, so it becomes the active one.
+/// A new camera at the end of the list. It is the one being set up, so it is switched on and becomes the active one.
 pub fn add_camera(d: &mut lc_core::Device) {
-    d.cameras.push(lc_core::CameraSource { name: trf("Camera {}", &[&(d.cameras.len() + 1)]), enabled: false, kind: lc_core::CameraKind::Url(String::new()), rotation: 0, image: Default::default(), lens: Default::default(), reference: vec![] });
-    d.active_camera = d.cameras.len() - 1;
+    d.cameras.push(lc_core::CameraSource { name: trf("Camera {}", &[&(d.cameras.len() + 1)]), enabled: true, kind: lc_core::CameraKind::Url(String::new()), rotation: 0, image: Default::default(), lens: Default::default(), reference: vec![] });
+    d.activate_camera(d.cameras.len() - 1);
 }
 
 #[cfg(test)]
@@ -1739,7 +1745,8 @@ mod tests {
         add_camera(&mut d);
         add_camera(&mut d);
         assert_eq!((d.cameras.len(), d.active_camera), (3, 2));
-        assert!(!d.cameras[2].enabled, "it stays off until it has a valid address");
+        assert!(d.cameras[2].enabled && !d.cameras[1].enabled && !d.cameras[0].enabled, "only the new one is on");
+        assert!(d.camera_source().is_none() || d.stream_url().is_none(), "no address yet: nothing to show");
     }
 
     #[test]

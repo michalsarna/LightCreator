@@ -1046,3 +1046,6 @@
 1045|Kůže 2 mm
 1046|Nový prázdný materiál
 1047|Překližka 3 mm
+1048|Přidat materiál, např. březová překližka 3 mm (nepovinné)
+1049|Kamery sledující stroj. Zaškrtnutá dává živý obraz; zaškrtnutí jiné vypne první.
+1050|Zapnout tuto kameru: dává živý obraz

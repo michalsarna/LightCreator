@@ -1046,3 +1046,6 @@
 1045|Cuir 2 mm
 1046|Nouveau matériau vide
 1047|Contreplaqué 3 mm
+1048|Ajoutez un matériau, par ex. contreplaqué de bouleau 3 mm (facultatif)
+1049|Caméras qui surveillent la machine. Celle qui est cochée donne l'image en direct ; en cocher une autre éteint la première.
+1050|Activer cette caméra : elle donne l'image en direct

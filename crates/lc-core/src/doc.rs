@@ -1533,6 +1533,16 @@ impl Device {
     }
 
     /// The camera whose picture is shown: the active one, when it is switched on and valid.
+    /// Switch camera `i` on and every other one off: the camera in use is the active one.
+    pub fn activate_camera(&mut self, i: usize) {
+        if i < self.cameras.len() {
+            self.active_camera = i;
+            for (j, c) in self.cameras.iter_mut().enumerate() {
+                c.enabled = j == i;
+            }
+        }
+    }
+
     pub fn camera_source(&self) -> Option<&CameraSource> {
         self.cameras.get(self.active_camera).filter(|c| c.enabled && c.is_valid())
     }

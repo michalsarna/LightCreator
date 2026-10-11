@@ -1046,3 +1046,6 @@
 1045|Oda 2 mm
 1046|Nauja tuščia medžiaga
 1047|Faneros 3 mm
+1048|Pridėkite medžiagą, pvz., beržo faneros 3 mm (neprivaloma)
+1049|Kameros, stebinčios mašiną. Pažymėta duoda gyvą vaizdą; pažymėjus kitą, pirmoji išjungiama.
+1050|Įjungti šią kamerą: ji duoda gyvą vaizdą

@@ -1046,3 +1046,6 @@
 1045|Nahk 2 mm
 1046|Uus tühi materjal
 1047|Vineer 3 mm
+1048|Lisa materjal, nt kasevineer 3 mm (valikuline)
+1049|Masinat jälgivad kaamerad. Märgitud kaamera annab reaalajapildi; teise märkimine lülitab esimese välja.
+1050|Lülita see kaamera sisse: see annab reaalajapildi

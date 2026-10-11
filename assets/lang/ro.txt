@@ -1046,3 +1046,6 @@
 1045|Piele 2 mm
 1046|Material nou, gol
 1047|Placaj 3 mm
+1048|Adaugă un material, de ex. placaj de mesteacăn 3 mm (opțional)
+1049|Camere care supraveghează mașina. Cea bifată dă imaginea live; bifarea alteia o oprește pe prima.
+1050|Pornește această cameră: dă imaginea live

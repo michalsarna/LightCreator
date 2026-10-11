@@ -1046,3 +1046,6 @@
 1045|Ġilda 2 mm
 1046|Materjal ġdid, vojt
 1047|Plywood 3 mm
+1048|Żid materjal, eż. plywood tal-betula 3 mm (mhux obbligatorju)
+1049|Kameras li josservaw il-magna. Dik immarkata tagħti x-xbieha dirett; li timmarka oħra titfi l-ewwel waħda.
+1050|Ixgħel din il-kamera: tagħti x-xbieha dirett

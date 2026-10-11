@@ -1046,3 +1046,6 @@
 1045|Leður 2 mm
 1046|Nýtt, tómt efni
 1047|Krossviður 3 mm
+1048|Bættu við efni, t.d. birkikrossviði 3 mm (valfrjálst)
+1049|Myndavélar sem fylgjast með vélinni. Sú sem er merkt gefur beina mynd; að merkja aðra slekkur á fyrstu.
+1050|Kveikja á þessari myndavél: hún gefur beina mynd

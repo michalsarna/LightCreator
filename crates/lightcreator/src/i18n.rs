@@ -1337,6 +1337,10 @@ const TABLE: &[[&str; 7]] = &[
     ["Leather 2 mm", "Skóra 2 mm", "Leder 2 mm", "Pelle 2 mm", "Nahka 2 mm", "皮革 2 毫米", "चमड़ा 2 मिमी"],
     ["New, empty material", "Nowy, pusty materiał", "Neues, leeres Material", "Nuovo materiale vuoto", "Uusi, tyhjä materiaali", "新的空材料", "नई, खाली सामग्री"],
     ["Plywood 3 mm", "Sklejka 3 mm", "Sperrholz 3 mm", "Compensato 3 mm", "Vaneri 3 mm", "胶合板 3 毫米", "प्लाईवुड 3 मिमी"],
+    // ---- add device and cameras ----
+    ["Add a material, e.g. Birch plywood 3 mm (optional)", "Dodaj materiał, np. Sklejka brzozowa 3 mm (opcjonalnie)", "Ein Material hinzufügen, z. B. Birkensperrholz 3 mm (optional)", "Aggiungi un materiale, ad es. Compensato di betulla 3 mm (facoltativo)", "Lisää materiaali, esim. koivuvaneri 3 mm (valinnainen)", "添加材料，例如桦木胶合板 3 毫米（可选）", "सामग्री जोड़ें, जैसे बर्च प्लाईवुड 3 मिमी (वैकल्पिक)"],
+    ["Cameras that watch the machine. The one that is ticked gives the live picture; ticking another switches the first off.", "Kamery obserwujące maszynę. Zaznaczona daje obraz na żywo; zaznaczenie innej wyłącza pierwszą.", "Kameras, die die Maschine beobachten. Die angehakte liefert das Livebild; eine andere anzuhaken schaltet die erste aus.", "Telecamere che osservano la macchina. Quella spuntata dà l'immagine dal vivo; spuntarne un'altra spegne la prima.", "Koneen kameravalvonta. Valittuna oleva antaa live-kuvan; toisen valitseminen sammuttaa ensimmäisen.", "监视机器的摄像头。打勾的那个提供实时画面；勾选另一个会关闭前一个。", "मशीन पर नज़र रखने वाले कैमरे। टिक किया हुआ कैमरा लाइव चित्र देता है; दूसरे पर टिक करने से पहला बंद हो जाता है।"],
+    ["Switch this camera on: it gives the live picture", "Włącz tę kamerę: daje obraz na żywo", "Diese Kamera einschalten: sie liefert das Livebild", "Attiva questa telecamera: dà l'immagine dal vivo", "Kytke tämä kamera päälle: se antaa live-kuvan", "开启此摄像头：它提供实时画面", "इस कैमरे को चालू करें: यह लाइव चित्र देता है"],
 ];
 #[cfg(test)]
 mod tests {

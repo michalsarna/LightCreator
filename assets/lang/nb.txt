@@ -1046,3 +1046,6 @@
 1045|Skinn 2 mm
 1046|Nytt, tomt materiale
 1047|Kryssfiner 3 mm
+1048|Legg til et materiale, f.eks. bjørkekryssfiner 3 mm (valgfritt)
+1049|Kameraer som overvåker maskinen. Det avkryssede gir live-bildet; å krysse av et annet slår det første av.
+1050|Slå på dette kameraet: det gir live-bildet

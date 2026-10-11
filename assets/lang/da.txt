@@ -1046,3 +1046,6 @@
 1045|Læder 2 mm
 1046|Nyt, tomt materiale
 1047|Krydsfiner 3 mm
+1048|Tilføj et materiale, fx birkekrydsfiner 3 mm (valgfrit)
+1049|Kameraer, der overvåger maskinen. Det afkrydsede giver live-billedet; at afkrydse et andet slår det første fra.
+1050|Tænd dette kamera: det giver live-billedet

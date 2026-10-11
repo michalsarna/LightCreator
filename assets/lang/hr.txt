@@ -1046,3 +1046,6 @@
 1045|Koža 2 mm
 1046|Novi, prazan materijal
 1047|Šperploča 3 mm
+1048|Dodajte materijal, npr. brezova šperploča 3 mm (neobavezno)
+1049|Kamere koje nadziru stroj. Označena daje sliku uživo; označavanje druge isključuje prvu.
+1050|Uključi ovu kameru: daje sliku uživo
