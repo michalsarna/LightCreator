@@ -1077,6 +1077,9 @@ const TABLE: &[[&str; 7]] = &[
     ["Wavelength", "Długość fali", "Wellenlänge", "Lunghezza d'onda", "Aallonpituus", "波长", "तरंगदैर्घ्य"],
     ["Where the red pointer dot is relative to the beam (x right, y down). Used by the pointer alignment in the Device tab.", "Gdzie jest czerwona kropka wskaźnika względem wiązki (x w prawo, y w dół). Używane przez wyrównanie do wskaźnika w zakładce Device.", "Wo der rote Zeigerpunkt relativ zum Strahl liegt (x rechts, y unten). Wird von der Zeigerausrichtung im Reiter Gerät genutzt.", "Dove si trova il punto rosso del puntatore rispetto al fascio (x a destra, y in basso). Usato dall'allineamento al puntatore nella scheda Dispositivo.", "Missä punainen osoitinpiste on säteeseen nähden (x oikealle, y alas). Käytetään Laite-välilehden osoittimeen kohdistuksessa.", "红色指示点相对于光束的位置（x 向右，y 向下）。供设备选项卡中的指示点对齐使用。", "लाल पॉइंटर बिंदु किरण के सापेक्ष कहाँ है (x दाएँ, y नीचे)। डिवाइस टैब के पॉइंटर संरेखण में उपयोग होता है।"],
     ["e.g. Blue diode", "np. Niebieska dioda", "z. B. Blaue Diode", "es. Diodo blu", "esim. Sininen diodi", "例如 蓝光二极管", "जैसे नीला डायोड"],
+    // ---- layer head ----
+    ["Laser head", "Głowica lasera", "Laserkopf", "Testa laser", "Laserpää", "激光头", "लेज़र हेड"],
+    ["The interval is smaller than the beam spot ({}): neighbouring lines overlap.", "Interwał jest mniejszy niż plamka wiązki ({}): sąsiednie linie nakładają się.", "Der Abstand ist kleiner als der Strahlfleck ({}): benachbarte Linien überlappen.", "L'intervallo è inferiore al punto del fascio ({}): le linee vicine si sovrappongono.", "Väli on pienempi kuin säteen piste ({}): viereiset viivat menevät päällekkäin.", "间距小于光斑（{}）：相邻线条会重叠。", "अंतराल किरण के धब्बे ({}) से छोटा है: पास की रेखाएँ ढक जाती हैं।"],
 ];
 #[cfg(test)]
 mod tests {

@@ -811,3 +811,5 @@
 810|Comprimento de onda
 811|Onde está o ponto vermelho do ponteiro em relação ao feixe (x para a direita, y para baixo). Usado pelo alinhamento com o ponteiro do separador Dispositivo.
 812|p. ex. Díodo azul
+813|Cabeçote laser
+814|O intervalo é menor que o ponto do feixe ({}): as linhas vizinhas sobrepõem-se.

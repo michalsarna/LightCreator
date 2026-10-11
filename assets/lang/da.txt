@@ -811,3 +811,5 @@
 810|Bølgelængde
 811|Hvor den røde pegepunkt er i forhold til strålen (x til højre, y nedad). Bruges af pegeindstillingen i fanen Enhed.
 812|f.eks. Blå diode
+813|Laserhoved
+814|Intervallet er mindre end strålepunktet ({}): nabolinjer overlapper.

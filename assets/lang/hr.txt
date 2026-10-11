@@ -811,3 +811,5 @@
 810|Valna duljina
 811|Gdje je crvena točka pokazivača u odnosu na snop (x desno, y dolje). Koristi je poravnanje po pokazivaču na kartici Uređaj.
 812|npr. Plava dioda
+813|Laserska glava
+814|Razmak je manji od točke snopa ({}): susjedne linije se preklapaju.

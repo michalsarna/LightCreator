@@ -179,3 +179,27 @@ fn arcs_for_circles_when_asked() {
     // Without the option the same document has no arcs, and the files of the other tests are untouched.
     assert!(!gcode_for(doc, device(&[])).contains("G2 "));
 }
+
+#[test]
+fn two_heads_get_their_tool_numbers_and_their_own_s_scale() {
+    let mut dev = device(&[]);
+    dev.heads[0].name = "Blue diode".into();
+    dev.heads.push(LaserHead { name: "Fibre".into(), tool: 2, s_max: 255.0, laser: LaserKind::Fiber, ..LaserHead::default() });
+    let mut doc = layers_doc();
+    doc.layers[1].head = 1; // layer 0 and 2 burn with the first head, layer 1 with the second
+    let text = gcode_for(doc.clone(), dev.clone());
+    check("grbl_m4_two_heads", &text);
+    let tools: Vec<&str> = text.lines().filter(|l| l.starts_with('T')).collect();
+    assert_eq!(tools, vec!["T2 ; laser head Fibre", "T0 ; laser head Blue diode"]);
+    // Layer 1 is at 100 %: full scale of its own head (255), the others use 1000 for 60 % and 35 %.
+    assert!(text.contains(" S255"));
+    assert!(text.contains(" S600"));
+    assert!(text.contains(" S350"));
+    // A layer that names a head the device does not have uses the first one; one head never writes T.
+    let mut lost = layers_doc();
+    lost.layers[0].head = 9;
+    assert!(!gcode_for(lost, device(&[])).lines().any(|l| l.starts_with('T')));
+    // With a second head defined but not used, nothing changes either.
+    let unused = gcode_for(layers_doc(), dev);
+    assert!(!unused.lines().any(|l| l.starts_with('T')));
+}

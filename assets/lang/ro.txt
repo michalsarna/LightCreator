@@ -811,3 +811,5 @@
 810|Lungime de undă
 811|Unde este punctul roșu al indicatorului față de fascicul (x spre dreapta, y în jos). Folosit de alinierea la indicator din fila Dispozitiv.
 812|ex. Diodă albastră
+813|Cap laser
+814|Intervalul este mai mic decât punctul fasciculului ({}): liniile vecine se suprapun.

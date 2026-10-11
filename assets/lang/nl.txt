@@ -811,3 +811,5 @@
 810|Golflengte
 811|Waar de rode aanwijzerstip zich ten opzichte van de straal bevindt (x naar rechts, y omlaag). Gebruikt door het uitlijnen op de aanwijzer in het tabblad Apparaat.
 812|bijv. Blauwe diode
+813|Laserkop
+814|Het interval is kleiner dan het straalpunt ({}): naburige lijnen overlappen.

@@ -64,6 +64,8 @@ struct Writer<'a> {
     s: Option<f64>,
     f: Option<f64>,
     layer: usize,
+    /// The laser head of the layer being written: its S max scales the power.
+    head: usize,
     op: usize,
     ops: Vec<OpInfo>,
     seconds: f64,
@@ -72,7 +74,7 @@ struct Writer<'a> {
 
 impl<'a> Writer<'a> {
     fn new(dev: &'a Device) -> Self {
-        Writer { dev, out: String::new(), moves: vec![], pos: dev.home_point(), s: None, f: None, layer: 0, op: 0, ops: vec![], seconds: 0.0, cut_len: 0.0 }
+        Writer { dev, out: String::new(), moves: vec![], pos: dev.home_point(), s: None, f: None, layer: 0, head: 0, op: 0, ops: vec![], seconds: 0.0, cut_len: 0.0 }
     }
 
     fn map(&self, p: Pt) -> (f64, f64) {
@@ -140,7 +142,7 @@ impl<'a> Writer<'a> {
 
     /// The `S` and `F` words that changed since the last move.
     fn modal(&mut self, l: &mut String, power: f64, speed: f64) {
-        let raw = power / 100.0 * self.dev.s_max();
+        let raw = power / 100.0 * self.dev.head(self.head).s_max;
         // Smoothieware takes a fraction of the full power, so it keeps decimals; the others take whole numbers.
         let smooth = self.dev.dialect() == Dialect::Smoothieware;
         let s = if smooth { (raw * 1000.0).round() / 1000.0 } else { raw.round() };
@@ -341,6 +343,8 @@ pub fn generate(doc: &Document) -> Job {
     let mut air = false;
     // The GRBL-like dialects can switch between constant and dynamic power from layer to layer.
     let mut mode = if dialect == Dialect::Grbl { PowerMode::Constant } else { PowerMode::Dynamic };
+    // The head that is active when the job starts is the first one.
+    let mut tool = 0usize;
     for li in doc.layer_order() {
         let layer = &doc.layers[li];
         if !layer.output {
@@ -353,7 +357,16 @@ pub fn generate(doc: &Document) -> Job {
             continue;
         }
         w.layer = li;
+        w.head = layer.head.min(dev.heads.len() - 1);
         let _ = writeln!(w.out, "; layer {} ({}) speed {} mm/s power {}%", layer.name, layer.mode.label(), layer.speed, layer.power);
+        // With several heads the controller is told which one burns this layer.
+        if dev.heads.len() > 1 && w.head != tool {
+            tool = w.head;
+            let h = &dev.heads[tool];
+            let _ = writeln!(w.out, "T{} ; laser head {}", h.tool, if h.name.trim().is_empty() { (tool + 1).to_string() } else { h.name.clone() });
+            // The new head has its own S scale: the modal S is no longer what the controller holds.
+            w.s = None;
+        }
         if dialect.is_grbl() {
             let want = match layer.power_mode {
                 PowerMode::Inherit if dialect == Dialect::Grbl => PowerMode::Constant,

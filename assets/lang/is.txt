@@ -811,3 +811,5 @@
 810|Bylgjulengd
 811|Hvar rauði bendilspunkturinn er miðað við geislann (x til hægri, y niður). Notað af bendilsstillingu í flipanum Tæki.
 812|t.d. Blá díóða
+813|Leysihaus
+814|Bilið er minna en geislabletturinn ({}): nálægar línur skarast.

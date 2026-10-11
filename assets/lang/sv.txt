@@ -811,3 +811,5 @@
 810|Våglängd
 811|Var den röda pekarpunkten är i förhållande till strålen (x åt höger, y nedåt). Används av pekarjusteringen i fliken Enhet.
 812|t.ex. Blå diod
+813|Laserhuvud
+814|Intervallet är mindre än strålpunkten ({}): grannlinjer överlappar.

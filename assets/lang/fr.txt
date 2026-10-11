@@ -811,3 +811,5 @@
 810|Longueur d'onde
 811|Où se trouve le point rouge du pointeur par rapport au faisceau (x vers la droite, y vers le bas). Utilisé par l'alignement sur le pointeur de l'onglet Appareil.
 812|p. ex. Diode bleue
+813|Tête laser
+814|L'intervalle est plus petit que le point du faisceau ({}) : les lignes voisines se chevauchent.

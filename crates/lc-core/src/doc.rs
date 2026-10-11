@@ -140,6 +140,9 @@ pub struct Layer {
     /// Constant (`M3`) or dynamic (`M4`) power for this layer; GRBL-like dialects only.
     #[serde(default)]
     pub power_mode: PowerMode,
+    /// The laser head that burns this layer (an index into the device's heads; the first one if it is not there).
+    #[serde(default)]
+    pub head: usize,
 }
 
 /// How a layer's laser power follows the speed.
@@ -184,6 +187,7 @@ impl Layer {
             min_power: 0.0,
             air_assist: false,
             power_mode: PowerMode::Inherit,
+            head: 0,
         }
     }
 }

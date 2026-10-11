@@ -811,3 +811,5 @@
 810	Wavelength
 811	Where the red pointer dot is relative to the beam (x right, y down). Used by the pointer alignment in the Device tab.
 812	e.g. Blue diode
+813	Laser head
+814	The interval is smaller than the beam spot ({}): neighbouring lines overlap.

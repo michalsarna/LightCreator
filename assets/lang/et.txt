@@ -811,3 +811,5 @@
 810|Lainepikkus
 811|Kus on punane osutipunkt kiire suhtes (x paremale, y alla). Kasutab vahelehe Seade osutiga joondamine.
 812|nt Sinine diood
+813|Laserpea
+814|Vahe on väiksem kui kiire täpp ({}): naaberjooned kattuvad.

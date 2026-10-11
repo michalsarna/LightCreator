@@ -811,3 +811,5 @@
 810|Bangos ilgis
 811|Kur raudonas rodyklės taškas spindulio atžvilgiu (x į dešinę, y žemyn). Naudoja lygiavimas pagal rodyklę skirtuke Įrenginys.
 812|pvz. Mėlynas diodas
+813|Lazerio galvutė
+814|Intervalas mažesnis už spindulio dėmę ({}): gretimos linijos persidengia.

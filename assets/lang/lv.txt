@@ -811,3 +811,5 @@
 810|Viļņa garums
 811|Kur ir sarkanais rādītāja punkts attiecībā pret staru (x pa labi, y uz leju). Izmanto izlīdzināšana pēc rādītāja cilnē Ierīce.
 812|piem. Zila diode
+813|Lāzera galviņa
+814|Intervāls ir mazāks par stara plankumu ({}): blakus līnijas pārklājas.

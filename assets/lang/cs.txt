@@ -811,3 +811,5 @@
 810|Vlnová délka
 811|Kde je červená tečka ukazatele vůči paprsku (x doprava, y dolů). Používá ji zarovnání podle ukazatele na kartě Zařízení.
 812|např. Modrá dioda
+813|Laserová hlava
+814|Rozteč je menší než stopa paprsku ({}): sousední čáry se překrývají.

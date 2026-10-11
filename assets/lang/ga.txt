@@ -811,3 +811,5 @@
 810|Tonnfhad
 811|Cá bhfuil an ponc dearg pointeora i gcoibhneas leis an mbíoma (x ar dheis, y síos). Úsáidtear é le haghaidh ailíniú pointeora sa chluaisín Gléas.
 812|m.sh. Dé-óid ghorm
+813|Ceann léasair
+814|Tá an t-eatramh níos lú ná spota an bhíoma ({}): tá línte comharsanacha ag forluí.

@@ -811,3 +811,5 @@
 810|Tul tal-mewġa
 811|Fejn hi t-tikka ħamra tal-indikatur relattiv għar-raġġ (x lejn il-lemin, y 'l isfel). Jintuża mill-allinjament mal-indikatur fit-tab Apparat.
 812|eż. Dijodu blu
+813|Ras tal-laser
+814|L-intervall huwa iżgħar mit-tikka tar-raġġ ({}): il-linji ġirien jikkoinċidu.
