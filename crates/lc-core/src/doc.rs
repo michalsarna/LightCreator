@@ -154,9 +154,23 @@ pub struct Layer {
     /// The layer is burnt on a rotary attachment (when the device has one switched on).
     #[serde(default)]
     pub rotary: bool,
+    /// Line layers: millimetres the outline is moved out (in, when negative) to make up for the width of the cut.
+    #[serde(default)]
+    pub kerf: f64,
+    /// Line layers: cut and skip lengths along the outline.
+    #[serde(default)]
+    pub perforation: crate::cutopts::Perforation,
+    /// Line layers: tabs (bridges) left in the outline.
+    #[serde(default)]
+    pub tabs: crate::cutopts::Tabs,
 }
 
 impl Layer {
+    /// Does the layer use the kerf, perforation or tabs (so that its outlines are not written as they are)?
+    pub fn has_cut_options(&self) -> bool {
+        (self.kerf.is_finite() && self.kerf != 0.0) || self.perforation.enabled || self.tabs.enabled
+    }
+
     /// The Z positions of the passes, or nothing when the layer does not move Z.
     pub fn z_levels(&self) -> Vec<f64> {
         if self.z_start == 0.0 && self.z_step == 0.0 {
@@ -212,6 +226,9 @@ impl Layer {
             z_start: 0.0,
             z_step: 0.0,
             rotary: false,
+            kerf: 0.0,
+            perforation: Default::default(),
+            tabs: Default::default(),
         }
     }
 }

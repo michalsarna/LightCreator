@@ -5,6 +5,7 @@ pub mod camimg;
 pub mod check;
 pub mod clipart;
 pub mod controller;
+pub mod cutopts;
 pub mod doc;
 pub mod export;
 pub mod gcode;

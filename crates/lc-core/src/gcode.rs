@@ -402,7 +402,25 @@ fn burn(w: &mut Writer, li: usize, layer: &Layer, polys: &[Polyline], images: &[
             }
         }
     }
-    if matches!(layer.mode, LayerMode::Line | LayerMode::FillAndLine) && !polys.is_empty() {
+    if matches!(layer.mode, LayerMode::Line | LayerMode::FillAndLine) && !polys.is_empty() && layer.has_cut_options() {
+        w.begin_op(li, OpKind::Line, pn, pt);
+        let paths = if layer.kerf != 0.0 { crate::cutopts::kerf_paths(polys, layer.kerf) } else { polys.to_vec() };
+        let all = paths.clone();
+        for p in order_paths(paths, w.pos) {
+            let is_inner = layer.tabs.enabled && layer.tabs.skip_inner && crate::cutopts::is_inner(&p, &all);
+            for piece in crate::cutopts::pieces(&p, &layer.perforation, &layer.tabs, is_inner) {
+                if piece.pts.len() < 2 {
+                    continue;
+                }
+                w.travel(piece.pts[0]);
+                if piece.factor <= 0.0 {
+                    w.travel(*piece.pts.last().unwrap());
+                } else {
+                    w.stroke(&piece.pts, layer.power * piece.factor, layer.speed);
+                }
+            }
+        }
+    } else if matches!(layer.mode, LayerMode::Line | LayerMode::FillAndLine) && !polys.is_empty() {
         w.begin_op(li, OpKind::Line, pn, pt);
         for p in order_paths(polys.to_vec(), w.pos) {
             w.travel(p.pts[0]);

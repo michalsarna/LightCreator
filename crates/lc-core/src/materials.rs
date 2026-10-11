@@ -115,6 +115,13 @@ pub struct LayerSpec {
     /// Index of the layer colour in `PALETTE`; `NO_COLOUR` for materials saved before colours were kept.
     #[serde(default = "no_colour")]
     pub colour: usize,
+    /// Kerf offset (mm), perforation and tabs of line layers.
+    #[serde(default)]
+    pub kerf: f64,
+    #[serde(default)]
+    pub perforation: crate::cutopts::Perforation,
+    #[serde(default)]
+    pub tabs: crate::cutopts::Tabs,
 }
 
 /// A material layer that does not say which colour it has.
@@ -140,11 +147,13 @@ pub enum Value {
     Dither(Dither),
     /// Index into `PALETTE`.
     Colour(usize),
+    /// A group of settings (on or off, and a fingerprint of the numbers inside, so a change in them shows).
+    Group(bool, u64),
 }
 
 impl LayerSpec {
     /// The names of the settings, as shown in the interface (they are also the keys of `value` / `take`).
-    pub const FIELDS: [&'static str; 12] = ["Colour", "Mode", "Speed", "Power (%)", "Passes", "Interval", "Scan angle", "Overscan", "Bidirectional", "Dithering", "Min power (%)", "Air assist"];
+    pub const FIELDS: [&'static str; 15] = ["Colour", "Mode", "Speed", "Power (%)", "Passes", "Interval", "Scan angle", "Overscan", "Bidirectional", "Dithering", "Min power (%)", "Air assist", "Kerf offset", "Perforation", "Tabs / bridges"];
 
     pub fn from_layer(l: &Layer) -> LayerSpec {
         LayerSpec {
@@ -160,6 +169,9 @@ impl LayerSpec {
             min_power: l.min_power,
             air_assist: l.air_assist,
             colour: l.color,
+            kerf: l.kerf,
+            perforation: l.perforation,
+            tabs: l.tabs,
         }
     }
 
@@ -179,6 +191,9 @@ impl LayerSpec {
         if self.colour < PALETTE.len() {
             l.color = self.colour;
         }
+        l.kerf = if self.kerf.is_finite() { self.kerf.clamp(-50.0, 50.0) } else { 0.0 };
+        l.perforation = self.perforation.clamped();
+        l.tabs = self.tabs.clamped();
     }
 
     pub fn value(&self, field: &str) -> Option<Value> {
@@ -195,6 +210,9 @@ impl LayerSpec {
             "Min power (%)" => Value::Percent(self.min_power),
             "Air assist" => Value::Flag(self.air_assist),
             "Colour" => Value::Colour(self.colour),
+            "Kerf offset" => Value::Length(self.kerf),
+            "Perforation" => Value::Group(self.perforation.enabled, fingerprint(&[self.perforation.cut, self.perforation.skip])),
+            "Tabs / bridges" => Value::Group(self.tabs.enabled, fingerprint(&[self.tabs.size, self.tabs.spacing, self.tabs.per_shape.into(), self.tabs.min_tabs.into(), self.tabs.max_tabs.into(), self.tabs.cut_power, f64::from(self.tabs.limit_max), f64::from(self.tabs.skip_inner), f64::from(self.tabs.mode as u8)])),
             _ => return None,
         })
     }
@@ -214,9 +232,17 @@ impl LayerSpec {
             "Min power (%)" => self.min_power = other.min_power,
             "Air assist" => self.air_assist = other.air_assist,
             "Colour" => self.colour = other.colour,
+            "Kerf offset" => self.kerf = other.kerf,
+            "Perforation" => self.perforation = other.perforation,
+            "Tabs / bridges" => self.tabs = other.tabs,
             _ => {}
         }
     }
+}
+
+/// A number that is the same for the same list of settings.
+fn fingerprint(v: &[f64]) -> u64 {
+    v.iter().fold(0xcbf29ce484222325u64, |h, x| (h ^ x.to_bits()).wrapping_mul(0x100000001b3))
 }
 
 /// Two values are the same when they differ by less than a rounding error.
@@ -387,7 +413,7 @@ fn operation_index(op: &str) -> usize {
 pub fn materials_from_presets(presets: &[Preset]) -> Vec<Material> {
     let mut out: Vec<Material> = vec![];
     for p in presets {
-        let spec = LayerSpec { mode: p.mode, speed: p.speed, power: p.power, passes: p.passes.max(1), interval: p.interval, angle: 0.0, overscan: 1.0, bidirectional: true, dither: Dither::default(), min_power: 0.0, air_assist: false, colour: NO_COLOUR };
+        let spec = LayerSpec { mode: p.mode, speed: p.speed, power: p.power, passes: p.passes.max(1), interval: p.interval, angle: 0.0, overscan: 1.0, bidirectional: true, dither: Dither::default(), min_power: 0.0, air_assist: false, colour: NO_COLOUR, kerf: 0.0, perforation: Default::default(), tabs: Default::default() };
         let mut index = operation_index(&p.operation);
         let pos = match out.iter().position(|m| (m.name.clone(), m.thickness) == split_thickness(&p.material) && m.laser == p.laser) {
             Some(i) => i,

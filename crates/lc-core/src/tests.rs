@@ -2001,3 +2001,68 @@ fn cameras_of_a_device_migrate_validate_and_travel_with_the_profile() {
     lens["cameras"][0]["lens"]["k1"] = 50.0.into();
     assert!(profiles::import_profile(&serde_json::json!({"format": 1, "profile": lens}).to_string()).is_err());
 }
+
+use crate::cutopts::{Perforation, TabMode, Tabs};
+
+fn gcode_of(layer_edit: impl FnOnce(&mut Layer)) -> String {
+    let mut d = Document::default();
+    d.add(0, Kind::Rect { w: 100.0, h: 100.0 }, Xf::translate(20.0, 20.0));
+    layer_edit(&mut d.layers[0]);
+    gcode::generate(&d).gcode
+}
+
+fn count(g: &str, word: &str) -> usize {
+    g.lines().filter(|l| l.starts_with(word)).count()
+}
+
+#[test]
+fn kerf_perforation_and_tabs_change_the_outline_only_when_asked() {
+    let plain = gcode_of(|_| {});
+    // Defaults write exactly what they always did.
+    assert_eq!(plain, gcode_of(|l| l.tabs.size = 9.0), "options that are not switched on change nothing");
+    // Tabs: four gaps in the 400 mm outline, one every 100 mm; the laser is off over each.
+    let tabs = gcode_of(|l| l.tabs = Tabs { enabled: true, size: 2.0, spacing: 100.0, ..Default::default() });
+    assert!(count(&tabs, "G0") >= count(&plain, "G0") + 4, "{} vs {}", count(&tabs, "G0"), count(&plain, "G0"));
+    assert!(count(&tabs, "G1") > count(&plain, "G1"));
+    // A weak cut over the tabs keeps the laser on with less power.
+    let weak = gcode_of(|l| l.tabs = Tabs { enabled: true, size: 2.0, spacing: 100.0, cut_power: 25.0, ..Default::default() });
+    assert!(weak.contains("S250"), "25 % of S1000 over the tabs");
+    // Perforation: many short pieces.
+    let perf = gcode_of(|l| l.perforation = Perforation { enabled: true, cut: 2.0, skip: 2.0 });
+    assert!(count(&perf, "G0") > 90, "{}", count(&perf, "G0"));
+    // Kerf: the outline moves out, so the head goes beyond the square.
+    let kerf = gcode_of(|l| l.kerf = 0.5);
+    let max_x = |g: &str| g.lines().filter_map(|l| l.split_whitespace().find_map(|w| w.strip_prefix('X')).and_then(|v| v.parse::<f64>().ok())).fold(f64::MIN, f64::max);
+    assert!(max_x(&kerf) > max_x(&plain) + 0.3, "{} vs {}", max_x(&kerf), max_x(&plain));
+}
+
+#[test]
+fn the_new_layer_options_travel_with_the_layer_the_material_and_old_files() {
+    let mut l = Layer::new(0);
+    l.kerf = 0.2;
+    l.perforation = Perforation { enabled: true, cut: 1.0, skip: 0.5 };
+    l.tabs = Tabs { enabled: true, mode: TabMode::PerShape, per_shape: 3, ..Default::default() };
+    let back: Layer = serde_json::from_str(&serde_json::to_string(&l).unwrap()).unwrap();
+    assert_eq!(back, l);
+    // A layer saved before they existed gets the defaults.
+    let mut v = serde_json::to_value(Layer::new(1)).unwrap();
+    for k in ["kerf", "perforation", "tabs"] {
+        v.as_object_mut().unwrap().remove(k);
+    }
+    let old: Layer = serde_json::from_value(v).unwrap();
+    assert_eq!((old.kerf, old.perforation.enabled, old.tabs.enabled), (0.0, false, false));
+    assert!(!old.has_cut_options());
+    // A material keeps them and applies them again.
+    let spec = materials::LayerSpec::from_layer(&l);
+    let mut other = Layer::new(2);
+    spec.apply(&mut other);
+    assert_eq!((other.kerf, other.perforation, other.tabs), (0.2, l.perforation, l.tabs));
+    // They show up in the differences of two versions of a material.
+    let mut changed = spec.clone();
+    changed.tabs.per_shape = 4;
+    assert_ne!(spec.value("Tabs / bridges"), changed.value("Tabs / bridges"));
+    assert_eq!(spec.value("Perforation"), changed.value("Perforation"));
+    let mut taken = spec.clone();
+    taken.take("Tabs / bridges", &changed);
+    assert_eq!(taken.tabs.per_shape, 4);
+}

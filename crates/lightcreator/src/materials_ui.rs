@@ -110,6 +110,7 @@ fn fmt_value(v: Value, units: Units, su: SpeedUnit) -> String {
         Value::Angle(a) => format!("{a:.0}°"),
         Value::Flag(b) => if b { tr("Yes") } else { tr("No") }.to_string(),
         Value::Dither(d) => tr(d.label()).to_string(),
+        Value::Group(on, _) => if on { tr("Yes") } else { tr("No") }.to_string(),
         Value::Colour(i) => if i < PALETTE.len() { format!("#{:02x}{:02x}{:02x}", PALETTE[i][0], PALETTE[i][1], PALETTE[i][2]) } else { "–".to_string() },
     }
 }
