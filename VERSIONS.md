@@ -2,6 +2,44 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.1.2
+
+Version numbers now count each part from 0 to 9 (so the last 0.x release will be v0.9.9, then v1.0.0); this release follows v0.0.11 as v0.1.2.
+
+**Devices and safety**
+* The device profile is grouped (axes, work area, speeds, G-code, connection, laser heads, rotary, maintenance, zones,
+  macros, cameras, notes) in a resizable configuration window with pages; older profiles are read as they are, and
+  the G-code of old profiles stays byte-for-byte the same (golden tests).
+* Zero in any of four corners, inverted axes and rotated panels, work-area margins, software limits, and a **job check**
+  (objects, toolpaths, power, speed, no-go zones, Z range, rotary) that blocks Start, Frame and export on errors.
+* After connecting, a GRBL controller is read once; warnings for laser mode off or a different $30. The **Firmware ($$)**
+  page shows the settings with their meaning, writes with validation, backs up and restores them.
+* Simple streaming mode, a stalled-job report, serial port bound to its USB id, automatic reconnect, and optional
+  homing / unlocking after connecting.
+
+**G-code**
+* Dialects (GRBL M3 / M4, Marlin, Smoothieware), optional arcs (G2 / G3, off by default), own start / end G-code,
+  power mode per layer, maximum speed and acceleration with a ramped time estimate.
+* Several laser heads (`T<n>`, S scaled by the head's S max), a focus beam with a big off button, and aiming by a
+  red pointer with a dry run.
+* Hooks (layer / object start and end) with variables, macros you run by hand, and no-go zones (rectangles and circles,
+  optionally with a height range).
+* Z axis (range, step per pass) and a rotary attachment (chuck or rollers, Y or a real A axis in degrees).
+
+**Profiles, maintenance and cameras**
+* Generic device templates (GRBL diode, GRBL CO2, K40 conversion, Marlin diode), a first-run setup, duplicate, and
+  export / import of one profile (format version, strict validation, no port from the file).
+* Maintenance: working time and own counters with limits. Per-device notes in Markdown with a preview.
+* Several cameras per device with picture settings (brightness, contrast, white balance, noise reduction, YUYV),
+  manual lens correction, and alignment of the overlay by 3 or more reference points. RTSP and automatic lens
+  calibration are not supported.
+
+**Fixes**
+* Pop-up windows, About included, can be made taller again (#19).
+* The MIT OR Apache-2.0 licence; a renamed parameter that CodeQL took for a hard-coded cryptographic value.
+
+Nothing in this release has been run against real hardware; see Safety and Limitations.
+
 ## v0.0.11
 
 **Materials**
