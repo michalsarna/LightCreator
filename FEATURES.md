@@ -114,6 +114,9 @@
   canvas, jog stops at them); a **check before the job** blocks Start, Frame and export when something lies outside the
   allowed area and asks for confirmation on warnings (0 % power, nothing to burn); after connecting GRBL is read once
   and warned about laser mode off (`$32`) and a `$30` that differs from the profile.
+* **G-code per device:** maximum cutting speed and acceleration (ramped time estimate, speed warning), dialects (GRBL M3 /
+  M4, Marlin, Smoothieware), an Advanced page with own start / end of the job and air assist commands, power mode per
+  layer (M3 / M4), and optional arcs (G2 / G3) with their own tolerance and a setting for the curve flattening.
 * **While a job runs** the Device tab locks jog, cancel jog, home, unlock and the jog options; pause, resume and STOP
   stay. Connect is green and Disconnect purple.
 * **Read from device:** the device configuration window can connect and read work area, S-value max, travel
