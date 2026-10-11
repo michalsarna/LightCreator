@@ -22,10 +22,9 @@ pub fn layer_paths(doc: &Document, li: usize) -> Vec<Polyline> {
     out
 }
 
-/// A design point as machine coordinates (clamped to the work area).
+/// A design point as machine coordinates.
 fn out_xy(dev: &Device, q: &Pt) -> (f64, f64) {
-    let (w, h) = dev.work_size();
-    dev.to_machine(Pt::new(q.x.clamp(0.0, w), q.y.clamp(0.0, h)))
+    dev.to_machine(*q)
 }
 
 /// Layers that have something to output.

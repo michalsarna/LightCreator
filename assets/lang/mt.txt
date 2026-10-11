@@ -679,3 +679,14 @@
 678|Limiti tas-software
 679|Strixxi mal-ġnub taż-żona tax-xogħol li l-magna ma tistax tuża (clamps, qafas); xejn ma jista' jitqiegħed jew jiċċaqlaq hemm
 680|Ir-ras hija fit-tarf taż-żona permessa.
+681|Kontroll qabel ix-xogħol
+682|Kompli xorta waħda
+683|Ikkoreġi l-iżbalji l-ewwel: magħhom ma jintbagħat, ma jiġi ffrejmjat u ma jiġi esportat xejn.
+684|Is-saff {} jaħraq b'qawwa ta' 0 %.
+685|Is-saff {} għandu oġġetti imma l-ebda mogħdija (eż. linji miftuħa fuq saff ta' mili).
+686|Agħżel l-oġġetti
+687|Il-qafas huwa barra mil-limiti tas-software.
+688|Il-qafas huwa barra miż-żona li tista' tintuża (lil hinn miż-żona tax-xogħol jew f'marġni).
+689|Il-mogħdija tas-saff {} titlaq miż-żona permessa (overscan jew movimenti vojta).
+690|{} oġġett/i huma barra mil-limiti tas-software.
+691|{} oġġett/i huma barra miż-żona li tista' tintuża (lil hinn miż-żona tax-xogħol jew f'marġni).

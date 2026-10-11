@@ -679,3 +679,14 @@
 678	Software limits
 679	Strips along the edges of the work area that the machine cannot use (clamps, frame); nothing may be placed or moved there
 680	The head is at the edge of the allowed area.
+681	Check before the job
+682	Continue anyway
+683	Fix the errors first: nothing is sent, framed or exported with them.
+684	Layer {} burns at 0 % power.
+685	Layer {} has objects but no toolpath (open lines on a fill layer, for example).
+686	Select objects
+687	The frame is outside the software limits.
+688	The frame is outside the usable area (beyond the work area or in a margin).
+689	The toolpath of layer {} leaves the allowed area (overscan or travel moves).
+690	{} object(s) are outside the software limits.
+691	{} object(s) are outside the usable area (beyond the work area or in a margin).

@@ -679,3 +679,14 @@
 678|Hugbúnaðarmörk
 679|Rendur á jaðri vinnusvæðisins sem vélin getur ekki notað (klemmur, rammi); ekkert má setja eða færa þar
 680|Hausinn er við jaðar leyfða svæðisins.
+681|Athugun fyrir verkið
+682|Halda áfram samt
+683|Lagaðu villurnar fyrst: með þeim er ekkert sent, rammað inn eða flutt út.
+684|Lag {} brennir með 0 % afli.
+685|Lag {} hefur hluti en enga braut (t.d. opnar línur á fyllingarlagi).
+686|Velja hluti
+687|Ramminn er utan hugbúnaðarmarka.
+688|Ramminn er utan nothæfs svæðis (utan vinnusvæðis eða í spássíu).
+689|Braut lags {} fer út fyrir leyfilegt svæði (yfirskönnun eða tómar hreyfingar).
+690|{} hlutur/hlutir eru utan hugbúnaðarmarka.
+691|{} hlutur/hlutir eru utan nothæfs svæðis (utan vinnusvæðis eða í spássíu).

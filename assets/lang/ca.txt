@@ -679,3 +679,14 @@
 678|Límits de programari
 679|Franges a les vores de l'àrea de treball que la màquina no pot usar (pinces, marc); no s'hi pot col·locar ni moure res
 680|El capçal és a la vora de l'àrea permesa.
+681|Comprovació abans de la feina
+682|Continua igualment
+683|Corregiu primer els errors: amb ells no s'envia, emmarca ni exporta res.
+684|La capa {} grava amb potència 0 %.
+685|La capa {} té objectes però cap trajectòria (per exemple, línies obertes en una capa de farcit).
+686|Selecciona els objectes
+687|El marc és fora dels límits de programari.
+688|El marc és fora de l'àrea utilitzable (més enllà de l'àrea de treball o en un marge).
+689|La trajectòria de la capa {} surt de l'àrea permesa (overscan o moviments en buit).
+690|{} objecte(s) són fora dels límits de programari.
+691|{} objecte(s) són fora de l'àrea utilitzable (més enllà de l'àrea de treball o en un marge).

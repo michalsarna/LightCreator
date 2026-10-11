@@ -679,3 +679,14 @@
 678|Programiniai apribojimai
 679|Darbo srities pakraščių juostos, kurių staklės negali naudoti (spaustukai, rėmas); ten nieko negalima dėti ar perkelti
 680|Galvutė yra leidžiamos srities pakraštyje.
+681|Patikra prieš darbą
+682|Vis tiek tęsti
+683|Pirmiausia ištaisykite klaidas: su jomis niekas nesiunčiama, neapibrėžiama ir neeksportuojama.
+684|Sluoksnis {} degina 0 % galia.
+685|Sluoksnyje {} yra objektų, bet nėra trajektorijos (pvz., atviros linijos užpildymo sluoksnyje).
+686|Pasirinkti objektus
+687|Rėmelis už programinių apribojimų ribų.
+688|Rėmelis už naudojamos srities ribų (už darbo srities arba paraštėje).
+689|Sluoksnio {} trajektorija išeina už leidžiamos srities (viršijimas arba tuščios eigos).
+690|{} objektas (-ai) už programinių apribojimų ribų.
+691|{} objektas (-ai) už naudojamos srities ribų (už darbo srities arba paraštėje).

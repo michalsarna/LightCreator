@@ -157,6 +157,10 @@ pub struct App {
     pub show_close_dlg: bool,
     /// A question waiting for Yes / No, drawn by the application so it is in the chosen language.
     pub confirm: Option<crate::session_ui::Confirm>,
+    /// The issues found before a job was sent, framed or exported.
+    pub check_dlg: Option<crate::check_ui::CheckDlg>,
+    /// The box the frame command traces.
+    pub frame_bounds: Option<lc_core::Rect>,
     pub allow_close: bool,
     pub show_options: bool,
     /// Look for a newer release on GitHub when the program starts.
@@ -351,6 +355,8 @@ impl App {
             toast: None,
             show_close_dlg: false,
             confirm: None,
+            check_dlg: None,
+            frame_bounds: None,
             allow_close: false,
             show_options: false,
             check_updates: saved("check_updates").map(|v| v != "0").unwrap_or(true),
@@ -794,6 +800,11 @@ impl App {
         }
     }
     pub fn export_gcode(&mut self) {
+        if self.guard(crate::check_ui::Pending::ExportGcode, None) {
+            self.export_gcode_now();
+        }
+    }
+    pub fn export_gcode_now(&mut self) {
         if let Some(p) = rfd::FileDialog::new().add_filter("G-code", &["gcode", "nc"]).set_file_name("job.gcode").save_file() {
             let job = gcode::generate(&self.doc);
             self.status = match std::fs::write(&p, job.gcode) {
@@ -806,6 +817,11 @@ impl App {
     // ---------- laser ----------
     /// Export the vector job as HPGL (.plt) or DXF for file-fed controllers (Ruida / Trocen software).
     pub fn export_cam(&mut self) {
+        if self.guard(crate::check_ui::Pending::ExportCam, None) {
+            self.export_cam_now();
+        }
+    }
+    pub fn export_cam_now(&mut self) {
         let Some(p) = rfd::FileDialog::new().add_filter("HPGL plot", &["plt"]).add_filter("DXF", &["dxf"]).set_file_name("job.plt").save_file() else { return };
         let is_dxf = p.extension().is_some_and(|e| e.eq_ignore_ascii_case("dxf"));
         let data = if is_dxf { lc_core::export::dxf(&self.doc) } else { lc_core::export::hpgl(&self.doc) };
@@ -826,6 +842,11 @@ impl App {
             self.status = tr("Connect to a laser first (Laser panel)").into();
             return;
         }
+        if self.guard(crate::check_ui::Pending::Start, None) {
+            self.send_job_now();
+        }
+    }
+    pub fn send_job_now(&mut self) {
         let job = gcode::generate(&self.doc);
         if job.moves.is_empty() {
             self.status = tr("Nothing to burn: no shapes on output layers").into();
@@ -873,6 +894,14 @@ impl App {
             self.status = tr("Connect to a laser first (Laser panel)").into();
             return;
         }
+        if self.guard(crate::check_ui::Pending::Frame, Some(b)) {
+            self.frame_bounds = Some(b);
+            self.frame_now();
+        }
+    }
+    /// Trace the box that was checked (or that is being framed again after the window of issues).
+    pub fn frame_now(&mut self) {
+        let Some(b) = self.frame_bounds else { return };
         let g = gcode::frame_gcode(b, &self.doc.device, self.doc.device.heads[0].frame_power, 40.0);
         for l in laser::clean_gcode(&g) {
             self.link.send(Cmd::Line(l));
@@ -1712,6 +1741,7 @@ impl App {
         self.online_clipart_window(ctx);
         self.round_window(ctx);
         self.materials_window(ctx);
+        self.check_window(ctx);
         self.material_edit_window(ctx);
         self.labels_window(ctx);
         self.merge_dialog(ctx);

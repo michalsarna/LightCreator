@@ -679,3 +679,14 @@
 678|Límites de software
 679|Franjas en los bordes del área de trabajo que la máquina no puede usar (pinzas, marco); no se puede colocar ni mover nada ahí
 680|El cabezal está en el borde del área permitida.
+681|Comprobación antes del trabajo
+682|Continuar de todos modos
+683|Corrija primero los errores: con ellos no se envía, enmarca ni exporta nada.
+684|La capa {} graba con potencia 0 %.
+685|La capa {} tiene objetos pero ninguna trayectoria (por ejemplo, líneas abiertas en una capa de relleno).
+686|Seleccionar objetos
+687|El marco está fuera de los límites de software.
+688|El marco está fuera del área utilizable (más allá del área de trabajo o en un margen).
+689|La trayectoria de la capa {} sale del área permitida (overscan o movimientos en vacío).
+690|{} objeto(s) están fuera de los límites de software.
+691|{} objeto(s) están fuera del área utilizable (más allá del área de trabajo o en un margen).

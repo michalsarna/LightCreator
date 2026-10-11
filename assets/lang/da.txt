@@ -679,3 +679,14 @@
 678|Softwaregrænser
 679|Striber langs arbejdsfladens kanter, som maskinen ikke kan bruge (klemmer, ramme); intet må placeres eller flyttes der
 680|Hovedet er ved kanten af det tilladte område.
+681|Kontrol før opgaven
+682|Fortsæt alligevel
+683|Ret fejlene først: med dem sendes, indrammes eller eksporteres intet.
+684|Lag {} brænder med 0 % effekt.
+685|Lag {} har objekter men ingen værktøjssti (f.eks. åbne linjer på et fyldlag).
+686|Vælg objekter
+687|Rammen er uden for softwaregrænserne.
+688|Rammen er uden for det brugbare område (uden for arbejdsfladen eller i en margen).
+689|Værktøjsstien for lag {} forlader det tilladte område (overscan eller tomgangsbevægelser).
+690|{} objekt(er) er uden for softwaregrænserne.
+691|{} objekt(er) er uden for det brugbare område (uden for arbejdsfladen eller i en margen).

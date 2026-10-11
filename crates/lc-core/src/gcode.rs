@@ -74,16 +74,10 @@ impl<'a> Writer<'a> {
     }
 
     fn map(&self, p: Pt) -> (f64, f64) {
-        self.dev.to_machine(self.clamp(p))
-    }
-
-    fn clamp(&self, p: Pt) -> Pt {
-        let (w, h) = self.dev.work_size();
-        Pt::new(p.x.clamp(0.0, w), p.y.clamp(0.0, h))
+        self.dev.to_machine(p)
     }
 
     fn travel(&mut self, p: Pt) {
-        let p = self.clamp(p);
         if p.dist(self.pos) < 1e-6 {
             return;
         }
@@ -134,7 +128,6 @@ impl<'a> Writer<'a> {
 
     /// Linear move with the laser at `power` percent and `speed` mm/s.
     fn line(&mut self, p: Pt, power: f64, speed: f64) {
-        let p = self.clamp(p);
         let s = (power / 100.0 * self.dev.s_max()).round();
         let f = (speed * 60.0).round();
         let (x, y) = self.map(p);

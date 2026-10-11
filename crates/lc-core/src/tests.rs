@@ -1054,3 +1054,84 @@ fn jog_stops_at_the_allowed_area_and_follows_the_axes() {
     assert_eq!(d.limited_jog(Some((2.0, 100.0)), 5.0, 0.0), (5.0, 0.0));
     assert_eq!(d.limited_jog(Some((2.0, 100.0)), -5.0, 0.0), (0.0, 0.0));
 }
+
+fn check_doc(x: f64, y: f64) -> Document {
+    let mut d = Document::default();
+    d.device = axes_device(Origin::FrontLeft, false, false, Orientation::Native);
+    d.layers[0].mode = LayerMode::Line;
+    d.add(0, Kind::Rect { w: 20.0, h: 10.0 }, Xf::translate(x, y));
+    d
+}
+
+fn kinds(d: &Document) -> Vec<check::IssueKind> {
+    check::job_check(d).into_iter().map(|i| i.kind).collect()
+}
+
+#[test]
+fn job_inside_the_area_has_no_issues_even_with_the_zero_in_a_margin() {
+    let mut d = check_doc(100.0, 100.0);
+    assert!(check::job_check(&d).is_empty());
+    // The way back to the zero (a corner of the machine) ends inside the margin: that is not an error.
+    d.device.area.margins = Margins { left: 5.0, top: 5.0, right: 5.0, bottom: 5.0 };
+    assert!(check::job_check(&d).is_empty(), "{:?}", check::job_check(&d));
+}
+
+#[test]
+fn objects_outside_the_area_the_margins_or_the_limits_are_errors_and_name_the_objects() {
+    let d = check_doc(295.0, 100.0);
+    let issues = check::job_check(&d);
+    assert_eq!(issues.len(), 1);
+    assert_eq!((issues[0].level, issues[0].kind), (check::Level::Error, check::IssueKind::OutsideArea));
+    assert_eq!(issues[0].shapes, vec![d.shapes[0].id]);
+    // Inside the work area but in a margin.
+    let mut m = check_doc(2.0, 100.0);
+    m.device.area.margins.left = 5.0;
+    assert_eq!(kinds(&m), vec![check::IssueKind::OutsideArea]);
+    // Inside the usable area but outside the software limits.
+    let mut l = check_doc(100.0, 100.0);
+    l.device.area.soft_limits = Some(SoftLimits { x0: 0.0, y0: 0.0, x1: 110.0, y1: 200.0 });
+    assert_eq!(kinds(&l), vec![check::IssueKind::OutsideLimits]);
+    // Within the tolerance (0.01 mm) is fine.
+    let t = check_doc(300.0 - 20.0 + 0.005, 100.0);
+    assert!(check::job_check(&t).is_empty());
+    // Objects on layers that do not output are not checked.
+    let mut off = check_doc(295.0, 100.0);
+    off.layers[0].output = false;
+    assert!(check::job_check(&off).is_empty());
+}
+
+#[test]
+fn overscan_that_leaves_the_area_is_reported_for_the_layer() {
+    let mut d = check_doc(0.0, 100.0);
+    d.layers[0].mode = LayerMode::Fill;
+    d.layers[0].interval = 1.0;
+    d.layers[0].overscan = 3.0;
+    let issues = check::job_check(&d);
+    assert!(issues.iter().any(|i| i.kind == check::IssueKind::MoveOutside && i.layer == Some(0)), "{issues:?}");
+    d.layers[0].overscan = 0.0;
+    assert!(check::job_check(&d).is_empty());
+}
+
+#[test]
+fn zero_power_and_empty_toolpaths_are_warnings() {
+    let mut d = check_doc(100.0, 100.0);
+    d.layers[0].power = 0.0;
+    let issues = check::job_check(&d);
+    assert_eq!(issues.iter().map(|i| (i.level, i.kind)).collect::<Vec<_>>(), vec![(check::Level::Warning, check::IssueKind::ZeroPower)]);
+    assert!(!check::has_error(&issues));
+    // A fill layer that holds only an open line burns nothing.
+    let mut f = Document::default();
+    f.device = axes_device(Origin::FrontLeft, false, false, Orientation::Native);
+    f.layers[0].mode = LayerMode::Fill;
+    f.add(0, Kind::Path(vec![Polyline::new(vec![Pt::new(0.0, 0.0), Pt::new(10.0, 0.0)], false)]), Xf::translate(50.0, 50.0));
+    assert_eq!(kinds(&f), vec![check::IssueKind::NothingToBurn]);
+}
+
+#[test]
+fn frame_outside_the_area_is_an_error() {
+    let dev = axes_device(Origin::FrontLeft, false, false, Orientation::Native);
+    let r = |x0, y0, x1, y1| Rect { min: Pt::new(x0, y0), max: Pt::new(x1, y1) };
+    assert!(check::check_frame(&dev, r(10.0, 10.0, 50.0, 50.0)).is_empty());
+    let e = check::check_frame(&dev, r(10.0, 10.0, 350.0, 50.0));
+    assert_eq!((e.len(), e[0].kind, e[0].level), (1, check::IssueKind::OutsideArea, check::Level::Error));
+}

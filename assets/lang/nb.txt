@@ -679,3 +679,14 @@
 678|Programvaregrenser
 679|Striper langs kantene av arbeidsflaten som maskinen ikke kan bruke (klemmer, ramme); ingenting kan plasseres eller flyttes der
 680|Hodet er ved kanten av det tillatte området.
+681|Kontroll før jobben
+682|Fortsett likevel
+683|Rett feilene først: med dem sendes, rammes inn eller eksporteres ingenting.
+684|Lag {} brenner med 0 % effekt.
+685|Lag {} har objekter, men ingen verktøybane (f.eks. åpne linjer på et fyllag).
+686|Velg objekter
+687|Rammen er utenfor programvaregrensene.
+688|Rammen er utenfor det brukbare området (utenfor arbeidsflaten eller i en marg).
+689|Verktøybanen til lag {} forlater det tillatte området (overscan eller tomgangsbevegelser).
+690|{} objekt(er) er utenfor programvaregrensene.
+691|{} objekt(er) er utenfor det brukbare området (utenfor arbeidsflaten eller i en marg).

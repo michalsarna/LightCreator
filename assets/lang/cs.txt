@@ -679,3 +679,14 @@
 678|Softwarové limity
 679|Pásy podél okrajů pracovní plochy, které stroj nemůže využít (svorky, rám); nic tam nelze umístit ani přesunout
 680|Hlava je na okraji povolené oblasti.
+681|Kontrola před úlohou
+682|Přesto pokračovat
+683|Nejprve opravte chyby: s nimi se nic neodešle, neobrysuje ani neexportuje.
+684|Vrstva {} pálí s výkonem 0 %.
+685|Vrstva {} má objekty, ale žádnou dráhu (například otevřené čáry na vrstvě výplně).
+686|Vybrat objekty
+687|Rámeček je mimo softwarové limity.
+688|Rámeček je mimo použitelnou oblast (za pracovní plochou nebo v okraji).
+689|Dráha vrstvy {} opouští povolenou oblast (přejezd nebo pohyby naprázdno).
+690|{} objekt(ů) je mimo softwarové limity.
+691|{} objekt(ů) je mimo použitelnou oblast (za pracovní plochou nebo v okraji).

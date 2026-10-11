@@ -679,3 +679,14 @@
 678|Softverska ograničenja
 679|Trake uz rubove radne površine koje stroj ne može koristiti (stege, okvir); tamo se ništa ne smije postaviti ni pomaknuti
 680|Glava je na rubu dopuštenog područja.
+681|Provjera prije posla
+682|Ipak nastavi
+683|Prvo ispravite pogreške: s njima se ništa ne šalje, ne uokviruje ni izvozi.
+684|Sloj {} gori snagom 0 %.
+685|Sloj {} ima objekte, ali nema putanju (npr. otvorene linije na sloju ispune).
+686|Odaberi objekte
+687|Okvir je izvan softverskih ograničenja.
+688|Okvir je izvan upotrebljivog područja (izvan radne površine ili u margini).
+689|Putanja sloja {} izlazi iz dopuštenog područja (overscan ili prazni hodovi).
+690|{} objekt(a) je izvan softverskih ograničenja.
+691|{} objekt(a) je izvan upotrebljivog područja (izvan radne površine ili u margini).

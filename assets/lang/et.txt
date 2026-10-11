@@ -679,3 +679,14 @@
 678|Tarkvaralised piirid
 679|Tööala servade ribad, mida masin ei saa kasutada (klambrid, raam); sinna ei tohi midagi asetada ega liigutada
 680|Pea on lubatud ala serval.
+681|Kontroll enne tööd
+682|Jätka ikkagi
+683|Paranda esmalt vead: nendega ei saadeta, raamita ega eksportita midagi.
+684|Kiht {} põletab 0 % võimsusega.
+685|Kihil {} on objekte, kuid pole tööteed (nt avatud jooned täitekihil).
+686|Vali objektid
+687|Raam on tarkvaraliste piiride väljas.
+688|Raam on kasutatava ala väljas (tööalast väljas või veeriselt).
+689|Kihi {} tööte väljub lubatud alalt (ületus või tühiliigutused).
+690|{} objekti on tarkvaraliste piiride väljas.
+691|{} objekti on kasutatava ala väljas (tööalast väljas või veeriselt).

@@ -679,3 +679,14 @@
 678|Limites de software
 679|Faixas nas bordas da área de trabalho que a máquina não pode usar (grampos, moldura); nada pode ser colocado ou movido ali
 680|O cabeçote está na borda da área permitida.
+681|Verificação antes do trabalho
+682|Continuar mesmo assim
+683|Corrija primeiro os erros: com eles nada é enviado, enquadrado ou exportado.
+684|A camada {} grava com potência 0 %.
+685|A camada {} tem objetos mas nenhum trajeto (por exemplo, linhas abertas numa camada de preenchimento).
+686|Selecionar objetos
+687|A moldura está fora dos limites de software.
+688|A moldura está fora da área utilizável (além da área de trabalho ou numa margem).
+689|O trajeto da camada {} sai da área permitida (overscan ou deslocamentos em vazio).
+690|{} objeto(s) estão fora dos limites de software.
+691|{} objeto(s) estão fora da área utilizável (além da área de trabalho ou numa margem).

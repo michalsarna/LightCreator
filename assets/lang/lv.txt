@@ -679,3 +679,14 @@
 678|Programmatūras ierobežojumi
 679|Joslas darba zonas malās, ko iekārta nevar izmantot (skavas, rāmis); tur nedrīkst novietot vai pārvietot neko
 680|Galviņa atrodas atļautās zonas malā.
+681|Pārbaude pirms darba
+682|Tomēr turpināt
+683|Vispirms izlabojiet kļūdas: ar tām nekas netiek sūtīts, ierāmēts vai eksportēts.
+684|Slānis {} dedzina ar 0 % jaudu.
+685|Slānim {} ir objekti, bet nav trajektorijas (piem., atvērtas līnijas aizpildes slānī).
+686|Atlasīt objektus
+687|Rāmis ir ārpus programmatūras ierobežojumiem.
+688|Rāmis ir ārpus izmantojamās zonas (ārpus darba zonas vai malā).
+689|Slāņa {} trajektorija iziet ārpus atļautās zonas (pārsniegums vai tukšgaitas).
+690|{} objekts/-i ir ārpus programmatūras ierobežojumiem.
+691|{} objekts/-i ir ārpus izmantojamās zonas (ārpus darba zonas vai malā).

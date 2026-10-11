@@ -679,3 +679,14 @@
 678|Softwarematige grenzen
 679|Stroken langs de randen van het werkgebied die de machine niet kan gebruiken (klemmen, frame); daar mag niets worden geplaatst of verplaatst
 680|De kop staat aan de rand van het toegestane gebied.
+681|Controle vóór de opdracht
+682|Toch doorgaan
+683|Herstel eerst de fouten: daarmee wordt niets verzonden, omkaderd of geëxporteerd.
+684|Laag {} brandt met 0 % vermogen.
+685|Laag {} heeft objecten maar geen gereedschapspad (bijvoorbeeld open lijnen op een vullaag).
+686|Objecten selecteren
+687|Het kader ligt buiten de softwarematige grenzen.
+688|Het kader ligt buiten het bruikbare gebied (voorbij het werkgebied of in een marge).
+689|Het gereedschapspad van laag {} verlaat het toegestane gebied (overscan of verplaatsingen zonder laser).
+690|{} object(en) liggen buiten de softwarematige grenzen.
+691|{} object(en) liggen buiten het bruikbare gebied (voorbij het werkgebied of in een marge).

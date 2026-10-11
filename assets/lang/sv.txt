@@ -679,3 +679,14 @@
 678|Programvarugränser
 679|Remsor längs arbetsytans kanter som maskinen inte kan använda (klämmor, ram); inget får placeras eller flyttas där
 680|Huvudet är vid kanten av det tillåtna området.
+681|Kontroll före jobbet
+682|Fortsätt ändå
+683|Rätta felen först: med dem skickas, ramas in eller exporteras ingenting.
+684|Lager {} bränner med 0 % effekt.
+685|Lager {} har objekt men ingen verktygsbana (t.ex. öppna linjer på ett fyllager).
+686|Markera objekt
+687|Ramen ligger utanför programvarugränserna.
+688|Ramen ligger utanför det användbara området (utanför arbetsytan eller i en marginal).
+689|Verktygsbanan för lager {} lämnar det tillåtna området (overscan eller tomgångsrörelser).
+690|{} objekt ligger utanför programvarugränserna.
+691|{} objekt ligger utanför det användbara området (utanför arbetsytan eller i en marginal).

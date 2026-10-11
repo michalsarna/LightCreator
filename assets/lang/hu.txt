@@ -679,3 +679,14 @@
 678|Szoftveres korlátok
 679|A munkaterület szélén lévő sávok, amelyeket a gép nem használhat (szorítók, keret); oda nem szabad semmit helyezni vagy mozgatni
 680|A fej az engedélyezett terület szélén van.
+681|Ellenőrzés a munka előtt
+682|Folytatás mégis
+683|Előbb javítsa a hibákat: velük semmi sem kerül elküldésre, keretezésre vagy exportálásra.
+684|A(z) {} réteg 0 % teljesítménnyel éget.
+685|A(z) {} rétegen vannak objektumok, de nincs szerszámút (pl. nyitott vonalak egy kitöltő rétegen).
+686|Objektumok kijelölése
+687|A keret a szoftveres korlátokon kívül van.
+688|A keret a használható területen kívül van (a munkaterületen túl vagy margóban).
+689|A(z) {} réteg szerszámútja elhagyja az engedélyezett területet (túlfutás vagy üresjárati mozgások).
+690|{} objektum a szoftveres korlátokon kívül van.
+691|{} objektum a használható területen kívül van (a munkaterületen túl vagy margóban).

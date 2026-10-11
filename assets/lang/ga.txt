@@ -679,3 +679,14 @@
 678|Teorainneacha bogearraí
 679|Stríoca ar imeall an limistéir oibre nach féidir leis an meaisín a úsáid (clampaí, fráma); ní féidir aon rud a chur ná a bhogadh ann
 680|Tá an ceann ag imeall an limistéir cheadaithe.
+681|Seiceáil roimh an obair
+682|Lean ar aghaidh ar aon nós
+683|Ceartaigh na hearráidí ar dtús: leo, ní sheoltar, ní fhráimeáiltear ná ní onnmhairítear aon rud.
+684|Dónn sraith {} ag cumhacht 0 %.
+685|Tá réada ag sraith {} ach níl cosán uirlise ann (m.sh. línte oscailte ar shraith líonta).
+686|Roghnaigh réada
+687|Tá an fráma lasmuigh de theorainneacha na bogearraí.
+688|Tá an fráma lasmuigh den limistéar inúsáidte (taobh amuigh den limistéar oibre nó i marcáil).
+689|Fágann cosán uirlise shraith {} an limistéar ceadaithe (overscan nó gluaiseachtaí folamh).
+690|Tá {} réad lasmuigh de theorainneacha na bogearraí.
+691|Tá {} réad lasmuigh den limistéar inúsáidte (taobh amuigh den limistéar oibre nó i marcáil).

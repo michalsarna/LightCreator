@@ -679,3 +679,14 @@
 678|Programske omejitve
 679|Pasovi ob robovih delovnega območja, ki jih stroj ne more uporabljati (spenjalci, okvir); tam se ne sme nič postaviti ali premakniti
 680|Glava je na robu dovoljenega območja.
+681|Preverjanje pred delom
+682|Vseeno nadaljuj
+683|Najprej popravite napake: z njimi se nič ne pošlje, uokviri ali izvozi.
+684|Plast {} žge z močjo 0 %.
+685|Plast {} ima objekte, vendar nima poti (npr. odprte črte na plasti polnila).
+686|Izberi objekte
+687|Okvir je zunaj programskih omejitev.
+688|Okvir je zunaj uporabnega območja (zunaj delovnega območja ali v robu).
+689|Pot plasti {} zapušča dovoljeno območje (overscan ali prazni premiki).
+690|{} objekt(ov) je zunaj programskih omejitev.
+691|{} objekt(ov) je zunaj uporabnega območja (zunaj delovnega območja ali v robu).

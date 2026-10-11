@@ -679,3 +679,14 @@
 678|Limites logicielles
 679|Bandes le long des bords de la zone de travail que la machine ne peut pas utiliser (pinces, cadre) ; rien ne peut y être placé ni déplacé
 680|La tête est au bord de la zone autorisée.
+681|Vérification avant le travail
+682|Continuer quand même
+683|Corrigez d'abord les erreurs : avec elles, rien n'est envoyé, encadré ni exporté.
+684|Le calque {} grave à 0 % de puissance.
+685|Le calque {} contient des objets mais aucun parcours (par exemple des lignes ouvertes sur un calque de remplissage).
+686|Sélectionner les objets
+687|Le cadre est hors des limites logicielles.
+688|Le cadre est hors de la zone utilisable (au-delà de la zone de travail ou dans une marge).
+689|Le parcours du calque {} quitte la zone autorisée (survol ou déplacements à vide).
+690|{} objet(s) sont hors des limites logicielles.
+691|{} objet(s) sont hors de la zone utilisable (au-delà de la zone de travail ou dans une marge).

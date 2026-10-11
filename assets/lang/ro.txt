@@ -679,3 +679,14 @@
 678|Limite software
 679|Benzi de-a lungul marginilor zonei de lucru pe care mașina nu le poate folosi (cleme, cadru); acolo nu se poate plasa sau muta nimic
 680|Capul este la marginea zonei permise.
+681|Verificare înainte de lucrare
+682|Continuă oricum
+683|Corectați mai întâi erorile: cu ele nu se trimite, nu se încadrează și nu se exportă nimic.
+684|Stratul {} arde cu putere 0 %.
+685|Stratul {} are obiecte, dar nu are traseu (de exemplu, linii deschise pe un strat de umplere).
+686|Selectează obiectele
+687|Cadrul este în afara limitelor software.
+688|Cadrul este în afara zonei utilizabile (dincolo de zona de lucru sau într-o margine).
+689|Traseul stratului {} iese din zona permisă (overscan sau deplasări în gol).
+690|{} obiect(e) sunt în afara limitelor software.
+691|{} obiect(e) sunt în afara zonei utilizabile (dincolo de zona de lucru sau într-o margine).

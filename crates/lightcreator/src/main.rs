@@ -1,5 +1,6 @@
 mod app;
 mod camera;
+mod check_ui;
 mod camera_stream;
 mod clip_net;
 mod clipart_ui;
