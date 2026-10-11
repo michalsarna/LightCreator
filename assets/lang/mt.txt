@@ -625,3 +625,26 @@
 624|Importati {} materjal u {} apparat
 625|Din mhix fajl ta' librerija ta' LightCreator.
 626|{} fih issettings tal-materjali differenti minn {}. Agħżel il-valuri li għandhom jinżammu.
+627|Plywood
+628|MDF
+629|Kartun
+630|Karta
+631|Ġilda
+632|Feltru
+633|Sufra
+634|Akriliku
+635|Akriliku, iswed jew skur
+636|Lavanja / ġebel
+637|Aluminju anodizzat (miksi)
+638|Gomma
+639|Drapp
+640|Ħġieġ
+641|Injam (iebes)
+642|Tags
+643|Ħxuna
+644|Tags, separati b'virgoli
+645|Editja l-materjal
+646|Irrestawra l-valuri integrati
+647|Il-valuri integrati ġew irrestawrati.
+648|Dan il-materjal m'għandux settings għat-tip ta' lejżer ta' dan l-apparat
+649|Agħmel double-click fuq materjal biex teditja s-settings tiegħu. Il-bidliet jinżammu fuq dan il-kompjuter.

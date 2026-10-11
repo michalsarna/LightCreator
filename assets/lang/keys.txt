@@ -625,3 +625,26 @@
 624	Imported {} material(s) and {} device(s)
 625	This is not a library file of LightCreator.
 626	{} has material settings that differ from {}. Choose the values to keep.
+627	Plywood
+628	MDF
+629	Cardboard
+630	Paper
+631	Leather
+632	Felt
+633	Cork
+634	Acrylic
+635	Acrylic, black or dark
+636	Slate / stone
+637	Anodised aluminium (coated)
+638	Rubber
+639	Fabric
+640	Glass
+641	Wood (hardwood)
+642	Tags
+643	Thickness
+644	Tags, separated by commas
+645	Edit material
+646	Restore built-in values
+647	The built-in values were restored.
+648	This material has no settings for the laser type of this device
+649	Double-click a material to edit its settings. Changes are kept on this computer.

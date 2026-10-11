@@ -755,12 +755,12 @@ fn the_interface_font_covers_every_european_translation() {
 fn builtin_materials_group_the_presets_by_material_and_laser() {
     let mats = materials::builtin_materials();
     assert!(mats.len() < materials::builtin().len());
-    let ply = mats.iter().find(|m| m.name == "Plywood 3 mm" && m.laser == LaserKind::Diode).unwrap();
+    let ply = mats.iter().find(|m| m.name == "Plywood" && m.thickness == 3.0 && m.laser == LaserKind::Diode).unwrap();
     assert_eq!(ply.layers.iter().map(|l| (l.index, l.label.as_str())).collect::<Vec<_>>(), vec![(0, "Cut"), (1, "Engrave")]);
     assert_eq!(ply.layer(0).unwrap().spec.mode, LayerMode::Line);
     assert_eq!(ply.layer(1).unwrap().spec.mode, LayerMode::Fill);
     // The same material for another laser is another entry.
-    assert!(mats.iter().any(|m| m.name == "Plywood 3 mm" && m.laser == LaserKind::Co2));
+    assert!(mats.iter().any(|m| m.name == "Plywood" && m.thickness == 3.0 && m.laser == LaserKind::Co2));
 }
 
 #[test]
@@ -850,7 +850,7 @@ fn a_device_gets_missing_materials_from_a_source_for_its_laser() {
 fn materials_keep_colours_and_categories() {
     // Built-in materials know their category and the colour of each layer.
     let mats = materials::builtin_materials();
-    let ply = mats.iter().find(|m| m.name == "Plywood 3 mm").unwrap();
+    let ply = mats.iter().find(|m| m.name == "Plywood" && m.thickness == 3.0).unwrap();
     assert_eq!(ply.category(), "Wood");
     assert_eq!(mats.iter().find(|m| m.name.starts_with("Acrylic")).unwrap().category(), "Plastic");
     assert_eq!(mats.iter().find(|m| m.name.starts_with("Anodised")).unwrap().category(), "Metal");
@@ -889,4 +889,51 @@ fn a_library_file_holds_global_materials_and_devices() {
     // Anything else is refused.
     assert!(materials::LibraryFile::from_json("{\"hello\":1}").is_none());
     assert!(materials::LibraryFile::from_json("not json").is_none());
+}
+
+#[test]
+fn materials_have_ids_that_survive_renaming_and_both_lasers_share_one() {
+    let mats = materials::builtin_materials();
+    let diode = mats.iter().find(|m| m.key() == "plywood-3" && m.laser == LaserKind::Diode).unwrap();
+    let co2 = mats.iter().find(|m| m.key() == "plywood-3" && m.laser == LaserKind::Co2).unwrap();
+    assert_eq!((diode.thickness, diode.name.as_str()), (3.0, "Plywood"));
+    assert!(diode.tags.contains(&"Cut".to_string()) && !diode.same_key(co2));
+    // The name can change; the id stays.
+    let mut m = diode.clone();
+    m.name = "Sklejka".into();
+    assert_eq!(m.key(), "plywood-3");
+    assert!(m.same_key(diode));
+    // A name with a thickness is split.
+    assert_eq!(materials::split_thickness("Birch 1.5 mm"), ("Birch".to_string(), 1.5));
+    assert_eq!(materials::split_thickness("Cardboard"), ("Cardboard".to_string(), 0.0));
+    // A material saved without an id gets one from its name.
+    let old = r#"{"name":"Cork","thickness":3.0,"laser":"Diode","layers":[]}"#;
+    assert_eq!(serde_json::from_str::<materials::Material>(old).unwrap().key(), "cork-3");
+}
+
+#[test]
+fn local_changes_override_the_built_in_library() {
+    let built = materials::builtin_materials();
+    let mut changed = built[0].clone();
+    changed.layers[0].spec.power = 11.0;
+    let mut extra = built[1].clone();
+    extra.id = "mine".into();
+    extra.name = "Mine".into();
+    let eff = materials::effective_library(&built, &[changed.clone(), extra.clone()]);
+    assert_eq!(eff.len(), built.len() + 1);
+    assert_eq!(eff[0].layers[0].spec.power, 11.0);
+    assert_eq!(eff.last().unwrap().name, "Mine");
+    // Nothing local: the built-in library as it is.
+    assert_eq!(materials::effective_library(&built, &[]), built);
+}
+
+#[test]
+fn a_document_remembers_the_material_it_was_made_with() {
+    let mut doc = Document::default();
+    assert!(doc.material.is_none());
+    doc.material = Some(materials::builtin_materials().remove(0));
+    let back = Document::from_json(&doc.to_json()).unwrap();
+    assert_eq!(back.material, doc.material);
+    // Old files have none.
+    assert!(Document::from_json(&Document::default().to_json().replace(",\"material\":null", "")).unwrap().material.is_none());
 }

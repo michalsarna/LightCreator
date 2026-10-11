@@ -625,3 +625,26 @@
 624|Imporditud {} materjali ja {} seadet
 625|See ei ole LightCreatori raamatukogufail.
 626|Failis {} on materjaliseaded, mis erinevad seadmest {}. Vali väärtused, mis jäävad.
+627|Vineer
+628|MDF
+629|Papp
+630|Paber
+631|Nahk
+632|Vilt
+633|Kork
+634|Akrüül
+635|Akrüül, must või tume
+636|Kiltkivi / kivi
+637|Anodeeritud alumiinium (kaetud)
+638|Kummi
+639|Kangas
+640|Klaas
+641|Puit (lehtpuit)
+642|Sildid
+643|Paksus
+644|Sildid, komadega eraldatud
+645|Muuda materjali
+646|Taasta sisseehitatud väärtused
+647|Sisseehitatud väärtused taastati.
+648|Sellel materjalil pole selle seadme laseritüübi jaoks seadeid
+649|Topeltklõpsa materjalil, et selle seadeid muuta. Muudatused salvestatakse sellesse arvutisse.

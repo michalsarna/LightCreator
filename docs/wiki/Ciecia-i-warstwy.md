@@ -35,6 +35,10 @@ Obrazy są grawerowane linia po linii co interwał warstwy. Wybierz **próg**, *
 
 Biblioteka urządzenia jest zapisana w profilu urządzenia (więc także w kopiach zapasowych) i wewnątrz każdego zapisanego projektu. Przy otwarciu projektu jego biblioteka jest scalana z biblioteką aktywnego urządzenia: nowe materiały są dodawane, a przy różnicach okno pozwala wybrać, wartość po wartości, czy zachować swoją, czy wziąć tę z pliku.
 
+Materiał jest **jedną pozycją dla obu rodzajów laserów**: dioda i CO2 mają własne ustawienia pod tym samym identyfikatorem. Nazwy, np. *Sklejka*, są tłumaczone, grubość jest osobną wartością, a każdy materiał ma jednoliniowy komentarz i tagi (*Cut*, *Engrave*…). Wartości wbudowane można zmienić na swoim komputerze: **kliknij dwukrotnie** materiał w oknie Material library (albo *Edit material*), ustaw każdą warstwę i zapisz; kopia nadpisuje dane wbudowane, a *Restore built-in values* przywraca oryginał. Biblioteka urządzenia dostaje wariant dla swojego rodzaju lasera. Listy są pogrupowane po kategoriach, a każdą grupę można zwinąć klikając tytuł. Zapisany projekt zawiera profil urządzenia, bibliotekę urządzenia i materiał, z którym powstał.
+
+![Edycja materiału](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/36-material-edit.png)
+
 Każda warstwa materiału pamięta też swój **kolor** i **etykietę** (przeznaczenie, np. *Cut*); zastosowanie materiału ustawia parametry, kolor i nazwę jego warstw. Materiały mają **kategorię** (Drewno, Metal, Tworzywa, Papier i skóra, Kamień i szkło, Inne albo własną), a listę w zakładce Materials można po niej filtrować. Każda pozycja pokazuje swoje warstwy z kolorem i głównymi ustawieniami.
 
 **Export library… / Import library…** (w oknie Material library i w zakładce Materials) zapisują i wczytują jeden plik `.lcb` z materiałami globalnymi i urządzeniami wraz z ich bibliotekami. Okno pozwala zaznaczyć dokładnie, co trafia do pliku lub co jest z niego brane; materiały, które się różnią, otwierają okno różnic. Zakładki panelu bocznego można przeciągać, aby zmienić ich kolejność.

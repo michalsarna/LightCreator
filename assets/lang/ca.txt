@@ -625,3 +625,26 @@
 624|Importats {} material(s) i {} dispositiu(s)
 625|Aquest no és un fitxer de biblioteca de LightCreator.
 626|{} conté paràmetres de materials diferents dels de {}. Trieu els valors que voleu conservar.
+627|Contraplacat
+628|MDF
+629|Cartró
+630|Paper
+631|Cuir
+632|Feltre
+633|Suro
+634|Acrílic
+635|Acrílic, negre o fosc
+636|Pissarra / pedra
+637|Alumini anoditzat (recobert)
+638|Cautxú
+639|Tela
+640|Vidre
+641|Fusta (dura)
+642|Etiquetes
+643|Gruix
+644|Etiquetes, separades per comes
+645|Edita el material
+646|Restaura els valors integrats
+647|S'han restaurat els valors integrats.
+648|Aquest material no té paràmetres per al tipus de làser d'aquest dispositiu
+649|Feu doble clic en un material per editar-ne els paràmetres. Els canvis es guarden en aquest ordinador.

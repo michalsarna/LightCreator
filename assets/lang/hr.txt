@@ -625,3 +625,26 @@
 624|Uvezeno materijala: {}, uređaja: {}
 625|Ovo nije datoteka biblioteke programa LightCreator.
 626|{} sadrži postavke materijala različite od {}. Odaberite vrijednosti koje se zadržavaju.
+627|Šperploča
+628|MDF
+629|Karton
+630|Papir
+631|Koža
+632|Filc
+633|Pluta
+634|Akril
+635|Akril, crni ili tamni
+636|Škriljevac / kamen
+637|Eloksirani aluminij (premazan)
+638|Guma
+639|Tkanina
+640|Staklo
+641|Drvo (tvrdo)
+642|Oznake
+643|Debljina
+644|Oznake, odvojene zarezima
+645|Uredi materijal
+646|Vrati ugrađene vrijednosti
+647|Ugrađene vrijednosti su vraćene.
+648|Ovaj materijal nema postavke za vrstu lasera ovog uređaja
+649|Dvaput kliknite materijal da biste uredili njegove postavke. Promjene se čuvaju na ovom računalu.

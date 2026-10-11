@@ -39,6 +39,7 @@ All pictures are rendered headlessly from the real UI. Back to the [README](../R
 | ![Ukrainian interface](screenshots/32-ukrainian.png) | ![Materials tab](screenshots/33-materials-tab.png) |
 | Ukrainian interface (one of the 23 added European languages) | The Materials tab: the library of the device, settings of every layer of a material |
 | ![Material differences](screenshots/34-material-merge.png) | ![Library file](screenshots/35-library-export.png) |
+| ![Editing a material](screenshots/36-material-edit.png) | |
 | A library read from a project file: choose, value by value, what to keep | |
 
 Regenerate them with

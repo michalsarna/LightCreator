@@ -625,3 +625,26 @@
 624|{} materia(a)l(en) en {} apparaat/apparaten geïmporteerd
 625|Dit is geen bibliotheekbestand van LightCreator.
 626|{} bevat materiaalinstellingen die afwijken van {}. Kies de waarden die blijven.
+627|Multiplex
+628|MDF
+629|Karton
+630|Papier
+631|Leer
+632|Vilt
+633|Kurk
+634|Acryl
+635|Acryl, zwart of donker
+636|Leisteen / steen
+637|Geanodiseerd aluminium (gecoat)
+638|Rubber
+639|Stof
+640|Glas
+641|Hout (hardhout)
+642|Tags
+643|Dikte
+644|Tags, gescheiden door komma's
+645|Materiaal bewerken
+646|Ingebouwde waarden herstellen
+647|De ingebouwde waarden zijn hersteld.
+648|Dit materiaal heeft geen instellingen voor het lasertype van dit apparaat
+649|Dubbelklik op een materiaal om de instellingen te bewerken. Wijzigingen blijven op deze computer bewaard.

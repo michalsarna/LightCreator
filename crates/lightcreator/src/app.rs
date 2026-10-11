@@ -267,7 +267,9 @@ pub struct App {
     pub side_w: f32,
     pub mat_filter: String,
     pub mat_laser: Option<lc_core::LaserKind>,
-    pub mat_sel: Option<usize>,
+    pub mat_sel: Option<String>,
+    /// The window that edits a material of the main library.
+    pub mat_edit: Option<crate::materials_ui::MatEdit>,
     pub mat_name: String,
     pub offset_dist: f64,
     pub offset_keep: bool,
@@ -431,6 +433,7 @@ impl App {
             mat_filter: String::new(),
             mat_laser: None,
             mat_sel: None,
+            mat_edit: None,
             mat_name: String::new(),
             offset_dist: -1.0,
             offset_keep: true,
@@ -697,7 +700,12 @@ impl App {
         match std::fs::read_to_string(&p).map_err(|e| e.to_string()).and_then(|s| Document::from_json(&s)) {
             Ok(d) => {
                 // The library of the device the file was saved with is merged into the library of this device.
-                let incoming = d.device.materials.clone();
+                let mut incoming = d.device.materials.clone();
+                if let Some(u) = &d.material {
+                    if !incoming.iter().any(|m| m.same_key(u)) {
+                        incoming.push(u.clone());
+                    }
+                }
                 self.doc = d;
                 let have_profile = self.profiles.get(self.active).is_some();
                 if let Some(p) = self.profiles.get(self.active) {
@@ -1690,6 +1698,7 @@ impl App {
         self.online_clipart_window(ctx);
         self.round_window(ctx);
         self.materials_window(ctx);
+        self.material_edit_window(ctx);
         self.merge_dialog(ctx);
         self.library_dialog(ctx);
         self.overlay_window(ctx);

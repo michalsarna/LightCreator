@@ -625,3 +625,26 @@
 624|Importálva: {} anyag és {} eszköz
 625|Ez nem a LightCreator könyvtárfájlja.
 626|A(z) {} anyagbeállításai eltérnek a(z) {} beállításaitól. Válassza ki a megtartandó értékeket.
+627|Rétegelt lemez
+628|MDF
+629|Karton
+630|Papír
+631|Bőr
+632|Filc
+633|Parafa
+634|Akril
+635|Akril, fekete vagy sötét
+636|Pala / kő
+637|Eloxált alumínium (bevonatos)
+638|Gumi
+639|Textil
+640|Üveg
+641|Fa (keményfa)
+642|Címkék
+643|Vastagság
+644|Címkék, vesszővel elválasztva
+645|Anyag szerkesztése
+646|Beépített értékek visszaállítása
+647|A beépített értékek vissza lettek állítva.
+648|Ennek az anyagnak nincs beállítása az eszköz lézertípusához
+649|Kattintson duplán egy anyagra a beállításainak szerkesztéséhez. A módosítások ezen a számítógépen maradnak.

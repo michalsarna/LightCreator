@@ -625,3 +625,26 @@
 624|Importados {} material(is) e {} dispositivo(s)
 625|Este não é um ficheiro de biblioteca do LightCreator.
 626|{} tem definições de materiais diferentes das de {}. Escolha os valores a manter.
+627|Contraplacado
+628|MDF
+629|Cartão
+630|Papel
+631|Couro
+632|Feltro
+633|Cortiça
+634|Acrílico
+635|Acrílico, preto ou escuro
+636|Ardósia / pedra
+637|Alumínio anodizado (revestido)
+638|Borracha
+639|Tecido
+640|Vidro
+641|Madeira (dura)
+642|Etiquetas
+643|Espessura
+644|Etiquetas, separadas por vírgulas
+645|Editar material
+646|Repor os valores integrados
+647|Os valores integrados foram repostos.
+648|Este material não tem definições para o tipo de laser deste dispositivo
+649|Faça duplo clique num material para editar as suas definições. As alterações ficam guardadas neste computador.

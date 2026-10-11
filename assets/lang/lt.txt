@@ -625,3 +625,26 @@
 624|Importuota medžiagų: {}, įrenginių: {}
 625|Tai nėra „LightCreator“ bibliotekos failas.
 626|{} medžiagų nustatymai skiriasi nuo {}. Pasirinkite reikšmes, kurias palikti.
+627|Fanera
+628|MDF
+629|Kartonas
+630|Popierius
+631|Oda
+632|Veltinis
+633|Kamštis
+634|Akrilas
+635|Akrilas, juodas arba tamsus
+636|Skalūnas / akmuo
+637|Anoduotas aliuminis (padengtas)
+638|Guma
+639|Audinys
+640|Stiklas
+641|Mediena (kietmedis)
+642|Žymos
+643|Storis
+644|Žymos, atskirtos kableliais
+645|Redaguoti medžiagą
+646|Atkurti įtaisytąsias reikšmes
+647|Įtaisytosios reikšmės atkurtos.
+648|Ši medžiaga neturi nustatymų šio įrenginio lazerio tipui
+649|Dukart spustelėkite medžiagą, kad redaguotumėte jos nustatymus. Pakeitimai saugomi šiame kompiuteryje.

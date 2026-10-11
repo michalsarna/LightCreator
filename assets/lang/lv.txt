@@ -625,3 +625,26 @@
 624|Importēti {} materiāli un {} ierīces
 625|Šis nav LightCreator bibliotēkas fails.
 626|{} materiālu iestatījumi atšķiras no {}. Izvēlieties vērtības, kas jāatstāj.
+627|Saplāksnis
+628|MDF
+629|Kartons
+630|Papīrs
+631|Āda
+632|Filcs
+633|Korķis
+634|Akrils
+635|Akrils, melns vai tumšs
+636|Slāneklis / akmens
+637|Anodēts alumīnijs (pārklāts)
+638|Gumija
+639|Audums
+640|Stikls
+641|Koks (cietkoks)
+642|Atzīmes
+643|Biezums
+644|Atzīmes, atdalītas ar komatiem
+645|Rediģēt materiālu
+646|Atjaunot iebūvētās vērtības
+647|Iebūvētās vērtības atjaunotas.
+648|Šim materiālam nav iestatījumu šīs ierīces lāzera tipam
+649|Veiciet dubultklikšķi uz materiāla, lai rediģētu tā iestatījumus. Izmaiņas tiek glabātas šajā datorā.

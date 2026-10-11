@@ -625,3 +625,26 @@
 624|Flutt inn: {} efni og {} tæki
 625|Þetta er ekki safnskrá frá LightCreator.
 626|{} inniheldur efnisstillingar sem eru frábrugðnar {}. Veldu gildin sem á að halda.
+627|Krossviður
+628|MDF
+629|Pappi
+630|Pappír
+631|Leður
+632|Flóki
+633|Korkur
+634|Akrýl
+635|Akrýl, svart eða dökkt
+636|Flögugrjót / steinn
+637|Anóðíserað ál (húðað)
+638|Gúmmí
+639|Efni
+640|Gler
+641|Viður (harðviður)
+642|Merki
+643|Þykkt
+644|Merki, aðskilin með kommum
+645|Breyta efni
+646|Endurheimta innbyggð gildi
+647|Innbyggðu gildin voru endurheimt.
+648|Þetta efni hefur engar stillingar fyrir leysigerð þessa tækis
+649|Tvísmelltu á efni til að breyta stillingum þess. Breytingar eru geymdar á þessari tölvu.

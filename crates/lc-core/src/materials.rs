@@ -239,9 +239,20 @@ pub struct MaterialLayer {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Material {
-    /// Material and thickness, e.g. "Plywood 3 mm".
+    /// Identifies the material in every library and file, whatever it is called or in which language. Empty in
+    /// materials saved before ids existed: `key` then derives it from the name.
+    #[serde(default)]
+    pub id: String,
+    /// The name without the thickness, e.g. "Plywood". The names that ship with the program are translated.
     pub name: String,
+    /// mm; 0 when the thickness does not matter.
+    #[serde(default)]
+    pub thickness: f64,
+    /// The settings are for this type of laser: one material (one id) has a variant per laser type.
     pub laser: LaserKind,
+    /// What the layers are for ("Cut", "Engrave"...), to find the material by.
+    #[serde(default)]
+    pub tags: Vec<String>,
     #[serde(default)]
     pub note: String,
     /// "Wood", "Metal", a category of your own... Empty: guessed from the name (see `category`).
@@ -272,12 +283,59 @@ pub fn guess_category(name: &str) -> &'static str {
     }
 }
 
+/// "Plywood 3 mm" -> ("Plywood", 3.0); a name without a thickness comes back as it is, with 0.
+pub fn split_thickness(name: &str) -> (String, f64) {
+    let n = name.trim();
+    if let Some(head) = n.strip_suffix("mm").map(str::trim_end) {
+        if let Some((base, num)) = head.rsplit_once(' ') {
+            if let Ok(t) = num.replace(',', ".").parse::<f64>() {
+                if t > 0.0 && !base.trim().is_empty() {
+                    return (base.trim().to_string(), t);
+                }
+            }
+        }
+    }
+    (n.to_string(), 0.0)
+}
+
+/// An id made of a name and a thickness: "plywood-3".
+pub fn make_id(name: &str, thickness: f64) -> String {
+    let mut s: String = name.to_lowercase().chars().map(|c| if c.is_alphanumeric() { c } else { '-' }).collect();
+    while s.contains("--") {
+        s = s.replace("--", "-");
+    }
+    let mut s = s.trim_matches('-').to_string();
+    if thickness > 0.0 {
+        s.push_str(&format!("-{}", thickness).replace('.', "_"));
+    }
+    s
+}
+
 impl Material {
+    /// The id, or one derived from the name for materials saved without.
+    pub fn key(&self) -> String {
+        if self.id.is_empty() {
+            make_id(&self.name, self.thickness)
+        } else {
+            self.id.clone()
+        }
+    }
+
+    /// Give the material its id (kept when the name is changed later).
+    pub fn freeze_id(&mut self) {
+        if self.id.is_empty() {
+            self.id = make_id(&self.name, self.thickness);
+        }
+    }
+
     /// A material taken from the settings of the given layers (index, layer).
+    /// A thickness at the end of the name ("Birch 3 mm") becomes the thickness of the material.
     pub fn from_layers(name: &str, laser: LaserKind, layers: &[(usize, &Layer)]) -> Material {
+        let (base, thickness) = split_thickness(name);
         let mut ls: Vec<MaterialLayer> = layers.iter().map(|(i, l)| MaterialLayer { index: *i, label: l.name.clone(), spec: LayerSpec::from_layer(l) }).collect();
         ls.sort_by_key(|l| l.index);
-        Material { name: name.trim().to_string(), laser, note: String::new(), category: guess_category(name).to_string(), layers: ls }
+        let tags = ls.iter().map(|l| l.label.clone()).collect();
+        Material { id: make_id(&base, thickness), name: base.clone(), thickness, laser, tags, note: String::new(), category: guess_category(&base).to_string(), layers: ls }
     }
 
     /// The category of the material: the one set, or a guess from its name.
@@ -309,9 +367,9 @@ impl Material {
         n
     }
 
-    /// Material and laser type identify a material within a library.
+    /// Id and laser type identify a material within a library.
     pub fn same_key(&self, other: &Material) -> bool {
-        self.name.trim().eq_ignore_ascii_case(other.name.trim()) && self.laser == other.laser
+        self.key() == other.key() && self.laser == other.laser
     }
 }
 
@@ -331,16 +389,20 @@ pub fn materials_from_presets(presets: &[Preset]) -> Vec<Material> {
     for p in presets {
         let spec = LayerSpec { mode: p.mode, speed: p.speed, power: p.power, passes: p.passes.max(1), interval: p.interval, angle: 0.0, overscan: 1.0, bidirectional: true, dither: Dither::default(), min_power: 0.0, air_assist: false, colour: NO_COLOUR };
         let mut index = operation_index(&p.operation);
-        let pos = match out.iter().position(|m| m.name == p.material && m.laser == p.laser) {
+        let pos = match out.iter().position(|m| (m.name.clone(), m.thickness) == split_thickness(&p.material) && m.laser == p.laser) {
             Some(i) => i,
             None => {
-                out.push(Material { name: p.material.clone(), laser: p.laser, note: String::new(), category: guess_category(&p.material).to_string(), layers: vec![] });
+                let (base, thickness) = split_thickness(&p.material);
+                out.push(Material { id: make_id(&base, thickness), category: guess_category(&base).to_string(), name: base, thickness, laser: p.laser, tags: vec![], note: String::new(), layers: vec![] });
                 out.len() - 1
             }
         };
         // A custom operation name takes the next free layer.
         while out[pos].layer(index).is_some() {
             index += 1;
+        }
+        if !out[pos].tags.contains(&p.operation) {
+            out[pos].tags.push(p.operation.clone());
         }
         let index = index.min(29);
         let spec = LayerSpec { colour: index, ..spec };
@@ -355,6 +417,14 @@ pub fn materials_from_presets(presets: &[Preset]) -> Vec<Material> {
 /// The built-in materials: the single-layer starting values of `builtin()` grouped into materials.
 pub fn builtin_materials() -> Vec<Material> {
     materials_from_presets(&builtin())
+}
+
+/// The materials of the main library as this computer sees them: the ones that ship with the program, where
+/// `local` holds another version of one (same id and laser type) that one, and then the ones only `local` has.
+pub fn effective_library(builtin: &[Material], local: &[Material]) -> Vec<Material> {
+    let mut out: Vec<Material> = builtin.iter().map(|b| local.iter().find(|l| l.same_key(b)).unwrap_or(b).clone()).collect();
+    out.extend(local.iter().filter(|l| !builtin.iter().any(|b| b.same_key(l))).cloned());
+    out
 }
 
 /// Copy the materials of `source` that suit `laser` and are not yet in `library` into it. Returns how many.

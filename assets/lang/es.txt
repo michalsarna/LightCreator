@@ -625,3 +625,26 @@
 624|Importados {} material(es) y {} dispositivo(s)
 625|Este no es un archivo de biblioteca de LightCreator.
 626|{} tiene ajustes de materiales distintos de los de {}. Elija los valores que se conservan.
+627|Contrachapado
+628|MDF
+629|Cartón
+630|Papel
+631|Cuero
+632|Fieltro
+633|Corcho
+634|Acrílico
+635|Acrílico, negro u oscuro
+636|Pizarra / piedra
+637|Aluminio anodizado (recubierto)
+638|Goma
+639|Tela
+640|Vidrio
+641|Madera (dura)
+642|Etiquetas
+643|Grosor
+644|Etiquetas, separadas por comas
+645|Editar material
+646|Restaurar los valores integrados
+647|Se restauraron los valores integrados.
+648|Este material no tiene ajustes para el tipo de láser de este dispositivo
+649|Haga doble clic en un material para editar sus ajustes. Los cambios se guardan en este equipo.

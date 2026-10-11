@@ -253,7 +253,7 @@ fn render_screenshots() {
         a.overlay = None;
         a.show_materials = true;
         a.mat_laser = Some(lc_core::LaserKind::Diode);
-        a.mat_sel = Some(1);
+        a.mat_sel = Some("plywood-3".into());
     }
     save(&mut h, "11-materials.png");
 
@@ -262,12 +262,12 @@ fn render_screenshots() {
         let a = app(&mut h);
         a.show_materials = false;
         a.side_tab = SideTab::Materials;
-        a.mat_dev_sel = a.doc.device.materials.iter().position(|m| m.name == "Plywood 3 mm");
+        a.mat_dev_sel = a.doc.device.materials.iter().position(|m| m.name == "Plywood" && m.thickness == 3.0);
     }
     save(&mut h, "33-materials-tab.png");
     {
         let a = app(&mut h);
-        let mut changed = a.doc.device.materials.iter().find(|m| m.name == "Plywood 3 mm").cloned().unwrap();
+        let mut changed = a.doc.device.materials.iter().find(|m| m.name == "Plywood" && m.thickness == 3.0).cloned().unwrap();
         changed.layers[0].spec.speed += 2.0;
         changed.layers[0].spec.passes += 1;
         changed.layers[0].spec.air_assist = true;
@@ -275,6 +275,21 @@ fn render_screenshots() {
     }
     save(&mut h, "34-material-merge.png");
     app(&mut h).mat_merge = None;
+    // Editing a material of the main library (double-click in the Material library window).
+    {
+        let a = app(&mut h);
+        a.show_materials = true;
+        a.mat_laser = Some(lc_core::LaserKind::Diode);
+        a.mat_sel = Some("plywood-3".into());
+        let m = a.main_library().into_iter().find(|m| m.key() == "plywood-3" && m.laser == lc_core::LaserKind::Diode).unwrap();
+        a.mat_edit = Some(crate::materials_ui::MatEdit { m });
+    }
+    save(&mut h, "36-material-edit.png");
+    {
+        let a = app(&mut h);
+        a.mat_edit = None;
+        a.show_materials = false;
+    }
     // Choosing what goes into a library file.
     {
         let a = app(&mut h);

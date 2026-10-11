@@ -167,6 +167,14 @@
     project file is opened, its library is merged into the library of the active device: new materials are added at
     once, materials that differ open a window where, value by value, you choose to keep your own or take the one from
     the file.
+  * A material is **one entry for both laser types** (diode and CO2 have their own settings under the same id, e.g.
+    `plywood-3`). Names such as "Plywood" are translated; the thickness is a separate value; there is a one-line note and
+    tags (Cut, Engrave...). The program's built-in values can be **changed on this computer**: double-click a material in the
+    Material library window (or Edit material) to set every layer, then Save; it is kept as a local copy that overrides the
+    built-in data, and *Restore built-in values* brings the original back. A device's library receives the variant for its
+    own laser type.
+  * Lists are grouped by category; a group folds up by its title (shown in the main colour), as in the clipart list.
+  * A saved project carries the device profile, the device library and the **material it was made with**.
   * Every material has the **colour** and a **label** (the name of its purpose, e.g. Cut) of each layer, and a **category**
     (Wood, Metal, Plastic, Paper and leather, Stone and glass, Other, or a category of your own). Applying a material sets
     the settings, colour and name of its layers. The list in the Materials tab shows every layer with its colour and main

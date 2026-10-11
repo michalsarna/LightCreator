@@ -625,3 +625,26 @@
 624|{} matériau(x) et {} appareil(s) importé(s)
 625|Ce n'est pas un fichier de bibliothèque de LightCreator.
 626|{} contient des réglages de matériaux différents de ceux de {}. Choisissez les valeurs à conserver.
+627|Contreplaqué
+628|MDF
+629|Carton
+630|Papier
+631|Cuir
+632|Feutre
+633|Liège
+634|Acrylique
+635|Acrylique, noir ou foncé
+636|Ardoise / pierre
+637|Aluminium anodisé (revêtu)
+638|Caoutchouc
+639|Tissu
+640|Verre
+641|Bois (dur)
+642|Étiquettes
+643|Épaisseur
+644|Étiquettes, séparées par des virgules
+645|Modifier le matériau
+646|Rétablir les valeurs intégrées
+647|Les valeurs intégrées ont été rétablies.
+648|Ce matériau n'a pas de réglages pour le type de laser de cet appareil
+649|Double-cliquez sur un matériau pour modifier ses réglages. Les changements sont conservés sur cet ordinateur.

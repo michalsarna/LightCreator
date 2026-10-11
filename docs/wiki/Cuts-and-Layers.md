@@ -35,6 +35,10 @@ A **material** holds the settings of every layer it needs: mode, speed, power, p
 
 The device library is stored in the device profile (so also in backups) and inside every saved project. When you open a project, its library is merged into the library of the active device: new materials are added, and where a material differs a window lets you choose, value by value, to keep yours or take the one from the file.
 
+A material is **one entry for both laser types**: diode and CO2 keep their own settings under the same id. Names such as *Plywood* are translated, the thickness is a separate value, and every material has a one-line note and tags (*Cut*, *Engrave*...). The built-in values can be changed on your computer: **double-click** a material in the Material library window (or press *Edit material*), set every layer and Save; the copy overrides the built-in data and *Restore built-in values* brings the original back. A device's library receives the variant for its own laser type. Lists are grouped by category and each group can be folded up by its title. A saved project carries the device profile, the device library and the material it was made with.
+
+![Editing a material](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/36-material-edit.png)
+
 Each layer of a material also keeps its **colour** and a **label** (its purpose, e.g. *Cut*); applying a material sets the settings, colour and name of its layers. Materials have a **category** (Wood, Metal, Plastic, Paper and leather, Stone and glass, Other, or one you add) and the list in the Materials tab can be filtered by it. Every entry shows its layers with colour and main settings.
 
 **Export library… / Import library…** (in the Material library window and the Materials tab) write and read one `.lcb` file with your global materials and your devices with their libraries. A window lets you tick exactly what goes into the file or is taken from it; materials that differ open the window of differences. The tabs of the side panel can be dragged to change their order.

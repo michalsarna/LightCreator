@@ -587,6 +587,10 @@ pub struct Document {
     pub order: Vec<usize>,
     #[serde(default)]
     next_group: u64,
+    /// The material whose settings were put into the layers of this design (it travels with the file, so the
+    /// design can be repeated on another machine).
+    #[serde(default)]
+    pub material: Option<crate::materials::Material>,
 }
 
 fn identity_order() -> Vec<usize> {
@@ -602,6 +606,7 @@ impl Default for Document {
             next_id: 1,
             order: identity_order(),
             next_group: 1,
+            material: None,
         }
     }
 }

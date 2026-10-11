@@ -625,3 +625,26 @@
 624|Importováno materiálů: {}, zařízení: {}
 625|Toto není soubor knihovny LightCreator.
 626|{} obsahuje nastavení materiálů odlišná od {}. Vyberte hodnoty, které se mají zachovat.
+627|Překližka
+628|MDF
+629|Karton
+630|Papír
+631|Kůže
+632|Filc
+633|Korek
+634|Akryl
+635|Akryl, černý nebo tmavý
+636|Břidlice / kámen
+637|Eloxovaný hliník (potažený)
+638|Guma
+639|Látka
+640|Sklo
+641|Dřevo (tvrdé)
+642|Štítky
+643|Tloušťka
+644|Štítky oddělené čárkami
+645|Upravit materiál
+646|Obnovit vestavěné hodnoty
+647|Vestavěné hodnoty byly obnoveny.
+648|Tento materiál nemá nastavení pro typ laseru tohoto zařízení
+649|Dvojitým kliknutím na materiál upravíte jeho nastavení. Změny se uchovávají v tomto počítači.

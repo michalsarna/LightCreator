@@ -625,3 +625,26 @@
 624|Importate {} material(e) și {} dispozitiv(e)
 625|Acesta nu este un fișier de bibliotecă LightCreator.
 626|{} conține setări de materiale diferite de cele din {}. Alegeți valorile de păstrat.
+627|Placaj
+628|MDF
+629|Carton
+630|Hârtie
+631|Piele
+632|Fetru
+633|Plută
+634|Acril
+635|Acril, negru sau închis
+636|Ardezie / piatră
+637|Aluminiu anodizat (acoperit)
+638|Cauciuc
+639|Țesătură
+640|Sticlă
+641|Lemn (esență tare)
+642|Etichete
+643|Grosime
+644|Etichete, separate prin virgule
+645|Editează materialul
+646|Restabilește valorile integrate
+647|Valorile integrate au fost restabilite.
+648|Acest material nu are setări pentru tipul de laser al acestui dispozitiv
+649|Faceți dublu clic pe un material pentru a-i edita setările. Modificările rămân pe acest computer.

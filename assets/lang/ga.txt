@@ -625,3 +625,26 @@
 624|Iompórtáladh {} ábhar agus {} feiste
 625|Ní comhad leabharlainne de chuid LightCreator é seo.
 626|Tá socruithe ábhair i {} atá difriúil ó {}. Roghnaigh na luachanna le coinneáil.
+627|Pláta
+628|MDF
+629|Cairtchlár
+630|Páipéar
+631|Leathar
+632|Féilt
+633|Corc
+634|Aicrileach
+635|Aicrileach, dubh nó dorcha
+636|Scláta / cloch
+637|Alúmanam anóidithe (brataithe)
+638|Rubar
+639|Fabraic
+640|Gloine
+641|Adhmad (crua)
+642|Clibeanna
+643|Tiús
+644|Clibeanna, scartha le camóga
+645|Cuir ábhar in eagar
+646|Athchóirigh na luachanna ionsuite
+647|Athchóiríodh na luachanna ionsuite.
+648|Níl socruithe ag an ábhar seo do chineál léasair na feiste seo
+649|Cliceáil faoi dhó ar ábhar chun a shocruithe a chur in eagar. Coimeádtar na hathruithe ar an ríomhaire seo.

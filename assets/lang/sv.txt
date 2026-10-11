@@ -625,3 +625,26 @@
 624|Importerade {} material och {} enhet(er)
 625|Det här är inte en biblioteksfil från LightCreator.
 626|{} har materialinställningar som skiljer sig från {}. Välj vilka värden som ska behållas.
+627|Plywood
+628|MDF
+629|Kartong
+630|Papper
+631|Läder
+632|Filt
+633|Kork
+634|Akryl
+635|Akryl, svart eller mörk
+636|Skiffer / sten
+637|Anodiserad aluminium (belagd)
+638|Gummi
+639|Tyg
+640|Glas
+641|Trä (hårdträ)
+642|Taggar
+643|Tjocklek
+644|Taggar, separerade med kommatecken
+645|Redigera material
+646|Återställ inbyggda värden
+647|De inbyggda värdena har återställts.
+648|Det här materialet har inga inställningar för den här enhetens lasertyp
+649|Dubbelklicka på ett material för att redigera dess inställningar. Ändringar sparas på den här datorn.
