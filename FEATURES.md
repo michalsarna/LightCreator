@@ -143,6 +143,14 @@
   (asks for administrator rights through `pkexec`, keeps a backup of the old file, needs a confirmation). A
   local-only option is offered for use with an SSH tunnel, with a warning that the port is otherwise open to the
   network.
+* **Device templates and profiles:** generic templates (GRBL diode, GRBL CO2, K40 conversion, Marlin diode), a
+  first-run setup with an optional read from the controller, duplicate, export and import of a profile (format
+  version, strict validation, no port from the file).
+* **Maintenance and notes:** working time and own counters with limits (counted from the time jobs really run) and
+  per-device notes in Markdown with a preview.
+* **Cameras:** several cameras per device (http / https stream or a camera of this computer), picture settings
+  (brightness, contrast, white balance, noise reduction, YUYV), manual lens correction, and alignment of the overlay
+  by 3 or more reference points (least-squares perspective fit).
 * **Camera view:** give the device a camera URL (an MJPEG stream or a JPEG snapshot address, http or https) and a
   "Camera view" button appears next to the preview button. The picture can also be shown as the overlay on the
   work area. RTSP streams are not supported; use an MJPEG address (most camera software offers one). The view
@@ -240,4 +248,4 @@
   Linux) and in the native macOS menu bar (menu titles on macOS stay text, as the system requires).
 
 **Not yet implemented:** direct Ruida / Trocen binary protocols, scan angles for images, kerning and complex
-script shaping in text, lens-distortion correction for the camera.
+script shaping in text, automatic lens calibration for the camera (the lens correction is entered by hand).

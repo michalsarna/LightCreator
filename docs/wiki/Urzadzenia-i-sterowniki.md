@@ -47,6 +47,12 @@ Strona **Laser** wymienia głowice lasera maszyny (co najmniej jedna). Głowica 
 ## Profile urządzeń
 Okno startowe wybiera **profil urządzenia** i go zapamiętuje. Profil zawiera sterownik, typ lasera (dioda lub CO2), jednostki (mm lub cale; geometria jest zawsze przechowywana w mm), jednostki prędkości (na sekundę lub na minutę, przeliczane automatycznie; G-code zawsze niesie posuw w mm/min po `G21`), domyślną prędkość każdej warstwy, pole robocze, zero maszyny, maks. wartość S, prędkość jałową, prędkość transmisji, port, krok i posuw ręcznego przesuwania, moc obrysu i wyrównanie kamery. Okno konfiguracji ma zmienny rozmiar i listę stron po lewej: **General** (nazwa, sterownik, jednostki, prędkości, przesuw), **Hardware** (pole robocze, zero maszyny), **Laser** (typ lasera, maks. S, moc obrysu), **G-code**, **Connection** (szeregowe lub TCP; tylko dla sterowników z połączeniem na żywo) i **Camera**. Profile zapisane przez wcześniejsze wersje są wczytywane bez zmian; ustawienia lasera są na liście głowic (na razie jedna). Edytor wymaga co najmniej jednego profilu.
 
+**Szablony i pierwsze uruchomienie.** *Dodaj urządzenie…* na ekranie startowym oferuje ogólne szablony (GRBL dioda, GRBL CO2, przeróbka K40, Marlin dioda) i opcjonalnie odczyt prawdziwych wartości ze sterownika; krótka konfiguracja pyta o nazwę i jednostki, a kończy podsumowaniem tego, co warto sprawdzić. Szablony to ogólne punkty startowe, a nie profile konkretnych maszyn. Profil można **powielić**, **wyeksportować** i **zaimportować** (plik JSON z wersją formatu; import jest ściśle sprawdzany, nowszy format jest odrzucany, a port szeregowy nigdy nie jest brany z pliku).
+
+**Konserwacja.** Każde urządzenie liczy łączny czas pracy i własne liczniki (np. „czyszczenie soczewki”) z opcjonalnymi limitami. Czas liczy się od chwili, gdy zadania naprawdę idą; przypomnienie pojawia się raz na sesję i na ekranie startowym, a licznik można wyzerować po potwierdzeniu. Kopie i importy startują od zera.
+
+**Notatki.** Każde urządzenie ma notatki w Markdown z podglądem (mały wbudowany renderer; tylko odnośniki http / https). Notatki z szablonu są tylko do odczytu.
+
 ## Sterowniki
 | Sterownik | Obsługa |
 |---|---|
@@ -80,3 +86,10 @@ Podaj urządzeniu adres kamery (strumień MJPEG lub zdjęcie JPEG, http / https;
 
 **Wyrównanie nakładki:** zdjęcie lub obraz na żywo leży pod projektem, wyrównany czterema przeciąganymi rogami (korekcja perspektywy), z przezroczystością, odbiciem i obrotem; zapisywane dla urządzenia.
 ![Nakładka](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/10-camera-overlay.png)
+
+**Wiele kamer.** Urządzenie może mieć dowolną liczbę kamer (strona *Kamera*): każda ma nazwę, przełącznik, źródło (adres http / https albo kamera tego komputera, jeśli wersja ma obsługę kamer), obrót i znacznik *aktywna*; aktywna daje podgląd na żywo. Kamerę można włączyć tylko przy poprawnym adresie. Dla każdej kamery są **ustawienia obrazu** (jasność, kontrast, balans bieli, redukcja szumu, a dla kamery lokalnej preferencja nieskompresowanego formatu YUYV) i **ręczna korekcja obiektywu** (współczynniki radialne k1–k3 i styczne p1, p2 wpisywane ręcznie; same 0 = bez korekcji). Profile z jednym adresem kamery z wcześniejszych wersji stają się jedną kamerą.
+
+**Wyrównanie według punktów odniesienia.** W oknie nakładki sekcja *Punkty odniesienia* zawiera pary: punkt na obrazie (piksele) i jego miejsce w obszarze roboczym (mm). Przy 3 punktach dopasowanie jest afiniczne, przy 4 i więcej pełne perspektywiczne (najmniejsze kwadraty); *Wyrównaj według punktów* przesuwa cztery narożniki nakładki, a *Punkty z obecnych narożników* zamienia dawne wyrównanie czterema narożnikami na punkty. Punkty są zapisywane przy kamerze.
+
+Nieobsługiwane: strumienie RTSP oraz automatyczna kalibracja obiektywu (planszy ChArUco, znaczniki, siatki kropek); wymagałaby ciężkiej zależności od wizji komputerowej, więc współczynniki wpisuje się ręcznie.
+

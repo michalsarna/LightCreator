@@ -47,6 +47,12 @@ The **Laser** page lists the laser heads of the machine (at least one). A head h
 ## Device profiles
 The start window selects a **device profile** and remembers it. A profile holds controller, laser type (diode or CO2), units (mm or inches; geometry is always stored in mm), speed units (per second or per minute, converted automatically; the G-code always carries the mm/min feed after `G21`), the default speed of each layer, work area, machine zero, S-value max, travel speed, baud rate, port, jog step and feed, frame power and camera alignment. The configuration window is a resizable window with a list of pages on the left: **General** (name, controller, units, speeds, jog), **Hardware** (work area, machine zero), **Laser** (laser type, S-value max, frame power), **G-code**, **Connection** (serial or TCP; only for controllers with a live link) and **Camera**. Profiles saved by earlier versions are read as they are; the laser settings live in a list of laser heads (one for now). The editor needs at least one profile.
 
+**Templates and the first-run setup.** *Add device…* on the start screen offers generic templates (GRBL diode, GRBL CO2, K40 conversion, Marlin diode) and, optionally, a read of the real values from the controller; a short setup then asks for the name and units and ends with a summary of what is worth checking. The templates are generic starting points, not profiles of particular machines. A profile can be **duplicated**, **exported** and **imported** (a JSON file with a format version; the import is validated strictly, a newer format is refused, and the serial port is never taken from the file).
+
+**Maintenance.** Each device keeps the total working time and your own counters (for example "lens cleaned") with optional limits. The time is counted from the moment jobs really run; a reminder is shown once per session and on the start screen, and a counter can be reset after confirming. Copies and imports start at zero.
+
+**Notes.** Every device has notes in Markdown with a preview (a small built-in renderer; only http / https links). Notes that come from a template are read-only.
+
 ## Controllers
 | Controller | Support |
 |---|---|
@@ -80,3 +86,10 @@ Give the device a camera URL (MJPEG stream or JPEG snapshot, http / https; RTSP 
 
 **Camera overlay alignment:** a photo or live camera sits under the design, aligned with four draggable corners (perspective corrected), with opacity, flip and rotate, saved per device.
 ![Overlay](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/10-camera-overlay.png)
+
+**Several cameras.** A device can have any number of cameras (the *Camera* page): each has a name, an on/off switch, a source (an http / https address, or a camera of this computer where the build has camera support), a rotation and one *active* flag; the active one gives the live picture. A camera can only be switched on when its address is valid. Per camera there are **picture settings** (brightness, contrast, white balance, noise reduction, and for a local camera a preference for the uncompressed YUYV format) and a **manual lens correction** (radial k1–k3 and tangential p1, p2 coefficients, entered by hand; all 0 means no correction). Profiles with a single camera URL from earlier versions become one camera.
+
+**Alignment by reference points.** In the overlay window, *Reference points* holds pairs of a point in the picture (pixels) and its place in the work area (mm). With 3 points the fit is affine, with 4 or more it is a full perspective fit (least squares); *Align by the points* moves the four overlay corners to match, and *Points from the current corners* turns the older four-corner alignment into points. The points are stored with the camera.
+
+Not supported: RTSP streams, and automatic lens calibration (ChArUco boards, markers or dot grids); it would need a heavy computer-vision dependency, so the coefficients are entered by hand.
+
