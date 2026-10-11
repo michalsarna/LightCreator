@@ -301,7 +301,7 @@ mod reconnect_tests {
         a.want_link = true;
         a.reconnect_at = Some(std::time::Instant::now() - std::time::Duration::from_secs(1));
         a.reconnect_tick(&ctx);
-        assert!(a.status.contains("Connecting again"), "{}", a.status);
+        assert_eq!(a.status, tr("Connecting again…"));
         let next = a.reconnect_at.expect("another try is scheduled");
         assert!(next > std::time::Instant::now());
         // The user pressed Disconnect: nothing more happens.

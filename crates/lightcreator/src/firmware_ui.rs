@@ -382,12 +382,13 @@ mod tests {
         // The controller took two of the three.
         a.fw_got(lines(&["$110=5000.000", "$111=3000.000", "$130=300.000"]));
         assert!(a.fw.verify.is_none());
-        assert!(a.fw.report[0].starts_with("1 of 3"), "{:?}", a.fw.report);
-        assert!(a.fw.report[1].contains("$111"));
+        // A heading and one line for the setting that differs (the words depend on the language).
+        assert_eq!(a.fw.report.len(), 2, "{:?}", a.fw.report);
+        assert!(a.fw.report[1].contains("$111") && !a.fw.report.iter().any(|l| l.contains("$110") || l.contains("$130")));
         let mut b = app();
         b.fw_write_all(vec![(110, "5000".into())]);
         b.fw_got(lines(&["$110=5000.000"]));
-        assert!(b.fw.report[0].starts_with("All 1 settings"), "{:?}", b.fw.report);
+        assert_eq!(b.fw.report.len(), 1, "{:?}", b.fw.report);
     }
 
     #[test]
