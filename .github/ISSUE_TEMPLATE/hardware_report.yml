@@ -49,8 +49,20 @@ body:
   - type: input
     id: version
     attributes:
-      label: LightCreator version and operating system
-      placeholder: v0.0.11 on Linux
+      label: LightCreator version
+      description: Exactly as the release name on the Releases page (also shown in Help → About), including the leading "v".
+      placeholder: v0.0.11
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Other
     validations:
       required: true
   - type: checkboxes
