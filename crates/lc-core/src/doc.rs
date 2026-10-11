@@ -780,11 +780,18 @@ pub struct Connection {
     /// Connect again by itself, every few seconds, when the link was lost without the user asking for it.
     #[serde(default)]
     pub auto_reconnect: bool,
+    /// Run the homing cycle (`$H`, `G28`) once the link is up.
+    #[serde(default)]
+    pub home_on_connect: bool,
+    /// Clear an alarm (`$X`, `M999`) once the link is up. This skips homing: only for machines whose head is known
+    /// to be in a safe place.
+    #[serde(default)]
+    pub unlock_on_connect: bool,
 }
 
 impl Default for Connection {
     fn default() -> Self {
-        Connection { link: LinkKind::Serial, host: String::new(), tcp_port: 3333, port: String::new(), baud: 115_200, streaming: Streaming::Counting, usb_id: String::new(), auto_reconnect: false }
+        Connection { link: LinkKind::Serial, host: String::new(), tcp_port: 3333, port: String::new(), baud: 115_200, streaming: Streaming::Counting, usb_id: String::new(), auto_reconnect: false, home_on_connect: false, unlock_on_connect: false }
     }
 }
 
@@ -923,6 +930,8 @@ impl From<DeviceWire> for Device {
             streaming: Streaming::Counting,
             usb_id: String::new(),
             auto_reconnect: false,
+            home_on_connect: false,
+            unlock_on_connect: false,
         });
         let mut heads = w.heads.unwrap_or_default();
         if heads.is_empty() {

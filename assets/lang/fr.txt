@@ -750,3 +750,9 @@
 749|Délier
 750|Quand la liaison tombe d'elle-même, réessayer toutes les quelques secondes jusqu'à ce que vous appuyiez sur Déconnecter.
 751|aucun
+752|Après la connexion
+753|Effacer une alarme
+754|Effacer l'alarme saute la prise d'origine : à n'utiliser que si la tête est sûrement en lieu sûr.
+755|Référencer la machine
+756|Référencer {}
+757|Référence seulement l'axe {} ($H{})

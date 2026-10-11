@@ -248,7 +248,7 @@ mod fw_tests {
         a.profiles = vec![lc_core::Device::default()];
         a.enter_editor(0);
         let now = std::time::Instant::now();
-        a.read_cfg = Some(ReadCfg { controller: Controller::Grbl, waiting_connect: false, request_at: None, sent_at: Some(now), lines: lines.iter().map(|l| l.to_string()).collect(), started: now, probe: true });
+        a.read_cfg = Some(ReadCfg { controller: Controller::Grbl, waiting_connect: false, request_at: None, sent_at: Some(now), lines: lines.iter().map(|l| l.to_string()).collect(), started: now, kind: crate::device_ui::ReadKind::Probe });
         a.finish_read();
         a
     }
@@ -315,5 +315,60 @@ mod reconnect_tests {
         b.reconnect_at = Some(std::time::Instant::now() - std::time::Duration::from_secs(1));
         b.reconnect_tick(&ctx);
         assert!(b.reconnect_at.is_none());
+    }
+}
+
+#[cfg(test)]
+mod connect_tests {
+    use super::*;
+    use crate::device_ui::{ReadCfg, ReadKind};
+
+    fn app(home: bool, unlock: bool) -> App {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.screen = crate::app::Screen::Editor;
+        let mut d = lc_core::Device::default();
+        d.connection.home_on_connect = home;
+        d.connection.unlock_on_connect = unlock;
+        a.profiles = vec![d];
+        a.enter_editor(0);
+        a
+    }
+
+    #[test]
+    fn the_actions_after_connecting_run_once_and_only_when_asked_for() {
+        let ctx = egui::Context::default();
+        let mut quiet = app(false, false);
+        quiet.read_on_connected(true);
+        assert!(quiet.connect_actions_at.is_none());
+        let mut a = app(true, true);
+        a.connected = true;
+        a.read_on_connected(true);
+        assert!(a.connect_actions_at.is_some());
+        a.connect_actions_at = Some(std::time::Instant::now() - std::time::Duration::from_millis(1));
+        a.connect_actions_tick(&ctx);
+        assert!(a.connect_actions_at.is_none(), "done once");
+        // Losing the link cancels what was planned.
+        a.read_on_connected(true);
+        a.read_on_connected(false);
+        assert!(a.connect_actions_at.is_none());
+    }
+
+    #[test]
+    fn single_axis_homing_is_known_from_the_build_options() {
+        let lines: Vec<String> = ["[VER:1.1h.20190825:]", "[OPT:VH,15,128]"].iter().map(|s| s.to_string()).collect();
+        assert_eq!(lc_core::controller::grbl_options(&lines).as_deref(), Some("VH"));
+        assert!(lc_core::controller::single_axis_homing("VH"));
+        let plain = vec!["[OPT:V,15,128]".to_string()];
+        assert!(!lc_core::controller::single_axis_homing(&lc_core::controller::grbl_options(&plain).unwrap()));
+        assert_eq!(lc_core::controller::grbl_options(&[]), None);
+        // The app learns it from the Info read and forgets it when the link goes down.
+        let mut a = app(false, false);
+        let now = std::time::Instant::now();
+        a.read_cfg = Some(ReadCfg { controller: lc_core::Controller::Grbl, waiting_connect: false, request_at: None, sent_at: Some(now), lines, started: now, kind: ReadKind::Info });
+        a.finish_read();
+        assert!(a.single_axis_homing);
+        a.read_on_connected(false);
+        assert!(!a.single_axis_homing);
     }
 }

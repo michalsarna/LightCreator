@@ -750,3 +750,9 @@
 749|Fjern binding
 750|Når forbindelsen faller av seg selv, prøv igjen hvert par sekunder til du trykker Koble fra.
 751|ingen
+752|Etter tilkobling
+753|Fjern et alarm
+754|Å fjerne alarmen hopper over homing: bruk det bare når hodet er kjent for å stå på et trygt sted.
+755|Home maskinen
+756|Home {}
+757|Homer bare {}-aksen ($H{})

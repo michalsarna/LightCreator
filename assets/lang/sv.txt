@@ -750,3 +750,9 @@
 749|Ta bort bindning
 750|När förbindelsen faller av sig själv, försök igen med några sekunders mellanrum tills du trycker på Koppla från.
 751|ingen
+752|Efter anslutning
+753|Rensa ett larm
+754|Att rensa larmet hoppar över homing: använd det bara när huvudet är känt för att stå på en säker plats.
+755|Home maskinen
+756|Home {}
+757|Homar bara {}-axeln ($H{})

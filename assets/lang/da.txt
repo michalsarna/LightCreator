@@ -750,3 +750,9 @@
 749|Fjern binding
 750|Når forbindelsen falder af sig selv, prøv igen hvert par sekunder, til du trykker Afbryd.
 751|ingen
+752|Efter tilslutning
+753|Ryd en alarm
+754|Rydning af alarmen springer homing over: brug det kun, når hovedet vides at stå et sikkert sted.
+755|Homing af maskinen
+756|Home {}
+757|Homer kun {}-aksen ($H{})

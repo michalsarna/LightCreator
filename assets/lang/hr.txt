@@ -750,3 +750,9 @@
 749|Odvezi
 750|Kad veza sama pukne, pokušavaj svakih nekoliko sekundi dok ne pritisnete Odspoji.
 751|nema
+752|Nakon spajanja
+753|Obriši alarm
+754|Brisanje alarma preskače referenciranje: koristite samo kad je poznato da glava stoji na sigurnom mjestu.
+755|Referenciraj stroj
+756|Referenciraj {}
+757|Referencira samo os {} ($H{})

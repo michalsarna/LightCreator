@@ -750,3 +750,9 @@
 749|Eemalda sidumine
 750|Kui ühendus katkeb iseenesest, proovi mõne sekundi tagant uuesti, kuni vajutad Katkesta.
 751|puudub
+752|Pärast ühendamist
+753|Tühista alarm
+754|Alarmi tühistamine jätab kodustamise vahele: kasuta ainult siis, kui pea on teadaolevalt turvalises kohas.
+755|Kodusta masin
+756|Kodusta {}
+757|Kodustab ainult {}-telje ($H{})

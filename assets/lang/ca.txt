@@ -750,3 +750,9 @@
 749|Desvincula
 750|Quan l'enllaç cau tot sol, torna-ho a provar cada pocs segons fins que premeu Desconnecta.
 751|cap
+752|Després de connectar
+753|Esborra una alarma
+754|Esborrar l'alarma omet el homing: useu-ho només quan se sap que el capçal és en un lloc segur.
+755|Fes el homing de la màquina
+756|Homing {}
+757|Fa el homing només de l'eix {} ($H{})

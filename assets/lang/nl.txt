@@ -750,3 +750,9 @@
 749|Binding opheffen
 750|Als de verbinding vanzelf wegvalt, om de paar seconden opnieuw proberen tot je op Verbinding verbreken drukt.
 751|geen
+752|Na het verbinden
+753|Een alarm wissen
+754|Het alarm wissen slaat het homen over: gebruik het alleen als de kop zeker op een veilige plek staat.
+755|De machine homen
+756|Home {}
+757|Homet alleen de {}-as ($H{})

@@ -750,3 +750,9 @@
 749|Kötés feloldása
 750|Ha a kapcsolat magától megszakad, néhány másodpercenként újra próbálkozik, amíg a Szétkapcsolást meg nem nyomja.
 751|nincs
+752|Csatlakozás után
+753|Riasztás törlése
+754|A riasztás törlése kihagyja a referenciafutást: csak akkor használja, ha a fej biztosan biztonságos helyen áll.
+755|A gép referenciafutása
+756|{} referenciafutás
+757|Csak a(z) {} tengelyt referálja ($H{})

@@ -20,8 +20,27 @@ pub struct ReadCfg {
     pub sent_at: Option<std::time::Instant>,
     pub lines: Vec<String>,
     pub started: std::time::Instant,
-    /// A read made after connecting to check the controller; it does not touch the profile being edited.
-    pub probe: bool,
+    pub kind: ReadKind,
+}
+
+/// What a read of the controller's settings is for.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ReadKind {
+    /// "Read from device" in the configuration window: the values go into the profile being edited.
+    Config,
+    /// Made after connecting, to check laser mode and `$30`; does not touch any profile.
+    Probe,
+    /// The build info (`$I`), to learn which options the firmware was built with.
+    Info,
+}
+
+impl ReadCfg {
+    fn request(&self) -> Option<&'static str> {
+        match self.kind {
+            ReadKind::Info => Some("$I"),
+            _ => self.controller.settings_request(),
+        }
+    }
 }
 
 /// A device profile being edited in the configuration window.
@@ -463,6 +482,15 @@ impl App {
                                     ui.label(tr("Reconnect"));
                                     ui.checkbox(&mut d.connection.auto_reconnect, tr("Connect again automatically")).on_hover_text(tr("When the link drops by itself, try again every few seconds until you press Disconnect."));
                                     ui.end_row();
+                                    ui.label(tr("After connecting"));
+                                    ui.vertical(|ui| {
+                                        ui.checkbox(&mut d.connection.home_on_connect, tr("Home the machine"));
+                                        ui.checkbox(&mut d.connection.unlock_on_connect, tr("Clear an alarm"));
+                                        if d.connection.unlock_on_connect {
+                                            ui.label(RichText::new(tr("Clearing the alarm skips homing: use it only when the head is known to stand in a safe place.")).color(Color32::from_rgb(0xe8, 0x8a, 0x1f)));
+                                        }
+                                    });
+                                    ui.end_row();
                                     ui.label(tr("Streaming"));
                                     egui::ComboBox::from_id_salt("streaming").selected_text(tr(d.connection.streaming.label())).show_ui(ui, |ui| {
                                         for m in lc_core::Streaming::ALL {
@@ -843,6 +871,16 @@ impl App {
                         act = Some(ctrl.home());
                     }
                 });
+                if self.single_axis_homing {
+                    // Only when the firmware reported it was built with `$HX` / `$HY`.
+                    ui.add_enabled_ui(!running, |ui| {
+                        for axis in ["X", "Y"] {
+                            if ui.small_button(trf("Home {}", &[&axis])).on_hover_text(trf("Homes the {} axis only ($H{})", &[&axis, &axis])).clicked() {
+                                act = Some(Action::Lines(vec![format!("$H{axis}")]));
+                            }
+                        }
+                    });
+                }
                 ui.add_enabled_ui(!running, |ui| {
                     if icon(ui, "lock-open", tr("Unlock").to_string(), None) {
                         act = Some(ctrl.unlock());
@@ -870,7 +908,7 @@ impl App {
     pub fn start_read(&mut self, draft: &Device) {
         let c = draft.controller;
         let Some(_) = c.settings_request() else { return };
-        let mut st = ReadCfg { controller: c, waiting_connect: false, request_at: None, sent_at: None, lines: vec![], started: std::time::Instant::now(), probe: false };
+        let mut st = ReadCfg { controller: c, waiting_connect: false, request_at: None, sent_at: None, lines: vec![], started: std::time::Instant::now(), kind: ReadKind::Config };
         if self.connected {
             st.request_at = Some(std::time::Instant::now());
         } else {
@@ -886,10 +924,19 @@ impl App {
 
     /// Called when the connection state changes.
     pub fn read_on_connected(&mut self, up: bool) {
+        if up {
+            let c = &self.doc.device.connection;
+            if c.home_on_connect || c.unlock_on_connect {
+                self.connect_actions_at = Some(std::time::Instant::now() + std::time::Duration::from_millis(1400));
+            }
+        } else {
+            self.single_axis_homing = false;
+            self.connect_actions_at = None;
+        }
         // Once per connection a GRBL controller is asked for its settings, to warn about laser mode and $30.
         if up && self.read_cfg.is_none() && self.doc.device.controller == Controller::Grbl && self.screen == Screen::Editor {
             let now = std::time::Instant::now();
-            self.read_cfg = Some(ReadCfg { controller: Controller::Grbl, waiting_connect: false, request_at: Some(now + std::time::Duration::from_millis(900)), sent_at: None, lines: vec![], started: now, probe: true });
+            self.read_cfg = Some(ReadCfg { controller: Controller::Grbl, waiting_connect: false, request_at: Some(now + std::time::Duration::from_millis(900)), sent_at: None, lines: vec![], started: now, kind: ReadKind::Probe });
         }
         if let Some(r) = &mut self.read_cfg {
             if r.waiting_connect {
@@ -917,15 +964,36 @@ impl App {
         }
     }
 
+    /// What the device is set to do when the link comes up: clear an alarm, then home.
+    pub fn connect_actions_tick(&mut self, ctx: &egui::Context) {
+        let Some(at) = self.connect_actions_at else { return };
+        if std::time::Instant::now() < at {
+            ctx.request_repaint_after(std::time::Duration::from_millis(200));
+            return;
+        }
+        self.connect_actions_at = None;
+        if !self.connected || self.job_running() {
+            return;
+        }
+        let (c, ctrl) = (self.doc.device.connection.clone(), self.doc.device.controller);
+        if c.unlock_on_connect {
+            self.run_action(ctrl.unlock());
+        }
+        if c.home_on_connect {
+            self.run_action(ctrl.home());
+        }
+    }
+
     /// Send the request when due and give up after a timeout.
     pub fn read_tick(&mut self, ctx: &egui::Context) {
+        self.connect_actions_tick(ctx);
         let Some(r) = &mut self.read_cfg else { return };
         let now = std::time::Instant::now();
         if let Some(at) = r.request_at {
             if now >= at {
                 r.request_at = None;
                 r.sent_at = Some(now);
-                if let Some(req) = r.controller.settings_request() {
+                if let Some(req) = r.request() {
                     self.link.send(Cmd::Line(req.to_string()));
                 }
             }
@@ -944,11 +1012,18 @@ impl App {
     pub fn finish_read(&mut self) {
         let Some(r) = self.read_cfg.take() else { return };
         let reading = r.controller.parse_settings(&r.lines);
-        if r.probe {
+        if r.kind == ReadKind::Probe {
             let check = reading.check(&self.doc.device);
             if !check.is_clean() {
                 self.fw_warn = Some(check);
             }
+            // Then ask which options the firmware was built with.
+            let now = std::time::Instant::now();
+            self.read_cfg = Some(ReadCfg { controller: r.controller, waiting_connect: false, request_at: Some(now), sent_at: None, lines: vec![], started: now, kind: ReadKind::Info });
+            return;
+        }
+        if r.kind == ReadKind::Info {
+            self.single_axis_homing = lc_core::controller::grbl_options(&r.lines).is_some_and(|o| lc_core::controller::single_axis_homing(&o));
             return;
         }
         let n = reading.count();

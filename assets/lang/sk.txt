@@ -750,3 +750,9 @@
 749|Zrušiť väzbu
 750|Keď spojenie samo spadne, skúšať to každých pár sekúnd, kým nestlačíte Odpojiť.
 751|žiadne
+752|Po pripojení
+753|Zrušiť alarm
+754|Zrušenie alarmu preskočí referenciu: použite len vtedy, keď viete, že hlava stojí na bezpečnom mieste.
+755|Referencovať stroj
+756|Referencovať {}
+757|Referencuje iba os {} ($H{})

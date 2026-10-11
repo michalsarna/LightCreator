@@ -750,3 +750,9 @@
 749|Ħoll ir-rabta
 750|Meta r-rabta tinqata' waħedha, erġa' pprova kull ftit sekondi sakemm tagħfas Skonnettja.
 751|xejn
+752|Wara l-konnessjoni
+753|Neħħi allarm
+754|It-tneħħija tal-allarm tbiddel il-homing: uża biss meta r-ras tkun taf li qiegħda f'post sigur.
+755|Agħmel homing tal-magna
+756|Homing {}
+757|Jagħmel homing tal-assi {} biss ($H{})

@@ -750,3 +750,9 @@
 749|Atsieti
 750|Kai ryšys nutrūksta pats, bandyti kas kelias sekundes, kol paspausite Atsijungti.
 751|nėra
+752|Prisijungus
+753|Panaikinti aliarmą
+754|Aliarmo panaikinimas praleidžia bazavimą: naudokite tik tada, kai žinoma, kad galvutė yra saugioje vietoje.
+755|Bazuoti staklės
+756|Bazuoti {}
+757|Bazuoja tik {} ašį ($H{})

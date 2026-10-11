@@ -102,6 +102,16 @@ impl Controller {
     }
 }
 
+/// The option letters GRBL reports in its build info (`$I`): `[OPT:VH,15,128]` gives `"VH"`.
+pub fn grbl_options(lines: &[String]) -> Option<String> {
+    lines.iter().find_map(|l| l.trim().strip_prefix("[OPT:")).map(|o| o.split([',', ']']).next().unwrap_or("").to_string())
+}
+
+/// Was this GRBL built with `$HX` / `$HY` / `$HZ` (single-axis homing, option letter `H`)?
+pub fn single_axis_homing(options: &str) -> bool {
+    options.contains('H')
+}
+
 /// Parse a status report into (state, x, y). GRBL: `<Idle|MPos:1,2,0|...>`; Marlin: `X:1.00 Y:2.00 Z:0.00 ...`.
 pub fn parse_status(line: &str) -> Option<(String, f64, f64)> {
     // Smoothieware: `<Idle,MPos:1.0000,2.0000,3.0000,WPos:...>` (commas everywhere).

@@ -750,3 +750,9 @@
 749|Razveži
 750|Ko povezava sama pade, poskušaj vsakih nekaj sekund, dokler ne pritisnete Prekini.
 751|brez
+752|Po povezavi
+753|Počisti alarm
+754|Čiščenje alarma preskoči iskanje izhodišča: uporabite le, če je znano, da glava stoji na varnem mestu.
+755|Poišči izhodišče stroja
+756|Izhodišče {}
+757|Poišče izhodišče samo osi {} ($H{})

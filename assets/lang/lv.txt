@@ -750,3 +750,9 @@
 749|Atsaistīt
 750|Kad savienojums pārtrūkst pats, mēģināt ik pēc dažām sekundēm, līdz nospiežat Atvienot.
 751|nav
+752|Pēc savienošanas
+753|Notīrīt trauksmi
+754|Trauksmes notīrīšana izlaiž bāzēšanu: lietojiet tikai tad, kad zināms, ka galviņa atrodas drošā vietā.
+755|Bāzēt iekārtu
+756|Bāzēt {}
+757|Bāzē tikai {} asi ($H{})

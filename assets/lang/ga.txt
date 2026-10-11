@@ -750,3 +750,9 @@
 749|Dícheangail
 750|Nuair a thiteann an nasc as féin, triail arís gach cúpla soicind go dtí go mbrúnn tú Dícheangail.
 751|gan aon cheann
+752|Tar éis ceangal
+753|Glan aláram
+754|Seachnaíonn glanadh an ailárim an bhaile: ná húsáid ach nuair is eol go bhfuil an ceann in áit shábháilte.
+755|Cuir an meaisín abhaile
+756|Baile {}
+757|Cuireann sé ais {} amháin abhaile ($H{})

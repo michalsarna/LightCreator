@@ -750,3 +750,9 @@
 749	Unbind
 750	When the link drops by itself, try again every few seconds until you press Disconnect.
 751	none
+752	After connecting
+753	Clear an alarm
+754	Clearing the alarm skips homing: use it only when the head is known to stand in a safe place.
+755	Home the machine
+756	Home {}
+757	Homes the {} axis only ($H{})

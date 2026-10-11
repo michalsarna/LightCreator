@@ -750,3 +750,9 @@
 749|Desvincular
 750|Cuando la conexión se cae sola, reintenta cada pocos segundos hasta que pulse Desconectar.
 751|ninguno
+752|Tras conectar
+753|Borrar una alarma
+754|Borrar la alarma omite el homing: úselo solo cuando se sepa que el cabezal está en un lugar seguro.
+755|Hacer homing de la máquina
+756|Homing {}
+757|Hace homing solo del eje {} ($H{})

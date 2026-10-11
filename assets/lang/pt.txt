@@ -750,3 +750,9 @@
 749|Desassociar
 750|Quando a ligação cai sozinha, tenta de novo a cada poucos segundos até premir Desligar.
 751|nenhum
+752|Depois de ligar
+753|Limpar um alarme
+754|Limpar o alarme salta o homing: use só quando se souber que o cabeçote está num local seguro.
+755|Fazer homing da máquina
+756|Homing {}
+757|Faz homing só do eixo {} ($H{})

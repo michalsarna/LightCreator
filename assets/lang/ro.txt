@@ -750,3 +750,9 @@
 749|Dezleagă
 750|Când legătura cade singură, încearcă din nou la câteva secunde până apăsați Deconectează.
 751|niciunul
+752|După conectare
+753|Șterge o alarmă
+754|Ștergerea alarmei omite homing-ul: folosiți doar când se știe că capul stă într-un loc sigur.
+755|Fă homing mașinii
+756|Homing {}
+757|Face homing doar axei {} ($H{})

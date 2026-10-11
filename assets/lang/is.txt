@@ -750,3 +750,9 @@
 749|Aftengja binding
 750|Þegar tengingin slitnar sjálf, reyna aftur á nokkurra sekúndna fresti þar til þú ýtir á Aftengja.
 751|ekkert
+752|Eftir tengingu
+753|Hreinsa viðvörun
+754|Að hreinsa viðvörun sleppir núllstillingu: notaðu aðeins þegar vitað er að hausinn er á öruggum stað.
+755|Núllstilla vélina
+756|Núllstilla {}
+757|Núllstillir aðeins {}-ásinn ($H{})

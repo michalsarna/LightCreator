@@ -1013,6 +1013,13 @@ const TABLE: &[[&str; 7]] = &[
     ["Unbind", "Rozłącz powiązanie", "Bindung lösen", "Dissocia", "Pura sidonta", "解除绑定", "बंधन हटाएँ"],
     ["When the link drops by itself, try again every few seconds until you press Disconnect.", "Gdy połączenie samo się zerwie, próbuj co kilka sekund, aż naciśniesz Rozłącz.", "Reißt die Verbindung von selbst ab, alle paar Sekunden erneut versuchen, bis du auf Trennen drückst.", "Se il collegamento cade da solo, riprova ogni pochi secondi finché non premi Disconnetti.", "Kun yhteys katkeaa itsestään, yritä uudelleen muutaman sekunnin välein, kunnes painat Katkaise.", "连接自行断开时，每隔几秒重试，直到你点击“断开”。", "लिंक अपने आप टूटे तो हर कुछ सेकंड में फिर कोशिश करें, जब तक आप डिस्कनेक्ट न दबाएँ।"],
     ["none", "brak", "keins", "nessuno", "ei mitään", "无", "कोई नहीं"],
+    // ---- connect behaviour ----
+    ["After connecting", "Po połączeniu", "Nach dem Verbinden", "Dopo la connessione", "Yhdistämisen jälkeen", "连接后", "कनेक्ट होने के बाद"],
+    ["Clear an alarm", "Wyczyść alarm", "Alarm löschen", "Cancella un allarme", "Kuittaa hälytys", "清除报警", "अलार्म साफ़ करें"],
+    ["Clearing the alarm skips homing: use it only when the head is known to stand in a safe place.", "Wyczyszczenie alarmu pomija bazowanie: używaj tylko, gdy wiadomo, że głowica stoi w bezpiecznym miejscu.", "Das Löschen des Alarms überspringt das Referenzieren: nur verwenden, wenn der Kopf sicher an einem sicheren Ort steht.", "Cancellare l'allarme salta l'azzeramento: usalo solo quando la testa si trova di sicuro in un punto sicuro.", "Hälytyksen kuittaus ohittaa referoinnin: käytä vain, kun pään tiedetään olevan turvallisessa paikassa.", "清除报警会跳过回零：仅在确知机头位于安全位置时使用。", "अलार्म साफ़ करना होमिंग छोड़ देता है: केवल तब उपयोग करें जब हेड सुरक्षित जगह पर हो।"],
+    ["Home the machine", "Bazuj maszynę", "Maschine referenzieren", "Azzera la macchina", "Referoi kone", "机器回零", "मशीन होम करें"],
+    ["Home {}", "Bazuj {}", "{} referenzieren", "Azzera {}", "Referoi {}", "{} 回零", "{} होम करें"],
+    ["Homes the {} axis only ($H{})", "Bazuje tylko oś {} ($H{})", "Referenziert nur die {}-Achse ($H{})", "Azzera solo l'asse {} ($H{})", "Referoi vain akselin {} ($H{})", "仅 {} 轴回零 ($H{})", "केवल {} अक्ष होम करता है ($H{})"],
 ];
 #[cfg(test)]
 mod tests {

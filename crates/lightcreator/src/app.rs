@@ -302,6 +302,10 @@ pub struct App {
     /// The user asked for a connection (and has not asked to end it): a lost link may be re-opened by itself.
     pub want_link: bool,
     pub reconnect_at: Option<std::time::Instant>,
+    /// When the actions the device runs after connecting are due (clear the alarm, home).
+    pub connect_actions_at: Option<std::time::Instant>,
+    /// The firmware reported that it was built with single-axis homing (`$HX`, `$HY`).
+    pub single_axis_homing: bool,
     pub connected: bool,
     pub machine: (String, f64, f64),
     pub progress: (usize, usize),
@@ -480,6 +484,8 @@ impl App {
             port_info,
             want_link: false,
             reconnect_at: None,
+            connect_actions_at: None,
+            single_axis_homing: false,
             connected: false,
             machine: (tr("Disconnected").into(), 0.0, 0.0),
             progress: (0, 0),
