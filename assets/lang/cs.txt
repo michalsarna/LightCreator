@@ -976,3 +976,79 @@
 975|Body z aktuálních rohů
 976|Referenční body
 977|Nahradí body čtyřmi rohy obrazu a místy, kde nyní leží.
+978|Přichytávat k objektům
+979|Stránku se nepodařilo vytvořit: {}
+980|Prohlížeč se nepodařilo otevřít: {}
+981|Výchozí tiskárna
+982|Okraj
+983|Jen objekty na viditelných vrstvách
+984|Jen objekty, co největší, jak stránka dovolí
+985|Otevřít PDF
+986|Otevřeno v prohlížeči PDF.
+987|Otevře stránku v prohlížeči PDF, který ji může vytisknout s více volbami
+988|Tisk
+989|Tisk…
+990|Tiskárna
+991|Vytiskne návrh na papírové tiskárně, ke kontrole rozmístění nebo jako šablonu.
+992|Uložit jako PDF…
+993|Odesláno na tiskárnu. {}
+994|Tiskárna to nepřijala: {}
+995|Celá pracovní plocha v měřítku
+996|Není co tisknout.
+997|{} objekt(ů) přesahuje pracovní plochu; na papíře jsou oříznuty na jejím okraji.
+998|{} objekt(ů) přesahuje pracovní plochu; vytisknou se přesto.
+999|Test kamery: {}
+1000|Otevře obraz této kamery s nastavením zde, bez uložení
+1001|Testovat
+1002|Střídá řezání a přeskakování podél obrysu.
+1003|Délka řezu
+1004|Rovnoměrné rozestupy
+1005|Korekce řezné spáry (kerf)
+1006|Ponechá krátké úseky obrysu nepřeříznuté (nebo slabě přeříznuté), aby díl držel na místě. Rozmísťují se automaticky.
+1007|Omezit maximální počet můstků
+1008|Min. můstků
+1009|Posune obrys ven (dovnitř, je-li záporné), aby vyrovnal šířku řezu. 0 = vypnuto.
+1010|Procento výkonu vrstvy na můstku; 0 = laser vypnutý.
+1011|Perforace
+1012|Režim perforace
+1013|Rozmístění
+1014|Přeskočit vnitřní tvary
+1015|Délka přeskoku
+1016|Rozestup
+1017|Řezný výkon můstku
+1018|Velikost můstku
+1019|Můstky
+1020|Můstků na tvar
+1021|Vektorové tvary na vrstvě v režimu Obraz se nevypalují.
+1022|Doba práce
+1023|Popis
+1024|Popište projekt: co to je, nastavení, která fungovala, poznámky na příště.
+1025|Webová stránka se stavem stroje, projektem a kamerou a API pro jiné programy. Nemá heslo.
+1026|Kdokoli v síti může stroj vidět a zastavit nebo pohnout. Není tu heslo ani šifrování: používejte jen v důvěryhodné síti.
+1027|Naslouchá na {}
+1028|Dostupný z jiných počítačů v síti
+1029|Zapnout webový server a API
+1030|Server se nepodařilo spustit: {}
+1031|Webový server a API
+1032|Přidat zařízení
+1033|Další nastavení…
+1034|Otevře celé okno zařízení s tím, co je zde zadáno
+1035|Výchozí bod
+1036|Výchozí materiál
+1037|Smazat tento materiál
+1038|Materiál: {}
+1039|Název nového materiálu
+1040|Nový materiál: kopie tohoto
+1041|Nový název
+1042|Přejmenovat tento materiál
+1043|projekt
+1044|Akryl 3 mm
+1045|Kůže 2 mm
+1046|Nový prázdný materiál
+1047|Překližka 3 mm
+1048|Přidat materiál, např. březová překližka 3 mm (nepovinné)
+1049|Kamery sledující stroj. Zaškrtnutá dává živý obraz; zaškrtnutí jiné vypne první.
+1050|Zapnout tuto kameru: dává živý obraz
+1051|Webový server: zapnut, port {}
+1052|Webový server: vypnut
+1053|Webový server: chyba

@@ -20,6 +20,21 @@ pub enum StreamMode {
 }
 
 impl StreamMode {
+    pub fn from_index(i: u8) -> StreamMode {
+        match i {
+            1 => StreamMode::Detached,
+            2 => StreamMode::Tab,
+            _ => StreamMode::Floating,
+        }
+    }
+    pub fn index(self) -> u8 {
+        match self {
+            StreamMode::Floating => 0,
+            StreamMode::Detached => 1,
+            StreamMode::Tab => 2,
+        }
+    }
+
     pub fn label(self) -> &'static str {
         match self {
             StreamMode::Floating => "Floating window",
@@ -30,6 +45,24 @@ impl StreamMode {
 }
 
 impl App {
+    /// Take the way of showing the camera view from the device (when a device is entered).
+    pub fn load_camera_view(&mut self) {
+        let v = &self.doc.device.camera_view;
+        self.stream_mode = StreamMode::from_index(v.mode);
+        self.stream_zoom = v.zoom.clamp(1.0, MAX_ZOOM);
+    }
+
+    /// Remember the mode and zoom with the device when they changed.
+    pub(crate) fn save_camera_view(&mut self) {
+        let v = &mut self.doc.device.camera_view;
+        let (mode, zoom) = (self.stream_mode.index(), self.stream_zoom);
+        if v.mode != mode || (v.zoom - zoom).abs() > 0.005 {
+            v.mode = mode;
+            v.zoom = zoom;
+            self.sync_profile();
+        }
+    }
+
     /// Stop the stream. A picture it fed into the work area is hidden with it.
     pub fn stream_closed(&mut self) {
         self.show_stream = false;
@@ -71,6 +104,7 @@ impl App {
         if let Some(f) = latest {
             let rgb = self.cam_process(f.rgb, f.w, f.h);
             let (w, h, rgb) = rotate_rgb(&rgb, f.w, f.h, rotation);
+            self.api_publish_frame(w, h, &rgb);
             let img = egui::ColorImage::from_rgb([w as usize, h as usize], &rgb);
             match &mut self.stream_tex {
                 Some(t) if t.size() == [w as usize, h as usize] => t.set(img.clone(), egui::TextureOptions::LINEAR),
@@ -154,6 +188,15 @@ impl App {
                 ui.add_space(30.0);
             }
         }
+        // The working time of the job, over the estimate: 00:04:12 / 00:13:00.
+        let elapsed = self.job_started.map_or(self.job_last_secs, |t| t.elapsed().as_secs_f64());
+        ui.label(RichText::new(format!("{} {} / {}", tr("Working time"), crate::app::fmt_clock(elapsed), crate::app::fmt_clock(self.job_est))).monospace().strong());
+        if self.job_started.is_some() {
+            ui.ctx().request_repaint_after(std::time::Duration::from_millis(500));
+        }
+        if !ui.input(|i| i.pointer.any_down()) {
+            self.save_camera_view();
+        }
         if !self.stream_err.is_empty() {
             ui.label(RichText::new(trf("Stream error: {}", &[&self.stream_err.replace(self.doc.device.stream_url().unwrap_or("-"), "…")])).color(egui::Color32::from_rgb(0xc0, 0x30, 0x30)));
         }
@@ -173,16 +216,38 @@ impl App {
         match self.stream_mode {
             StreamMode::Floating => {
                 let mut open = true;
-                egui::Window::new("camera_window").title_bar(false).default_size([680.0, 540.0]).resizable(true).show(ctx, |ui| {
+                let saved = self.doc.device.camera_view.clone();
+                let mut win = egui::Window::new(format!("camera_window_{}", self.active)).title_bar(false).default_size(saved.float_size.unwrap_or([680.0, 540.0])).resizable(true);
+                if let Some(p) = saved.float_pos {
+                    win = win.default_pos(p);
+                }
+                let shown = win.show(ctx, |ui| {
                     crate::window_ui::mini_title(ui, &tr("Camera view"), &mut open, |_| {});
                     self.stream_view(ui);
                 });
+                // The place and size are kept with the device, once the mouse is released.
+                if let Some(r) = shown.map(|r| r.response.rect) {
+                    if !ctx.input(|i| i.pointer.any_down()) {
+                        let (pos, size) = ([r.min.x.round(), r.min.y.round()], [r.width().round(), r.height().round()]);
+                        let v = &mut self.doc.device.camera_view;
+                        if v.float_pos != Some(pos) || v.float_size != Some(size) {
+                            v.float_pos = Some(pos);
+                            v.float_size = Some(size);
+                            self.sync_profile();
+                        }
+                    }
+                }
                 if !open {
                     self.stream_closed();
                 }
             }
             StreamMode::Detached => {
-                let builder = egui::ViewportBuilder::default().with_title(tr("Camera view")).with_inner_size([720.0, 580.0]).with_min_inner_size([320.0, 240.0]);
+                let saved = self.doc.device.camera_view.clone();
+                let mut builder = egui::ViewportBuilder::default().with_title(tr("Camera view")).with_inner_size(saved.win_size.unwrap_or([720.0, 580.0])).with_min_inner_size([320.0, 240.0]);
+                if let Some(p) = saved.win_pos {
+                    builder = builder.with_position(p);
+                }
+                let mut seen: Option<([f32; 2], [f32; 2])> = None;
                 let mut close = false;
                 ctx.show_viewport_immediate(egui::ViewportId::from_hash_of("lightcreator-camera"), builder, |ui, class| {
                     if class == egui::ViewportClass::EmbeddedWindow {
@@ -191,10 +256,24 @@ impl App {
                         return;
                     }
                     egui::CentralPanel::default().show(ui, |ui| self.stream_view(ui));
+                    ui.input(|i| {
+                        let vp = i.viewport();
+                        if let (Some(o), Some(inner)) = (vp.outer_rect, vp.inner_rect) {
+                            seen = Some(([o.min.x.round(), o.min.y.round()], [inner.width().round(), inner.height().round()]));
+                        }
+                    });
                     if ui.input(|i| i.viewport().close_requested()) {
                         close = true;
                     }
                 });
+                if let Some((pos, size)) = seen {
+                    let v = &mut self.doc.device.camera_view;
+                    if size[0] >= 100.0 && size[1] >= 100.0 && (v.win_pos != Some(pos) || v.win_size != Some(size)) && !ctx.input(|i| i.pointer.any_down()) {
+                        v.win_pos = Some(pos);
+                        v.win_size = Some(size);
+                        self.sync_profile();
+                    }
+                }
                 if close {
                     self.stream_closed();
                 }
@@ -282,5 +361,48 @@ mod tests {
         assert!(a.stream_tex.is_none(), "texture is rebuilt with the new rotation");
         assert_eq!(a.stream_rot, 1);
         a.stream = None;
+    }
+
+    #[test]
+    fn the_camera_view_opens_the_way_it_was_left_for_each_device() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        let mut d1 = lc_core::Device::default();
+        d1.name = "One".into();
+        d1.camera_view = lc_core::CameraView { mode: 2, zoom: 3.0, ..Default::default() };
+        let mut d2 = lc_core::Device::default();
+        d2.name = "Two".into();
+        a.profiles = vec![d1, d2];
+        a.enter_editor(0);
+        assert_eq!((a.stream_mode, a.stream_zoom), (StreamMode::Tab, 3.0));
+        a.enter_editor(1);
+        assert_eq!((a.stream_mode, a.stream_zoom), (StreamMode::Floating, 1.0), "the other device has its own");
+        // A change is kept with the device and in the profile list.
+        a.stream_mode = StreamMode::Detached;
+        a.stream_zoom = 2.0;
+        a.save_camera_view();
+        assert_eq!((a.doc.device.camera_view.mode, a.doc.device.camera_view.zoom), (1, 2.0));
+        assert_eq!(a.profiles[1].camera_view.mode, 1);
+        a.enter_editor(0);
+        assert_eq!(a.stream_mode, StreamMode::Tab);
+        a.enter_editor(1);
+        assert_eq!((a.stream_mode, a.stream_zoom), (StreamMode::Detached, 2.0));
+    }
+
+    #[test]
+    fn the_clock_under_the_picture_counts_hours_minutes_seconds() {
+        use crate::app::fmt_clock;
+        assert_eq!(fmt_clock(0.0), "00:00:00");
+        assert_eq!(fmt_clock(780.0), "00:13:00");
+        assert_eq!(fmt_clock(3.0 * 3600.0 + 61.9), "03:01:01");
+        assert_eq!(fmt_clock(f64::NAN), "00:00:00");
+        assert_eq!(fmt_clock(-5.0), "00:00:00");
+        // While a job runs the elapsed time comes from its start; afterwards the last one stays.
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.job_est = 780.0;
+        a.job_started = Some(std::time::Instant::now() - std::time::Duration::from_secs(252));
+        let e = a.job_started.map_or(a.job_last_secs, |t| t.elapsed().as_secs_f64());
+        assert_eq!(fmt_clock(e), "00:04:12");
     }
 }

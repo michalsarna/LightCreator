@@ -976,3 +976,79 @@
 975	Points from the current corners
 976	Reference points
 977	Replaces the points with the four corners of the picture and where they lie now.
+978	Snap to objects
+979	Could not make the page: {}
+980	Could not open the viewer: {}
+981	Default printer
+982	Margin
+983	Only objects on visible layers
+984	Only the objects, as large as the page allows
+985	Open the PDF
+986	Opened in the PDF viewer.
+987	Opens the page in the PDF viewer, which can print it with more options
+988	Print
+989	Print…
+990	Printer
+991	Prints the design on a paper printer, for checking placement or as a template.
+992	Save as PDF…
+993	Sent to the printer. {}
+994	The printer did not take it: {}
+995	The whole work area, to scale
+996	There is nothing to print.
+997	{} object(s) reach outside the work area; on the paper they are cut off at its edge.
+998	{} object(s) reach outside the work area; they are printed anyway.
+999	Camera test: {}
+1000	Opens the picture of this camera as set here, without saving
+1001	Test
+1002	Alternates cutting and skipping along the outline.
+1003	Cut length
+1004	Even spacing
+1005	Kerf offset
+1006	Leaves short stretches of the outline uncut (or cut weakly) so the piece stays in place. They are placed automatically.
+1007	Limit max tabs
+1008	Min tabs
+1009	Moves the outline out (in, when negative) to make up for the width of the cut. 0 = off.
+1010	Percent of the layer's power over a tab; 0 = the laser is off.
+1011	Perforation
+1012	Perforation mode
+1013	Placement
+1014	Skip inner shapes
+1015	Skip length
+1016	Spacing
+1017	Tab cut power
+1018	Tab size
+1019	Tabs / bridges
+1020	Tabs per shape
+1021	Vector shapes on a layer in the Image mode are not burnt.
+1022	Working time
+1023	Description
+1024	Describe the project: what it is, the settings that worked, notes for next time.
+1025	A web page with the state of the machine, the project and the camera, and an API for other programs. It has no password.
+1026	Anyone on the network can see the machine and stop or move it. There is no password or encryption: use only on a network you trust.
+1027	Listening on {}
+1028	Reachable from other computers on the network
+1029	Switch on the web server and the API
+1030	The server could not start: {}
+1031	Web server and API
+1032	Add device
+1033	More settings…
+1034	Open the whole device window with what is entered here
+1035	Starting point
+1036	Default material
+1037	Delete this material
+1038	Material: {}
+1039	Name of the new material
+1040	New material: a copy of this one
+1041	New name
+1042	Rename this material
+1043	project
+1044	Acrylic 3 mm
+1045	Leather 2 mm
+1046	New, empty material
+1047	Plywood 3 mm
+1048	Add a material, e.g. Birch plywood 3 mm (optional)
+1049	Cameras that watch the machine. The one that is ticked gives the live picture; ticking another switches the first off.
+1050	Switch this camera on: it gives the live picture
+1051	Web server: on, port {}
+1052	Web server: off
+1053	Web server: error

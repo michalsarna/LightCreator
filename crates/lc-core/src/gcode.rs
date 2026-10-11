@@ -130,6 +130,7 @@ impl<'a> Writer<'a> {
     /// Engrave scan rows (image raster): each run at its own power, leaving gaps with the laser off.
     fn raster(&mut self, rows: &[crate::raster::Row], layer: &Layer) {
         let os = layer.overscan.max(0.0);
+        let rot = crate::raster::scan_rotation(layer.angle);
         let mut emitted = 0usize;
         for row in rows {
             if row.runs.is_empty() {
@@ -140,21 +141,21 @@ impl<'a> Writer<'a> {
             let dir = if rev { -1.0 } else { 1.0 };
             let ordered: Vec<&crate::raster::Run> = if rev { row.runs.iter().rev().collect() } else { row.runs.iter().collect() };
             let first = if rev { ordered[0].x1 } else { ordered[0].x0 };
-            self.travel(Pt::new(first - dir * os, row.y));
+            self.travel(rot.apply(Pt::new(first - dir * os, row.y)));
             if os > 0.0 {
-                self.line(Pt::new(first, row.y), 0.0, layer.speed);
+                self.line(rot.apply(Pt::new(first, row.y)), 0.0, layer.speed);
             }
             let mut x = first;
             for run in ordered {
                 let (s, e) = if rev { (run.x1, run.x0) } else { (run.x0, run.x1) };
                 if (s - x).abs() > 1e-6 {
-                    self.line(Pt::new(s, row.y), 0.0, layer.speed);
+                    self.line(rot.apply(Pt::new(s, row.y)), 0.0, layer.speed);
                 }
-                self.line(Pt::new(e, row.y), run.power, layer.speed);
+                self.line(rot.apply(Pt::new(e, row.y)), run.power, layer.speed);
                 x = e;
             }
             if os > 0.0 {
-                self.line(Pt::new(x + dir * os, row.y), 0.0, layer.speed);
+                self.line(rot.apply(Pt::new(x + dir * os, row.y)), 0.0, layer.speed);
             }
         }
     }
@@ -402,7 +403,25 @@ fn burn(w: &mut Writer, li: usize, layer: &Layer, polys: &[Polyline], images: &[
             }
         }
     }
-    if matches!(layer.mode, LayerMode::Line | LayerMode::FillAndLine) && !polys.is_empty() {
+    if matches!(layer.mode, LayerMode::Line | LayerMode::FillAndLine) && !polys.is_empty() && layer.has_cut_options() {
+        w.begin_op(li, OpKind::Line, pn, pt);
+        let paths = if layer.kerf != 0.0 { crate::cutopts::kerf_paths(polys, layer.kerf) } else { polys.to_vec() };
+        let all = paths.clone();
+        for p in order_paths(paths, w.pos) {
+            let is_inner = layer.tabs.enabled && layer.tabs.skip_inner && crate::cutopts::is_inner(&p, &all);
+            for piece in crate::cutopts::pieces(&p, &layer.perforation, &layer.tabs, is_inner) {
+                if piece.pts.len() < 2 {
+                    continue;
+                }
+                w.travel(piece.pts[0]);
+                if piece.factor <= 0.0 {
+                    w.travel(*piece.pts.last().unwrap());
+                } else {
+                    w.stroke(&piece.pts, layer.power * piece.factor, layer.speed);
+                }
+            }
+        }
+    } else if matches!(layer.mode, LayerMode::Line | LayerMode::FillAndLine) && !polys.is_empty() {
         w.begin_op(li, OpKind::Line, pn, pt);
         for p in order_paths(polys.to_vec(), w.pos) {
             w.travel(p.pts[0]);

@@ -976,3 +976,79 @@
 975|Pontos dos cantos atuais
 976|Pontos de referência
 977|Substitui os pontos pelos quatro cantos da imagem e onde estão agora.
+978|Ajustar aos objetos
+979|Não foi possível criar a página: {}
+980|Não foi possível abrir o visualizador: {}
+981|Impressora predefinida
+982|Margem
+983|Apenas objetos em camadas visíveis
+984|Apenas os objetos, os maiores que a página permitir
+985|Abrir o PDF
+986|Aberto no visualizador de PDF.
+987|Abre a página no visualizador de PDF, que a pode imprimir com mais opções
+988|Imprimir
+989|Imprimir…
+990|Impressora
+991|Imprime o desenho numa impressora de papel, para verificar a disposição ou como modelo.
+992|Guardar como PDF…
+993|Enviado para a impressora. {}
+994|A impressora não o aceitou: {}
+995|Toda a área de trabalho, à escala
+996|Não há nada para imprimir.
+997|{} objeto(s) saem da área de trabalho; no papel são cortados na margem.
+998|{} objeto(s) saem da área de trabalho; são impressos na mesma.
+999|Teste da câmara: {}
+1000|Abre a imagem desta câmara com as definições aqui, sem guardar
+1001|Testar
+1002|Alterna corte e salto ao longo do contorno.
+1003|Comprimento do corte
+1004|Espaçamento uniforme
+1005|Compensação do kerf
+1006|Deixa pequenos troços do contorno por cortar (ou cortados levemente) para que a peça fique no lugar. São colocados automaticamente.
+1007|Limitar o máximo de pontes
+1008|Pontes mín.
+1009|Move o contorno para fora (para dentro, se negativo) para compensar a largura do corte. 0 = desligado.
+1010|Percentagem da potência da camada sobre uma ponte; 0 = laser desligado.
+1011|Perfuração
+1012|Modo de perfuração
+1013|Colocação
+1014|Ignorar formas interiores
+1015|Comprimento do salto
+1016|Espaçamento
+1017|Potência de corte da ponte
+1018|Tamanho da ponte
+1019|Pontes
+1020|Pontes por forma
+1021|As formas vetoriais numa camada no modo Imagem não são queimadas.
+1022|Tempo de trabalho
+1023|Descrição
+1024|Descreva o projeto: o que é, as definições que funcionaram, notas para a próxima vez.
+1025|Uma página web com o estado da máquina, o projeto e a câmara, e uma API para outros programas. Não tem palavra-passe.
+1026|Qualquer pessoa na rede pode ver a máquina e pará-la ou movê-la. Não há palavra-passe nem cifragem: use apenas numa rede de confiança.
+1027|A escutar em {}
+1028|Acessível a partir de outros computadores da rede
+1029|Ligar o servidor web e a API
+1030|Não foi possível iniciar o servidor: {}
+1031|Servidor web e API
+1032|Adicionar dispositivo
+1033|Mais definições…
+1034|Abre a janela completa do dispositivo com o que foi introduzido aqui
+1035|Ponto de partida
+1036|Material predefinido
+1037|Eliminar este material
+1038|Material: {}
+1039|Nome do novo material
+1040|Novo material: uma cópia deste
+1041|Novo nome
+1042|Mudar o nome deste material
+1043|projeto
+1044|Acrílico 3 mm
+1045|Couro 2 mm
+1046|Novo material vazio
+1047|Contraplacado 3 mm
+1048|Adicione um material, p. ex. contraplacado de bétula 3 mm (opcional)
+1049|Câmaras que vigiam a máquina. A assinalada dá a imagem em direto; assinalar outra desliga a primeira.
+1050|Ligar esta câmara: dá a imagem em direto
+1051|Servidor web: ligado, porta {}
+1052|Servidor web: desligado
+1053|Servidor web: erro

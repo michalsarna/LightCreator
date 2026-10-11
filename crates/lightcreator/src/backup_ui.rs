@@ -1,5 +1,5 @@
 //! Help > Download backup…: one zip file with everything the program keeps on this computer, the settings
-//! (device profiles, language, material presets and so on) and the clipart you saved.
+//! (device profiles, language and so on) and the clipart you saved.
 use crate::app::{App, APP_VERSION};
 use crate::i18n::trf;
 use std::collections::BTreeMap;
@@ -131,6 +131,15 @@ impl App {
         }
         self.active = get("active_profile").and_then(|v| v.parse::<usize>().ok()).filter(|i| *i < self.profiles.len()).unwrap_or(0);
         self.start_sel = self.active;
+        if let Some(v) = get("api_on") {
+            self.api_on = v == "1";
+        }
+        if let Some(v) = get("api_port").and_then(|v| v.parse::<u16>().ok()).filter(|p| *p >= 1024) {
+            self.api_port = v;
+        }
+        if let Some(v) = get("api_lan") {
+            self.api_lan = v == "1";
+        }
         if let Some(v) = get("autosave_on") {
             self.autosave_on = v != "0";
         }
@@ -149,20 +158,14 @@ impl App {
         if let Some(v) = get("grid_main_on") {
             self.show_grid = v != "0";
         }
+        if let Some(v) = get("snap_objects") {
+            self.snap_objects = v == "1";
+        }
         if let Some(v) = get("zones_visible") {
             self.zones_visible = v != "0";
         }
         if let Some(v) = get("grid_main_mm").and_then(|v| v.parse::<f64>().ok()) {
             self.grid = v;
-        }
-        if get("global_materials").is_some() || get("user_materials").is_some() {
-            self.global_materials = crate::materials_ui::load_global(&|k| m.get(k).cloned());
-        }
-        if let Some(l) = get("layer_labels").and_then(|j| serde_json::from_str(&j).ok()) {
-            self.layer_labels = l;
-        }
-        if let Some(h) = get("mat_list_h").and_then(|v| v.parse::<f32>().ok()).filter(|h| (60.0..=700.0).contains(h)) {
-            self.mat_list_h = h;
         }
         if let Some(o) = get("tab_order") {
             self.tab_order = crate::app::SideTab::arranged(o);
@@ -200,7 +203,7 @@ impl App {
         }
         let readme = format!(
             "LightCreator {APP_VERSION} backup\n\n\
-             app.ron   your settings: device profiles, language, colour scheme, material presets, recent files\n\
+             app.ron   your settings: device profiles, language, colour scheme, recent files\n\
              clipart/  the pictures you saved or downloaded, with index.json\n\n\
              To restore, close LightCreator and copy app.ron and the clipart folder into its data folder\n\
              (macOS: ~/Library/Application Support/lightcreator, Windows: %APPDATA%\\lightcreator\\data,\n\

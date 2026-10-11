@@ -976,3 +976,79 @@
 975|Punkter från de nuvarande hörnen
 976|Referenspunkter
 977|Ersätter punkterna med bildens fyra hörn och var de ligger nu.
+978|Fäst mot objekt
+979|Sidan kunde inte skapas: {}
+980|Visaren kunde inte öppnas: {}
+981|Standardskrivare
+982|Marginal
+983|Endast objekt på synliga lager
+984|Endast objekten, så stora som sidan tillåter
+985|Öppna PDF
+986|Öppnad i PDF-visaren.
+987|Öppnar sidan i PDF-visaren, som kan skriva ut den med fler alternativ
+988|Skriv ut
+989|Skriv ut…
+990|Skrivare
+991|Skriver ut designen på en pappersskrivare, för att kontrollera placeringen eller som mall.
+992|Spara som PDF…
+993|Skickat till skrivaren. {}
+994|Skrivaren tog inte emot den: {}
+995|Hela arbetsytan i skala
+996|Det finns inget att skriva ut.
+997|{} objekt sticker ut utanför arbetsytan; på papperet skärs de av vid kanten.
+998|{} objekt sticker ut utanför arbetsytan; de skrivs ut ändå.
+999|Kameratest: {}
+1000|Öppnar bilden från den här kameran med inställningarna här, utan att spara
+1001|Testa
+1002|Växlar mellan att skära och hoppa över längs konturen.
+1003|Skärlängd
+1004|Jämnt avstånd
+1005|Skärbreddsförskjutning (kerf)
+1006|Lämnar korta stycken av konturen oskurna (eller svagt skurna) så att delen stannar på plats. De placeras automatiskt.
+1007|Begränsa maxantal bryggor
+1008|Min. bryggor
+1009|Flyttar konturen utåt (inåt om negativt) för att kompensera skärets bredd. 0 = av.
+1010|Procent av lagrets effekt över en brygga; 0 = lasern är av.
+1011|Perforering
+1012|Perforeringsläge
+1013|Placering
+1014|Hoppa över inre former
+1015|Längd att hoppa över
+1016|Avstånd
+1017|Skäreffekt på brygga
+1018|Bryggstorlek
+1019|Bryggor
+1020|Bryggor per form
+1021|Vektorformer på ett lager i bildläge bränns inte.
+1022|Arbetstid
+1023|Beskrivning
+1024|Beskriv projektet: vad det är, inställningar som fungerade, anteckningar till nästa gång.
+1025|En webbsida med maskinens tillstånd, projektet och kameran samt ett API för andra program. Den har inget lösenord.
+1026|Vem som helst i nätverket kan se maskinen och stoppa eller flytta den. Det finns inget lösenord eller någon kryptering: använd bara i ett nätverk du litar på.
+1027|Lyssnar på {}
+1028|Nåbar från andra datorer i nätverket
+1029|Slå på webbservern och API:et
+1030|Servern kunde inte startas: {}
+1031|Webbserver och API
+1032|Lägg till enhet
+1033|Fler inställningar…
+1034|Öppnar hela enhetsfönstret med det som skrivits in här
+1035|Utgångspunkt
+1036|Standardmaterial
+1037|Ta bort det här materialet
+1038|Material: {}
+1039|Namn på det nya materialet
+1040|Nytt material: en kopia av detta
+1041|Nytt namn
+1042|Byt namn på det här materialet
+1043|projekt
+1044|Akryl 3 mm
+1045|Läder 2 mm
+1046|Nytt, tomt material
+1047|Plywood 3 mm
+1048|Lägg till ett material, t.ex. björkplywood 3 mm (valfritt)
+1049|Kameror som övervakar maskinen. Den ikryssade ger livebilden; att kryssa i en annan stänger av den första.
+1050|Slå på den här kameran: den ger livebilden
+1051|Webbserver: på, port {}
+1052|Webbserver: av
+1053|Webbserver: fel

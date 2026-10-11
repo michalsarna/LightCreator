@@ -976,3 +976,79 @@
 975|Punktar úr núverandi hornum
 976|Viðmiðunarpunktar
 977|Skiptir punktunum út fyrir fjögur horn myndarinnar og stöðu þeirra núna.
+978|Grípa í hluti
+979|Ekki tókst að búa til síðuna: {}
+980|Ekki tókst að opna skoðarann: {}
+981|Sjálfgefinn prentari
+982|Spássía
+983|Aðeins hlutir á sýnilegum lögum
+984|Aðeins hlutirnir, eins stórir og síðan leyfir
+985|Opna PDF
+986|Opnað í PDF-skoðaranum.
+987|Opnar síðuna í PDF-skoðara, sem getur prentað hana með fleiri valkostum
+988|Prenta
+989|Prenta…
+990|Prentari
+991|Prentar hönnunina á pappírsprentara, til að athuga staðsetningu eða sem sniðmát.
+992|Vista sem PDF…
+993|Sent á prentarann. {}
+994|Prentarinn tók ekki við því: {}
+995|Allt vinnusvæðið, í réttum kvarða
+996|Ekkert er til að prenta.
+997|{} hlutur(ir) ná út fyrir vinnusvæðið; á pappírnum eru þeir skornir af við jaðarinn.
+998|{} hlutur(ir) ná út fyrir vinnusvæðið; þeir eru samt prentaðir.
+999|Prófun myndavélar: {}
+1000|Opnar mynd þessarar myndavélar með stillingunum hér, án þess að vista
+1001|Prófa
+1002|Víxlar skurði og stökki eftir útlínunni.
+1003|Lengd skurðar
+1004|Jöfn bil
+1005|Skurðbreiddarleiðrétting (kerf)
+1006|Skilur eftir stutta kafla af útlínunni óskorna (eða veikt skorna) svo hluturinn haldist á sínum stað. Þeir eru settir sjálfkrafa.
+1007|Takmarka hámarksfjölda brúa
+1008|Lágmarksfjöldi brúa
+1009|Færir útlínuna út á við (inn á við ef neikvætt) til að bæta upp breidd skurðarins. 0 = slökkt.
+1010|Hlutfall af afli lagsins yfir brú; 0 = slökkt á leysinum.
+1011|Götun
+1012|Götunarhamur
+1013|Staðsetning
+1014|Sleppa innri formum
+1015|Lengd stökks
+1016|Bil
+1017|Skurðarafl brúar
+1018|Stærð brúar
+1019|Brýr
+1020|Brýr á hvert form
+1021|Vektoraform á lagi í myndham eru ekki brennd.
+1022|Vinnutími
+1023|Lýsing
+1024|Lýstu verkefninu: hvað það er, stillingar sem virkuðu, athugasemdir fyrir næsta skipti.
+1025|Vefsíða með stöðu vélarinnar, verkefninu og myndavélinni, og API fyrir önnur forrit. Hún hefur ekkert lykilorð.
+1026|Hver sem er á netinu getur séð vélina og stöðvað hana eða fært. Ekkert lykilorð eða dulkóðun: notið aðeins á neti sem þið treystið.
+1027|Hlustar á {}
+1028|Aðgengilegt úr öðrum tölvum á netinu
+1029|Kveikja á vefþjóni og API
+1030|Ekki tókst að ræsa netþjóninn: {}
+1031|Vefþjónn og API
+1032|Bæta við tæki
+1033|Fleiri stillingar…
+1034|Opnar allan tækjagluggann með því sem slegið er inn hér
+1035|Upphafspunktur
+1036|Sjálfgefið efni
+1037|Eyða þessu efni
+1038|Efni: {}
+1039|Nafn nýja efnisins
+1040|Nýtt efni: afrit af þessu
+1041|Nýtt nafn
+1042|Endurnefna þetta efni
+1043|verkefni
+1044|Akrýl 3 mm
+1045|Leður 2 mm
+1046|Nýtt, tómt efni
+1047|Krossviður 3 mm
+1048|Bættu við efni, t.d. birkikrossviði 3 mm (valfrjálst)
+1049|Myndavélar sem fylgjast með vélinni. Sú sem er merkt gefur beina mynd; að merkja aðra slekkur á fyrstu.
+1050|Kveikja á þessari myndavél: hún gefur beina mynd
+1051|Vefþjónn: á, gátt {}
+1052|Vefþjónn: af
+1053|Vefþjónn: villa

@@ -976,3 +976,79 @@
 975|Pontok a jelenlegi sarkokból
 976|Referenciapontok
 977|A pontokat a kép négy sarkával és jelenlegi helyükkel váltja fel.
+978|Igazítás az objektumokhoz
+979|Az oldalt nem sikerült elkészíteni: {}
+980|A megjelenítőt nem sikerült megnyitni: {}
+981|Alapértelmezett nyomtató
+982|Margó
+983|Csak a látható rétegek objektumai
+984|Csak az objektumok, amilyen nagyra az oldal engedi
+985|PDF megnyitása
+986|Megnyitva a PDF-megjelenítőben.
+987|Megnyitja az oldalt a PDF-megjelenítőben, amely több beállítással tudja kinyomtatni
+988|Nyomtatás
+989|Nyomtatás…
+990|Nyomtató
+991|Papírnyomtatón kinyomtatja a tervet az elrendezés ellenőrzéséhez vagy sablonként.
+992|Mentés PDF-ként…
+993|Elküldve a nyomtatónak. {}
+994|A nyomtató nem fogadta el: {}
+995|A teljes munkaterület, méretarányosan
+996|Nincs mit nyomtatni.
+997|{} objektum túlnyúlik a munkaterületen; a papíron a szélénél levágódik.
+998|{} objektum túlnyúlik a munkaterületen; ettől még kinyomtatódik.
+999|Kamerateszt: {}
+1000|Megnyitja a kamera képét az itt megadott beállításokkal, mentés nélkül
+1001|Teszt
+1002|Váltogatja a vágást és a kihagyást a kontúr mentén.
+1003|Vágás hossza
+1004|Egyenletes távolság
+1005|Vágásszélesség-eltolás (kerf)
+1006|A kontúr rövid szakaszait vágatlanul (vagy gyengén vágva) hagyja, hogy a darab a helyén maradjon. Automatikusan kerülnek elhelyezésre.
+1007|A hidak maximális számának korlátozása
+1008|Hidak min.
+1009|A kontúrt kifelé (negatívnál befelé) tolja, hogy kiegyenlítse a vágás szélességét. 0 = ki.
+1010|A réteg teljesítményének százaléka a hídnál; 0 = a lézer ki van kapcsolva.
+1011|Perforálás
+1012|Perforálás mód
+1013|Elhelyezés
+1014|Belső alakzatok kihagyása
+1015|Kihagyás hossza
+1016|Távolság
+1017|A híd vágóteljesítménye
+1018|A híd mérete
+1019|Hidak
+1020|Hidak alakzatonként
+1021|A Kép módú rétegen lévő vektoros alakzatok nem kerülnek kiégetésre.
+1022|Munkaidő
+1023|Leírás
+1024|Írd le a projektet: mi ez, mely beállítások működtek, jegyzetek a következő alkalomra.
+1025|Egy weboldal a gép állapotával, a projekttel és a kamerával, valamint egy API más programoknak. Nincs jelszava.
+1026|A hálózaton bárki láthatja a gépet, leállíthatja vagy mozgathatja. Nincs jelszó vagy titkosítás: csak megbízható hálózaton használd.
+1027|Figyel ezen: {}
+1028|Elérhető a hálózat más számítógépeiről
+1029|Webszerver és API bekapcsolása
+1030|A szervert nem sikerült elindítani: {}
+1031|Webszerver és API
+1032|Eszköz hozzáadása
+1033|További beállítások…
+1034|Megnyitja a teljes eszközablakot az itt megadottakkal
+1035|Kiindulópont
+1036|Alapértelmezett anyag
+1037|Az anyag törlése
+1038|Anyag: {}
+1039|Az új anyag neve
+1040|Új anyag: ennek másolata
+1041|Új név
+1042|Az anyag átnevezése
+1043|projekt
+1044|Akril 3 mm
+1045|Bőr 2 mm
+1046|Új, üres anyag
+1047|Rétegelt lemez 3 mm
+1048|Adj hozzá anyagot, pl. nyírfa rétegelt lemez 3 mm (nem kötelező)
+1049|A gépet figyelő kamerák. A bejelölt adja az élő képet; egy másik bejelölése kikapcsolja az elsőt.
+1050|Kamera bekapcsolása: ez adja az élő képet
+1051|Webszerver: be, port {}
+1052|Webszerver: ki
+1053|Webszerver: hiba

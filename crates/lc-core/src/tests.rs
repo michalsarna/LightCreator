@@ -236,19 +236,6 @@ fn hpgl_and_dxf_export() {
 }
 
 #[test]
-fn material_presets_apply_to_layers() {
-    let lib = materials::builtin();
-    assert!(lib.iter().any(|p| p.laser == LaserKind::Co2) && lib.iter().any(|p| p.laser == LaserKind::Diode));
-    assert!(lib.iter().all(|p| p.speed > 0.0 && p.power > 0.0 && p.power <= 100.0 && p.passes >= 1));
-    let mut l = Layer::new(0);
-    let cut = lib.iter().find(|p| p.material == "Plywood 3 mm" && p.operation == "Cut" && p.laser == LaserKind::Diode).unwrap();
-    cut.apply(&mut l);
-    assert_eq!((l.mode, l.passes, l.power), (LayerMode::Line, 2, 100.0));
-    let user = materials::Preset::from_layer("Mine", "Cut", LaserKind::Diode, &l);
-    assert!(user.user && user.speed == l.speed);
-}
-
-#[test]
 fn layer_order_groups_and_old_files() {
     let mut d = Document::default();
     d.move_layer(0, false);
@@ -751,195 +738,8 @@ fn the_interface_font_covers_every_european_translation() {
     assert!(missing.is_empty(), "characters without a glyph: {missing:?}");
 }
 
-#[test]
-fn builtin_materials_group_the_presets_by_material_and_laser() {
-    let mats = materials::builtin_materials();
-    assert!(mats.len() < materials::builtin().len());
-    let ply = mats.iter().find(|m| m.name == "Plywood" && m.thickness == 3.0 && m.laser == LaserKind::Diode).unwrap();
-    assert_eq!(ply.layers.iter().map(|l| (l.index, l.label.as_str())).collect::<Vec<_>>(), vec![(0, "Cut"), (1, "Engrave")]);
-    assert_eq!(ply.layer(0).unwrap().spec.mode, LayerMode::Line);
-    assert_eq!(ply.layer(1).unwrap().spec.mode, LayerMode::Fill);
-    // The same material for another laser is another entry.
-    assert!(mats.iter().any(|m| m.name == "Plywood" && m.thickness == 3.0 && m.laser == LaserKind::Co2));
-}
-
-#[test]
-fn a_material_keeps_and_restores_the_settings_of_all_its_layers() {
-    let mut doc = Document::default();
-    doc.layers[0].speed = 5.0;
-    doc.layers[0].air_assist = true;
-    doc.layers[0].passes = 3;
-    doc.layers[2].mode = LayerMode::Offset;
-    doc.layers[2].power = 40.0;
-    let m = materials::Material::from_layers(" Birch ", LaserKind::Diode, &[(2, &doc.layers[2]), (0, &doc.layers[0])]);
-    assert_eq!(m.name, "Birch");
-    assert_eq!(m.layers.iter().map(|l| l.index).collect::<Vec<_>>(), vec![0, 2], "sorted by layer");
-    let mut other = Document::default();
-    assert_eq!(m.apply(&mut other.layers), 2);
-    assert_eq!((other.layers[0].speed, other.layers[0].air_assist, other.layers[0].passes), (5.0, true, 3));
-    assert_eq!((other.layers[2].mode, other.layers[2].power), (LayerMode::Offset, 40.0));
-    // Layers the material does not mention stay as they are.
-    assert_eq!(other.layers[1], Document::default().layers[1]);
-    // It survives JSON like the rest of a device profile.
-    let back: materials::Material = serde_json::from_str(&serde_json::to_string(&m).unwrap()).unwrap();
-    assert_eq!(back, m);
-}
-
-#[test]
-fn old_user_presets_become_materials() {
-    let mk = |mat: &str, op: &str| materials::Preset { material: mat.into(), operation: op.into(), laser: LaserKind::Co2, mode: LayerMode::Line, speed: 9.0, power: 50.0, passes: 1, interval: 0.1, user: true };
-    let mats = materials::materials_from_presets(&[mk("Mine", "Cut"), mk("Mine", "Engrave"), mk("Mine", "Cut"), mk("Other", "Score")]);
-    assert_eq!(mats.len(), 2);
-    let mine = &mats[0];
-    // The second "Cut" does not overwrite the first: it takes the next free layer.
-    assert_eq!(mine.layers.iter().map(|l| l.index).collect::<Vec<_>>(), vec![0, 1, 2]);
-    assert_eq!(mats[1].layers[0].index, 2);
-}
-
-#[test]
-fn merging_a_library_from_a_file_finds_new_equal_and_different_materials() {
-    let base = |name: &str, speed: f64| {
-        let mut l = Layer::new(0);
-        l.speed = speed;
-        materials::Material::from_layers(name, LaserKind::Diode, &[(0, &l)])
-    };
-    let local = vec![base("Same", 5.0), base("Differs", 5.0), base("Only here", 1.0)];
-    let mut incoming_differs = base("differs", 8.0); // names are compared without regard to case
-    let mut extra = Layer::new(1);
-    extra.power = 33.0;
-    incoming_differs.layers.push(materials::MaterialLayer { index: 1, label: "Engrave".into(), spec: materials::LayerSpec::from_layer(&extra) });
-    let incoming = vec![base("Same", 5.0), incoming_differs, base("Brand new", 2.0)];
-    let plan = materials::plan_merge(&local, &incoming);
-    assert_eq!((plan.unchanged, plan.added.len(), plan.conflicts.len()), (1, 1, 1));
-    assert_eq!(plan.added[0].name, "Brand new");
-    let c = &plan.conflicts[0];
-    let fields: Vec<_> = c.rows.iter().map(|r| (r.layer, r.field)).collect();
-    assert_eq!(fields, vec![(0, "Speed"), (1, "")], "one changed setting and one layer the local material lacks");
-    // Take only the speed from the file: the new layer is not added.
-    let mut mine = local[1].clone();
-    materials::apply_rows(&mut mine, c, &[true, false]);
-    assert_eq!(mine.layer(0).unwrap().spec.speed, 8.0);
-    assert!(mine.layer(1).is_none());
-    // Take both.
-    let mut mine = local[1].clone();
-    materials::apply_rows(&mut mine, c, &[true, true]);
-    assert_eq!(mine.layer(1).unwrap().spec.power, 33.0);
-    // Take nothing: unchanged.
-    let mut mine = local[1].clone();
-    materials::apply_rows(&mut mine, c, &[false, false]);
-    assert_eq!(mine, local[1]);
-}
-
-#[test]
-fn a_device_gets_missing_materials_from_a_source_for_its_laser() {
-    let src = materials::builtin_materials();
-    let mut lib = vec![];
-    let n = materials::add_missing(&mut lib, &src, LaserKind::Co2);
-    assert!(n > 5 && lib.iter().all(|m| m.laser == LaserKind::Co2));
-    // Doing it again adds nothing; a deleted one comes back only when asked for.
-    assert_eq!(materials::add_missing(&mut lib, &src, LaserKind::Co2), 0);
-    lib.remove(0);
-    assert_eq!(materials::add_missing(&mut lib, &src, LaserKind::Co2), 1);
-    // Profiles saved before libraries existed load with an empty one.
-    let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
-    let d: Device = serde_json::from_str(old).unwrap();
-    assert!(d.materials.is_empty() && !d.materials_seeded);
-}
-
-#[test]
-fn materials_keep_colours_and_categories() {
-    // Built-in materials know their category and the colour of each layer.
-    let mats = materials::builtin_materials();
-    let ply = mats.iter().find(|m| m.name == "Plywood" && m.thickness == 3.0).unwrap();
-    assert_eq!(ply.category(), "Wood");
-    assert_eq!(mats.iter().find(|m| m.name.starts_with("Acrylic")).unwrap().category(), "Plastic");
-    assert_eq!(mats.iter().find(|m| m.name.starts_with("Anodised")).unwrap().category(), "Metal");
-    assert!(ply.layers.iter().all(|l| l.spec.colour == l.index));
-    // A material saved without a category (or a colour) still loads; the category is guessed.
-    let old = r#"{"name":"Birch plywood","laser":"Diode","layers":[{"index":4,"label":"Cut","spec":{"mode":"Line","speed":3.0,"power":90.0,"passes":1,"interval":0.1,"angle":0.0,"overscan":1.0,"bidirectional":true,"dither":"Threshold","min_power":0.0,"air_assist":false}}]}"#;
-    let m: materials::Material = serde_json::from_str(old).unwrap();
-    assert_eq!((m.category().as_str(), m.layers[0].spec.colour), ("Wood", materials::NO_COLOUR));
-    // Applying a material sets the colour and the name of the layer; without a colour the layer keeps its own.
-    let mut doc = Document::default();
-    let mut m2 = ply.clone();
-    m2.layers[0].spec.colour = 17;
-    m2.layers[0].label = "Outline".into();
-    m2.apply(&mut doc.layers);
-    assert_eq!((doc.layers[0].color, doc.layers[0].name.as_str()), (17, "Outline"));
-    let before = doc.layers[4].color;
-    m.apply(&mut doc.layers);
-    assert_eq!(doc.layers[4].color, before);
-    // A category of your own survives a round trip.
-    let mut mine = ply.clone();
-    mine.category = "Samples".into();
-    let back: materials::Material = serde_json::from_str(&serde_json::to_string(&mine).unwrap()).unwrap();
-    assert_eq!(back.category(), "Samples");
-}
-
-#[test]
-fn a_library_file_holds_global_materials_and_devices() {
-    let mats = materials::builtin_materials();
-    let mut d = Device::default();
-    d.name = "Shop laser".into();
-    d.materials = mats[..3].to_vec();
-    let f = materials::LibraryFile::new(mats[3..5].to_vec(), vec![d]);
-    let back = materials::LibraryFile::from_json(&f.to_json()).expect("reads back");
-    assert_eq!(back, f);
-    assert_eq!(back.devices[0].materials.len(), 3);
-    // Anything else is refused.
-    assert!(materials::LibraryFile::from_json("{\"hello\":1}").is_none());
-    assert!(materials::LibraryFile::from_json("not json").is_none());
-}
-
-#[test]
-fn materials_have_ids_that_survive_renaming_and_both_lasers_share_one() {
-    let mats = materials::builtin_materials();
-    let diode = mats.iter().find(|m| m.key() == "plywood-3" && m.laser == LaserKind::Diode).unwrap();
-    let co2 = mats.iter().find(|m| m.key() == "plywood-3" && m.laser == LaserKind::Co2).unwrap();
-    assert_eq!((diode.thickness, diode.name.as_str()), (3.0, "Plywood"));
-    assert!(diode.tags.contains(&"Cut".to_string()) && !diode.same_key(co2));
-    // The name can change; the id stays.
-    let mut m = diode.clone();
-    m.name = "Sklejka".into();
-    assert_eq!(m.key(), "plywood-3");
-    assert!(m.same_key(diode));
-    // A name with a thickness is split.
-    assert_eq!(materials::split_thickness("Birch 1.5 mm"), ("Birch".to_string(), 1.5));
-    assert_eq!(materials::split_thickness("Cardboard"), ("Cardboard".to_string(), 0.0));
-    // A material saved without an id gets one from its name.
-    let old = r#"{"name":"Cork","thickness":3.0,"laser":"Diode","layers":[]}"#;
-    assert_eq!(serde_json::from_str::<materials::Material>(old).unwrap().key(), "cork-3");
-}
-
-#[test]
-fn local_changes_override_the_built_in_library() {
-    let built = materials::builtin_materials();
-    let mut changed = built[0].clone();
-    changed.layers[0].spec.power = 11.0;
-    let mut extra = built[1].clone();
-    extra.id = "mine".into();
-    extra.name = "Mine".into();
-    let eff = materials::effective_library(&built, &[changed.clone(), extra.clone()]);
-    assert_eq!(eff.len(), built.len() + 1);
-    assert_eq!(eff[0].layers[0].spec.power, 11.0);
-    assert_eq!(eff.last().unwrap().name, "Mine");
-    // Nothing local: the built-in library as it is.
-    assert_eq!(materials::effective_library(&built, &[]), built);
-}
-
-#[test]
-fn a_document_remembers_the_material_it_was_made_with() {
-    let mut doc = Document::default();
-    assert!(doc.material.is_none());
-    doc.material = Some(materials::builtin_materials().remove(0));
-    let back = Document::from_json(&doc.to_json()).unwrap();
-    assert_eq!(back.material, doc.material);
-    // Old files have none.
-    assert!(Document::from_json(&Document::default().to_json().replace(",\"material\":null", "")).unwrap().material.is_none());
-}
-
 /// A profile exactly as v0.0.11 wrote it: every setting is a flat field.
-const OLD_PROFILE: &str = r#"{"name":"Old CO2","units":"Inch","speed_unit":"PerMinute","controller":"Marlin","laser":"Co2","bed_w":300.0,"bed_h":200.0,"origin":"BackLeft","s_max":255.0,"dynamic_power":false,"travel_speed":4500.0,"return_home":false,"baud":250000,"port":"/dev/ttyUSB3","jog_step":2.5,"jog_feed":1800.0,"frame_power":1.5,"camera":null,"link":"Tcp","host":"pi.local","tcp_port":4000,"camera_url":"http://pi.local:8080/stream","camera_rotation":2,"layer_speeds":[1200.0],"materials":[],"materials_seeded":true,"materials_inherit":false}"#;
+const OLD_PROFILE: &str = r#"{"name":"Old CO2","units":"Inch","speed_unit":"PerMinute","controller":"Marlin","laser":"Co2","bed_w":300.0,"bed_h":200.0,"origin":"BackLeft","s_max":255.0,"dynamic_power":false,"travel_speed":4500.0,"return_home":false,"baud":250000,"port":"/dev/ttyUSB3","jog_step":2.5,"jog_feed":1800.0,"frame_power":1.5,"camera":null,"link":"Tcp","host":"pi.local","tcp_port":4000,"camera_url":"http://pi.local:8080/stream","camera_rotation":2,"layer_speeds":[1200.0]}"#;
 
 #[test]
 fn old_flat_profile_is_read_into_the_groups() {
@@ -949,7 +749,7 @@ fn old_flat_profile_is_read_into_the_groups() {
     assert_eq!((d.connection.baud, d.connection.port.as_str(), d.connection.link, d.connection.host.as_str(), d.connection.tcp_port), (250000, "/dev/ttyUSB3", LinkKind::Tcp, "pi.local", 4000));
     assert_eq!(d.heads.len(), 1);
     assert_eq!((d.heads[0].s_max, d.heads[0].frame_power, d.heads[0].laser), (255.0, 1.5, LaserKind::Co2));
-    assert_eq!((d.controller, d.units, d.jog_step, d.cameras[0].rotation, d.materials_seeded), (Controller::Marlin, Units::Inch, 2.5, 2, true));
+    assert_eq!((d.controller, d.units, d.jog_step, d.cameras[0].rotation), (Controller::Marlin, Units::Inch, 2.5, 2));
 }
 
 #[test]
@@ -1697,28 +1497,6 @@ fn a_zone_with_a_height_range_only_stops_moves_at_those_heights_and_only_with_a_
 }
 
 #[test]
-fn every_template_makes_a_valid_profile_with_its_own_numbers() {
-    for t in profiles::TEMPLATES {
-        let d = profiles::template(t.id);
-        assert_eq!(profiles::validate(&d), Ok(()), "{}", t.id);
-        assert!(d.name.contains(&t.name[..4]) || !d.name.is_empty());
-    }
-    let co2 = profiles::template("grbl-co2-300x200");
-    assert_eq!((co2.area.bed_w, co2.area.bed_h, co2.laser()), (300.0, 200.0, LaserKind::Co2));
-    let k40 = profiles::template("grbl-k40-300x200");
-    assert_eq!((k40.axes.origin, k40.laser()), (Origin::BackLeft, LaserKind::Co2));
-    assert!(k40.template_notes.contains("top-left"));
-    let marlin = profiles::template("marlin-diode");
-    assert_eq!((marlin.controller, marlin.s_max()), (Controller::Marlin, 255.0));
-    // An unknown id is the plain GRBL diode machine.
-    assert_eq!(profiles::template("nope").controller, Controller::Grbl);
-    // Names are distinct, so the list can be told apart.
-    let mut names: Vec<&str> = profiles::TEMPLATES.iter().map(|t| t.name).collect();
-    names.dedup();
-    assert_eq!(names.len(), profiles::TEMPLATES.len());
-}
-
-#[test]
 fn copies_get_a_free_name() {
     let taken = vec!["Laser".to_string(), "Laser (copy)".to_string()];
     assert_eq!(profiles::copy_name("Laser", &[]), "Laser (copy)");
@@ -1728,7 +1506,10 @@ fn copies_get_a_free_name() {
 
 #[test]
 fn a_profile_file_round_trips_without_the_port_and_old_files_are_read() {
-    let mut d = profiles::template("grbl-k40-300x200");
+    let mut d = Device::default();
+    d.name = "K40".into();
+    d.axes.origin = Origin::BackLeft;
+    d.heads[0].laser = LaserKind::Co2;
     d.connection.port = "/dev/tty.usbserial-1410".into();
     d.connection.usb_id = "1a86:7523".into();
     d.macros = vec![Macro { name: "Park".into(), code: "G0 X0 Y0".into() }];
@@ -2000,4 +1781,302 @@ fn cameras_of_a_device_migrate_validate_and_travel_with_the_profile() {
     let mut lens = serde_json::to_value(&d).unwrap();
     lens["cameras"][0]["lens"]["k1"] = 50.0.into();
     assert!(profiles::import_profile(&serde_json::json!({"format": 1, "profile": lens}).to_string()).is_err());
+}
+
+use crate::cutopts::{Perforation, TabMode, Tabs};
+
+fn gcode_of(layer_edit: impl FnOnce(&mut Layer)) -> String {
+    let mut d = Document::default();
+    d.add(0, Kind::Rect { w: 100.0, h: 100.0 }, Xf::translate(20.0, 20.0));
+    layer_edit(&mut d.layers[0]);
+    gcode::generate(&d).gcode
+}
+
+fn count(g: &str, word: &str) -> usize {
+    g.lines().filter(|l| l.starts_with(word)).count()
+}
+
+#[test]
+fn kerf_perforation_and_tabs_change_the_outline_only_when_asked() {
+    let plain = gcode_of(|_| {});
+    // Defaults write exactly what they always did.
+    assert_eq!(plain, gcode_of(|l| l.tabs.size = 9.0), "options that are not switched on change nothing");
+    // Tabs: four gaps in the 400 mm outline, one every 100 mm; the laser is off over each.
+    let tabs = gcode_of(|l| l.tabs = Tabs { enabled: true, size: 2.0, spacing: 100.0, ..Default::default() });
+    assert!(count(&tabs, "G0") >= count(&plain, "G0") + 4, "{} vs {}", count(&tabs, "G0"), count(&plain, "G0"));
+    assert!(count(&tabs, "G1") > count(&plain, "G1"));
+    // A weak cut over the tabs keeps the laser on with less power.
+    let weak = gcode_of(|l| l.tabs = Tabs { enabled: true, size: 2.0, spacing: 100.0, cut_power: 25.0, ..Default::default() });
+    assert!(weak.contains("S250"), "25 % of S1000 over the tabs");
+    // Perforation: many short pieces.
+    let perf = gcode_of(|l| l.perforation = Perforation { enabled: true, cut: 2.0, skip: 2.0 });
+    assert!(count(&perf, "G0") > 90, "{}", count(&perf, "G0"));
+    // Kerf: the outline moves out, so the head goes beyond the square.
+    let kerf = gcode_of(|l| l.kerf = 0.5);
+    let max_x = |g: &str| g.lines().filter_map(|l| l.split_whitespace().find_map(|w| w.strip_prefix('X')).and_then(|v| v.parse::<f64>().ok())).fold(f64::MIN, f64::max);
+    assert!(max_x(&kerf) > max_x(&plain) + 0.3, "{} vs {}", max_x(&kerf), max_x(&plain));
+}
+
+#[test]
+fn the_new_layer_options_travel_with_the_layer_and_old_files() {
+    let mut l = Layer::new(0);
+    l.kerf = 0.2;
+    l.perforation = Perforation { enabled: true, cut: 1.0, skip: 0.5 };
+    l.tabs = Tabs { enabled: true, mode: TabMode::PerShape, per_shape: 3, ..Default::default() };
+    let back: Layer = serde_json::from_str(&serde_json::to_string(&l).unwrap()).unwrap();
+    assert_eq!(back, l);
+    // A layer saved before they existed gets the defaults.
+    let mut v = serde_json::to_value(Layer::new(1)).unwrap();
+    for k in ["kerf", "perforation", "tabs"] {
+        v.as_object_mut().unwrap().remove(k);
+    }
+    let old: Layer = serde_json::from_value(v).unwrap();
+    assert_eq!((old.kerf, old.perforation.enabled, old.tabs.enabled), (0.0, false, false));
+    assert!(!old.has_cut_options());
+}
+
+fn image_shape(doc: &mut Document, layer: usize, x: f64) -> u64 {
+    let im = ImageData { name: "t".into(), px_w: 4, px_h: 4, gray: vec![0; 16], w: 8.0, h: 8.0, invert: false };
+    doc.add(layer, Kind::Image(im), Xf::translate(x, 10.0))
+}
+
+#[test]
+fn a_layer_of_images_is_in_the_image_mode_and_goes_back_when_the_images_leave() {
+    let mut d = Document::default();
+    image_shape(&mut d, 3, 10.0);
+    assert!(d.is_image_layer(3) && !d.is_image_layer(4));
+    assert!(d.normalize_image_layers());
+    assert_eq!(d.layers[3].mode, LayerMode::Image);
+    assert!(!d.normalize_image_layers(), "nothing more to do");
+    // Setting another mode does not stick.
+    d.layers[3].mode = LayerMode::Fill;
+    d.normalize_image_layers();
+    assert_eq!(d.layers[3].mode, LayerMode::Image);
+    // An outline on the same layer: the layer is mixed, so it is no longer an image layer and goes back to Line.
+    d.add(3, Kind::Rect { w: 5.0, h: 5.0 }, Xf::IDENTITY);
+    assert!(!d.is_image_layer(3));
+    d.normalize_image_layers();
+    assert_eq!(d.layers[3].mode, LayerMode::Line);
+    // A mixed layer keeps the mode the user gave it.
+    d.layers[3].mode = LayerMode::FillAndLine;
+    assert!(!d.normalize_image_layers());
+    assert_eq!(d.layers[3].mode, LayerMode::FillAndLine);
+    // Old files read as before.
+    let v = serde_json::to_string(&LayerMode::Image).unwrap();
+    assert_eq!(serde_json::from_str::<LayerMode>(&v).unwrap(), LayerMode::Image);
+}
+
+#[test]
+fn image_layers_burn_only_the_images_and_may_scan_at_an_angle() {
+    let mut d = Document::default();
+    image_shape(&mut d, 0, 10.0);
+    d.normalize_image_layers();
+    let flat = gcode::generate(&d).gcode;
+    assert!(flat.contains("G1"), "the image is engraved");
+    // With a scan angle the rows run at that angle: moves are no longer along X only.
+    d.layers[0].angle = 45.0;
+    let turned = gcode::generate(&d).gcode;
+    assert_ne!(flat, turned);
+    // Share of engraving moves that change Y: rows along X keep Y, turned rows change it with every move.
+    let y_changes = |g: &str| {
+        let ys: Vec<f64> = g.lines().filter(|l| l.starts_with("G1")).filter_map(|l| l.split_whitespace().find_map(|w| w.strip_prefix('Y')).and_then(|v| v.parse::<f64>().ok())).collect();
+        ys.windows(2).filter(|w| (w[0] - w[1]).abs() > 1e-6).count() as f64 / ys.len().max(1) as f64
+    };
+    assert!(y_changes(&turned) > 0.8 && y_changes(&flat) < 0.6, "{} vs {}", y_changes(&turned), y_changes(&flat));
+    // The same image engraved at angle 0 is byte for byte what it was.
+    d.layers[0].angle = 0.0;
+    assert_eq!(gcode::generate(&d).gcode, flat);
+    // Vector shapes on a layer in the Image mode are not burnt.
+    let mut v = Document::default();
+    v.add(1, Kind::Rect { w: 10.0, h: 10.0 }, Xf::IDENTITY);
+    v.layers[1].mode = LayerMode::Image;
+    assert!(!gcode::generate(&v).gcode.contains("G1 X"), "{}", gcode::generate(&v).gcode);
+}
+
+#[test]
+fn the_camera_view_is_stored_with_the_device_and_checked_on_import() {
+    let mut d = Device::default();
+    assert_eq!(d.camera_view, CameraView::default());
+    d.camera_view = CameraView { mode: 1, zoom: 2.5, float_pos: Some([10.0, 20.0]), float_size: Some([640.0, 480.0]), win_pos: Some([-300.0, 40.0]), win_size: Some([800.0, 600.0]) };
+    let back = profiles::import_profile(&profiles::export_profile(&d, "v0.1.2")).unwrap();
+    assert_eq!(back.camera_view, d.camera_view);
+    // Older profiles have the default view.
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert_eq!(old.camera_view, CameraView::default());
+    for bad in [CameraView { mode: 3, ..Default::default() }, CameraView { zoom: 0.2, ..Default::default() }, CameraView { zoom: f32::NAN, ..Default::default() }, CameraView { float_size: Some([5.0, 5.0]), ..Default::default() }, CameraView { win_pos: Some([f32::INFINITY, 0.0]), ..Default::default() }] {
+        let mut x = Device::default();
+        x.camera_view = bad;
+        assert!(profiles::import_profile(&profiles::export_profile(&x, "v0.1.2")).is_err());
+    }
+}
+
+#[test]
+fn the_description_is_saved_in_the_project_and_old_projects_have_none() {
+    let mut d = Document::default();
+    d.description = "Birch plywood 3 mm\nair assist on".into();
+    let back = Document::from_json(&d.to_json()).unwrap();
+    assert_eq!(back.description, d.description);
+    let mut v: serde_json::Value = serde_json::from_str(&d.to_json()).unwrap();
+    v.as_object_mut().unwrap().remove("description");
+    assert_eq!(Document::from_json(&v.to_string()).unwrap().description, "");
+}
+
+#[test]
+fn every_device_has_a_material_and_old_profiles_get_the_default_one() {
+    let d = Device::default();
+    assert_eq!((d.materials.len(), d.active_material, d.materials[0].name.as_str()), (1, 0, materials::DEFAULT_MATERIAL));
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert_eq!(old.materials.len(), 1);
+    // A bad index is brought back, an empty list refilled.
+    let mut x = old.clone();
+    x.materials.clear();
+    x.active_material = 7;
+    x.ensure_materials();
+    assert_eq!((x.materials.len(), x.active_material), (1, 0));
+}
+
+#[test]
+fn the_layers_follow_the_selected_material_and_the_material_follows_the_layers() {
+    let mut d = Document::default();
+    // A layer the design uses joins the material, with the settings it has (the defaults).
+    d.add(2, Kind::Rect { w: 10.0, h: 10.0 }, Xf::IDENTITY);
+    assert!(d.sync_material());
+    assert_eq!(d.device.materials[0].layers.len(), 1);
+    assert!(d.device.materials[0].layer(2).unwrap().settings.same_settings(&Layer::new(2)));
+    assert!(!d.sync_material(), "nothing more to do");
+    // An edit of the layer is written into the material.
+    d.layers[2].speed = 7.0;
+    d.layers[2].power = 55.0;
+    assert!(d.sync_material());
+    assert_eq!(d.device.materials[0].layer(2).unwrap().settings.speed, 7.0);
+    // A layer that is not used joins when it is changed.
+    d.layers[9].passes = 3;
+    d.sync_material();
+    assert_eq!(d.device.materials[0].layer(9).unwrap().settings.passes, 3);
+    // A second material starts empty and is edited on its own.
+    let second = d.add_material("Acrylic");
+    assert_eq!((second, d.device.material().name.as_str()), (1, "Acrylic"));
+    d.layers[2].speed = 20.0;
+    d.sync_material();
+    assert_eq!(d.device.materials[0].layer(2).unwrap().settings.speed, 7.0, "the first one is untouched");
+    assert_eq!(d.device.materials[1].layer(2).unwrap().settings.speed, 20.0);
+    // Choosing the first one puts its settings into the layers.
+    d.select_material(0);
+    assert_eq!((d.layers[2].speed, d.layers[2].power, d.layers[9].passes), (7.0, 55.0, 3));
+    // Names of the layers, their colours and switches are not taken from a material.
+    d.layers[2].name = "Mine".into();
+    d.layers[2].visible = false;
+    d.select_material(1);
+    assert_eq!((d.layers[2].name.as_str(), d.layers[2].visible, d.layers[2].speed), ("Mine", false, 20.0));
+    // A material without a layer that the design uses: the layer is added with the default settings.
+    d.device.materials[1].layers.retain(|l| l.index != 2);
+    d.select_material(1);
+    assert!(d.layers[2].same_settings(&Layer::new(2)), "defaults");
+    assert!(d.device.materials[1].layer(2).is_some());
+    // And a layer that is not used and not in the material goes back to the defaults.
+    assert!(d.layers[9].same_settings(&Layer::new(9)) || d.device.materials[1].layer(9).is_some());
+}
+
+#[test]
+fn materials_are_named_renamed_and_deleted_but_one_stays() {
+    let mut d = Document::default();
+    assert!(!d.delete_material(), "the last one stays");
+    d.add_material("Plywood");
+    d.add_material("Plywood");
+    let names: Vec<&str> = d.device.materials.iter().map(|m| m.name.as_str()).collect();
+    assert_eq!(names, [materials::DEFAULT_MATERIAL, "Plywood", "Plywood (2)"]);
+    d.rename_material("Plywood");
+    assert_eq!(d.device.material().name, "Plywood (2)", "its own name is free, the other one is taken: it keeps a free name");
+    d.rename_material("Leather");
+    assert_eq!(d.device.material().name, "Leather");
+    assert!(d.delete_material());
+    assert_eq!((d.device.materials.len(), d.device.active_material), (2, 1));
+    assert_eq!(materials::free_name(&[], "  "), "Material");
+}
+
+#[test]
+fn materials_travel_with_the_profile_and_with_the_project_and_are_checked_on_import() {
+    let mut d = Document::default();
+    d.add(1, Kind::Rect { w: 5.0, h: 5.0 }, Xf::IDENTITY);
+    d.layers[1].speed = 12.0;
+    d.sync_material();
+    d.add_material("Acrylic");
+    let back = Document::from_json(&d.to_json()).unwrap();
+    assert_eq!(back.device.materials, d.device.materials);
+    assert_eq!(back.device.active_material, 1);
+    let ok = profiles::import_profile(&profiles::export_profile(&d.device, "v0.1.2")).unwrap();
+    assert_eq!(ok.materials, d.device.materials);
+    // A wrong selected material is simply brought back to the first.
+    let mut v: serde_json::Value = serde_json::from_str(&profiles::export_profile(&d.device, "v0.1.2")).unwrap();
+    v["profile"]["active_material"] = 9.into();
+    assert_eq!(profiles::import_profile(&v.to_string()).unwrap().active_material, 0);
+    for mutate in [
+        |v: &mut serde_json::Value| v["profile"]["materials"][0]["name"] = "".into(),
+        |v: &mut serde_json::Value| v["profile"]["materials"][0]["layers"][0]["index"] = 99.into(),
+        |v: &mut serde_json::Value| v["profile"]["materials"][0]["layers"][0]["settings"]["speed"] = (-5.0).into(),
+    ] {
+        let mut v: serde_json::Value = serde_json::from_str(&profiles::export_profile(&d.device, "v0.1.2")).unwrap();
+        mutate(&mut v);
+        assert!(profiles::import_profile(&v.to_string()).is_err());
+    }
+}
+
+#[test]
+fn a_new_device_comes_with_starter_materials_for_its_laser_and_a_new_material_is_empty() {
+    let mut diode = Device::default();
+    diode.add_starter_materials();
+    let names: Vec<&str> = diode.materials.iter().map(|m| m.name.as_str()).collect();
+    assert_eq!(names, [materials::DEFAULT_MATERIAL, "Plywood 3 mm", "Cardboard", "Leather 2 mm", "Paper"]);
+    assert!(diode.materials[0].layers.is_empty(), "the default one is empty");
+    for m in &diode.materials[1..] {
+        assert_eq!(m.layers.len(), 2);
+        assert_eq!((m.layers[0].settings.mode, m.layers[1].settings.mode), (LayerMode::Fill, LayerMode::Line));
+        assert!(m.layers.iter().all(|l| l.settings.speed > 0.0 && l.settings.power > 0.0 && l.settings.power <= 100.0));
+    }
+    let mut co2 = Device::default();
+    co2.heads[0].laser = LaserKind::Co2;
+    co2.add_starter_materials();
+    assert!(co2.materials.iter().any(|m| m.name == "Acrylic 3 mm"));
+    assert!(!diode.materials.iter().any(|m| m.name == "Acrylic 3 mm"), "a diode laser does not cut clear acrylic");
+    // Changing the laser type of a device that still has its starters gives it those of the other type...
+    let mut x = diode.clone();
+    x.heads[0].laser = LaserKind::Co2;
+    x.add_starter_materials();
+    assert_eq!(x.materials, co2.materials);
+    // ...but a device whose materials were touched is left alone.
+    let mut y = diode.clone();
+    y.materials[1].layers[0].settings.power = 77.0;
+    y.heads[0].laser = LaserKind::Co2;
+    let before = y.materials.clone();
+    y.add_starter_materials();
+    assert_eq!(y.materials, before);
+    // Every starter passes the check of an imported profile.
+    assert!(profiles::import_profile(&profiles::export_profile(&co2, "v0.1.2")).is_ok());
+    // A new material is empty: the layers go back to the defaults and the used ones join with them.
+    let mut d = Document::default();
+    d.add(1, Kind::Rect { w: 5.0, h: 5.0 }, Xf::IDENTITY);
+    d.layers[1].speed = 3.0;
+    d.sync_material();
+    let i = d.add_material("Felt");
+    assert_eq!(d.device.materials[i].layers.len(), 1, "only the layer in use");
+    assert!(d.layers[1].same_settings(&Layer::new(1)), "reset to the defaults");
+    assert_eq!(d.device.materials[0].layer(1).unwrap().settings.speed, 3.0, "the first material keeps its own");
+}
+
+#[test]
+fn one_camera_is_on_at_a_time_and_a_new_one_without_an_address_is_allowed() {
+    let mut d = Device::default();
+    d.cameras = vec![CameraSource::url("A", "http://a/x", 0), CameraSource::url("B", "http://b/y", 0), CameraSource::url("C", "", 0)];
+    d.activate_camera(1);
+    assert_eq!((d.active_camera, d.cameras.iter().map(|c| c.enabled).collect::<Vec<_>>()), (1, vec![false, true, false]));
+    assert_eq!(d.stream_url(), Some("http://b/y"));
+    d.activate_camera(7);
+    assert_eq!(d.active_camera, 1, "no such camera");
+    // A camera that is on but has no address yet shows nothing and is still a valid profile.
+    d.activate_camera(2);
+    assert_eq!(d.stream_url(), None);
+    assert!(profiles::import_profile(&profiles::export_profile(&d, "v0.1.2")).is_ok());
+    // A bad address that is on is still refused.
+    d.cameras[2].kind = CameraKind::Url("rtsp://x".into());
+    assert!(profiles::import_profile(&profiles::export_profile(&d, "v0.1.2")).is_err());
 }

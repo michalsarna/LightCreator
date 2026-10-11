@@ -36,9 +36,12 @@ pub enum LayerMode {
     Fill,
     /// Fill the interior, then cut the outline.
     FillAndLine,
+    /// Engrave bitmap images. A layer that holds only images is always in this mode; vector shapes are not burnt in it.
+    Image,
 }
 
 impl LayerMode {
+    /// The modes a layer can be switched between by hand (a layer of images is in the Image mode and stays there).
     pub const ALL: [LayerMode; 4] = [LayerMode::Line, LayerMode::Fill, LayerMode::FillAndLine, LayerMode::Offset];
     pub fn label(self) -> &'static str {
         match self {
@@ -46,6 +49,7 @@ impl LayerMode {
             LayerMode::Fill => "Fill",
             LayerMode::Offset => "Offset fill",
             LayerMode::FillAndLine => "Fill + Line",
+            LayerMode::Image => "Image",
         }
     }
 }
@@ -154,9 +158,23 @@ pub struct Layer {
     /// The layer is burnt on a rotary attachment (when the device has one switched on).
     #[serde(default)]
     pub rotary: bool,
+    /// Line layers: millimetres the outline is moved out (in, when negative) to make up for the width of the cut.
+    #[serde(default)]
+    pub kerf: f64,
+    /// Line layers: cut and skip lengths along the outline.
+    #[serde(default)]
+    pub perforation: crate::cutopts::Perforation,
+    /// Line layers: tabs (bridges) left in the outline.
+    #[serde(default)]
+    pub tabs: crate::cutopts::Tabs,
 }
 
 impl Layer {
+    /// Does the layer use the kerf, perforation or tabs (so that its outlines are not written as they are)?
+    pub fn has_cut_options(&self) -> bool {
+        (self.kerf.is_finite() && self.kerf != 0.0) || self.perforation.enabled || self.tabs.enabled
+    }
+
     /// The Z positions of the passes, or nothing when the layer does not move Z.
     pub fn z_levels(&self) -> Vec<f64> {
         if self.z_start == 0.0 && self.z_step == 0.0 {
@@ -212,6 +230,9 @@ impl Layer {
             z_start: 0.0,
             z_step: 0.0,
             rotary: false,
+            kerf: 0.0,
+            perforation: Default::default(),
+            tabs: Default::default(),
         }
     }
 }
@@ -504,7 +525,7 @@ impl Controller {
     }
 }
 
-/// Laser source type; selects matching entries in the material library.
+/// Laser source type.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum LaserKind {
     #[default]
@@ -1066,15 +1087,15 @@ pub struct Device {
     pub cameras: Vec<CameraSource>,
     /// The camera whose picture is shown (an index into `cameras`).
     pub active_camera: usize,
-    /// Default speed of each of the 30 layers in mm/min, kept with the device and used for new documents.
+    /// How the camera view opens (mode, zoom, window places).
+    pub camera_view: crate::camimg::CameraView,
+    /// Legacy: older versions kept a default speed for each of the 30 layers here. The settings of the layers now
+    /// belong to the project; this list is read and kept, not used.
     pub layer_speeds: Vec<f64>,
-    /// The material library of this device: materials with the settings of all their layers. It is stored with
-    /// the profile and with saved projects.
+    /// The materials of this device (at least one) and the selected one: each holds the settings of the layers it
+    /// uses. They travel with the profile and with saved projects.
     pub materials: Vec<crate::materials::Material>,
-    /// The library has been filled from the built-in one (once; deleting materials does not refill it).
-    pub materials_seeded: bool,
-    /// The library follows the main library: the materials above are only this device's own copies of changed ones.
-    pub materials_inherit: bool,
+    pub active_material: usize,
     /// Own G-code scripts that are run by hand from the Device tab.
     pub macros: Vec<Macro>,
     /// Parts of the work area the machine must not enter, in design coordinates.
@@ -1290,14 +1311,14 @@ struct DeviceWire {
     cameras: Vec<CameraSource>,
     #[serde(default)]
     active_camera: usize,
+    #[serde(default)]
+    camera_view: crate::camimg::CameraView,
     #[serde(default = "d_layer_speeds")]
     layer_speeds: Vec<f64>,
     #[serde(default)]
     materials: Vec<crate::materials::Material>,
     #[serde(default)]
-    materials_seeded: bool,
-    #[serde(default)]
-    materials_inherit: bool,
+    active_material: usize,
     #[serde(default)]
     macros: Vec<Macro>,
     #[serde(default)]
@@ -1350,7 +1371,7 @@ impl From<DeviceWire> for Device {
         if heads.is_empty() {
             heads.push(LaserHead { s_max: w.s_max.unwrap_or(1000.0), frame_power: w.frame_power.unwrap_or(0.0), laser: w.laser.unwrap_or_default(), ..LaserHead::default() });
         }
-        Device {
+        let mut dev = Device {
             name: w.name,
             units: w.units,
             speed_unit: w.speed_unit,
@@ -1366,17 +1387,19 @@ impl From<DeviceWire> for Device {
             camera: w.camera,
             cameras: if w.cameras.is_empty() && !w.camera_url.trim().is_empty() { vec![CameraSource::url("Camera 1", w.camera_url.trim(), w.camera_rotation)] } else { w.cameras },
             active_camera: w.active_camera,
+            camera_view: w.camera_view,
             layer_speeds: w.layer_speeds,
             materials: w.materials,
-            materials_seeded: w.materials_seeded,
-            materials_inherit: w.materials_inherit,
+            active_material: w.active_material,
             macros: w.macros,
             zones: w.zones,
             rotary: w.rotary,
             template_notes: w.template_notes,
             maintenance: w.maintenance,
             notes: w.notes,
-        }
+        };
+        dev.ensure_materials();
+        dev
     }
 }
 
@@ -1510,6 +1533,16 @@ impl Device {
     }
 
     /// The camera whose picture is shown: the active one, when it is switched on and valid.
+    /// Switch camera `i` on and every other one off: the camera in use is the active one.
+    pub fn activate_camera(&mut self, i: usize) {
+        if i < self.cameras.len() {
+            self.active_camera = i;
+            for (j, c) in self.cameras.iter_mut().enumerate() {
+                c.enabled = j == i;
+            }
+        }
+    }
+
     pub fn camera_source(&self) -> Option<&CameraSource> {
         self.cameras.get(self.active_camera).filter(|c| c.enabled && c.is_valid())
     }
@@ -1537,7 +1570,7 @@ impl Device {
         self.heads.iter().enumerate().any(|(i, h)| self.heads[..i].iter().any(|o| o.tool == h.tool))
     }
 
-    /// The laser type of the first head (the one the material library follows).
+    /// The laser type of the first head.
     pub fn laser(&self) -> LaserKind {
         self.heads[0].laser
     }
@@ -1582,10 +1615,10 @@ impl Default for Device {
             camera: None,
             cameras: vec![],
             active_camera: 0,
+            camera_view: Default::default(),
             layer_speeds: d_layer_speeds(),
-            materials: vec![],
-            materials_seeded: false,
-            materials_inherit: false,
+            materials: vec![crate::materials::Material::new(crate::materials::DEFAULT_MATERIAL)],
+            active_material: 0,
             macros: vec![],
             zones: vec![],
             rotary: Rotary::default(),
@@ -1607,10 +1640,9 @@ pub struct Document {
     pub order: Vec<usize>,
     #[serde(default)]
     next_group: u64,
-    /// The material whose settings were put into the layers of this design (it travels with the file, so the
-    /// design can be repeated on another machine).
+    /// A free text about the project (what it is, the settings that worked...), saved in the project file.
     #[serde(default)]
-    pub material: Option<crate::materials::Material>,
+    pub description: String,
     /// What hooks may print about the job; set by the program before the G-code is made, never saved.
     #[serde(skip)]
     pub job_info: JobInfo,
@@ -1637,13 +1669,55 @@ impl Default for Document {
             next_id: 1,
             order: identity_order(),
             next_group: 1,
-            material: None,
+            description: String::new(),
             job_info: JobInfo::default(),
         }
     }
 }
 
 impl Document {
+    /// A layer that holds images and nothing else is in the Image mode; a layer left in that mode without images goes
+    /// back to Line. Returns whether anything changed. Mixed layers (images and outlines) keep their mode.
+    pub fn normalize_image_layers(&mut self) -> bool {
+        let mut changed = false;
+        for li in 0..self.layers.len() {
+            let (mut img, mut vec) = (false, false);
+            for s in self.shapes.iter().filter(|s| s.layer == li) {
+                if s.is_image() {
+                    img = true;
+                } else {
+                    vec = true;
+                }
+            }
+            let want = if img && !vec {
+                Some(LayerMode::Image)
+            } else if self.layers[li].mode == LayerMode::Image && (vec || img) {
+                Some(LayerMode::Line)
+            } else {
+                None
+            };
+            if let Some(m) = want {
+                if self.layers[li].mode != m {
+                    self.layers[li].mode = m;
+                    changed = true;
+                }
+            }
+        }
+        changed
+    }
+
+    /// Does layer `li` hold only images?
+    pub fn is_image_layer(&self, li: usize) -> bool {
+        let mut img = false;
+        for s in self.shapes.iter().filter(|s| s.layer == li) {
+            if !s.is_image() {
+                return false;
+            }
+            img = true;
+        }
+        img
+    }
+
     pub fn add(&mut self, layer: usize, kind: Kind, xf: Xf) -> u64 {
         let id = self.next_id;
         self.next_id += 1;

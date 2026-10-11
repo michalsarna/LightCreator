@@ -8,7 +8,7 @@ Money is not required. You also help by:
 * reporting bugs and ideas in [Issues](https://github.com/michalsarna/LightCreator/issues),
 * testing on real machines (GRBL, Marlin, ser2net, camera) and sharing results,
 * improving translations,
-* adding clipart and materials,
+* adding clipart,
 * starring the project and telling others.
 
 Thank you!

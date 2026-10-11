@@ -976,3 +976,79 @@
 975|Punts dels cantons actuals
 976|Punts de referència
 977|Substitueix els punts pels quatre cantons de la imatge i el lloc on són ara.
+978|Encaixa als objectes
+979|No s'ha pogut crear la pàgina: {}
+980|No s'ha pogut obrir el visualitzador: {}
+981|Impressora predeterminada
+982|Marge
+983|Només objectes de capes visibles
+984|Només els objectes, tan grans com permeti la pàgina
+985|Obre el PDF
+986|S'ha obert al visualitzador de PDF.
+987|Obre la pàgina al visualitzador de PDF, que la pot imprimir amb més opcions
+988|Imprimeix
+989|Imprimeix…
+990|Impressora
+991|Imprimeix el disseny en una impressora de paper, per comprovar la col·locació o com a plantilla.
+992|Desa com a PDF…
+993|Enviat a la impressora. {}
+994|La impressora no l'ha acceptat: {}
+995|Tota l'àrea de treball, a escala
+996|No hi ha res per imprimir.
+997|{} objecte(s) surten de l'àrea de treball; al paper es tallen a la vora.
+998|{} objecte(s) surten de l'àrea de treball; s'imprimeixen igualment.
+999|Prova de la càmera: {}
+1000|Obre la imatge d'aquesta càmera amb els valors indicats aquí, sense desar
+1001|Prova
+1002|Alterna tallar i saltar al llarg del contorn.
+1003|Longitud del tall
+1004|Espaiat uniforme
+1005|Compensació del kerf
+1006|Deixa trams curts del contorn sense tallar (o tallats feblement) perquè la peça es quedi al seu lloc. Es col·loquen automàticament.
+1007|Limita el màxim de pons
+1008|Pons mín.
+1009|Mou el contorn cap a fora (cap a dins si és negatiu) per compensar l'amplada del tall. 0 = desactivat.
+1010|Percentatge de la potència de la capa sobre un pont; 0 = làser apagat.
+1011|Perforació
+1012|Mode de perforació
+1013|Col·locació
+1014|Omet les formes interiors
+1015|Longitud de salt
+1016|Espaiat
+1017|Potència de tall del pont
+1018|Mida del pont
+1019|Pons
+1020|Pons per forma
+1021|Les formes vectorials d'una capa en mode Imatge no es graven.
+1022|Temps de treball
+1023|Descripció
+1024|Descriu el projecte: què és, els paràmetres que han funcionat, notes per a la propera vegada.
+1025|Una pàgina web amb l'estat de la màquina, el projecte i la càmera, i una API per a altres programes. No té contrasenya.
+1026|Qualsevol de la xarxa pot veure la màquina i aturar-la o moure-la. No hi ha contrasenya ni xifratge: useu-ho només en una xarxa de confiança.
+1027|Escoltant a {}
+1028|Accessible des d'altres ordinadors de la xarxa
+1029|Activa el servidor web i l'API
+1030|No s'ha pogut iniciar el servidor: {}
+1031|Servidor web i API
+1032|Afegeix un dispositiu
+1033|Més opcions…
+1034|Obre tota la finestra del dispositiu amb el que s'ha introduït aquí
+1035|Punt de partida
+1036|Material per defecte
+1037|Elimina aquest material
+1038|Material: {}
+1039|Nom del material nou
+1040|Material nou: una còpia d'aquest
+1041|Nom nou
+1042|Canvia el nom d'aquest material
+1043|projecte
+1044|Acrílic 3 mm
+1045|Cuir 2 mm
+1046|Material nou, buit
+1047|Contraplacat 3 mm
+1048|Afegeix un material, p. ex. contraplacat de bedoll 3 mm (opcional)
+1049|Càmeres que vigilen la màquina. La marcada dona la imatge en directe; marcar-ne una altra apaga la primera.
+1050|Activa aquesta càmera: dona la imatge en directe
+1051|Servidor web: actiu, port {}
+1052|Servidor web: apagat
+1053|Servidor web: error

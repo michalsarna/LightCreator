@@ -819,6 +819,26 @@ impl App {
                             dy = (dy / self.grid).round() * self.grid;
                         }
                         let orig = orig.clone();
+                        if self.snap_objects {
+                            // Where the selection would be, against the other objects: lines within a few pixels join.
+                            let ids: Vec<u64> = orig.iter().map(|(id, _)| *id).collect();
+                            if self.snap_targets.is_none() {
+                                let others = self.doc.shapes.iter().filter(|s| !ids.contains(&s.id) && self.doc.layers[s.layer].visible).filter_map(|s| s.bounds()).collect();
+                                self.snap_targets = Some(others);
+                            }
+                            for (id, xf) in &orig {
+                                if let Some(s) = self.doc.unlocked_mut(*id) {
+                                    s.xf = *xf;
+                                }
+                            }
+                            if let Some(b) = self.doc.bounds_of(&ids) {
+                                let moved = Rect { min: Pt::new(b.min.x + dx, b.min.y + dy), max: Pt::new(b.max.x + dx, b.max.y + dy) };
+                                let s = lc_core::snap::snap_to_objects(moved, self.snap_targets.as_deref().unwrap_or(&[]), 8.0 / self.view.zoom as f64);
+                                dx += s.dx;
+                                dy += s.dy;
+                                self.snap_guides = (s.guide_x, s.guide_y);
+                            }
+                        }
                         for (id, xf) in orig {
                             if let Some(s) = self.doc.unlocked_mut(id) {
                                 s.xf = xf.then(Xf::translate(dx, dy));
@@ -958,7 +978,21 @@ impl App {
                 }
             }
         }
+        // Guide lines of the object snapping, through the whole work area.
+        if self.drag.is_some() {
+            let st = Stroke::new(1.0, Color32::from_rgb(0xe0, 0x30, 0xc0));
+            if let Some(x) = self.snap_guides.0 {
+                let sx = self.w2s(o, Pt::new(x, 0.0)).x;
+                painter.line_segment([Pos2::new(sx, bed.min.y), Pos2::new(sx, bed.max.y)], st);
+            }
+            if let Some(y) = self.snap_guides.1 {
+                let sy = self.w2s(o, Pt::new(0.0, y)).y;
+                painter.line_segment([Pos2::new(bed.min.x, sy), Pos2::new(bed.max.x, sy)], st);
+            }
+        }
         if resp.drag_stopped_by(PointerButton::Primary) {
+            self.snap_guides = (None, None);
+            self.snap_targets = None;
             if let (Some(d), Some(m)) = (self.drag.take(), hpos) {
                 let w = self.s2w(o, m);
                 match d {

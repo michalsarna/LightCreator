@@ -16,6 +16,7 @@ pub enum Act {
     Save,
     SaveAs,
     ImportSvg,
+    Print,
     ExportSvg,
     ExportGcode,
     ExportCam,
@@ -67,7 +68,6 @@ pub enum Act {
     ToggleAutoFit,
     DeviceSettings,
     SwitchDevice,
-    MaterialLibrary,
     CameraOverlay,
     GridOptions,
     ProgramOptions,
@@ -79,6 +79,7 @@ pub enum Act {
     ShareSer2net,
     ToggleOverlay,
     ToggleZones,
+    ToggleSnapObjects,
     Frame,
     StartJob,
     About,
@@ -124,6 +125,7 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
                 Item(Act::OnlineClipart, "Online clipart…", None),
             ],
         ),
+        Item(Act::Print, "Print…", key("CmdOrCtrl+P", "Ctrl+P")),
         Sub(
             "Export",
             vec![
@@ -144,7 +146,6 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
     }
     let mut laser = vec![
         Item(Act::SwitchDevice, "Switch device…", None),
-        Item(Act::MaterialLibrary, "Material library…", None),
         Item(Act::DeviceSettings, "Device settings…", None),
         Item(Act::Frame, "Frame", None),
         Item(Act::StartJob, "Start job", None),
@@ -216,6 +217,7 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
             vec![
                 Item(Act::ToggleGrid, "Grid", None),
                 Item(Act::ToggleSnap, "Snap to grid", None),
+                Item(Act::ToggleSnapObjects, "Snap to objects", None),
                 Item(Act::TogglePreview, "Toolpath preview", None),
                 Item(Act::PreviewWindow, "Preview window…", None),
                 Item(Act::ZoomIn, "Zoom in", key("CmdOrCtrl+=", "Ctrl++")),

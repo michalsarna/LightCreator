@@ -29,6 +29,8 @@ Live text from system fonts (family search, bold, italic, size, letter and line 
 ## Selection
 The square handles around a selection resize it. **Click a handle** (without dragging) and they become round corner handles that rotate the selection about its middle (Shift snaps to 15°) and diamond edge handles that slant it along that edge; click a handle again to go back to resizing.
 
+**Snap to objects** (the target icon next to the magnet in the control bar, and View > Snap to objects; saved with the settings): while you move a selection, its left, middle and right line (top, middle, bottom) jump to the same line of a nearby visible object when it comes within about 8 screen pixels, and a magenta guide line shows where it joined. It works independently of *Snap to grid*; objects on hidden layers are not snap targets.
+
 Drag left → right: only objects wholly inside. Right → left: everything touched. Shift+click adds. Escape twice returns to the select tool. The right-click menu holds the common commands.
 
 ## View and navigation

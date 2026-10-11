@@ -8,7 +8,7 @@ Wsparcie finansowe nie jest wymagane. Pomagasz też, kiedy:
 * zgłaszasz błędy i pomysły w [Issues](https://github.com/michalsarna/LightCreator/issues),
 * testujesz program na prawdziwych maszynach (GRBL, Marlin, ser2net, kamera) i opisujesz wyniki,
 * poprawiasz tłumaczenia,
-* dodajesz własne cliparty i materiały,
+* dodajesz własne cliparty,
 * dajesz projektowi gwiazdkę i mówisz o nim innym.
 
 Dziękuję!

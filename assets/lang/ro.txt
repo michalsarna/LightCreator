@@ -976,3 +976,79 @@
 975|Puncte din colțurile curente
 976|Puncte de referință
 977|Înlocuiește punctele cu cele patru colțuri ale imaginii și locul unde sunt acum.
+978|Aliniere la obiecte
+979|Pagina nu a putut fi creată: {}
+980|Vizualizatorul nu a putut fi deschis: {}
+981|Imprimantă implicită
+982|Margine
+983|Doar obiectele de pe straturile vizibile
+984|Doar obiectele, cât de mari permite pagina
+985|Deschide PDF-ul
+986|Deschis în vizualizatorul PDF.
+987|Deschide pagina în vizualizatorul PDF, care o poate tipări cu mai multe opțiuni
+988|Tipărește
+989|Tipărește…
+990|Imprimantă
+991|Tipărește designul pe o imprimantă de hârtie, pentru a verifica amplasarea sau ca șablon.
+992|Salvează ca PDF…
+993|Trimis la imprimantă. {}
+994|Imprimanta nu l-a primit: {}
+995|Toată zona de lucru, la scară
+996|Nu e nimic de tipărit.
+997|{} obiect(e) ies din zona de lucru; pe hârtie sunt tăiate la margine.
+998|{} obiect(e) ies din zona de lucru; sunt tipărite oricum.
+999|Test cameră: {}
+1000|Deschide imaginea acestei camere cu setările de aici, fără salvare
+1001|Testează
+1002|Alternează tăierea și sărirea de-a lungul conturului.
+1003|Lungimea tăierii
+1004|Distanță egală
+1005|Decalaj kerf
+1006|Lasă porțiuni scurte din contur netăiate (sau tăiate slab) ca piesa să rămână pe loc. Sunt plasate automat.
+1007|Limitează numărul maxim de punți
+1008|Punți min.
+1009|Mută conturul spre exterior (spre interior, dacă e negativ) pentru a compensa lățimea tăieturii. 0 = oprit.
+1010|Procent din puterea stratului peste o punte; 0 = laserul este oprit.
+1011|Perforare
+1012|Mod perforare
+1013|Amplasare
+1014|Sari peste formele interioare
+1015|Lungimea săriturii
+1016|Distanță
+1017|Puterea de tăiere a punții
+1018|Dimensiunea punții
+1019|Punți
+1020|Punți pe formă
+1021|Formele vectoriale de pe un strat în modul Imagine nu sunt arse.
+1022|Timp de lucru
+1023|Descriere
+1024|Descrie proiectul: ce este, setările care au funcționat, note pentru data viitoare.
+1025|O pagină web cu starea mașinii, proiectul și camera, și un API pentru alte programe. Nu are parolă.
+1026|Oricine din rețea poate vedea mașina și o poate opri sau muta. Nu există parolă sau criptare: folosiți doar într-o rețea de încredere.
+1027|Ascultă pe {}
+1028|Accesibil de pe alte calculatoare din rețea
+1029|Pornește serverul web și API-ul
+1030|Serverul nu a putut porni: {}
+1031|Server web și API
+1032|Adaugă dispozitiv
+1033|Mai multe setări…
+1034|Deschide fereastra completă a dispozitivului cu ce s-a introdus aici
+1035|Punct de plecare
+1036|Material implicit
+1037|Șterge acest material
+1038|Material: {}
+1039|Numele noului material
+1040|Material nou: o copie a acestuia
+1041|Nume nou
+1042|Redenumește acest material
+1043|proiect
+1044|Acril 3 mm
+1045|Piele 2 mm
+1046|Material nou, gol
+1047|Placaj 3 mm
+1048|Adaugă un material, de ex. placaj de mesteacăn 3 mm (opțional)
+1049|Camere care supraveghează mașina. Cea bifată dă imaginea live; bifarea alteia o oprește pe prima.
+1050|Pornește această cameră: dă imaginea live
+1051|Server web: pornit, port {}
+1052|Server web: oprit
+1053|Server web: eroare

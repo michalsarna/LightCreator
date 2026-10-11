@@ -96,6 +96,7 @@ impl App {
         let Some(outcome) = &self.update.window else { return };
         let mut open = true;
         let mut go = false;
+        let mut shut = false;
         crate::window_ui::popup(ctx, "update_window", &tr("Updates"), [360.0, 200.0], &mut open, |ui| {
             match outcome {
                 Outcome::Newer(tag) => {
@@ -108,6 +109,9 @@ impl App {
                 Outcome::UpToDate(tag) => {
                     ui.label(RichText::new(tr("You have the newest version.")).strong());
                     ui.label(RichText::new(trf("Newest release: {}", &[tag])).color(theme::text_dim()));
+                    ui.add_space(8.0);
+                    let close = egui::Button::new(RichText::new(tr("Close")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2f, 0x6f, 0xd0));
+                    shut = ui.add_sized([ui.available_width(), 30.0], close).clicked();
                 }
                 Outcome::Failed(e) => {
                     ui.label(RichText::new(tr("Could not check for updates.")).strong());
@@ -115,6 +119,9 @@ impl App {
                 }
             }
         });
+        if shut {
+            open = false;
+        }
         if go {
             ctx.open_url(egui::OpenUrl::new_tab(RELEASES_URL));
             open = false;

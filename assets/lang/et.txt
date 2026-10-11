@@ -976,3 +976,79 @@
 975|Punktid praegustest nurkadest
 976|Võrdluspunktid
 977|Asendab punktid pildi nelja nurga ja nende praeguste kohtadega.
+978|Joonda objektidele
+979|Lehe loomine ebaõnnestus: {}
+980|Vaaturi avamine ebaõnnestus: {}
+981|Vaikeprinter
+982|Veeris
+983|Ainult nähtavate kihtide objektid
+984|Ainult objektid, nii suured kui leht lubab
+985|Ava PDF
+986|Avatud PDF-vaaturis.
+987|Avab lehe PDF-vaaturis, mis saab selle printida rohkemate valikutega
+988|Prindi
+989|Prindi…
+990|Printer
+991|Prindib kujunduse paberprinteris, paigutuse kontrollimiseks või mallina.
+992|Salvesta PDF-ina…
+993|Saadetud printerisse. {}
+994|Printer ei võtnud seda vastu: {}
+995|Kogu tööala mõõtkavas
+996|Printida pole midagi.
+997|{} objekti ulatub tööalast välja; paberil lõigatakse need serva kohalt ära.
+998|{} objekti ulatub tööalast välja; need prinditakse siiski.
+999|Kaamera test: {}
+1000|Avab selle kaamera pildi siin määratud seadetega, salvestamata
+1001|Testi
+1002|Vaheldab lõikamist ja vahelejätmist piki kontuuri.
+1003|Lõike pikkus
+1004|Ühtlane vahe
+1005|Lõikelaiuse nihe (kerf)
+1006|Jätab kontuuri lühikesed lõigud lõikamata (või nõrgalt lõigatuks), et detail püsiks kohal. Need paigutatakse automaatselt.
+1007|Piira sildade maksimaalset arvu
+1008|Silde min.
+1009|Nihutab kontuuri väljapoole (sissepoole, kui negatiivne), et korvata lõike laiust. 0 = väljas.
+1010|Protsent kihi võimsusest sillal; 0 = laser on väljas.
+1011|Perforatsioon
+1012|Perforatsiooni režiim
+1013|Paigutus
+1014|Jäta sisemised kujundid vahele
+1015|Vahelejätu pikkus
+1016|Vahe
+1017|Silla lõikevõimsus
+1018|Silla suurus
+1019|Sillad
+1020|Sildu kujundi kohta
+1021|Pildirežiimis kihi vektorkujundeid ei põletata.
+1022|Tööaeg
+1023|Kirjeldus
+1024|Kirjelda projekti: mis see on, millised seaded töötasid, märkmed järgmiseks korraks.
+1025|Veebileht masina oleku, projekti ja kaameraga ning API teistele programmidele. Parooli pole.
+1026|Igaüks võrgus võib masinat näha ning seda peatada või liigutada. Parooli ega krüpteerimist pole: kasuta ainult usaldusväärses võrgus.
+1027|Kuulab aadressil {}
+1028|Ligipääsetav teistest võrgu arvutitest
+1029|Lülita sisse veebiserver ja API
+1030|Serverit ei õnnestunud käivitada: {}
+1031|Veebiserver ja API
+1032|Lisa seade
+1033|Veel seadeid…
+1034|Avab kogu seadme akna siin sisestatuga
+1035|Lähtepunkt
+1036|Vaikematerjal
+1037|Kustuta see materjal
+1038|Materjal: {}
+1039|Uue materjali nimi
+1040|Uus materjal: selle koopia
+1041|Uus nimi
+1042|Nimeta see materjal ümber
+1043|projekt
+1044|Akrüül 3 mm
+1045|Nahk 2 mm
+1046|Uus tühi materjal
+1047|Vineer 3 mm
+1048|Lisa materjal, nt kasevineer 3 mm (valikuline)
+1049|Masinat jälgivad kaamerad. Märgitud kaamera annab reaalajapildi; teise märkimine lülitab esimese välja.
+1050|Lülita see kaamera sisse: see annab reaalajapildi
+1051|Veebiserver: sees, port {}
+1052|Veebiserver: väljas
+1053|Veebiserver: viga

@@ -30,7 +30,7 @@ fn id(a: Act) -> String {
 }
 
 fn is_check(a: Act) -> bool {
-    matches!(a, Act::ToggleGrid | Act::ToggleSnap | Act::TogglePreview | Act::SetLang(_) | Act::SetScheme(_))
+    matches!(a, Act::ToggleGrid | Act::ToggleSnap | Act::ToggleSnapObjects | Act::TogglePreview | Act::SetLang(_) | Act::SetScheme(_))
 }
 
 /// Accelerators the system menu owns. Editing shortcuts (copy, paste, delete...) stay with egui so text

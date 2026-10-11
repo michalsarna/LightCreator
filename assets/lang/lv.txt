@@ -976,3 +976,79 @@
 975|Punkti no pašreizējiem stūriem
 976|Atsauces punkti
 977|Aizstāj punktus ar attēla četriem stūriem un to pašreizējo vietu.
+978|Pieķerties objektiem
+979|Neizdevās izveidot lapu: {}
+980|Neizdevās atvērt skatītāju: {}
+981|Noklusējuma printeris
+982|Mala
+983|Tikai redzamo slāņu objekti
+984|Tikai objekti, cik lieli lapa atļauj
+985|Atvērt PDF
+986|Atvērts PDF skatītājā.
+987|Atver lapu PDF skatītājā, kas to var izdrukāt ar vairāk iespējām
+988|Drukāt
+989|Drukāt…
+990|Printeris
+991|Izdrukā dizainu uz papīra printera, lai pārbaudītu izvietojumu vai kā veidni.
+992|Saglabāt kā PDF…
+993|Nosūtīts uz printeri. {}
+994|Printeris to nepieņēma: {}
+995|Visa darba zona mērogā
+996|Nav ko drukāt.
+997|{} objekti iziet ārpus darba zonas; uz papīra tie tiek nogriezti pie malas.
+998|{} objekti iziet ārpus darba zonas; tie tomēr tiek izdrukāti.
+999|Kameras tests: {}
+1000|Atver šīs kameras attēlu ar šeit norādītajiem iestatījumiem, nesaglabājot
+1001|Pārbaudīt
+1002|Mijas griešana un izlaišana gar kontūru.
+1003|Griezuma garums
+1004|Vienmērīgi atstarpes
+1005|Griezuma platuma nobīde (kerf)
+1006|Atstāj īsus kontūra posmus negrieztus (vai vāji grieztus), lai detaļa paliktu vietā. Tie tiek izvietoti automātiski.
+1007|Ierobežot maksimālo tiltiņu skaitu
+1008|Min. tiltiņu
+1009|Pārbīda kontūru uz āru (uz iekšu, ja negatīvs), lai kompensētu griezuma platumu. 0 = izslēgts.
+1010|Slāņa jaudas procents pie tiltiņa; 0 = lāzers izslēgts.
+1011|Perforācija
+1012|Perforācijas režīms
+1013|Izvietojums
+1014|Izlaist iekšējās formas
+1015|Izlaišanas garums
+1016|Atstarpe
+1017|Tiltiņa griešanas jauda
+1018|Tiltiņa izmērs
+1019|Tiltiņi
+1020|Tiltiņi uz formu
+1021|Vektoru formas slānī Attēla režīmā netiek dedzinātas.
+1022|Darba laiks
+1023|Apraksts
+1024|Aprakstiet projektu: kas tas ir, kuri iestatījumi darbojās, piezīmes nākamajam reizei.
+1025|Tīmekļa lapa ar iekārtas stāvokli, projektu un kameru, kā arī API citām programmām. Tai nav paroles.
+1026|Ikviens tīklā var redzēt iekārtu un to apturēt vai pārvietot. Nav paroles vai šifrēšanas: lietojiet tikai uzticamā tīklā.
+1027|Klausās uz {}
+1028|Pieejams no citiem tīkla datoriem
+1029|Ieslēgt tīmekļa serveri un API
+1030|Serveri neizdevās palaist: {}
+1031|Tīmekļa serveris un API
+1032|Pievienot ierīci
+1033|Vairāk iestatījumu…
+1034|Atver visu ierīces logu ar šeit ievadīto
+1035|Sākumpunkts
+1036|Noklusējuma materiāls
+1037|Dzēst šo materiālu
+1038|Materiāls: {}
+1039|Jaunā materiāla nosaukums
+1040|Jauns materiāls: šī kopija
+1041|Jauns nosaukums
+1042|Pārdēvēt šo materiālu
+1043|projekts
+1044|Akrils 3 mm
+1045|Āda 2 mm
+1046|Jauns, tukšs materiāls
+1047|Saplāksnis 3 mm
+1048|Pievienojiet materiālu, piem., bērza saplāksni 3 mm (neobligāti)
+1049|Kameras, kas vēro iekārtu. Atzīmētā dod tiešraides attēlu; atzīmējot citu, pirmā tiek izslēgta.
+1050|Ieslēgt šo kameru: tā dod tiešraides attēlu
+1051|Tīmekļa serveris: ieslēgts, ports {}
+1052|Tīmekļa serveris: izslēgts
+1053|Tīmekļa serveris: kļūda

@@ -57,7 +57,7 @@ impl Tool {
 }
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.1.2";
+pub const APP_VERSION: &str = "v0.1.3";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
@@ -67,7 +67,8 @@ pub enum SideTab {
     Device,
     Console,
     Clipart,
-    Materials,
+    /// A free text about the project.
+    Description,
     /// The camera picture; only listed while the stream is shown as a tab.
     Camera,
 }
@@ -79,7 +80,7 @@ impl SideTab {
         (SideTab::Device, "Device"),
         (SideTab::Console, "Console"),
         (SideTab::Clipart, "Clipart"),
-        (SideTab::Materials, "Materials"),
+        (SideTab::Description, "Description"),
     ];
 
     pub fn id(self) -> &'static str {
@@ -89,7 +90,7 @@ impl SideTab {
             SideTab::Device => "device",
             SideTab::Console => "console",
             SideTab::Clipart => "clipart",
-            SideTab::Materials => "materials",
+            SideTab::Description => "description",
             SideTab::Camera => "camera",
         }
     }
@@ -150,6 +151,15 @@ pub struct App {
     pub saved_revision: u64,
     pub autosaved_revision: u64,
     pub autosave_on: bool,
+    /// The web server and API (off by default): switched on, port, and reachable from the network.
+    /// The material header of the Layers tab: adding or renaming.
+    pub mat_edit: Option<crate::materials_ui::MatEdit>,
+    /// The revision the selected material was last compared with the layers at.
+    pub mat_rev: u64,
+    pub api_on: bool,
+    pub api_port: u16,
+    pub api_lan: bool,
+    pub api: crate::api_ui::ApiState,
     pub autosave_secs: u32,
     pub last_autosave: std::time::Instant,
     /// A short message (text, until when) such as "file saved".
@@ -174,6 +184,11 @@ pub struct App {
     /// Draw the no-go zones on the work area (kept between sessions).
     pub zones_visible: bool,
     pub snap: bool,
+    /// Snap a moved selection to the edges and centres of the other objects (guides are drawn while it holds).
+    pub snap_objects: bool,
+    /// Boxes of the objects a drag can snap to (taken when the drag starts) and the guide lines now shown.
+    pub snap_targets: Option<Vec<Rect>>,
+    pub snap_guides: (Option<f64>, Option<f64>),
     pub grid: f64,
     pub preview_on: bool,
     pub preview: Option<(u64, gcode::Job)>,
@@ -200,7 +215,6 @@ pub struct App {
     pub focus_text: bool,
     pub image_tex: std::collections::HashMap<(u64, bool), egui::TextureHandle>,
     pub show_offset: bool,
-    pub show_materials: bool,
     pub show_prefs: bool,
     /// The node-editing bar is shown while the canvas, the bar or the tool bars were the last thing clicked.
     pub node_bar_active: bool,
@@ -221,6 +235,8 @@ pub struct App {
     pub layer_dlg: Option<usize>,
     pub show_stream: bool,
     pub ser2net: Option<crate::ser2net_ui::Ser2NetDlg>,
+    pub print: Option<crate::print_ui::PrintDlg>,
+    pub cam_test: Option<crate::cam_test_ui::CamTest>,
     pub stream_mode: crate::stream_ui::StreamMode,
     pub tab_seen: bool,
     /// Rotation the current stream texture was made with.
@@ -253,42 +269,10 @@ pub struct App {
     pub cam_index: u32,
     pub cam_error: String,
     pub cam_worker: Option<crate::camera::Worker>,
-    /// Materials added to the program by the user, available for every device (on top of the built-in ones).
-    pub global_materials: Vec<lc_core::materials::Material>,
-    /// Labels the user added for the layers of materials (besides Cut, Engrave and Score).
-    pub layer_labels: Vec<String>,
-    pub show_labels: bool,
-    /// Height of the list in the Materials tab; the border to the editor can be dragged.
-    pub mat_list_h: f32,
-    pub label_new: String,
-    pub mat_dev_filter: String,
-    pub mat_dev_sel: Option<usize>,
-    pub mat_add_layer: usize,
-    pub mat_global_name: String,
-    /// The library window was opened to add materials to the device (from the Materials tab).
-    pub mat_add_mode: bool,
-    pub mat_merge: Option<crate::materials_ui::MergeDlg>,
-    /// More windows of differences, shown one after the other.
-    pub mat_merge_next: Vec<crate::materials_ui::MergeDlg>,
-    /// Category shown in the Materials tab (`None`: all).
-    pub mat_dev_cat: Option<String>,
-    /// Category shown in the Material library window (`None`: all).
-    pub mat_cat: Option<String>,
-    /// Category chosen for a material that is being saved (`None`: the one its name suggests).
-    pub mat_save_cat: Option<String>,
-    pub mat_new_cat: String,
-    /// The window that exports or imports a library file.
-    pub lib_dlg: Option<crate::materials_ui::LibDlg>,
     /// The order of the tabs of the side panel.
     pub tab_order: Vec<(SideTab, &'static str)>,
     /// Width of the side panel as drawn in the last frame.
     pub side_w: f32,
-    pub mat_filter: String,
-    pub mat_laser: Option<lc_core::LaserKind>,
-    pub mat_sel: Option<String>,
-    /// The window that edits a material of the main library.
-    pub mat_edit: Option<crate::materials_ui::MatEdit>,
-    pub mat_name: String,
     pub offset_dist: f64,
     pub offset_keep: bool,
     pub lang: Lang,
@@ -311,20 +295,24 @@ pub struct App {
     /// The Firmware ($$) page.
     pub fw: crate::firmware_ui::FwUi,
     /// The window with the templates for a new device is open.
-    pub show_templates: bool,
     /// The first-run setup is open at this step.
-    pub wizard: Option<usize>,
-    /// The wizard read the controller.
-    pub wizard_read: bool,
-    pub wizard_read_done: bool,
+    pub add_dev: Option<usize>,
+    /// The name of a material to add to the device being added (optional).
+    pub add_dev_material: String,
+    /// The add-device window read the controller.
+    pub add_dev_read: bool,
+    pub add_dev_read_done: bool,
     /// The user left the first-run setup: do not start it again this session.
-    pub wizard_skipped: bool,
+    pub add_dev_skipped: bool,
     /// The focus beam is on.
     pub focus_on: bool,
     /// The warning about macros has been answered in this session.
     pub macros_ok: bool,
     /// When the running job started (for the work time of the machine).
     pub job_started: Option<std::time::Instant>,
+    /// The estimated time of the job that was sent last, and how long the last finished one really ran (seconds).
+    pub job_est: f64,
+    pub job_last_secs: f64,
     /// The counters (by index) that have been announced as due in this session.
     pub maintenance_notified: std::collections::HashSet<usize>,
     /// For this session only: aim with the pointer dot (the frame and the dry run move back by its offset).
@@ -359,9 +347,6 @@ impl App {
         let scheme = saved("scheme").and_then(|c| Scheme::from_id(&c)).unwrap_or(Scheme::LightDark);
         let profiles: Vec<lc_core::Device> = saved("profiles").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let active = saved("active_profile").and_then(|v| v.parse::<usize>().ok()).filter(|i| *i < profiles.len()).unwrap_or(0);
-        let global_materials = crate::materials_ui::load_global(&|k| saved(k));
-        let mat_list_h = saved("mat_list_h").and_then(|v| v.parse::<f32>().ok()).filter(|h| (60.0..=700.0).contains(h)).unwrap_or(260.0);
-        let layer_labels: Vec<String> = saved("layer_labels").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let grid_prefs: crate::prefs::GridPrefs = saved("grid_prefs").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let show_grid = saved("grid_main_on").map(|v| v == "1").unwrap_or(true);
         let grid = saved("grid_main_mm").and_then(|v| v.parse::<f64>().ok()).filter(|g| *g >= 0.1).unwrap_or(10.0);
@@ -389,6 +374,12 @@ impl App {
             saved_revision: 0,
             autosaved_revision: 0,
             autosave_on: saved("autosave_on").map(|v| v != "0").unwrap_or(true),
+            mat_edit: None,
+            mat_rev: u64::MAX,
+            api_on: saved("api_on").map(|v| v == "1").unwrap_or(false),
+            api_port: saved("api_port").and_then(|v| v.parse::<u16>().ok()).filter(|p| *p >= 1024).unwrap_or(crate::api_ui::DEFAULT_PORT),
+            api_lan: saved("api_lan").map(|v| v == "1").unwrap_or(false),
+            api: Default::default(),
             autosave_secs: saved("autosave_secs").and_then(|v| v.parse().ok()).filter(|v| (10..=3600).contains(v)).unwrap_or(crate::session_ui::DEFAULT_AUTOSAVE_SECS),
             last_autosave: std::time::Instant::now(),
             toast: None,
@@ -405,6 +396,9 @@ impl App {
             show_grid,
             zones_visible: saved("zones_visible").map(|v| v != "0").unwrap_or(true),
             snap: false,
+            snap_objects: saved("snap_objects").map(|v| v == "1").unwrap_or(false),
+            snap_targets: None,
+            snap_guides: (None, None),
             grid,
             preview_on: false,
             preview: None,
@@ -430,7 +424,6 @@ impl App {
             focus_text: false,
             image_tex: Default::default(),
             show_offset: false,
-            show_materials: false,
             show_prefs: false,
             node_bar_active: true,
             space_prev: None,
@@ -446,6 +439,8 @@ impl App {
             layer_dlg: None,
             show_stream: false,
             ser2net: None,
+            print: None,
+            cam_test: None,
             stream_mode: crate::stream_ui::StreamMode::Floating,
             tab_seen: false,
             stream_rot: 0,
@@ -474,30 +469,8 @@ impl App {
             cam_index: 0,
             cam_error: String::new(),
             cam_worker: None,
-            global_materials,
-            layer_labels,
-            show_labels: false,
-            mat_list_h,
-            label_new: String::new(),
-            mat_dev_filter: String::new(),
-            mat_dev_sel: None,
-            mat_add_layer: 0,
-            mat_global_name: String::new(),
-            mat_add_mode: false,
-            mat_merge: None,
-            mat_merge_next: vec![],
-            mat_dev_cat: None,
-            mat_cat: None,
-            mat_save_cat: None,
-            mat_new_cat: String::new(),
-            lib_dlg: None,
             side_w: 0.0,
             tab_order: SideTab::arranged(&saved("tab_order").unwrap_or_default()),
-            mat_filter: String::new(),
-            mat_laser: None,
-            mat_sel: None,
-            mat_edit: None,
-            mat_name: String::new(),
             offset_dist: -1.0,
             offset_keep: true,
             lang,
@@ -513,14 +486,16 @@ impl App {
             connect_actions_at: None,
             single_axis_homing: false,
             fw: Default::default(),
-            show_templates: false,
-            wizard: None,
-            wizard_read: false,
-            wizard_read_done: false,
-            wizard_skipped: false,
+            add_dev: None,
+            add_dev_material: String::new(),
+            add_dev_read: false,
+            add_dev_read_done: false,
+            add_dev_skipped: false,
             focus_on: false,
             macros_ok: false,
             job_started: None,
+            job_est: 0.0,
+            job_last_secs: 0.0,
             maintenance_notified: Default::default(),
             pointer_align: false,
             connected: false,
@@ -538,6 +513,7 @@ impl App {
     // ---------- document editing helpers ----------
     pub fn touch(&mut self) {
         self.revision += 1;
+        self.doc.normalize_image_layers();
     }
     pub fn checkpoint(&mut self) {
         self.undo.push(self.doc.clone());
@@ -738,18 +714,12 @@ impl App {
     }
 
     // ---------- file operations ----------
-    /// Give every layer the default speed that the device profile keeps for it.
-    pub fn apply_layer_speeds(&mut self) {
-        for (i, l) in self.doc.layers.iter_mut().enumerate() {
-            l.speed = self.doc.device.layer_speed_mm_s(i);
-        }
-    }
-
     pub fn new_doc(&mut self) {
         let device = self.doc.device.clone();
         self.doc = Document::default();
         self.doc.device = device;
-        self.apply_layer_speeds();
+        self.doc.select_material(self.doc.device.active_material);
+        self.sync_profile();
         self.undo.clear();
         self.redo.clear();
         self.sel.clear();
@@ -780,17 +750,12 @@ impl App {
         }
         match std::fs::read_to_string(&p).map_err(|e| e.to_string()).and_then(|s| Document::from_json(&s)) {
             Ok(d) => {
-                // The library of the device the file was saved with is merged into the library of this device.
-                let mut incoming = d.device.materials.clone();
-                if let Some(u) = &d.material {
-                    if !incoming.iter().any(|m| m.same_key(u)) {
-                        incoming.push(u.clone());
-                    }
-                }
+                let incoming = d.device.material().clone();
                 self.doc = d;
-                let have_profile = self.profiles.get(self.active).is_some();
                 if let Some(p) = self.profiles.get(self.active) {
                     self.doc.device = p.clone();
+                    // The material the project was made with joins the library of the device.
+                    self.adopt_project_material(incoming);
                 }
                 self.undo.clear();
                 self.redo.clear();
@@ -801,10 +766,6 @@ impl App {
                 self.touch();
                 self.mark_saved();
                 self.view.need_fit = true;
-                if have_profile {
-                    let name = self.path.as_ref().and_then(|p| p.file_name()).map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
-                    self.import_incoming_materials(incoming, &name);
-                }
             }
             Err(e) => self.status = trf("Open failed: {}", &[&e]),
         }
@@ -928,6 +889,8 @@ impl App {
         }
         let lines = laser::clean_gcode(&job.gcode);
         self.push_console(ConsoleLine::info(trf("Starting job: {} lines, ~{}", &[&lines.len(), &fmt_time(job.est_seconds)])));
+        self.job_est = job.est_seconds;
+        self.job_last_secs = 0.0;
         self.link.send(Cmd::Job(lines));
     }
     /// Start can be pressed: a streaming controller needs a connected laser, the file-based ones (Ruida, Trocen)
@@ -1013,6 +976,7 @@ impl App {
         let stopped = self.progress.1 == 0 || !self.connected;
         if finished || stopped {
             self.job_started = None;
+            self.job_last_secs = t0.elapsed().as_secs_f64();
             self.maintenance_add(t0.elapsed().as_secs_f64());
         }
     }
@@ -1200,6 +1164,7 @@ impl App {
         match a {
             Act::ToggleGrid => Some(self.show_grid),
             Act::ToggleSnap => Some(self.snap),
+            Act::ToggleSnapObjects => Some(self.snap_objects),
             Act::TogglePreview => Some(self.preview_on),
             Act::ToggleOverlay => Some(self.overlay.is_some() && self.overlay_visible),
             Act::ToggleZones => Some(self.zones_visible),
@@ -1246,6 +1211,7 @@ impl App {
             Act::Save => self.save(false),
             Act::SaveAs => self.save(true),
             Act::ImportSvg => self.import_svg(),
+            Act::Print => self.open_print(),
             Act::ExportSvg => self.export_svg(),
             Act::ExportGcode => self.export_gcode(),
             Act::ExportCam => self.export_cam(),
@@ -1314,15 +1280,11 @@ impl App {
                     self.show_stream = true;
                 }
             }
-            Act::MaterialLibrary => {
-                self.mat_laser = Some(self.doc.device.laser());
-                self.mat_add_mode = false;
-                self.show_materials = true;
-            }
             Act::GridArray => self.show_array = true,
             Act::ToggleGrid => self.show_grid = !self.show_grid,
             Act::ToggleZones => self.zones_visible = !self.zones_visible,
             Act::ToggleSnap => self.snap = !self.snap,
+            Act::ToggleSnapObjects => self.snap_objects = !self.snap_objects,
             Act::TogglePreview => self.preview_on = !self.preview_on,
             Act::FitBed => {
                 self.view.need_fit = true;
@@ -1468,7 +1430,8 @@ impl App {
             ui.separator();
             let ctx = ui.ctx().clone();
             for (act, icon, tip) in [(Act::New, "file-plus", "New"), (Act::Open, "folder-open", "Open…"), (Act::Save, "save", "Save")] {
-                if icon_button(ui, icon, &tr(tip), true, 28.0) {
+                let ink = if act == Act::Save { crate::window_ui::SAVE_GREEN } else { theme::text() };
+                if icon_button_ink(ui, icon, &tr(tip), true, 28.0, ink) {
                     self.do_act(&ctx, act);
                 }
             }
@@ -1482,6 +1445,9 @@ impl App {
             }
             if toggle_icon(ui, "magnet", &tr("Snap to grid"), self.snap) {
                 self.snap = !self.snap;
+            }
+            if toggle_icon(ui, "target", &tr("Snap to objects"), self.snap_objects) {
+                self.snap_objects = !self.snap_objects;
             }
             ui.separator();
             // Green while the toolpaths are shown, grey otherwise.
@@ -1523,7 +1489,8 @@ impl App {
                     self.frame();
                 }
                 self.focus_button(ui, false);
-                if ui.button(tr("Save G-code")).clicked() {
+                self.home_button(ui);
+                if crate::window_ui::save_button(ui, &tr("Save G-code")).clicked() {
                     self.export_gcode();
                 }
                 let (w, h) = self.sel_bounds().map(|b| (b.width(), b.height())).unwrap_or((0.0, 0.0));
@@ -1533,6 +1500,28 @@ impl App {
                 }
             });
         });
+    }
+
+    /// Homing needs a live link and no running job (framing counts as a job).
+    pub fn can_home(&self) -> bool {
+        self.connected && !self.job_running()
+    }
+
+    /// The Home button of the control bar: the same as the one in the Device tab, off when there is no link or a job runs.
+    pub fn home_button(&mut self, ui: &mut egui::Ui) {
+        let on = self.can_home();
+        let (rect, resp) = ui.allocate_exact_size(egui::vec2(28.0, 24.0), egui::Sense::click());
+        let hovered = resp.hovered() && on;
+        let fill = if hovered { theme::panel_dark() } else { ui.visuals().widgets.inactive.weak_bg_fill };
+        ui.painter().rect_filled(rect, 4.0, fill);
+        ui.painter().rect_stroke(rect, 4.0, egui::Stroke::new(1.0, theme::border()), egui::StrokeKind::Inside);
+        let ink = if on { theme::text() } else { theme::text().gamma_multiply(0.4) };
+        crate::icons::paint(ui, rect.shrink(4.0), "house", ink);
+        let tip = if self.connected { tr("Home") } else { tr("Connect to a laser first (Laser panel)") };
+        if resp.on_hover_text(tip).clicked() && on {
+            let ctrl = self.doc.device.controller;
+            self.run_action(ctrl.home());
+        }
     }
 
     /// Space held down: pan with the hand tool, and go back to the previous tool when it is released.
@@ -1746,8 +1735,11 @@ impl App {
                     let d = if u == lc_core::Units::Mm { 2 } else { 3 };
                     ui.label(format!("X {:.*}  Y {:.*}{}", d, x, d, y, u.suffix()));
                 }
+                let web = if self.api.server.is_some() { (trf("Web server: on, port {}", &[&self.api.server.as_ref().map(|s| s.addr.port()).unwrap_or(0)]), Color32::from_rgb(0x2e, 0xa0, 0x4f)) } else if self.api_on { (tr("Web server: error").to_string(), Color32::from_rgb(0xc0, 0x30, 0x30)) } else { (tr("Web server: off").to_string(), theme::text_dim()) };
+                ui.label(RichText::new(web.0).color(web.1));
+                ui.separator();
                 let color = if self.connected { Color32::from_rgb(0x2e, 0xa0, 0x4f) } else { theme::text_dim() };
-                ui.label(RichText::new(self.machine.0.clone()).color(color));
+                ui.label(RichText::new(trf("Device: {}", &[&self.machine.0])).color(color));
                 let (r, _) = ui.allocate_exact_size(egui::vec2(10.0, 10.0), egui::Sense::hover());
                 ui.painter().circle_filled(r.center(), 4.0, color);
                 if self.progress.1 > 0 && self.progress.0 < self.progress.1 {
@@ -1884,24 +1876,26 @@ impl App {
         self.clip_dialogs(ctx);
         self.online_clipart_window(ctx);
         self.round_window(ctx);
-        self.materials_window(ctx);
         self.check_window(ctx);
         self.fw_window(ctx);
         self.stall_window(ctx);
         self.fw_windows(ctx);
-        self.template_window(ctx);
-        self.wizard_window(ctx);
-        self.material_edit_window(ctx);
-        self.labels_window(ctx);
-        self.merge_dialog(ctx);
-        self.library_dialog(ctx);
+        self.add_device_window(ctx);
         self.overlay_window(ctx);
         self.prefs_window(ctx);
         self.preview_window(ctx);
         self.image_dialogs(ctx);
         self.stream_window(ctx);
         self.ser2net_window(ctx);
+        self.print_window(ctx);
+        self.cam_test_window(ctx);
     }
+}
+
+/// `hh:mm:ss` with two digits for the hours, for the clock under the camera picture.
+pub fn fmt_clock(s: f64) -> String {
+    let s = if s.is_finite() && s > 0.0 { s as u64 } else { 0 };
+    format!("{:02}:{:02}:{:02}", s / 3600, s / 60 % 60, s % 60)
 }
 
 pub fn fmt_time(s: f64) -> String {
@@ -1973,12 +1967,16 @@ pub fn toggle_icon(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool) -> bool {
 
 /// A square icon-only button with a tooltip; greyed out and inert when `on` is false.
 pub fn icon_button(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool, size: f32) -> bool {
+    icon_button_ink(ui, icon, tip, on, size, theme::text())
+}
+
+pub fn icon_button_ink(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool, size: f32, color: Color32) -> bool {
     let sense = if on { egui::Sense::click() } else { egui::Sense::hover() };
     let (rect, resp) = ui.allocate_exact_size(egui::vec2(size, size), sense);
     if on && resp.hovered() {
         ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
     }
-    let ink = if on { theme::text() } else { theme::text().gamma_multiply(0.35) };
+    let ink = if on { color } else { color.gamma_multiply(0.35) };
     crate::icons::paint(ui, rect.shrink(size * 0.2), icon, ink);
     let resp = resp.on_hover_text(tip);
     ui.add_space(2.0);
@@ -1994,6 +1992,9 @@ impl App {
         }
         v.push(("active_profile", self.active.to_string()));
         v.push(("autosave_on", if self.autosave_on { "1" } else { "0" }.into()));
+        v.push(("api_on", if self.api_on { "1" } else { "0" }.into()));
+        v.push(("api_port", self.api_port.to_string()));
+        v.push(("api_lan", if self.api_lan { "1" } else { "0" }.into()));
         v.push(("autosave_secs", self.autosave_secs.to_string()));
         v.push(("check_updates", if self.check_updates { "1" } else { "0" }.into()));
         if let Ok(j) = serde_json::to_string(&self.recent) {
@@ -2003,15 +2004,9 @@ impl App {
             v.push(("grid_prefs", j));
         }
         v.push(("grid_main_on", if self.show_grid { "1" } else { "0" }.into()));
+        v.push(("snap_objects", if self.snap_objects { "1" } else { "0" }.into()));
         v.push(("zones_visible", if self.zones_visible { "1" } else { "0" }.into()));
         v.push(("grid_main_mm", self.grid.to_string()));
-        v.push(("mat_list_h", self.mat_list_h.to_string()));
-        if let Ok(j) = serde_json::to_string(&self.layer_labels) {
-            v.push(("layer_labels", j));
-        }
-        if let Ok(j) = serde_json::to_string(&self.global_materials) {
-            v.push(("global_materials", j));
-        }
         v.push(("tab_order", self.tab_order.iter().map(|(t, _)| t.id()).collect::<Vec<_>>().join(",")));
         v
     }
@@ -2213,7 +2208,51 @@ mod recent_tests {
 }
 
 #[cfg(test)]
+mod snap_objects_tests {
+    use super::*;
+
+    #[test]
+    fn snapping_to_objects_is_a_saved_switch() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.enter_editor(0);
+        a.screen = Screen::Editor;
+        assert_eq!(a.act_checked(Act::ToggleSnapObjects), Some(false));
+        a.do_act(&ctx, Act::ToggleSnapObjects);
+        assert_eq!(a.act_checked(Act::ToggleSnapObjects), Some(true));
+        assert!(a.settings_pairs().iter().any(|(k, v)| *k == "snap_objects" && v == "1"));
+        assert!(a.act_enabled(Act::ToggleSnapObjects));
+    }
+}
+
+#[cfg(test)]
+mod home_button_tests {
+    use super::*;
+
+    #[test]
+    fn home_is_off_without_a_link_and_while_a_job_runs() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.connected = false;
+        assert!(!a.can_home());
+        a.connected = true;
+        assert!(a.can_home());
+        a.progress = (1, 10);
+        assert!(!a.can_home(), "running");
+    }
+}
+
+#[cfg(test)]
 mod version_tests {
+    /// Without eframe's `links` feature `open_url` does nothing at all: the download button of the update window,
+    /// the GitHub menu entry and every hyperlink would silently do nothing (issue #24).
+    #[test]
+    fn links_can_be_opened_in_the_browser() {
+        let toml = include_str!("../Cargo.toml");
+        let eframe = toml.lines().find(|l| l.trim_start().starts_with("eframe")).expect("eframe dependency");
+        assert!(eframe.contains("\"links\""), "{eframe}");
+    }
+
     /// The version shown in About, the Cargo version, the newest VERSIONS.md section and the supported
     /// version in SECURITY.md must all name the same release.
     #[test]
@@ -2271,21 +2310,26 @@ mod layer_speed_tests {
     use super::*;
 
     #[test]
-    fn layer_speeds_follow_the_device_profile() {
+    fn layer_settings_belong_to_the_project_not_to_the_device() {
         let ctx = egui::Context::default();
         let mut a = App::build(&ctx, None, false);
         a.profiles = vec![lc_core::Device::default()];
         a.enter_editor(0);
-        assert!((a.doc.layers[2].speed - 1000.0 / 60.0).abs() < 1e-9);
-        // An edit in the layer panel is stored in the profile.
+        let device_before = a.profiles[0].clone();
+        // An edit in the layer panel changes the project's layer and leaves the device profile alone.
         let before = a.doc.layers.clone();
         a.doc.layers[2].speed = 30.0;
         a.commit_layer_edit(10.0, before);
-        assert_eq!(a.profiles[0].layer_speeds[2], 1800.0);
-        // A new document starts with those speeds.
-        a.new_doc();
         assert_eq!(a.doc.layers[2].speed, 30.0);
-        assert!((a.doc.layers[3].speed - 1000.0 / 60.0).abs() < 1e-9);
+        assert_eq!(a.profiles[0], device_before);
+        assert_eq!(a.doc.device.layer_speeds, device_before.layer_speeds);
+        // A new document starts from the defaults, not from what was typed before.
+        a.new_doc();
+        assert!((a.doc.layers[2].speed - 1000.0 / 60.0).abs() < 1e-9);
+        // The layers travel with the project file.
+        a.doc.layers[2].speed = 12.0;
+        let back = Document::from_json(&a.doc.to_json()).unwrap();
+        assert_eq!(back.layers[2].speed, 12.0);
     }
 }
 

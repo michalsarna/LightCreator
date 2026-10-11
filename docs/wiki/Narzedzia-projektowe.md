@@ -29,6 +29,8 @@ Tekst na żywo z czcionek systemowych (wyszukiwanie rodziny, pogrubienie, kursyw
 ## Zaznaczanie
 Kwadratowe uchwyty wokół zaznaczenia zmieniają rozmiar. **Kliknij uchwyt** (bez przeciągania), a zamienią się w okrągłe uchwyty narożne, które obracają zaznaczenie wokół jego środka (Shift: co 15°), i rombowe uchwyty krawędzi, które pochylają je wzdłuż tej krawędzi; ponowne kliknięcie uchwytu wraca do zmiany rozmiaru.
 
+**Przyciąganie do obiektów** (ikona celu obok magnesu na pasku sterowania oraz Widok > Przyciągaj do obiektów; zapisywane w ustawieniach): podczas przesuwania zaznaczenia jego lewa, środkowa i prawa linia (górna, środkowa, dolna) przeskakują na tę samą linię pobliskiego widocznego obiektu, gdy znajdą się w odległości około 8 pikseli ekranu, a magentowa linia pomocnicza pokazuje, gdzie się złączyły. Działa niezależnie od *Przyciągaj do siatki*; obiekty na ukrytych warstwach nie są celami przyciągania.
+
 Ramka z lewej do prawej: tylko obiekty w całości w środku. Z prawej do lewej: wszystko, czego dotyka. Shift+klik dodaje. Dwukrotne Escape wraca do narzędzia zaznaczania. Menu prawego przycisku zawiera najczęstsze polecenia.
 
 ## Widok i nawigacja

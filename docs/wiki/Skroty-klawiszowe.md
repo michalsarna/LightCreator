@@ -7,6 +7,7 @@
 | Plik | Ctrl+N / O / S | Nowy / otwórz / zapisz |
 | | Ctrl+Shift+S | Zapisz jako |
 | | Ctrl+I | Import SVG |
+| | Ctrl+P | Drukuj |
 | Edycja | Ctrl+Z / Ctrl+Y | Cofnij / ponów |
 | | Ctrl+C / V / D | Kopiuj / wklej / powiel |
 | | Delete | Usuń |

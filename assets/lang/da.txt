@@ -976,3 +976,79 @@
 975|Punkter fra de nuværende hjørner
 976|Referencepunkter
 977|Erstatter punkterne med billedets fire hjørner og deres nuværende placering.
+978|Fastgør til objekter
+979|Siden kunne ikke laves: {}
+980|Fremviseren kunne ikke åbnes: {}
+981|Standardprinter
+982|Margen
+983|Kun objekter på synlige lag
+984|Kun objekterne, så store som siden tillader
+985|Åbn PDF
+986|Åbnet i PDF-fremviseren.
+987|Åbner siden i PDF-fremviseren, som kan printe den med flere valgmuligheder
+988|Udskriv
+989|Udskriv…
+990|Printer
+991|Udskriver designet på en papirprinter, til at kontrollere placeringen eller som skabelon.
+992|Gem som PDF…
+993|Sendt til printeren. {}
+994|Printeren tog den ikke: {}
+995|Hele arbejdsområdet i målestok
+996|Der er intet at udskrive.
+997|{} objekt(er) rager uden for arbejdsområdet; på papiret skæres de af ved kanten.
+998|{} objekt(er) rager uden for arbejdsområdet; de udskrives alligevel.
+999|Kameratest: {}
+1000|Åbner dette kameras billede med indstillingerne her, uden at gemme
+1001|Test
+1002|Skifter mellem at skære og springe over langs konturen.
+1003|Skærelængde
+1004|Jævn afstand
+1005|Snitbredde-forskydning (kerf)
+1006|Lader korte stykker af konturen være uskåret (eller svagt skåret), så emnet bliver på plads. De placeres automatisk.
+1007|Begræns maks. antal broer
+1008|Min. broer
+1009|Flytter konturen udad (indad, hvis negativ) for at udligne snittets bredde. 0 = fra.
+1010|Procent af lagets effekt over en bro; 0 = laseren er slukket.
+1011|Perforering
+1012|Perforeringstilstand
+1013|Placering
+1014|Spring indre former over
+1015|Længde at springe over
+1016|Afstand
+1017|Skæreeffekt på bro
+1018|Brostørrelse
+1019|Broer
+1020|Broer pr. form
+1021|Vektorformer på et lag i billedtilstand brændes ikke.
+1022|Arbejdstid
+1023|Beskrivelse
+1024|Beskriv projektet: hvad det er, indstillinger der virkede, noter til næste gang.
+1025|En webside med maskinens tilstand, projektet og kameraet samt en API til andre programmer. Den har ingen adgangskode.
+1026|Alle på netværket kan se maskinen og stoppe eller flytte den. Der er ingen adgangskode eller kryptering: brug kun på et netværk, du stoler på.
+1027|Lytter på {}
+1028|Tilgængelig fra andre computere på netværket
+1029|Slå webserveren og API'en til
+1030|Serveren kunne ikke starte: {}
+1031|Webserver og API
+1032|Tilføj enhed
+1033|Flere indstillinger…
+1034|Åbner hele enhedsvinduet med det, der er indtastet her
+1035|Udgangspunkt
+1036|Standardmateriale
+1037|Slet dette materiale
+1038|Materiale: {}
+1039|Navn på det nye materiale
+1040|Nyt materiale: en kopi af dette
+1041|Nyt navn
+1042|Omdøb dette materiale
+1043|projekt
+1044|Akryl 3 mm
+1045|Læder 2 mm
+1046|Nyt, tomt materiale
+1047|Krydsfiner 3 mm
+1048|Tilføj et materiale, fx birkekrydsfiner 3 mm (valgfrit)
+1049|Kameraer, der overvåger maskinen. Det afkrydsede giver live-billedet; at afkrydse et andet slår det første fra.
+1050|Tænd dette kamera: det giver live-billedet
+1051|Webserver: tændt, port {}
+1052|Webserver: slukket
+1053|Webserver: fejl

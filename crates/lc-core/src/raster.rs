@@ -84,10 +84,27 @@ fn dither(d: &mut [f32], cols: usize, rows: usize, mode: Dither) {
     }
 }
 
+/// The turn from the frame of the scan lines to the work area: the scan angle in degrees.
+pub fn scan_rotation(angle_deg: f64) -> Xf {
+    if angle_deg.is_finite() && angle_deg != 0.0 {
+        Xf::rotate(angle_deg.clamp(-180.0, 180.0).to_radians())
+    } else {
+        Xf::IDENTITY
+    }
+}
+
 /// Scan rows for an image shape. `layer` supplies interval, powers and the dither mode.
 pub fn rows_for(shape: &Shape, im: &ImageData, layer: &Layer) -> Vec<Row> {
-    let Some(b) = shape.bounds() else { return vec![] };
+    let Some(wb) = shape.bounds() else { return vec![] };
     let Some(inv) = shape.xf.inverse() else { return vec![] };
+    // The scan lines may run at an angle: rows are made in a turned frame, the writer turns the points back.
+    let rot = scan_rotation(layer.angle);
+    let b = if layer.angle == 0.0 || !layer.angle.is_finite() {
+        wb
+    } else {
+        let back = rot.inverse().unwrap_or(Xf::IDENTITY);
+        Rect::from_pts([wb.min, Pt::new(wb.max.x, wb.min.y), wb.max, Pt::new(wb.min.x, wb.max.y)].map(|p| back.apply(p))).unwrap_or(wb)
+    };
     let mut step = layer.interval.max(0.02);
     loop {
         let (c, r) = ((b.width() / step).ceil() as usize, (b.height() / step).ceil() as usize);
@@ -103,7 +120,7 @@ pub fn rows_for(shape: &Shape, im: &ImageData, layer: &Layer) -> Vec<Row> {
         let y = b.min.y + (r as f64 + 0.5) * step;
         for c in 0..cols {
             let x = b.min.x + (c as f64 + 0.5) * step;
-            let l = inv.apply(Pt::new(x, y));
+            let l = inv.apply(rot.apply(Pt::new(x, y)));
             d[r * cols + c] = im.darkness_at(l.x, l.y);
         }
     }

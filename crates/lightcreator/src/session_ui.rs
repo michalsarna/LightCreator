@@ -83,6 +83,8 @@ impl App {
             ctx.request_repaint_after(Duration::from_secs(1));
         }
         self.update_tick(ctx);
+        self.api_tick(ctx);
+        self.material_tick();
         self.toast_ui(ctx);
         self.close_dialog(ctx);
         self.confirm_dialog(ctx);
@@ -98,7 +100,7 @@ impl App {
         }
         ctx.request_repaint_after(left);
         egui::Area::new(egui::Id::new("saved_toast")).order(egui::Order::Tooltip).anchor(egui::Align2::CENTER_BOTTOM, [0.0, -48.0]).show(ctx, |ui| {
-            egui::Frame::popup(ui.style()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f)).show(ui, |ui| {
+            egui::Frame::popup(ui.style()).fill(crate::window_ui::SAVE_GREEN).show(ui, |ui| {
                 ui.horizontal(|ui| {
                     ui.add(crate::icons::slot(Some("check"), Color32::WHITE));
                     ui.label(RichText::new(text.as_str()).color(Color32::WHITE).strong());
@@ -121,7 +123,7 @@ impl App {
             ui.add_space(14.0);
             ui.horizontal(|ui| {
                 let size = egui::vec2((ui.available_width() - 2.0 * ui.spacing().item_spacing.x) / 3.0, 38.0);
-                let save = egui::Button::new(RichText::new(tr("Save")).size(15.0).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f));
+                let save = egui::Button::new(RichText::new(tr("Save")).size(15.0).color(Color32::WHITE).strong()).fill(crate::window_ui::SAVE_GREEN);
                 if ui.add_sized(size, save).clicked() {
                     choice = Some(Close::Save);
                 }
@@ -175,6 +177,8 @@ impl App {
                 ui.label(tr("Updates"));
                 ui.checkbox(&mut self.check_updates, tr("Look for a newer version when the program starts"));
                 ui.end_row();
+                self.api_options_ui(ui);
+                ui.end_row();
             });
         });
         self.show_options = open;
@@ -183,7 +187,6 @@ impl App {
 
 /// What a Yes answer does.
 pub enum ConfirmAct {
-    DeleteAllMaterials,
     EnableLaserMode,
     /// Write `$id=value` to the controller.
     WriteSetting(u32, String),
@@ -208,7 +211,6 @@ impl App {
     /// What a Yes answer does.
     pub fn do_confirmed(&mut self, ctx: &egui::Context, act: ConfirmAct) {
         match act {
-            ConfirmAct::DeleteAllMaterials => self.reset_device_library(),
             ConfirmAct::WriteSetting(id, v) => {
                 self.link.send(crate::laser::Cmd::Line(lc_core::grbl_settings::write_line(id, &v)));
                 self.fw.reread_at = Some(std::time::Instant::now() + std::time::Duration::from_millis(600));

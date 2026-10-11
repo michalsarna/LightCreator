@@ -27,6 +27,7 @@ the projects they maintain. Licences are named for orientation; the exact terms 
 
 * **[serialport](https://github.com/serialport/serialport-rs)** (MPL-2.0): talking to the laser controller.
 * **[ureq](https://github.com/algesten/ureq)** (MIT / Apache-2.0): the camera stream, online clipart and the update check.
+* **[webbrowser](https://github.com/amodm/webbrowser-rs)** (MIT / Apache-2.0): opening links (the download page, GitHub) in the default browser.
 * **[nokhwa](https://github.com/l1npengtul/nokhwa)** (Apache-2.0): optional live camera capture.
 * **[GRBL](https://github.com/gnea/grbl)** and **[Marlin](https://marlinfw.org/)**: the controller firmwares whose G-code
   dialects LightCreator speaks. **[ser2net](https://github.com/cminyard/ser2net)** by Corey Minyard: sharing a serial port

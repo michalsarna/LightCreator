@@ -1,6 +1,9 @@
+mod api_server;
+mod api_ui;
 mod app;
 mod camera;
 mod check_ui;
+mod cam_test_ui;
 mod camera_stream;
 mod clip_net;
 mod clipart_ui;
@@ -17,8 +20,8 @@ mod help_ui;
 mod icons;
 mod image_ui;
 mod laser;
-mod materials_ui;
 mod markdown_ui;
+mod materials_ui;
 mod menu;
 mod nodes;
 #[cfg(target_os = "macos")]
@@ -27,6 +30,7 @@ mod overlay;
 mod panels;
 mod preview_ui;
 mod prefs;
+mod print_ui;
 mod ser2net_ui;
 mod shape_ops;
 mod stream_ui;
@@ -38,7 +42,7 @@ mod update_ui;
 mod backup_ui;
 mod units_ui;
 mod window_ui;
-mod wizard_ui;
+mod add_device_ui;
 
 const ICON_256: &[u8] = include_bytes!("../../../assets/icons/icon-256.png");
 const ICON_512: &[u8] = include_bytes!("../../../assets/icons/icon-512.png");

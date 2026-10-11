@@ -2,6 +2,31 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.1.3
+
+**Devices and materials**
+* Adding a device is one window with the basic settings (name, controller, laser type, units, **speed units**, work area,
+  machine zero, S max, connection) and a first material at the bottom; it opens by itself when there is no device. No
+  ready-made profiles and no step-by-step wizard; *More settings…* opens the whole window.
+* A device keeps a **library of materials** (at least one): each holds the layer settings. The Layers tab has a header
+  to choose, add, rename and delete a material; layers in use are added with default settings, projects bring their
+  material along, and the library is saved with the device. New devices come with a few starter materials.
+* Cameras: the tick before the name switches a camera on (one at a time, new cameras are ticked), the *Active* field is
+  gone; a **Test** button shows the picture before saving; the view mode, zoom and window place are kept per device and
+  a working-time clock sits under the picture.
+
+**Layers and G-code**
+* Per layer: kerf offset, perforation, tabs / bridges and the **Image** mode with a scan angle (all off by default; the
+  G-code of old projects is byte-for-byte the same).
+* Snap to objects with guide lines.
+
+**Program**
+* **Print…** (Ctrl+P) as a one-page PDF to scale; a **Description** tab saved in the project; the **web server and API**
+  (off by default, no password) with a page, status, camera pictures and basic controls.
+* The status bar shows the device and the web server; save buttons are green, import buttons blue, delete buttons are
+  red with a bin; a Home icon and four diagonal jog buttons; the update window has a Close button and its links work
+  (issues #20 to #24).
+
 ## v0.1.2
 
 Version numbers now count each part from 0 to 9 (so the last 0.x release will be v0.9.9, then v1.0.0); this release follows v0.0.11 as v0.1.2.

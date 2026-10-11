@@ -976,3 +976,79 @@
 975|Pointí ó na coirnéil reatha
 976|Pointí tagartha
 977|Cuireann sé ceithre choirnéal an phictiúir agus a n-áit anois in ionad na bpointí.
+978|Teaglaim le réada
+979|Níorbh fhéidir an leathanach a dhéanamh: {}
+980|Níorbh fhéidir an breathnóir a oscailt: {}
+981|Priontáil réamhshocraithe
+982|Imeall
+983|Réada ar chiseal infheicthe amháin
+984|Na réada amháin, chomh mór agus a cheadaíonn an leathanach
+985|Oscail an PDF
+986|Oscailte sa bhreathnóir PDF.
+987|Osclaíonn sé an leathanach sa bhreathnóir PDF, ar féidir leis é a phriontáil le tuilleadh roghanna
+988|Priontáil
+989|Priontáil…
+990|Priontáil
+991|Priontálann sé an dearadh ar phriontáil pháipéir, chun an láithriú a sheiceáil nó mar theimpléad.
+992|Sábháil mar PDF…
+993|Seolta chuig an bpriontáil. {}
+994|Níor ghlac an phriontáil leis: {}
+995|An limistéar oibre ar fad, de réir scála
+996|Níl aon rud le priontáil.
+997|Sroicheann {} réad lasmuigh den limistéar oibre; ar an bpáipéar gearrtar iad ag a imeall.
+998|Sroicheann {} réad lasmuigh den limistéar oibre; priontáiltear iad ar aon nós.
+999|Tástáil ceamara: {}
+1000|Osclaíonn sé pictiúr an cheamara seo leis na socruithe anseo, gan sábháil
+1001|Tástáil
+1002|Malartaíonn sé gearradh agus scipeáil feadh na imlíne.
+1003|Fad an ghearrtha
+1004|Spásáil chothrom
+1005|Fritháireamh kerf
+1006|Fágann sé stráicí gearra den imlíne gan ghearradh (nó gearrtha go lag) ionas go bhfanann an píosa ina áit. Cuirtear go huathoibríoch iad.
+1007|Teorainn le uastábla na dtáibleog
+1008|Táibleoga íosta
+1009|Bogann sé an imlíne amach (isteach, má tá sé diúltach) chun leithead an ghearrtha a chúiteamh. 0 = as.
+1010|Céatadán de chumhacht an chisil thar táibleog; 0 = an léasar as.
+1011|Peirfriú
+1012|Mód peirfriúcháin
+1013|Láithriú
+1014|Scipeáil cruthanna istigh
+1015|Fad na scipeála
+1016|Spásáil
+1017|Cumhacht ghearrtha táibleoige
+1018|Méid táibleoige
+1019|Táibleoga / droichid
+1020|Táibleoga in aghaidh an chruth
+1021|Ní dhóitear cruthanna veicteora ar chiseal sa mhód Íomhá.
+1022|Am oibre
+1023|Cur síos
+1024|Déan cur síos ar an tionscadal: cad é, na socruithe a d'oibrigh, nótaí don chéad uair eile.
+1025|Leathanach gréasáin le staid an mheaisín, an tionscadal agus an ceamara, agus API do chláir eile. Níl focal faire air.
+1026|Is féidir le duine ar bith ar an líonra an meaisín a fheiceáil agus é a stopadh nó a bhogadh. Níl focal faire ná criptiú ann: ná húsáid ach ar líonra iontaofa.
+1027|Ag éisteacht ar {}
+1028|Inrochtana ó ríomhairí eile ar an líonra
+1029|Cuir an freastalaí gréasáin agus an API ar siúl
+1030|Níorbh fhéidir an freastalaí a thosú: {}
+1031|Freastalaí gréasáin agus API
+1032|Cuir gléas leis
+1033|Tuilleadh socruithe…
+1034|Osclaíonn sé fuinneog iomlán an ghléis leis an méid a cuireadh isteach anseo
+1035|Pointe tosaigh
+1036|Ábhar réamhshocraithe
+1037|Scrios an t-ábhar seo
+1038|Ábhar: {}
+1039|Ainm an ábhair nua
+1040|Ábhar nua: cóip den cheann seo
+1041|Ainm nua
+1042|Athainmnigh an t-ábhar seo
+1043|tionscadal
+1044|Aicrileach 3 mm
+1045|Leathar 2 mm
+1046|Ábhar nua folamh
+1047|Plaicearrach 3 mm
+1048|Cuir ábhar leis, m.sh. plaicearrach beithe 3 mm (roghnach)
+1049|Ceamaraí a choimeádann súil ar an meaisín. Tugann an ceann ticeáilte an pictiúr beo; múchann ticeáil ceann eile an chéad cheann.
+1050|Cuir an ceamara seo air: tugann sé an pictiúr beo
+1051|Freastalaí gréasáin: ar siúl, port {}
+1052|Freastalaí gréasáin: múchta
+1053|Freastalaí gréasáin: earráid

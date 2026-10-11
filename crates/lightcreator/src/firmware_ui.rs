@@ -65,10 +65,10 @@ pub fn page(ui: &mut egui::Ui, fw: &mut FwUi, connected: bool, controller: Contr
         if ui.add_enabled(!fw.reading, egui::Button::new(read)).clicked() {
             acts.push(FwAct::Read);
         }
-        if ui.add_enabled(!fw.values.is_empty(), egui::Button::new(tr("Back up to a file…"))).clicked() {
+        if crate::window_ui::save_button_enabled(ui, !fw.values.is_empty(), &tr("Back up to a file…")).clicked() {
             acts.push(FwAct::Export);
         }
-        if ui.button(tr("Restore from a file…")).clicked() {
+        if crate::window_ui::import_button(ui, &tr("Restore from a file…")).clicked() {
             acts.push(FwAct::Import);
         }
         let red = egui::Button::new(RichText::new(tr("Factory settings ($RST=$)…")).color(Color32::WHITE)).fill(Color32::from_rgb(0xc0, 0x30, 0x30));

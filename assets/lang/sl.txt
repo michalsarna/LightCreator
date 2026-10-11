@@ -976,3 +976,79 @@
 975|Točke iz trenutnih vogalov
 976|Referenčne točke
 977|Točke zamenja s štirimi vogali slike in mestom, kjer so zdaj.
+978|Pripni na predmete
+979|Strani ni bilo mogoče ustvariti: {}
+980|Pregledovalnika ni bilo mogoče odpreti: {}
+981|Privzeti tiskalnik
+982|Rob
+983|Samo predmeti na vidnih slojih
+984|Samo predmeti, kar največji, kolikor dopušča stran
+985|Odpri PDF
+986|Odprto v pregledovalniku PDF.
+987|Odpre stran v pregledovalniku PDF, ki jo lahko natisne z več možnostmi
+988|Natisni
+989|Natisni…
+990|Tiskalnik
+991|Natisne načrt na papirnatem tiskalniku, za preverjanje postavitve ali kot predlogo.
+992|Shrani kot PDF…
+993|Poslano tiskalniku. {}
+994|Tiskalnik tega ni sprejel: {}
+995|Celotno delovno območje v merilu
+996|Ničesar ni za tiskanje.
+997|{} predmet(ov) sega zunaj delovnega območja; na papirju so odrezani na robu.
+998|{} predmet(ov) sega zunaj delovnega območja; vseeno se natisnejo.
+999|Preizkus kamere: {}
+1000|Odpre sliko te kamere z nastavitvami tukaj, brez shranjevanja
+1001|Preizkusi
+1002|Izmenjuje rezanje in preskakovanje vzdolž obrisa.
+1003|Dolžina reza
+1004|Enakomerni razmik
+1005|Zamik reza (kerf)
+1006|Pusti kratke odseke obrisa nerezane (ali šibko rezane), da kos ostane na mestu. Postavljeni so samodejno.
+1007|Omeji največ mostičkov
+1008|Min. mostičkov
+1009|Premakne obris navzven (navznoter, če je negativno), da nadomesti širino reza. 0 = izklopljeno.
+1010|Odstotek moči sloja čez mostiček; 0 = laser je izklopljen.
+1011|Perforacija
+1012|Način perforacije
+1013|Postavitev
+1014|Preskoči notranje oblike
+1015|Dolžina preskoka
+1016|Razmik
+1017|Moč rezanja mostička
+1018|Velikost mostička
+1019|Mostički
+1020|Mostičkov na obliko
+1021|Vektorske oblike na sloju v načinu Slika se ne žgejo.
+1022|Čas dela
+1023|Opis
+1024|Opišite projekt: kaj je, nastavitve, ki so delovale, zapiski za naslednjič.
+1025|Spletna stran s stanjem stroja, projektom in kamero ter API za druge programe. Nima gesla.
+1026|Vsak v omrežju lahko vidi stroj ter ga ustavi ali premakne. Ni gesla ali šifriranja: uporabljajte le v omrežju, ki mu zaupate.
+1027|Posluša na {}
+1028|Dosegljivo z drugih računalnikov v omrežju
+1029|Vklopi spletni strežnik in API
+1030|Strežnika ni bilo mogoče zagnati: {}
+1031|Spletni strežnik in API
+1032|Dodaj napravo
+1033|Več nastavitev…
+1034|Odpre celotno okno naprave s tem, kar je vneseno tukaj
+1035|Izhodišče
+1036|Privzeti material
+1037|Izbriši ta material
+1038|Material: {}
+1039|Ime novega materiala
+1040|Nov material: kopija tega
+1041|Novo ime
+1042|Preimenuj ta material
+1043|projekt
+1044|Akril 3 mm
+1045|Usnje 2 mm
+1046|Nov, prazen material
+1047|Vezana plošča 3 mm
+1048|Dodajte material, npr. brezova vezana plošča 3 mm (neobvezno)
+1049|Kamere, ki nadzirajo stroj. Označena daje sliko v živo; označitev druge izklopi prvo.
+1050|Vklopi to kamero: daje sliko v živo
+1051|Spletni strežnik: vklopljen, vrata {}
+1052|Spletni strežnik: izklopljen
+1053|Spletni strežnik: napaka

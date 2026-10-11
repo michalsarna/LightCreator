@@ -976,3 +976,79 @@
 975|Points depuis les coins actuels
 976|Points de référence
 977|Remplace les points par les quatre coins de l'image et l'endroit où ils sont maintenant.
+978|Aimanter aux objets
+979|Impossible de créer la page : {}
+980|Impossible d'ouvrir la visionneuse : {}
+981|Imprimante par défaut
+982|Marge
+983|Seulement les objets des calques visibles
+984|Seulement les objets, aussi grands que la page le permet
+985|Ouvrir le PDF
+986|Ouvert dans la visionneuse PDF.
+987|Ouvre la page dans la visionneuse PDF, qui peut l'imprimer avec plus d'options
+988|Imprimer
+989|Imprimer…
+990|Imprimante
+991|Imprime le dessin sur une imprimante papier, pour vérifier la disposition ou comme gabarit.
+992|Enregistrer en PDF…
+993|Envoyé à l'imprimante. {}
+994|L'imprimante ne l'a pas pris : {}
+995|Toute la zone de travail, à l'échelle
+996|Il n'y a rien à imprimer.
+997|{} objet(s) dépassent de la zone de travail ; sur le papier ils sont coupés au bord.
+998|{} objet(s) dépassent de la zone de travail ; ils sont imprimés quand même.
+999|Test de la caméra : {}
+1000|Ouvre l'image de cette caméra avec les réglages d'ici, sans enregistrer
+1001|Tester
+1002|Alterne découpe et saut le long du contour.
+1003|Longueur de coupe
+1004|Espacement régulier
+1005|Décalage de trait de coupe (kerf)
+1006|Laisse de courts tronçons du contour non coupés (ou coupés faiblement) pour que la pièce reste en place. Ils sont placés automatiquement.
+1007|Limiter le nombre max de ponts
+1008|Ponts min.
+1009|Déplace le contour vers l'extérieur (vers l'intérieur si négatif) pour compenser la largeur de la coupe. 0 = désactivé.
+1010|Pourcentage de la puissance du calque sur un pont ; 0 = laser éteint.
+1011|Perforation
+1012|Mode perforation
+1013|Placement
+1014|Ignorer les formes intérieures
+1015|Longueur du saut
+1016|Espacement
+1017|Puissance de coupe du pont
+1018|Taille du pont
+1019|Ponts / attaches
+1020|Ponts par forme
+1021|Les formes vectorielles d'un calque en mode Image ne sont pas gravées.
+1022|Temps de travail
+1023|Description
+1024|Décrivez le projet : ce que c'est, les réglages qui ont fonctionné, des notes pour la prochaine fois.
+1025|Une page web avec l'état de la machine, le projet et la caméra, et une API pour d'autres programmes. Elle n'a pas de mot de passe.
+1026|Toute personne du réseau peut voir la machine, l'arrêter ou la déplacer. Il n'y a ni mot de passe ni chiffrement : à n'utiliser que sur un réseau de confiance.
+1027|Écoute sur {}
+1028|Accessible depuis les autres ordinateurs du réseau
+1029|Activer le serveur web et l'API
+1030|Le serveur n'a pas pu démarrer : {}
+1031|Serveur web et API
+1032|Ajouter l'appareil
+1033|Plus de réglages…
+1034|Ouvre la fenêtre complète de l'appareil avec ce qui est saisi ici
+1035|Point de départ
+1036|Matériau par défaut
+1037|Supprimer ce matériau
+1038|Matériau : {}
+1039|Nom du nouveau matériau
+1040|Nouveau matériau : une copie de celui-ci
+1041|Nouveau nom
+1042|Renommer ce matériau
+1043|projet
+1044|Acrylique 3 mm
+1045|Cuir 2 mm
+1046|Nouveau matériau vide
+1047|Contreplaqué 3 mm
+1048|Ajoutez un matériau, par ex. contreplaqué de bouleau 3 mm (facultatif)
+1049|Caméras qui surveillent la machine. Celle qui est cochée donne l'image en direct ; en cocher une autre éteint la première.
+1050|Activer cette caméra : elle donne l'image en direct
+1051|Serveur web : actif, port {}
+1052|Serveur web : éteint
+1053|Serveur web : erreur

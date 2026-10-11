@@ -118,11 +118,11 @@ impl App {
         self.doc.device = dev;
         self.pointer_align = false;
         // The first-run setup belongs to the start screen.
-        self.wizard = None;
-        self.seed_device_library();
-        // An empty new document takes the layer speeds of the device; a loaded one keeps its own.
+        self.add_dev = None;
+        self.load_camera_view();
+        // A new, empty document takes the layers of the device's selected material; a loaded one keeps its own.
         if self.doc.shapes.is_empty() && self.path.is_none() {
-            self.apply_layer_speeds();
+            self.doc.select_material(self.doc.device.active_material);
         }
         self.touch();
         self.view.need_fit = true;
@@ -131,10 +131,6 @@ impl App {
     }
 
     /// Open the configuration window on a new profile made from `draft`.
-    pub fn open_cfg_with(&mut self, draft: Device) {
-        self.cfg = Some(CfgEdit { idx: None, draft, page: CfgPage::General, head: 0 });
-    }
-
     /// A copy of a profile, under a free name, selected.
     pub fn duplicate_profile(&mut self, idx: usize) {
         let Some(src) = self.profiles.get(idx).cloned() else { return };
@@ -186,43 +182,6 @@ impl App {
         }
     }
 
-    /// The window that offers the starting points for a new device.
-    pub fn template_window(&mut self, ctx: &egui::Context) {
-        if !self.show_templates {
-            return;
-        }
-        let mut open = true;
-        let mut pick: Option<Option<&'static str>> = None;
-        crate::window_ui::popup(ctx, "device_templates", &tr("Add a device"), [480.0, 360.0], &mut open, |ui| {
-            ui.label(RichText::new(tr("Starting points: general machines with typical numbers. Check them against your machine's documentation.")).color(theme::text_dim()));
-            ui.add_space(4.0);
-            for t in lc_core::profiles::TEMPLATES {
-                let r = ui.add_sized([ui.available_width(), 38.0], egui::Button::new(RichText::new(tr(t.name)).strong()));
-                if r.clicked() {
-                    pick = Some(Some(t.id));
-                }
-                ui.label(RichText::new(tr(t.desc)).small().color(theme::text_dim()));
-            }
-            ui.add_space(4.0);
-            if ui.button(tr("A blank profile")).clicked() {
-                pick = Some(None);
-            }
-        });
-        if let Some(p) = pick {
-            let mut dev = match p {
-                Some(id) => lc_core::profiles::template(id),
-                None => Device::default(),
-            };
-            if p.is_none() {
-                dev.name = String::new();
-            }
-            self.open_cfg_with(dev);
-            self.show_templates = false;
-        } else if !open {
-            self.show_templates = false;
-        }
-    }
-
     pub fn open_cfg_new(&mut self) {
         let mut draft = Device::default();
         draft.name = String::new();
@@ -238,10 +197,10 @@ impl App {
     pub fn start_screen(&mut self, ui: &mut egui::Ui) {
         // No profile yet: the user must create one before anything else. The first run goes through a short setup.
         if self.profiles.is_empty() && self.cfg.is_none() {
-            if self.wizard_skipped {
+            if self.add_dev_skipped {
                 self.open_cfg_new();
             } else {
-                self.start_wizard();
+                self.start_add_device();
             }
         }
         let ctx = ui.ctx().clone();
@@ -333,7 +292,7 @@ impl App {
                 go = true;
             }
             if ui.button(tr("Add device…")).clicked() {
-                self.show_templates = true;
+                self.start_add_device();
             }
             if ui.add_enabled(has, egui::Button::new(tr("Edit…"))).clicked() {
                 self.open_cfg_edit(self.start_sel);
@@ -341,14 +300,14 @@ impl App {
             if ui.add_enabled(has, egui::Button::new(tr("Duplicate"))).on_hover_text(tr("A copy of this profile")).clicked() {
                 self.duplicate_profile(self.start_sel);
             }
-            if ui.add_enabled(has, egui::Button::new(tr("Export…"))).on_hover_text(tr("Save this profile to a file")).clicked() {
+            if crate::window_ui::save_button_enabled(ui, has, &tr("Export…")).on_hover_text(tr("Save this profile to a file")).clicked() {
                 self.export_profile_dialog(self.start_sel);
             }
-            if ui.button(tr("Import…")).on_hover_text(tr("Read a profile from a file")).clicked() {
+            if crate::window_ui::import_button(ui, &tr("Import…")).on_hover_text(tr("Read a profile from a file")).clicked() {
                 self.import_profile_dialog();
             }
             if self.confirm_delete && has {
-                if ui.button(RichText::new(tr("Confirm delete")).color(Color32::from_rgb(0xc0, 0x30, 0x30))).clicked() {
+                if crate::window_ui::delete_button(ui, &tr("Confirm delete")).clicked() {
                     self.profiles.remove(self.start_sel);
                     self.confirm_delete = false;
                     self.active = 0;
@@ -356,7 +315,7 @@ impl App {
                 if ui.button(tr("Cancel")).clicked() {
                     self.confirm_delete = false;
                 }
-            } else if ui.add_enabled(has, egui::Button::new(tr("Delete"))).clicked() {
+            } else if crate::window_ui::delete_button_enabled(ui, has, &tr("Delete")).clicked() {
                 self.confirm_delete = true;
             }
         });
@@ -375,7 +334,7 @@ impl App {
             }
         }
         // The first-run setup has its own window on the same draft.
-        if self.wizard.is_some() {
+        if self.add_dev.is_some() {
             return;
         }
         let Some(mut cfg) = self.cfg.take() else { return };
@@ -389,6 +348,7 @@ impl App {
         let mut fw_acts: Vec<crate::firmware_ui::FwAct> = vec![];
         let mut cfg_head = cfg.head;
         let mut maint_reset: Option<usize> = None;
+        let mut test_cam: Option<lc_core::CameraSource> = None;
         crate::window_ui::popup(ctx, "device_cfg", &title, [720.0, 500.0], &mut cfg_open, |ui| {
             if must_create {
                 ui.label(RichText::new(tr("Create at least one device profile to continue.")).color(theme::text_dim()));
@@ -546,7 +506,7 @@ impl App {
                                         d.heads.push(h);
                                         head = d.heads.len() - 1;
                                     }
-                                    if ui.add_enabled(d.heads.len() > 1, egui::Button::new("−").small()).on_hover_text(tr("Remove this laser head")).clicked() {
+                                    if ui.add_enabled_ui(d.heads.len() > 1, |ui| crate::window_ui::delete_icon(ui, &tr("Remove this laser head"))).inner.clicked() {
                                         d.heads.remove(head);
                                         head = head.saturating_sub(1).min(d.heads.len() - 1);
                                     }
@@ -753,23 +713,22 @@ impl App {
                                 });
                             }
                             CfgPage::Camera => {
-                                ui.label(RichText::new(tr("Cameras that watch the machine. The active one gives the live picture. A camera can only be switched on when its address is valid.")).color(theme::text_dim()));
+                                ui.label(RichText::new(tr("Cameras that watch the machine. The one that is ticked gives the live picture; ticking another switches the first off.")).color(theme::text_dim()));
                                 let mut remove = None;
+                                let mut toggle: Option<(usize, bool)> = None;
                                 let n = d.cameras.len();
                                 for i in 0..n {
                                     let active = d.active_camera == i;
                                     let c = &mut d.cameras[i];
                                     egui::Frame::group(ui.style()).show(ui, |ui| {
                                         ui.horizontal_wrapped(|ui| {
-                                            let ok = c.is_valid();
-                                            if ui.add_enabled(ok || c.enabled, egui::Checkbox::new(&mut c.enabled, "")).on_hover_text(if ok { tr("Switch this camera on or off") } else { tr("The address is not valid: an http or https address is needed") }).changed() && !ok {
-                                                c.enabled = false;
+                                            // The tick before the name switches this camera on (and the others off): it is the one in use.
+                                            let mut on = active && c.enabled;
+                                            if ui.checkbox(&mut on, "").on_hover_text(tr("Switch this camera on: it gives the live picture")).changed() {
+                                                toggle = Some((i, on));
                                             }
                                             ui.add(egui::TextEdit::singleline(&mut c.name).hint_text(tr("Camera name")).desired_width(150.0));
-                                            if ui.radio(active, tr("Active")).clicked() {
-                                                d.active_camera = i;
-                                            }
-                                            if ui.small_button("✕").on_hover_text(tr("Delete this camera")).clicked() {
+                                            if crate::window_ui::delete_icon(ui, &tr("Delete this camera")).clicked() {
                                                 remove = Some(i);
                                             }
                                         });
@@ -802,6 +761,13 @@ impl App {
                                                     ui.label(RichText::new(tr("This build has no camera support. Build with: cargo run --release --features camera")).color(theme::text_dim()));
                                                 }
                                             }
+                                        }
+                                        let testable = match &c.kind {
+                                            lc_core::CameraKind::Url(u) => lc_core::camimg::valid_url(u),
+                                            lc_core::CameraKind::Local(_) => crate::camera::SUPPORTED,
+                                        };
+                                        if ui.add_enabled(testable, egui::Button::new(tr("Test"))).on_hover_text(tr("Opens the picture of this camera as set here, without saving")).clicked() {
+                                            test_cam = Some(c.clone());
                                         }
                                         ui.horizontal(|ui| {
                                             ui.label(tr("Camera rotation"));
@@ -850,12 +816,19 @@ impl App {
                                         });
                                     });
                                 }
+                                if let Some((i, on)) = toggle {
+                                    if on {
+                                        d.activate_camera(i);
+                                    } else if let Some(c) = d.cameras.get_mut(i) {
+                                        c.enabled = false;
+                                    }
+                                }
                                 if let Some(i) = remove {
                                     d.cameras.remove(i);
                                     d.active_camera = d.active_camera.min(d.cameras.len().saturating_sub(1));
                                 }
                                 if d.cameras.len() < 8 && ui.button(tr("Add a camera")).clicked() {
-                                    d.cameras.push(lc_core::CameraSource { name: trf("Camera {}", &[&(d.cameras.len() + 1)]), enabled: false, kind: lc_core::CameraKind::Url(String::new()), rotation: 0, image: Default::default(), lens: Default::default(), reference: vec![] });
+                                    add_camera(d);
                                 }
                             }
                             CfgPage::Rotary => {
@@ -944,7 +917,7 @@ impl App {
                                         if ui.button(tr("Reset")).clicked() {
                                             reset = Some(i);
                                         }
-                                        if ui.small_button("✕").on_hover_text(tr("Delete this counter")).clicked() {
+                                        if crate::window_ui::delete_icon(ui, &tr("Delete this counter")).clicked() {
                                             remove = Some(i);
                                         }
                                     });
@@ -978,7 +951,7 @@ impl App {
                                             let b = z.shape.bounds();
                                             z.shape = if want_rect { lc_core::ZoneShape::Rect { x: b.min.x, y: b.min.y, w: b.width(), h: b.height() } } else { lc_core::ZoneShape::Circle { x: b.center().x, y: b.center().y, r: (b.width().max(b.height())) / 2.0 } };
                                         }
-                                        if ui.small_button("✕").on_hover_text(tr("Delete this zone")).clicked() {
+                                        if crate::window_ui::delete_icon(ui, &tr("Delete this zone")).clicked() {
                                             remove = Some(i);
                                         }
                                     });
@@ -1071,7 +1044,7 @@ impl App {
                                 for (i, m) in d.macros.iter_mut().enumerate() {
                                     ui.horizontal(|ui| {
                                         ui.add(egui::TextEdit::singleline(&mut m.name).hint_text(tr("Macro name")).desired_width(200.0));
-                                        if ui.small_button("✕").on_hover_text(tr("Delete this macro")).clicked() {
+                                        if crate::window_ui::delete_icon(ui, &tr("Delete this macro")).clicked() {
                                             remove = Some(i);
                                         }
                                     });
@@ -1120,7 +1093,7 @@ impl App {
                 ui.label(RichText::new(tr("A profile name is required.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
             }
             ui.horizontal(|ui| {
-                if ui.add_enabled(valid, egui::Button::new(tr("Save"))).clicked() {
+                if crate::window_ui::save_button_enabled(ui, valid, &tr("Save")).clicked() {
                     save = true;
                 }
                 if !must_create && ui.button(tr("Cancel")).clicked() {
@@ -1128,6 +1101,9 @@ impl App {
                 }
             });
         });
+        if let Some(cam) = test_cam {
+            self.start_cam_test(ctx, cam);
+        }
         if !cfg_open && !must_create {
             cancel = true;
         }
@@ -1161,6 +1137,7 @@ impl App {
                     i
                 }
                 _ => {
+                    cfg.draft.add_starter_materials();
                     self.profiles.push(cfg.draft.clone());
                     self.profiles.len() - 1
                 }
@@ -1282,7 +1259,7 @@ impl App {
     }
 
     /// A jog step in the design's directions (x right, y down), kept inside the allowed area. `None` when there is no room.
-    fn jog_action(&mut self, dx: f64, dy: f64) -> Option<Action> {
+    pub(crate) fn jog_action(&mut self, dx: f64, dy: f64) -> Option<Action> {
         let dev = &self.doc.device;
         let at = (self.connected && self.machine.1.is_finite()).then_some((self.machine.1, self.machine.2));
         let (mx, my) = dev.limited_jog(at, dx, dy);
@@ -1484,16 +1461,18 @@ impl App {
                 crate::icons::paint(ui, egui::Rect::from_center_size(rect.center(), egui::vec2(27.0, 27.0)), name, ink);
                 resp.on_hover_text(tip).clicked()
             };
+            let jog_tip = |a: &'static str, b: &'static str| if b.is_empty() { tr(a).to_string() } else { format!("{} + {}", tr(a), tr(b)) };
             let centre = |ui: &mut egui::Ui, total: f32| ui.add_space(((ui.available_width() - total) / 2.0).max(0.0));
             // While a job runs the machine must not be moved by hand: only pause, resume and stop stay available.
             ui.add_enabled_ui(!running, |ui| ui.horizontal(|ui| {
             centre(ui, 3.0 * size.x + 2.0 * 4.0);
             egui::Grid::new("jog").spacing([4.0, 4.0]).show(ui, |ui| {
-                ui.allocate_exact_size(size, egui::Sense::hover());
-                if icon(ui, "arrow-up", tr("Up").to_string(), None) {
-                    act = self.jog_action(0.0, -s);
+                // The four diagonals move both axes by one step at once.
+                for (name, a, b, dx, dy) in [("arrow-up-left", "Up", "Left", -s, -s), ("arrow-up", "Up", "", 0.0, -s), ("arrow-up-right", "Up", "Right", s, -s)] {
+                    if icon(ui, name, jog_tip(a, b), None) {
+                        act = self.jog_action(dx, dy);
+                    }
                 }
-                ui.allocate_exact_size(size, egui::Sense::hover());
                 ui.end_row();
                 if icon(ui, "arrow-left", tr("Left").to_string(), None) {
                     act = self.jog_action(-s, 0.0);
@@ -1505,9 +1484,10 @@ impl App {
                     act = self.jog_action(s, 0.0);
                 }
                 ui.end_row();
-                ui.allocate_exact_size(size, egui::Sense::hover());
-                if icon(ui, "arrow-down", tr("Down").to_string(), None) {
-                    act = self.jog_action(0.0, s);
+                for (name, a, b, dx, dy) in [("arrow-down-left", "Down", "Left", -s, s), ("arrow-down", "Down", "", 0.0, s), ("arrow-down-right", "Down", "Right", s, s)] {
+                    if icon(ui, name, jog_tip(a, b), None) {
+                        act = self.jog_action(dx, dy);
+                    }
                 }
                 ui.end_row();
             });
@@ -1740,16 +1720,51 @@ impl App {
                 d.gcode.dynamic_power = v;
             }
         }
-        if self.wizard.is_some() {
-            self.wizard_read_done = true;
+        if self.add_dev.is_some() {
+            self.add_dev_read_done = true;
         }
         self.status = trf("Read {} values from the device", &[&n]);
     }
 }
 
+/// A new camera at the end of the list. It is the one being set up, so it is switched on and becomes the active one.
+pub fn add_camera(d: &mut lc_core::Device) {
+    d.cameras.push(lc_core::CameraSource { name: trf("Camera {}", &[&(d.cameras.len() + 1)]), enabled: true, kind: lc_core::CameraKind::Url(String::new()), rotation: 0, image: Default::default(), lens: Default::default(), reference: vec![] });
+    d.activate_camera(d.cameras.len() - 1);
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_new_camera_becomes_the_active_one() {
+        let mut d = lc_core::Device::default();
+        add_camera(&mut d);
+        assert_eq!((d.cameras.len(), d.active_camera), (1, 0));
+        add_camera(&mut d);
+        add_camera(&mut d);
+        assert_eq!((d.cameras.len(), d.active_camera), (3, 2));
+        assert!(d.cameras[2].enabled && !d.cameras[1].enabled && !d.cameras[0].enabled, "only the new one is on");
+        assert!(d.camera_source().is_none() || d.stream_url().is_none(), "no address yet: nothing to show");
+    }
+
+    #[test]
+    fn diagonal_jogs_move_both_axes_and_have_icons() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.connected = false;
+        for (dx, dy) in [(-5.0, -5.0), (5.0, -5.0), (-5.0, 5.0), (5.0, 5.0)] {
+            let Some(Action::Lines(l)) = a.jog_action(dx, dy) else { panic!("a jog") };
+            // The design's Y runs down the screen and the default zero is at the front: the machine's Y is flipped.
+            let (x, y) = (format!("X{}", if dx < 0.0 { "-5" } else { "5" }), format!("Y{}", if dy < 0.0 { "5" } else { "-5" }));
+            assert!(l[0].contains(&x) && l[0].contains(&y), "{dx},{dy}: {}", l[0]);
+        }
+        let names = crate::icons::all_names();
+        for n in ["arrow-up-left", "arrow-up-right", "arrow-down-left", "arrow-down-right"] {
+            assert!(names.contains(&n), "{n}");
+        }
+    }
 
     fn app() -> App {
         let ctx = egui::Context::default();
@@ -1786,13 +1801,5 @@ mod tests {
         a.import_profile_from(&dir.join("missing.json"));
         assert_eq!(a.profiles.len(), 4);
         let _ = std::fs::remove_dir_all(&dir);
-    }
-
-    #[test]
-    fn the_template_window_opens_the_configuration_with_the_chosen_machine() {
-        let mut a = app();
-        a.open_cfg_with(lc_core::profiles::template("marlin-diode"));
-        let c = a.cfg.as_ref().unwrap();
-        assert_eq!((c.idx, c.draft.controller), (None, Controller::Marlin));
     }
 }

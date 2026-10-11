@@ -252,60 +252,11 @@ fn render_screenshots() {
         a.show_overlay = false;
         a.overlay_edit = false;
         a.overlay = None;
-        a.show_materials = true;
-        a.mat_laser = Some(lc_core::LaserKind::Diode);
-        a.mat_sel = Some("plywood-3".into());
     }
-    save(&mut h, "11-materials.png");
-
-    // The Materials tab (library of the device) and the window that settles differences with a file.
-    {
-        let a = app(&mut h);
-        a.show_materials = false;
-        a.side_tab = SideTab::Materials;
-        a.mat_dev_sel = a.doc.device.materials.iter().position(|m| m.name == "Plywood" && m.thickness == 3.0);
-    }
-    save(&mut h, "33-materials-tab.png");
-    {
-        let a = app(&mut h);
-        let mut changed = a.doc.device.materials.iter().find(|m| m.name == "Plywood" && m.thickness == 3.0).cloned().unwrap();
-        changed.layers[0].spec.speed += 2.0;
-        changed.layers[0].spec.passes += 1;
-        changed.layers[0].spec.air_assist = true;
-        a.import_incoming_materials(vec![changed], "wood-signs.lcr");
-    }
-    save(&mut h, "34-material-merge.png");
-    app(&mut h).mat_merge = None;
-    // Editing a material of the main library (double-click in the Material library window).
-    {
-        let a = app(&mut h);
-        a.show_materials = true;
-        a.mat_laser = Some(lc_core::LaserKind::Diode);
-        a.mat_sel = Some("plywood-3".into());
-        let m = a.main_library().into_iter().find(|m| m.key() == "plywood-3" && m.laser == lc_core::LaserKind::Diode).unwrap();
-        a.mat_edit = Some(crate::materials_ui::MatEdit { m });
-    }
-    save(&mut h, "36-material-edit.png");
-    {
-        let a = app(&mut h);
-        a.mat_edit = None;
-        a.show_materials = false;
-    }
-    // Choosing what goes into a library file.
-    {
-        let a = app(&mut h);
-        a.start_library_export();
-        if let Some(d) = &mut a.lib_dlg {
-            d.global_on = true;
-        }
-    }
-    save(&mut h, "35-library-export.png");
-    app(&mut h).lib_dlg = None;
 
     // Preview window: several operations, each in its own colour, with travel moves.
     {
         let a = app(&mut h);
-        a.show_materials = false;
         a.doc.shapes.clear();
         a.doc.layers[2].mode = lc_core::LayerMode::FillAndLine;
         a.doc.layers[2].interval = 0.5;
@@ -567,6 +518,48 @@ fn render_screenshots() {
         a.clip.online = Some(o);
     }
     save(&mut h, "25-clipart-online.png");
+
+    // The window that adds a device, the material header, the description tab, the options with the web server.
+    {
+        let a = app(&mut h);
+        a.lang = Lang::En;
+        i18n::set_lang(Lang::En);
+        a.show_ser2net_off();
+        a.clip.online = None;
+        a.show_prefs = false;
+        a.show_stream = false;
+        a.doc.shapes.clear();
+        a.status = "Ready".into();
+        a.start_add_device();
+        if let Some(c) = a.cfg.as_mut() {
+            c.draft.name = "Diode laser 400 × 400".into();
+        }
+        a.add_dev_material = "Birch plywood 3 mm".into();
+    }
+    save(&mut h, "33-add-device.png");
+    {
+        let a = app(&mut h);
+        a.cfg = None;
+        a.add_dev = None;
+        a.side_tab = SideTab::Layers;
+        a.doc.add(2, Kind::Rect { w: 70.0, h: 45.0 }, Xf::translate(40.0, 40.0));
+        a.doc.add(5, Kind::Ellipse { w: 60.0, h: 45.0 }, Xf::translate(150.0, 40.0));
+    }
+    save(&mut h, "34-material-layers.png");
+    {
+        let a = app(&mut h);
+        a.doc.description = "Birch plywood 3 mm, two passes for the outline.\nFocus 1 mm below the surface.".into();
+        a.side_tab = SideTab::Description;
+    }
+    save(&mut h, "35-description.png");
+    {
+        let a = app(&mut h);
+        a.side_tab = SideTab::Properties;
+        a.api_on = true;
+        a.show_options = true;
+    }
+    save(&mut h, "36-options-web-server.png");
+    app(&mut h).show_options = false;
 }
 
 /// The node-editing bar disappears when another window (the preview) is clicked and returns on a click in the canvas.
@@ -906,7 +899,6 @@ fn side_width(lang: Lang, tab: SideTab) -> f32 {
         a.enter_editor(0);
         a.doc.add(0, Kind::Rect { w: 20.0, h: 10.0 }, Xf::IDENTITY);
         a.select_all();
-        a.mat_dev_sel = Some(0);
         a.side_tab = tab;
     }
     h.run_steps(6);
@@ -1029,7 +1021,7 @@ mod resize_tests {
         );
         h.run_steps(2);
         app(&mut h).enter_editor(0);
-        app(&mut h).wizard = None;
+        app(&mut h).add_dev = None;
         h.run_steps(2);
         app(&mut h).show_about = true;
         h.run_steps(4);

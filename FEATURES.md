@@ -40,8 +40,13 @@
   pressed again. The Overlay button follows Camera view and is always visible; it is greyed out until there is a
   picture to show (a saved photo, or the live camera while its window is open) and then switches it on the work area.
   Start / STOP are written in capitals.
+* **Web server and API** (Program options, off by default, no password): a web page with the state of the machine, the project and a camera, and an API for the status, the project as SVG, the cameras and the commands stop, home, cancel jog, jog and camera choice. Listens only on this computer unless you allow the network. See the wiki page Web Server and API.
+* **Delete buttons:** everything that deletes (devices, cameras, zones, macros, counters, clipart, nodes, the overlay...) has a bin icon and is red.
+* **Description tab:** a plain multi-line text about the project in the side panel (it can be moved like the other tabs), saved in the project file.
+* **Materials:** every device has a list of materials (a new device starts with an empty, translated *Default material* and starting points for its laser type: Plywood, Cardboard, Leather, Paper, and Acrylic for CO2; a new material is empty); a material has a name and the settings of the layers it uses. The Layers tab edits the layers of the selected material and its heading chooses, adds (a copy), renames and deletes materials; layers the design uses are added to the material with default settings. The list belongs to the device (profile, exports, backups) and to saved projects.
+* **Layer cut options:** kerf offset, perforation (cut / skip lengths) and automatic tabs / bridges for line layers, saved with the layer and the project; a layer of images is always in the Image mode (mode fixed, the rest editable) and images have a scan angle. Not implemented: sub-layers and hand-placed tabs.
 * **Control bar:** name of the current tool in a box of fixed width, New / Open / Save icons, switches for the grid,
-  the secondary grid and snapping (icons, highlighted while on) and the Toolpaths button, green while the toolpaths
+  the secondary grid, snapping to the grid and snapping to other objects (while moving, edges and centres join with a guide line) (icons, highlighted while on) and the Toolpaths button, green while the toolpaths
   are shown and grey otherwise. Toolpaths are drawn in layer colours darkened or lightened until they stand out from
   the work area.
 * **Tool bar groups:** selecting and node editing, then the tools that insert new objects (shapes, line,
@@ -70,6 +75,11 @@
   between sessions; "Clear list" empties it and a file that no longer exists is dropped when picked.
 * **Import** submenu: SVG (curves are kept as Béziers; colours map to layers), bitmaps (PNG, JPEG, BMP, GIF,
   WebP) and Adobe Illustrator / PDF (first page, vector paths; Illustrator files saved with PDF compatibility).
+* **Print** (File > Print…, Ctrl+P): the design on a paper printer, as a one-page PDF made by the program: the whole work
+  area to scale or only the objects as large as the page allows, only visible layers or all, A4 or Letter, a margin, and a
+  warning when objects reach outside the work area. *Print* sends the page to the system printer (`lp` on macOS and Linux
+  with a choice of printer, the PDF viewer's Print verb on Windows); *Save as PDF…* and *Open the PDF* are the alternatives.
+  Layers are drawn in their colours, filled shapes lightly tinted, images in grey.
 * **Export** submenu: SVG, G-code, and HPGL (`.plt`) / DXF. Native `.lcr` projects embed images.
 * **Layer list:** the three switches at the end of each row (output, visible, air pump) have icon headings above
   the list; the layer colour is shown next to the title of the cut settings.
@@ -94,7 +104,7 @@
   Jarvis, Stucki, Atkinson, ordered or grayscale power (minimum and maximum power); negative option per image.
 * Inner shapes are cut first, nearest-neighbour ordering, live toolpath preview with time estimate.
 * The layer colour strip at the bottom shows the layer names. Double-clicking a layer name there or in the
-  Layers tab opens the layer options window (name, mode, speed, power, passes, fill and image settings). New layers start at 100 % power and 1000 mm/min; the speed of each layer is kept in the device profile (a speed you type for a layer becomes that layer's default for the device and for new documents).
+  Layers tab opens the layer options window (name, mode, speed, power, passes, fill and image settings). New layers start at 100 % power and 1000 mm/min; the settings of the layers belong to the project file, together with the device profile, not in the device profile itself.
 * The **Layers** tab lists layers in burn order; move them up or down to change the order. The Properties tab
   shows the colour of the selected object's layer.
 * **Preview window:** playback starts at ×10; the bottom line shows the real job time at the slider position out of
@@ -143,8 +153,8 @@
   (asks for administrator rights through `pkexec`, keeps a backup of the old file, needs a confirmation). A
   local-only option is offered for use with an SSH tunnel, with a warning that the port is otherwise open to the
   network.
-* **Device templates and profiles:** generic templates (GRBL diode, GRBL CO2, K40 conversion, Marlin diode), a
-  first-run setup with an optional read from the controller, duplicate, export and import of a profile (format
+* **Adding a device and profiles:** no predefined profiles and no wizard: one window with the basic settings (opens by
+  itself when there is no device; a first material can be named at the bottom; optional read from the controller), duplicate, export and import of a profile (format
   version, strict validation, no port from the file).
 * **Maintenance and notes:** working time and own counters with limits (counted from the time jobs really run) and
   per-device notes in Markdown with a preview.
@@ -167,7 +177,7 @@
   controller's own software (for example RDWorks). Fill is exported as hatch lines, raster images are skipped.
 * Per-device display units: millimetres or inches (stored geometry stays in millimetres) and, separately, speeds
   per second or per minute (mm/s, mm/min, in/s, in/min). This applies to layer speed, travel speed, jog feed and the
-  material list; values are converted automatically and the G-code always carries the mm/min feed that GRBL and Marlin
+  other speeds; values are converted automatically and the G-code always carries the mm/min feed that GRBL and Marlin
   expect after `G21`.
 * The editor cannot be opened until at least one device profile exists.
 
@@ -183,44 +193,12 @@
   or deleted from the right-click menu. They live in the application's data folder next to `app.ron`, in the `clipart` folder (the location per system is in the README).
 
 **Helpers**
-* **Material libraries:** a material holds the settings of all the layers it needs (mode, speed, power, passes,
-  interval, scan angle, overscan, dithering, minimum power, air assist). There are three levels.
-  * The **built-in library** (starting values for typical 10 W diode and 40 W CO2 lasers) is the source for the rest.
-  * The **Material library…** window of the Laser menu is the only place that extends it: "Save the layers of the
-    design as a material for every device" adds a global material that every device can use. Built-in materials are read-only.
-  * Every device has its **own library**, shown in the **Materials** tab of the side panel and filled once from the
-    built-in and global materials that suit its laser type. In the tab you edit all the settings of every layer of a
-    material, add or remove layers, rename, delete, apply a material to the layers of the design and save the layers of
-    the design as a material; all of that is kept in the device library.
-  * Lists show name and tags in alternating rows with scroll arrows; a layer's label is picked from a list that the **Layer labels…** button of the library window extends. Questions (restore, delete all materials) are asked in the program's own language; pop-up windows share one style and resize both ways.
-  * The device library is saved in the device profile (and so in backups) and inside every saved project. When a
-    project file is opened, its library is merged into the library of the active device: new materials are added at
-    once, materials that differ open a window where, value by value, you choose to keep your own or take the one from
-    the file.
-  * A material is **one entry for both laser types** (diode and CO2 have their own settings under the same id, e.g.
-    `plywood-3`). Names such as "Plywood" are translated; the thickness is a separate value; there is a one-line note and
-    tags (Cut, Engrave...). The program's built-in values can be **changed on this computer**: double-click a material in the
-    Material library window (or Edit material) to set every layer, then Save; it is kept as a local copy that overrides the
-    built-in data, and *Restore built-in values* brings the original back. A device's library receives the variant for its
-    own laser type.
-  * Lists are grouped by category; a group folds up by its title (shown in the main colour), as in the clipart list.
-  * **Delete all materials** (Materials tab) empties the device's library and shows the main library instead; a material
-    that is changed there is kept as a copy for the device. Tags are suggested from those already in use, and hovering over
-    the dithering setting explains the chosen method.
-  * A saved project carries the device profile, the device library and the **material it was made with**.
-  * Every material has the **colour** and a **label** (the name of its purpose, e.g. Cut) of each layer, and a **category**
-    (Wood, Metal, Plastic, Paper and leather, Stone and glass, Other, or a category of your own). Applying a material sets
-    the settings, colour and name of its layers. The list in the Materials tab shows every layer with its colour and main
-    settings and can be filtered by category, as the clipart list can.
-  * **Export library… / Import library…** (Material library window and Materials tab) write and read one `.lcb` file with
-    the global materials and the devices with their libraries. A window lets you tick exactly what goes into the file or
-    is taken from it; materials that differ open the same window of differences.
 * **Camera overlay:** a photo or the live camera (build with `--features camera`) under the design, aligned
   with four draggable corners (perspective corrected), opacity, flip and rotate; saved per device.
 
 **Help**
 * **Download backup…** (Help menu): asks where to save a zip file with everything the program keeps on this computer,
-  the settings (`app.ron`: device profiles, language, colour scheme, material presets, recent files) and the whole
+  the settings (`app.ron`: device profiles, language, colour scheme, recent files) and the whole
   `clipart` folder, plus a README. **Restore from backup…** (Help menu) reads such a file back: settings and clipart
   are replaced after a confirmation. When no profile files are found at start, the start window offers the same
   restore with a green button.
@@ -240,6 +218,8 @@
 * Languages (30): English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी and 23 more European languages: Български, Català, Hrvatski, Čeština, Dansk, Nederlands, Eesti, Français, Ελληνικά, Magyar, Íslenska, Gaeilge, Latviešu, Lietuvių, Malti, Norsk bokmål, Português, Română, Slovenčina, Slovenščina, Español, Svenska, Українська. The texts of the European languages are in `assets/lang/<code>.txt`, one file per language,
   and were prepared with machine help: corrections from native speakers are welcome. Russian is not included. The quick
   guide exists in English and Polish; the other languages show the English text there.
+* The status bar shows the state of the device and of the web server (off, on with the port, error). Save buttons are
+  green, import buttons blue and delete buttons red.
 * Colour schemes: Dark, Light Dark, Medium Light, Light.
 * Application icon in every place the platform supports.
 * All interface icons (tool bar, menus, context menu, buttons) are SVG files and all text fonts (Noto Sans,
@@ -247,5 +227,5 @@
   program, so the look is the same on every system. Every menu entry has an icon, in the in-window menus (Windows,
   Linux) and in the native macOS menu bar (menu titles on macOS stay text, as the system requires).
 
-**Not yet implemented:** direct Ruida / Trocen binary protocols, scan angles for images, kerning and complex
+**Not yet implemented:** direct Ruida / Trocen binary protocols, kerning and complex
 script shaping in text, automatic lens calibration for the camera (the lens correction is entered by hand).

@@ -976,3 +976,79 @@
 975|Punti mill-kantunieri attwali
 976|Punti ta' referenza
 977|Jissostitwixxi l-punti bl-erba' kantunieri tax-xbieha u fejn jinsabu issa.
+978|Aqbad mal-oġġetti
+979|Ma setgħetx issir il-paġna: {}
+980|Ma setax jinfetaħ il-vewer: {}
+981|Stampatur default
+982|Marġni
+983|Oġġetti biss fuq saffi viżibbli
+984|L-oġġetti biss, kemm jippermetti l-paġna
+985|Iftaħ il-PDF
+986|Miftuħ fil-vewer tal-PDF.
+987|Jiftaħ il-paġna fil-vewer tal-PDF, li jista' jistampaha b'aktar għażliet
+988|Stampa
+989|Stampa…
+990|Stampatur
+991|Jistampa d-disinn fuq stampatur tal-karta, biex tiċċekkja l-pożizzjoni jew bħala mudell.
+992|Ħlief bħala PDF…
+993|Mibgħut lill-istampatur. {}
+994|L-istampatur ma aċċettahx: {}
+995|L-erja tax-xogħol kollha, bi skala
+996|M'hemm xejn x'tistampa.
+997|{} oġġett(i) joħorġu barra mill-erja tax-xogħol; fuq il-karta jinqatgħu fit-tarf tagħha.
+998|{} oġġett(i) joħorġu barra mill-erja tax-xogħol; jiġu stampati xorta.
+999|Test tal-kamera: {}
+1000|Jiftaħ ix-xbieha ta' din il-kamera bl-issettjar hawn, mingħajr ma jissejvja
+1001|Ittesta
+1002|Ibdel it-qtugħ u t-taqbiż tul il-kontorn.
+1003|Tul tal-qtugħ
+1004|Spazjar uniformi
+1005|Kumpens tal-kerf
+1006|Iħalli biċċiet qosra tal-kontorn mhux maqtugħin (jew maqtugħin dgħajjef) biex il-biċċa tibqa' f'postha. Jitqiegħdu awtomatikament.
+1007|Illimita n-numru massimu ta' pontijiet
+1008|Pontijiet min.
+1009|Iċaqlaq il-kontorn 'il barra (għal ġewwa, jekk negattiv) biex jikkumpensa l-wisa' tal-qtugħ. 0 = mitfi.
+1010|Perċentwali tal-qawwa tas-saff fuq pont; 0 = il-laser mitfi.
+1011|Perforazzjoni
+1012|Modalità tal-perforazzjoni
+1013|Tqegħid
+1014|Aqbeż il-forom ta' ġewwa
+1015|Tul tat-taqbiż
+1016|Spazju
+1017|Qawwa tal-qtugħ tal-pont
+1018|Daqs tal-pont
+1019|Pontijiet
+1020|Pontijiet għal kull forma
+1021|Il-forom vettorjali fuq saff fil-modalità Immaġni ma jinħarqux.
+1022|Ħin tax-xogħol
+1023|Deskrizzjoni
+1024|Iddeskrivi l-proġett: x'inhu, l-issettjar li ħadem, noti għall-darba li jmiss.
+1025|Paġna tal-web bl-istat tal-magna, il-proġett u l-kamera, u API għal programmi oħra. M'għandhiex password.
+1026|Kull wieħed fin-netwerk jista' jara l-magna u jwaqqafha jew iċaqlaqha. M'hemm l-ebda password jew encryption: uża biss fuq netwerk li tafda.
+1027|Qed jisma' fuq {}
+1028|Aċċessibbli minn kompjuters oħra fin-netwerk
+1029|Ixgħel is-server tal-web u l-API
+1030|Is-server ma setax jibda: {}
+1031|Server tal-web u API
+1032|Żid apparat
+1033|Aktar settings…
+1034|Jiftaħ it-tieqa sħiħa tal-apparat b'dak li ddaħħal hawn
+1035|Punt tat-tluq
+1036|Materjal default
+1037|Neħħi dan il-materjal
+1038|Materjal: {}
+1039|Isem il-materjal il-ġdid
+1040|Materjal ġdid: kopja ta' dan
+1041|Isem ġdid
+1042|Biddel l-isem ta' dan il-materjal
+1043|proġett
+1044|Akriliku 3 mm
+1045|Ġilda 2 mm
+1046|Materjal ġdid, vojt
+1047|Plywood 3 mm
+1048|Żid materjal, eż. plywood tal-betula 3 mm (mhux obbligatorju)
+1049|Kameras li josservaw il-magna. Dik immarkata tagħti x-xbieha dirett; li timmarka oħra titfi l-ewwel waħda.
+1050|Ixgħel din il-kamera: tagħti x-xbieha dirett
+1051|Server tal-web: mixgħul, port {}
+1052|Server tal-web: mitfi
+1053|Server tal-web: żball

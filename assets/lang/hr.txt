@@ -976,3 +976,79 @@
 975|Točke iz trenutnih kutova
 976|Referentne točke
 977|Zamjenjuje točke s četiri kuta slike i mjestom gdje su sada.
+978|Prianjanje uz objekte
+979|Stranicu nije moguće napraviti: {}
+980|Preglednik nije moguće otvoriti: {}
+981|Zadani pisač
+982|Margina
+983|Samo objekti na vidljivim slojevima
+984|Samo objekti, što veći koliko stranica dopušta
+985|Otvori PDF
+986|Otvoreno u PDF pregledniku.
+987|Otvara stranicu u PDF pregledniku, koji je može ispisati s više mogućnosti
+988|Ispis
+989|Ispis…
+990|Pisač
+991|Ispisuje dizajn na papirnatom pisaču, radi provjere rasporeda ili kao predložak.
+992|Spremi kao PDF…
+993|Poslano pisaču. {}
+994|Pisač to nije prihvatio: {}
+995|Cijelo radno područje, u mjerilu
+996|Nema ničega za ispis.
+997|{} objekt(a) izlazi izvan radnog područja; na papiru se režu na njegovom rubu.
+998|{} objekt(a) izlazi izvan radnog područja; ipak se ispisuju.
+999|Test kamere: {}
+1000|Otvara sliku ove kamere s ovdje zadanim postavkama, bez spremanja
+1001|Testiraj
+1002|Naizmjenično reže i preskače duž konture.
+1003|Duljina reza
+1004|Ravnomjerni razmak
+1005|Pomak reza (kerf)
+1006|Ostavlja kratke dijelove konture neprerezanima (ili slabo prerezanima) da dio ostane na mjestu. Postavljaju se automatski.
+1007|Ograniči najveći broj mostića
+1008|Min. mostića
+1009|Pomiče konturu prema van (prema unutra ako je negativno) radi nadoknade širine reza. 0 = isključeno.
+1010|Postotak snage sloja preko mostića; 0 = laser je isključen.
+1011|Perforacija
+1012|Način perforacije
+1013|Raspored
+1014|Preskoči unutarnje oblike
+1015|Duljina preskoka
+1016|Razmak
+1017|Snaga rezanja mostića
+1018|Veličina mostića
+1019|Mostići
+1020|Mostića po obliku
+1021|Vektorski oblici na sloju u načinu Slika ne gravira se.
+1022|Radno vrijeme
+1023|Opis
+1024|Opišite projekt: što je, postavke koje su uspjele, bilješke za sljedeći put.
+1025|Web-stranica sa stanjem stroja, projektom i kamerom te API za druge programe. Nema lozinku.
+1026|Svatko na mreži može vidjeti stroj te ga zaustaviti ili pomaknuti. Nema lozinke ni šifriranja: koristite samo na mreži kojoj vjerujete.
+1027|Sluša na {}
+1028|Dostupno s drugih računala na mreži
+1029|Uključi web-poslužitelj i API
+1030|Poslužitelj se nije mogao pokrenuti: {}
+1031|Web-poslužitelj i API
+1032|Dodaj uređaj
+1033|Više postavki…
+1034|Otvara cijeli prozor uređaja s onim što je ovdje uneseno
+1035|Početna točka
+1036|Zadani materijal
+1037|Izbriši ovaj materijal
+1038|Materijal: {}
+1039|Naziv novog materijala
+1040|Novi materijal: kopija ovog
+1041|Novi naziv
+1042|Preimenuj ovaj materijal
+1043|projekt
+1044|Akril 3 mm
+1045|Koža 2 mm
+1046|Novi, prazan materijal
+1047|Šperploča 3 mm
+1048|Dodajte materijal, npr. brezova šperploča 3 mm (neobavezno)
+1049|Kamere koje nadziru stroj. Označena daje sliku uživo; označavanje druge isključuje prvu.
+1050|Uključi ovu kameru: daje sliku uživo
+1051|Web poslužitelj: uključen, port {}
+1052|Web poslužitelj: isključen
+1053|Web poslužitelj: greška

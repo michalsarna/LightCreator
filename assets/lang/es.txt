@@ -976,3 +976,79 @@
 975|Puntos de las esquinas actuales
 976|Puntos de referencia
 977|Sustituye los puntos por las cuatro esquinas de la imagen y donde están ahora.
+978|Ajustar a los objetos
+979|No se pudo crear la página: {}
+980|No se pudo abrir el visor: {}
+981|Impresora predeterminada
+982|Margen
+983|Solo objetos de capas visibles
+984|Solo los objetos, tan grandes como permita la página
+985|Abrir el PDF
+986|Abierto en el visor de PDF.
+987|Abre la página en el visor de PDF, que puede imprimirla con más opciones
+988|Imprimir
+989|Imprimir…
+990|Impresora
+991|Imprime el diseño en una impresora de papel, para comprobar la colocación o como plantilla.
+992|Guardar como PDF…
+993|Enviado a la impresora. {}
+994|La impresora no lo aceptó: {}
+995|Toda el área de trabajo, a escala
+996|No hay nada que imprimir.
+997|{} objeto(s) salen del área de trabajo; en el papel se cortan en su borde.
+998|{} objeto(s) salen del área de trabajo; se imprimen de todos modos.
+999|Prueba de la cámara: {}
+1000|Abre la imagen de esta cámara con los ajustes de aquí, sin guardar
+1001|Probar
+1002|Alterna cortar y saltar a lo largo del contorno.
+1003|Longitud del corte
+1004|Espaciado uniforme
+1005|Compensación del kerf
+1006|Deja tramos cortos del contorno sin cortar (o cortados débilmente) para que la pieza se quede en su sitio. Se colocan automáticamente.
+1007|Limitar el máximo de puentes
+1008|Puentes mín.
+1009|Mueve el contorno hacia fuera (hacia dentro si es negativo) para compensar el ancho del corte. 0 = desactivado.
+1010|Porcentaje de la potencia de la capa sobre un puente; 0 = láser apagado.
+1011|Perforación
+1012|Modo de perforación
+1013|Colocación
+1014|Omitir formas interiores
+1015|Longitud del salto
+1016|Espaciado
+1017|Potencia de corte del puente
+1018|Tamaño del puente
+1019|Puentes
+1020|Puentes por forma
+1021|Las formas vectoriales de una capa en modo Imagen no se queman.
+1022|Tiempo de trabajo
+1023|Descripción
+1024|Describe el proyecto: qué es, los ajustes que funcionaron, notas para la próxima vez.
+1025|Una página web con el estado de la máquina, el proyecto y la cámara, y una API para otros programas. No tiene contraseña.
+1026|Cualquiera en la red puede ver la máquina y detenerla o moverla. No hay contraseña ni cifrado: úsalo solo en una red de confianza.
+1027|Escuchando en {}
+1028|Accesible desde otros ordenadores de la red
+1029|Activar el servidor web y la API
+1030|No se pudo iniciar el servidor: {}
+1031|Servidor web y API
+1032|Añadir dispositivo
+1033|Más ajustes…
+1034|Abre la ventana completa del dispositivo con lo introducido aquí
+1035|Punto de partida
+1036|Material predeterminado
+1037|Eliminar este material
+1038|Material: {}
+1039|Nombre del material nuevo
+1040|Material nuevo: una copia de este
+1041|Nombre nuevo
+1042|Cambiar el nombre de este material
+1043|proyecto
+1044|Acrílico 3 mm
+1045|Cuero 2 mm
+1046|Material nuevo, vacío
+1047|Contrachapado 3 mm
+1048|Añade un material, p. ej. contrachapado de abedul 3 mm (opcional)
+1049|Cámaras que vigilan la máquina. La marcada da la imagen en vivo; marcar otra apaga la primera.
+1050|Activar esta cámara: da la imagen en vivo
+1051|Servidor web: activo, puerto {}
+1052|Servidor web: apagado
+1053|Servidor web: error
