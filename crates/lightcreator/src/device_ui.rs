@@ -365,6 +365,20 @@ impl App {
                                         }
                                     });
                                     ui.end_row();
+                                    ui.label(tr("Z axis"));
+                                    ui.vertical(|ui| {
+                                        ui.checkbox(&mut d.axes.has_z, tr("The machine has a Z axis"));
+                                        if d.axes.has_z {
+                                            ui.horizontal(|ui| {
+                                                ui.label(tr("Travel"));
+                                                ui.add(egui::DragValue::new(&mut d.axes.z_min).speed(0.5).suffix(" mm"));
+                                                ui.label("–");
+                                                ui.add(egui::DragValue::new(&mut d.axes.z_max).speed(0.5).suffix(" mm"));
+                                            });
+                                            ui.checkbox(&mut d.axes.flip_z, tr("Up is the negative Z direction"));
+                                        }
+                                    });
+                                    ui.end_row();
                                     ui.label(tr("Machine zero (0,0)"));
                                     egui::ComboBox::from_id_salt("origin").selected_text(tr(d.axes.origin.label())).show_ui(ui, |ui| {
                                         for o in Origin::ALL {
@@ -898,6 +912,22 @@ impl App {
         ctx.request_repaint_after(std::time::Duration::from_millis(500));
     }
 
+    /// A jog step of the Z axis, `dir` = 1 for up, -1 for down, kept inside the travel of the axis.
+    pub fn jog_z_action(&mut self, dir: f64) -> Option<Action> {
+        let dev = &self.doc.device;
+        let (lo, hi) = (dev.axes.z_min.min(dev.axes.z_max), dev.axes.z_min.max(dev.axes.z_max));
+        let mut dz = dir * if dev.axes.flip_z { -1.0 } else { 1.0 } * dev.jog_step;
+        if self.connected && self.machine_z.is_finite() {
+            let target = (self.machine_z + dz).clamp(lo, hi);
+            dz = target - self.machine_z;
+        }
+        if dz.abs() < 1e-9 {
+            self.status = tr("The head is at the edge of the allowed area.").to_string();
+            return None;
+        }
+        Some(dev.controller.jog_z(dz, dev.jog_feed))
+    }
+
     /// A jog step in the design's directions (x right, y down), kept inside the allowed area. `None` when there is no room.
     fn jog_action(&mut self, dx: f64, dy: f64) -> Option<Action> {
         let dev = &self.doc.device;
@@ -1162,6 +1192,23 @@ impl App {
             }
             ui.add_space(4.0);
             self.focus_button(ui, true);
+            if self.doc.device.axes.has_z {
+                ui.add_space(4.0);
+                ui.horizontal(|ui| {
+                    ui.label(tr("Z"));
+                    ui.add_enabled_ui(!running, |ui| {
+                        if ui.button(tr("Up")).clicked() {
+                            act = self.jog_z_action(1.0);
+                        }
+                        if ui.button(tr("Down")).clicked() {
+                            act = self.jog_z_action(-1.0);
+                        }
+                    });
+                    if self.machine_z.is_finite() {
+                        ui.label(RichText::new(format!("Z {:.2}", self.machine_z)).color(theme::text_dim()));
+                    }
+                });
+            }
             if !self.doc.device.macros.is_empty() {
                 ui.add_space(4.0);
                 ui.label(RichText::new(tr("Macros")).strong());

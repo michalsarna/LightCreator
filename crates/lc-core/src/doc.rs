@@ -143,6 +143,23 @@ pub struct Layer {
     /// The laser head that burns this layer (an index into the device's heads; the first one if it is not there).
     #[serde(default)]
     pub head: usize,
+    /// Machine Z (millimetres) the head goes to before the first pass of the layer; only with a Z axis and only when
+    /// `z_start` or `z_step` is not 0.
+    #[serde(default)]
+    pub z_start: f64,
+    /// Millimetres Z moves with each further pass (negative = down for a machine with up = +Z); 0 = no Z moves.
+    #[serde(default)]
+    pub z_step: f64,
+}
+
+impl Layer {
+    /// The Z positions of the passes, or nothing when the layer does not move Z.
+    pub fn z_levels(&self) -> Vec<f64> {
+        if self.z_start == 0.0 && self.z_step == 0.0 {
+            return vec![];
+        }
+        (0..self.passes.max(1)).map(|p| self.z_start + self.z_step * f64::from(p)).collect()
+    }
 }
 
 /// How a layer's laser power follows the speed.
@@ -188,6 +205,8 @@ impl Layer {
             air_assist: false,
             power_mode: PowerMode::Inherit,
             head: 0,
+            z_start: 0.0,
+            z_step: 0.0,
         }
     }
 }
@@ -575,11 +594,26 @@ pub struct Axes {
     pub flip_y: bool,
     #[serde(default)]
     pub orientation: Orientation,
+    /// The machine has a Z axis the program may move.
+    #[serde(default)]
+    pub has_z: bool,
+    /// Up is the negative Z direction (only for the jog buttons).
+    #[serde(default)]
+    pub flip_z: bool,
+    /// The range of Z the head may travel, in the machine's own coordinates.
+    #[serde(default)]
+    pub z_min: f64,
+    #[serde(default = "d_z_max")]
+    pub z_max: f64,
+}
+
+fn d_z_max() -> f64 {
+    50.0
 }
 
 impl Default for Axes {
     fn default() -> Self {
-        Axes { origin: Origin::FrontLeft, flip_x: false, flip_y: false, orientation: Orientation::Native }
+        Axes { origin: Origin::FrontLeft, flip_x: false, flip_y: false, orientation: Orientation::Native, has_z: false, flip_z: false, z_min: 0.0, z_max: 50.0 }
     }
 }
 

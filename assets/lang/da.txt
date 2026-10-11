@@ -853,3 +853,13 @@
 852|Zone {}
 853|Forbudszoner
 854|Vis forbudszoner
+855|Hvor langt Z flytter sig for hvert yderligere gennemløb (negativ er nedad, når op er +Z). 0 = Z bliver.
+856|Maskinens Z, som hovedet kører til før det første gennemløb. 0 sammen med 0 pr. gennemløb = Z flyttes ikke.
+857|Z-højderne for lag {} ligger uden for Z-aksens vandring.
+858|Maskinen har en Z-akse
+859|Vandring
+860|Op er den negative Z-retning
+861|Z
+862|Z-akse
+863|Z-højde
+864|Z pr. gennemløb

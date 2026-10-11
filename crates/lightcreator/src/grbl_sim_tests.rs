@@ -85,7 +85,7 @@ impl Session {
             match e {
                 Evt::Connected(c) => self.seen.connected = Some(c),
                 Evt::Traffic(l) if l.dir == Dir::Rx && !l.poll => self.seen.rx.push(l.text),
-                Evt::Status { state, x, y } => {
+                Evt::Status { state, x, y, .. } => {
                     self.seen.state = state;
                     self.seen.pos = (x, y);
                 }

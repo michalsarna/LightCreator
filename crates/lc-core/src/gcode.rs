@@ -510,6 +510,12 @@ pub fn generate(doc: &Document) -> Job {
                 let _ = writeln!(w.out, "; pass {}/{}", pass + 1, layer.passes);
             }
             let (pn, pt) = (pass + 1, layer.passes.max(1));
+            // A machine with a Z axis goes to the height of this pass first.
+            if dev.axes.has_z {
+                if let Some(z) = layer.z_levels().get(pass as usize) {
+                    let _ = writeln!(w.out, "G0 Z{z:.3} ; Z for pass {pn}");
+                }
+            }
             for (polys, images, shape) in &sets {
                 if let Some(sh) = shape {
                     let no = object_order.iter().position(|id| *id == sh.id).map_or(0, |i| i + 1);

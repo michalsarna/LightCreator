@@ -853,3 +853,13 @@
 852|Svæði {}
 853|Bannsvæði
 854|Sýna bannsvæði
+855|Hversu mikið Z færist með hverri umferð í viðbót (neikvætt er niður þegar upp er +Z). 0 = Z helst.
+856|Z vélarinnar sem hausinn fer á fyrir fyrstu umferð. 0 ásamt 0 á umferð = Z er ekki hreyft.
+857|Z-hæðir lags {} eru utan færslu Z-ássins.
+858|Vélin er með Z-ás
+859|Færsla
+860|Upp er neikvæð Z-átt
+861|Z
+862|Z-ás
+863|Z-hæð
+864|Z á umferð

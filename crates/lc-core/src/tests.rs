@@ -974,7 +974,7 @@ fn a_profile_without_heads_gets_one() {
 fn axes_device(origin: Origin, flip_x: bool, flip_y: bool, orientation: Orientation) -> Device {
     let mut d = Device::default();
     d.area = Area { bed_w: 300.0, bed_h: 200.0, ..Area::default() };
-    d.axes = Axes { origin, flip_x, flip_y, orientation };
+    d.axes = Axes { origin, flip_x, flip_y, orientation, ..Axes::default() };
     d
 }
 
@@ -1312,7 +1312,7 @@ fn circle_becomes_a_few_arcs_in_the_right_direction_for_every_axis_setup() {
         for (fx, fy) in [(false, false), (true, false), (false, true)] {
             for o in Orientation::ALL {
                 let mut d = circle_doc(true);
-                d.device.axes = Axes { origin, flip_x: fx, flip_y: fy, orientation: o };
+                d.device.axes = Axes { origin, flip_x: fx, flip_y: fy, orientation: o, ..Axes::default() };
                 let job = gcode::generate(&d);
                 let arcs_found = parse_arcs(&job.gcode);
                 assert!(!arcs_found.is_empty() && arcs_found.len() < 8, "{origin:?} {fx} {fy} {o:?}: {} arcs", arcs_found.len());
@@ -1564,4 +1564,36 @@ fn the_frame_may_not_touch_a_zone_either_and_zones_travel_with_the_profile() {
     assert_eq!(back.zones, d.device.zones);
     let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
     assert!(old.zones.is_empty());
+}
+
+#[test]
+fn z_heights_outside_the_travel_are_an_error_and_status_reports_give_z() {
+    let mut d = check_doc(100.0, 100.0);
+    d.device.axes.has_z = true;
+    d.device.axes.z_min = 0.0;
+    d.device.axes.z_max = 30.0;
+    d.layers[0].passes = 3;
+    d.layers[0].z_start = 20.0;
+    d.layers[0].z_step = -5.0;
+    assert!(check::job_check(&d).is_empty());
+    d.layers[0].z_step = -10.0; // 20, 10, 0: still in the travel
+    assert!(check::job_check(&d).is_empty());
+    d.layers[0].z_step = -12.0; // 20, 8, -4: below the travel
+    assert!(check::job_check(&d).iter().any(|i| i.kind == check::IssueKind::ZOutOfRange && i.layer == Some(0) && i.level == check::Level::Error));
+    d.layers[0].z_step = 5.0; // 20, 25, 30
+    assert!(check::job_check(&d).is_empty());
+    d.layers[0].z_start = 40.0;
+    assert!(check::job_check(&d).iter().any(|i| i.kind == check::IssueKind::ZOutOfRange));
+    // Without a Z axis the heights mean nothing.
+    d.device.axes.has_z = false;
+    assert!(check::job_check(&d).is_empty());
+    // Z in the reports of the controllers.
+    assert_eq!(controller::parse_status_z("<Idle|MPos:1.000,2.000,3.500|FS:0,0>"), Some(3.5));
+    assert_eq!(controller::parse_status_z("X:1.00 Y:2.00 Z:7.25 E:0.00 Count X:80"), Some(7.25));
+    assert_eq!(controller::parse_status_z("<Idle,MPos:1.0000,2.0000,4.5000,WPos:1.0000,2.0000,4.5000>"), Some(4.5));
+    assert_eq!(controller::parse_status_z("ok"), None);
+    assert_eq!(controller::parse_status_z("<Idle|FS:0,0>"), None);
+    // Z axis settings live in the profile; old ones have no axis.
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert!(!old.axes.has_z);
 }

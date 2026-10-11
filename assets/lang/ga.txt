@@ -853,3 +853,13 @@
 852|Crios {}
 853|Criosanna toirmiscthe
 854|Taispeáin criosanna toirmiscthe
+855|An méid a bhogann Z le gach pas eile (is síos é diúltach nuair is +Z é suas). 0 = fanann Z.
+856|Z an mheaisín a théann an ceann chuige roimh an gcéad phas. 0 in éineacht le 0 in aghaidh an phais = ní bhogtar Z.
+857|Tá airde Z na sraithe {} lasmuigh de thaisteal an ais Z.
+858|Tá ais Z ag an meaisín
+859|Taisteal
+860|Is é suas an treo diúltach Z
+861|Z
+862|Ais Z
+863|Airde Z
+864|Z in aghaidh an phais

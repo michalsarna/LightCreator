@@ -524,6 +524,8 @@ pub struct LayerCtx {
     pub accel: f64,
     /// The GRBL-like dialects can switch between constant and dynamic power per layer.
     pub power_modes: bool,
+    /// The machine has a Z axis: layers can set a height and a step per pass.
+    pub has_z: bool,
     /// Names and beam spots (mm, the smaller side; 0 = not known) of the laser heads.
     pub heads: Vec<(String, f64)>,
 }
@@ -533,6 +535,7 @@ impl LayerCtx {
         LayerCtx {
             accel: dev.speeds.acceleration,
             power_modes: dev.dialect().is_grbl(),
+            has_z: dev.axes.has_z,
             heads: dev.heads.iter().enumerate().map(|(i, h)| (if h.name.trim().is_empty() { trf("Head {}", &[&(i + 1)]) } else { h.name.clone() }, if h.spot_x > 0.0 && h.spot_y > 0.0 { h.spot_x.min(h.spot_y) } else { h.spot_x.max(h.spot_y) })).collect(),
         }
     }
@@ -558,6 +561,14 @@ pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_cor
         ui.label(tr("Passes"));
         ui.add(egui::DragValue::new(&mut l.passes).range(1..=100));
         ui.end_row();
+        if dev.has_z {
+            ui.label(tr("Z height"));
+            ui.add(egui::DragValue::new(&mut l.z_start).speed(0.1).suffix(" mm")).on_hover_text(tr("Machine Z the head goes to before the first pass. 0 together with 0 per pass = Z is not moved."));
+            ui.end_row();
+            ui.label(tr("Z per pass"));
+            ui.add(egui::DragValue::new(&mut l.z_step).speed(0.05).suffix(" mm")).on_hover_text(tr("How far Z moves with each further pass (negative goes down on a machine where up is +Z). 0 = Z stays."));
+            ui.end_row();
+        }
         if dev.heads.len() > 1 {
             ui.label(tr("Laser head"));
             let shown = dev.heads.get(l.head).map(|h| h.0.clone()).unwrap_or_else(|| dev.heads[0].0.clone());

@@ -853,3 +853,13 @@
 852|Zon {}
 853|Förbudszoner
 854|Visa förbudszoner
+855|Hur långt Z flyttar sig vid varje ytterligare genomgång (negativt är nedåt när upp är +Z). 0 = Z stannar.
+856|Maskinens Z som huvudet kör till före första genomgången. 0 tillsammans med 0 per genomgång = Z flyttas inte.
+857|Z-höjderna för lager {} ligger utanför Z-axelns rörelse.
+858|Maskinen har en Z-axel
+859|Rörelse
+860|Upp är negativ Z-riktning
+861|Z
+862|Z-axel
+863|Z-höjd
+864|Z per genomgång

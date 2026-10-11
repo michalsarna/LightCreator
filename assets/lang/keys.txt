@@ -853,3 +853,13 @@
 852	Zone {}
 853	No-go zones
 854	Show no-go zones
+855	How far Z moves with each further pass (negative goes down on a machine where up is +Z). 0 = Z stays.
+856	Machine Z the head goes to before the first pass. 0 together with 0 per pass = Z is not moved.
+857	The Z heights of layer {} are outside the travel of the Z axis.
+858	The machine has a Z axis
+859	Travel
+860	Up is the negative Z direction
+861	Z
+862	Z axis
+863	Z height
+864	Z per pass

@@ -853,3 +853,13 @@
 852|Tsoon {}
 853|Keelutsoonid
 854|Näita keelutsoone
+855|Kui palju Z liigub iga järgmise läbimisega (negatiivne on alla, kui üles on +Z). 0 = Z jääb.
+856|Masina Z, kuhu pea enne esimest läbimist läheb. 0 koos 0 läbimise kohta = Z-d ei liigutata.
+857|Kihi {} Z-kõrgused on Z-telje käigust väljas.
+858|Masinal on Z-telg
+859|Käik
+860|Üles on Z negatiivne suund
+861|Z
+862|Z-telg
+863|Z-kõrgus
+864|Z läbimise kohta

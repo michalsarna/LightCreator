@@ -33,6 +33,7 @@ pub fn describe(i: &Issue, layers: &[String], zones: &[String], frame: bool) -> 
         IssueKind::MoveOutside => trf("The toolpath of layer {} leaves the allowed area (overscan or travel moves).", &[&layer]),
         IssueKind::NoGoZone if frame => trf("The frame touches the no-go zone \"{}\".", &[&zone]),
         IssueKind::NoGoZone => trf("The toolpath of layer {} touches the no-go zone \"{}\".", &[&layer, &zone]),
+        IssueKind::ZOutOfRange => trf("The Z heights of layer {} are outside the travel of the Z axis.", &[&layer]),
         IssueKind::SpeedAboveMax => trf("Layer {} is faster than the maximum cutting speed of the machine.", &[&layer]),
         IssueKind::ZeroPower => trf("Layer {} burns at 0 % power.", &[&layer]),
         IssueKind::NothingToBurn => trf("Layer {} has objects but no toolpath (open lines on a fill layer, for example).", &[&layer]),
@@ -500,5 +501,51 @@ mod zone_tests {
         a.doc.device.zones.clear();
         assert!(!a.act_enabled(Act::ToggleZones));
         assert!(a.settings_pairs().iter().any(|(k, v)| *k == "zones_visible" && v == "0"));
+    }
+}
+
+#[cfg(test)]
+mod z_tests {
+    use super::*;
+
+    fn app() -> App {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.screen = crate::app::Screen::Editor;
+        let mut d = lc_core::Device::default();
+        d.axes.has_z = true;
+        d.axes.z_min = 0.0;
+        d.axes.z_max = 50.0;
+        d.jog_step = 5.0;
+        a.profiles = vec![d];
+        a.enter_editor(0);
+        a.connected = true;
+        a
+    }
+
+    #[test]
+    fn the_z_jog_stops_at_the_travel_and_follows_the_direction_setting() {
+        use lc_core::controller::Action;
+        let jog = |a: &mut App, dir: f64| a.jog_z_action(dir).map(|act| match act {
+            Action::Lines(l) => l.join(" | "),
+            _ => String::new(),
+        });
+        let mut a = app();
+        a.machine_z = 10.0;
+        assert_eq!(jog(&mut a, 1.0).unwrap(), "$J=G91 G21 Z5 F3000");
+        a.machine_z = 48.0;
+        assert_eq!(jog(&mut a, 1.0).unwrap(), "$J=G91 G21 Z2 F3000", "shortened to the end of the travel");
+        a.machine_z = 50.0;
+        assert!(jog(&mut a, 1.0).is_none(), "at the top");
+        assert!(jog(&mut a, -1.0).is_some());
+        a.machine_z = 3.0;
+        assert_eq!(jog(&mut a, -1.0).unwrap(), "$J=G91 G21 Z-3 F3000");
+        // Up is the negative direction on this machine.
+        a.doc.device.axes.flip_z = true;
+        a.machine_z = 10.0;
+        assert_eq!(jog(&mut a, 1.0).unwrap(), "$J=G91 G21 Z-5 F3000");
+        // Without a reported position the step is taken as it is.
+        a.machine_z = f64::NAN;
+        assert_eq!(jog(&mut a, -1.0).unwrap(), "$J=G91 G21 Z5 F3000");
     }
 }

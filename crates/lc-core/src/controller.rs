@@ -79,6 +79,14 @@ impl Controller {
             _ => Action::None,
         }
     }
+    /// Jog the Z axis by `dz` millimetres at `feed` mm/min.
+    pub fn jog_z(self, dz: f64, feed: f64) -> Action {
+        match self {
+            Controller::Grbl => Action::Lines(vec![format!("$J=G91 G21 Z{dz} F{feed}")]),
+            Controller::Marlin | Controller::Smoothieware => Action::Lines(vec!["G91".into(), format!("G0 Z{dz} F{feed}"), "G90".into()]),
+            _ => Action::None,
+        }
+    }
     /// Byte(s) sent right after connecting.
     pub fn on_connect(self) -> Option<u8> {
         match self {
@@ -100,6 +108,23 @@ impl Controller {
             _ => None,
         }
     }
+}
+
+/// The Z position of a status report, when it has one (`MPos:1,2,3` of GRBL and Smoothieware, `Z:3.00` of Marlin).
+pub fn parse_status_z(line: &str) -> Option<f64> {
+    if let Some(inner) = line.strip_prefix('<').and_then(|l| l.strip_suffix('>')) {
+        let sep = if inner.contains('|') { '|' } else { ',' };
+        let parts: Vec<&str> = inner.split(sep).collect();
+        let at = parts.iter().position(|p| p.starts_with("MPos:") || p.starts_with("WPos:"))?;
+        let first = parts[at].split(':').nth(1)?;
+        // GRBL: "MPos:x,y,z" in one part; Smoothieware: the values are separate parts.
+        let nums: Vec<f64> = if sep == '|' { first.split(',').filter_map(|s| s.parse().ok()).collect() } else { std::iter::once(first).chain(parts[at + 1..].iter().copied()).take(3).filter_map(|s| s.parse().ok()).collect() };
+        return nums.get(2).copied();
+    }
+    if line.starts_with("X:") {
+        return line.split_whitespace().find_map(|t| t.strip_prefix("Z:")).and_then(|v| v.parse::<f64>().ok());
+    }
+    None
 }
 
 /// The option letters GRBL reports in its build info (`$I`): `[OPT:VH,15,128]` gives `"VH"`.

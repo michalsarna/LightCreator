@@ -853,3 +853,13 @@
 852|Zona {}
 853|Zone interzise
 854|Arată zonele interzise
+855|Cât se mișcă Z la fiecare trecere următoare (negativ înseamnă în jos când sus este +Z). 0 = Z rămâne.
+856|Z al mașinii la care merge capul înainte de prima trecere. 0 împreună cu 0 pe trecere = Z nu se mișcă.
+857|Înălțimile Z ale stratului {} sunt în afara cursei axei Z.
+858|Mașina are o axă Z
+859|Cursă
+860|Sus este direcția Z negativă
+861|Z
+862|Axa Z
+863|Înălțime Z
+864|Z pe trecere

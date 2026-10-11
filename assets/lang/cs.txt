@@ -853,3 +853,13 @@
 852|Zóna {}
 853|Zakázané zóny
 854|Zobrazit zakázané zóny
+855|O kolik se Z posune s každým dalším průchodem (záporné je dolů, když nahoru je +Z). 0 = Z zůstává.
+856|Z stroje, na které hlava před prvním průchodem jede. 0 spolu s 0 na průchod = Z se nehýbe.
+857|Výšky Z vrstvy {} jsou mimo dráhu osy Z.
+858|Stroj má osu Z
+859|Dráha
+860|Nahoru je záporný směr Z
+861|Z
+862|Osa Z
+863|Výška Z
+864|Z na průchod

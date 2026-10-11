@@ -853,3 +853,13 @@
 852|Območje {}
 853|Prepovedana območja
 854|Pokaži prepovedana območja
+855|Koliko se Z premakne pri vsakem nadaljnjem prehodu (negativno je navzdol, ko je navzgor +Z). 0 = Z ostane.
+856|Z stroja, na katerega gre glava pred prvim prehodom. 0 skupaj z 0 na prehod = Z se ne premika.
+857|Višine Z plasti {} so zunaj hoda osi Z.
+858|Stroj ima os Z
+859|Hod
+860|Navzgor je negativna smer Z
+861|Z
+862|Os Z
+863|Višina Z
+864|Z na prehod

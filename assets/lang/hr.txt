@@ -853,3 +853,13 @@
 852|Zona {}
 853|Zabranjene zone
 854|Prikaži zabranjene zone
+855|Koliko se Z pomiče sa svakim sljedećim prolazom (negativno je prema dolje kad je gore +Z). 0 = Z ostaje.
+856|Z stroja na koji glava ide prije prvog prolaza. 0 zajedno s 0 po prolazu = Z se ne pomiče.
+857|Z visine sloja {} izvan su hoda osi Z.
+858|Stroj ima os Z
+859|Hod
+860|Gore je negativni smjer Z
+861|Z
+862|Os Z
+863|Z visina
+864|Z po prolazu

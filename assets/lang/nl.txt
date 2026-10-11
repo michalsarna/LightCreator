@@ -853,3 +853,13 @@
 852|Zone {}
 853|Verboden zones
 854|Verboden zones tonen
+855|Hoever Z met elke volgende doorgang beweegt (negatief is omlaag als omhoog +Z is). 0 = Z blijft.
+856|Machine-Z waar de kop naartoe gaat vóór de eerste doorgang. 0 samen met 0 per doorgang = Z wordt niet bewogen.
+857|De Z-hoogten van laag {} liggen buiten de slag van de Z-as.
+858|De machine heeft een Z-as
+859|Slag
+860|Omhoog is de negatieve Z-richting
+861|Z
+862|Z-as
+863|Z-hoogte
+864|Z per doorgang

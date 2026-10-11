@@ -853,3 +853,13 @@
 852|Sone {}
 853|Forbudssoner
 854|Vis forbudssoner
+855|Hvor langt Z flytter seg for hvert ekstra gjennomløp (negativ er nedover når opp er +Z). 0 = Z blir.
+856|Maskinens Z som hodet kjører til før første gjennomløp. 0 sammen med 0 per gjennomløp = Z flyttes ikke.
+857|Z-høydene for lag {} ligger utenfor Z-aksens vandring.
+858|Maskinen har en Z-akse
+859|Vandring
+860|Opp er negativ Z-retning
+861|Z
+862|Z-akse
+863|Z-høyde
+864|Z per gjennomløp

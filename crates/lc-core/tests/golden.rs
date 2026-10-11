@@ -290,3 +290,30 @@ fn hooks_are_validated_before_they_are_kept() {
     assert!(lc_core::hooks::check_variables("G4 P{layer_index}", lc_core::hooks::MACRO_VARS).is_err());
     assert!(lc_core::hooks::check_variables("M117 {machine_name} {pulse_width}", lc_core::hooks::MACRO_VARS).is_ok());
 }
+
+#[test]
+fn z_moves_only_when_the_machine_has_a_z_axis_and_the_layer_asks_for_them() {
+    let mut doc = rect_doc(LayerMode::Line);
+    doc.layers[0].passes = 3;
+    doc.layers[0].z_start = 12.0;
+    doc.layers[0].z_step = -2.5;
+    let mut with_z = device(&[]);
+    with_z.axes.has_z = true;
+    let text = gcode_for(doc.clone(), with_z);
+    check("grbl_m4_z_step_down", &text);
+    let zs: Vec<&str> = text.lines().filter(|l| l.starts_with("G0 Z")).collect();
+    assert_eq!(zs, vec!["G0 Z12.000 ; Z for pass 1", "G0 Z9.500 ; Z for pass 2", "G0 Z7.000 ; Z for pass 3"]);
+    // Each Z move comes before the paths of its pass.
+    let first_z = text.find("G0 Z12").unwrap();
+    let first_cut = text.find("G1 ").unwrap();
+    assert!(first_z < first_cut);
+    // Without a Z axis the layer settings are ignored: the G-code is the one of a flat job.
+    let flat = gcode_for(doc.clone(), device(&[]));
+    assert!(!flat.contains(" Z"));
+    // A layer that sets nothing never moves Z, also on a machine that has the axis.
+    let mut plain = rect_doc(LayerMode::Line);
+    plain.layers[0].passes = 2;
+    let mut with_z = device(&[]);
+    with_z.axes.has_z = true;
+    assert!(!gcode_for(plain, with_z).contains("G0 Z"));
+}

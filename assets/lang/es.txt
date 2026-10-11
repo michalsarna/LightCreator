@@ -853,3 +853,13 @@
 852|Zona {}
 853|Zonas prohibidas
 854|Mostrar las zonas prohibidas
+855|Cuánto se mueve Z en cada pasada siguiente (negativo es hacia abajo cuando arriba es +Z). 0 = Z se queda.
+856|Z de la máquina al que va el cabezal antes de la primera pasada. 0 junto con 0 por pasada = Z no se mueve.
+857|Las alturas Z de la capa {} están fuera del recorrido del eje Z.
+858|La máquina tiene un eje Z
+859|Recorrido
+860|Arriba es la dirección Z negativa
+861|Z
+862|Eje Z
+863|Altura Z
+864|Z por pasada

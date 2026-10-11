@@ -318,6 +318,8 @@ pub struct App {
     pub pointer_align: bool,
     pub connected: bool,
     pub machine: (String, f64, f64),
+    /// The Z position the controller last reported (NaN when it does not report one).
+    pub machine_z: f64,
     pub progress: (usize, usize),
     pub console: Vec<ConsoleLine>,
     pub side_tab: SideTab,
@@ -503,6 +505,7 @@ impl App {
             pointer_align: false,
             connected: false,
             machine: (tr("Disconnected").into(), 0.0, 0.0),
+            machine_z: f64::NAN,
             progress: (0, 0),
             console: vec![],
             side_tab: SideTab::Properties,
@@ -1006,7 +1009,10 @@ impl App {
                         self.focus_on = false;
                     }
                 }
-                Evt::Status { state, x, y } => self.machine = (state, x, y),
+                Evt::Status { state, x, y, z } => {
+                    self.machine = (state, x, y);
+                    self.machine_z = z;
+                }
                 Evt::Progress { done, total } => {
                     self.progress = (done, total);
                     if done >= total {

@@ -1125,6 +1125,17 @@ const TABLE: &[[&str; 7]] = &[
     ["Zone {}", "Strefa {}", "Zone {}", "Zona {}", "Alue {}", "区域 {}", "क्षेत्र {}"],
     ["No-go zones", "Strefy zakazane", "Sperrzonen", "Zone vietate", "Kielletyt alueet", "禁区", "निषिद्ध क्षेत्र"],
     ["Show no-go zones", "Pokaż strefy zakazane", "Sperrzonen anzeigen", "Mostra le zone vietate", "Näytä kielletyt alueet", "显示禁区", "निषिद्ध क्षेत्र दिखाएँ"],
+    // ---- z axis ----
+    ["How far Z moves with each further pass (negative goes down on a machine where up is +Z). 0 = Z stays.", "O ile Z przesuwa się z każdym kolejnym przejściem (ujemna wartość to w dół, gdy góra to +Z). 0 = Z zostaje.", "Wie weit Z mit jedem weiteren Durchgang fährt (negativ heißt nach unten, wenn oben +Z ist). 0 = Z bleibt.", "Di quanto si muove Z a ogni passata successiva (negativo scende se l'alto è +Z). 0 = Z resta.", "Kuinka paljon Z liikkuu jokaisella lisäläpäisyllä (negatiivinen on alas, kun ylös on +Z). 0 = Z pysyy.", "每多一遍 Z 移动多少（上为 +Z 的机器上负值为向下）。0 = Z 不动。", "हर अगले पास के साथ Z कितना चलता है (ऊपर +Z वाली मशीन पर ऋणात्मक का अर्थ नीचे)। 0 = Z वहीं रहता है।"],
+    ["Machine Z the head goes to before the first pass. 0 together with 0 per pass = Z is not moved.", "Z maszyny, na które głowica jedzie przed pierwszym przejściem. 0 razem z 0 na przejście = Z nie jest ruszane.", "Maschinen-Z, auf das der Kopf vor dem ersten Durchgang fährt. 0 zusammen mit 0 je Durchgang = Z wird nicht bewegt.", "Z macchina a cui va la testa prima della prima passata. 0 insieme a 0 per passata = Z non viene mosso.", "Koneen Z, johon pää menee ennen ensimmäistä läpäisyä. 0 yhdessä arvon 0 per läpäisy kanssa = Z:tä ei liikuteta.", "机头在第一遍之前前往的机器 Z。与每遍 0 同时为 0 = 不移动 Z。", "मशीन का Z जहाँ हेड पहले पास से पहले जाता है। 0 और प्रति पास 0 = Z नहीं चलता।"],
+    ["The Z heights of layer {} are outside the travel of the Z axis.", "Wysokości Z warstwy {} są poza zakresem osi Z.", "Die Z-Höhen von Ebene {} liegen außerhalb des Verfahrwegs der Z-Achse.", "Le altezze Z del livello {} sono fuori dalla corsa dell'asse Z.", "Tason {} Z-korkeudet ovat Z-akselin liikealueen ulkopuolella.", "图层 {} 的 Z 高度超出了 Z 轴行程。", "परत {} की Z ऊँचाइयाँ Z अक्ष की यात्रा से बाहर हैं।"],
+    ["The machine has a Z axis", "Maszyna ma oś Z", "Die Maschine hat eine Z-Achse", "La macchina ha un asse Z", "Koneessa on Z-akseli", "机器有 Z 轴", "मशीन में Z अक्ष है"],
+    ["Travel", "Zakres", "Verfahrweg", "Corsa", "Liikealue", "行程", "यात्रा"],
+    ["Up is the negative Z direction", "Góra to ujemny kierunek Z", "Oben ist die negative Z-Richtung", "L'alto è la direzione Z negativa", "Ylös on Z:n negatiivinen suunta", "向上是 Z 的负方向", "ऊपर Z की ऋणात्मक दिशा है"],
+    ["Z", "Z", "Z", "Z", "Z", "Z", "Z"],
+    ["Z axis", "Oś Z", "Z-Achse", "Asse Z", "Z-akseli", "Z 轴", "Z अक्ष"],
+    ["Z height", "Wysokość Z", "Z-Höhe", "Altezza Z", "Z-korkeus", "Z 高度", "Z ऊँचाई"],
+    ["Z per pass", "Z na przejście", "Z je Durchgang", "Z per passata", "Z per läpäisy", "每遍 Z 步进", "प्रति पास Z"],
 ];
 #[cfg(test)]
 mod tests {

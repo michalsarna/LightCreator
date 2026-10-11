@@ -853,3 +853,13 @@
 852|Zona {}
 853|Uždraustos zonos
 854|Rodyti uždraustas zonas
+855|Kiek Z pasislenka su kiekvienu kitu praėjimu (neigiamas reiškia žemyn, kai aukštyn yra +Z). 0 = Z lieka.
+856|Staklių Z, į kurį galvutė nuvyksta prieš pirmąjį praėjimą. 0 kartu su 0 per praėjimą = Z nejudinamas.
+857|Sluoksnio {} Z aukščiai už Z ašies eigos ribų.
+858|Staklės turi Z ašį
+859|Eiga
+860|Aukštyn yra neigiama Z kryptis
+861|Z
+862|Z ašis
+863|Z aukštis
+864|Z per praėjimą

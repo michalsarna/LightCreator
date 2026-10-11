@@ -24,6 +24,8 @@ pub enum IssueKind {
     MoveOutside,
     /// An output layer that has objects burns at 0 % power.
     ZeroPower,
+    /// The Z of a layer's passes leaves the range of the Z axis.
+    ZOutOfRange,
     /// A move (also an empty one) touches an enabled no-go zone.
     NoGoZone,
     /// The speed of an output layer is above the maximum cutting speed of the machine.
@@ -109,6 +111,15 @@ pub fn job_check(doc: &Document) -> Vec<Issue> {
         let named = out.iter().any(|i| i.level == Level::Error && doc.shapes.iter().any(|s| s.layer == li && i.shapes.contains(&s.id)));
         if !named {
             out.push(Issue { level: Level::Error, kind: IssueKind::MoveOutside, shapes: vec![], layer: Some(li), zone: None });
+        }
+    }
+    // The heights the layers go to must lie in the travel of the Z axis.
+    if dev.axes.has_z {
+        for li in doc.layer_order() {
+            let l = &doc.layers[li];
+            if l.output && doc.shapes.iter().any(|s| s.layer == li) && l.z_levels().iter().any(|z| *z < dev.axes.z_min - TOLERANCE || *z > dev.axes.z_max + TOLERANCE) {
+                out.push(Issue { level: Level::Error, kind: IssueKind::ZOutOfRange, shapes: vec![], layer: Some(li), zone: None });
+            }
         }
     }
     // Every move, also the ones with the laser off, must stay out of the zones.

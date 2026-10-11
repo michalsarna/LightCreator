@@ -853,3 +853,13 @@
 852|Żona {}
 853|Żoni pprojbiti
 854|Uri ż-żoni pprojbiti
+855|Kemm jiċċaqlaq Z ma' kull passaġġ ieħor (in-negattiv huwa 'l isfel meta 'l fuq huwa +Z). 0 = Z jibqa'.
+856|Z tal-magna li lejha tmur ir-ras qabel l-ewwel passaġġ. 0 flimkien ma' 0 għal kull passaġġ = Z ma jiċċaqlaqx.
+857|L-għoli Z tas-saff {} huma barra mill-vjaġġ tal-assi Z.
+858|Il-magna għandha assi Z
+859|Vjaġġ
+860|'L fuq huwa d-direzzjoni Z negattiva
+861|Z
+862|Assi Z
+863|Għoli Z
+864|Z għal kull passaġġ

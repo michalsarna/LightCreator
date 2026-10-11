@@ -103,7 +103,7 @@ pub enum Evt {
     /// A line that crossed the serial port.
     Traffic(ConsoleLine),
     Connected(bool),
-    Status { state: String, x: f64, y: f64 },
+    Status { state: String, x: f64, y: f64, z: f64 },
     Progress { done: usize, total: usize },
     /// A job is running, the controller has not answered for `secs` and the machine is not moving.
     Stalled { secs: u64, state: String },
@@ -340,7 +340,7 @@ fn worker(rx: Receiver<Cmd>, tx: Sender<Evt>, ctx: eframe::egui::Context, stall_
                 } else if let Some((state, x, y)) = lc_core::controller::parse_status(&line) {
                     emit(traffic(Dir::Rx, line.clone(), true));
                     machine_state = state.clone();
-                    emit(Evt::Status { state, x, y });
+                    emit(Evt::Status { state, x, y, z: lc_core::controller::parse_status_z(&line).unwrap_or(f64::NAN) });
                 } else if restarting.is_some() && (line == "ok" || line.starts_with("error")) {
                     // Start-up noise (e.g. `error:7` from an empty EEPROM) or a late reply to a line sent before the
                     // reset: not the acknowledgement of anything queued now.

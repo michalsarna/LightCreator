@@ -853,3 +853,13 @@
 852|Zona {}
 853|Aizliegtās zonas
 854|Rādīt aizliegtās zonas
+855|Cik Z pārvietojas ar katru nākamo caurlaidi (negatīvs ir uz leju, ja uz augšu ir +Z). 0 = Z paliek.
+856|Iekārtas Z, uz kuru galviņa dodas pirms pirmās caurlaides. 0 kopā ar 0 uz caurlaidi = Z netiek kustināts.
+857|Slāņa {} Z augstumi ir ārpus Z ass gājiena.
+858|Iekārtai ir Z ass
+859|Gājiens
+860|Uz augšu ir negatīvais Z virziens
+861|Z
+862|Z ass
+863|Z augstums
+864|Z uz caurlaidi

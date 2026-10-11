@@ -853,3 +853,13 @@
 852|Zona {}
 853|Zonas proibidas
 854|Mostrar as zonas proibidas
+855|Quanto Z se move em cada passagem seguinte (negativo é para baixo quando cima é +Z). 0 = Z fica.
+856|Z da máquina a que o cabeçote vai antes da primeira passagem. 0 junto com 0 por passagem = Z não se move.
+857|As alturas Z da camada {} estão fora do curso do eixo Z.
+858|A máquina tem um eixo Z
+859|Curso
+860|Cima é a direção Z negativa
+861|Z
+862|Eixo Z
+863|Altura Z
+864|Z por passagem

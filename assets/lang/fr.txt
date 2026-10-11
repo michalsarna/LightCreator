@@ -853,3 +853,13 @@
 852|Zone {}
 853|Zones interdites
 854|Afficher les zones interdites
+855|De combien Z bouge à chaque passe suivante (négatif descend quand le haut est +Z). 0 = Z reste.
+856|Z machine où va la tête avant la première passe. 0 avec 0 par passe = Z n'est pas déplacé.
+857|Les hauteurs Z du calque {} sont hors de la course de l'axe Z.
+858|La machine a un axe Z
+859|Course
+860|Le haut est la direction Z négative
+861|Z
+862|Axe Z
+863|Hauteur Z
+864|Z par passe

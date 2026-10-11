@@ -853,3 +853,13 @@
 852|Zona {}
 853|Zones prohibides
 854|Mostra les zones prohibides
+855|Quant es mou Z a cada passada següent (negatiu és cap avall quan amunt és +Z). 0 = Z es queda.
+856|Z de la màquina a què va el capçal abans de la primera passada. 0 juntament amb 0 per passada = Z no es mou.
+857|Les altures Z de la capa {} són fora del recorregut de l'eix Z.
+858|La màquina té un eix Z
+859|Recorregut
+860|Amunt és la direcció Z negativa
+861|Z
+862|Eix Z
+863|Altura Z
+864|Z per passada

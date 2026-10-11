@@ -853,3 +853,13 @@
 852|{}. zóna
 853|Tiltott zónák
 854|Tiltott zónák megjelenítése
+855|Mennyit mozog a Z minden további áthaladásnál (negatív lefelé, ha a fel +Z). 0 = a Z marad.
+856|A gép Z értéke, ahová a fej az első áthaladás előtt megy. A 0 és az áthaladásonkénti 0 együtt = a Z nem mozog.
+857|A(z) {} réteg Z magasságai a Z tengely útján kívül vannak.
+858|A gépnek van Z tengelye
+859|Út
+860|A fel a Z negatív iránya
+861|Z
+862|Z tengely
+863|Z magasság
+864|Z áthaladásonként

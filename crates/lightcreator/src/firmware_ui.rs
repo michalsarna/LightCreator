@@ -336,7 +336,7 @@ impl App {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::device_ui::{ReadCfg, ReadKind};
+    use crate::device_ui::ReadKind;
 
     fn app() -> App {
         let ctx = egui::Context::default();
