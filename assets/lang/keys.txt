@@ -1000,3 +1000,23 @@
 999	Camera test: {}
 1000	Opens the picture of this camera as set here, without saving
 1001	Test
+1002	Alternates cutting and skipping along the outline.
+1003	Cut length
+1004	Even spacing
+1005	Kerf offset
+1006	Leaves short stretches of the outline uncut (or cut weakly) so the piece stays in place. They are placed automatically.
+1007	Limit max tabs
+1008	Min tabs
+1009	Moves the outline out (in, when negative) to make up for the width of the cut. 0 = off.
+1010	Percent of the layer's power over a tab; 0 = the laser is off.
+1011	Perforation
+1012	Perforation mode
+1013	Placement
+1014	Skip inner shapes
+1015	Skip length
+1016	Spacing
+1017	Tab cut power
+1018	Tab size
+1019	Tabs / bridges
+1020	Tabs per shape
+1021	Vector shapes on a layer in the Image mode are not burnt.

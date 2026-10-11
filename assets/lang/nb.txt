@@ -1000,3 +1000,23 @@
 999|Kameratest: {}
 1000|Åpner bildet fra dette kameraet med innstillingene her, uten å lagre
 1001|Test
+1002|Veksler mellom å skjære og hoppe over langs konturen.
+1003|Skjærelengde
+1004|Jevn avstand
+1005|Snittbredde-forskyvning (kerf)
+1006|Lar korte stykker av konturen være uskåret (eller svakt skåret) slik at emnet blir på plass. De plasseres automatisk.
+1007|Begrens maks antall broer
+1008|Min. broer
+1009|Flytter konturen utover (innover hvis negativ) for å utjevne snittets bredde. 0 = av.
+1010|Prosent av lagets effekt over en bro; 0 = laseren er av.
+1011|Perforering
+1012|Perforeringsmodus
+1013|Plassering
+1014|Hopp over indre former
+1015|Lengde å hoppe over
+1016|Avstand
+1017|Skjæreeffekt på bro
+1018|Brostørrelse
+1019|Broer
+1020|Broer per form
+1021|Vektorformer på et lag i bildemodus brennes ikke.

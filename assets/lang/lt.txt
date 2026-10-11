@@ -1000,3 +1000,23 @@
 999|Kameros bandymas: {}
 1000|Atidaro šios kameros vaizdą su čia nustatytomis reikšmėmis, neįrašant
 1001|Išbandyti
+1002|Kaitaliojasi pjovimas ir praleidimas išilgai kontūro.
+1003|Pjūvio ilgis
+1004|Vienodi tarpai
+1005|Pjūvio pločio poslinkis (kerf)
+1006|Palieka trumpus kontūro ruožus nepjautus (arba silpnai pjautus), kad detalė liktų vietoje. Jie išdėstomi automatiškai.
+1007|Apriboti didžiausią tiltelių skaičių
+1008|Min. tiltelių
+1009|Perstumia kontūrą į išorę (į vidų, jei neigiama), kad kompensuotų pjūvio plotį. 0 = išjungta.
+1010|Sluoksnio galios procentas ties tilteliu; 0 = lazeris išjungtas.
+1011|Perforacija
+1012|Perforacijos režimas
+1013|Išdėstymas
+1014|Praleisti vidines formas
+1015|Praleidimo ilgis
+1016|Tarpas
+1017|Tiltelio pjovimo galia
+1018|Tiltelio dydis
+1019|Tilteliai
+1020|Tiltelių vienai formai
+1021|Vektorinės formos sluoksnyje, esančiame Vaizdo režime, nededamos.

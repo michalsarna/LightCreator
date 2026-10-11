@@ -1000,3 +1000,23 @@
 999|Kameras tests: {}
 1000|Atver šīs kameras attēlu ar šeit norādītajiem iestatījumiem, nesaglabājot
 1001|Pārbaudīt
+1002|Mijas griešana un izlaišana gar kontūru.
+1003|Griezuma garums
+1004|Vienmērīgi atstarpes
+1005|Griezuma platuma nobīde (kerf)
+1006|Atstāj īsus kontūra posmus negrieztus (vai vāji grieztus), lai detaļa paliktu vietā. Tie tiek izvietoti automātiski.
+1007|Ierobežot maksimālo tiltiņu skaitu
+1008|Min. tiltiņu
+1009|Pārbīda kontūru uz āru (uz iekšu, ja negatīvs), lai kompensētu griezuma platumu. 0 = izslēgts.
+1010|Slāņa jaudas procents pie tiltiņa; 0 = lāzers izslēgts.
+1011|Perforācija
+1012|Perforācijas režīms
+1013|Izvietojums
+1014|Izlaist iekšējās formas
+1015|Izlaišanas garums
+1016|Atstarpe
+1017|Tiltiņa griešanas jauda
+1018|Tiltiņa izmērs
+1019|Tiltiņi
+1020|Tiltiņi uz formu
+1021|Vektoru formas slānī Attēla režīmā netiek dedzinātas.

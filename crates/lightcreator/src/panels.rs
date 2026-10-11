@@ -372,7 +372,8 @@ impl App {
         ui.checkbox(&mut self.show_all_layers, tr("Show all 30 layers"));
         ui.separator();
         let has_images = self.doc.shapes.iter().any(|s| s.layer == self.active_layer && s.is_image());
-        let layer_ctx = LayerCtx::of(&self.doc.device);
+        let mut layer_ctx = LayerCtx::of(&self.doc.device);
+        layer_ctx.image_only = self.doc.is_image_layer(self.active_layer);
         let l = &mut self.doc.layers[self.active_layer];
         ui.horizontal(|ui| {
             let c = PALETTE[l.color.min(29)];
@@ -408,7 +409,8 @@ impl App {
         let before = self.doc.layers.clone();
         let (units, su) = (self.doc.device.units, self.doc.device.speed_unit);
         let has_images = self.doc.shapes.iter().any(|s| s.layer == i && s.is_image());
-        let layer_ctx = LayerCtx::of(&self.doc.device);
+        let mut layer_ctx = LayerCtx::of(&self.doc.device);
+        layer_ctx.image_only = self.doc.is_image_layer(i);
         let mut open = true;
         let title = trf("Layer options — {}", &[&self.doc.layers[i].name]);
         crate::window_ui::popup(ctx, "layer_dialog", &title, [340.0, 220.0], &mut open, |ui| {
@@ -523,6 +525,8 @@ pub struct LayerCtx {
     pub rotary: bool,
     /// Names and beam spots (mm, the smaller side; 0 = not known) of the laser heads.
     pub heads: Vec<(String, f64)>,
+    /// The layer holds only images: its mode is Image and cannot be changed.
+    pub image_only: bool,
 }
 
 impl LayerCtx {
@@ -532,6 +536,7 @@ impl LayerCtx {
             power_modes: dev.dialect().is_grbl(),
             has_z: dev.axes.has_z,
             rotary: dev.rotary.enabled,
+            image_only: false,
             heads: dev.heads.iter().enumerate().map(|(i, h)| (if h.name.trim().is_empty() { trf("Head {}", &[&(i + 1)]) } else { h.name.clone() }, if h.spot_x > 0.0 && h.spot_y > 0.0 { h.spot_x.min(h.spot_y) } else { h.spot_x.max(h.spot_y) })).collect(),
         }
     }
@@ -542,10 +547,13 @@ pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_cor
     let power_modes = dev.power_modes;
     egui::Grid::new(("cut", id_scope)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
         ui.label(tr("Mode"));
-        egui::ComboBox::from_id_salt(("cm", id_scope)).selected_text(tr(l.mode.label())).show_ui(ui, |ui| {
-            for m in LayerMode::ALL {
-                ui.selectable_value(&mut l.mode, m, tr(m.label()));
-            }
+        // A layer of images is in the Image mode and stays there; everything else can still be set.
+        ui.add_enabled_ui(!dev.image_only, |ui| {
+            egui::ComboBox::from_id_salt(("cm", id_scope)).selected_text(tr(l.mode.label())).show_ui(ui, |ui| {
+                for m in LayerMode::ALL {
+                    ui.selectable_value(&mut l.mode, m, tr(m.label()));
+                }
+            });
         });
         ui.end_row();
         ui.label(tr("Speed"));
@@ -557,6 +565,11 @@ pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_cor
         ui.label(tr("Passes"));
         ui.add(egui::DragValue::new(&mut l.passes).range(1..=100));
         ui.end_row();
+        if matches!(l.mode, LayerMode::Line | LayerMode::FillAndLine) {
+            ui.label(tr("Kerf offset"));
+            drag_len(ui, units, &mut l.kerf, 0.01, Some((-5.0, 5.0))).on_hover_text(tr("Moves the outline out (in, when negative) to make up for the width of the cut. 0 = off."));
+            ui.end_row();
+        }
         if dev.rotary {
             ui.label(tr("Rotary"));
             ui.checkbox(&mut l.rotary, tr("Burn this layer on the rotary")).on_hover_text(tr("All burning layers must be rotary, or none. The design may not be higher than the way round the workpiece."));
@@ -628,11 +641,17 @@ pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_cor
             ui.end_row();
         }
     });
+    if matches!(l.mode, LayerMode::Line | LayerMode::FillAndLine) {
+        cut_options_ui(ui, units, l, id_scope);
+    }
+    if l.mode == LayerMode::Image && !dev.image_only {
+        ui.label(RichText::new(tr("Vector shapes on a layer in the Image mode are not burnt.")).small().color(Color32::from_rgb(0xe8, 0x8a, 0x1f)));
+    }
     // Dithering only matters for bitmap images, not for vector shapes.
     if !has_images {
         return;
     }
-    egui::CollapsingHeader::new(tr("Image settings")).id_salt(("img_hdr", id_scope)).default_open(false).show(ui, |ui| {
+    egui::CollapsingHeader::new(tr("Image settings")).id_salt(("img_hdr", id_scope)).default_open(dev.image_only).show(ui, |ui| {
         ui.label(RichText::new(tr("Images use the interval, speed, power and overscan of their layer.")).color(theme::text_dim()));
         egui::Grid::new(("img_cut", id_scope)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
             ui.label(tr("Dithering"));
@@ -648,6 +667,64 @@ pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_cor
             let max = l.power;
             ui.add(egui::Slider::new(&mut l.min_power, 0.0..=max));
             ui.end_row();
+        });
+    });
+}
+
+/// Perforation and tabs of a line layer (collapsed until switched on).
+fn cut_options_ui(ui: &mut egui::Ui, units: lc_core::Units, l: &mut lc_core::Layer, id_scope: &str) {
+    use lc_core::cutopts::TabMode;
+    egui::CollapsingHeader::new(tr("Perforation")).id_salt(("perf", id_scope)).default_open(l.perforation.enabled).show(ui, |ui| {
+        ui.checkbox(&mut l.perforation.enabled, tr("Perforation mode")).on_hover_text(tr("Alternates cutting and skipping along the outline."));
+        ui.add_enabled_ui(l.perforation.enabled, |ui| {
+            egui::Grid::new(("perf_g", id_scope)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
+                ui.label(tr("Cut length"));
+                drag_len(ui, units, &mut l.perforation.cut, 0.05, Some((0.01, 100.0)));
+                ui.end_row();
+                ui.label(tr("Skip length"));
+                drag_len(ui, units, &mut l.perforation.skip, 0.05, Some((0.01, 100.0)));
+                ui.end_row();
+            });
+        });
+    });
+    egui::CollapsingHeader::new(tr("Tabs / bridges")).id_salt(("tabs", id_scope)).default_open(l.tabs.enabled).show(ui, |ui| {
+        ui.checkbox(&mut l.tabs.enabled, tr("Tabs / bridges")).on_hover_text(tr("Leaves short stretches of the outline uncut (or cut weakly) so the piece stays in place. They are placed automatically."));
+        ui.add_enabled_ui(l.tabs.enabled, |ui| {
+            egui::Grid::new(("tabs_g", id_scope)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
+                ui.label(tr("Tab size"));
+                drag_len(ui, units, &mut l.tabs.size, 0.05, Some((0.05, 100.0)));
+                ui.end_row();
+                ui.label(tr("Placement"));
+                ui.horizontal(|ui| {
+                    ui.selectable_value(&mut l.tabs.mode, TabMode::Even, tr("Even spacing"));
+                    ui.selectable_value(&mut l.tabs.mode, TabMode::PerShape, tr("Tabs per shape"));
+                });
+                ui.end_row();
+                if l.tabs.mode == TabMode::Even {
+                    ui.label(tr("Spacing"));
+                    drag_len(ui, units, &mut l.tabs.spacing, 0.5, Some((0.5, 10_000.0)));
+                    ui.end_row();
+                    ui.label(tr("Min tabs"));
+                    ui.add(egui::DragValue::new(&mut l.tabs.min_tabs).range(0..=1000));
+                    ui.end_row();
+                } else {
+                    ui.label(tr("Tabs per shape"));
+                    ui.add(egui::DragValue::new(&mut l.tabs.per_shape).range(0..=1000));
+                    ui.end_row();
+                }
+                ui.label(tr("Limit max tabs"));
+                ui.horizontal(|ui| {
+                    ui.checkbox(&mut l.tabs.limit_max, "");
+                    ui.add_enabled(l.tabs.limit_max, egui::DragValue::new(&mut l.tabs.max_tabs).range(0..=1000));
+                });
+                ui.end_row();
+                ui.label(tr("Tab cut power"));
+                ui.add(egui::DragValue::new(&mut l.tabs.cut_power).range(0.0..=100.0).suffix(" %")).on_hover_text(tr("Percent of the layer's power over a tab; 0 = the laser is off."));
+                ui.end_row();
+                ui.label(tr("Skip inner shapes"));
+                ui.checkbox(&mut l.tabs.skip_inner, "");
+                ui.end_row();
+            });
         });
     });
 }

@@ -1000,3 +1000,23 @@
 999|Preizkus kamere: {}
 1000|Odpre sliko te kamere z nastavitvami tukaj, brez shranjevanja
 1001|Preizkusi
+1002|Izmenjuje rezanje in preskakovanje vzdolž obrisa.
+1003|Dolžina reza
+1004|Enakomerni razmik
+1005|Zamik reza (kerf)
+1006|Pusti kratke odseke obrisa nerezane (ali šibko rezane), da kos ostane na mestu. Postavljeni so samodejno.
+1007|Omeji največ mostičkov
+1008|Min. mostičkov
+1009|Premakne obris navzven (navznoter, če je negativno), da nadomesti širino reza. 0 = izklopljeno.
+1010|Odstotek moči sloja čez mostiček; 0 = laser je izklopljen.
+1011|Perforacija
+1012|Način perforacije
+1013|Postavitev
+1014|Preskoči notranje oblike
+1015|Dolžina preskoka
+1016|Razmik
+1017|Moč rezanja mostička
+1018|Velikost mostička
+1019|Mostički
+1020|Mostičkov na obliko
+1021|Vektorske oblike na sloju v načinu Slika se ne žgejo.

@@ -1000,3 +1000,23 @@
 999|Kaamera test: {}
 1000|Avab selle kaamera pildi siin määratud seadetega, salvestamata
 1001|Testi
+1002|Vaheldab lõikamist ja vahelejätmist piki kontuuri.
+1003|Lõike pikkus
+1004|Ühtlane vahe
+1005|Lõikelaiuse nihe (kerf)
+1006|Jätab kontuuri lühikesed lõigud lõikamata (või nõrgalt lõigatuks), et detail püsiks kohal. Need paigutatakse automaatselt.
+1007|Piira sildade maksimaalset arvu
+1008|Silde min.
+1009|Nihutab kontuuri väljapoole (sissepoole, kui negatiivne), et korvata lõike laiust. 0 = väljas.
+1010|Protsent kihi võimsusest sillal; 0 = laser on väljas.
+1011|Perforatsioon
+1012|Perforatsiooni režiim
+1013|Paigutus
+1014|Jäta sisemised kujundid vahele
+1015|Vahelejätu pikkus
+1016|Vahe
+1017|Silla lõikevõimsus
+1018|Silla suurus
+1019|Sillad
+1020|Sildu kujundi kohta
+1021|Pildirežiimis kihi vektorkujundeid ei põletata.

@@ -1000,3 +1000,23 @@
 999|Tástáil ceamara: {}
 1000|Osclaíonn sé pictiúr an cheamara seo leis na socruithe anseo, gan sábháil
 1001|Tástáil
+1002|Malartaíonn sé gearradh agus scipeáil feadh na imlíne.
+1003|Fad an ghearrtha
+1004|Spásáil chothrom
+1005|Fritháireamh kerf
+1006|Fágann sé stráicí gearra den imlíne gan ghearradh (nó gearrtha go lag) ionas go bhfanann an píosa ina áit. Cuirtear go huathoibríoch iad.
+1007|Teorainn le uastábla na dtáibleog
+1008|Táibleoga íosta
+1009|Bogann sé an imlíne amach (isteach, má tá sé diúltach) chun leithead an ghearrtha a chúiteamh. 0 = as.
+1010|Céatadán de chumhacht an chisil thar táibleog; 0 = an léasar as.
+1011|Peirfriú
+1012|Mód peirfriúcháin
+1013|Láithriú
+1014|Scipeáil cruthanna istigh
+1015|Fad na scipeála
+1016|Spásáil
+1017|Cumhacht ghearrtha táibleoige
+1018|Méid táibleoige
+1019|Táibleoga / droichid
+1020|Táibleoga in aghaidh an chruth
+1021|Ní dhóitear cruthanna veicteora ar chiseal sa mhód Íomhá.

@@ -1000,3 +1000,23 @@
 999|Test kamere: {}
 1000|Otvara sliku ove kamere s ovdje zadanim postavkama, bez spremanja
 1001|Testiraj
+1002|Naizmjenično reže i preskače duž konture.
+1003|Duljina reza
+1004|Ravnomjerni razmak
+1005|Pomak reza (kerf)
+1006|Ostavlja kratke dijelove konture neprerezanima (ili slabo prerezanima) da dio ostane na mjestu. Postavljaju se automatski.
+1007|Ograniči najveći broj mostića
+1008|Min. mostića
+1009|Pomiče konturu prema van (prema unutra ako je negativno) radi nadoknade širine reza. 0 = isključeno.
+1010|Postotak snage sloja preko mostića; 0 = laser je isključen.
+1011|Perforacija
+1012|Način perforacije
+1013|Raspored
+1014|Preskoči unutarnje oblike
+1015|Duljina preskoka
+1016|Razmak
+1017|Snaga rezanja mostića
+1018|Veličina mostića
+1019|Mostići
+1020|Mostića po obliku
+1021|Vektorski oblici na sloju u načinu Slika ne gravira se.

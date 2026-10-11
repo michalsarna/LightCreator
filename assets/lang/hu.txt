@@ -1000,3 +1000,23 @@
 999|Kamerateszt: {}
 1000|Megnyitja a kamera képét az itt megadott beállításokkal, mentés nélkül
 1001|Teszt
+1002|Váltogatja a vágást és a kihagyást a kontúr mentén.
+1003|Vágás hossza
+1004|Egyenletes távolság
+1005|Vágásszélesség-eltolás (kerf)
+1006|A kontúr rövid szakaszait vágatlanul (vagy gyengén vágva) hagyja, hogy a darab a helyén maradjon. Automatikusan kerülnek elhelyezésre.
+1007|A hidak maximális számának korlátozása
+1008|Hidak min.
+1009|A kontúrt kifelé (negatívnál befelé) tolja, hogy kiegyenlítse a vágás szélességét. 0 = ki.
+1010|A réteg teljesítményének százaléka a hídnál; 0 = a lézer ki van kapcsolva.
+1011|Perforálás
+1012|Perforálás mód
+1013|Elhelyezés
+1014|Belső alakzatok kihagyása
+1015|Kihagyás hossza
+1016|Távolság
+1017|A híd vágóteljesítménye
+1018|A híd mérete
+1019|Hidak
+1020|Hidak alakzatonként
+1021|A Kép módú rétegen lévő vektoros alakzatok nem kerülnek kiégetésre.

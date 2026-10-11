@@ -1000,3 +1000,23 @@
 999|Test tal-kamera: {}
 1000|Jiftaħ ix-xbieha ta' din il-kamera bl-issettjar hawn, mingħajr ma jissejvja
 1001|Ittesta
+1002|Ibdel it-qtugħ u t-taqbiż tul il-kontorn.
+1003|Tul tal-qtugħ
+1004|Spazjar uniformi
+1005|Kumpens tal-kerf
+1006|Iħalli biċċiet qosra tal-kontorn mhux maqtugħin (jew maqtugħin dgħajjef) biex il-biċċa tibqa' f'postha. Jitqiegħdu awtomatikament.
+1007|Illimita n-numru massimu ta' pontijiet
+1008|Pontijiet min.
+1009|Iċaqlaq il-kontorn 'il barra (għal ġewwa, jekk negattiv) biex jikkumpensa l-wisa' tal-qtugħ. 0 = mitfi.
+1010|Perċentwali tal-qawwa tas-saff fuq pont; 0 = il-laser mitfi.
+1011|Perforazzjoni
+1012|Modalità tal-perforazzjoni
+1013|Tqegħid
+1014|Aqbeż il-forom ta' ġewwa
+1015|Tul tat-taqbiż
+1016|Spazju
+1017|Qawwa tal-qtugħ tal-pont
+1018|Daqs tal-pont
+1019|Pontijiet
+1020|Pontijiet għal kull forma
+1021|Il-forom vettorjali fuq saff fil-modalità Immaġni ma jinħarqux.

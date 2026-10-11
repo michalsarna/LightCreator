@@ -1000,3 +1000,23 @@
 999|Cameratest: {}
 1000|Opent het beeld van deze camera met de instellingen hier, zonder op te slaan
 1001|Testen
+1002|Wisselt snijden en overslaan af langs de contour.
+1003|Snijlengte
+1004|Gelijke afstand
+1005|Kerf-offset
+1006|Laat korte stukken van de contour ongesneden (of zwak gesneden) zodat het stuk op zijn plaats blijft. Ze worden automatisch geplaatst.
+1007|Maximum aantal bruggen beperken
+1008|Min. bruggen
+1009|Verschuift de contour naar buiten (naar binnen als negatief) om de breedte van de snede te compenseren. 0 = uit.
+1010|Percentage van het vermogen van de laag op een brug; 0 = laser uit.
+1011|Perforatie
+1012|Perforatiemodus
+1013|Plaatsing
+1014|Binnenvormen overslaan
+1015|Lengte van de sprong
+1016|Afstand
+1017|Snijvermogen van de brug
+1018|Grootte van de brug
+1019|Bruggen
+1020|Bruggen per vorm
+1021|Vectorvormen op een laag in de beeldmodus worden niet gebrand.

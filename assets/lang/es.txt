@@ -1000,3 +1000,23 @@
 999|Prueba de la cámara: {}
 1000|Abre la imagen de esta cámara con los ajustes de aquí, sin guardar
 1001|Probar
+1002|Alterna cortar y saltar a lo largo del contorno.
+1003|Longitud del corte
+1004|Espaciado uniforme
+1005|Compensación del kerf
+1006|Deja tramos cortos del contorno sin cortar (o cortados débilmente) para que la pieza se quede en su sitio. Se colocan automáticamente.
+1007|Limitar el máximo de puentes
+1008|Puentes mín.
+1009|Mueve el contorno hacia fuera (hacia dentro si es negativo) para compensar el ancho del corte. 0 = desactivado.
+1010|Porcentaje de la potencia de la capa sobre un puente; 0 = láser apagado.
+1011|Perforación
+1012|Modo de perforación
+1013|Colocación
+1014|Omitir formas interiores
+1015|Longitud del salto
+1016|Espaciado
+1017|Potencia de corte del puente
+1018|Tamaño del puente
+1019|Puentes
+1020|Puentes por forma
+1021|Las formas vectoriales de una capa en modo Imagen no se queman.

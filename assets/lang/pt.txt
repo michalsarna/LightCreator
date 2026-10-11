@@ -1000,3 +1000,23 @@
 999|Teste da câmara: {}
 1000|Abre a imagem desta câmara com as definições aqui, sem guardar
 1001|Testar
+1002|Alterna corte e salto ao longo do contorno.
+1003|Comprimento do corte
+1004|Espaçamento uniforme
+1005|Compensação do kerf
+1006|Deixa pequenos troços do contorno por cortar (ou cortados levemente) para que a peça fique no lugar. São colocados automaticamente.
+1007|Limitar o máximo de pontes
+1008|Pontes mín.
+1009|Move o contorno para fora (para dentro, se negativo) para compensar a largura do corte. 0 = desligado.
+1010|Percentagem da potência da camada sobre uma ponte; 0 = laser desligado.
+1011|Perfuração
+1012|Modo de perfuração
+1013|Colocação
+1014|Ignorar formas interiores
+1015|Comprimento do salto
+1016|Espaçamento
+1017|Potência de corte da ponte
+1018|Tamanho da ponte
+1019|Pontes
+1020|Pontes por forma
+1021|As formas vetoriais numa camada no modo Imagem não são queimadas.

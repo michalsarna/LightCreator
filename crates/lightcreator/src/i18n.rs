@@ -1284,6 +1284,27 @@ const TABLE: &[[&str; 7]] = &[
     ["Camera test: {}", "Test kamery: {}", "Kameratest: {}", "Test della telecamera: {}", "Kameran testi: {}", "摄像头测试：{}", "कैमरा परीक्षण: {}"],
     ["Opens the picture of this camera as set here, without saving", "Otwiera obraz tej kamery z ustawieniami podanymi tutaj, bez zapisywania", "Öffnet das Bild dieser Kamera mit den hier eingestellten Werten, ohne zu speichern", "Apre l'immagine di questa telecamera come impostata qui, senza salvare", "Avaa tämän kameran kuvan tässä asetetuilla arvoilla tallentamatta", "按此处的设置打开此摄像头的画面，不保存", "इस कैमरे का चित्र यहाँ दी गई सेटिंग के साथ खोलता है, सहेजे बिना"],
     ["Test", "Testuj", "Testen", "Prova", "Testaa", "测试", "परीक्षण करें"],
+    // ---- layer cut options ----
+    ["Alternates cutting and skipping along the outline.", "Na przemian tnie i pomija wzdłuż konturu.", "Wechselt entlang der Kontur zwischen Schneiden und Überspringen.", "Alterna taglio e salto lungo il contorno.", "Vuorottelee leikkaamista ja ohitusta ääriviivaa pitkin.", "沿轮廓交替切割与跳过。", "रूपरेखा के साथ बारी-बारी से काटता और छोड़ता है।"],
+    ["Cut length", "Długość cięcia", "Schnittlänge", "Lunghezza del taglio", "Leikkauksen pituus", "切割长度", "काटने की लंबाई"],
+    ["Even spacing", "Równe odstępy", "Gleichmäßiger Abstand", "Spaziatura uniforme", "Tasainen väli", "等间距", "समान अंतराल"],
+    ["Kerf offset", "Offset szczeliny (kerf)", "Schnittfugen-Versatz (Kerf)", "Compensazione del kerf", "Leikkausraon korjaus (kerf)", "切缝补偿（kerf）", "कर्फ़ ऑफ़सेट"],
+    ["Leaves short stretches of the outline uncut (or cut weakly) so the piece stays in place. They are placed automatically.", "Zostawia krótkie odcinki konturu nieprzecięte (lub przecięte słabo), by element trzymał się na miejscu. Są rozmieszczane automatycznie.", "Lässt kurze Stücke der Kontur ungeschnitten (oder schwach geschnitten), damit das Teil an seinem Platz bleibt. Sie werden automatisch gesetzt.", "Lascia brevi tratti del contorno non tagliati (o tagliati debolmente) perché il pezzo resti al suo posto. Sono posizionati automaticamente.", "Jättää lyhyitä kohtia ääriviivasta leikkaamatta (tai heikosti leikattuna), jotta kappale pysyy paikallaan. Ne sijoitetaan automaattisesti.", "在轮廓上留下短段不切（或弱切），让工件留在原位。自动放置。", "रूपरेखा के छोटे हिस्से बिना कटे (या हल्के कटे) छोड़ देता है ताकि टुकड़ा अपनी जगह रहे। वे अपने आप रखे जाते हैं।"],
+    ["Limit max tabs", "Ogranicz maks. liczbę mostków", "Höchstzahl der Stege begrenzen", "Limita il numero massimo di ponticelli", "Rajoita siltojen enimmäismäärää", "限制最大连桥数", "अधिकतम टैब सीमित करें"],
+    ["Min tabs", "Min. mostków", "Min. Stege", "Ponticelli min.", "Siltoja väh.", "最少连桥数", "न्यूनतम टैब"],
+    ["Moves the outline out (in, when negative) to make up for the width of the cut. 0 = off.", "Przesuwa kontur na zewnątrz (do wewnątrz, gdy ujemny), by uwzględnić szerokość cięcia. 0 = wyłączone.", "Verschiebt die Kontur nach außen (nach innen, wenn negativ), um die Breite des Schnitts auszugleichen. 0 = aus.", "Sposta il contorno verso l'esterno (verso l'interno se negativo) per compensare la larghezza del taglio. 0 = disattivato.", "Siirtää ääriviivaa ulospäin (sisäänpäin, jos negatiivinen) leikkauksen leveyden kompensoimiseksi. 0 = pois.", "将轮廓向外移动（为负时向内）以补偿切缝宽度。0 = 关闭。", "कट की चौड़ाई की भरपाई के लिए रूपरेखा को बाहर (ऋणात्मक हो तो भीतर) खिसकाता है। 0 = बंद।"],
+    ["Percent of the layer's power over a tab; 0 = the laser is off.", "Procent mocy warstwy na mostku; 0 = laser wyłączony.", "Prozent der Ebenenleistung über einem Steg; 0 = Laser aus.", "Percentuale della potenza del livello sul ponticello; 0 = laser spento.", "Prosenttia tason tehosta sillan kohdalla; 0 = laser pois.", "连桥处的功率占该图层功率的百分比；0 = 关闭激光。", "टैब पर परत की शक्ति का प्रतिशत; 0 = लेज़र बंद।"],
+    ["Perforation", "Perforacja", "Perforation", "Perforazione", "Perforointi", "打孔虚线", "छिद्रण"],
+    ["Perforation mode", "Tryb perforacji", "Perforationsmodus", "Modalità perforazione", "Perforointitila", "打孔模式", "छिद्रण मोड"],
+    ["Placement", "Rozmieszczenie", "Verteilung", "Posizionamento", "Sijoittelu", "布置方式", "स्थान निर्धारण"],
+    ["Skip inner shapes", "Pomiń kształty wewnętrzne", "Innere Formen überspringen", "Salta le forme interne", "Ohita sisäiset muodot", "跳过内部形状", "भीतरी आकृतियाँ छोड़ें"],
+    ["Skip length", "Długość pominięcia", "Länge der Lücke", "Lunghezza del salto", "Ohituksen pituus", "跳过长度", "छोड़ने की लंबाई"],
+    ["Spacing", "Odstęp", "Abstand", "Spaziatura", "Väli", "间距", "अंतराल"],
+    ["Tab cut power", "Moc cięcia mostka", "Schnittleistung am Steg", "Potenza di taglio del ponticello", "Sillan leikkausteho", "连桥切割功率", "टैब पर कट शक्ति"],
+    ["Tab size", "Rozmiar mostka", "Stegbreite", "Dimensione del ponticello", "Sillan koko", "连桥大小", "टैब का आकार"],
+    ["Tabs / bridges", "Mostki", "Stege / Brücken", "Ponticelli", "Sillat", "连桥", "टैब / ब्रिज"],
+    ["Tabs per shape", "Mostków na kształt", "Stege pro Form", "Ponticelli per forma", "Siltoja muotoa kohden", "每个形状的连桥数", "प्रति आकृति टैब"],
+    ["Vector shapes on a layer in the Image mode are not burnt.", "Kształty wektorowe na warstwie w trybie Obraz nie są wypalane.", "Vektorformen auf einer Ebene im Bildmodus werden nicht gebrannt.", "Le forme vettoriali su un livello in modalità Immagine non vengono incise.", "Kuvatilassa olevan tason vektorimuotoja ei polteta.", "处于图像模式的图层上的矢量形状不会被雕刻。", "छवि मोड वाली परत पर वेक्टर आकृतियाँ नहीं जलाई जातीं।"],
 ];
 #[cfg(test)]
 mod tests {

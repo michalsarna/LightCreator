@@ -1000,3 +1000,23 @@
 999|Kameratest: {}
 1000|Öppnar bilden från den här kameran med inställningarna här, utan att spara
 1001|Testa
+1002|Växlar mellan att skära och hoppa över längs konturen.
+1003|Skärlängd
+1004|Jämnt avstånd
+1005|Skärbreddsförskjutning (kerf)
+1006|Lämnar korta stycken av konturen oskurna (eller svagt skurna) så att delen stannar på plats. De placeras automatiskt.
+1007|Begränsa maxantal bryggor
+1008|Min. bryggor
+1009|Flyttar konturen utåt (inåt om negativt) för att kompensera skärets bredd. 0 = av.
+1010|Procent av lagrets effekt över en brygga; 0 = lasern är av.
+1011|Perforering
+1012|Perforeringsläge
+1013|Placering
+1014|Hoppa över inre former
+1015|Längd att hoppa över
+1016|Avstånd
+1017|Skäreffekt på brygga
+1018|Bryggstorlek
+1019|Bryggor
+1020|Bryggor per form
+1021|Vektorformer på ett lager i bildläge bränns inte.

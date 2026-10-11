@@ -1000,3 +1000,23 @@
 999|Test kamery: {}
 1000|Otvorí obraz tejto kamery s nastaveniami tu, bez uloženia
 1001|Testovať
+1002|Strieda rezanie a preskakovanie pozdĺž obrysu.
+1003|Dĺžka rezu
+1004|Rovnomerné rozstupy
+1005|Korekcia rezu (kerf)
+1006|Ponechá krátke úseky obrysu neprerezané (alebo slabo prerezané), aby diel držal na mieste. Rozmiestňujú sa automaticky.
+1007|Obmedziť maximálny počet mostíkov
+1008|Min. mostíkov
+1009|Posunie obrys von (dovnútra, ak je záporné), aby vyrovnal šírku rezu. 0 = vypnuté.
+1010|Percento výkonu vrstvy na mostíku; 0 = laser vypnutý.
+1011|Perforácia
+1012|Režim perforácie
+1013|Rozmiestnenie
+1014|Preskočiť vnútorné tvary
+1015|Dĺžka preskoku
+1016|Rozstup
+1017|Rezný výkon mostíka
+1018|Veľkosť mostíka
+1019|Mostíky
+1020|Mostíkov na tvar
+1021|Vektorové tvary na vrstve v režime Obraz sa nevypaľujú.

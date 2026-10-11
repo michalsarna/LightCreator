@@ -1000,3 +1000,23 @@
 999|Prova de la càmera: {}
 1000|Obre la imatge d'aquesta càmera amb els valors indicats aquí, sense desar
 1001|Prova
+1002|Alterna tallar i saltar al llarg del contorn.
+1003|Longitud del tall
+1004|Espaiat uniforme
+1005|Compensació del kerf
+1006|Deixa trams curts del contorn sense tallar (o tallats feblement) perquè la peça es quedi al seu lloc. Es col·loquen automàticament.
+1007|Limita el màxim de pons
+1008|Pons mín.
+1009|Mou el contorn cap a fora (cap a dins si és negatiu) per compensar l'amplada del tall. 0 = desactivat.
+1010|Percentatge de la potència de la capa sobre un pont; 0 = làser apagat.
+1011|Perforació
+1012|Mode de perforació
+1013|Col·locació
+1014|Omet les formes interiors
+1015|Longitud de salt
+1016|Espaiat
+1017|Potència de tall del pont
+1018|Mida del pont
+1019|Pons
+1020|Pons per forma
+1021|Les formes vectorials d'una capa en mode Imatge no es graven.

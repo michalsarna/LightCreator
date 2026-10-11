@@ -1000,3 +1000,23 @@
 999|Test de la caméra : {}
 1000|Ouvre l'image de cette caméra avec les réglages d'ici, sans enregistrer
 1001|Tester
+1002|Alterne découpe et saut le long du contour.
+1003|Longueur de coupe
+1004|Espacement régulier
+1005|Décalage de trait de coupe (kerf)
+1006|Laisse de courts tronçons du contour non coupés (ou coupés faiblement) pour que la pièce reste en place. Ils sont placés automatiquement.
+1007|Limiter le nombre max de ponts
+1008|Ponts min.
+1009|Déplace le contour vers l'extérieur (vers l'intérieur si négatif) pour compenser la largeur de la coupe. 0 = désactivé.
+1010|Pourcentage de la puissance du calque sur un pont ; 0 = laser éteint.
+1011|Perforation
+1012|Mode perforation
+1013|Placement
+1014|Ignorer les formes intérieures
+1015|Longueur du saut
+1016|Espacement
+1017|Puissance de coupe du pont
+1018|Taille du pont
+1019|Ponts / attaches
+1020|Ponts par forme
+1021|Les formes vectorielles d'un calque en mode Image ne sont pas gravées.

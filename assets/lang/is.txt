@@ -1000,3 +1000,23 @@
 999|Prófun myndavélar: {}
 1000|Opnar mynd þessarar myndavélar með stillingunum hér, án þess að vista
 1001|Prófa
+1002|Víxlar skurði og stökki eftir útlínunni.
+1003|Lengd skurðar
+1004|Jöfn bil
+1005|Skurðbreiddarleiðrétting (kerf)
+1006|Skilur eftir stutta kafla af útlínunni óskorna (eða veikt skorna) svo hluturinn haldist á sínum stað. Þeir eru settir sjálfkrafa.
+1007|Takmarka hámarksfjölda brúa
+1008|Lágmarksfjöldi brúa
+1009|Færir útlínuna út á við (inn á við ef neikvætt) til að bæta upp breidd skurðarins. 0 = slökkt.
+1010|Hlutfall af afli lagsins yfir brú; 0 = slökkt á leysinum.
+1011|Götun
+1012|Götunarhamur
+1013|Staðsetning
+1014|Sleppa innri formum
+1015|Lengd stökks
+1016|Bil
+1017|Skurðarafl brúar
+1018|Stærð brúar
+1019|Brýr
+1020|Brýr á hvert form
+1021|Vektoraform á lagi í myndham eru ekki brennd.

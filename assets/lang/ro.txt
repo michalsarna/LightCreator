@@ -1000,3 +1000,23 @@
 999|Test cameră: {}
 1000|Deschide imaginea acestei camere cu setările de aici, fără salvare
 1001|Testează
+1002|Alternează tăierea și sărirea de-a lungul conturului.
+1003|Lungimea tăierii
+1004|Distanță egală
+1005|Decalaj kerf
+1006|Lasă porțiuni scurte din contur netăiate (sau tăiate slab) ca piesa să rămână pe loc. Sunt plasate automat.
+1007|Limitează numărul maxim de punți
+1008|Punți min.
+1009|Mută conturul spre exterior (spre interior, dacă e negativ) pentru a compensa lățimea tăieturii. 0 = oprit.
+1010|Procent din puterea stratului peste o punte; 0 = laserul este oprit.
+1011|Perforare
+1012|Mod perforare
+1013|Amplasare
+1014|Sari peste formele interioare
+1015|Lungimea săriturii
+1016|Distanță
+1017|Puterea de tăiere a punții
+1018|Dimensiunea punții
+1019|Punți
+1020|Punți pe formă
+1021|Formele vectoriale de pe un strat în modul Imagine nu sunt arse.
