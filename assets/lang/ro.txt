@@ -1060,3 +1060,5 @@
 1059|Violet (deschis)
 1060|Maro (închis)
 1061|Maro (deschis)
+1062|Portocaliu (închis)
+1063|Portocaliu (deschis)

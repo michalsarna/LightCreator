@@ -1060,3 +1060,5 @@
 1059|Vjola (ċar)
 1060|Kannella (skur)
 1061|Kannella (ċar)
+1062|Oranġjo (skur)
+1063|Oranġjo (ċar)

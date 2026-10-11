@@ -1060,3 +1060,5 @@
 1059|Ljubičasta (svijetla)
 1060|Smeđa (tamna)
 1061|Smeđa (svijetla)
+1062|Narančasta (tamna)
+1063|Narančasta (svijetla)

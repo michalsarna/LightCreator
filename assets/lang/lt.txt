@@ -1060,3 +1060,5 @@
 1059|Violetinė (šviesi)
 1060|Ruda (tamsi)
 1061|Ruda (šviesi)
+1062|Oranžinė (tamsi)
+1063|Oranžinė (šviesi)

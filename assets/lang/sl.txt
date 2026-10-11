@@ -1060,3 +1060,5 @@
 1059|Vijolična (svetla)
 1060|Rjava (temna)
 1061|Rjava (svetla)
+1062|Oranžna (temna)
+1063|Oranžna (svetla)

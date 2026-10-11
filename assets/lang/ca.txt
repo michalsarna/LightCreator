@@ -1060,3 +1060,5 @@
 1059|Lila (clar)
 1060|Marró (fosc)
 1061|Marró (clar)
+1062|Taronja (fosc)
+1063|Taronja (clar)

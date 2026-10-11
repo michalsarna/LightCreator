@@ -1060,3 +1060,5 @@
 1059|Lilla (lys)
 1060|Brun (mørk)
 1061|Brun (lys)
+1062|Oransje (mørk)
+1063|Oransje (lys)

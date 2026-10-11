@@ -1060,3 +1060,5 @@
 1059|Corcra (éadrom)
 1060|Donn (dorcha)
 1061|Donn (éadrom)
+1062|Oráiste (dorcha)
+1063|Oráiste (éadrom)

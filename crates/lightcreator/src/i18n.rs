@@ -1357,6 +1357,9 @@ const TABLE: &[[&str; 7]] = &[
     // ---- theme names: brown ----
     ["Brown (dark)", "brązowy (ciemny)", "Braun (dunkel)", "Marrone (scuro)", "Ruskea (tumma)", "棕色 (深色)", "भूरा (गहरा)"],
     ["Brown (light)", "brązowy (jasny)", "Braun (hell)", "Marrone (chiaro)", "Ruskea (vaalea)", "棕色 (浅色)", "भूरा (हल्का)"],
+    // ---- theme names: orange ----
+    ["Orange (dark)", "pomarańczowy (ciemny)", "Orange (dunkel)", "Arancione (scuro)", "Oranssi (tumma)", "橙色 (深色)", "नारंगी (गहरा)"],
+    ["Orange (light)", "pomarańczowy (jasny)", "Orange (hell)", "Arancione (chiaro)", "Oranssi (vaalea)", "橙色 (浅色)", "नारंगी (हल्का)"],
 ];
 #[cfg(test)]
 mod tests {

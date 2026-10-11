@@ -1060,3 +1060,5 @@
 1059|Fjólublátt (ljóst)
 1060|Brúnt (dökkt)
 1061|Brúnt (ljóst)
+1062|Appelsínugult (dökkt)
+1063|Appelsínugult (ljóst)

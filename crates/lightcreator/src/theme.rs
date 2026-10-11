@@ -19,10 +19,12 @@ pub enum Scheme {
     PurpleLight,
     BrownDark,
     BrownLight,
+    OrangeDark,
+    OrangeLight,
 }
 
 impl Scheme {
-    pub const ALL: [Scheme; 12] = [Scheme::Dark, Scheme::LightDark, Scheme::MediumLight, Scheme::Light, Scheme::BlueDark, Scheme::BlueLight, Scheme::GreenDark, Scheme::GreenLight, Scheme::PurpleDark, Scheme::PurpleLight, Scheme::BrownDark, Scheme::BrownLight];
+    pub const ALL: [Scheme; 14] = [Scheme::Dark, Scheme::LightDark, Scheme::MediumLight, Scheme::Light, Scheme::BlueDark, Scheme::BlueLight, Scheme::GreenDark, Scheme::GreenLight, Scheme::PurpleDark, Scheme::PurpleLight, Scheme::BrownDark, Scheme::BrownLight, Scheme::OrangeDark, Scheme::OrangeLight];
 
     /// English label (translated through `i18n::tr`).
     pub fn label(self) -> &'static str {
@@ -31,6 +33,8 @@ impl Scheme {
             Scheme::LightDark => "Light Dark",
             Scheme::MediumLight => "Medium Light",
             Scheme::Light => "Light",
+            Scheme::OrangeDark => "Orange (dark)",
+            Scheme::OrangeLight => "Orange (light)",
             Scheme::BrownDark => "Brown (dark)",
             Scheme::BrownLight => "Brown (light)",
             Scheme::PurpleDark => "Purple (dark)",
@@ -47,6 +51,8 @@ impl Scheme {
             Scheme::LightDark => "light-dark",
             Scheme::MediumLight => "medium-light",
             Scheme::Light => "light",
+            Scheme::OrangeDark => "orange-dark",
+            Scheme::OrangeLight => "orange-light",
             Scheme::BrownDark => "brown-dark",
             Scheme::BrownLight => "brown-light",
             Scheme::PurpleDark => "purple-dark",
@@ -61,7 +67,7 @@ impl Scheme {
         Scheme::ALL.into_iter().find(|x| x.id() == s)
     }
     pub fn is_dark(self) -> bool {
-        matches!(self, Scheme::Dark | Scheme::LightDark | Scheme::BrownDark | Scheme::PurpleDark | Scheme::GreenDark | Scheme::BlueDark)
+        matches!(self, Scheme::Dark | Scheme::LightDark | Scheme::OrangeDark | Scheme::BrownDark | Scheme::PurpleDark | Scheme::GreenDark | Scheme::BlueDark)
     }
     fn index(self) -> u8 {
         Scheme::ALL.iter().position(|x| *x == self).unwrap_or(3) as u8
@@ -73,6 +79,8 @@ impl Scheme {
             Scheme::LightDark => LIGHT_DARK,
             Scheme::MediumLight => MEDIUM_LIGHT,
             Scheme::Light => LIGHT,
+            Scheme::OrangeDark => tinted(DARK, ORANGE, false),
+            Scheme::OrangeLight => tinted(LIGHT, ORANGE, true),
             Scheme::BrownDark => tinted(DARK, BROWN, false),
             Scheme::BrownLight => tinted(LIGHT, BROWN, true),
             Scheme::PurpleDark => tinted(DARK, PURPLE, false),
@@ -201,6 +209,8 @@ const GREEN: Hue = Hue { tint: [0.3, 0.8, 0.4], accent: rgb(0x3f, 0xb8, 0x60) };
 const PURPLE: Hue = Hue { tint: [0.6, 0.4, 0.9], accent: rgb(0x9b, 0x6b, 0xe8) };
 
 const BROWN: Hue = Hue { tint: [0.65, 0.45, 0.3], accent: rgb(0xc0, 0x8a, 0x5a) };
+
+const ORANGE: Hue = Hue { tint: [0.95, 0.6, 0.2], accent: rgb(0xf0, 0x8c, 0x1e) };
 
 static CURRENT: AtomicU8 = AtomicU8::new(3);
 static PALETTES: OnceLock<Vec<Palette>> = OnceLock::new();
