@@ -518,6 +518,48 @@ fn render_screenshots() {
         a.clip.online = Some(o);
     }
     save(&mut h, "25-clipart-online.png");
+
+    // The window that adds a device, the material header, the description tab, the options with the web server.
+    {
+        let a = app(&mut h);
+        a.lang = Lang::En;
+        i18n::set_lang(Lang::En);
+        a.show_ser2net_off();
+        a.clip.online = None;
+        a.show_prefs = false;
+        a.show_stream = false;
+        a.doc.shapes.clear();
+        a.status = "Ready".into();
+        a.start_add_device();
+        if let Some(c) = a.cfg.as_mut() {
+            c.draft.name = "Diode laser 400 × 400".into();
+        }
+        a.add_dev_material = "Birch plywood 3 mm".into();
+    }
+    save(&mut h, "33-add-device.png");
+    {
+        let a = app(&mut h);
+        a.cfg = None;
+        a.add_dev = None;
+        a.side_tab = SideTab::Layers;
+        a.doc.add(2, Kind::Rect { w: 70.0, h: 45.0 }, Xf::translate(40.0, 40.0));
+        a.doc.add(5, Kind::Ellipse { w: 60.0, h: 45.0 }, Xf::translate(150.0, 40.0));
+    }
+    save(&mut h, "34-material-layers.png");
+    {
+        let a = app(&mut h);
+        a.doc.description = "Birch plywood 3 mm, two passes for the outline.\nFocus 1 mm below the surface.".into();
+        a.side_tab = SideTab::Description;
+    }
+    save(&mut h, "35-description.png");
+    {
+        let a = app(&mut h);
+        a.side_tab = SideTab::Properties;
+        a.api_on = true;
+        a.show_options = true;
+    }
+    save(&mut h, "36-options-web-server.png");
+    app(&mut h).show_options = false;
 }
 
 /// The node-editing bar disappears when another window (the preview) is clicked and returns on a click in the canvas.

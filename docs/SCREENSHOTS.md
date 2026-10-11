@@ -41,3 +41,7 @@ All pictures are rendered headlessly from the real UI. Back to the [README](../R
 
 Regenerate them with
 `cargo test -p lightcreator --release render_screenshots -- --ignored`.
+| ![Add a device](screenshots/33-add-device.png) | ![Materials and layers](screenshots/34-material-layers.png) |
+| Adding a device: one window with the basic settings and a first material | Layers tab: the material header above the layers of that material |
+| ![Description tab](screenshots/35-description.png) | ![Program options](screenshots/36-options-web-server.png) |
+| Description tab, saved in the project | Program options with the web server; its state is in the status bar |
