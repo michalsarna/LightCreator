@@ -1,7 +1,9 @@
 //! Colour schemes: flat chrome modelled on VectorCraft with a red-orange accent.
-//! Four schemes (Dark, Light Dark, Medium Light, Light) selectable at runtime.
+//! Four neutral schemes (Dark, Light Dark, Medium Light, Light) and, for each colour, a dark and a light scheme
+//! tinted with it (the same palettes with the greys shifted towards the colour and the accent in that colour).
 use eframe::egui::{self, Color32, CornerRadius, Stroke};
 use std::sync::atomic::{AtomicU8, Ordering};
+use std::sync::OnceLock;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
 pub enum Scheme {
@@ -40,9 +42,20 @@ impl Scheme {
     fn index(self) -> u8 {
         Scheme::ALL.iter().position(|x| *x == self).unwrap_or(3) as u8
     }
+    /// The palette of this scheme.
+    fn palette(self) -> Palette {
+        match self {
+            Scheme::Dark => DARK,
+            Scheme::LightDark => LIGHT_DARK,
+            Scheme::MediumLight => MEDIUM_LIGHT,
+            Scheme::Light => LIGHT,
+        }
+    }
 }
 
+#[derive(Clone, Copy)]
 struct Palette {
+    accent: Color32,
     panel: Color32,
     panel_dark: Color32,
     border: Color32,
@@ -61,6 +74,7 @@ const fn rgb(r: u8, g: u8, b: u8) -> Color32 {
 }
 
 const DARK: Palette = Palette {
+    accent: rgb(0xe8, 0x57, 0x3f),
     panel: rgb(0x26, 0x27, 0x2b),
     panel_dark: rgb(0x1e, 0x1f, 0x22),
     border: rgb(0x3a, 0x3b, 0x42),
@@ -74,6 +88,7 @@ const DARK: Palette = Palette {
     input: rgb(0x1a, 0x1b, 0x1e),
 };
 const LIGHT_DARK: Palette = Palette {
+    accent: rgb(0xe8, 0x57, 0x3f),
     panel: rgb(0x3c, 0x3d, 0x43),
     panel_dark: rgb(0x33, 0x34, 0x39),
     border: rgb(0x52, 0x53, 0x5b),
@@ -87,6 +102,7 @@ const LIGHT_DARK: Palette = Palette {
     input: rgb(0x2f, 0x30, 0x34),
 };
 const MEDIUM_LIGHT: Palette = Palette {
+    accent: rgb(0xe8, 0x57, 0x3f),
     panel: rgb(0xdd, 0xdd, 0xe1),
     panel_dark: rgb(0xcf, 0xcf, 0xd4),
     border: rgb(0xb4, 0xb4, 0xbb),
@@ -100,6 +116,7 @@ const MEDIUM_LIGHT: Palette = Palette {
     input: rgb(0xf0, 0xf0, 0xf2),
 };
 const LIGHT: Palette = Palette {
+    accent: rgb(0xe8, 0x57, 0x3f),
     panel: rgb(0xf4, 0xf4, 0xf5),
     panel_dark: rgb(0xe9, 0xe9, 0xeb),
     border: rgb(0xd2, 0xd2, 0xd6),
@@ -113,19 +130,48 @@ const LIGHT: Palette = Palette {
     input: Color32::WHITE,
 };
 
-static CURRENT: AtomicU8 = AtomicU8::new(3);
+/// A colour for the tinted schemes: the colour that tints the greys and the accent used with it.
+#[derive(Clone, Copy)]
+struct Hue {
+    tint: [f32; 3],
+    accent: Color32,
+}
 
-fn pal() -> &'static Palette {
-    match CURRENT.load(Ordering::Relaxed) {
-        0 => &DARK,
-        1 => &LIGHT_DARK,
-        2 => &MEDIUM_LIGHT,
-        _ => &LIGHT,
+/// `base` with every grey moved towards the colour of `hue` (keeping its brightness): `k` is how far for the
+/// surfaces, the text moves a third of that. The accent is the colour's own.
+fn tinted(base: Palette, hue: Hue, light: bool) -> Palette {
+    let mean = (hue.tint[0] + hue.tint[1] + hue.tint[2]) / 3.0;
+    let k = if light { 0.28 } else { 0.40 };
+    let shift = |c: Color32, k: f32| {
+        let f = |v: u8, t: f32| (v as f32 * (1.0 + k * (t / mean - 1.0))).round().clamp(0.0, 255.0) as u8;
+        Color32::from_rgb(f(c.r(), hue.tint[0]), f(c.g(), hue.tint[1]), f(c.b(), hue.tint[2]))
+    };
+    Palette {
+        accent: if light { Color32::from_rgb((hue.accent.r() as f32 * 0.82) as u8, (hue.accent.g() as f32 * 0.82) as u8, (hue.accent.b() as f32 * 0.82) as u8) } else { hue.accent },
+        panel: shift(base.panel, k),
+        panel_dark: shift(base.panel_dark, k),
+        border: shift(base.border, k),
+        workspace: shift(base.workspace, k),
+        text: shift(base.text, k / 3.0),
+        text_dim: shift(base.text_dim, k / 2.0),
+        widget: shift(base.widget, k),
+        widget_weak: shift(base.widget_weak, k),
+        widget_hover: shift(base.widget_hover, k),
+        widget_hover_weak: shift(base.widget_hover_weak, k),
+        input: shift(base.input, k / 2.0),
     }
 }
 
+static CURRENT: AtomicU8 = AtomicU8::new(3);
+static PALETTES: OnceLock<Vec<Palette>> = OnceLock::new();
+
+fn pal() -> &'static Palette {
+    let all = PALETTES.get_or_init(|| Scheme::ALL.iter().map(|s| s.palette()).collect());
+    &all[(CURRENT.load(Ordering::Relaxed) as usize).min(all.len() - 1)]
+}
+
 pub fn accent() -> Color32 {
-    rgb(0xe8, 0x57, 0x3f)
+    pal().accent
 }
 pub fn panel() -> Color32 {
     pal().panel
@@ -144,7 +190,7 @@ pub fn text() -> Color32 {
 }
 /// Background of the console output: near black in the dark schemes, a warm paper tone in the light ones.
 pub fn console_bg() -> Color32 {
-    if CURRENT.load(Ordering::Relaxed) <= 1 {
+    if Scheme::ALL[(CURRENT.load(Ordering::Relaxed) as usize).min(Scheme::ALL.len() - 1)].is_dark() {
         rgb(0x0f, 0x13, 0x1b)
     } else {
         rgb(0xfb, 0xf7, 0xe9)
@@ -157,7 +203,7 @@ pub fn text_dim() -> Color32 {
 pub fn apply(ctx: &egui::Context, scheme: Scheme) {
     CURRENT.store(scheme.index(), Ordering::Relaxed);
     let p = pal();
-    let accent = accent();
+    let accent = p.accent;
     let mut v = if scheme.is_dark() { egui::Visuals::dark() } else { egui::Visuals::light() };
     v.panel_fill = p.panel;
     v.window_fill = p.panel;
@@ -192,4 +238,31 @@ pub fn apply(ctx: &egui::Context, scheme: Scheme) {
         // Wide enough that menu entries are not cut short with an ellipsis.
         s.spacing.menu_width = 280.0;
     });
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn every_scheme_has_its_own_id_label_and_palette() {
+        for (i, a) in Scheme::ALL.iter().enumerate() {
+            assert_eq!(Scheme::from_id(a.id()), Some(*a));
+            assert_eq!(a.index() as usize, i);
+            for b in &Scheme::ALL[i + 1..] {
+                assert!(a.id() != b.id() && a.label() != b.label());
+            }
+        }
+    }
+
+    #[test]
+    fn text_is_readable_on_every_panel() {
+        let lum = |c: Color32| 0.2126 * c.r() as f32 + 0.7152 * c.g() as f32 + 0.0722 * c.b() as f32;
+        for s in Scheme::ALL {
+            let p = s.palette();
+            assert!((lum(p.text) - lum(p.panel)).abs() > 110.0, "{}: text on the panel", s.id());
+            assert!((lum(p.text) - lum(p.input)).abs() > 110.0, "{}: text in an input", s.id());
+            assert_eq!(lum(p.panel) < 128.0, s.is_dark(), "{}: dark or light", s.id());
+        }
+    }
 }
