@@ -1023,3 +1023,10 @@
 1022|Tööaeg
 1023|Kirjeldus
 1024|Kirjelda projekti: mis see on, millised seaded töötasid, märkmed järgmiseks korraks.
+1025|Veebileht masina oleku, projekti ja kaameraga ning API teistele programmidele. Parooli pole.
+1026|Igaüks võrgus võib masinat näha ning seda peatada või liigutada. Parooli ega krüpteerimist pole: kasuta ainult usaldusväärses võrgus.
+1027|Kuulab aadressil {}
+1028|Ligipääsetav teistest võrgu arvutitest
+1029|Lülita sisse veebiserver ja API
+1030|Serverit ei õnnestunud käivitada: {}
+1031|Veebiserver ja API

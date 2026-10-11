@@ -1023,3 +1023,10 @@
 1022|Ħin tax-xogħol
 1023|Deskrizzjoni
 1024|Iddeskrivi l-proġett: x'inhu, l-issettjar li ħadem, noti għall-darba li jmiss.
+1025|Paġna tal-web bl-istat tal-magna, il-proġett u l-kamera, u API għal programmi oħra. M'għandhiex password.
+1026|Kull wieħed fin-netwerk jista' jara l-magna u jwaqqafha jew iċaqlaqha. M'hemm l-ebda password jew encryption: uża biss fuq netwerk li tafda.
+1027|Qed jisma' fuq {}
+1028|Aċċessibbli minn kompjuters oħra fin-netwerk
+1029|Ixgħel is-server tal-web u l-API
+1030|Is-server ma setax jibda: {}
+1031|Server tal-web u API

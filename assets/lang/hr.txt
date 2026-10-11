@@ -1023,3 +1023,10 @@
 1022|Radno vrijeme
 1023|Opis
 1024|Opišite projekt: što je, postavke koje su uspjele, bilješke za sljedeći put.
+1025|Web-stranica sa stanjem stroja, projektom i kamerom te API za druge programe. Nema lozinku.
+1026|Svatko na mreži može vidjeti stroj te ga zaustaviti ili pomaknuti. Nema lozinke ni šifriranja: koristite samo na mreži kojoj vjerujete.
+1027|Sluša na {}
+1028|Dostupno s drugih računala na mreži
+1029|Uključi web-poslužitelj i API
+1030|Poslužitelj se nije mogao pokrenuti: {}
+1031|Web-poslužitelj i API

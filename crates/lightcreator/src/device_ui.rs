@@ -1290,7 +1290,7 @@ impl App {
     }
 
     /// A jog step in the design's directions (x right, y down), kept inside the allowed area. `None` when there is no room.
-    fn jog_action(&mut self, dx: f64, dy: f64) -> Option<Action> {
+    pub(crate) fn jog_action(&mut self, dx: f64, dy: f64) -> Option<Action> {
         let dev = &self.doc.device;
         let at = (self.connected && self.machine.1.is_finite()).then_some((self.machine.1, self.machine.2));
         let (mx, my) = dev.limited_jog(at, dx, dy);

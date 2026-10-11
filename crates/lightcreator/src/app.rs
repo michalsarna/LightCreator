@@ -154,6 +154,11 @@ pub struct App {
     pub saved_revision: u64,
     pub autosaved_revision: u64,
     pub autosave_on: bool,
+    /// The web server and API (off by default): switched on, port, and reachable from the network.
+    pub api_on: bool,
+    pub api_port: u16,
+    pub api_lan: bool,
+    pub api: crate::api_ui::ApiState,
     pub autosave_secs: u32,
     pub last_autosave: std::time::Instant,
     /// A short message (text, until when) such as "file saved".
@@ -403,6 +408,10 @@ impl App {
             saved_revision: 0,
             autosaved_revision: 0,
             autosave_on: saved("autosave_on").map(|v| v != "0").unwrap_or(true),
+            api_on: saved("api_on").map(|v| v == "1").unwrap_or(false),
+            api_port: saved("api_port").and_then(|v| v.parse::<u16>().ok()).filter(|p| *p >= 1024).unwrap_or(crate::api_ui::DEFAULT_PORT),
+            api_lan: saved("api_lan").map(|v| v == "1").unwrap_or(false),
+            api: Default::default(),
             autosave_secs: saved("autosave_secs").and_then(|v| v.parse().ok()).filter(|v| (10..=3600).contains(v)).unwrap_or(crate::session_ui::DEFAULT_AUTOSAVE_SECS),
             last_autosave: std::time::Instant::now(),
             toast: None,
@@ -2048,6 +2057,9 @@ impl App {
         }
         v.push(("active_profile", self.active.to_string()));
         v.push(("autosave_on", if self.autosave_on { "1" } else { "0" }.into()));
+        v.push(("api_on", if self.api_on { "1" } else { "0" }.into()));
+        v.push(("api_port", self.api_port.to_string()));
+        v.push(("api_lan", if self.api_lan { "1" } else { "0" }.into()));
         v.push(("autosave_secs", self.autosave_secs.to_string()));
         v.push(("check_updates", if self.check_updates { "1" } else { "0" }.into()));
         if let Ok(j) = serde_json::to_string(&self.recent) {

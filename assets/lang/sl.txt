@@ -1023,3 +1023,10 @@
 1022|Čas dela
 1023|Opis
 1024|Opišite projekt: kaj je, nastavitve, ki so delovale, zapiski za naslednjič.
+1025|Spletna stran s stanjem stroja, projektom in kamero ter API za druge programe. Nima gesla.
+1026|Vsak v omrežju lahko vidi stroj ter ga ustavi ali premakne. Ni gesla ali šifriranja: uporabljajte le v omrežju, ki mu zaupate.
+1027|Posluša na {}
+1028|Dosegljivo z drugih računalnikov v omrežju
+1029|Vklopi spletni strežnik in API
+1030|Strežnika ni bilo mogoče zagnati: {}
+1031|Spletni strežnik in API

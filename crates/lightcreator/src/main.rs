@@ -1,3 +1,5 @@
+mod api_server;
+mod api_ui;
 mod app;
 mod camera;
 mod check_ui;

@@ -1023,3 +1023,10 @@
 1022|Timp de lucru
 1023|Descriere
 1024|Descrie proiectul: ce este, setările care au funcționat, note pentru data viitoare.
+1025|O pagină web cu starea mașinii, proiectul și camera, și un API pentru alte programe. Nu are parolă.
+1026|Oricine din rețea poate vedea mașina și o poate opri sau muta. Nu există parolă sau criptare: folosiți doar într-o rețea de încredere.
+1027|Ascultă pe {}
+1028|Accesibil de pe alte calculatoare din rețea
+1029|Pornește serverul web și API-ul
+1030|Serverul nu a putut porni: {}
+1031|Server web și API

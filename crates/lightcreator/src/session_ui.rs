@@ -83,6 +83,7 @@ impl App {
             ctx.request_repaint_after(Duration::from_secs(1));
         }
         self.update_tick(ctx);
+        self.api_tick(ctx);
         self.toast_ui(ctx);
         self.close_dialog(ctx);
         self.confirm_dialog(ctx);
@@ -174,6 +175,8 @@ impl App {
                 ui.end_row();
                 ui.label(tr("Updates"));
                 ui.checkbox(&mut self.check_updates, tr("Look for a newer version when the program starts"));
+                ui.end_row();
+                self.api_options_ui(ui);
                 ui.end_row();
             });
         });

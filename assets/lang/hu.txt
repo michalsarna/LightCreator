@@ -1023,3 +1023,10 @@
 1022|Munkaidő
 1023|Leírás
 1024|Írd le a projektet: mi ez, mely beállítások működtek, jegyzetek a következő alkalomra.
+1025|Egy weboldal a gép állapotával, a projekttel és a kamerával, valamint egy API más programoknak. Nincs jelszava.
+1026|A hálózaton bárki láthatja a gépet, leállíthatja vagy mozgathatja. Nincs jelszó vagy titkosítás: csak megbízható hálózaton használd.
+1027|Figyel ezen: {}
+1028|Elérhető a hálózat más számítógépeiről
+1029|Webszerver és API bekapcsolása
+1030|A szervert nem sikerült elindítani: {}
+1031|Webszerver és API

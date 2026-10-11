@@ -1023,3 +1023,10 @@
 1022|Werktijd
 1023|Beschrijving
 1024|Beschrijf het project: wat het is, welke instellingen werkten, notities voor de volgende keer.
+1025|Een webpagina met de toestand van de machine, het project en de camera, en een API voor andere programma's. Er is geen wachtwoord.
+1026|Iedereen op het netwerk kan de machine zien en stoppen of bewegen. Er is geen wachtwoord of versleuteling: gebruik alleen op een netwerk dat je vertrouwt.
+1027|Luistert op {}
+1028|Bereikbaar vanaf andere computers in het netwerk
+1029|Webserver en API inschakelen
+1030|De server kon niet starten: {}
+1031|Webserver en API

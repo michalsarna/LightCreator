@@ -1023,3 +1023,10 @@
 1022|Temps de treball
 1023|Descripció
 1024|Descriu el projecte: què és, els paràmetres que han funcionat, notes per a la propera vegada.
+1025|Una pàgina web amb l'estat de la màquina, el projecte i la càmera, i una API per a altres programes. No té contrasenya.
+1026|Qualsevol de la xarxa pot veure la màquina i aturar-la o moure-la. No hi ha contrasenya ni xifratge: useu-ho només en una xarxa de confiança.
+1027|Escoltant a {}
+1028|Accessible des d'altres ordinadors de la xarxa
+1029|Activa el servidor web i l'API
+1030|No s'ha pogut iniciar el servidor: {}
+1031|Servidor web i API

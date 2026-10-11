@@ -1023,3 +1023,10 @@
 1022|Vinnutími
 1023|Lýsing
 1024|Lýstu verkefninu: hvað það er, stillingar sem virkuðu, athugasemdir fyrir næsta skipti.
+1025|Vefsíða með stöðu vélarinnar, verkefninu og myndavélinni, og API fyrir önnur forrit. Hún hefur ekkert lykilorð.
+1026|Hver sem er á netinu getur séð vélina og stöðvað hana eða fært. Ekkert lykilorð eða dulkóðun: notið aðeins á neti sem þið treystið.
+1027|Hlustar á {}
+1028|Aðgengilegt úr öðrum tölvum á netinu
+1029|Kveikja á vefþjóni og API
+1030|Ekki tókst að ræsa netþjóninn: {}
+1031|Vefþjónn og API

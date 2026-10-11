@@ -104,6 +104,7 @@ impl App {
         if let Some(f) = latest {
             let rgb = self.cam_process(f.rgb, f.w, f.h);
             let (w, h, rgb) = rotate_rgb(&rgb, f.w, f.h, rotation);
+            self.api_publish_frame(w, h, &rgb);
             let img = egui::ColorImage::from_rgb([w as usize, h as usize], &rgb);
             match &mut self.stream_tex {
                 Some(t) if t.size() == [w as usize, h as usize] => t.set(img.clone(), egui::TextureOptions::LINEAR),

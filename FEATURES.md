@@ -40,6 +40,7 @@
   pressed again. The Overlay button follows Camera view and is always visible; it is greyed out until there is a
   picture to show (a saved photo, or the live camera while its window is open) and then switches it on the work area.
   Start / STOP are written in capitals.
+* **Web server and API** (Program options, off by default, no password): a web page with the state of the machine, the project and a camera, and an API for the status, the project as SVG, the cameras and the commands stop, home, cancel jog, jog and camera choice. Listens only on this computer unless you allow the network. See the wiki page Web Server and API.
 * **Delete buttons:** everything that deletes (devices, cameras, zones, macros, counters, materials, clipart, nodes, the overlay...) has a bin icon and is red.
 * **Description tab:** a plain multi-line text about the project in the side panel (it can be moved like the other tabs), saved in the project file.
 * **Layer cut options:** kerf offset, perforation (cut / skip lengths) and automatic tabs / bridges for line layers, saved with the layer, the material and the project; a layer of images is always in the Image mode (mode fixed, the rest editable) and images have a scan angle. Not implemented: sub-layers and hand-placed tabs.

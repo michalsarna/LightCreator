@@ -1023,3 +1023,10 @@
 1022|Čas práce
 1023|Popis
 1024|Opíšte projekt: čo to je, nastavenia, ktoré fungovali, poznámky nabudúce.
+1025|Webová stránka so stavom stroja, projektom a kamerou a API pre iné programy. Nemá heslo.
+1026|Ktokoľvek v sieti môže stroj vidieť a zastaviť alebo pohnúť. Nie je tu heslo ani šifrovanie: používajte len v dôveryhodnej sieti.
+1027|Počúva na {}
+1028|Dostupný z iných počítačov v sieti
+1029|Zapnúť webový server a API
+1030|Server sa nepodarilo spustiť: {}
+1031|Webový server a API

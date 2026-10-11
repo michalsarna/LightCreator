@@ -131,6 +131,15 @@ impl App {
         }
         self.active = get("active_profile").and_then(|v| v.parse::<usize>().ok()).filter(|i| *i < self.profiles.len()).unwrap_or(0);
         self.start_sel = self.active;
+        if let Some(v) = get("api_on") {
+            self.api_on = v == "1";
+        }
+        if let Some(v) = get("api_port").and_then(|v| v.parse::<u16>().ok()).filter(|p| *p >= 1024) {
+            self.api_port = v;
+        }
+        if let Some(v) = get("api_lan") {
+            self.api_lan = v == "1";
+        }
         if let Some(v) = get("autosave_on") {
             self.autosave_on = v != "0";
         }

@@ -1023,3 +1023,10 @@
 1022|Darba laiks
 1023|Apraksts
 1024|Aprakstiet projektu: kas tas ir, kuri iestatījumi darbojās, piezīmes nākamajam reizei.
+1025|Tīmekļa lapa ar iekārtas stāvokli, projektu un kameru, kā arī API citām programmām. Tai nav paroles.
+1026|Ikviens tīklā var redzēt iekārtu un to apturēt vai pārvietot. Nav paroles vai šifrēšanas: lietojiet tikai uzticamā tīklā.
+1027|Klausās uz {}
+1028|Pieejams no citiem tīkla datoriem
+1029|Ieslēgt tīmekļa serveri un API
+1030|Serveri neizdevās palaist: {}
+1031|Tīmekļa serveris un API

@@ -1023,3 +1023,10 @@
 1022|Am oibre
 1023|Cur síos
 1024|Déan cur síos ar an tionscadal: cad é, na socruithe a d'oibrigh, nótaí don chéad uair eile.
+1025|Leathanach gréasáin le staid an mheaisín, an tionscadal agus an ceamara, agus API do chláir eile. Níl focal faire air.
+1026|Is féidir le duine ar bith ar an líonra an meaisín a fheiceáil agus é a stopadh nó a bhogadh. Níl focal faire ná criptiú ann: ná húsáid ach ar líonra iontaofa.
+1027|Ag éisteacht ar {}
+1028|Inrochtana ó ríomhairí eile ar an líonra
+1029|Cuir an freastalaí gréasáin agus an API ar siúl
+1030|Níorbh fhéidir an freastalaí a thosú: {}
+1031|Freastalaí gréasáin agus API

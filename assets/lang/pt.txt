@@ -1023,3 +1023,10 @@
 1022|Tempo de trabalho
 1023|Descrição
 1024|Descreva o projeto: o que é, as definições que funcionaram, notas para a próxima vez.
+1025|Uma página web com o estado da máquina, o projeto e a câmara, e uma API para outros programas. Não tem palavra-passe.
+1026|Qualquer pessoa na rede pode ver a máquina e pará-la ou movê-la. Não há palavra-passe nem cifragem: use apenas numa rede de confiança.
+1027|A escutar em {}
+1028|Acessível a partir de outros computadores da rede
+1029|Ligar o servidor web e a API
+1030|Não foi possível iniciar o servidor: {}
+1031|Servidor web e API

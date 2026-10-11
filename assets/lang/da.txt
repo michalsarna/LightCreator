@@ -1023,3 +1023,10 @@
 1022|Arbejdstid
 1023|Beskrivelse
 1024|Beskriv projektet: hvad det er, indstillinger der virkede, noter til næste gang.
+1025|En webside med maskinens tilstand, projektet og kameraet samt en API til andre programmer. Den har ingen adgangskode.
+1026|Alle på netværket kan se maskinen og stoppe eller flytte den. Der er ingen adgangskode eller kryptering: brug kun på et netværk, du stoler på.
+1027|Lytter på {}
+1028|Tilgængelig fra andre computere på netværket
+1029|Slå webserveren og API'en til
+1030|Serveren kunne ikke starte: {}
+1031|Webserver og API

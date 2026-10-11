@@ -1023,3 +1023,10 @@
 1022|Darbo laikas
 1023|Aprašymas
 1024|Aprašykite projektą: kas tai, kurie nustatymai veikė, pastabos kitam kartui.
+1025|Tinklalapis su aparato būsena, projektu ir kamera bei API kitoms programoms. Neturi slaptažodžio.
+1026|Bet kas tinkle gali matyti aparatą ir jį sustabdyti ar judinti. Nėra slaptažodžio ar šifravimo: naudokite tik patikimame tinkle.
+1027|Klausosi {}
+1028|Pasiekiamas iš kitų tinklo kompiuterių
+1029|Įjungti žiniatinklio serverį ir API
+1030|Nepavyko paleisti serverio: {}
+1031|Žiniatinklio serveris ir API
