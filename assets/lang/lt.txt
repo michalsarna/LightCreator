@@ -1062,3 +1062,5 @@
 1061|Ruda (šviesi)
 1062|Oranžinė (tamsi)
 1063|Oranžinė (šviesi)
+1064|Darbo erdvės spalva
+1065|Erdvė aplink darbo plotą

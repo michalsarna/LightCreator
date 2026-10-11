@@ -1062,3 +1062,5 @@
 1061|Marró (clar)
 1062|Taronja (fosc)
 1063|Taronja (clar)
+1064|Color de l'espai de treball
+1065|L'espai al voltant de l'àrea de treball

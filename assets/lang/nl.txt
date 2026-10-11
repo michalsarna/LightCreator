@@ -1062,3 +1062,5 @@
 1061|Bruin (licht)
 1062|Oranje (donker)
 1063|Oranje (licht)
+1064|Kleur van de werkruimte
+1065|De ruimte rond het werkgebied

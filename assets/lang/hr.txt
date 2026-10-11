@@ -1062,3 +1062,5 @@
 1061|Smeđa (svijetla)
 1062|Narančasta (tamna)
 1063|Narančasta (svijetla)
+1064|Boja radnog prostora
+1065|Prostor oko radne površine

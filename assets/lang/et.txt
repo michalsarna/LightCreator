@@ -1062,3 +1062,5 @@
 1061|Pruun (hele)
 1062|Oranž (tume)
 1063|Oranž (hele)
+1064|Tööruumi värv
+1065|Tööala ümbritsev ruum

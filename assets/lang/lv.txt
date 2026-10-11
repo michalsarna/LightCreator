@@ -1062,3 +1062,5 @@
 1061|Brūna (gaiša)
 1062|Oranža (tumša)
 1063|Oranža (gaiša)
+1064|Darba telpas krāsa
+1065|Telpa ap darba laukumu

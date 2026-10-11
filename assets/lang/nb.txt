@@ -1062,3 +1062,5 @@
 1061|Brun (lys)
 1062|Oransje (mørk)
 1063|Oransje (lys)
+1064|Farge på arbeidsrommet
+1065|Rommet rundt arbeidsområdet

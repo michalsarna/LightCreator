@@ -1062,3 +1062,5 @@
 1061|Rjava (svetla)
 1062|Oranžna (temna)
 1063|Oranžna (svetla)
+1064|Barva delovnega prostora
+1065|Prostor okoli delovnega območja

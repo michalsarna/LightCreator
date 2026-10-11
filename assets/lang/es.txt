@@ -1062,3 +1062,5 @@
 1061|Marrón (claro)
 1062|Naranja (oscuro)
 1063|Naranja (claro)
+1064|Color del espacio de trabajo
+1065|El espacio alrededor del área de trabajo

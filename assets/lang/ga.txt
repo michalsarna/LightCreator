@@ -1062,3 +1062,5 @@
 1061|Donn (éadrom)
 1062|Oráiste (dorcha)
 1063|Oráiste (éadrom)
+1064|Dath an spáis oibre
+1065|An spás timpeall an limistéir oibre

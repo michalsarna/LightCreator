@@ -1062,3 +1062,5 @@
 1061|Maro (deschis)
 1062|Portocaliu (închis)
 1063|Portocaliu (deschis)
+1064|Culoarea spațiului de lucru
+1065|Spațiul din jurul zonei de lucru

@@ -65,7 +65,7 @@
   "Auto-fit work area to window" toggles it). The preview window behaves the same way.
 * **View options** (Settings menu): main grid and a finer secondary grid, each with its own line distance and
   colour, the work-area background colour (automatically very light grey in the dark colour schemes and
-  white in the light ones, or your own) and the thickness of the drawn lines.
+  white in the light ones, or your own), the colour of the workspace around it (the colour scheme's, or your own) and the thickness of the drawn lines.
 
 **Files**
 * **Saving:** a "File saved" message appears for 5 seconds after saving by hand. Auto-save (Settings → Program options…,

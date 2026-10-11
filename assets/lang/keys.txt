@@ -1062,3 +1062,5 @@
 1061	Brown (light)
 1062	Orange (dark)
 1063	Orange (light)
+1064	Workspace colour
+1065	The space around the work area

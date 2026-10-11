@@ -1062,3 +1062,5 @@
 1061|Brúnt (ljóst)
 1062|Appelsínugult (dökkt)
 1063|Appelsínugult (ljóst)
+1064|Litur vinnusvæðisins
+1065|Svæðið í kringum vinnusvæðið

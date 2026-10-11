@@ -1360,6 +1360,9 @@ const TABLE: &[[&str; 7]] = &[
     // ---- theme names: orange ----
     ["Orange (dark)", "pomarańczowy (ciemny)", "Orange (dunkel)", "Arancione (scuro)", "Oranssi (tumma)", "橙色 (深色)", "नारंगी (गहरा)"],
     ["Orange (light)", "pomarańczowy (jasny)", "Orange (hell)", "Arancione (chiaro)", "Oranssi (vaalea)", "橙色 (浅色)", "नारंगी (हल्का)"],
+    // ---- workspace colour option ----
+    ["Workspace colour", "Kolor obszaru roboczego", "Farbe des Arbeitsbereichs", "Colore dell'area di lavoro", "Työtilan väri", "工作区颜色", "कार्यक्षेत्र का रंग"],
+    ["The space around the work area", "Przestrzeń wokół pola roboczego", "Der Raum um die Arbeitsfläche", "Lo spazio intorno al piano di lavoro", "Työalueen ympärillä oleva tila", "工作区域周围的空间", "कार्य क्षेत्र के चारों ओर की जगह"],
 ];
 #[cfg(test)]
 mod tests {

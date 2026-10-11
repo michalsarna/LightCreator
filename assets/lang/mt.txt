@@ -1062,3 +1062,5 @@
 1061|Kannella (ċar)
 1062|Oranġjo (skur)
 1063|Oranġjo (ċar)
+1064|Kulur tal-ispazju tax-xogħol
+1065|L-ispazju madwar iż-żona tax-xogħol

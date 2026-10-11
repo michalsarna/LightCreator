@@ -1062,3 +1062,5 @@
 1061|Hnědý (světlý)
 1062|Oranžový (tmavý)
 1063|Oranžový (světlý)
+1064|Barva pracovního prostoru
+1065|Prostor kolem pracovní plochy

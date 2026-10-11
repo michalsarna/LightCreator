@@ -289,7 +289,7 @@ impl App {
         self.cursor_mm = resp.hover_pos().map(|m| self.s2w(o, m));
 
         // ---- background, bed, grid ----
-        painter.rect_filled(rect, 0.0, theme::workspace());
+        painter.rect_filled(rect, 0.0, self.workspace_fill());
         let bed = egui::Rect::from_min_max(self.w2s(o, Pt::new(0.0, 0.0)), self.w2s(o, Pt::new(bw, bh)));
         painter.rect_filled(bed.translate(egui::vec2(3.0, 3.0)), 0.0, Color32::from_black_alpha(25));
         painter.rect_filled(bed, 0.0, self.bed_fill());
