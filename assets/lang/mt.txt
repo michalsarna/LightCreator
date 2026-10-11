@@ -977,3 +977,23 @@
 976|Punti ta' referenza
 977|Jissostitwixxi l-punti bl-erba' kantunieri tax-xbieha u fejn jinsabu issa.
 978|Aqbad mal-oġġetti
+979|Ma setgħetx issir il-paġna: {}
+980|Ma setax jinfetaħ il-vewer: {}
+981|Stampatur default
+982|Marġni
+983|Oġġetti biss fuq saffi viżibbli
+984|L-oġġetti biss, kemm jippermetti l-paġna
+985|Iftaħ il-PDF
+986|Miftuħ fil-vewer tal-PDF.
+987|Jiftaħ il-paġna fil-vewer tal-PDF, li jista' jistampaha b'aktar għażliet
+988|Stampa
+989|Stampa…
+990|Stampatur
+991|Jistampa d-disinn fuq stampatur tal-karta, biex tiċċekkja l-pożizzjoni jew bħala mudell.
+992|Ħlief bħala PDF…
+993|Mibgħut lill-istampatur. {}
+994|L-istampatur ma aċċettahx: {}
+995|L-erja tax-xogħol kollha, bi skala
+996|M'hemm xejn x'tistampa.
+997|{} oġġett(i) joħorġu barra mill-erja tax-xogħol; fuq il-karta jinqatgħu fit-tarf tagħha.
+998|{} oġġett(i) joħorġu barra mill-erja tax-xogħol; jiġu stampati xorta.

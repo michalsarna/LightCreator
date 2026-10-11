@@ -977,3 +977,23 @@
 976|Puntos de referencia
 977|Sustituye los puntos por las cuatro esquinas de la imagen y donde están ahora.
 978|Ajustar a los objetos
+979|No se pudo crear la página: {}
+980|No se pudo abrir el visor: {}
+981|Impresora predeterminada
+982|Margen
+983|Solo objetos de capas visibles
+984|Solo los objetos, tan grandes como permita la página
+985|Abrir el PDF
+986|Abierto en el visor de PDF.
+987|Abre la página en el visor de PDF, que puede imprimirla con más opciones
+988|Imprimir
+989|Imprimir…
+990|Impresora
+991|Imprime el diseño en una impresora de papel, para comprobar la colocación o como plantilla.
+992|Guardar como PDF…
+993|Enviado a la impresora. {}
+994|La impresora no lo aceptó: {}
+995|Toda el área de trabajo, a escala
+996|No hay nada que imprimir.
+997|{} objeto(s) salen del área de trabajo; en el papel se cortan en su borde.
+998|{} objeto(s) salen del área de trabajo; se imprimen de todos modos.

@@ -977,3 +977,23 @@
 976|Pointí tagartha
 977|Cuireann sé ceithre choirnéal an phictiúir agus a n-áit anois in ionad na bpointí.
 978|Teaglaim le réada
+979|Níorbh fhéidir an leathanach a dhéanamh: {}
+980|Níorbh fhéidir an breathnóir a oscailt: {}
+981|Priontáil réamhshocraithe
+982|Imeall
+983|Réada ar chiseal infheicthe amháin
+984|Na réada amháin, chomh mór agus a cheadaíonn an leathanach
+985|Oscail an PDF
+986|Oscailte sa bhreathnóir PDF.
+987|Osclaíonn sé an leathanach sa bhreathnóir PDF, ar féidir leis é a phriontáil le tuilleadh roghanna
+988|Priontáil
+989|Priontáil…
+990|Priontáil
+991|Priontálann sé an dearadh ar phriontáil pháipéir, chun an láithriú a sheiceáil nó mar theimpléad.
+992|Sábháil mar PDF…
+993|Seolta chuig an bpriontáil. {}
+994|Níor ghlac an phriontáil leis: {}
+995|An limistéar oibre ar fad, de réir scála
+996|Níl aon rud le priontáil.
+997|Sroicheann {} réad lasmuigh den limistéar oibre; ar an bpáipéar gearrtar iad ag a imeall.
+998|Sroicheann {} réad lasmuigh den limistéar oibre; priontáiltear iad ar aon nós.

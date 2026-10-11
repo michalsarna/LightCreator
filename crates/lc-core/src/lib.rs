@@ -10,6 +10,7 @@ pub mod export;
 pub mod gcode;
 pub mod hooks;
 pub mod image;
+pub mod print;
 pub mod snap;
 pub mod fillet;
 pub mod geom;

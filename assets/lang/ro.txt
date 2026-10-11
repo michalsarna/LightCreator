@@ -977,3 +977,23 @@
 976|Puncte de referință
 977|Înlocuiește punctele cu cele patru colțuri ale imaginii și locul unde sunt acum.
 978|Aliniere la obiecte
+979|Pagina nu a putut fi creată: {}
+980|Vizualizatorul nu a putut fi deschis: {}
+981|Imprimantă implicită
+982|Margine
+983|Doar obiectele de pe straturile vizibile
+984|Doar obiectele, cât de mari permite pagina
+985|Deschide PDF-ul
+986|Deschis în vizualizatorul PDF.
+987|Deschide pagina în vizualizatorul PDF, care o poate tipări cu mai multe opțiuni
+988|Tipărește
+989|Tipărește…
+990|Imprimantă
+991|Tipărește designul pe o imprimantă de hârtie, pentru a verifica amplasarea sau ca șablon.
+992|Salvează ca PDF…
+993|Trimis la imprimantă. {}
+994|Imprimanta nu l-a primit: {}
+995|Toată zona de lucru, la scară
+996|Nu e nimic de tipărit.
+997|{} obiect(e) ies din zona de lucru; pe hârtie sunt tăiate la margine.
+998|{} obiect(e) ies din zona de lucru; sunt tipărite oricum.

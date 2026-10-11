@@ -977,3 +977,23 @@
 976|Referentne točke
 977|Zamjenjuje točke s četiri kuta slike i mjestom gdje su sada.
 978|Prianjanje uz objekte
+979|Stranicu nije moguće napraviti: {}
+980|Preglednik nije moguće otvoriti: {}
+981|Zadani pisač
+982|Margina
+983|Samo objekti na vidljivim slojevima
+984|Samo objekti, što veći koliko stranica dopušta
+985|Otvori PDF
+986|Otvoreno u PDF pregledniku.
+987|Otvara stranicu u PDF pregledniku, koji je može ispisati s više mogućnosti
+988|Ispis
+989|Ispis…
+990|Pisač
+991|Ispisuje dizajn na papirnatom pisaču, radi provjere rasporeda ili kao predložak.
+992|Spremi kao PDF…
+993|Poslano pisaču. {}
+994|Pisač to nije prihvatio: {}
+995|Cijelo radno područje, u mjerilu
+996|Nema ničega za ispis.
+997|{} objekt(a) izlazi izvan radnog područja; na papiru se režu na njegovom rubu.
+998|{} objekt(a) izlazi izvan radnog područja; ipak se ispisuju.

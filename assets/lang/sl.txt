@@ -977,3 +977,23 @@
 976|Referenčne točke
 977|Točke zamenja s štirimi vogali slike in mestom, kjer so zdaj.
 978|Pripni na predmete
+979|Strani ni bilo mogoče ustvariti: {}
+980|Pregledovalnika ni bilo mogoče odpreti: {}
+981|Privzeti tiskalnik
+982|Rob
+983|Samo predmeti na vidnih slojih
+984|Samo predmeti, kar največji, kolikor dopušča stran
+985|Odpri PDF
+986|Odprto v pregledovalniku PDF.
+987|Odpre stran v pregledovalniku PDF, ki jo lahko natisne z več možnostmi
+988|Natisni
+989|Natisni…
+990|Tiskalnik
+991|Natisne načrt na papirnatem tiskalniku, za preverjanje postavitve ali kot predlogo.
+992|Shrani kot PDF…
+993|Poslano tiskalniku. {}
+994|Tiskalnik tega ni sprejel: {}
+995|Celotno delovno območje v merilu
+996|Ničesar ni za tiskanje.
+997|{} predmet(ov) sega zunaj delovnega območja; na papirju so odrezani na robu.
+998|{} predmet(ov) sega zunaj delovnega območja; vseeno se natisnejo.

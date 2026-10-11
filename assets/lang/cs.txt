@@ -977,3 +977,23 @@
 976|Referenční body
 977|Nahradí body čtyřmi rohy obrazu a místy, kde nyní leží.
 978|Přichytávat k objektům
+979|Stránku se nepodařilo vytvořit: {}
+980|Prohlížeč se nepodařilo otevřít: {}
+981|Výchozí tiskárna
+982|Okraj
+983|Jen objekty na viditelných vrstvách
+984|Jen objekty, co největší, jak stránka dovolí
+985|Otevřít PDF
+986|Otevřeno v prohlížeči PDF.
+987|Otevře stránku v prohlížeči PDF, který ji může vytisknout s více volbami
+988|Tisk
+989|Tisk…
+990|Tiskárna
+991|Vytiskne návrh na papírové tiskárně, ke kontrole rozmístění nebo jako šablonu.
+992|Uložit jako PDF…
+993|Odesláno na tiskárnu. {}
+994|Tiskárna to nepřijala: {}
+995|Celá pracovní plocha v měřítku
+996|Není co tisknout.
+997|{} objekt(ů) přesahuje pracovní plochu; na papíře jsou oříznuty na jejím okraji.
+998|{} objekt(ů) přesahuje pracovní plochu; vytisknou se přesto.

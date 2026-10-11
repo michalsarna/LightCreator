@@ -977,3 +977,23 @@
 976	Reference points
 977	Replaces the points with the four corners of the picture and where they lie now.
 978	Snap to objects
+979	Could not make the page: {}
+980	Could not open the viewer: {}
+981	Default printer
+982	Margin
+983	Only objects on visible layers
+984	Only the objects, as large as the page allows
+985	Open the PDF
+986	Opened in the PDF viewer.
+987	Opens the page in the PDF viewer, which can print it with more options
+988	Print
+989	Print…
+990	Printer
+991	Prints the design on a paper printer, for checking placement or as a template.
+992	Save as PDF…
+993	Sent to the printer. {}
+994	The printer did not take it: {}
+995	The whole work area, to scale
+996	There is nothing to print.
+997	{} object(s) reach outside the work area; on the paper they are cut off at its edge.
+998	{} object(s) reach outside the work area; they are printed anyway.

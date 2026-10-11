@@ -977,3 +977,23 @@
 976|Atsauces punkti
 977|Aizstāj punktus ar attēla četriem stūriem un to pašreizējo vietu.
 978|Pieķerties objektiem
+979|Neizdevās izveidot lapu: {}
+980|Neizdevās atvērt skatītāju: {}
+981|Noklusējuma printeris
+982|Mala
+983|Tikai redzamo slāņu objekti
+984|Tikai objekti, cik lieli lapa atļauj
+985|Atvērt PDF
+986|Atvērts PDF skatītājā.
+987|Atver lapu PDF skatītājā, kas to var izdrukāt ar vairāk iespējām
+988|Drukāt
+989|Drukāt…
+990|Printeris
+991|Izdrukā dizainu uz papīra printera, lai pārbaudītu izvietojumu vai kā veidni.
+992|Saglabāt kā PDF…
+993|Nosūtīts uz printeri. {}
+994|Printeris to nepieņēma: {}
+995|Visa darba zona mērogā
+996|Nav ko drukāt.
+997|{} objekti iziet ārpus darba zonas; uz papīra tie tiek nogriezti pie malas.
+998|{} objekti iziet ārpus darba zonas; tie tomēr tiek izdrukāti.

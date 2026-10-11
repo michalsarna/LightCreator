@@ -977,3 +977,23 @@
 976|Referenspunkter
 977|Ersätter punkterna med bildens fyra hörn och var de ligger nu.
 978|Fäst mot objekt
+979|Sidan kunde inte skapas: {}
+980|Visaren kunde inte öppnas: {}
+981|Standardskrivare
+982|Marginal
+983|Endast objekt på synliga lager
+984|Endast objekten, så stora som sidan tillåter
+985|Öppna PDF
+986|Öppnad i PDF-visaren.
+987|Öppnar sidan i PDF-visaren, som kan skriva ut den med fler alternativ
+988|Skriv ut
+989|Skriv ut…
+990|Skrivare
+991|Skriver ut designen på en pappersskrivare, för att kontrollera placeringen eller som mall.
+992|Spara som PDF…
+993|Skickat till skrivaren. {}
+994|Skrivaren tog inte emot den: {}
+995|Hela arbetsytan i skala
+996|Det finns inget att skriva ut.
+997|{} objekt sticker ut utanför arbetsytan; på papperet skärs de av vid kanten.
+998|{} objekt sticker ut utanför arbetsytan; de skrivs ut ändå.

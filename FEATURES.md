@@ -70,6 +70,11 @@
   between sessions; "Clear list" empties it and a file that no longer exists is dropped when picked.
 * **Import** submenu: SVG (curves are kept as Béziers; colours map to layers), bitmaps (PNG, JPEG, BMP, GIF,
   WebP) and Adobe Illustrator / PDF (first page, vector paths; Illustrator files saved with PDF compatibility).
+* **Print** (File > Print…, Ctrl+P): the design on a paper printer, as a one-page PDF made by the program: the whole work
+  area to scale or only the objects as large as the page allows, only visible layers or all, A4 or Letter, a margin, and a
+  warning when objects reach outside the work area. *Print* sends the page to the system printer (`lp` on macOS and Linux
+  with a choice of printer, the PDF viewer's Print verb on Windows); *Save as PDF…* and *Open the PDF* are the alternatives.
+  Layers are drawn in their colours, filled shapes lightly tinted, images in grey.
 * **Export** submenu: SVG, G-code, and HPGL (`.plt`) / DXF. Native `.lcr` projects embed images.
 * **Layer list:** the three switches at the end of each row (output, visible, air pump) have icon headings above
   the list; the layer colour is shown next to the title of the cut settings.

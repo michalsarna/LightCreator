@@ -16,6 +16,7 @@ pub enum Act {
     Save,
     SaveAs,
     ImportSvg,
+    Print,
     ExportSvg,
     ExportGcode,
     ExportCam,
@@ -125,6 +126,7 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
                 Item(Act::OnlineClipart, "Online clipart…", None),
             ],
         ),
+        Item(Act::Print, "Print…", key("CmdOrCtrl+P", "Ctrl+P")),
         Sub(
             "Export",
             vec![

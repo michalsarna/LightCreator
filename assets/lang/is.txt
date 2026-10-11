@@ -977,3 +977,23 @@
 976|Viðmiðunarpunktar
 977|Skiptir punktunum út fyrir fjögur horn myndarinnar og stöðu þeirra núna.
 978|Grípa í hluti
+979|Ekki tókst að búa til síðuna: {}
+980|Ekki tókst að opna skoðarann: {}
+981|Sjálfgefinn prentari
+982|Spássía
+983|Aðeins hlutir á sýnilegum lögum
+984|Aðeins hlutirnir, eins stórir og síðan leyfir
+985|Opna PDF
+986|Opnað í PDF-skoðaranum.
+987|Opnar síðuna í PDF-skoðara, sem getur prentað hana með fleiri valkostum
+988|Prenta
+989|Prenta…
+990|Prentari
+991|Prentar hönnunina á pappírsprentara, til að athuga staðsetningu eða sem sniðmát.
+992|Vista sem PDF…
+993|Sent á prentarann. {}
+994|Prentarinn tók ekki við því: {}
+995|Allt vinnusvæðið, í réttum kvarða
+996|Ekkert er til að prenta.
+997|{} hlutur(ir) ná út fyrir vinnusvæðið; á pappírnum eru þeir skornir af við jaðarinn.
+998|{} hlutur(ir) ná út fyrir vinnusvæðið; þeir eru samt prentaðir.

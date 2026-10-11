@@ -226,6 +226,7 @@ pub struct App {
     pub layer_dlg: Option<usize>,
     pub show_stream: bool,
     pub ser2net: Option<crate::ser2net_ui::Ser2NetDlg>,
+    pub print: Option<crate::print_ui::PrintDlg>,
     pub stream_mode: crate::stream_ui::StreamMode,
     pub tab_seen: bool,
     /// Rotation the current stream texture was made with.
@@ -454,6 +455,7 @@ impl App {
             layer_dlg: None,
             show_stream: false,
             ser2net: None,
+            print: None,
             stream_mode: crate::stream_ui::StreamMode::Floating,
             tab_seen: false,
             stream_rot: 0,
@@ -1255,6 +1257,7 @@ impl App {
             Act::Save => self.save(false),
             Act::SaveAs => self.save(true),
             Act::ImportSvg => self.import_svg(),
+            Act::Print => self.open_print(),
             Act::ExportSvg => self.export_svg(),
             Act::ExportGcode => self.export_gcode(),
             Act::ExportCam => self.export_cam(),
@@ -1937,6 +1940,7 @@ impl App {
         self.image_dialogs(ctx);
         self.stream_window(ctx);
         self.ser2net_window(ctx);
+        self.print_window(ctx);
     }
 }
 

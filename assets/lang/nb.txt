@@ -977,3 +977,23 @@
 976|Referansepunkter
 977|Erstatter punktene med bildets fire hjørner og hvor de ligger nå.
 978|Fest til objekter
+979|Siden kunne ikke lages: {}
+980|Visningsprogrammet kunne ikke åpnes: {}
+981|Standardskriver
+982|Marg
+983|Bare objekter på synlige lag
+984|Bare objektene, så store som siden tillater
+985|Åpne PDF
+986|Åpnet i PDF-visningen.
+987|Åpner siden i PDF-visningen, som kan skrive den ut med flere valg
+988|Skriv ut
+989|Skriv ut…
+990|Skriver
+991|Skriver ut designet på en papirskriver, for å sjekke plasseringen eller som mal.
+992|Lagre som PDF…
+993|Sendt til skriveren. {}
+994|Skriveren tok ikke imot den: {}
+995|Hele arbeidsområdet i målestokk
+996|Det er ingenting å skrive ut.
+997|{} objekt(er) rager utenfor arbeidsområdet; på papiret kuttes de ved kanten.
+998|{} objekt(er) rager utenfor arbeidsområdet; de skrives ut likevel.

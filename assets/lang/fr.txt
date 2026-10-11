@@ -977,3 +977,23 @@
 976|Points de référence
 977|Remplace les points par les quatre coins de l'image et l'endroit où ils sont maintenant.
 978|Aimanter aux objets
+979|Impossible de créer la page : {}
+980|Impossible d'ouvrir la visionneuse : {}
+981|Imprimante par défaut
+982|Marge
+983|Seulement les objets des calques visibles
+984|Seulement les objets, aussi grands que la page le permet
+985|Ouvrir le PDF
+986|Ouvert dans la visionneuse PDF.
+987|Ouvre la page dans la visionneuse PDF, qui peut l'imprimer avec plus d'options
+988|Imprimer
+989|Imprimer…
+990|Imprimante
+991|Imprime le dessin sur une imprimante papier, pour vérifier la disposition ou comme gabarit.
+992|Enregistrer en PDF…
+993|Envoyé à l'imprimante. {}
+994|L'imprimante ne l'a pas pris : {}
+995|Toute la zone de travail, à l'échelle
+996|Il n'y a rien à imprimer.
+997|{} objet(s) dépassent de la zone de travail ; sur le papier ils sont coupés au bord.
+998|{} objet(s) dépassent de la zone de travail ; ils sont imprimés quand même.

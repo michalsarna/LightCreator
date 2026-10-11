@@ -977,3 +977,23 @@
 976|Referenciapontok
 977|A pontokat a kép négy sarkával és jelenlegi helyükkel váltja fel.
 978|Igazítás az objektumokhoz
+979|Az oldalt nem sikerült elkészíteni: {}
+980|A megjelenítőt nem sikerült megnyitni: {}
+981|Alapértelmezett nyomtató
+982|Margó
+983|Csak a látható rétegek objektumai
+984|Csak az objektumok, amilyen nagyra az oldal engedi
+985|PDF megnyitása
+986|Megnyitva a PDF-megjelenítőben.
+987|Megnyitja az oldalt a PDF-megjelenítőben, amely több beállítással tudja kinyomtatni
+988|Nyomtatás
+989|Nyomtatás…
+990|Nyomtató
+991|Papírnyomtatón kinyomtatja a tervet az elrendezés ellenőrzéséhez vagy sablonként.
+992|Mentés PDF-ként…
+993|Elküldve a nyomtatónak. {}
+994|A nyomtató nem fogadta el: {}
+995|A teljes munkaterület, méretarányosan
+996|Nincs mit nyomtatni.
+997|{} objektum túlnyúlik a munkaterületen; a papíron a szélénél levágódik.
+998|{} objektum túlnyúlik a munkaterületen; ettől még kinyomtatódik.

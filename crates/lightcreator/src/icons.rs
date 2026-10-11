@@ -99,6 +99,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::ImportImage => "image",
         Act::OnlineClipart => "globe",
         Act::ExportSvg | Act::ExportCam => "file-output",
+        Act::Print => "printer",
         Act::ExportGcode => "file-code",
         Act::Quit => "x",
         Act::Undo => "undo-2",

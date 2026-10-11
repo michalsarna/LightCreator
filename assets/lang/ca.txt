@@ -977,3 +977,23 @@
 976|Punts de referència
 977|Substitueix els punts pels quatre cantons de la imatge i el lloc on són ara.
 978|Encaixa als objectes
+979|No s'ha pogut crear la pàgina: {}
+980|No s'ha pogut obrir el visualitzador: {}
+981|Impressora predeterminada
+982|Marge
+983|Només objectes de capes visibles
+984|Només els objectes, tan grans com permeti la pàgina
+985|Obre el PDF
+986|S'ha obert al visualitzador de PDF.
+987|Obre la pàgina al visualitzador de PDF, que la pot imprimir amb més opcions
+988|Imprimeix
+989|Imprimeix…
+990|Impressora
+991|Imprimeix el disseny en una impressora de paper, per comprovar la col·locació o com a plantilla.
+992|Desa com a PDF…
+993|Enviat a la impressora. {}
+994|La impressora no l'ha acceptat: {}
+995|Tota l'àrea de treball, a escala
+996|No hi ha res per imprimir.
+997|{} objecte(s) surten de l'àrea de treball; al paper es tallen a la vora.
+998|{} objecte(s) surten de l'àrea de treball; s'imprimeixen igualment.

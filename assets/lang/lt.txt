@@ -977,3 +977,23 @@
 976|Atskaitos taškai
 977|Pakeičia taškus keturiais vaizdo kampais ir jų dabartine vieta.
 978|Prilipti prie objektų
+979|Nepavyko sukurti puslapio: {}
+980|Nepavyko atidaryti peržiūros programos: {}
+981|Numatytasis spausdintuvas
+982|Paraštė
+983|Tik matomų sluoksnių objektai
+984|Tik objektai, kuo didesni, kiek leidžia puslapis
+985|Atidaryti PDF
+986|Atidaryta PDF peržiūros programoje.
+987|Atidaro puslapį PDF peržiūros programoje, kuri gali jį atspausdinti su daugiau parinkčių
+988|Spausdinti
+989|Spausdinti…
+990|Spausdintuvas
+991|Atspausdina dizainą popieriniu spausdintuvu, išdėstymui patikrinti arba kaip šabloną.
+992|Įrašyti kaip PDF…
+993|Išsiųsta spausdintuvui. {}
+994|Spausdintuvas jo nepriėmė: {}
+995|Visa darbo sritis mastelyje
+996|Nėra ką spausdinti.
+997|{} objektų išeina už darbo srities ribų; ant popieriaus jie nupjaunami prie krašto.
+998|{} objektų išeina už darbo srities ribų; jie vis tiek atspausdinami.

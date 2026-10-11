@@ -27,6 +27,7 @@ mod overlay;
 mod panels;
 mod preview_ui;
 mod prefs;
+mod print_ui;
 mod ser2net_ui;
 mod shape_ops;
 mod stream_ui;

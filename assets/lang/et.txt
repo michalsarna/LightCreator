@@ -977,3 +977,23 @@
 976|Võrdluspunktid
 977|Asendab punktid pildi nelja nurga ja nende praeguste kohtadega.
 978|Joonda objektidele
+979|Lehe loomine ebaõnnestus: {}
+980|Vaaturi avamine ebaõnnestus: {}
+981|Vaikeprinter
+982|Veeris
+983|Ainult nähtavate kihtide objektid
+984|Ainult objektid, nii suured kui leht lubab
+985|Ava PDF
+986|Avatud PDF-vaaturis.
+987|Avab lehe PDF-vaaturis, mis saab selle printida rohkemate valikutega
+988|Prindi
+989|Prindi…
+990|Printer
+991|Prindib kujunduse paberprinteris, paigutuse kontrollimiseks või mallina.
+992|Salvesta PDF-ina…
+993|Saadetud printerisse. {}
+994|Printer ei võtnud seda vastu: {}
+995|Kogu tööala mõõtkavas
+996|Printida pole midagi.
+997|{} objekti ulatub tööalast välja; paberil lõigatakse need serva kohalt ära.
+998|{} objekti ulatub tööalast välja; need prinditakse siiski.

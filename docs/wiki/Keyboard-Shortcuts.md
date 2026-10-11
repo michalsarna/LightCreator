@@ -7,6 +7,7 @@
 | File | Ctrl+N / O / S | New / open / save |
 | | Ctrl+Shift+S | Save as |
 | | Ctrl+I | Import SVG |
+| | Ctrl+P | Print |
 | Edit | Ctrl+Z / Ctrl+Y | Undo / redo |
 | | Ctrl+C / V / D | Copy / paste / duplicate |
 | | Delete | Delete |
