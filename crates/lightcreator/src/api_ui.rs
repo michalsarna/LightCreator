@@ -258,6 +258,20 @@ mod tests {
     }
 
     #[test]
+    fn the_phrase_is_kept_as_base64_and_read_back() {
+        let (mut a, _ctx) = app();
+        a.api_access = "my phrase ü".into();
+        let pairs = a.settings_pairs();
+        let kept = pairs.iter().find(|(k, _)| *k == "api_access").map(|(_, v)| v.clone()).unwrap();
+        assert!(!kept.contains("phrase"), "not in plain text");
+        assert_eq!(crate::api_server::access_from_setting(&kept).as_deref(), Some("my phrase ü"));
+        // The phrase a fresh installation starts with is kept the same way.
+        let (b, _) = app();
+        let fresh = b.settings_pairs().into_iter().find(|(k, _)| *k == "api_access").map(|(_, v)| v).unwrap();
+        assert_eq!(fresh, "TGlnaHRDcmVhdG9y");
+    }
+
+    #[test]
     fn a_new_access_phrase_reaches_the_running_server() {
         let (mut a, ctx) = app();
         a.api_on = true;
@@ -310,7 +324,7 @@ mod tests {
         a.api_lan = true;
         a.api_access = "my phrase".into();
         let pairs = a.settings_pairs();
-        for (k, v) in [("api_on", "1"), ("api_port", "9000"), ("api_lan", "1"), ("api_access", "my phrase")] {
+        for (k, v) in [("api_on", "1"), ("api_port", "9000"), ("api_lan", "1"), ("api_access", "bXkgcGhyYXNl")] {
             assert!(pairs.iter().any(|(a, b)| *a == k && b == v), "{k}");
         }
     }

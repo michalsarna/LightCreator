@@ -97,6 +97,30 @@ fn same_bytes(a: &[u8], b: &[u8]) -> bool {
     diff == 0
 }
 
+/// The bytes as standard base64 (with padding).
+pub fn base64_encode(bytes: &[u8]) -> String {
+    const A: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    let mut out = String::with_capacity(bytes.len().div_ceil(3) * 4);
+    for c in bytes.chunks(3) {
+        let n = (c[0] as u32) << 16 | (*c.get(1).unwrap_or(&0) as u32) << 8 | *c.get(2).unwrap_or(&0) as u32;
+        for i in 0..4 {
+            out.push(if i <= c.len() { A[(n >> (18 - 6 * i) & 63) as usize] as char } else { '=' });
+        }
+    }
+    out
+}
+
+/// The access phrase as it is kept in the settings (base64: not readable at a glance, but no encryption).
+pub fn access_to_setting(phrase: &str) -> String {
+    base64_encode(phrase.as_bytes())
+}
+
+/// The access phrase from the settings; `None` when it is not valid base64 of a usable phrase.
+pub fn access_from_setting(text: &str) -> Option<String> {
+    let phrase = String::from_utf8(base64_decode(text)?).ok()?;
+    access_ok(&phrase).then_some(phrase)
+}
+
 /// The text of a standard base64 string (padding allowed), or `None` when it is not valid.
 fn base64_decode(s: &str) -> Option<Vec<u8>> {
     let s = s.trim().trim_end_matches('=');
@@ -368,20 +392,7 @@ mod tests {
     }
 
     fn basic(user: &str, phrase: &str) -> String {
-        const A: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-        let raw = format!("{user}:{phrase}");
-        let mut out = String::new();
-        for c in raw.as_bytes().chunks(3) {
-            let n = (c[0] as u32) << 16 | (*c.get(1).unwrap_or(&0) as u32) << 8 | *c.get(2).unwrap_or(&0) as u32;
-            for i in 0..4 {
-                if i <= c.len() {
-                    out.push(A[(n >> (18 - 6 * i) & 63) as usize] as char);
-                } else {
-                    out.push('=');
-                }
-            }
-        }
-        format!("Authorization: Basic {out}\r\n")
+        format!("Authorization: Basic {}\r\n", base64_encode(format!("{user}:{phrase}").as_bytes()))
     }
 
     fn get_as(addr: SocketAddr, path: &str, auth: &str) -> (u16, String) {
@@ -430,6 +441,15 @@ mod tests {
         assert!(!access_ok("") && !access_ok("a\nb") && !access_ok(&"x".repeat(MAX_ACCESS + 1)));
         assert!(access_ok(&"x".repeat(MAX_ACCESS)));
         assert_eq!(base64_decode("bWU6TGlnaHQ=").unwrap(), b"me:Light");
+        for raw in ["", "a", "ab", "abc", "abcd", "LightCreator", "ü ž:\"x"] {
+            assert_eq!(base64_decode(&base64_encode(raw.as_bytes())).unwrap(), raw.as_bytes(), "{raw}");
+        }
+        assert_eq!(base64_encode(b"LightCreator"), "TGlnaHRDcmVhdG9y");
+        assert_eq!(access_from_setting(&access_to_setting("my phrase ü")).as_deref(), Some("my phrase ü"));
+        assert_eq!(access_from_setting("!!!"), None);
+        assert_eq!(access_from_setting(""), None, "an empty phrase is not usable");
+        assert_eq!(access_from_setting(&base64_encode(&[0xff, 0xfe])), None, "not text");
+        assert_eq!(access_from_setting(&base64_encode(b"a\nb")), None, "control characters");
         assert_eq!(base64_decode("bWU6TGlnaHQ").unwrap(), b"me:Light");
         assert!(base64_decode("a$b").is_none());
         assert!(same_bytes(b"abc", b"abc") && !same_bytes(b"abc", b"abd") && !same_bytes(b"abc", b"ab") && !same_bytes(b"", b"a"));

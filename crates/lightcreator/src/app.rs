@@ -383,7 +383,7 @@ impl App {
             api_on: saved("api_on").map(|v| v == "1").unwrap_or(false),
             api_port: saved("api_port").and_then(|v| v.parse::<u16>().ok()).filter(|p| *p >= 1024).unwrap_or(crate::api_ui::DEFAULT_PORT),
             api_lan: saved("api_lan").map(|v| v == "1").unwrap_or(false),
-            api_access: saved("api_access").filter(|v| crate::api_server::access_ok(v)).unwrap_or_else(|| crate::api_server::DEFAULT_ACCESS.to_string()),
+            api_access: saved("api_access").and_then(|v| crate::api_server::access_from_setting(&v)).unwrap_or_else(|| crate::api_server::DEFAULT_ACCESS.to_string()),
             api_access_edit: String::new(),
             api_access_typing: false,
             api: Default::default(),
@@ -2006,7 +2006,7 @@ impl App {
         v.push(("api_on", if self.api_on { "1" } else { "0" }.into()));
         v.push(("api_port", self.api_port.to_string()));
         v.push(("api_lan", if self.api_lan { "1" } else { "0" }.into()));
-        v.push(("api_access", self.api_access.clone()));
+        v.push(("api_access", crate::api_server::access_to_setting(&self.api_access)));
         v.push(("autosave_secs", self.autosave_secs.to_string()));
         v.push(("check_updates", if self.check_updates { "1" } else { "0" }.into()));
         if let Ok(j) = serde_json::to_string(&self.recent) {

@@ -12,7 +12,7 @@ Each release gets the next version number and a branch with the same name. Newes
 
 **Web server**
 * Every request needs an access phrase (HTTP Basic, default `LightCreator`); it is changed in the program options with
-  a Save button and applies at once. There is still no encryption.
+  a Save button and applies at once; it is kept in the settings as base64 (an encoding, not encryption). There is still no encryption.
 * A new web page: two columns on a computer (camera on two thirds, control panel and the project on one third), one
   column on a phone (status, camera, project, control); a crossed-out camera when there is none; the project opens
   full screen on double-click with zoom, move and reset; the colour schemes of the program (the one in use by
