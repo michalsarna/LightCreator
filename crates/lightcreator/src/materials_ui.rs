@@ -320,7 +320,7 @@ pub struct EditCx<'a> {
 }
 
 /// Everything about one material: name, thickness, category, tags, note and the settings of each layer.
-pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, salt: &str, cx: &mut EditCx) {
+pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, scope: &str, cx: &mut EditCx) {
     m.freeze_id();
     ui.horizontal_wrapped(|ui| {
         ui.add(egui::TextEdit::singleline(&mut m.name).desired_width((ui.available_width() - 130.0).clamp(80.0, 240.0)));
@@ -330,7 +330,7 @@ pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, salt: &str, cx: &mut
     ui.horizontal_wrapped(|ui| {
         ui.label(tr("Category"));
         let own = m.category();
-        egui::ComboBox::from_id_salt((salt, "category")).width(120.0).selected_text(cat_label(&own)).show_ui(ui, |ui| {
+        egui::ComboBox::from_id_salt((scope, "category")).width(120.0).selected_text(cat_label(&own)).show_ui(ui, |ui| {
             for c in &cx.cats {
                 if ui.selectable_label(own.eq_ignore_ascii_case(c), cat_label(c)).clicked() {
                     m.category = c.clone();
@@ -344,7 +344,7 @@ pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, salt: &str, cx: &mut
         }
     });
     // The tags are typed as one line; the text is kept between frames so that a comma can be typed.
-    let tags_id = ui.make_persistent_id((salt, "tags", m.key(), m.laser as u8));
+    let tags_id = ui.make_persistent_id((scope, "tags", m.key(), m.laser as u8));
     let mut text: String = ui.data_mut(|d| d.get_temp::<String>(tags_id)).unwrap_or_else(|| m.tags.iter().map(|t| tr_tag(t)).collect::<Vec<_>>().join(", "));
     ui.label(tr("Tags"));
     {
@@ -381,16 +381,16 @@ pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, salt: &str, cx: &mut
         let lname = cx.layers.get(ml.index).map(|l| l.name.clone()).unwrap_or_default();
         let head = format!("{} ({})", ml.label, trf("Layer {}", &[&lname]));
         let swatch_colour = layer_colour(ml);
-        let state = egui::collapsing_header::CollapsingState::load_with_default_open(ui.ctx(), ui.make_persistent_id((salt, "layer", li)), true);
+        let state = egui::collapsing_header::CollapsingState::load_with_default_open(ui.ctx(), ui.make_persistent_id((scope, "layer", li)), true);
         state.show_header(ui, |ui| {
             swatch(ui, swatch_colour);
             ui.label(RichText::new(head).strong());
         })
         .body(|ui| {
-            layer_spec_ui(ui, (salt, 0, li), &mut ml.spec, cx.units, cx.su);
+            layer_spec_ui(ui, (scope, 0, li), &mut ml.spec, cx.units, cx.su);
             ui.horizontal(|ui| {
                 ui.label(tr("Colour"));
-                colour_picker(ui, (salt, "colour", li), &mut ml.spec.colour, ml.index);
+                colour_picker(ui, (scope, "colour", li), &mut ml.spec.colour, ml.index);
             });
             ui.horizontal(|ui| {
                 ui.label(tr("Label"));
@@ -398,7 +398,7 @@ pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, salt: &str, cx: &mut
                 if !options.iter().any(|o| o.eq_ignore_ascii_case(&ml.label)) {
                     options.push(ml.label.clone());
                 }
-                egui::ComboBox::from_id_salt((salt, "label", li)).width(150.0).selected_text(tr_tag(&ml.label)).show_ui(ui, |ui| {
+                egui::ComboBox::from_id_salt((scope, "label", li)).width(150.0).selected_text(tr_tag(&ml.label)).show_ui(ui, |ui| {
                     for o in options {
                         if ui.selectable_label(o.eq_ignore_ascii_case(&ml.label), tr_tag(&o)).clicked() {
                             ml.label = o;
@@ -422,7 +422,7 @@ pub fn material_editor(ui: &mut egui::Ui, m: &mut Material, salt: &str, cx: &mut
         if !free.contains(&pick) {
             pick = free.first().copied().unwrap_or(0);
         }
-        egui::ComboBox::from_id_salt((salt, "add_layer")).selected_text(cx.layers[pick].name.clone()).show_ui(ui, |ui| {
+        egui::ComboBox::from_id_salt((scope, "add_layer")).selected_text(cx.layers[pick].name.clone()).show_ui(ui, |ui| {
             for f in &free {
                 ui.selectable_value(&mut pick, *f, cx.layers[*f].name.clone());
             }
