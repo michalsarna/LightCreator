@@ -43,6 +43,7 @@ pub fn template(id: &str) -> Device {
             d.name = "GRBL diode laser 400 × 400".into();
         }
     }
+    d.add_starter_materials();
     d
 }
 

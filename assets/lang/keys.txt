@@ -1042,3 +1042,7 @@
 1041	New name
 1042	Rename this material
 1043	project
+1044	Acrylic 3 mm
+1045	Leather 2 mm
+1046	New, empty material
+1047	Plywood 3 mm

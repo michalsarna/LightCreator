@@ -1042,3 +1042,7 @@
 1041|Új név
 1042|Az anyag átnevezése
 1043|projekt
+1044|Akril 3 mm
+1045|Bőr 2 mm
+1046|Új, üres anyag
+1047|Rétegelt lemez 3 mm

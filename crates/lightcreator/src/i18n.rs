@@ -1332,6 +1332,11 @@ const TABLE: &[[&str; 7]] = &[
     ["New name", "Nowa nazwa", "Neuer Name", "Nuovo nome", "Uusi nimi", "新名称", "नया नाम"],
     ["Rename this material", "Zmień nazwę tego materiału", "Dieses Material umbenennen", "Rinomina questo materiale", "Nimeä tämä materiaali uudelleen", "重命名此材料", "इस सामग्री का नाम बदलें"],
     ["project", "projekt", "Projekt", "progetto", "projekti", "项目", "प्रोजेक्ट"],
+    // ---- starter materials ----
+    ["Acrylic 3 mm", "Akryl 3 mm", "Acryl 3 mm", "Acrilico 3 mm", "Akryyli 3 mm", "亚克力 3 毫米", "ऐक्रेलिक 3 मिमी"],
+    ["Leather 2 mm", "Skóra 2 mm", "Leder 2 mm", "Pelle 2 mm", "Nahka 2 mm", "皮革 2 毫米", "चमड़ा 2 मिमी"],
+    ["New, empty material", "Nowy, pusty materiał", "Neues, leeres Material", "Nuovo materiale vuoto", "Uusi, tyhjä materiaali", "新的空材料", "नई, खाली सामग्री"],
+    ["Plywood 3 mm", "Sklejka 3 mm", "Sperrholz 3 mm", "Compensato 3 mm", "Vaneri 3 mm", "胶合板 3 毫米", "प्लाईवुड 3 मिमी"],
 ];
 #[cfg(test)]
 mod tests {

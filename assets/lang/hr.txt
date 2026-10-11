@@ -1042,3 +1042,7 @@
 1041|Novi naziv
 1042|Preimenuj ovaj materijal
 1043|projekt
+1044|Akril 3 mm
+1045|Koža 2 mm
+1046|Novi, prazan materijal
+1047|Šperploča 3 mm

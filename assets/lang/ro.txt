@@ -1042,3 +1042,7 @@
 1041|Nume nou
 1042|Redenumește acest material
 1043|proiect
+1044|Acril 3 mm
+1045|Piele 2 mm
+1046|Material nou, gol
+1047|Placaj 3 mm

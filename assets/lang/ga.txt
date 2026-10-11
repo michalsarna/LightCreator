@@ -1042,3 +1042,7 @@
 1041|Ainm nua
 1042|Athainmnigh an t-ábhar seo
 1043|tionscadal
+1044|Aicrileach 3 mm
+1045|Leathar 2 mm
+1046|Ábhar nua folamh
+1047|Plaicearrach 3 mm

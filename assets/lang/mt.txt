@@ -1042,3 +1042,7 @@
 1041|Isem ġdid
 1042|Biddel l-isem ta' dan il-materjal
 1043|proġett
+1044|Akriliku 3 mm
+1045|Ġilda 2 mm
+1046|Materjal ġdid, vojt
+1047|Plywood 3 mm

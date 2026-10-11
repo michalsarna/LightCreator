@@ -1042,3 +1042,7 @@
 1041|Nombre nuevo
 1042|Cambiar el nombre de este material
 1043|proyecto
+1044|Acrílico 3 mm
+1045|Cuero 2 mm
+1046|Material nuevo, vacío
+1047|Contrachapado 3 mm

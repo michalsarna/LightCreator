@@ -1042,3 +1042,7 @@
 1041|Uus nimi
 1042|Nimeta see materjal ümber
 1043|projekt
+1044|Akrüül 3 mm
+1045|Nahk 2 mm
+1046|Uus tühi materjal
+1047|Vineer 3 mm

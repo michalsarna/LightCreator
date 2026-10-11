@@ -180,6 +180,7 @@ impl App {
         if finish {
             let mut dev = cfg.draft;
             dev.name = dev.name.trim().to_string();
+            dev.add_starter_materials();
             self.profiles.push(dev);
             self.start_sel = self.profiles.len() - 1;
             self.wizard = None;

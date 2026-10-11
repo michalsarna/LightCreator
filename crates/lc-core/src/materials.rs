@@ -71,7 +71,63 @@ pub fn free_name(taken: &[String], base: &str) -> String {
     (2..).map(|n| format!("{base} ({n})")).find(|c| !taken.iter().any(|t| t.eq_ignore_ascii_case(c))).unwrap_or_default()
 }
 
+/// One layer of a starter material: mode, speed in mm/min, power in percent, passes, interval in mm.
+fn starter_layer(index: usize, mode: LayerMode, speed_mm_min: f64, power: f64, passes: u32, interval: f64) -> MaterialLayer {
+    let mut l = Layer::new(index);
+    l.mode = mode;
+    l.speed = speed_mm_min / 60.0;
+    l.power = power;
+    l.passes = passes;
+    l.interval = interval;
+    MaterialLayer { index, settings: l }
+}
+
+/// A material with an engraving layer (layer 0, fill) and a cutting layer (layer 1, line).
+fn starter(name: &str, engrave: (f64, f64), cut: (f64, f64, u32)) -> Material {
+    Material {
+        name: name.to_string(),
+        layers: vec![starter_layer(0, LayerMode::Fill, engrave.0, engrave.1, 1, 0.1), starter_layer(1, LayerMode::Line, cut.0, cut.1, cut.2, 0.1)],
+    }
+}
+
+/// The materials a new device offers, besides the empty default one: generic starting points for a typical diode
+/// (about 10 W) or CO2 (about 40 W) laser. Always test on scrap. Their names are translated.
+pub fn starter_materials(laser: LaserKind) -> Vec<Material> {
+    match laser {
+        LaserKind::Diode => vec![
+            starter("Plywood 3 mm", (6000.0, 35.0), (180.0, 100.0, 3)),
+            starter("Cardboard", (6000.0, 25.0), (600.0, 100.0, 1)),
+            starter("Leather 2 mm", (5000.0, 30.0), (250.0, 100.0, 2)),
+            starter("Paper", (6000.0, 12.0), (1500.0, 70.0, 1)),
+        ],
+        LaserKind::Co2 => vec![
+            starter("Plywood 3 mm", (12000.0, 25.0), (600.0, 70.0, 1)),
+            starter("Acrylic 3 mm", (12000.0, 20.0), (480.0, 75.0, 1)),
+            starter("Cardboard", (15000.0, 15.0), (1500.0, 40.0, 1)),
+            starter("Leather 2 mm", (12000.0, 18.0), (900.0, 45.0, 1)),
+            starter("Paper", (15000.0, 10.0), (3000.0, 20.0, 1)),
+        ],
+        LaserKind::Fiber => vec![],
+    }
+}
+
 impl Device {
+    /// A device that has only what it started with (the empty default material, or the starters of some laser type)
+    /// gets the starter materials of its laser type. A device whose materials were changed is left alone.
+    pub fn add_starter_materials(&mut self) {
+        let empty_default = |m: &[Material]| m.len() == 1 && m[0].name == DEFAULT_MATERIAL && m[0].layers.is_empty();
+        let with_starters = |k: LaserKind| {
+            let mut v = vec![Material::new(DEFAULT_MATERIAL)];
+            v.extend(starter_materials(k));
+            v
+        };
+        let pristine = empty_default(&self.materials) || [LaserKind::Diode, LaserKind::Co2, LaserKind::Fiber].into_iter().any(|k| self.materials == with_starters(k));
+        if pristine {
+            self.materials = with_starters(self.laser());
+            self.active_material = 0;
+        }
+    }
+
     /// A device always has a material: older profiles get the default one.
     pub fn ensure_materials(&mut self) {
         if self.materials.is_empty() {
@@ -133,15 +189,15 @@ impl Document {
         changed
     }
 
-    /// A new material with a free name, made from the settings the layers have now; it becomes the selected one.
+    /// A new, empty material with a free name; it becomes the selected one. The layers go back to the default
+    /// settings, and the layers the design uses join the material with them.
     pub fn add_material(&mut self, name: &str) -> usize {
         self.sync_material();
         let names: Vec<String> = self.device.materials.iter().map(|m| m.name.clone()).collect();
-        let mut m = self.device.material().clone();
-        m.name = free_name(&names, name);
-        self.device.materials.push(m);
-        self.device.active_material = self.device.materials.len() - 1;
-        self.device.active_material
+        self.device.materials.push(Material::new(&free_name(&names, name)));
+        let i = self.device.materials.len() - 1;
+        self.select_material(i);
+        i
     }
 
     pub fn rename_material(&mut self, name: &str) {

@@ -1131,6 +1131,7 @@ impl App {
                     i
                 }
                 _ => {
+                    cfg.draft.add_starter_materials();
                     self.profiles.push(cfg.draft.clone());
                     self.profiles.len() - 1
                 }

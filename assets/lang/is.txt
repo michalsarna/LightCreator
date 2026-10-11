@@ -1042,3 +1042,7 @@
 1041|Nýtt nafn
 1042|Endurnefna þetta efni
 1043|verkefni
+1044|Akrýl 3 mm
+1045|Leður 2 mm
+1046|Nýtt, tómt efni
+1047|Krossviður 3 mm

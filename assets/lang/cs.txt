@@ -1042,3 +1042,7 @@
 1041|Nový název
 1042|Přejmenovat tento materiál
 1043|projekt
+1044|Akryl 3 mm
+1045|Kůže 2 mm
+1046|Nový prázdný materiál
+1047|Překližka 3 mm

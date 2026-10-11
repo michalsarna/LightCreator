@@ -8,11 +8,16 @@ use lc_core::materials::DEFAULT_MATERIAL;
 
 /// A material name as shown: the name every device starts with is translated, the others are the user's own words.
 pub fn material_label(name: &str) -> String {
-    if name == DEFAULT_MATERIAL {
-        tr("Default material").to_string()
-    } else {
-        name.to_string()
+    match name {
+        DEFAULT_MATERIAL => tr("Default material"),
+        "Plywood 3 mm" => tr("Plywood 3 mm"),
+        "Acrylic 3 mm" => tr("Acrylic 3 mm"),
+        "Cardboard" => tr("Cardboard"),
+        "Leather 2 mm" => tr("Leather 2 mm"),
+        "Paper" => tr("Paper"),
+        other => return other.to_string(),
     }
+    .to_string()
 }
 
 /// What the header is doing besides showing the name.
@@ -65,7 +70,7 @@ impl App {
                         }
                     }
                 });
-                if ui.add(egui::Button::image(crate::icons::slot(Some("plus"), theme::text()))).on_hover_text(tr("New material: a copy of this one")).clicked() {
+                if ui.add(egui::Button::image(crate::icons::slot(Some("plus"), theme::text()))).on_hover_text(tr("New, empty material")).clicked() {
                     edit = Some(MatEdit::New(String::new()));
                 }
                 if ui.add(egui::Button::image(crate::icons::slot(Some("pencil"), theme::text()))).on_hover_text(tr("Rename this material")).clicked() {

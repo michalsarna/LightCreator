@@ -1042,3 +1042,7 @@
 1041|Nytt navn
 1042|Gi dette materialet nytt navn
 1043|prosjekt
+1044|Akryl 3 mm
+1045|Skinn 2 mm
+1046|Nytt, tomt materiale
+1047|Kryssfiner 3 mm

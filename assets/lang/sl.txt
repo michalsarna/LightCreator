@@ -1042,3 +1042,7 @@
 1041|Novo ime
 1042|Preimenuj ta material
 1043|projekt
+1044|Akril 3 mm
+1045|Usnje 2 mm
+1046|Nov, prazen material
+1047|Vezana plošča 3 mm

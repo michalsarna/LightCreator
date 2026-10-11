@@ -1042,3 +1042,7 @@
 1041|Nieuwe naam
 1042|Dit materiaal hernoemen
 1043|project
+1044|Acryl 3 mm
+1045|Leer 2 mm
+1046|Nieuw, leeg materiaal
+1047|Multiplex 3 mm

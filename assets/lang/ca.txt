@@ -1042,3 +1042,7 @@
 1041|Nom nou
 1042|Canvia el nom d'aquest material
 1043|projecte
+1044|Acrílic 3 mm
+1045|Cuir 2 mm
+1046|Material nou, buit
+1047|Contraplacat 3 mm

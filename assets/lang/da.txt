@@ -1042,3 +1042,7 @@
 1041|Nyt navn
 1042|Omdøb dette materiale
 1043|projekt
+1044|Akryl 3 mm
+1045|Læder 2 mm
+1046|Nyt, tomt materiale
+1047|Krydsfiner 3 mm

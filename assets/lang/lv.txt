@@ -1042,3 +1042,7 @@
 1041|Jauns nosaukums
 1042|Pārdēvēt šo materiālu
 1043|projekts
+1044|Akrils 3 mm
+1045|Āda 2 mm
+1046|Jauns, tukšs materiāls
+1047|Saplāksnis 3 mm

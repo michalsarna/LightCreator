@@ -1976,7 +1976,7 @@ fn the_layers_follow_the_selected_material_and_the_material_follows_the_layers()
     d.layers[9].passes = 3;
     d.sync_material();
     assert_eq!(d.device.materials[0].layer(9).unwrap().settings.passes, 3);
-    // A second material starts as a copy and can be edited on its own.
+    // A second material starts empty and is edited on its own.
     let second = d.add_material("Acrylic");
     assert_eq!((second, d.device.material().name.as_str()), (1, "Acrylic"));
     d.layers[2].speed = 20.0;
@@ -2042,4 +2042,43 @@ fn materials_travel_with_the_profile_and_with_the_project_and_are_checked_on_imp
         mutate(&mut v);
         assert!(profiles::import_profile(&v.to_string()).is_err());
     }
+}
+
+#[test]
+fn a_new_device_comes_with_starter_materials_for_its_laser_and_a_new_material_is_empty() {
+    let diode = profiles::template("grbl-diode-400");
+    let names: Vec<&str> = diode.materials.iter().map(|m| m.name.as_str()).collect();
+    assert_eq!(names, [materials::DEFAULT_MATERIAL, "Plywood 3 mm", "Cardboard", "Leather 2 mm", "Paper"]);
+    assert!(diode.materials[0].layers.is_empty(), "the default one is empty");
+    for m in &diode.materials[1..] {
+        assert_eq!(m.layers.len(), 2);
+        assert_eq!((m.layers[0].settings.mode, m.layers[1].settings.mode), (LayerMode::Fill, LayerMode::Line));
+        assert!(m.layers.iter().all(|l| l.settings.speed > 0.0 && l.settings.power > 0.0 && l.settings.power <= 100.0));
+    }
+    let co2 = profiles::template("grbl-co2-300x200");
+    assert!(co2.materials.iter().any(|m| m.name == "Acrylic 3 mm"));
+    assert!(!diode.materials.iter().any(|m| m.name == "Acrylic 3 mm"), "a diode laser does not cut clear acrylic");
+    // Changing the laser type of a device that still has its starters gives it those of the other type...
+    let mut x = diode.clone();
+    x.heads[0].laser = LaserKind::Co2;
+    x.add_starter_materials();
+    assert_eq!(x.materials, co2.materials);
+    // ...but a device whose materials were touched is left alone.
+    let mut y = diode.clone();
+    y.materials[1].layers[0].settings.power = 77.0;
+    y.heads[0].laser = LaserKind::Co2;
+    let before = y.materials.clone();
+    y.add_starter_materials();
+    assert_eq!(y.materials, before);
+    // Every starter passes the check of an imported profile.
+    assert!(profiles::import_profile(&profiles::export_profile(&co2, "v0.1.2")).is_ok());
+    // A new material is empty: the layers go back to the defaults and the used ones join with them.
+    let mut d = Document::default();
+    d.add(1, Kind::Rect { w: 5.0, h: 5.0 }, Xf::IDENTITY);
+    d.layers[1].speed = 3.0;
+    d.sync_material();
+    let i = d.add_material("Felt");
+    assert_eq!(d.device.materials[i].layers.len(), 1, "only the layer in use");
+    assert!(d.layers[1].same_settings(&Layer::new(1)), "reset to the defaults");
+    assert_eq!(d.device.materials[0].layer(1).unwrap().settings.speed, 3.0, "the first material keeps its own");
 }

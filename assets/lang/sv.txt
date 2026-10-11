@@ -1042,3 +1042,7 @@
 1041|Nytt namn
 1042|Byt namn på det här materialet
 1043|projekt
+1044|Akryl 3 mm
+1045|Läder 2 mm
+1046|Nytt, tomt material
+1047|Plywood 3 mm

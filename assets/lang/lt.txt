@@ -1042,3 +1042,7 @@
 1041|Naujas pavadinimas
 1042|Pervadinti šią medžiagą
 1043|projektas
+1044|Akrilas 3 mm
+1045|Oda 2 mm
+1046|Nauja tuščia medžiaga
+1047|Faneros 3 mm
