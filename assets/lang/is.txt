@@ -1064,3 +1064,8 @@
 1063|Ljóst appelsínugult
 1064|Litur vinnusvæðisins
 1065|Svæðið í kringum vinnusvæðið
+1066|Vefsíða með stöðu vélarinnar, verkefninu og myndavélinni, og API fyrir önnur forrit. Hver beiðni þarf aðgangssetninguna; engin dulritun er til staðar.
+1067|Hver sem er á netinu sem þekkir aðgangssetninguna getur séð vélina og stöðvað hana eða fært. Setningin er send ódulrituð: notaðu aðeins á neti sem þú treystir.
+1068|Aðgangssetning
+1069|Nota þessa aðgangssetningu héðan í frá
+1070|Aðgangssetningin má ekki vera tóm eða innihalda stjórnstafi.

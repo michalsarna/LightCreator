@@ -1064,3 +1064,8 @@
 1063|Svetla oranžna
 1064|Barva delovnega prostora
 1065|Prostor okoli delovnega območja
+1066|Spletna stran s stanjem stroja, projektom in kamero ter API za druge programe. Vsaka zahteva potrebuje dostopno frazo; šifriranja ni.
+1067|Vsak v omrežju, ki pozna dostopno frazo, lahko vidi stroj ter ga ustavi ali premakne. Fraza se pošilja nešifrirana: uporabljajte le v omrežju, ki mu zaupate.
+1068|Dostopna fraza
+1069|Odslej uporabljaj to dostopno frazo
+1070|Dostopna fraza ne sme biti prazna ali vsebovati kontrolnih znakov.

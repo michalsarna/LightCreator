@@ -1064,3 +1064,8 @@
 1063|Gaiša oranža
 1064|Darba telpas krāsa
 1065|Telpa ap darba laukumu
+1066|Tīmekļa lapa ar iekārtas stāvokli, projektu un kameru, kā arī API citām programmām. Katram pieprasījumam vajadzīga piekļuves frāze; šifrēšanas nav.
+1067|Ikviens tīklā, kas zina piekļuves frāzi, var redzēt iekārtu un to apturēt vai pārvietot. Frāze tiek sūtīta nešifrēta: izmantojiet tikai uzticamā tīklā.
+1068|Piekļuves frāze
+1069|Turpmāk izmantot šo piekļuves frāzi
+1070|Piekļuves frāze nedrīkst būt tukša vai saturēt vadības rakstzīmes.

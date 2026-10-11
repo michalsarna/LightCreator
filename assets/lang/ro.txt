@@ -1064,3 +1064,8 @@
 1063|Portocaliu deschis
 1064|Culoarea spațiului de lucru
 1065|Spațiul din jurul zonei de lucru
+1066|O pagină web cu starea mașinii, proiectul și camera, și un API pentru alte programe. Fiecare cerere necesită fraza de acces; nu există criptare.
+1067|Oricine din rețea care cunoaște fraza de acces poate vedea mașina și o poate opri sau muta. Fraza este trimisă necriptat: folosiți doar într-o rețea de încredere.
+1068|Frază de acces
+1069|Folosește această frază de acces de acum
+1070|Fraza de acces nu poate fi goală și nu poate avea caractere de control.

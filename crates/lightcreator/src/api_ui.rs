@@ -47,6 +47,12 @@ impl App {
         }
         let Some(server) = &self.api.server else { return };
         let shared = server.shared.clone();
+        // A changed access phrase counts from now on, without restarting the server.
+        if let Ok(mut a) = shared.access.lock() {
+            if *a != self.api_access {
+                *a = self.api_access.clone();
+            }
+        }
         // The commands first, so that STOP does not wait for the next publication.
         let cmds: Vec<Command> = shared.commands.lock().map(|mut q| q.drain(..).collect()).unwrap_or_default();
         for c in cmds {
@@ -158,7 +164,7 @@ impl App {
     pub fn api_options_ui(&mut self, ui: &mut egui::Ui) {
         ui.label(tr("Web server and API"));
         ui.vertical(|ui| {
-            ui.checkbox(&mut self.api_on, tr("Switch on the web server and the API")).on_hover_text(tr("A web page with the state of the machine, the project and the camera, and an API for other programs. It has no password."));
+            ui.checkbox(&mut self.api_on, tr("Switch on the web server and the API")).on_hover_text(tr("A web page with the state of the machine, the project and the camera, and an API for other programs. Every request needs the access phrase; there is no encryption."));
             ui.add_enabled_ui(self.api_on, |ui| {
                 ui.horizontal(|ui| {
                     ui.label(tr("Port"));
@@ -166,8 +172,29 @@ impl App {
                 });
                 ui.checkbox(&mut self.api_lan, tr("Reachable from other computers on the network"));
             });
+            ui.add_enabled_ui(self.api_on, |ui| {
+                if self.api_access_edit.is_empty() && !self.api_access_typing {
+                    self.api_access_edit = self.api_access.clone();
+                }
+                let ok = crate::api_server::access_ok(&self.api_access_edit);
+                ui.horizontal(|ui| {
+                    ui.label(tr("Access phrase"));
+                    let r = ui.add(egui::TextEdit::singleline(&mut self.api_access_edit).password(true).desired_width(140.0).char_limit(crate::api_server::MAX_ACCESS));
+                    if r.changed() {
+                        self.api_access_typing = true;
+                    }
+                    let changed = self.api_access_edit != self.api_access;
+                    if crate::window_ui::save_button_enabled(ui, ok && changed, &tr("Save")).on_hover_text(tr("Use this access phrase from now on")).clicked() {
+                        self.api_access = self.api_access_edit.clone();
+                        self.api_access_typing = false;
+                    }
+                });
+                if !ok {
+                    ui.label(RichText::new(tr("The access phrase cannot be empty or have control characters.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
+                }
+            });
             if self.api_on && self.api_lan {
-                ui.label(RichText::new(tr("Anyone on the network can see the machine and stop or move it. There is no password or encryption: use only on a network you trust.")).color(Color32::from_rgb(0xc0, 0x80, 0x20)));
+                ui.label(RichText::new(tr("Anyone on the network who knows the access phrase can see the machine and stop or move it. The phrase is sent without encryption: use only on a network you trust.")).color(Color32::from_rgb(0xc0, 0x80, 0x20)));
             }
             if let Some(s) = &self.api.server {
                 ui.label(RichText::new(trf("Listening on {}", &[&format!("http://{}:{}", if self.api_lan { "<this computer>".to_string() } else { "localhost".to_string() }, s.addr.port())])).color(Color32::from_rgb(0x2e, 0xa0, 0x4f)));
@@ -219,6 +246,19 @@ mod tests {
     }
 
     #[test]
+    fn a_new_access_phrase_reaches_the_running_server() {
+        let (mut a, ctx) = app();
+        a.api_on = true;
+        a.api_tick(&ctx);
+        let shared = a.api.server.as_ref().unwrap().shared.clone();
+        assert_eq!(*shared.access.lock().unwrap(), crate::api_server::DEFAULT_ACCESS, "the default");
+        a.api_access = "other".into();
+        a.api.last_publish = None;
+        a.api_tick(&ctx);
+        assert_eq!(*shared.access.lock().unwrap(), "other");
+    }
+
+    #[test]
     fn commands_follow_the_rules_of_the_buttons() {
         let (mut a, _ctx) = app();
         a.doc.device.cameras = vec![lc_core::CameraSource::url("A", "http://a/x", 0), lc_core::CameraSource::url("B", "http://b/y", 0)];
@@ -240,8 +280,9 @@ mod tests {
         a.api_on = true;
         a.api_port = 9000;
         a.api_lan = true;
+        a.api_access = "my phrase".into();
         let pairs = a.settings_pairs();
-        for (k, v) in [("api_on", "1"), ("api_port", "9000"), ("api_lan", "1")] {
+        for (k, v) in [("api_on", "1"), ("api_port", "9000"), ("api_lan", "1"), ("api_access", "my phrase")] {
             assert!(pairs.iter().any(|(a, b)| *a == k && b == v), "{k}");
         }
     }

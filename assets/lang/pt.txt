@@ -1064,3 +1064,8 @@
 1063|Laranja claro
 1064|Cor do espaço de trabalho
 1065|O espaço à volta da área de trabalho
+1066|Uma página web com o estado da máquina, o projeto e a câmara, e uma API para outros programas. Cada pedido precisa da frase de acesso; não há cifragem.
+1067|Qualquer pessoa na rede que conheça a frase de acesso pode ver a máquina e pará-la ou movê-la. A frase é enviada sem cifragem: use apenas numa rede de confiança.
+1068|Frase de acesso
+1069|Usar esta frase de acesso a partir de agora
+1070|A frase de acesso não pode estar vazia nem ter caracteres de controlo.

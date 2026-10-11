@@ -1064,3 +1064,8 @@
 1063|Lys oransje
 1064|Farge på arbeidsrommet
 1065|Rommet rundt arbeidsområdet
+1066|En nettside med maskinens tilstand, prosjektet og kameraet, og en API for andre programmer. Hver forespørsel krever tilgangssetningen; det er ingen kryptering.
+1067|Alle på nettverket som kjenner tilgangssetningen, kan se maskinen og stoppe eller flytte den. Setningen sendes uten kryptering: bruk bare på et nettverk du stoler på.
+1068|Tilgangssetning
+1069|Bruk denne tilgangssetningen fra nå av
+1070|Tilgangssetningen kan ikke være tom eller ha kontrolltegn.

@@ -1064,3 +1064,8 @@
 1063|Taronja clar
 1064|Color de l'espai de treball
 1065|L'espai al voltant de l'àrea de treball
+1066|Una pàgina web amb l'estat de la màquina, el projecte i la càmera, i una API per a altres programes. Cada petició necessita la frase d'accés; no hi ha xifratge.
+1067|Qualsevol persona de la xarxa que conegui la frase d'accés pot veure la màquina i aturar-la o moure-la. La frase s'envia sense xifrar: useu-la només en una xarxa de confiança.
+1068|Frase d'accés
+1069|Utilitza aquesta frase d'accés a partir d'ara
+1070|La frase d'accés no pot estar buida ni tenir caràcters de control.

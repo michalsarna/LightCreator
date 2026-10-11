@@ -1064,3 +1064,8 @@
 1063	Light Orange
 1064	Workspace colour
 1065	The space around the work area
+1066	A web page with the state of the machine, the project and the camera, and an API for other programs. Every request needs the access phrase; there is no encryption.
+1067	Anyone on the network who knows the access phrase can see the machine and stop or move it. The phrase is sent without encryption: use only on a network you trust.
+1068	Access phrase
+1069	Use this access phrase from now on
+1070	The access phrase cannot be empty or have control characters.

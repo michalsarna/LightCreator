@@ -1064,3 +1064,8 @@
 1063|Világos narancs
 1064|A munkaterület színe
 1065|A munkaterület körüli tér
+1066|Weboldal a gép állapotával, a projekttel és a kamerával, valamint API más programoknak. Minden kérés hozzáférési mondatot igényel; nincs titkosítás.
+1067|A hálózaton bárki, aki ismeri a hozzáférési mondatot, láthatja a gépet, leállíthatja vagy mozgathatja. A mondat titkosítás nélkül megy át: csak megbízható hálózaton használd.
+1068|Hozzáférési mondat
+1069|Ezt a hozzáférési mondatot használja mostantól
+1070|A hozzáférési mondat nem lehet üres, és nem tartalmazhat vezérlőkaraktert.

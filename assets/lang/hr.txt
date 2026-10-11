@@ -1064,3 +1064,8 @@
 1063|Svijetla narančasta
 1064|Boja radnog prostora
 1065|Prostor oko radne površine
+1066|Web stranica sa stanjem stroja, projektom i kamerom te API za druge programe. Svaki zahtjev traži pristupnu frazu; nema šifriranja.
+1067|Svatko na mreži tko zna pristupnu frazu može vidjeti stroj te ga zaustaviti ili pomaknuti. Fraza se šalje bez šifriranja: koristite samo na mreži kojoj vjerujete.
+1068|Pristupna fraza
+1069|Koristi ovu pristupnu frazu od sada
+1070|Pristupna fraza ne smije biti prazna niti sadržavati kontrolne znakove.
