@@ -267,3 +267,26 @@ fn grbl_sim_job_sent_right_after_connect_is_not_lost() {
     s.run_job(job, 15.0);
     s.wait_idle_at(2.0, 3.0, 15.0);
 }
+
+/// The settings report of `$$`, as the lines GRBL printed before its `ok`.
+fn read_settings(s: &mut Session) -> Vec<String> {
+    let from = s.seen.rx.len();
+    s.link.send(Cmd::Line("$$".into()));
+    s.wait("settings report", 5.0, |v| v.rx[from..].iter().any(|l| l == "ok"));
+    s.seen.rx[from..].to_vec()
+}
+
+#[test]
+#[ignore = "needs grbl-sim: tools/grbl-sim/build.sh"]
+fn grbl_sim_starts_with_laser_mode_off_and_accepts_enabling_it() {
+    // What the app does after connecting: read `$$`, warn when `$32` is 0, and write `$32=1` once the user agrees.
+    let mut s = Session::connect();
+    s.wait_banner();
+    let dev = lc_core::Device::default();
+    let before = Controller::Grbl.parse_settings(&read_settings(&mut s)).check(&dev);
+    assert!(before.laser_mode_off, "grbl-sim's default is $32=0");
+    s.link.send(Cmd::Line("$32=1".into()));
+    let after = Controller::Grbl.parse_settings(&read_settings(&mut s));
+    assert_eq!(after.laser_mode, Some(true));
+    assert!(s.errors().is_empty(), "{:?}", s.errors());
+}

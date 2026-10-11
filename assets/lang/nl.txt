@@ -690,3 +690,11 @@
 689|Het gereedschapspad van laag {} verlaat het toegestane gebied (overscan of verplaatsingen zonder laser).
 690|{} object(en) liggen buiten de softwarematige grenzen.
 691|{} object(en) liggen buiten het bruikbare gebied (voorbij het werkgebied of in een marge).
+692|Lasermodus inschakelen ($32=1)
+693|De lasermodus ($32) staat uit.
+694|De besturing meldt een probleem
+695|De maximale S-waarde van de besturing ($30) is {}, het profiel gebruikt {}.
+696|Dit schrijft $32=1 naar de instellingen van de besturing. Doorgaan?
+697|Waarde van de besturing gebruiken
+698|Bij verschillende waarden komt het vermogen in de G-code niet overeen met de ingestelde percentages.
+699|Met lasermodus uit gedraagt GRBL zich als een spilbesturing: de laser kan afgaan bij snelle verplaatsingen en het vermogen volgt de snelheid niet.

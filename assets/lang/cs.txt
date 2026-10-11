@@ -690,3 +690,11 @@
 689|Dráha vrstvy {} opouští povolenou oblast (přejezd nebo pohyby naprázdno).
 690|{} objekt(ů) je mimo softwarové limity.
 691|{} objekt(ů) je mimo použitelnou oblast (za pracovní plochou nebo v okraji).
+692|Zapnout laserový režim ($32=1)
+693|Laserový režim ($32) je vypnutý.
+694|Řídicí jednotka hlásí problém
+695|Maximální hodnota S řídicí jednotky ($30) je {}, profil používá {}.
+696|Tím se do nastavení řídicí jednotky zapíše $32=1. Pokračovat?
+697|Použít hodnotu z řídicí jednotky
+698|Při různých hodnotách nebude výkon v G-kódu odpovídat nastaveným procentům.
+699|S vypnutým laserovým režimem se GRBL chová jako řadič vřetena: laser se může zapnout při rychlých pohybech a výkon nesleduje rychlost.

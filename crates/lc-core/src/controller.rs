@@ -135,6 +135,33 @@ pub struct Reading {
     /// mm/min
     pub travel_speed: Option<f64>,
     pub dynamic_power: Option<bool>,
+    /// GRBL `$32`: laser mode on. Without it GRBL treats the laser like a spindle.
+    pub laser_mode: Option<bool>,
+}
+
+/// What a controller reports that does not agree with the profile or is unsafe.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct FwCheck {
+    /// GRBL's laser mode (`$32`) is off.
+    pub laser_mode_off: bool,
+    /// `$30` of the controller when it differs from the S max of the profile.
+    pub s_max: Option<f64>,
+}
+
+impl FwCheck {
+    pub fn is_clean(&self) -> bool {
+        !self.laser_mode_off && self.s_max.is_none()
+    }
+}
+
+impl Reading {
+    /// Compare what the controller reported with the profile of the device.
+    pub fn check(&self, dev: &crate::doc::Device) -> FwCheck {
+        FwCheck {
+            laser_mode_off: self.laser_mode == Some(false),
+            s_max: self.s_max.filter(|v| (*v - dev.s_max()).abs() > 1e-6),
+        }
+    }
 }
 
 impl Reading {
@@ -166,7 +193,10 @@ impl Controller {
                         "110" => r.travel_speed = Some(v),
                         "130" => r.bed_w = Some(v),
                         "131" => r.bed_h = Some(v),
-                        "32" => r.dynamic_power = Some(v >= 1.0),
+                        "32" => {
+                            r.dynamic_power = Some(v >= 1.0);
+                            r.laser_mode = Some(v >= 1.0);
+                        }
                         _ => {}
                     }
                 }

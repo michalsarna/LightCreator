@@ -690,3 +690,11 @@
 689|Kihi {} tööte väljub lubatud alalt (ületus või tühiliigutused).
 690|{} objekti on tarkvaraliste piiride väljas.
 691|{} objekti on kasutatava ala väljas (tööalast väljas või veeriselt).
+692|Lülita lasterrežiim sisse ($32=1)
+693|Lasterrežiim ($32) on välja lülitatud.
+694|Kontroller teatab probleemist
+695|Kontrolleri maksimaalne S-väärtus ($30) on {}, profiil kasutab {}.
+696|See kirjutab kontrolleri seadetesse $32=1. Kas jätkata?
+697|Kasuta kontrolleri väärtust
+698|Erinevate väärtuste korral ei vasta G-koodi võimsus seatud protsentidele.
+699|Väljalülitatud lasterrežiimil käitub GRBL nagu spindlikontroller: laser võib kiirliigutustel süttida ja võimsus ei järgi kiirust.

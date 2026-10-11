@@ -690,3 +690,11 @@
 689|Putanja sloja {} izlazi iz dopuštenog područja (overscan ili prazni hodovi).
 690|{} objekt(a) je izvan softverskih ograničenja.
 691|{} objekt(a) je izvan upotrebljivog područja (izvan radne površine ili u margini).
+692|Uključi laserski način ($32=1)
+693|Laserski način ($32) je isključen.
+694|Upravljač prijavljuje problem
+695|Najveća S vrijednost upravljača ($30) je {}, profil koristi {}.
+696|Ovo zapisuje $32=1 u postavke upravljača. Nastaviti?
+697|Koristi vrijednost iz upravljača
+698|Uz različite vrijednosti snaga u G-kodu neće odgovarati postavljenim postocima.
+699|S isključenim laserskim načinom GRBL se ponaša kao upravljač vretena: laser se može upaliti pri brzim pomacima, a snaga ne prati brzinu.

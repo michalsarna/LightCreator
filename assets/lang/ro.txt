@@ -690,3 +690,11 @@
 689|Traseul stratului {} iese din zona permisă (overscan sau deplasări în gol).
 690|{} obiect(e) sunt în afara limitelor software.
 691|{} obiect(e) sunt în afara zonei utilizabile (dincolo de zona de lucru sau într-o margine).
+692|Activează modul laser ($32=1)
+693|Modul laser ($32) este oprit.
+694|Controlerul raportează o problemă
+695|Valoarea S maximă a controlerului ($30) este {}, profilul folosește {}.
+696|Aceasta scrie $32=1 în setările controlerului. Continuați?
+697|Folosește valoarea din controler
+698|Cu valori diferite puterea din G-code nu va corespunde procentelor setate.
+699|Cu modul laser oprit GRBL se comportă ca un controler de ax: laserul se poate aprinde la deplasări rapide, iar puterea nu urmează viteza.

@@ -690,3 +690,11 @@
 689|Pot plasti {} zapušča dovoljeno območje (overscan ali prazni premiki).
 690|{} objekt(ov) je zunaj programskih omejitev.
 691|{} objekt(ov) je zunaj uporabnega območja (zunaj delovnega območja ali v robu).
+692|Vklopi laserski način ($32=1)
+693|Laserski način ($32) je izklopljen.
+694|Krmilnik poroča o težavi
+695|Največja vrednost S krmilnika ($30) je {}, profil uporablja {}.
+696|To zapiše $32=1 v nastavitve krmilnika. Nadaljujem?
+697|Uporabi vrednost iz krmilnika
+698|Pri različnih vrednostih moč v G-kodi ne bo ustrezala nastavljenim odstotkom.
+699|Z izklopljenim laserskim načinom se GRBL obnaša kot krmilnik vretena: laser se lahko prižge pri hitrih premikih, moč pa ne sledi hitrosti.

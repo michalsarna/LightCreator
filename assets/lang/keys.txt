@@ -690,3 +690,11 @@
 689	The toolpath of layer {} leaves the allowed area (overscan or travel moves).
 690	{} object(s) are outside the software limits.
 691	{} object(s) are outside the usable area (beyond the work area or in a margin).
+692	Enable laser mode ($32=1)
+693	Laser mode ($32) is off.
+694	The controller reports a problem
+695	The controller's maximum S value ($30) is {}, the profile uses {}.
+696	This writes $32=1 to the controller's settings. Continue?
+697	Use the value from the controller
+698	With different values the power in the G-code will not match the percentages you set.
+699	With laser mode off GRBL behaves like a spindle controller: the laser may fire during rapid moves and the power does not follow the speed.

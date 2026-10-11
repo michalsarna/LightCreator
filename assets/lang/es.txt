@@ -690,3 +690,11 @@
 689|La trayectoria de la capa {} sale del área permitida (overscan o movimientos en vacío).
 690|{} objeto(s) están fuera de los límites de software.
 691|{} objeto(s) están fuera del área utilizable (más allá del área de trabajo o en un margen).
+692|Activar el modo láser ($32=1)
+693|El modo láser ($32) está desactivado.
+694|El controlador informa de un problema
+695|El valor S máximo del controlador ($30) es {}, el perfil usa {}.
+696|Esto escribe $32=1 en los ajustes del controlador. ¿Continuar?
+697|Usar el valor del controlador
+698|Con valores distintos la potencia del G-code no coincidirá con los porcentajes que indicó.
+699|Con el modo láser desactivado GRBL se comporta como un controlador de husillo: el láser puede dispararse en movimientos rápidos y la potencia no sigue la velocidad.

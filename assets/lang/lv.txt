@@ -690,3 +690,11 @@
 689|Slāņa {} trajektorija iziet ārpus atļautās zonas (pārsniegums vai tukšgaitas).
 690|{} objekts/-i ir ārpus programmatūras ierobežojumiem.
 691|{} objekts/-i ir ārpus izmantojamās zonas (ārpus darba zonas vai malā).
+692|Ieslēgt lāzera režīmu ($32=1)
+693|Lāzera režīms ($32) ir izslēgts.
+694|Kontrolieris ziņo par problēmu
+695|Kontroliera maksimālā S vērtība ($30) ir {}, profils izmanto {}.
+696|Tas ieraksta $32=1 kontroliera iestatījumos. Turpināt?
+697|Izmantot kontroliera vērtību
+698|Ar atšķirīgām vērtībām jauda G-kodā neatbildīs iestatītajiem procentiem.
+699|Ar izslēgtu lāzera režīmu GRBL uzvedas kā vārpstas kontrolieris: lāzers var iedegties ātrajās kustībās, un jauda neseko ātrumam.

@@ -690,3 +690,11 @@
 689|Le parcours du calque {} quitte la zone autorisée (survol ou déplacements à vide).
 690|{} objet(s) sont hors des limites logicielles.
 691|{} objet(s) sont hors de la zone utilisable (au-delà de la zone de travail ou dans une marge).
+692|Activer le mode laser ($32=1)
+693|Le mode laser ($32) est désactivé.
+694|Le contrôleur signale un problème
+695|La valeur S maximale du contrôleur ($30) est {}, le profil utilise {}.
+696|Cela écrit $32=1 dans les réglages du contrôleur. Continuer ?
+697|Utiliser la valeur du contrôleur
+698|Avec des valeurs différentes, la puissance du G-code ne correspondra pas aux pourcentages réglés.
+699|Avec le mode laser désactivé, GRBL se comporte comme un contrôleur de broche : le laser peut s'allumer lors des déplacements rapides et la puissance ne suit pas la vitesse.

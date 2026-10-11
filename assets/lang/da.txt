@@ -690,3 +690,11 @@
 689|Værktøjsstien for lag {} forlader det tilladte område (overscan eller tomgangsbevægelser).
 690|{} objekt(er) er uden for softwaregrænserne.
 691|{} objekt(er) er uden for det brugbare område (uden for arbejdsfladen eller i en margen).
+692|Aktivér lasertilstand ($32=1)
+693|Lasertilstand ($32) er slået fra.
+694|Styringen melder et problem
+695|Styringens maksimale S-værdi ($30) er {}, profilen bruger {}.
+696|Dette skriver $32=1 i styringens indstillinger. Fortsæt?
+697|Brug værdien fra styringen
+698|Med forskellige værdier passer effekten i G-koden ikke med de procenter, du har sat.
+699|Med lasertilstand slået fra opfører GRBL sig som en spindelstyring: laseren kan tænde ved ilgange, og effekten følger ikke hastigheden.

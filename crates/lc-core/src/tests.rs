@@ -1135,3 +1135,19 @@ fn frame_outside_the_area_is_an_error() {
     let e = check::check_frame(&dev, r(10.0, 10.0, 350.0, 50.0));
     assert_eq!((e.len(), e[0].kind, e[0].level), (1, check::IssueKind::OutsideArea, check::Level::Error));
 }
+
+#[test]
+fn controller_report_is_compared_with_the_profile() {
+    let lines: Vec<String> = ["$30=255", "$32=0", "$110=3000", "ok"].iter().map(|s| s.to_string()).collect();
+    let r = Controller::Grbl.parse_settings(&lines);
+    assert_eq!((r.s_max, r.laser_mode), (Some(255.0), Some(false)));
+    let dev = Device::default(); // S max 1000
+    let c = r.check(&dev);
+    assert!(c.laser_mode_off);
+    assert_eq!(c.s_max, Some(255.0));
+    // Laser mode on and the same S max: nothing to say.
+    let ok: Vec<String> = ["$30=1000", "$32=1"].iter().map(|s| s.to_string()).collect();
+    assert!(Controller::Grbl.parse_settings(&ok).check(&dev).is_clean());
+    // A controller that did not report the values raises nothing.
+    assert!(Controller::Grbl.parse_settings(&[]).check(&dev).is_clean());
+}

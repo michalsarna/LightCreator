@@ -690,3 +690,11 @@
 689|Sluoksnio {} trajektorija išeina už leidžiamos srities (viršijimas arba tuščios eigos).
 690|{} objektas (-ai) už programinių apribojimų ribų.
 691|{} objektas (-ai) už naudojamos srities ribų (už darbo srities arba paraštėje).
+692|Įjungti lazerio režimą ($32=1)
+693|Lazerio režimas ($32) išjungtas.
+694|Valdiklis praneša apie problemą
+695|Maksimali valdiklio S vertė ($30) yra {}, profilis naudoja {}.
+696|Tai įrašo $32=1 į valdiklio nustatymus. Tęsti?
+697|Naudoti valdiklio vertę
+698|Esant skirtingoms vertėms galia G-kode neatitiks nustatytų procentų.
+699|Išjungus lazerio režimą GRBL elgiasi kaip suklio valdiklis: lazeris gali įsijungti greitų judesių metu, o galia neseka greičio.

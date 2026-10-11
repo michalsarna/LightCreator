@@ -20,6 +20,8 @@ pub struct ReadCfg {
     pub sent_at: Option<std::time::Instant>,
     pub lines: Vec<String>,
     pub started: std::time::Instant,
+    /// A read made after connecting to check the controller; it does not touch the profile being edited.
+    pub probe: bool,
 }
 
 /// A device profile being edited in the configuration window.
@@ -734,7 +736,7 @@ impl App {
     pub fn start_read(&mut self, draft: &Device) {
         let c = draft.controller;
         let Some(_) = c.settings_request() else { return };
-        let mut st = ReadCfg { controller: c, waiting_connect: false, request_at: None, sent_at: None, lines: vec![], started: std::time::Instant::now() };
+        let mut st = ReadCfg { controller: c, waiting_connect: false, request_at: None, sent_at: None, lines: vec![], started: std::time::Instant::now(), probe: false };
         if self.connected {
             st.request_at = Some(std::time::Instant::now());
         } else {
@@ -750,6 +752,11 @@ impl App {
 
     /// Called when the connection state changes.
     pub fn read_on_connected(&mut self, up: bool) {
+        // Once per connection a GRBL controller is asked for its settings, to warn about laser mode and $30.
+        if up && self.read_cfg.is_none() && self.doc.device.controller == Controller::Grbl && self.screen == Screen::Editor {
+            let now = std::time::Instant::now();
+            self.read_cfg = Some(ReadCfg { controller: Controller::Grbl, waiting_connect: false, request_at: Some(now + std::time::Duration::from_millis(900)), sent_at: None, lines: vec![], started: now, probe: true });
+        }
         if let Some(r) = &mut self.read_cfg {
             if r.waiting_connect {
                 if up {
@@ -800,9 +807,16 @@ impl App {
         ctx.request_repaint_after(std::time::Duration::from_millis(150));
     }
 
-    fn finish_read(&mut self) {
+    pub fn finish_read(&mut self) {
         let Some(r) = self.read_cfg.take() else { return };
         let reading = r.controller.parse_settings(&r.lines);
+        if r.probe {
+            let check = reading.check(&self.doc.device);
+            if !check.is_clean() {
+                self.fw_warn = Some(check);
+            }
+            return;
+        }
         let n = reading.count();
         if n == 0 {
             self.status = tr("The device did not report any settings.").to_string();

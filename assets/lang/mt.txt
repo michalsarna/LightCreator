@@ -690,3 +690,11 @@
 689|Il-mogħdija tas-saff {} titlaq miż-żona permessa (overscan jew movimenti vojta).
 690|{} oġġett/i huma barra mil-limiti tas-software.
 691|{} oġġett/i huma barra miż-żona li tista' tintuża (lil hinn miż-żona tax-xogħol jew f'marġni).
+692|Ixgħel il-modalità tal-laser ($32=1)
+693|Il-modalità tal-laser ($32) hija mitfija.
+694|Il-kontrollur jirrapporta problema
+695|Il-valur massimu S tal-kontrollur ($30) huwa {}, il-profil juża {}.
+696|Dan jikteb $32=1 fl-issettjar tal-kontrollur. Tkompli?
+697|Uża l-valur tal-kontrollur
+698|Bi valuri differenti l-qawwa fil-G-code mhux se taqbel mal-perċentwali li ssettjajt.
+699|Meta l-modalità tal-laser tkun mitfija GRBL iġib ruħu bħal kontrollur tal-ispindil: il-laser jista' jinxtegħel f'movimenti mgħaġġla u l-qawwa ma ssegwix il-veloċità.

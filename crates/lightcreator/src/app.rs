@@ -159,6 +159,8 @@ pub struct App {
     pub confirm: Option<crate::session_ui::Confirm>,
     /// The issues found before a job was sent, framed or exported.
     pub check_dlg: Option<crate::check_ui::CheckDlg>,
+    /// What the controller reported after connecting that does not look right.
+    pub fw_warn: Option<lc_core::controller::FwCheck>,
     /// The box the frame command traces.
     pub frame_bounds: Option<lc_core::Rect>,
     pub allow_close: bool,
@@ -356,6 +358,7 @@ impl App {
             show_close_dlg: false,
             confirm: None,
             check_dlg: None,
+            fw_warn: None,
             frame_bounds: None,
             allow_close: false,
             show_options: false,
@@ -929,6 +932,7 @@ impl App {
                     self.read_on_connected(c);
                     if !c {
                         self.machine.0 = tr("Disconnected").into();
+                        self.fw_warn = None;
                     }
                 }
                 Evt::Status { state, x, y } => self.machine = (state, x, y),
@@ -1742,6 +1746,7 @@ impl App {
         self.round_window(ctx);
         self.materials_window(ctx);
         self.check_window(ctx);
+        self.fw_window(ctx);
         self.material_edit_window(ctx);
         self.labels_window(ctx);
         self.merge_dialog(ctx);

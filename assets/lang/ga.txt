@@ -690,3 +690,11 @@
 689|Fágann cosán uirlise shraith {} an limistéar ceadaithe (overscan nó gluaiseachtaí folamh).
 690|Tá {} réad lasmuigh de theorainneacha na bogearraí.
 691|Tá {} réad lasmuigh den limistéar inúsáidte (taobh amuigh den limistéar oibre nó i marcáil).
+692|Cumasaigh an mód léasair ($32=1)
+693|Tá an mód léasair ($32) as.
+694|Tuairiscíonn an rialaitheoir fadhb
+695|Is é uasluach S an rialaitheora ($30) ná {}, úsáideann an phróifíl {}.
+696|Scríobhann sé seo $32=1 i socruithe an rialaitheora. Lean ar aghaidh?
+697|Úsáid luach an rialaitheora
+698|Le luachanna difriúla ní chomhfhreagróidh an chumhacht sa G-code do na céatadáin a shocraigh tú.
+699|Nuair atá an mód léasair as, iompraíonn GRBL mar rialaitheoir fearsaid: féadfaidh an léasair lasadh le linn gluaiseachtaí tapa agus ní leanann an chumhacht an luas.

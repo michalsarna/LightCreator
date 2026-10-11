@@ -690,3 +690,11 @@
 689|Verktøybanen til lag {} forlater det tillatte området (overscan eller tomgangsbevegelser).
 690|{} objekt(er) er utenfor programvaregrensene.
 691|{} objekt(er) er utenfor det brukbare området (utenfor arbeidsflaten eller i en marg).
+692|Slå på lasermodus ($32=1)
+693|Lasermodus ($32) er av.
+694|Kontrolleren melder et problem
+695|Kontrollerens maksimale S-verdi ($30) er {}, profilen bruker {}.
+696|Dette skriver $32=1 til kontrollerens innstillinger. Fortsette?
+697|Bruk verdien fra kontrolleren
+698|Med ulike verdier vil effekten i G-koden ikke samsvare med prosentene du har satt.
+699|Med lasermodus av oppfører GRBL seg som en spindelkontroller: laseren kan tenne ved raske bevegelser, og effekten følger ikke hastigheten.

@@ -690,3 +690,11 @@
 689|Braut lags {} fer út fyrir leyfilegt svæði (yfirskönnun eða tómar hreyfingar).
 690|{} hlutur/hlutir eru utan hugbúnaðarmarka.
 691|{} hlutur/hlutir eru utan nothæfs svæðis (utan vinnusvæðis eða í spássíu).
+692|Kveikja á leysiham ($32=1)
+693|Leysihamur ($32) er slökktur.
+694|Stýringin tilkynnir vandamál
+695|Hæsta S-gildi stýringarinnar ($30) er {}, sniðið notar {}.
+696|Þetta skrifar $32=1 í stillingar stýringarinnar. Halda áfram?
+697|Nota gildi stýringarinnar
+698|Með mismunandi gildum passar aflið í G-kóða ekki við hlutföllin sem þú stillir.
+699|Þegar leysihamur er slökktur hegðar GRBL sér eins og snældustýring: leysirinn getur kviknað í hraðfærslum og aflið fylgir ekki hraðanum.

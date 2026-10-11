@@ -690,3 +690,11 @@
 689|La trajectòria de la capa {} surt de l'àrea permesa (overscan o moviments en buit).
 690|{} objecte(s) són fora dels límits de programari.
 691|{} objecte(s) són fora de l'àrea utilitzable (més enllà de l'àrea de treball o en un marge).
+692|Activa el mode làser ($32=1)
+693|El mode làser ($32) està desactivat.
+694|El controlador informa d'un problema
+695|El valor S màxim del controlador ($30) és {}, el perfil usa {}.
+696|Això escriu $32=1 a la configuració del controlador. Continuar?
+697|Usa el valor del controlador
+698|Amb valors diferents la potència al G-code no coincidirà amb els percentatges establerts.
+699|Amb el mode làser desactivat GRBL es comporta com un controlador d'eix: el làser pot disparar-se en moviments ràpids i la potència no segueix la velocitat.

@@ -51,6 +51,58 @@ impl App {
         false
     }
 
+    /// The warning about what the controller reported after connecting: laser mode off, `$30` unlike the profile.
+    pub fn fw_window(&mut self, ctx: &egui::Context) {
+        let Some(w) = self.fw_warn.clone() else { return };
+        if w.is_clean() {
+            self.fw_warn = None;
+            return;
+        }
+        let mut open = true;
+        let mut close = false;
+        let mut enable = false;
+        let mut take_s = None;
+        let mine = self.doc.device.s_max();
+        crate::window_ui::popup(ctx, "fw_check", &tr("The controller reports a problem"), [520.0, 220.0], &mut open, |ui| {
+            if w.laser_mode_off {
+                ui.label(RichText::new(tr("Laser mode ($32) is off.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)).strong());
+                ui.label(tr("With laser mode off GRBL behaves like a spindle controller: the laser may fire during rapid moves and the power does not follow the speed."));
+                if ui.button(tr("Enable laser mode ($32=1)")).clicked() {
+                    enable = true;
+                }
+                ui.add_space(6.0);
+            }
+            if let Some(v) = w.s_max {
+                ui.label(RichText::new(trf("The controller's maximum S value ($30) is {}, the profile uses {}.", &[&v, &mine])).color(Color32::from_rgb(0xe8, 0x8a, 0x1f)).strong());
+                ui.label(tr("With different values the power in the G-code will not match the percentages you set."));
+                if ui.button(tr("Use the value from the controller")).clicked() {
+                    take_s = Some(v);
+                }
+                ui.add_space(6.0);
+            }
+            if ui.button(tr("Close")).clicked() {
+                close = true;
+            }
+        });
+        if enable {
+            self.confirm = Some(crate::session_ui::Confirm {
+                title: tr("Enable laser mode ($32=1)").to_string(),
+                text: tr("This writes $32=1 to the controller's settings. Continue?").to_string(),
+                act: crate::session_ui::ConfirmAct::EnableLaserMode,
+            });
+        }
+        if let Some(v) = take_s {
+            self.doc.device.heads[0].s_max = v;
+            self.sync_profile();
+            if let Some(w) = &mut self.fw_warn {
+                w.s_max = None;
+            }
+        }
+        if !open || close {
+            self.fw_warn = None;
+        }
+    }
+
     pub fn check_window(&mut self, ctx: &egui::Context) {
         let Some(dlg) = &self.check_dlg else { return };
         let names = self.layer_names();
@@ -151,5 +203,48 @@ mod tests {
         let names: Vec<String> = (0..30).map(|i| format!("C{i:02}")).collect();
         let i = Issue { level: Level::Warning, kind: IssueKind::ZeroPower, shapes: vec![1], layer: Some(3) };
         assert!(describe(&i, &names, false).contains("C03"));
+    }
+}
+
+#[cfg(test)]
+mod fw_tests {
+    use super::*;
+    use crate::device_ui::ReadCfg;
+    use lc_core::Controller;
+
+    fn probe(lines: &[&str]) -> App {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.screen = crate::app::Screen::Editor;
+        a.profiles = vec![lc_core::Device::default()];
+        a.enter_editor(0);
+        let now = std::time::Instant::now();
+        a.read_cfg = Some(ReadCfg { controller: Controller::Grbl, waiting_connect: false, request_at: None, sent_at: Some(now), lines: lines.iter().map(|l| l.to_string()).collect(), started: now, probe: true });
+        a.finish_read();
+        a
+    }
+
+    #[test]
+    fn laser_mode_off_and_a_different_s_max_raise_the_warning() {
+        let a = probe(&["$30=255", "$32=0"]);
+        let w = a.fw_warn.expect("warning");
+        assert!(w.laser_mode_off);
+        assert_eq!(w.s_max, Some(255.0));
+        // The probe never touches the profile by itself.
+        assert_eq!(a.doc.device.s_max(), 1000.0);
+    }
+
+    #[test]
+    fn a_healthy_controller_raises_nothing_and_a_probe_does_not_change_the_status() {
+        let a = probe(&["$30=1000", "$32=1"]);
+        assert!(a.fw_warn.is_none());
+    }
+
+    #[test]
+    fn confirming_laser_mode_clears_that_part_of_the_warning() {
+        let mut a = probe(&["$32=0", "$30=255"]);
+        a.do_confirmed(&egui::Context::default(), crate::session_ui::ConfirmAct::EnableLaserMode);
+        let w = a.fw_warn.expect("the $30 part remains");
+        assert!(!w.laser_mode_off && w.s_max == Some(255.0));
     }
 }

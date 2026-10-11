@@ -690,3 +690,11 @@
 689|A(z) {} réteg szerszámútja elhagyja az engedélyezett területet (túlfutás vagy üresjárati mozgások).
 690|{} objektum a szoftveres korlátokon kívül van.
 691|{} objektum a használható területen kívül van (a munkaterületen túl vagy margóban).
+692|Lézer mód bekapcsolása ($32=1)
+693|A lézer mód ($32) ki van kapcsolva.
+694|A vezérlő problémát jelez
+695|A vezérlő maximális S értéke ($30) {}, a profil {} értéket használ.
+696|Ez a $32=1 értéket írja a vezérlő beállításaiba. Folytatja?
+697|A vezérlő értékének használata
+698|Eltérő értékeknél a G-kódban a teljesítmény nem egyezik a beállított százalékokkal.
+699|Kikapcsolt lézer módban a GRBL orsóvezérlőként viselkedik: a lézer gyorsmozgásnál bekapcsolhat, és a teljesítmény nem követi a sebességet.

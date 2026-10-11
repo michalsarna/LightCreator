@@ -690,3 +690,11 @@
 689|Verktygsbanan för lager {} lämnar det tillåtna området (overscan eller tomgångsrörelser).
 690|{} objekt ligger utanför programvarugränserna.
 691|{} objekt ligger utanför det användbara området (utanför arbetsytan eller i en marginal).
+692|Aktivera lasterläge ($32=1)
+693|Lasterläget ($32) är av.
+694|Styrenheten rapporterar ett problem
+695|Styrenhetens maximala S-värde ($30) är {}, profilen använder {}.
+696|Detta skriver $32=1 till styrenhetens inställningar. Fortsätta?
+697|Använd värdet från styrenheten
+698|Med olika värden stämmer effekten i G-koden inte med de procent du har ställt in.
+699|Med lasterläget av beter sig GRBL som en spindelstyrning: lasern kan tändas vid snabba rörelser och effekten följer inte hastigheten.

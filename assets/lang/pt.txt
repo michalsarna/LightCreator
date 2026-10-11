@@ -690,3 +690,11 @@
 689|O trajeto da camada {} sai da área permitida (overscan ou deslocamentos em vazio).
 690|{} objeto(s) estão fora dos limites de software.
 691|{} objeto(s) estão fora da área utilizável (além da área de trabalho ou numa margem).
+692|Ativar o modo laser ($32=1)
+693|O modo laser ($32) está desativado.
+694|O controlador relata um problema
+695|O valor S máximo do controlador ($30) é {}, o perfil usa {}.
+696|Isto grava $32=1 nas definições do controlador. Continuar?
+697|Usar o valor do controlador
+698|Com valores diferentes a potência no G-code não corresponderá às percentagens definidas.
+699|Com o modo laser desativado o GRBL comporta-se como um controlador de fuso: o laser pode disparar em movimentos rápidos e a potência não acompanha a velocidade.

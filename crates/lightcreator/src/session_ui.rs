@@ -184,6 +184,7 @@ impl App {
 /// What a Yes answer does.
 pub enum ConfirmAct {
     DeleteAllMaterials,
+    EnableLaserMode,
     RestoreBackup(std::path::PathBuf),
 }
 
@@ -194,6 +195,20 @@ pub struct Confirm {
 }
 
 impl App {
+    /// What a Yes answer does.
+    pub fn do_confirmed(&mut self, ctx: &egui::Context, act: ConfirmAct) {
+        match act {
+            ConfirmAct::DeleteAllMaterials => self.reset_device_library(),
+            ConfirmAct::EnableLaserMode => {
+                self.link.send(crate::laser::Cmd::Line("$32=1".into()));
+                if let Some(w) = &mut self.fw_warn {
+                    w.laser_mode_off = false;
+                }
+            }
+            ConfirmAct::RestoreBackup(path) => self.restore_backup_from(ctx, &path),
+        }
+    }
+
     fn confirm_dialog(&mut self, ctx: &egui::Context) {
         let Some(c) = &self.confirm else { return };
         let mut open = true;
@@ -218,10 +233,7 @@ impl App {
         if !yes {
             return;
         }
-        match c.act {
-            ConfirmAct::DeleteAllMaterials => self.reset_device_library(),
-            ConfirmAct::RestoreBackup(path) => self.restore_backup_from(ctx, &path),
-        }
+        self.do_confirmed(ctx, c.act);
     }
 }
 
