@@ -698,3 +698,9 @@
 697|Nota gildi stýringarinnar
 698|Með mismunandi gildum passar aflið í G-kóða ekki við hlutföllin sem þú stillir.
 699|Þegar leysihamur er slökktur hegðar GRBL sér eins og snældustýring: leysirinn getur kviknað í hraðfærslum og aflið fylgir ekki hraðanum.
+700|Hámarks skurðhraði
+701|Hröðun
+702|0 = engin takmörk. Lög sem eru hraðari fá viðvörun fyrir verkið; tímaáætlunin notar í mesta lagi þennan hraða.
+703|0 = óþekkt. Með gildi inniheldur tímaáætlunin ræsi- og stöðvunarrampa og lagaspjaldið leggur til yfirskönnun.
+704|Tillaga: {} (hemlunarvegalengd á þessum hraða og með hröðun vélarinnar)
+705|Lag {} er hraðara en hámarks skurðhraði vélarinnar.

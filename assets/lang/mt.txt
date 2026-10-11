@@ -698,3 +698,9 @@
 697|Uża l-valur tal-kontrollur
 698|Bi valuri differenti l-qawwa fil-G-code mhux se taqbel mal-perċentwali li ssettjajt.
 699|Meta l-modalità tal-laser tkun mitfija GRBL iġib ruħu bħal kontrollur tal-ispindil: il-laser jista' jinxtegħel f'movimenti mgħaġġla u l-qawwa ma ssegwix il-veloċità.
+700|Veloċità massima tal-qtugħ
+701|Aċċelerazzjoni
+702|0 = bla limitu. Is-saffi aktar mgħaġġla minn dan jirċievu twissija qabel ix-xogħol; l-istima tal-ħin tuża l-aktar din il-veloċità.
+703|0 = mhux magħruf. B'valur l-istima tal-ħin tinkludi r-rampi tal-bidu u tal-waqfien u l-pannell tas-saff jissuġġerixxi overscan.
+704|Issuġġerit: {} (id-distanza tal-brejkijiet b'din il-veloċità u bl-aċċelerazzjoni tal-magna)
+705|Is-saff {} huwa aktar mgħaġġel mill-veloċità massima tal-qtugħ tal-magna.

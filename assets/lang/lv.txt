@@ -698,3 +698,9 @@
 697|Izmantot kontroliera vērtību
 698|Ar atšķirīgām vērtībām jauda G-kodā neatbildīs iestatītajiem procentiem.
 699|Ar izslēgtu lāzera režīmu GRBL uzvedas kā vārpstas kontrolieris: lāzers var iedegties ātrajās kustībās, un jauda neseko ātrumam.
+700|Maks. griešanas ātrums
+701|Paātrinājums
+702|0 = bez ierobežojuma. Par šo ātrākiem slāņiem pirms darba tiek rādīts brīdinājums; laika aprēķins izmanto ne vairāk kā šo ātrumu.
+703|0 = nezināms. Ar vērtību laika aprēķins ietver starta un apstāšanās rampas, un slāņa panelis iesaka pārsniegumu.
+704|Ieteikts: {} (bremzēšanas ceļš šajā ātrumā un iekārtas paātrinājums)
+705|Slānis {} ir ātrāks par iekārtas maksimālo griešanas ātrumu.

@@ -698,3 +698,9 @@
 697|Uporabi vrednost iz krmilnika
 698|Pri različnih vrednostih moč v G-kodi ne bo ustrezala nastavljenim odstotkom.
 699|Z izklopljenim laserskim načinom se GRBL obnaša kot krmilnik vretena: laser se lahko prižge pri hitrih premikih, moč pa ne sledi hitrosti.
+700|Najv. hitrost rezanja
+701|Pospešek
+702|0 = brez omejitve. Plasti, hitrejše od te vrednosti, dobijo opozorilo pred delom; ocena časa uporabi največ to hitrost.
+703|0 = ni znano. Z vrednostjo ocena časa vključuje rampi zagona in ustavitve, plošča plasti pa predlaga overscan.
+704|Predlog: {} (zavorna pot pri tej hitrosti in pospešku stroja)
+705|Plast {} je hitrejša od največje hitrosti rezanja stroja.

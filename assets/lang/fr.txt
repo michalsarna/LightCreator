@@ -698,3 +698,9 @@
 697|Utiliser la valeur du contrôleur
 698|Avec des valeurs différentes, la puissance du G-code ne correspondra pas aux pourcentages réglés.
 699|Avec le mode laser désactivé, GRBL se comporte comme un contrôleur de broche : le laser peut s'allumer lors des déplacements rapides et la puissance ne suit pas la vitesse.
+700|Vitesse de coupe max
+701|Accélération
+702|0 = sans limite. Les calques plus rapides reçoivent un avertissement avant le travail ; l'estimation du temps utilise au plus cette vitesse.
+703|0 = inconnue. Avec une valeur, l'estimation du temps inclut les rampes de démarrage et d'arrêt et le panneau du calque suggère un survol.
+704|Suggéré : {} (la distance de freinage à cette vitesse et avec l'accélération de la machine)
+705|Le calque {} est plus rapide que la vitesse de coupe maximale de la machine.

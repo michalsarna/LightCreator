@@ -555,11 +555,17 @@ impl Default for Area {
 pub struct Speeds {
     /// Speed of moves with the laser off, mm/min.
     pub travel_speed: f64,
+    /// The fastest the machine can cut, mm/min; 0 = no limit.
+    #[serde(default)]
+    pub max_cut_speed: f64,
+    /// Acceleration of the machine, mm/s²; 0 = not known (the time estimate ignores ramps).
+    #[serde(default)]
+    pub acceleration: f64,
 }
 
 impl Default for Speeds {
     fn default() -> Self {
-        Speeds { travel_speed: 3000.0 }
+        Speeds { travel_speed: 3000.0, max_cut_speed: 0.0, acceleration: 0.0 }
     }
 }
 
@@ -718,7 +724,7 @@ impl From<DeviceWire> for Device {
         let d = Device::default();
         let axes = w.axes.unwrap_or(Axes { origin: w.origin.unwrap_or(d.axes.origin), ..Axes::default() });
         let area = w.area.unwrap_or(Area { bed_w: w.bed_w.unwrap_or(d.area.bed_w), bed_h: w.bed_h.unwrap_or(d.area.bed_h), ..Area::default() });
-        let speeds = w.speeds.unwrap_or(Speeds { travel_speed: w.travel_speed.unwrap_or(d.speeds.travel_speed) });
+        let speeds = w.speeds.unwrap_or(Speeds { travel_speed: w.travel_speed.unwrap_or(d.speeds.travel_speed), ..Speeds::default() });
         let gcode = w.gcode.unwrap_or(GcodeCfg { dynamic_power: w.dynamic_power.unwrap_or(true), return_home: w.return_home.unwrap_or(true) });
         let connection = w.connection.unwrap_or(Connection {
             link: w.link.unwrap_or_default(),
@@ -776,6 +782,13 @@ impl Device {
             Orientation::Native => (self.area.bed_w, self.area.bed_h),
             Orientation::RotateLeft | Orientation::RotateRight => (self.area.bed_h, self.area.bed_w),
         }
+    }
+
+    /// Braking distance (mm) from `speed` (mm/s) with the machine's acceleration: a sensible overscan. `None` when
+    /// the acceleration is not known.
+    pub fn suggested_overscan(&self, speed: f64) -> Option<f64> {
+        let a = self.speeds.acceleration;
+        (a > 0.0).then(|| speed * speed / (2.0 * a))
     }
 
     /// The usable area in design coordinates: the work area minus the margins (never negative in size).

@@ -698,3 +698,9 @@
 697|Folosește valoarea din controler
 698|Cu valori diferite puterea din G-code nu va corespunde procentelor setate.
 699|Cu modul laser oprit GRBL se comportă ca un controler de ax: laserul se poate aprinde la deplasări rapide, iar puterea nu urmează viteza.
+700|Viteza max. de tăiere
+701|Accelerație
+702|0 = fără limită. Straturile mai rapide primesc un avertisment înainte de lucrare; estimarea timpului folosește cel mult această viteză.
+703|0 = necunoscută. Cu o valoare estimarea timpului include rampele de pornire și oprire, iar panoul stratului sugerează un overscan.
+704|Sugerat: {} (distanța de frânare la această viteză și cu accelerația mașinii)
+705|Stratul {} este mai rapid decât viteza maximă de tăiere a mașinii.

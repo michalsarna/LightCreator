@@ -698,3 +698,9 @@
 697|Koristi vrijednost iz upravljača
 698|Uz različite vrijednosti snaga u G-kodu neće odgovarati postavljenim postocima.
 699|S isključenim laserskim načinom GRBL se ponaša kao upravljač vretena: laser se može upaliti pri brzim pomacima, a snaga ne prati brzinu.
+700|Maks. brzina rezanja
+701|Ubrzanje
+702|0 = bez ograničenja. Slojevi brži od ove vrijednosti dobivaju upozorenje prije posla; procjena vremena koristi najviše ovu brzinu.
+703|0 = nepoznato. S vrijednošću procjena vremena uključuje rampe pokretanja i zaustavljanja, a ploča sloja predlaže overscan.
+704|Predloženo: {} (put kočenja pri ovoj brzini i ubrzanju stroja)
+705|Sloj {} je brži od najveće brzine rezanja stroja.

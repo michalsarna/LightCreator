@@ -698,3 +698,9 @@
 697|Naudoti valdiklio vertę
 698|Esant skirtingoms vertėms galia G-kode neatitiks nustatytų procentų.
 699|Išjungus lazerio režimą GRBL elgiasi kaip suklio valdiklis: lazeris gali įsijungti greitų judesių metu, o galia neseka greičio.
+700|Maks. pjovimo greitis
+701|Pagreitis
+702|0 = be ribos. Sluoksniai, greitesni už šią vertę, prieš darbą gauna įspėjimą; laiko įvertis naudoja daugiausia šį greitį.
+703|0 = nežinoma. Su verte laiko įvertis apima pradžios ir sustojimo rampas, o sluoksnio skydelis siūlo viršijimą.
+704|Siūloma: {} (stabdymo kelias šiuo greičiu ir staklių pagreičiu)
+705|Sluoksnis {} greitesnis už didžiausią staklių pjovimo greitį.

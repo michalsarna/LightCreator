@@ -24,6 +24,8 @@ pub enum IssueKind {
     MoveOutside,
     /// An output layer that has objects burns at 0 % power.
     ZeroPower,
+    /// The speed of an output layer is above the maximum cutting speed of the machine.
+    SpeedAboveMax,
     /// An output layer has objects but they produce no toolpath (open outlines on a fill layer, for example).
     NothingToBurn,
 }
@@ -100,6 +102,10 @@ pub fn job_check(doc: &Document) -> Vec<Issue> {
         let ids: Vec<u64> = doc.shapes.iter().filter(|s| s.layer == li).map(|s| s.id).collect();
         if ids.is_empty() {
             continue;
+        }
+        let max = dev.speeds.max_cut_speed;
+        if max > 0.0 && layer.speed * 60.0 > max + 1e-6 {
+            out.push(Issue { level: Level::Warning, kind: IssueKind::SpeedAboveMax, shapes: ids.clone(), layer: Some(li) });
         }
         if layer.power <= 0.0 {
             out.push(Issue { level: Level::Warning, kind: IssueKind::ZeroPower, shapes: ids.clone(), layer: Some(li) });

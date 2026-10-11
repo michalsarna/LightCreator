@@ -698,3 +698,9 @@
 697|Usar el valor del controlador
 698|Con valores distintos la potencia del G-code no coincidirá con los porcentajes que indicó.
 699|Con el modo láser desactivado GRBL se comporta como un controlador de husillo: el láser puede dispararse en movimientos rápidos y la potencia no sigue la velocidad.
+700|Velocidad máx. de corte
+701|Aceleración
+702|0 = sin límite. Las capas más rápidas reciben un aviso antes del trabajo; la estimación del tiempo usa como máximo esta velocidad.
+703|0 = desconocida. Con un valor la estimación del tiempo incluye las rampas de arranque y parada y el panel de la capa sugiere un overscan.
+704|Sugerido: {} (la distancia de frenado a esta velocidad y con la aceleración de la máquina)
+705|La capa {} es más rápida que la velocidad máxima de corte de la máquina.

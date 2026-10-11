@@ -698,3 +698,9 @@
 697|Brug værdien fra styringen
 698|Med forskellige værdier passer effekten i G-koden ikke med de procenter, du har sat.
 699|Med lasertilstand slået fra opfører GRBL sig som en spindelstyring: laseren kan tænde ved ilgange, og effekten følger ikke hastigheden.
+700|Maks. skærehastighed
+701|Acceleration
+702|0 = ingen grænse. Lag, der er hurtigere end dette, får en advarsel før opgaven; tidsestimatet bruger højst denne hastighed.
+703|0 = ukendt. Med en værdi indeholder tidsestimatet start- og stoprampe, og lagpanelet foreslår en overscan.
+704|Foreslået: {} (bremselængden ved denne hastighed og maskinens acceleration)
+705|Lag {} er hurtigere end maskinens maksimale skærehastighed.

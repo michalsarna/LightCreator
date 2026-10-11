@@ -698,3 +698,9 @@
 697|Použít hodnotu z řídicí jednotky
 698|Při různých hodnotách nebude výkon v G-kódu odpovídat nastaveným procentům.
 699|S vypnutým laserovým režimem se GRBL chová jako řadič vřetena: laser se může zapnout při rychlých pohybech a výkon nesleduje rychlost.
+700|Max. rychlost řezání
+701|Zrychlení
+702|0 = bez omezení. Vrstvy rychlejší než tato hodnota dostanou před úlohou varování; odhad času použije nejvýše tuto rychlost.
+703|0 = neznámé. S hodnotou odhad času zahrnuje rozjezdové a brzdné rampy a panel vrstvy navrhne přejezd (overscan).
+704|Doporučeno: {} (brzdná dráha při této rychlosti a zrychlení stroje)
+705|Vrstva {} je rychlejší než maximální řezná rychlost stroje.

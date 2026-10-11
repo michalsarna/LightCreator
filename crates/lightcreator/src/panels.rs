@@ -372,6 +372,8 @@ impl App {
         ui.checkbox(&mut self.show_all_layers, tr("Show all 30 layers"));
         ui.separator();
         let has_images = self.doc.shapes.iter().any(|s| s.layer == self.active_layer && s.is_image());
+        let accel = self.doc.device.speeds.acceleration;
+        let overscan_hint = move |v: f64| (accel > 0.0).then(|| v * v / (2.0 * accel));
         let l = &mut self.doc.layers[self.active_layer];
         ui.horizontal(|ui| {
             let c = PALETTE[l.color.min(29)];
@@ -381,7 +383,7 @@ impl App {
             ui.label(RichText::new(trf("Cut settings — {}", &[&l.name])).strong());
         });
         let panel_scope = format!("panel-{}", self.active_layer);
-        layer_settings_ui(ui, (units, su), l, panel_scope.as_str(), has_images);
+        layer_settings_ui(ui, (units, su), l, panel_scope.as_str(), has_images, overscan_hint);
         let now = ui.input(|i| i.time);
         self.commit_layer_edit(now, before);
     }
@@ -414,6 +416,8 @@ impl App {
         let before = self.doc.layers.clone();
         let (units, su) = (self.doc.device.units, self.doc.device.speed_unit);
         let has_images = self.doc.shapes.iter().any(|s| s.layer == i && s.is_image());
+        let accel = self.doc.device.speeds.acceleration;
+        let overscan_hint = move |v: f64| (accel > 0.0).then(|| v * v / (2.0 * accel));
         let mut open = true;
         let title = trf("Layer options — {}", &[&self.doc.layers[i].name]);
         crate::window_ui::popup(ctx, "layer_dialog", &title, [340.0, 220.0], &mut open, |ui| {
@@ -435,7 +439,7 @@ impl App {
                 ui.end_row();
             });
             ui.separator();
-            layer_settings_ui(ui, (units, su), l, "dialog", has_images);
+            layer_settings_ui(ui, (units, su), l, "dialog", has_images, overscan_hint);
         });
         let now = ctx.input(|i| i.time);
         self.commit_layer_edit(now, before);
@@ -516,7 +520,8 @@ fn button_grid(ui: &mut egui::Ui, id: &str, cells: &[(&str, &str, &str)]) -> Opt
 
 /// The cut settings of one layer: mode, speed, power, passes, fill options and image options.
 /// `id_scope` keeps the widget ids apart when the same settings are shown in the panel and in the dialog.
-pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_core::SpeedUnit), l: &mut lc_core::Layer, id_scope: &str, has_images: bool) {
+/// `overscan_hint` is the braking distance for the speed of the layer when the machine's acceleration is known.
+pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_core::SpeedUnit), l: &mut lc_core::Layer, id_scope: &str, has_images: bool, overscan_hint: impl Fn(f64) -> Option<f64>) {
     egui::Grid::new(("cut", id_scope)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
         ui.label(tr("Mode"));
         egui::ComboBox::from_id_salt(("cm", id_scope)).selected_text(tr(l.mode.label())).show_ui(ui, |ui| {
@@ -549,7 +554,10 @@ pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_cor
             ui.add(egui::DragValue::new(&mut l.angle).range(-180.0..=180.0).suffix("°"));
             ui.end_row();
             ui.label(tr("Overscan"));
-            drag_len(ui, units, &mut l.overscan, 0.1, Some((0.0, 20.0)));
+            let r = drag_len(ui, units, &mut l.overscan, 0.1, Some((0.0, 20.0)));
+            if let Some(mm) = overscan_hint(l.speed) {
+                r.on_hover_text(trf("Suggested: {} (the braking distance at this speed and the machine's acceleration)", &[&crate::units_ui::fmt_len(units, mm, 2)]));
+            }
             ui.end_row();
             ui.label(tr("Bidirectional"));
             ui.checkbox(&mut l.bidirectional, "");

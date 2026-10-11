@@ -698,3 +698,9 @@
 697|Usa el valor del controlador
 698|Amb valors diferents la potència al G-code no coincidirà amb els percentatges establerts.
 699|Amb el mode làser desactivat GRBL es comporta com un controlador d'eix: el làser pot disparar-se en moviments ràpids i la potència no segueix la velocitat.
+700|Velocitat màxima de tall
+701|Acceleració
+702|0 = sense límit. Les capes més ràpides reben un avís abans de la feina; l'estimació del temps usa com a màxim aquesta velocitat.
+703|0 = desconeguda. Amb un valor l'estimació del temps inclou les rampes d'arrencada i parada i el tauler de la capa suggereix un overscan.
+704|Suggerit: {} (la distància de frenada a aquesta velocitat i amb l'acceleració de la màquina)
+705|La capa {} és més ràpida que la velocitat màxima de tall de la màquina.

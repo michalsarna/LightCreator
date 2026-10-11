@@ -28,6 +28,7 @@ pub fn describe(i: &Issue, layers: &[String], frame: bool) -> String {
         IssueKind::OutsideArea => trf("{} object(s) are outside the usable area (beyond the work area or in a margin).", &[&i.shapes.len()]),
         IssueKind::OutsideLimits => trf("{} object(s) are outside the software limits.", &[&i.shapes.len()]),
         IssueKind::MoveOutside => trf("The toolpath of layer {} leaves the allowed area (overscan or travel moves).", &[&layer]),
+        IssueKind::SpeedAboveMax => trf("Layer {} is faster than the maximum cutting speed of the machine.", &[&layer]),
         IssueKind::ZeroPower => trf("Layer {} burns at 0 % power.", &[&layer]),
         IssueKind::NothingToBurn => trf("Layer {} has objects but no toolpath (open lines on a fill layer, for example).", &[&layer]),
     }

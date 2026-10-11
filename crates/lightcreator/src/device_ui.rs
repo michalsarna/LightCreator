@@ -278,6 +278,12 @@ impl App {
                                     ui.label(tr("Travel speed"));
                                     drag_speed(ui, u, su, true, &mut d.speeds.travel_speed, 50.0, Some((100.0, 60000.0)));
                                     ui.end_row();
+                                    ui.label(tr("Max cutting speed"));
+                                    drag_speed(ui, u, su, true, &mut d.speeds.max_cut_speed, 50.0, Some((0.0, 60000.0))).on_hover_text(tr("0 = no limit. Layers faster than this get a warning before the job; the time estimate uses at most this speed."));
+                                    ui.end_row();
+                                    ui.label(tr("Acceleration"));
+                                    ui.add(egui::DragValue::new(&mut d.speeds.acceleration).range(0.0..=100000.0).suffix(" mm/s²")).on_hover_text(tr("0 = not known. With a value the time estimate includes the start and stop ramps and the layer panel suggests an overscan."));
+                                    ui.end_row();
                                     ui.label(tr("Jog step"));
                                     drag_len(ui, u, &mut d.jog_step, 0.1, Some((0.1, 200.0)));
                                     ui.end_row();

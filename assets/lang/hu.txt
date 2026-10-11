@@ -698,3 +698,9 @@
 697|A vezérlő értékének használata
 698|Eltérő értékeknél a G-kódban a teljesítmény nem egyezik a beállított százalékokkal.
 699|Kikapcsolt lézer módban a GRBL orsóvezérlőként viselkedik: a lézer gyorsmozgásnál bekapcsolhat, és a teljesítmény nem követi a sebességet.
+700|Max. vágási sebesség
+701|Gyorsulás
+702|0 = nincs korlát. Az ennél gyorsabb rétegek figyelmeztetést kapnak a munka előtt; az időbecslés legfeljebb ezt a sebességet használja.
+703|0 = ismeretlen. Értékkel az időbecslés tartalmazza az indítási és fékezési rámpákat, és a rétegpanel túlfutást javasol.
+704|Javasolt: {} (a fékezési út ezen a sebességen és a gép gyorsulásával)
+705|A(z) {} réteg gyorsabb, mint a gép maximális vágási sebessége.

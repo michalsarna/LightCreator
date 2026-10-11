@@ -1151,3 +1151,58 @@ fn controller_report_is_compared_with_the_profile() {
     // A controller that did not report the values raises nothing.
     assert!(Controller::Grbl.parse_settings(&[]).check(&dev).is_clean());
 }
+
+fn long_line_doc(speed: f64) -> Document {
+    let mut d = Document::default();
+    d.device.area = Area { bed_w: 300.0, bed_h: 200.0, ..Area::default() };
+    d.device.axes.origin = Origin::BackLeft;
+    d.device.gcode.return_home = false;
+    d.layers[0].mode = LayerMode::Line;
+    d.layers[0].speed = speed;
+    d.layers[0].power = 50.0;
+    // One open 100 mm line from the machine's zero: no travel move before it.
+    d.add(0, Kind::Path(vec![Polyline::new(vec![Pt::new(0.0, 0.0), Pt::new(100.0, 0.0)], false)]), Xf::IDENTITY);
+    d
+}
+
+#[test]
+fn estimate_without_limits_is_distance_over_speed() {
+    let job = gcode::generate(&long_line_doc(10.0));
+    assert!((job.est_seconds - 10.0).abs() < 1e-6, "{}", job.est_seconds);
+}
+
+#[test]
+fn estimate_with_acceleration_adds_the_ramps_and_caps_the_speed() {
+    let mut d = long_line_doc(10.0);
+    d.device.speeds.acceleration = 10.0;
+    // 100 mm at 10 mm/s with 10 mm/s²: 10 s cruise + 1 s of ramps.
+    assert!((gcode::generate(&d).est_seconds - 11.0).abs() < 1e-6);
+    // The machine cannot go faster than 600 mm/min = 10 mm/s whatever the layer says.
+    let mut fast = long_line_doc(40.0);
+    fast.device.speeds.acceleration = 10.0;
+    fast.device.speeds.max_cut_speed = 600.0;
+    assert!((gcode::generate(&fast).est_seconds - 11.0).abs() < 1e-6);
+    // A move too short to reach the speed is a triangle: 1 mm at a = 10 mm/s² takes 2 * sqrt(1 / 10) s.
+    let mut short = long_line_doc(10.0);
+    short.shapes[0].kind = Kind::Path(vec![Polyline::new(vec![Pt::new(0.0, 0.0), Pt::new(1.0, 0.0)], false)]);
+    short.device.speeds.acceleration = 10.0;
+    assert!((gcode::generate(&short).est_seconds - 2.0 * (0.1f64).sqrt()).abs() < 1e-6);
+    // Move durations still add up to the total.
+    let job = gcode::generate(&d);
+    assert!((job.moves.iter().map(|m| m.dur).sum::<f64>() - job.est_seconds).abs() < 1e-9);
+}
+
+#[test]
+fn a_run_of_short_segments_ramps_once_and_a_layer_above_the_maximum_warns() {
+    let mut d = long_line_doc(10.0);
+    d.shapes[0].kind = Kind::Path(vec![Polyline::new((0..=100).map(|i| Pt::new(i as f64, 0.0)).collect(), false)]);
+    d.device.speeds.acceleration = 10.0;
+    assert!((gcode::generate(&d).est_seconds - 11.0).abs() < 1e-6);
+    d.device.speeds.max_cut_speed = 300.0; // 5 mm/s
+    d.layers[0].speed = 10.0;
+    assert!(check::job_check(&d).iter().any(|i| i.kind == check::IssueKind::SpeedAboveMax && i.level == check::Level::Warning));
+    d.device.speeds.max_cut_speed = 0.0;
+    assert!(!check::job_check(&d).iter().any(|i| i.kind == check::IssueKind::SpeedAboveMax));
+    assert_eq!(d.device.suggested_overscan(10.0), Some(5.0));
+    assert_eq!(Device::default().suggested_overscan(10.0), None);
+}

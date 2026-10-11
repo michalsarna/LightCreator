@@ -698,3 +698,9 @@
 697	Use the value from the controller
 698	With different values the power in the G-code will not match the percentages you set.
 699	With laser mode off GRBL behaves like a spindle controller: the laser may fire during rapid moves and the power does not follow the speed.
+700	Max cutting speed
+701	Acceleration
+702	0 = no limit. Layers faster than this get a warning before the job; the time estimate uses at most this speed.
+703	0 = not known. With a value the time estimate includes the start and stop ramps and the layer panel suggests an overscan.
+704	Suggested: {} (the braking distance at this speed and the machine's acceleration)
+705	Layer {} is faster than the maximum cutting speed of the machine.

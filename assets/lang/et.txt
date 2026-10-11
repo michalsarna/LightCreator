@@ -698,3 +698,9 @@
 697|Kasuta kontrolleri väärtust
 698|Erinevate väärtuste korral ei vasta G-koodi võimsus seatud protsentidele.
 699|Väljalülitatud lasterrežiimil käitub GRBL nagu spindlikontroller: laser võib kiirliigutustel süttida ja võimsus ei järgi kiirust.
+700|Maks lõikekiirus
+701|Kiirendus
+702|0 = piirangut pole. Sellest kiiremad kihid saavad enne tööd hoiatuse; ajahinnang kasutab kõige rohkem seda kiirust.
+703|0 = teadmata. Väärtusega sisaldab ajahinnang kiirenduse ja pidurduse lävesid ja kihipaneel soovitab ületust.
+704|Soovitus: {} (pidurdusteekond sellel kiirusel ja masina kiirendusel)
+705|Kiht {} on kiirem kui masina maksimaalne lõikekiirus.

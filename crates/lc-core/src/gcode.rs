@@ -14,6 +14,8 @@ pub struct Move {
     pub op: usize,
     /// Time the move takes, seconds.
     pub dur: f64,
+    /// Nominal speed of the move, mm/s.
+    pub speed: f64,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -83,7 +85,7 @@ impl<'a> Writer<'a> {
         }
         let (x, y) = self.map(p);
         let _ = writeln!(self.out, "G0 X{:.3} Y{:.3}", x, y);
-        self.moves.push(Move { a: self.pos, b: p, laser: false, layer: self.layer, op: self.op, dur: p.dist(self.pos) / self.dev.speeds.travel_speed.max(1.0) * 60.0 });
+        self.moves.push(Move { a: self.pos, b: p, laser: false, layer: self.layer, op: self.op, dur: p.dist(self.pos) / self.dev.speeds.travel_speed.max(1.0) * 60.0, speed: self.dev.speeds.travel_speed.max(1.0) / 60.0 });
         self.seconds += p.dist(self.pos) / self.dev.speeds.travel_speed.max(1.0) * 60.0;
         self.pos = p;
     }
@@ -143,7 +145,7 @@ impl<'a> Writer<'a> {
         self.out.push_str(&l);
         self.out.push('\n');
         let d = p.dist(self.pos);
-        self.moves.push(Move { a: self.pos, b: p, laser: power > 0.0, layer: self.layer, op: self.op, dur: d / speed.max(0.1) });
+        self.moves.push(Move { a: self.pos, b: p, laser: power > 0.0, layer: self.layer, op: self.op, dur: d / speed.max(0.1), speed });
         self.seconds += d / speed.max(0.1);
         if power > 0.0 {
             self.cut_len += d;
@@ -341,7 +343,47 @@ pub fn generate(doc: &Document) -> Job {
     if dev.controller != Controller::Marlin {
         let _ = writeln!(w.out, "M2");
     }
-    Job { ops: w.ops, gcode: w.out, moves: w.moves, est_seconds: w.seconds, cut_length: w.cut_len }
+    let est = timing(&mut w.moves, dev, w.seconds);
+    Job { ops: w.ops, gcode: w.out, moves: w.moves, est_seconds: est, cut_length: w.cut_len }
+}
+
+/// Time of `len` mm at `v` mm/s from and to rest with acceleration `a` mm/s² (trapezoid, or triangle when short).
+fn ramp_time(len: f64, v: f64, a: f64) -> f64 {
+    if len <= 0.0 || v <= 0.0 {
+        return 0.0;
+    }
+    if a <= 0.0 {
+        return len / v;
+    }
+    let ramp = v * v / a;
+    if len >= ramp { len / v + v / a } else { 2.0 * (len / a).sqrt() }
+}
+
+/// Durations of the moves with the machine's limits: cutting speed capped at the maximum, and a start and a stop
+/// ramp for every run of moves at one speed (travel moves each start and stop). Without limits the plain
+/// distance / speed times stay. Returns the total.
+fn timing(moves: &mut [Move], dev: &Device, plain_total: f64) -> f64 {
+    let (a, vmax) = (dev.speeds.acceleration, dev.speeds.max_cut_speed / 60.0);
+    if a <= 0.0 && vmax <= 0.0 {
+        return plain_total;
+    }
+    let mut i = 0;
+    while i < moves.len() {
+        let travel = !moves[i].laser && moves[i].speed == dev.speeds.travel_speed.max(1.0) / 60.0;
+        let mut j = i + 1;
+        // Travel moves stand alone; cutting moves at the same speed form one run.
+        while !travel && j < moves.len() && moves[j].laser == moves[i].laser && (moves[j].speed - moves[i].speed).abs() < 1e-9 && moves[j].a.dist(moves[j - 1].b) < 1e-9 {
+            j += 1;
+        }
+        let v = if !travel && vmax > 0.0 { moves[i].speed.min(vmax) } else { moves[i].speed };
+        let len: f64 = moves[i..j].iter().map(|m| m.a.dist(m.b)).sum();
+        let t = ramp_time(len, v, a);
+        for m in &mut moves[i..j] {
+            m.dur = if len > 0.0 { t * m.a.dist(m.b) / len } else { 0.0 };
+        }
+        i = j;
+    }
+    moves.iter().map(|m| m.dur).sum()
 }
 
 /// G-code that traces the bounding box of the design. `power` is percent (0 = laser off, 1-2 gives a visible dot on diodes).
