@@ -1071,3 +1071,7 @@
 1070|Prieigos frazė negali būti tuščia ar turėti valdymo simbolių.
 1071|Lazerio padėtis gyvai
 1072|Parodo lazerio galvutės padėtį kaip tašką darbo srityje. Įjungus, kai staklės stovi, pirmiausia atliekamas bazavimas; darbo ar rėmo metu tik rodoma padėtis, atnaujinama kas sekundę. Reikia prijungto įrenginio.
+1073|Pradėti nuo
+1074|Home (staklių nulis)
+1075|Dabartinė lazerio padėtis
+1076|Home: maketas deginamas ten, kur jis yra darbo srityje, skaičiuojant nuo staklių nulio. Dabartinė padėtis: maketo viršutinis kairysis kampas dedamas ten, kur dabar yra lazerio galvutė (darbai, rėmai ir bandomoji eiga), ir darbas baigiasi ten. Eksportuoti failai visada skaičiuojami nuo staklių nulio.

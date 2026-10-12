@@ -1071,3 +1071,7 @@
 1070|Tilgangssetningen kan ikke være tom eller ha kontrolltegn.
 1071|Laserposisjon direkte
 1072|Viser posisjonen til laserhodet som en prikk på arbeidsområdet. Slått på mens maskinen står stille, homer den først; under en jobb eller en ramme viser den bare posisjonen, oppdatert hvert sekund. Krever en tilkoblet enhet.
+1073|Start fra
+1074|Home (maskinens nullpunkt)
+1075|Laserens nåværende posisjon
+1076|Home: designet brennes der det ligger på arbeidsområdet, regnet fra maskinens nullpunkt. Nåværende posisjon: designets øvre venstre hjørne plasseres der laserhodet står nå (jobber, rammer og tørrkjøring), og jobben slutter der. Eksporterte filer regnes alltid fra maskinens nullpunkt.

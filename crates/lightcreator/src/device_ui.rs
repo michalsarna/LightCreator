@@ -1156,12 +1156,13 @@ impl App {
     /// leaves the allowed area) come back as issues.
     pub fn dry_run_lines(&self) -> Result<Vec<String>, Vec<lc_core::check::Issue>> {
         let h = self.doc.device.head(0);
-        let moved = lc_core::gcode::shifted(&self.doc, -h.pointer_dx, -h.pointer_dy);
+        let (base, back) = self.job_doc();
+        let moved = lc_core::gcode::shifted(&base, -h.pointer_dx, -h.pointer_dy);
         let errors: Vec<_> = lc_core::check::job_check(&moved).into_iter().filter(|i| i.level == lc_core::check::Level::Error).collect();
         if !errors.is_empty() {
             return Err(errors);
         }
-        let job = lc_core::gcode::generate(&moved);
+        let job = lc_core::gcode::generate_from(&moved, back.map(|p| lc_core::Pt::new(p.x - h.pointer_dx, p.y - h.pointer_dy)));
         Ok(laser::clean_gcode(&lc_core::gcode::without_power(&job.gcode)))
     }
 
@@ -1474,6 +1475,16 @@ impl App {
             ui.end_row();
             ui.label(tr("Jog feed"));
             drag_speed(ui, units, self.doc.device.speed_unit, true, &mut self.doc.device.jog_feed, 10.0, Some((10.0, 20000.0)));
+            ui.end_row();
+            ui.label(tr("Start from"));
+            let start = &mut self.doc.device.start_from;
+            egui::ComboBox::from_id_salt("start_from").width(150.0).truncate().selected_text(tr(start.label())).show_ui(ui, |ui| {
+                for m in lc_core::StartFrom::ALL {
+                    ui.selectable_value(start, m, tr(m.label()));
+                }
+            })
+            .response
+            .on_hover_text(tr("Home: the design is burned where it lies on the work area, counted from the machine's zero. Current position: the top-left corner of the design is put where the laser head stands now (jobs, frames and the dry run), and the job ends there. Exported files always count from the machine's zero."));
             ui.end_row();
             ui.label(tr("Frame power"));
             ui.add(egui::DragValue::new(&mut self.doc.device.heads[0].frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));

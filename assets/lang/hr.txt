@@ -1071,3 +1071,7 @@
 1070|Pristupna fraza ne smije biti prazna niti sadržavati kontrolne znakove.
 1071|Položaj lasera uživo
 1072|Prikazuje položaj laserske glave kao točku na radnoj površini. Uključeno dok stroj miruje, prvo izvodi homing; tijekom posla ili okvira samo prikazuje položaj, osvježen svake sekunde. Treba povezan uređaj.
+1073|Početak od
+1074|Home (nula stroja)
+1075|Trenutni položaj lasera
+1076|Home: dizajn se pali tamo gdje leži na radnoj površini, računajući od nule stroja. Trenutni položaj: gornji lijevi kut dizajna stavlja se tamo gdje je laserska glava sada (poslovi, okviri i suhi hod), a posao tamo završava. Izvezene datoteke uvijek računaju od nule stroja.

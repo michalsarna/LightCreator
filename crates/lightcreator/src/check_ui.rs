@@ -51,6 +51,7 @@ impl App {
     pub fn guard(&mut self, what: Pending, frame_bounds: Option<lc_core::Rect>) -> bool {
         let issues = match (what, frame_bounds) {
             (Pending::Frame, Some(b)) => check::check_frame(&self.doc.device, b),
+            (Pending::Start, _) => check::job_check(&self.job_doc().0),
             _ => check::job_check(&self.doc),
         };
         if issues.is_empty() {

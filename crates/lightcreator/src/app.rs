@@ -892,7 +892,8 @@ impl App {
         self.focus_off();
         self.stamp_job();
         // The job is written for the design as it is: the pointer alignment never moves it.
-        let job = gcode::generate(&self.doc);
+        let (doc, back) = self.job_doc();
+        let job = gcode::generate_from(&doc, back);
         if job.moves.is_empty() {
             self.status = tr("Nothing to burn: no shapes on output layers").into();
             return;
@@ -941,10 +942,35 @@ impl App {
             self.status = tr("Connect to a laser first (Laser panel)").into();
             return;
         }
-        let b = self.aim(b);
+        let b = self.aim(self.placed_rect(b));
         if self.guard(crate::check_ui::Pending::Frame, Some(b)) {
             self.frame_bounds = Some(b);
             self.frame_now();
+        }
+    }
+
+    /// Where the head stands, in design coordinates, when the position is known.
+    pub fn head_point(&self) -> Option<Pt> {
+        (self.connected && self.machine.1.is_finite() && self.machine.2.is_finite()).then(|| self.doc.device.from_machine(self.machine.1, self.machine.2))
+    }
+
+    /// The document as the laser gets it: as it is, or (start from the current position) moved so that its top-left
+    /// corner lies on the head. The second value is where such a job ends, instead of the machine's zero.
+    pub fn job_doc(&self) -> (std::borrow::Cow<'_, lc_core::Document>, Option<Pt>) {
+        match (self.doc.device.start_from, self.head_point()) {
+            (lc_core::StartFrom::CurrentPosition, Some(head)) => (std::borrow::Cow::Owned(gcode::placed_at(&self.doc, head)), Some(head)),
+            _ => (std::borrow::Cow::Borrowed(&self.doc), None),
+        }
+    }
+
+    /// A frame box moved the same way as the job: its top-left corner on the head when starting from the current position.
+    pub fn placed_rect(&self, r: lc_core::Rect) -> lc_core::Rect {
+        match (self.doc.device.start_from, self.head_point()) {
+            (lc_core::StartFrom::CurrentPosition, Some(head)) => {
+                let (dx, dy) = (head.x - r.min.x, head.y - r.min.y);
+                lc_core::Rect { min: Pt::new(r.min.x + dx, r.min.y + dy), max: Pt::new(r.max.x + dx, r.max.y + dy) }
+            }
+            _ => r,
         }
     }
 
@@ -2480,6 +2506,26 @@ mod live_position_tests {
         a.machine.0 = "Idle".into();
         a.machine.1 = 60.0;
         assert_eq!(a.live_point(), Some(a.doc.device.from_machine(60.0, 20.0)));
+    }
+
+    #[test]
+    fn a_job_from_the_current_position_is_placed_on_the_head() {
+        let mut a = app();
+        a.doc.add(0, lc_core::Kind::Rect { w: 10.0, h: 10.0 }, lc_core::Xf::translate(50.0, 60.0));
+        let head = a.doc.device.from_machine(10.0, 20.0);
+        let (doc, back) = a.job_doc();
+        assert!(back.is_none() && matches!(doc, std::borrow::Cow::Borrowed(_)), "from home nothing moves");
+        drop(doc);
+        a.doc.device.start_from = lc_core::StartFrom::CurrentPosition;
+        let (doc, back) = a.job_doc();
+        assert_eq!(back, Some(head));
+        let c = gcode::burn_corner(&doc).unwrap();
+        assert!(c.dist(head) < 1e-6, "{c:?} {head:?}");
+        let r = a.placed_rect(lc_core::Rect { min: Pt::new(50.0, 60.0), max: Pt::new(60.0, 70.0) });
+        assert!(r.min.dist(head) < 1e-6 && ((r.max.x - r.min.x) - 10.0).abs() < 1e-9);
+        // Without a position (no link) the design stays where it is.
+        a.connected = false;
+        assert!(a.job_doc().1.is_none());
     }
 
     #[test]

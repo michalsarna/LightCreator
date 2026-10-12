@@ -1071,3 +1071,7 @@
 1070|Piekļuves frāze nedrīkst būt tukša vai saturēt vadības rakstzīmes.
 1071|Lāzera pozīcija reāllaikā
 1072|Rāda lāzera galviņas pozīciju kā punktu darba laukā. Ieslēdzot, kamēr iekārta stāv, tā vispirms veic bāzēšanu; darba vai rāmja laikā tikai rāda pozīciju, atjaunojot to ik sekundi. Nepieciešama pievienota ierīce.
+1073|Sākt no
+1074|Sākums (iekārtas nulle)
+1075|Lāzera pašreizējā pozīcija
+1076|Sākums: dizains tiek dedzināts tur, kur tas atrodas darba laukā, skaitot no iekārtas nulles. Pašreizējā pozīcija: dizaina augšējais kreisais stūris tiek novietots tur, kur tagad atrodas lāzera galviņa (darbi, rāmji un sausā darbināšana), un darbs beidzas tur. Eksportētie faili vienmēr skaita no iekārtas nulles.

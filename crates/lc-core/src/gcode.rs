@@ -435,6 +435,29 @@ fn burn(w: &mut Writer, li: usize, layer: &Layer, polys: &[Polyline], images: &[
 }
 
 pub fn generate(doc: &Document) -> Job {
+    generate_from(doc, None)
+}
+
+/// The corner of the burned work that is put on the head when a job starts from the current position: the top-left
+/// of all the laser moves (design coordinates, y down). `None` when nothing is burned.
+pub fn burn_corner(doc: &Document) -> Option<Pt> {
+    let job = generate(doc);
+    let mut pts = job.moves.iter().filter(|m| m.laser).flat_map(|m| [m.a, m.b]);
+    let first = pts.next()?;
+    Some(pts.fold(first, |c, p| Pt::new(c.x.min(p.x), c.y.min(p.y))))
+}
+
+/// The document moved so that its top-left corner (see `burn_corner`) lies on `head`; unchanged when nothing is burned.
+pub fn placed_at(doc: &Document, head: Pt) -> Document {
+    match burn_corner(doc) {
+        Some(c) => shifted(doc, head.x - c.x, head.y - c.y),
+        None => doc.clone(),
+    }
+}
+
+/// The job; `back` is where it ends instead of the machine's zero when the device returns to its origin (a job that
+/// started from the head's position goes back there).
+pub fn generate_from(doc: &Document, back: Option<Pt>) -> Job {
     let dev = &doc.device;
     let mut w = Writer::new(dev);
     let _ = writeln!(w.out, "; LightCreator job — {}", dev.name);
@@ -563,7 +586,7 @@ pub fn generate(doc: &Document) -> Job {
     w.rot = None;
     let _ = writeln!(w.out, "{}", if dialect == Dialect::Marlin { "M5 I ; laser off" } else { "M5 ; laser off" });
     if dev.gcode.return_home {
-        w.travel(dev.home_point());
+        w.travel(back.unwrap_or_else(|| dev.home_point()));
     }
     if air {
         let _ = writeln!(w.out, "{air_off} ; air assist off");

@@ -92,6 +92,9 @@
 * **Live laser position:** a switch in the Device tab (off by default, saved with the device, greyed out without a
   connection) that shows the head as a red dot on the work area. Switched on at rest it homes the machine first;
   during a job, a frame or a jog it only shows the dot, refreshed once a second.
+* **Start from:** a device setting, home (machine zero, the default) or the current position of the laser: the
+  top-left corner of the design is put where the head stands, for the job, the frame and the dry run, and the job ends
+  there. Exported files always count from the machine zero.
 * **Image import dialog:** preview with rotate (90° steps and free angle), flip, brightness, contrast, gamma,
   auto levels, negative and size. The same dialog adjusts an image already on the page.
 * **Trace image:** turn the dark (or light) areas of a bitmap into Bézier outlines with threshold, speckle

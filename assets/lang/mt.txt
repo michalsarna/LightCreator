@@ -1071,3 +1071,7 @@
 1070|Il-frażi ta' aċċess ma tistax tkun vojta jew ikollha karattri ta' kontroll.
 1071|Pożizzjoni tal-lejżer dirett
 1072|Turi l-pożizzjoni tar-ras tal-lejżer bħala tikka fuq iż-żona tax-xogħol. Meta titqabbad waqt li l-magna tkun wieqfa, l-ewwel tagħmel homing; waqt xogħol jew qafas turi biss il-pożizzjoni, imġedda kull sekonda. Teħtieġ apparat imqabbad.
+1073|Ibda minn
+1074|Home (żero tal-magna)
+1075|Pożizzjoni preżenti tal-lejżer
+1076|Home: id-disinn jinħaraq fejn jinsab fiż-żona tax-xogħol, jgħodd miż-żero tal-magna. Pożizzjoni preżenti: l-irkien ta' fuq xellug tad-disinn jitqiegħed fejn hu r-ras tal-lejżer issa (xogħlijiet, oqfsa u eżekuzzjoni niexfa), u x-xogħol jintemm hemm. Fajls esportati dejjem jgħoddu miż-żero tal-magna.

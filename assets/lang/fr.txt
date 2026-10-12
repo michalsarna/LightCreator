@@ -1071,3 +1071,7 @@
 1070|La phrase d'accès ne peut pas être vide ni contenir de caractères de contrôle.
 1071|Position du laser en direct
 1072|Affiche la position de la tête laser sous forme de point sur la zone de travail. Activée machine à l'arrêt, elle lance d'abord la prise d'origine ; pendant un travail ou un cadrage, elle n'affiche que la position, actualisée chaque seconde. Nécessite un appareil connecté.
+1073|Partir de
+1074|Home (zéro machine)
+1075|Position actuelle du laser
+1076|Home : le dessin est gravé là où il se trouve dans la zone de travail, à partir du zéro machine. Position actuelle : le coin supérieur gauche du dessin est placé là où se trouve la tête laser en ce moment (travaux, cadrages et essai à blanc), et le travail se termine là. Les fichiers exportés comptent toujours à partir du zéro machine.

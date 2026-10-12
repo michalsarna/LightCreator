@@ -1071,3 +1071,7 @@
 1070|Přístupová fráze nesmí být prázdná ani obsahovat řídicí znaky.
 1071|Poloha laseru živě
 1072|Zobrazuje polohu laserové hlavy jako tečku na pracovní ploše. Zapnete-li ji při stojícím stroji, nejprve provede homing; během úlohy nebo rámování polohu jen ukazuje, obnovuje se každou sekundu. Vyžaduje připojené zařízení.
+1073|Začít od
+1074|Home (nula stroje)
+1075|Aktuální poloha laseru
+1076|Home: návrh se vypálí tam, kde leží na pracovní ploše, počítáno od nuly stroje. Aktuální poloha: levý horní roh návrhu se umístí tam, kde laserová hlava právě stojí (úlohy, rámování a suchý běh), a úloha tam končí. Exportované soubory se vždy počítají od nuly stroje.

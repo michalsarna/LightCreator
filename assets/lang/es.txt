@@ -1071,3 +1071,7 @@
 1070|La frase de acceso no puede estar vacía ni tener caracteres de control.
 1071|Posición del láser en vivo
 1072|Muestra la posición del cabezal láser como un punto en el área de trabajo. Si se activa con la máquina parada, primero hace el homing; durante un trabajo o un contorno solo muestra la posición, actualizada cada segundo. Necesita un dispositivo conectado.
+1073|Empezar desde
+1074|Home (cero de la máquina)
+1075|Posición actual del láser
+1076|Home: el diseño se graba donde está en el área de trabajo, contando desde el cero de la máquina. Posición actual: la esquina superior izquierda del diseño se pone donde está ahora el cabezal láser (trabajos, contornos y prueba en seco) y el trabajo termina allí. Los archivos exportados siempre cuentan desde el cero de la máquina.
