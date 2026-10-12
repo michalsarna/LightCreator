@@ -87,28 +87,92 @@ pub enum Act {
     SetScheme(Scheme),
 }
 
-#[derive(Clone)]
-pub enum Entry {
-    /// Action, English label, accelerator in muda syntax (`CmdOrCtrl+O`) and display text (`Ctrl+O`).
-    Item(Act, &'static str, Option<(&'static str, &'static str)>),
-    Sep,
-    Sub(&'static str, Vec<Entry>),
-    /// The "Open recent" submenu, filled from the list of recently used files.
-    Recent,
+pub use base_ui::menu::Entry;
+use base_ui::menu::{key, std_entries, Entry::{Item, Recent, Sep, Sub}, StdAct};
+
+impl From<StdAct> for Act {
+    fn from(a: StdAct) -> Act {
+        match a {
+            StdAct::Undo => Act::Undo,
+            StdAct::Redo => Act::Redo,
+            StdAct::Copy => Act::Copy,
+            StdAct::Paste => Act::Paste,
+            StdAct::Duplicate => Act::Duplicate,
+            StdAct::Delete => Act::Delete,
+            StdAct::SelectAll => Act::SelectAll,
+            StdAct::Align(m) => Act::Align(m),
+            StdAct::CenterOnBed => Act::CenterOnBed,
+            StdAct::CenterEachOther => Act::CenterEachOther,
+            StdAct::FlipH => Act::FlipH,
+            StdAct::FlipV => Act::FlipV,
+            StdAct::RotCw => Act::RotCw,
+            StdAct::RotCcw => Act::RotCcw,
+            StdAct::ToFront => Act::ToFront,
+            StdAct::ToBack => Act::ToBack,
+            StdAct::ToPath => Act::ToPath,
+            StdAct::EditNodes => Act::EditNodes,
+            StdAct::Group => Act::Group,
+            StdAct::Ungroup => Act::Ungroup,
+            StdAct::Lock => Act::Lock,
+            StdAct::Unlock => Act::Unlock,
+            StdAct::ToggleGrid => Act::ToggleGrid,
+            StdAct::ToggleSnap => Act::ToggleSnap,
+            StdAct::ToggleSnapObjects => Act::ToggleSnapObjects,
+            StdAct::FitBed => Act::FitBed,
+            StdAct::FitAll => Act::FitAll,
+            StdAct::ZoomIn => Act::ZoomIn,
+            StdAct::ZoomOut => Act::ZoomOut,
+            StdAct::ToggleAutoFit => Act::ToggleAutoFit,
+        }
+    }
 }
 
-use Entry::{Item, Recent, Sep, Sub};
+impl Act {
+    /// The standard editing command this action stands for, if it is one.
+    pub fn std(self) -> Option<StdAct> {
+        Some(match self {
+            Act::Undo => StdAct::Undo,
+            Act::Redo => StdAct::Redo,
+            Act::Copy => StdAct::Copy,
+            Act::Paste => StdAct::Paste,
+            Act::Duplicate => StdAct::Duplicate,
+            Act::Delete => StdAct::Delete,
+            Act::SelectAll => StdAct::SelectAll,
+            Act::Align(m) => StdAct::Align(m),
+            Act::CenterOnBed => StdAct::CenterOnBed,
+            Act::CenterEachOther => StdAct::CenterEachOther,
+            Act::FlipH => StdAct::FlipH,
+            Act::FlipV => StdAct::FlipV,
+            Act::RotCw => StdAct::RotCw,
+            Act::RotCcw => StdAct::RotCcw,
+            Act::ToFront => StdAct::ToFront,
+            Act::ToBack => StdAct::ToBack,
+            Act::ToPath => StdAct::ToPath,
+            Act::EditNodes => StdAct::EditNodes,
+            Act::Group => StdAct::Group,
+            Act::Ungroup => StdAct::Ungroup,
+            Act::Lock => StdAct::Lock,
+            Act::Unlock => StdAct::Unlock,
+            Act::ToggleGrid => StdAct::ToggleGrid,
+            Act::ToggleSnap => StdAct::ToggleSnap,
+            Act::ToggleSnapObjects => StdAct::ToggleSnapObjects,
+            Act::FitBed => StdAct::FitBed,
+            Act::FitAll => StdAct::FitAll,
+            Act::ZoomIn => StdAct::ZoomIn,
+            Act::ZoomOut => StdAct::ZoomOut,
+            Act::ToggleAutoFit => StdAct::ToggleAutoFit,
+            _ => return None,
+        })
+    }
+}
 
-const fn key(accel: &'static str, shown: &'static str) -> Option<(&'static str, &'static str)> {
-    Some((accel, shown))
+/// Entries of the standard commands as entries of this application.
+fn std(entries: Vec<Entry<StdAct>>) -> Vec<Entry<Act>> {
+    entries.into_iter().map(|e| e.map(&Act::from)).collect()
 }
 
 /// Top-level menus: (English title, entries). The macOS app menu is added by `native_menu`.
-pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
-    let mut align = vec![];
-    for (i, n) in ["Align left", "Align centre (H)", "Align right", "Align top", "Align centre (V)", "Align bottom"].into_iter().enumerate() {
-        align.push(Item(Act::Align(i as u8), n, None));
-    }
+pub fn menus() -> base_ui::menu::Menus<Act> {
     let mut file = vec![
         Item(Act::New, "New", key("CmdOrCtrl+N", "Ctrl+N")),
         Item(Act::Open, "Open…", key("CmdOrCtrl+O", "Ctrl+O")),
@@ -157,43 +221,21 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
     }
     vec![
         ("File", file),
-        (
-            "Edit",
-            vec![
-                Item(Act::Undo, "Undo", key("CmdOrCtrl+Z", "Ctrl+Z")),
-                Item(Act::Redo, "Redo", key("CmdOrCtrl+Shift+Z", "Ctrl+Y")),
-                Sep,
-                Item(Act::Copy, "Copy", key("CmdOrCtrl+C", "Ctrl+C")),
-                Item(Act::Paste, "Paste", key("CmdOrCtrl+V", "Ctrl+V")),
-                Item(Act::Duplicate, "Duplicate", key("CmdOrCtrl+D", "Ctrl+D")),
-                Item(Act::Delete, "Delete", key("Backspace", "Del")),
-                Item(Act::SelectAll, "Select all", key("CmdOrCtrl+A", "Ctrl+A")),
-            ],
-        ),
+        ("Edit", std(std_entries::edit())),
         (
             "Arrange",
             [
-                align,
+                std(std_entries::align()),
+                vec![Sep],
+                std(std_entries::place()),
+                vec![Sep],
+                std(std_entries::group()),
+                vec![Sep],
+                std(std_entries::order()),
+                vec![Sep],
+                // Editing of curves.
+                std(std_entries::nodes()),
                 vec![
-                    Sep,
-                    Item(Act::CenterOnBed, "Centre on bed", None),
-                    Item(Act::CenterEachOther, "Centre on each other", None),
-                    Item(Act::FlipH, "Flip horizontal", None),
-                    Item(Act::FlipV, "Flip vertical", None),
-                    Item(Act::RotCw, "Rotate 90° CW", None),
-                    Item(Act::RotCcw, "Rotate 90° CCW", None),
-                    Sep,
-                    Item(Act::Group, "Group", key("CmdOrCtrl+G", "Ctrl+G")),
-                    Item(Act::Ungroup, "Ungroup", key("CmdOrCtrl+Shift+G", "Ctrl+Shift+G")),
-                    Item(Act::Lock, "Lock", key("CmdOrCtrl+L", "Ctrl+L")),
-                    Item(Act::Unlock, "Unlock", key("CmdOrCtrl+Shift+L", "Ctrl+Shift+L")),
-                    Sep,
-                    Item(Act::ToFront, "Bring to front", None),
-                    Item(Act::ToBack, "Send to back", None),
-                    Sep,
-                    // Editing of curves.
-                    Item(Act::EditNodes, "Edit nodes", key("N", "N")),
-                    Item(Act::ToPath, "Convert to path", None),
                     Item(Act::ToCurves, "Convert to curves", None),
                     Item(Act::RoundCorners, "Round corners…", None),
                     Sep,
@@ -214,22 +256,18 @@ pub fn menus() -> Vec<(&'static str, Vec<Entry>)> {
         ),
         (
             "View",
-            vec![
-                Item(Act::ToggleGrid, "Grid", None),
-                Item(Act::ToggleSnap, "Snap to grid", None),
-                Item(Act::ToggleSnapObjects, "Snap to objects", None),
-                Item(Act::TogglePreview, "Toolpath preview", None),
-                Item(Act::PreviewWindow, "Preview window…", None),
-                Item(Act::ZoomIn, "Zoom in", key("CmdOrCtrl+=", "Ctrl++")),
-                Item(Act::ZoomOut, "Zoom out", key("CmdOrCtrl+-", "Ctrl+-")),
-                Item(Act::FitBed, "Fit bed to window", key("CmdOrCtrl+0", "Ctrl+0")),
-                Item(Act::FitAll, "Fit all objects", key("CmdOrCtrl+9", "Ctrl+9")),
-                Item(Act::ToggleAutoFit, "Auto-fit work area to window", None),
-                Item(Act::CameraView, "Camera view", None),
-                Item(Act::ToggleOverlay, "Show camera overlay", None),
-                Item(Act::ToggleZones, "Show no-go zones", None),
-                Item(Act::CameraOverlay, "Camera overlay…", None),
-            ],
+            [
+                std(std_entries::grid()),
+                vec![Item(Act::TogglePreview, "Toolpath preview", None), Item(Act::PreviewWindow, "Preview window…", None)],
+                std(std_entries::zoom()),
+                vec![
+                    Item(Act::CameraView, "Camera view", None),
+                    Item(Act::ToggleOverlay, "Show camera overlay", None),
+                    Item(Act::ToggleZones, "Show no-go zones", None),
+                    Item(Act::CameraOverlay, "Camera overlay…", None),
+                ],
+            ]
+            .concat(),
         ),
         ("Laser", laser),
         (

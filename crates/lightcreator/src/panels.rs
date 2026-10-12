@@ -1,3 +1,4 @@
+use base_ui::clipart_ui::ClipGallery;
 use base_ui::editor::EditorCommands;
 use base_ui::editor::EditorHost;
 use crate::app::{App, SideTab};

@@ -2,6 +2,8 @@
 //!
 //! `cargo test -p lightcreator --release render_screenshots -- --ignored --nocapture`
 //! writes PNG files into `docs/screenshots/`.
+use base_ui::clipart_ui::ClipGallery;
+use base_ui::editor::EditorImages;
 use base_ui::editor::EditorCommands;
 use base_ui::editor::EditorHost;
 use crate::app::{App, Screen, SideTab, Tool};
@@ -297,7 +299,7 @@ fn render_screenshots() {
     save(&mut h, "13-image-import.png");
     {
         let a = app(&mut h);
-        a.img_dlg = None;
+        a.ed.img_dlg = None;
         let im = ImageData {
             name: "logo.png".into(),
             px_w: 200,
@@ -314,7 +316,7 @@ fn render_screenshots() {
     save(&mut h, "14-trace.png");
     {
         let a = app(&mut h);
-        a.trace_dlg = None;
+        a.ed.trace_dlg = None;
         a.doc.scene.shapes.clear();
         a.ed.grid_prefs.minor_on = true;
         a.ed.grid_prefs.minor_mm = 5.0;
@@ -487,7 +489,7 @@ fn render_screenshots() {
         a.doc.scene.shapes.clear();
         let dir = std::env::temp_dir().join(format!("lc-shot-clip-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
-        a.clip = crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(dir));
+        a.clip = crate::clipart_ui::new_state(lc_core::clipart::Library::open(dir));
         let pick = |cat: &str, name: &str| crate::clipart_ui::BUILTIN_CLIPART.iter().find(|c| c.0 == cat && c.1 == name).map(|c| String::from_utf8_lossy(c.2).to_string()).unwrap();
         for (cat, n, new_name) in [("Animals", "owl", "Wise owl"), ("Animals", "penguin", "Penguin"), ("Nature", "leaf", "Autumn leaf"), ("Celebrations", "gift", "Gift box")] {
             let _ = a.clip.lib.add(&pick(cat, n), new_name, cat, "https://icon-sets.iconify.design/tabler/x/", "MIT", "Tabler");
@@ -720,7 +722,7 @@ fn render_clipart_node_editing() {
         a.profiles = vec![Device::default()];
         a.cfg = None;
         a.enter_editor(0);
-        a.clip = crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(std::env::temp_dir().join(format!("lc-shot-node-{}", std::process::id()))));
+        a.clip = crate::clipart_ui::new_state(lc_core::clipart::Library::open(std::env::temp_dir().join(format!("lc-shot-node-{}", std::process::id()))));
         let svg = crate::clipart_ui::BUILTIN_CLIPART.iter().find(|c| c.1 == "owl").map(|c| c.2).unwrap();
         a.clip.size_mm = 160.0;
         a.place_clip(svg, "owl");

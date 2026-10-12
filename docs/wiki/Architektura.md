@@ -9,13 +9,20 @@ Repozytorium to workspace Cargo z dwoma crate'ami.
 | `crates/lc-core` | biblioteka niezależna od interfejsu, pokryta testami jednostkowymi |
 | `crates/lightcreator` | aplikacja desktopowa na [egui](https://github.com/emilk/egui) |
 
+## baseCreator (wspólne z MillCreatorem)
+Kod, który nie potrzebuje lasera, jest w [baseCreator](https://github.com/michalsarna/baseCreator) i przypięty do tagu w `crates/lc-core/Cargo.toml` oraz `crates/lightcreator/Cargo.toml`.
+* **base-core**: `geom`, `bezier`, `arcs`, `fillet`, `snap` (geometria, kontury, zaokrąglanie) · `ops` (operacje logiczne, offsety) · `text` (kontury) · `image`, `trace`, `camimg` · `scene` (kształty, grupy, identyfikatory) · `svg`, `pdf` (czytniki) · `clipart` (biblioteka) · `units` · `grbl_settings`, `ser2net`.
+* **base-ui**: `theme`, `fonts`, `icons`, `i18n` / `texts` · `menu`, `native_menu` (wpisy, pasek w oknie i macOS, standardowe polecenia edycji) · `window` (ramka, okna, przyciski), `widgets` · `dialogs` (O programie, krótki przewodnik, sprawdzanie aktualizacji) · `clipart_ui` · `editor` (płótno, narzędzia, zaznaczanie, edycja węzłów, polecenia edycji, okna obrazów, opcje widoku, pasek narzędzi, pasek układania za traitem `EditorHost`) · `markdown_ui`, `units_ui`, `camera`, `camera_stream`.
+
+`lc-core` re-eksportuje moduły base-core, więc `lc_core::geom` itp. nadal działają.
+
 ## lc-core
-`geom`, `bezier`, `fillet` (geometria, kontury, zaokrąglanie) · `ops` (operacje logiczne, offsety) · `text` (kontury tekstu) · `raster`, `image`, `trace` (grawerowanie, dithering, trasowanie) · `gcode`, `export` (G-code, PLT / DXF) · `svg`, `pdf` (import) · `doc` (model dokumentu, `.lcr`) · `materials`, `clipart` · `controller`, `ser2net`.
+`doc` (laserowa część dokumentu: warstwy, urządzenie, `.lcr`; scena pochodzi z base-core) · `gcode`, `export` (G-code, PLT / DXF) · `raster`, `cutopts` · `svg`, `pdf`, `clipart` (układanie importów na warstwach) · `materials`, `profiles`, `zones`, `check`, `hooks` · `controller`.
 
 ## lightcreator
-`app` (główny stan) · `canvas`, `nodes`, `shape_ops`, `overlay` (edycja) · `panels`, `menu`, `native_menu`, `theme`, `icons`, `fonts`, `i18n`, `guide` / `help_ui` (interfejs) · `laser` (wątek portu szeregowego / TCP dla GRBL i Marlin) · `device_ui`, `ser2net_ui`, `camera`, `camera_stream`, `stream_ui` (urządzenia, kamera) · `clipart_ui`, `clip_net`, `materials_ui`, `image_ui`, `preview_ui`, `units_ui` · `prefs` (`app.ron`) · `screenshots` (renderowanie bez okna).
+`app` (główny stan, implementuje `EditorHost` i `MenuHost`) · `canvas` (oznaczenia stołu, strefy, pozycja na żywo, obraz z kamery i podgląd jako haki edytora), `shape_ops`, `overlay` · `menu` (lista akcji), `icons` (ikona każdej akcji), `native_menu`, `panels`, `i18n` (teksty), `guide`, `help_ui`, `update_ui`, `prefs`, `window_ui` · `laser` (wątek portu szeregowego / TCP dla GRBL i Marlin) · `device_ui`, `ser2net_ui`, `stream_ui` (urządzenia, kamera) · `clipart_ui` (obrazy dostarczane z programem), `materials_ui`, `preview_ui`, `print_ui`, `check_ui` · `screenshots` (renderowanie bez okna).
 
-`build.rs` zbiera ikony interfejsu z `assets/ui-icons` i osadza cliparty; test sprawdza, czy każda żądana ikona istnieje.
+`build.rs` osadza cliparty. Ikony interfejsu osadza baseCreator (`assets/ui-icons`); test sprawdza, czy każda ikona żądana przez akcję istnieje.
 
 ## Konwencje
 * Współrzędne w **milimetrach**, początek w **lewym górnym rogu** pola roboczego. Na wyjściu oś Y jest odwracana dla maszyn z zerem z przodu po lewej (*Laser → Device settings*).

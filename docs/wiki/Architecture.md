@@ -9,13 +9,20 @@ The repository is a Cargo workspace with two crates.
 | `crates/lc-core` | UI-independent, unit-tested library |
 | `crates/lightcreator` | [egui](https://github.com/emilk/egui) desktop application |
 
+## baseCreator (shared with MillCreator)
+The code that needs no laser lives in [baseCreator](https://github.com/michalsarna/baseCreator) and is pinned to a tag in `crates/lc-core/Cargo.toml` and `crates/lightcreator/Cargo.toml`.
+* **base-core**: `geom`, `bezier`, `arcs`, `fillet`, `snap` (geometry, contours, round corners) · `ops` (boolean ops, offsets) · `text` (outlines) · `image`, `trace`, `camimg` · `scene` (shapes, groups, ids) · `svg`, `pdf` (readers) · `clipart` (library) · `units` · `grbl_settings`, `ser2net`.
+* **base-ui**: `theme`, `fonts`, `icons`, `i18n` / `texts` · `menu`, `native_menu` (entries, in-window and macOS bars, the standard editing commands) · `window` (frame, pop-ups, buttons), `widgets` · `dialogs` (About, quick guide, update check) · `clipart_ui` · `editor` (canvas, tools, selection, node editing, editing commands, picture dialogs, view options, tool palette, arrange bar behind the `EditorHost` trait) · `markdown_ui`, `units_ui`, `camera`, `camera_stream`.
+
+`lc-core` re-exports the modules of base-core, so `lc_core::geom` and the like keep working.
+
 ## lc-core
-`geom`, `bezier`, `fillet` (geometry, contours, round corners) · `ops` (boolean ops, offsets) · `text` (outlines) · `raster`, `image`, `trace` (engraving, dithering, tracing) · `gcode`, `export` (G-code, PLT / DXF) · `svg`, `pdf` (import) · `doc` (document model, `.lcr`) · `materials`, `clipart` · `controller`, `ser2net`.
+`doc` (the laser side of the document: layers, device, `.lcr`; the scene comes from base-core) · `gcode`, `export` (G-code, PLT / DXF) · `raster`, `cutopts` · `svg`, `pdf`, `clipart` (placing imports on layers) · `materials`, `profiles`, `zones`, `check`, `hooks` · `controller`.
 
 ## lightcreator
-`app` (main state) · `canvas`, `nodes`, `shape_ops`, `overlay` (editing) · `panels`, `menu`, `native_menu`, `theme`, `icons`, `fonts`, `i18n`, `guide` / `help_ui` (UI) · `laser` (serial / TCP worker for GRBL and Marlin) · `device_ui`, `ser2net_ui`, `camera`, `camera_stream`, `stream_ui` (devices, camera) · `clipart_ui`, `clip_net`, `materials_ui`, `image_ui`, `preview_ui`, `units_ui` · `prefs` (`app.ron`) · `screenshots` (headless rendering).
+`app` (main state, implements `EditorHost` and `MenuHost`) · `canvas` (bed markings, zones, live position, camera picture and preview as hooks of the editor), `shape_ops`, `overlay` · `menu` (the list of actions), `icons` (the icon of each action), `native_menu`, `panels`, `i18n` (the texts), `guide`, `help_ui`, `update_ui`, `prefs`, `window_ui` · `laser` (serial / TCP worker for GRBL and Marlin) · `device_ui`, `ser2net_ui`, `stream_ui` (devices, camera) · `clipart_ui` (the pictures that ship with the program), `materials_ui`, `preview_ui`, `print_ui`, `check_ui` · `screenshots` (headless rendering).
 
-`build.rs` collects interface icons from `assets/ui-icons` and embeds the clipart; a test checks that every requested icon exists.
+`build.rs` embeds the clipart. The interface icons are embedded by baseCreator (`assets/ui-icons`); a test checks that every icon an action asks for exists.
 
 ## Conventions
 * Coordinates are **millimetres**, origin at the **top-left** of the work area. On output Y is flipped for machines whose zero is front-left (*Laser → Device settings*).
