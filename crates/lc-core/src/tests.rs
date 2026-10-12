@@ -44,7 +44,7 @@ fn inner_cut_before_outer() {
     let mut d = Document::default();
     d.add(0, Kind::Rect { w: 50.0, h: 50.0 }, Xf::IDENTITY);
     d.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(20.0, 20.0));
-    let paths = gcode::order_paths(d.shapes.iter().flat_map(|s| s.polys()).collect(), Pt::new(0.0, 0.0));
+    let paths = gcode::order_paths(d.scene.shapes.iter().flat_map(|s| s.polys()).collect(), Pt::new(0.0, 0.0));
     assert!(paths[0].area().abs() < paths[1].area().abs());
 }
 
@@ -62,8 +62,8 @@ fn svg_roundtrip() {
     let mut d = Document::default();
     let ids = svg::import(svg, &mut d, None).unwrap();
     assert_eq!(ids.len(), 1);
-    assert_eq!(d.shapes[0].layer, 2); // red -> C02
-    let b = d.shapes[0].bounds().unwrap();
+    assert_eq!(d.scene.shapes[0].layer, 2); // red -> C02
+    let b = d.scene.shapes[0].bounds().unwrap();
     assert!((b.width() - 40.0 * 25.4 / 96.0).abs() < 1e-3);
     assert!(svg::export(&d).contains("<path"));
 }
@@ -72,7 +72,7 @@ fn svg_roundtrip() {
 fn json_roundtrip() {
     let d = square_doc(LayerMode::Fill);
     let d2 = Document::from_json(&d.to_json()).unwrap();
-    assert_eq!(d2.shapes.len(), 1);
+    assert_eq!(d2.scene.shapes.len(), 1);
 }
 
 #[test]
@@ -480,7 +480,7 @@ fn locked_shapes_refuse_editing_access() {
     for s in v["shapes"].as_array_mut().unwrap() {
         s.as_object_mut().unwrap().remove("locked");
     }
-    assert!(Document::from_json(&v.to_string()).unwrap().shapes.iter().all(|s| !s.locked));
+    assert!(Document::from_json(&v.to_string()).unwrap().scene.shapes.iter().all(|s| !s.locked));
 }
 
 #[test]
@@ -597,7 +597,7 @@ fn clipart_import_scales_centres_and_groups_on_one_layer() {
     let b = d.bounds_of(&ids).unwrap();
     assert!((b.width().max(b.height()) - 50.0).abs() < 1e-6, "{b:?}");
     assert!(b.center().dist(Pt::new(100.0, 80.0)) < 1e-6);
-    assert!(d.shapes.iter().all(|s| s.layer == 7), "colours do not spread the picture over layers");
+    assert!(d.scene.shapes.iter().all(|s| s.layer == 7), "colours do not spread the picture over layers");
     // Two elements become a group.
     let two = r##"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="red" d="M2,2L10,2L10,10Z"/><path fill="blue" d="M14,14L22,14L22,22Z"/></svg>"##;
     let ids = clipart::import_clip(two.as_bytes(), &mut d, 3, 30.0, Pt::new(10.0, 10.0)).unwrap();
@@ -882,7 +882,7 @@ fn objects_outside_the_area_the_margins_or_the_limits_are_errors_and_name_the_ob
     let issues = check::job_check(&d);
     assert_eq!(issues.len(), 1);
     assert_eq!((issues[0].level, issues[0].kind), (check::Level::Error, check::IssueKind::OutsideArea));
-    assert_eq!(issues[0].shapes, vec![d.shapes[0].id]);
+    assert_eq!(issues[0].shapes, vec![d.scene.shapes[0].id]);
     // Inside the work area but in a margin.
     let mut m = check_doc(2.0, 100.0);
     m.device.area.margins.left = 5.0;
@@ -984,7 +984,7 @@ fn estimate_with_acceleration_adds_the_ramps_and_caps_the_speed() {
     assert!((gcode::generate(&fast).est_seconds - 11.0).abs() < 1e-6);
     // A move too short to reach the speed is a triangle: 1 mm at a = 10 mm/s² takes 2 * sqrt(1 / 10) s.
     let mut short = long_line_doc(10.0);
-    short.shapes[0].kind = Kind::Path(vec![Polyline::new(vec![Pt::new(0.0, 0.0), Pt::new(1.0, 0.0)], false)]);
+    short.scene.shapes[0].kind = Kind::Path(vec![Polyline::new(vec![Pt::new(0.0, 0.0), Pt::new(1.0, 0.0)], false)]);
     short.device.speeds.acceleration = 10.0;
     assert!((gcode::generate(&short).est_seconds - 2.0 * (0.1f64).sqrt()).abs() < 1e-6);
     // Move durations still add up to the total.
@@ -995,7 +995,7 @@ fn estimate_with_acceleration_adds_the_ramps_and_caps_the_speed() {
 #[test]
 fn a_run_of_short_segments_ramps_once_and_a_layer_above_the_maximum_warns() {
     let mut d = long_line_doc(10.0);
-    d.shapes[0].kind = Kind::Path(vec![Polyline::new((0..=100).map(|i| Pt::new(i as f64, 0.0)).collect(), false)]);
+    d.scene.shapes[0].kind = Kind::Path(vec![Polyline::new((0..=100).map(|i| Pt::new(i as f64, 0.0)).collect(), false)]);
     d.device.speeds.acceleration = 10.0;
     assert!((gcode::generate(&d).est_seconds - 11.0).abs() < 1e-6);
     d.device.speeds.max_cut_speed = 300.0; // 5 mm/s
@@ -1211,8 +1211,8 @@ fn without_power_keeps_the_path_and_zeroes_every_s_of_a_move() {
     let mut d = Document::default();
     d.add(0, Kind::Rect { w: 4.0, h: 4.0 }, Xf::translate(10.0, 10.0));
     let s = gcode::shifted(&d, -3.0, 2.0);
-    assert_eq!(s.shapes[0].bounds().unwrap().min, Pt::new(7.0, 12.0));
-    assert_eq!(d.shapes[0].bounds().unwrap().min, Pt::new(10.0, 10.0));
+    assert_eq!(s.scene.shapes[0].bounds().unwrap().min, Pt::new(7.0, 12.0));
+    assert_eq!(d.scene.shapes[0].bounds().unwrap().min, Pt::new(10.0, 10.0));
 }
 
 fn macro_dev(macros: &[(&str, &str)]) -> Device {
@@ -2102,7 +2102,7 @@ fn a_job_from_the_current_position_puts_the_top_left_corner_on_the_head_and_ends
     // Nothing burned: the document stays as it is.
     let empty = Document::default();
     assert!(gcode::burn_corner(&empty).is_none());
-    assert_eq!(gcode::placed_at(&empty, head).shapes.len(), 0);
+    assert_eq!(gcode::placed_at(&empty, head).scene.shapes.len(), 0);
 }
 
 #[test]

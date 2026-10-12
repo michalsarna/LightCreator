@@ -89,7 +89,7 @@ impl App {
 
     fn hit_shape(&self, p: Pt) -> Option<u64> {
         let tol = 5.0 / self.view.zoom as f64;
-        let visible = || self.doc.shapes.iter().rev().filter(|s| self.doc.layers[s.layer].visible);
+        let visible = || self.doc.scene.shapes.iter().rev().filter(|s| self.doc.layers[s.layer].visible);
         if let Some(s) = visible().find(|s| s.polys().iter().any(|q| q.dist_to(p) <= tol)) {
             return Some(s.id);
         }
@@ -171,7 +171,7 @@ impl App {
     /// Upload image textures that are missing and drop those of deleted images.
     fn ensure_textures(&mut self, ctx: &egui::Context) {
         let mut keep = vec![];
-        for s in &self.doc.shapes {
+        for s in &self.doc.scene.shapes {
             if let Kind::Image(im) = &s.kind {
                 let key = (s.id, im.invert);
                 keep.push(key);
@@ -249,7 +249,7 @@ impl App {
         // Fit everything on the page once, on request.
         if self.fit_all_req && rect.width() > 50.0 {
             self.fit_all_req = false;
-            let all: Vec<u64> = self.doc.shapes.iter().filter(|s| self.doc.layers[s.layer].visible).map(|s| s.id).collect();
+            let all: Vec<u64> = self.doc.scene.shapes.iter().filter(|s| self.doc.layers[s.layer].visible).map(|s| s.id).collect();
             let (min, size) = match self.doc.bounds_of(&all) {
                 Some(b) => ((b.min.x, b.min.y), (b.width().max(1.0), b.height().max(1.0))),
                 None => ((0.0, 0.0), (bw, bh)),
@@ -436,7 +436,7 @@ impl App {
         let preview = self.preview_on;
         let ctx2 = ui.ctx().clone();
         self.ensure_textures(&ctx2);
-        for s in &self.doc.shapes {
+        for s in &self.doc.scene.shapes {
             let Kind::Image(im) = &s.kind else { continue };
             if !self.doc.layers[s.layer].visible {
                 continue;
@@ -453,7 +453,7 @@ impl App {
                 painter.add(egui::Shape::mesh(mesh));
             }
         }
-        for s in &self.doc.shapes {
+        for s in &self.doc.scene.shapes {
             let layer = &self.doc.layers[s.layer];
             if !layer.visible {
                 continue;
@@ -496,7 +496,7 @@ impl App {
         }
 
         // Padlock on locked objects.
-        for s in self.doc.shapes.iter().filter(|s| s.locked && self.doc.layers[s.layer].visible) {
+        for s in self.doc.scene.shapes.iter().filter(|s| s.locked && self.doc.layers[s.layer].visible) {
             if let Some(b) = s.bounds() {
                 let p = self.w2s(o, Pt::new(b.max.x, b.min.y));
                 crate::icons::paint(ui, egui::Rect::from_center_size(p + egui::vec2(-8.0, 8.0), egui::vec2(14.0, 14.0)), "lock", theme::accent());
@@ -828,7 +828,7 @@ impl App {
                             // Where the selection would be, against the other objects: lines within a few pixels join.
                             let ids: Vec<u64> = orig.iter().map(|(id, _)| *id).collect();
                             if self.snap_targets.is_none() {
-                                let others = self.doc.shapes.iter().filter(|s| !ids.contains(&s.id) && self.doc.layers[s.layer].visible).filter_map(|s| s.bounds()).collect();
+                                let others = self.doc.scene.shapes.iter().filter(|s| !ids.contains(&s.id) && self.doc.layers[s.layer].visible).filter_map(|s| s.bounds()).collect();
                                 self.snap_targets = Some(others);
                             }
                             for (id, xf) in &orig {

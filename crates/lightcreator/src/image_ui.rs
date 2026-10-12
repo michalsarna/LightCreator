@@ -276,7 +276,7 @@ impl App {
         }
         self.checkpoint();
         if d.delete_original {
-            self.doc.shapes.retain(|s| s.id != d.shape || s.locked);
+            self.doc.scene.shapes.retain(|s| s.id != d.shape || s.locked);
         }
         let n = contours.len();
         let id = self.doc.add(shape.layer, Kind::Bezier(contours), Xf::IDENTITY);

@@ -82,12 +82,12 @@ impl App {
             }
         }
         // Drop contours that no longer make sense, and shapes that became empty.
-        for s in &mut self.doc.shapes {
+        for s in &mut self.doc.scene.shapes {
             if let Kind::Bezier(cs) = &mut s.kind {
                 cs.retain(|c| c.nodes.len() >= 2);
             }
         }
-        self.doc.shapes.retain(|s| !matches!(&s.kind, Kind::Bezier(cs) if cs.is_empty()));
+        self.doc.scene.shapes.retain(|s| !matches!(&s.kind, Kind::Bezier(cs) if cs.is_empty()));
         self.sel.retain(|id| self.doc.shape(*id).is_some());
         self.node_sel.clear();
         self.active_seg = None;
@@ -263,11 +263,11 @@ mod tests {
         let s2 = a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(5.0, 0.0));
         a.sel = vec![s1, s2];
         a.bool_op(BoolOp::Union);
-        assert_eq!(a.doc.shapes.len(), 1);
-        let b = a.doc.shapes[0].bounds().unwrap();
+        assert_eq!(a.doc.scene.shapes.len(), 1);
+        let b = a.doc.scene.shapes[0].bounds().unwrap();
         assert!((b.width() - 15.0).abs() < 1e-6);
         a.do_undo();
-        assert_eq!(a.doc.shapes.len(), 2);
+        assert_eq!(a.doc.scene.shapes.len(), 2);
     }
 
     #[test]
@@ -276,7 +276,7 @@ mod tests {
         let s = a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(10.0, 10.0));
         a.sel = vec![s];
         a.offset_selected(-1.0, true);
-        assert_eq!(a.doc.shapes.len(), 2);
+        assert_eq!(a.doc.scene.shapes.len(), 2);
         let b = a.doc.shape(a.sel[0]).unwrap().bounds().unwrap();
         assert!((b.width() - 8.0).abs() < 0.05, "{}", b.width());
     }

@@ -20,7 +20,7 @@ pub fn temp_autosave_path() -> PathBuf {
 impl App {
     /// There is work that is neither saved by hand nor written by the auto-save.
     pub fn is_dirty(&self) -> bool {
-        self.revision != self.saved_revision && (!self.doc.shapes.is_empty() || self.path.is_some())
+        self.revision != self.saved_revision && (!self.doc.scene.shapes.is_empty() || self.path.is_some())
     }
 
     /// The document now matches the file on disk: forget the temporary copy.

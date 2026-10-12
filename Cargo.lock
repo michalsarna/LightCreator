@@ -178,6 +178,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
 
 [[package]]
+name = "base-core"
+version = "0.1.0"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v0.1.0-alpha.2#52311208bab442369a58b4f4a2fafb58ed95c8f0"
+dependencies = [
+ "base64 0.23.1",
+ "i_overlay",
+ "image",
+ "lopdf",
+ "serde",
+ "serde_json",
+ "ttf-parser",
+ "usvg 0.48.1",
+]
+
+[[package]]
 name = "base64"
 version = "0.22.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1929,14 +1944,12 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 name = "lc-core"
 version = "0.1.5"
 dependencies = [
- "base64 0.23.1",
- "i_overlay",
+ "base-core",
  "image",
  "lopdf",
  "serde",
  "serde_json",
  "ttf-parser",
- "usvg 0.48.1",
 ]
 
 [[package]]

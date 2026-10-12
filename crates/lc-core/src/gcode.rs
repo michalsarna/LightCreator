@@ -500,11 +500,11 @@ pub fn generate_from(doc: &Document, back: Option<Pt>) -> Job {
     // The head that is active when the job starts is the first one.
     let mut tool = 0usize;
     // Where we are in the job, for the variables of hooks.
-    let burning: Vec<usize> = doc.layer_order().into_iter().filter(|&li| doc.layers[li].output && doc.shapes.iter().any(|s| s.layer == li)).collect();
+    let burning: Vec<usize> = doc.layer_order().into_iter().filter(|&li| doc.layers[li].output && doc.scene.shapes.iter().any(|s| s.layer == li)).collect();
     let layers_total = burning.len();
-    let objects_total = doc.shapes.iter().filter(|s| burning.contains(&s.layer)).count();
+    let objects_total = doc.scene.shapes.iter().filter(|s| burning.contains(&s.layer)).count();
     // The objects in the order they are burnt, for `{workpiece_index}`.
-    let object_order: Vec<u64> = burning.iter().flat_map(|&li| doc.shapes.iter().filter(move |s| s.layer == li).map(|s| s.id)).collect();
+    let object_order: Vec<u64> = burning.iter().flat_map(|&li| doc.scene.shapes.iter().filter(move |s| s.layer == li).map(|s| s.id)).collect();
     let mut layer_no = 0usize;
     for li in doc.layer_order() {
         let layer = &doc.layers[li];
@@ -512,8 +512,8 @@ pub fn generate_from(doc: &Document, back: Option<Pt>) -> Job {
             continue;
         }
         let tol = dev.gcode.flatten_tolerance.clamp(0.001, 5.0);
-        let polys: Vec<Polyline> = doc.shapes.iter().filter(|s| s.layer == li && !s.is_image()).flat_map(|s| s.polys_tol(tol)).collect();
-        let images: Vec<&Shape> = doc.shapes.iter().filter(|s| s.layer == li && s.is_image()).collect();
+        let polys: Vec<Polyline> = doc.scene.shapes.iter().filter(|s| s.layer == li && !s.is_image()).flat_map(|s| s.polys_tol(tol)).collect();
+        let images: Vec<&Shape> = doc.scene.shapes.iter().filter(|s| s.layer == li && s.is_image()).collect();
         if polys.is_empty() && images.is_empty() {
             continue;
         }
@@ -547,7 +547,7 @@ pub fn generate_from(doc: &Document, back: Option<Pt>) -> Job {
         // Objects with hooks are burnt one by one; otherwise a layer is one set of paths (nearest neighbour over all).
         let per_object = dev.gcode.hooks.per_object();
         let sets: Vec<(Vec<Polyline>, Vec<&Shape>, Option<&Shape>)> = if per_object {
-            doc.shapes
+            doc.scene.shapes
                 .iter()
                 .filter(|s| s.layer == li)
                 .map(|s| if s.is_image() { (vec![], vec![s], Some(s)) } else { (s.polys_tol(tol), vec![], Some(s)) })
@@ -714,7 +714,7 @@ pub fn without_power(gcode: &str) -> String {
 /// A copy of the document with everything moved by `(dx, dy)` design millimetres.
 pub fn shifted(doc: &Document, dx: f64, dy: f64) -> Document {
     let mut d = doc.clone();
-    for s in &mut d.shapes {
+    for s in &mut d.scene.shapes {
         s.xf = s.xf.then(Xf::translate(dx, dy));
     }
     d

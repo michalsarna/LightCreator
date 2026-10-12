@@ -147,7 +147,7 @@ impl Device {
 impl Document {
     /// Is the layer used by the design?
     fn layer_used(&self, li: usize) -> bool {
-        self.shapes.iter().any(|s| s.layer == li)
+        self.scene.shapes.iter().any(|s| s.layer == li)
     }
 
     /// Select a material: the layers it defines get its settings; the other layers go back to the default

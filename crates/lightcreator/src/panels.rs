@@ -317,7 +317,7 @@ impl App {
     fn layers_panel(&mut self, ui: &mut egui::Ui) {
         let (units, su) = (self.doc.device.units, self.doc.device.speed_unit);
         let before = self.doc.layers.clone();
-        let used: Vec<bool> = (0..30).map(|i| self.doc.shapes.iter().any(|s| s.layer == i)).collect();
+        let used: Vec<bool> = (0..30).map(|i| self.doc.scene.shapes.iter().any(|s| s.layer == i)).collect();
         self.material_header(ui);
         ui.label(RichText::new(tr("Layers are burnt from top to bottom.")).color(theme::text_dim()));
         // Headings of the three switches at the end of each row.
@@ -381,7 +381,7 @@ impl App {
         }
         ui.checkbox(&mut self.show_all_layers, tr("Show all 30 layers"));
         ui.separator();
-        let has_images = self.doc.shapes.iter().any(|s| s.layer == self.active_layer && s.is_image());
+        let has_images = self.doc.scene.shapes.iter().any(|s| s.layer == self.active_layer && s.is_image());
         let mut layer_ctx = LayerCtx::of(&self.doc.device);
         layer_ctx.image_only = self.doc.is_image_layer(self.active_layer);
         let l = &mut self.doc.layers[self.active_layer];
@@ -418,7 +418,7 @@ impl App {
         let Some(i) = self.layer_dlg else { return };
         let before = self.doc.layers.clone();
         let (units, su) = (self.doc.device.units, self.doc.device.speed_unit);
-        let has_images = self.doc.shapes.iter().any(|s| s.layer == i && s.is_image());
+        let has_images = self.doc.scene.shapes.iter().any(|s| s.layer == i && s.is_image());
         let mut layer_ctx = LayerCtx::of(&self.doc.device);
         layer_ctx.image_only = self.doc.is_image_layer(i);
         let mut open = true;

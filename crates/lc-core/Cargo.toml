@@ -5,11 +5,11 @@ edition.workspace = true
 license.workspace = true
 
 [dependencies]
-base64 = "0.23.1"
-i_overlay = "9.0.1"
+base-core = { git = "https://github.com/michalsarna/baseCreator", tag = "v0.1.0-alpha.2" }
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "bmp", "gif", "webp"] }
-lopdf = { version = "0.45", default-features = false }
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.151"
+
+[dev-dependencies]
+lopdf = { version = "0.45", default-features = false }
 ttf-parser = { version = "0.25", default-features = false, features = ["std"] }
-usvg = "0.48.1"
