@@ -212,8 +212,6 @@ pub struct App {
     /// The window with the templates for a new device is open.
     /// The first-run setup is open at this step.
     pub add_dev: Option<usize>,
-    /// The name of a material to add to the device being added (optional).
-    pub add_dev_material: String,
     /// The add-device window read the controller.
     pub add_dev_read: bool,
     pub add_dev_read_done: bool,
@@ -383,7 +381,6 @@ impl App {
             single_axis_homing: false,
             fw: Default::default(),
             add_dev: None,
-            add_dev_material: String::new(),
             add_dev_read: false,
             add_dev_read_done: false,
             add_dev_skipped: false,

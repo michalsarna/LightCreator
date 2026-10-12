@@ -161,7 +161,7 @@
   local-only option is offered for use with an SSH tunnel, with a warning that the port is otherwise open to the
   network.
 * **Adding a device and profiles:** no predefined profiles and no wizard: one window with the basic settings (opens by
-  itself when there is no device; a first material can be named at the bottom; optional read from the controller), duplicate, export and import of a profile (format
+  itself when there is no device; optional camera and read from the controller; Cancel on the first run quits), duplicate, export and import of a profile (format
   version, strict validation, no port from the file).
 * **Maintenance and notes:** working time and own counters with limits (counted from the time jobs really run) and
   per-device notes in Markdown with a preview.
