@@ -565,7 +565,7 @@ impl App {
         self.checkpoint();
         let sel = std::mem::take(&mut self.sel);
         // Locked shapes survive and stay selected.
-        self.doc.shapes.retain(|s| !sel.contains(&s.id) || s.locked);
+        self.doc.scene.shapes.retain(|s| !sel.contains(&s.id) || s.locked);
         self.sel = sel.into_iter().filter(|id| self.doc.shape(*id).is_some()).collect();
     }
     pub fn copy(&mut self) {
@@ -597,7 +597,7 @@ impl App {
         self.paste();
     }
     pub fn select_all(&mut self) {
-        let vis: Vec<u64> = self.doc.shapes.iter().filter(|s| self.doc.layers[s.layer].visible).map(|s| s.id).collect();
+        let vis: Vec<u64> = self.doc.scene.shapes.iter().filter(|s| self.doc.layers[s.layer].visible).map(|s| s.id).collect();
         self.sel = vis;
     }
     pub fn assign_layer(&mut self, layer: usize) {
@@ -698,8 +698,8 @@ impl App {
     pub fn reorder(&mut self, front: bool) {
         self.checkpoint();
         let sel = self.doc.unlocked_ids(&self.sel);
-        let (a, b): (Vec<Shape>, Vec<Shape>) = std::mem::take(&mut self.doc.shapes).into_iter().partition(|s| sel.contains(&s.id));
-        self.doc.shapes = if front { [b, a].concat() } else { [a, b].concat() };
+        let (a, b): (Vec<Shape>, Vec<Shape>) = std::mem::take(&mut self.doc.scene.shapes).into_iter().partition(|s| sel.contains(&s.id));
+        self.doc.scene.shapes = if front { [b, a].concat() } else { [a, b].concat() };
     }
     pub fn make_array(&mut self) {
         let (cols, rows, dx, dy) = self.array;
@@ -936,7 +936,7 @@ impl App {
         if self.job_running() {
             return;
         }
-        let b = self.sel_bounds().or_else(|| self.doc.bounds_of(&self.doc.shapes.iter().map(|s| s.id).collect::<Vec<_>>()));
+        let b = self.sel_bounds().or_else(|| self.doc.bounds_of(&self.doc.scene.shapes.iter().map(|s| s.id).collect::<Vec<_>>()));
         let Some(b) = b else { return };
         if !self.connected {
             self.status = tr("Connect to a laser first (Laser panel)").into();

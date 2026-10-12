@@ -1,17 +1,14 @@
 mod api_server;
 mod api_ui;
 mod app;
-mod camera;
 mod check_ui;
 mod cam_test_ui;
-mod camera_stream;
 mod clip_net;
 mod clipart_ui;
 mod canvas;
 mod device_ui;
 mod firmware_ui;
 mod focus_ui;
-mod fonts;
 #[cfg(test)]
 mod grbl_sim_tests;
 mod i18n;
@@ -20,7 +17,6 @@ mod help_ui;
 mod icons;
 mod image_ui;
 mod laser;
-mod markdown_ui;
 mod materials_ui;
 mod menu;
 mod nodes;
@@ -36,13 +32,13 @@ mod shape_ops;
 mod stream_ui;
 #[cfg(test)]
 mod screenshots;
-mod theme;
 mod session_ui;
 mod update_ui;
 mod backup_ui;
-mod units_ui;
 mod window_ui;
 mod add_device_ui;
+
+pub use base_ui::{camera, camera_stream, fonts, markdown_ui, theme, units_ui};
 
 const ICON_256: &[u8] = include_bytes!("../../../assets/icons/icon-256.png");
 const ICON_512: &[u8] = include_bytes!("../../../assets/icons/icon-512.png");

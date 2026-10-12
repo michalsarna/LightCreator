@@ -8,7 +8,7 @@ use std::fmt::Write;
 /// Paths of one layer as the laser would trace them (hatching and rings included, images excluded).
 pub fn layer_paths(doc: &Document, li: usize) -> Vec<Polyline> {
     let layer = &doc.layers[li];
-    let polys: Vec<Polyline> = doc.shapes.iter().filter(|s| s.layer == li && !s.is_image()).flat_map(|s| s.polys_tol(doc.device.gcode.flatten_tolerance.clamp(0.001, 5.0))).collect();
+    let polys: Vec<Polyline> = doc.scene.shapes.iter().filter(|s| s.layer == li && !s.is_image()).flat_map(|s| s.polys_tol(doc.device.gcode.flatten_tolerance.clamp(0.001, 5.0))).collect();
     let mut out = vec![];
     if matches!(layer.mode, LayerMode::Fill | LayerMode::FillAndLine) {
         out.extend(fill_lines(&polys, layer.interval, layer.angle, layer.bidirectional).into_iter().map(|(a, b)| Polyline::new(vec![a, b], false)));
@@ -29,12 +29,12 @@ fn out_xy(dev: &Device, q: &Pt) -> (f64, f64) {
 
 /// Layers that have something to output.
 fn active_layers(doc: &Document) -> Vec<usize> {
-    doc.layer_order().into_iter().filter(|&li| doc.layers[li].output && doc.shapes.iter().any(|s| s.layer == li)).collect()
+    doc.layer_order().into_iter().filter(|&li| doc.layers[li].output && doc.scene.shapes.iter().any(|s| s.layer == li)).collect()
 }
 
 /// Number of images that cannot be represented in these formats.
 pub fn skipped_images(doc: &Document) -> usize {
-    doc.shapes.iter().filter(|s| s.is_image() && doc.layers[s.layer].output).count()
+    doc.scene.shapes.iter().filter(|s| s.is_image() && doc.layers[s.layer].output).count()
 }
 
 /// HPGL: 40 plotter units per millimetre, one pen per layer (pen = layer index + 1).

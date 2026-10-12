@@ -662,16 +662,16 @@ mod tests {
         a.clip.size_mm = 30.0;
         a.place_clip(BUILTIN_CLIPART[0].2, "x");
         assert!(!a.sel.is_empty());
-        assert!(a.doc.shapes.iter().all(|s| s.layer == 5));
+        assert!(a.doc.scene.shapes.iter().all(|s| s.layer == 5));
         let b = a.doc.bounds_of(&a.sel).unwrap();
         assert!(b.center().dist(Pt::new(a.doc.device.work_size().0 / 2.0, a.doc.device.work_size().1 / 2.0)) < 1e-6);
         a.do_undo();
-        assert!(a.doc.shapes.is_empty(), "one undo removes the whole picture");
+        assert!(a.doc.scene.shapes.is_empty(), "one undo removes the whole picture");
         // A broken picture changes nothing and leaves no undo step behind.
         let n = a.undo.len();
         a.place_clip(b"<svg", "broken");
         assert_eq!(a.undo.len(), n);
-        assert!(a.doc.shapes.is_empty());
+        assert!(a.doc.scene.shapes.is_empty());
     }
 
     #[test]

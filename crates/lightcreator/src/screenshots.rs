@@ -171,7 +171,7 @@ fn render_screenshots() {
         a.scheme = Scheme::LightDark;
         a.lang = Lang::En;
         // A fresh page: one curved shape for node editing.
-        a.doc.shapes.clear();
+        a.doc.scene.shapes.clear();
         a.preview_on = false;
         let id = a.doc.add(2, Kind::Ellipse { w: 120.0, h: 70.0 }, Xf::translate(40.0, 60.0));
         a.sel = vec![id];
@@ -186,7 +186,7 @@ fn render_screenshots() {
     {
         let a = app(&mut h);
         a.tool = Tool::Select;
-        a.doc.shapes.clear();
+        a.doc.scene.shapes.clear();
         a.node_sel.clear();
         let t = TextData { text: "LightCreator\nlaser studio".into(), size: 22.0, bold: false, ..TextData::default() };
         let id = a.doc.add(0, Kind::Text(t), Xf::translate(30.0, 40.0));
@@ -198,7 +198,7 @@ fn render_screenshots() {
 
     {
         let a = app(&mut h);
-        a.doc.shapes.clear();
+        a.doc.scene.shapes.clear();
         let (w, hh) = (240u32, 160u32);
         let gray: Vec<u8> = (0..w * hh)
             .map(|i| {
@@ -220,7 +220,7 @@ fn render_screenshots() {
     // Camera overlay: a procedural "wood board" picture, slightly skewed.
     {
         let a = app(&mut h);
-        a.doc.shapes.clear();
+        a.doc.scene.shapes.clear();
         a.preview_on = false;
         a.show_overlay = false;
         let (w, hh) = (320usize, 240usize);
@@ -257,7 +257,7 @@ fn render_screenshots() {
     // Preview window: several operations, each in its own colour, with travel moves.
     {
         let a = app(&mut h);
-        a.doc.shapes.clear();
+        a.doc.scene.shapes.clear();
         a.doc.layers[2].mode = lc_core::LayerMode::FillAndLine;
         a.doc.layers[2].interval = 0.5;
         a.doc.layers[5].mode = lc_core::LayerMode::Offset;
@@ -279,7 +279,7 @@ fn render_screenshots() {
     {
         let a = app(&mut h);
         a.show_preview = false;
-        a.doc.shapes.clear();
+        a.doc.scene.shapes.clear();
         let (w, hh) = (200u32, 140u32);
         let gray: Vec<u8> = (0..w * hh)
             .map(|i| {
@@ -313,7 +313,7 @@ fn render_screenshots() {
     {
         let a = app(&mut h);
         a.trace_dlg = None;
-        a.doc.shapes.clear();
+        a.doc.scene.shapes.clear();
         a.grid_prefs.minor_on = true;
         a.grid_prefs.minor_mm = 5.0;
         a.grid_prefs.minor_color = [0xc8, 0xd8, 0xf0, 0xff];
@@ -335,7 +335,7 @@ fn render_screenshots() {
     {
         let a = app(&mut h);
         a.show_prefs = false;
-        a.doc.shapes.clear();
+        a.doc.scene.shapes.clear();
         a.grid_prefs.minor_on = false;
         a.grid = 10.0;
         a.side_tab = SideTab::Properties;
@@ -361,7 +361,7 @@ fn render_screenshots() {
         a.grid_prefs = crate::prefs::GridPrefs::default();
         a.grid = 10.0;
         a.tool = Tool::Select;
-        a.doc.shapes.clear();
+        a.doc.scene.shapes.clear();
         a.doc.device.cameras = vec![lc_core::CameraSource::url("Camera 1", "http://127.0.0.1:9/stream.mjpg", 1)];
         a.stream_mode = crate::stream_ui::StreamMode::Tab;
         a.show_stream = true;
@@ -395,7 +395,7 @@ fn render_screenshots() {
     {
         let a = app(&mut h);
         a.show_ser2net_off();
-        a.doc.shapes.clear();
+        a.doc.scene.shapes.clear();
         a.grid_prefs = crate::prefs::GridPrefs::default();
         a.grid = 20.0;
         a.show_prefs = false;
@@ -419,7 +419,7 @@ fn render_screenshots() {
         let a = app(&mut h);
         a.show_ser2net_off();
         a.layer_dlg = None;
-        a.doc.shapes.clear();
+        a.doc.scene.shapes.clear();
         a.side_tab = SideTab::Properties;
         a.lang = Lang::Zh;
         i18n::set_lang(Lang::Zh);
@@ -455,7 +455,7 @@ fn render_screenshots() {
         let a = app(&mut h);
         a.lang = Lang::En;
         i18n::set_lang(Lang::En);
-        a.doc.shapes.clear();
+        a.doc.scene.shapes.clear();
         a.doc.layers[2].name = "C02".into();
         let r = a.doc.add(2, Kind::Rect { w: 80.0, h: 50.0 }, Xf::translate(40.0, 50.0));
         a.sel = vec![r];
@@ -482,7 +482,7 @@ fn render_screenshots() {
         let a = app(&mut h);
         a.show_guide = false;
         a.show_round = false;
-        a.doc.shapes.clear();
+        a.doc.scene.shapes.clear();
         let dir = std::env::temp_dir().join(format!("lc-shot-clip-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         a.clip = crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(dir));
@@ -528,7 +528,7 @@ fn render_screenshots() {
         a.clip.online = None;
         a.show_prefs = false;
         a.show_stream = false;
-        a.doc.shapes.clear();
+        a.doc.scene.shapes.clear();
         a.status = "Ready".into();
         a.start_add_device();
         if let Some(c) = a.cfg.as_mut() {
@@ -591,7 +591,7 @@ fn node_bar_hides_when_another_window_is_clicked() {
         a.enter_editor(0);
         a.doc.add(0, Kind::Rect { w: 40.0, h: 30.0 }, Xf::translate(60.0, 60.0));
         a.tool = Tool::Node;
-        a.sel = vec![a.doc.shapes[0].id];
+        a.sel = vec![a.doc.scene.shapes[0].id];
         a.show_preview = true;
     }
     h.run_steps(4);
@@ -638,7 +638,7 @@ fn clicking_a_handle_switches_between_resize_and_rotate() {
         a.enter_editor(0);
         a.doc.add(0, Kind::Rect { w: 40.0, h: 40.0 }, Xf::translate(100.0, 100.0));
         a.tool = Tool::Select;
-        a.sel = vec![a.doc.shapes[0].id];
+        a.sel = vec![a.doc.scene.shapes[0].id];
         a.view.auto_fit = false;
     }
     h.run_steps(4);
@@ -667,10 +667,10 @@ fn clicking_a_handle_switches_between_resize_and_rotate() {
     }
     button(&h, to, false);
     h.run_steps(3);
-    let xf = app(&mut h).doc.shapes[0].xf;
+    let xf = app(&mut h).doc.scene.shapes[0].xf;
     assert!(xf.b.abs() > 0.9 && xf.a.abs() < 0.1, "rotated by about 90 degrees: {xf:?}");
     // The top edge handle now slants the shape instead of resizing it.
-    let before = app(&mut h).doc.shapes[0].xf;
+    let before = app(&mut h).doc.scene.shapes[0].xf;
     let b = app(&mut h).sel_bounds().unwrap();
     let top = at(&mut h, b.center().x, b.min.y);
     let moved = pos2(top.x + 30.0, top.y);
@@ -683,7 +683,7 @@ fn clicking_a_handle_switches_between_resize_and_rotate() {
     }
     button(&h, moved, false);
     h.run_steps(3);
-    let after = app(&mut h).doc.shapes[0].xf;
+    let after = app(&mut h).doc.scene.shapes[0].xf;
     let (det0, det1) = (before.det(), after.det());
     assert!(after != before, "the edge drag changed the shape");
     assert!((det0.abs() - det1.abs()).abs() < 1e-6, "a slant keeps the area: {det0} {det1}");

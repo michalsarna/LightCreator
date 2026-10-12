@@ -52,7 +52,7 @@ const FOOTER_PT: f64 = 16.0;
 
 /// Indexes of the shapes that are printed.
 pub fn included(doc: &Document, o: &PrintOptions) -> Vec<usize> {
-    (0..doc.shapes.len()).filter(|&i| !o.visible_only || doc.layers.get(doc.shapes[i].layer).is_some_and(|l| l.visible)).collect()
+    (0..doc.scene.shapes.len()).filter(|&i| !o.visible_only || doc.layers.get(doc.scene.shapes[i].layer).is_some_and(|l| l.visible)).collect()
 }
 
 /// How many printed objects reach outside the work area (to warn about: on the paper they would be cut off or
@@ -60,7 +60,7 @@ pub fn included(doc: &Document, o: &PrintOptions) -> Vec<usize> {
 pub fn outside_area(doc: &Document, o: &PrintOptions) -> usize {
     let (w, h) = doc.device.work_size();
     let eps = 1e-6;
-    included(doc, o).into_iter().filter_map(|i| doc.shapes[i].bounds()).filter(|b| b.min.x < -eps || b.min.y < -eps || b.max.x > w + eps || b.max.y > h + eps).count()
+    included(doc, o).into_iter().filter_map(|i| doc.scene.shapes[i].bounds()).filter(|b| b.min.x < -eps || b.min.y < -eps || b.max.x > w + eps || b.max.y > h + eps).count()
 }
 
 /// The part of the design that goes on the page.
@@ -70,7 +70,7 @@ pub fn region(doc: &Document, o: &PrintOptions) -> Result<Rect, String> {
             let (w, h) = doc.device.work_size();
             Rect { min: Pt::new(0.0, 0.0), max: Pt::new(w, h) }
         }
-        Scope::Objects => included(doc, o).into_iter().filter_map(|i| doc.shapes[i].bounds()).reduce(Rect::union).ok_or("nothing to print")?,
+        Scope::Objects => included(doc, o).into_iter().filter_map(|i| doc.scene.shapes[i].bounds()).reduce(Rect::union).ok_or("nothing to print")?,
     };
     let ok = |v: f64| v.is_finite() && v.abs() < 1e7;
     if !(ok(r.min.x) && ok(r.min.y) && ok(r.max.x) && ok(r.max.y)) {
@@ -174,8 +174,8 @@ pub fn pdf(doc: &Document, o: &PrintOptions) -> Result<Vec<u8>, String> {
         let layer = &doc.layers[li];
         let c = colour(doc, li);
         let fills = matches!(layer.mode, LayerMode::Fill | LayerMode::FillAndLine | LayerMode::Offset);
-        for &i in idx.iter().filter(|&&i| doc.shapes[i].layer == li) {
-            let s = &doc.shapes[i];
+        for &i in idx.iter().filter(|&&i| doc.scene.shapes[i].layer == li) {
+            let s = &doc.scene.shapes[i];
             if let Kind::Image(img) = &s.kind {
                 let Some(g) = small_gray(img) else { continue };
                 let (p00, p10, p01) = (plan.pt(s.xf.apply(Pt::new(0.0, img.h))), plan.pt(s.xf.apply(Pt::new(img.w, img.h))), plan.pt(s.xf.apply(Pt::new(0.0, 0.0))));
@@ -256,7 +256,7 @@ mod tests {
         let mut d = Document::default();
         d.device.area.bed_w = 200.0;
         d.device.area.bed_h = 100.0;
-        d.shapes = shapes;
+        d.scene.shapes = shapes;
         d
     }
 
@@ -308,7 +308,7 @@ mod tests {
     fn the_pdf_is_well_formed() {
         let mut d = doc_with(vec![rect(1, 0, 10.0, 10.0, 50.0, 30.0)]);
         let img = Shape { id: 2, layer: 0, kind: Kind::Image(ImageData { name: "x".into(), px_w: 4, px_h: 2, gray: vec![0, 32, 64, 127, 127, 64, 32, 0], w: 40.0, h: 20.0, invert: false }), xf: Xf::translate(100.0, 40.0), group: None, locked: false };
-        d.shapes.push(img);
+        d.scene.shapes.push(img);
         d.layers[0].mode = LayerMode::Fill;
         d.device.name = "Laser (test)".into();
         let bytes = pdf(&d, &PrintOptions::default()).unwrap();

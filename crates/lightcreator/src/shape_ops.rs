@@ -32,7 +32,7 @@ impl App {
         }
         let layer = self.doc.shape(ids[0]).map(|s| s.layer).unwrap_or(self.active_layer);
         self.checkpoint();
-        self.doc.shapes.retain(|s| !ids.contains(&s.id));
+        self.doc.scene.shapes.retain(|s| !ids.contains(&s.id));
         let id = self.doc.add(layer, Kind::Path(acc), Xf::IDENTITY);
         self.sel = vec![id];
         self.node_sel.clear();
@@ -59,7 +59,7 @@ impl App {
         }
         self.checkpoint();
         if !keep_original {
-            self.doc.shapes.retain(|s| !ids.contains(&s.id) || s.locked);
+            self.doc.scene.shapes.retain(|s| !ids.contains(&s.id) || s.locked);
         }
         for (layer, polys) in created {
             made.push(self.doc.add(layer, Kind::Path(polys), Xf::IDENTITY));
@@ -72,7 +72,7 @@ impl App {
     /// right to left everything the rectangle touches. Groups are completed by the caller.
     pub fn marquee_hits(&self, r: &lc_core::Rect, left_to_right: bool) -> Vec<u64> {
         self.doc
-            .shapes
+            .scene.shapes
             .iter()
             .filter(|s| self.doc.layers[s.layer].visible)
             .filter(|s| {
@@ -254,7 +254,7 @@ impl App {
             };
             let layer = self.doc.shape(a).map(|s| s.layer).unwrap_or(self.active_layer);
             self.checkpoint();
-            self.doc.shapes.retain(|s| s.id != a && s.id != b);
+            self.doc.scene.shapes.retain(|s| s.id != a && s.id != b);
             let id = self.doc.add(layer, Kind::Bezier(vec![contour]), Xf::IDENTITY);
             self.sel = vec![id];
             self.node_sel.clear();
@@ -412,8 +412,8 @@ mod tests {
         assert_eq!(a.doc.group_of(s1).len(), 2);
         // Duplicate: the copies form their own group.
         a.duplicate();
-        assert_eq!(a.doc.shapes.len(), 4);
-        let groups: std::collections::HashSet<_> = a.doc.shapes.iter().filter_map(|s| s.group).collect();
+        assert_eq!(a.doc.scene.shapes.len(), 4);
+        let groups: std::collections::HashSet<_> = a.doc.scene.shapes.iter().filter_map(|s| s.group).collect();
         assert_eq!(groups.len(), 2);
         // Ungroup the copies only.
         a.ungroup_selection();
@@ -472,7 +472,7 @@ mod tests {
         assert_eq!((s.xf, s.layer), (before, 3 * 0), "unchanged, still on layer 0");
         // Copy and paste gives an editable copy; the original stays locked.
         a.duplicate();
-        assert_eq!(a.doc.shapes.len(), 2);
+        assert_eq!(a.doc.scene.shapes.len(), 2);
         let copy = a.doc.shape(a.sel[0]).unwrap();
         assert!(!copy.locked);
         a.transform_selection(Xf::translate(1.0, 0.0));
@@ -510,17 +510,17 @@ mod tests {
         a.do_undo();
         assert!(matches!(a.doc.shape(r).unwrap().kind, lc_core::Kind::Rect { .. }));
         // Two lines.
-        a.doc.shapes.clear();
+        a.doc.scene.shapes.clear();
         let h = a.doc.add(0, lc_core::Kind::Path(vec![lc_core::Polyline::new(vec![Pt::new(0.0, 10.0), Pt::new(14.0, 10.0)], false)]), Xf::IDENTITY);
         let v = a.doc.add(1, lc_core::Kind::Path(vec![lc_core::Polyline::new(vec![Pt::new(10.0, 0.0), Pt::new(10.0, 25.0)], false)]), Xf::IDENTITY);
         a.sel = vec![h, v];
         assert!(a.selected_line_pair().is_some());
         a.round_corners(3.0);
-        assert_eq!(a.doc.shapes.len(), 1, "the two lines became one rounded path");
-        let polys = a.doc.shapes[0].polys();
+        assert_eq!(a.doc.scene.shapes.len(), 1, "the two lines became one rounded path");
+        let polys = a.doc.scene.shapes[0].polys();
         assert!(polys[0].pts.len() > 4 && !polys[0].closed);
         // Nothing to round: a smooth ellipse leaves the document untouched (and no stray undo step).
-        a.doc.shapes.clear();
+        a.doc.scene.shapes.clear();
         let e = a.doc.add(0, lc_core::Kind::Ellipse { w: 10.0, h: 10.0 }, Xf::IDENTITY);
         a.sel = vec![e];
         let undo_len = a.undo.len();

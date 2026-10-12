@@ -92,7 +92,7 @@ pub fn job_check(doc: &Document) -> Vec<Issue> {
     let mut out = vec![];
     // Objects on output layers that lie outside, one issue per kind with all of them listed.
     for kind in [IssueKind::OutsideArea, IssueKind::OutsideLimits] {
-        let ids: Vec<u64> = doc.shapes.iter().filter(|s| doc.layers[s.layer].output).filter(|s| s.bounds().and_then(|b| rect_issue(dev, b)) == Some(kind)).map(|s| s.id).collect();
+        let ids: Vec<u64> = doc.scene.shapes.iter().filter(|s| doc.layers[s.layer].output).filter(|s| s.bounds().and_then(|b| rect_issue(dev, b)) == Some(kind)).map(|s| s.id).collect();
         if !ids.is_empty() {
             out.push(Issue { level: Level::Error, kind, shapes: ids, layer: None, zone: None });
         }
@@ -112,7 +112,7 @@ pub fn job_check(doc: &Document) -> Vec<Issue> {
     }
     for li in moved_out {
         // Reported once per layer, and not again when the objects of that layer are already named above.
-        let named = out.iter().any(|i| i.level == Level::Error && doc.shapes.iter().any(|s| s.layer == li && i.shapes.contains(&s.id)));
+        let named = out.iter().any(|i| i.level == Level::Error && doc.scene.shapes.iter().any(|s| s.layer == li && i.shapes.contains(&s.id)));
         if !named {
             out.push(Issue { level: Level::Error, kind: IssueKind::MoveOutside, shapes: vec![], layer: Some(li), zone: None });
         }
@@ -120,16 +120,16 @@ pub fn job_check(doc: &Document) -> Vec<Issue> {
     // A rotary attachment turns the work: the layers must all be rotary or all flat, and the design must not be higher
     // than the way round the workpiece.
     if dev.rotary.enabled {
-        let burning: Vec<usize> = doc.layer_order().into_iter().filter(|&li| doc.layers[li].output && doc.shapes.iter().any(|s| s.layer == li)).collect();
+        let burning: Vec<usize> = doc.layer_order().into_iter().filter(|&li| doc.layers[li].output && doc.scene.shapes.iter().any(|s| s.layer == li)).collect();
         let rot: Vec<usize> = burning.iter().copied().filter(|&li| doc.layers[li].rotary).collect();
         if !rot.is_empty() && rot.len() != burning.len() {
             out.push(Issue { level: Level::Error, kind: IssueKind::RotaryMix, shapes: vec![], layer: rot.first().copied(), zone: None });
         }
         let circ = dev.rotary.circumference();
         for &li in &rot {
-            let b = doc.shapes.iter().filter(|s| s.layer == li).filter_map(|s| s.bounds()).reduce(Rect::union);
+            let b = doc.scene.shapes.iter().filter(|s| s.layer == li).filter_map(|s| s.bounds()).reduce(Rect::union);
             if b.is_some_and(|b| b.height() > circ + TOLERANCE) {
-                out.push(Issue { level: Level::Error, kind: IssueKind::RotaryTooTall, shapes: doc.shapes.iter().filter(|s| s.layer == li).map(|s| s.id).collect(), layer: Some(li), zone: None });
+                out.push(Issue { level: Level::Error, kind: IssueKind::RotaryTooTall, shapes: doc.scene.shapes.iter().filter(|s| s.layer == li).map(|s| s.id).collect(), layer: Some(li), zone: None });
             }
         }
     }
@@ -137,7 +137,7 @@ pub fn job_check(doc: &Document) -> Vec<Issue> {
     if dev.axes.has_z {
         for li in doc.layer_order() {
             let l = &doc.layers[li];
-            if l.output && doc.shapes.iter().any(|s| s.layer == li) && l.z_levels().iter().any(|z| *z < dev.axes.z_min - TOLERANCE || *z > dev.axes.z_max + TOLERANCE) {
+            if l.output && doc.scene.shapes.iter().any(|s| s.layer == li) && l.z_levels().iter().any(|z| *z < dev.axes.z_min - TOLERANCE || *z > dev.axes.z_max + TOLERANCE) {
                 out.push(Issue { level: Level::Error, kind: IssueKind::ZOutOfRange, shapes: vec![], layer: Some(li), zone: None });
             }
         }
@@ -160,7 +160,7 @@ pub fn job_check(doc: &Document) -> Vec<Issue> {
         if !layer.output {
             continue;
         }
-        let ids: Vec<u64> = doc.shapes.iter().filter(|s| s.layer == li).map(|s| s.id).collect();
+        let ids: Vec<u64> = doc.scene.shapes.iter().filter(|s| s.layer == li).map(|s| s.id).collect();
         if ids.is_empty() {
             continue;
         }

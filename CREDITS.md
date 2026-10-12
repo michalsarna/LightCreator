@@ -5,6 +5,7 @@ the projects they maintain. Licences are named for orientation; the exact terms 
 
 ## Language and interface
 
+* **[baseCreator](https://github.com/michalsarna/baseCreator)** (MIT / Apache-2.0): the code LightCreator shares with MillCreator.
 * **[Rust](https://www.rust-lang.org/)** and **Cargo**: the language, compiler and package manager everything is written in.
 * **[egui / eframe](https://github.com/emilk/egui)** by Emil Ernerfeldt and contributors (MIT / Apache-2.0): the immediate-mode
   interface toolkit, including `egui_extras` and the `egui_kittest` harness that renders the documentation screenshots.

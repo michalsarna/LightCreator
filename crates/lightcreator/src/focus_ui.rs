@@ -200,7 +200,7 @@ mod tests {
         assert!((dx - (nx - 10.0)).abs() < 1e-6 && (dy - (ny - 5.0)).abs() < 1e-6, "{n} vs {d}");
         // Going out of the area is an error, not a run.
         let mut edge = pointer_app();
-        edge.doc.shapes[0].xf = lc_core::Xf::translate(5.0, 60.0);
+        edge.doc.scene.shapes[0].xf = lc_core::Xf::translate(5.0, 60.0);
         assert!(edge.dry_run_lines().is_err());
     }
 }
