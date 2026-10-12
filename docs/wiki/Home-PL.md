@@ -21,6 +21,7 @@ Otwartoźródłowy odpowiednik [LightBurn](https://lightburnsoftware.com/) dla g
 | Sprawdzić skrót klawiszowy | [Skróty klawiszowe](Skroty-klawiszowe) |
 | Znaleźć plik ustawień | [Ustawienia i pliki](Ustawienia-i-pliki) |
 | Poznać kod | [Architektura](Architektura) |
+| Sprawdzić kod lub błąd GRBL | [Kody GRBL](Kody-GRBL) |
 | Testować bez lasera | [Symulator GRBL](Symulator-GRBL) |
 | Wiedzieć, co jest sprawdzone | [Bezpieczeństwo i ograniczenia](Bezpieczenstwo-i-ograniczenia) |
 

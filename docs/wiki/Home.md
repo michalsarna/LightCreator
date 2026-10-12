@@ -21,6 +21,7 @@ An open-source alternative to [LightBurn](https://lightburnsoftware.com/) for CN
 | Look up a key | [Keyboard Shortcuts](Keyboard-Shortcuts) |
 | Find the settings file | [Settings and Files](Settings-and-Files) |
 | Read about the code | [Architecture](Architecture) |
+| Look up a GRBL code or error | [GRBL Codes](GRBL-Codes) |
 | Test without a laser | [GRBL Simulator](GRBL-Simulator) |
 | Know what is tested | [Safety and Limitations](Safety-and-Limitations) |
 
