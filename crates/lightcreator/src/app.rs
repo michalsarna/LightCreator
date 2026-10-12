@@ -1470,6 +1470,7 @@ impl App {
                 let ink = match act {
                     Act::Save => crate::window_ui::SAVE_GREEN,
                     Act::New => crate::window_ui::NEW_BLUE,
+                    Act::Open => crate::window_ui::OPEN_ORANGE,
                     _ => theme::text(),
                 };
                 if icon_button_ink(ui, icon, &tr(tip), true, 28.0, ink) {
