@@ -2,10 +2,7 @@
 //! Written in English and Polish; other interface languages show the English text.
 use crate::i18n::{lang, Lang};
 
-pub struct Section {
-    pub title: &'static str,
-    pub lines: &'static [&'static str],
-}
+pub use base_ui::dialogs::Section;
 
 const EN: &[Section] = &[
     Section {

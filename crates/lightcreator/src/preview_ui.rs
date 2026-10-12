@@ -1,5 +1,6 @@
 //! Preview window: the generated toolpath with every burn operation in its own colour, optional travel moves
 //! and a simulation slider.
+use base_ui::editor::EditorHost;
 use crate::app::{App, View};
 use crate::i18n::{tr, trf};
 use crate::theme;

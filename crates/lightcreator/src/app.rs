@@ -1405,28 +1405,20 @@ impl App {
         }
         self.show_array = open;
 
-        let mut open = self.show_about;
-        if open {
-            crate::window_ui::popup(ctx, "about_window", &tr("About LightCreator"), [380.0, 300.0], &mut open, |ui| {
-                ui.horizontal(|ui| {
-                    if let Some(logo) = &self.logo {
-                        ui.image((logo.id(), egui::vec2(72.0, 72.0)));
-                    }
-                    ui.vertical(|ui| {
-                        ui.heading("LightCreator");
-                        ui.label(trf("Version {}", &[&APP_VERSION]));
-                    });
-                });
-                ui.label(tr("Open-source design & control software for laser engravers and cutters."));
-                ui.separator();
-                ui.label(tr("Origin: written in Rust with egui/eframe."));
-                ui.label(tr("Inspired by LightBurn; interface inspired by VectorCraft."));
-                ui.label(tr("Author: Michał Sarna"));
-                ui.hyperlink(crate::help_ui::GITHUB_URL);
-                ui.label(format!("{}: MIT OR Apache-2.0", tr("Licence")));
-            });
-        }
-        self.show_about = open;
+        let about = base_ui::dialogs::AboutInfo {
+            title: &tr("About LightCreator"),
+            name: "LightCreator",
+            version: APP_VERSION,
+            lines: vec![
+                tr("Open-source design & control software for laser engravers and cutters.").to_string(),
+                tr("Origin: written in Rust with egui/eframe.").to_string(),
+                tr("Inspired by LightBurn; interface inspired by VectorCraft.").to_string(),
+                tr("Author: Michał Sarna").to_string(),
+            ],
+            url: crate::help_ui::GITHUB_URL,
+            licence: "MIT OR Apache-2.0",
+        };
+        base_ui::dialogs::about_window(ctx, &mut self.show_about, &about, self.logo.as_ref());
         self.config_window(ctx);
         self.layer_dialog(ctx);
         self.guide_window(ctx);
@@ -1507,10 +1499,10 @@ impl base_ui::editor::EditorHost for App {
         self.doc.device.units
     }
     fn workspace_fill(&self) -> egui::Color32 {
-        App::workspace_fill(self)
+        self.ed.grid_prefs.workspace_fill()
     }
     fn bed_fill(&self) -> egui::Color32 {
-        App::bed_fill(self)
+        self.ed.grid_prefs.bed_fill(self.scheme.is_dark())
     }
     fn shape_color(&self, layer: usize) -> Option<egui::Color32> {
         let l = self.doc.layers.get(layer)?;
