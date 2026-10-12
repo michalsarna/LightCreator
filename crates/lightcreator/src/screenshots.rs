@@ -460,7 +460,7 @@ fn render_screenshots() {
         a.doc.layers[2].name = "C02".into();
         let r = a.doc.add(2, Kind::Rect { w: 80.0, h: 50.0 }, Xf::translate(40.0, 50.0));
         a.ed.sel = vec![r];
-        a.fillet_radius = 8.0;
+        a.ed.fillet_radius = 8.0;
         a.round_corners(8.0);
         let tri = a.doc.add(5, Kind::Bezier(vec![lc_core::Contour::triangle(60.0, 50.0)]), Xf::translate(150.0, 50.0));
         a.ed.sel = vec![tri];

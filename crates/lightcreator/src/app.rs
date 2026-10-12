@@ -152,7 +152,6 @@ pub struct App {
     pub show_guide: bool,
     pub guide_filter: String,
     pub show_round: bool,
-    pub fillet_radius: f64,
     pub esc_time: f64,
     pub layer_dlg: Option<usize>,
     pub show_stream: bool,
@@ -339,7 +338,6 @@ impl App {
             show_guide: false,
             guide_filter: String::new(),
             show_round: false,
-            fillet_radius: 2.0,
             esc_time: -10.0,
             layer_dlg: None,
             show_stream: false,
@@ -1854,6 +1852,12 @@ impl base_ui::editor::EditorHost for App {
     }
     fn touch(&mut self) {
         App::touch(self)
+    }
+    fn drop_checkpoint(&mut self) {
+        self.undo.pop();
+    }
+    fn delete_button(&self, ui: &mut egui::Ui, enabled: bool, text: &str) -> egui::Response {
+        crate::window_ui::delete_button_enabled(ui, enabled, text)
     }
     fn say(&mut self, msg: String) {
         self.status = msg;

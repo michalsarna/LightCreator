@@ -272,34 +272,6 @@ impl App {
         }
     }
 
-    /// Round the selected nodes (node tool) with `radius` mm.
-    pub fn round_selected_nodes(&mut self, radius: f64) {
-        if self.ed.node_sel.is_empty() || radius <= 0.0 {
-            return;
-        }
-        self.checkpoint();
-        let mut by_contour: std::collections::BTreeMap<(u64, usize), std::collections::HashSet<usize>> = Default::default();
-        for (id, ci, ni) in &self.ed.node_sel {
-            by_contour.entry((*id, *ci)).or_default().insert(*ni);
-        }
-        let mut total = 0;
-        for ((id, ci), only) in by_contour {
-            if let Some(c) = self.contour_mut(id, ci) {
-                let (rounded, n) = lc_core::fillet::round_contour(c, radius, Some(&only));
-                *c = rounded;
-                total += n;
-            }
-        }
-        self.ed.node_sel.clear();
-        self.ed.active_seg = None;
-        if total == 0 {
-            self.undo.pop();
-            self.status_is(tr("There are no straight corners to round."));
-        } else {
-            self.status_is(trf("Rounded {} corner(s).", &[&total]));
-        }
-    }
-
     pub fn round_window(&mut self, ctx: &egui::Context) {
         if !self.show_round {
             return;
@@ -311,14 +283,14 @@ impl App {
         crate::window_ui::popup(ctx, "round_window", &tr("Round corners"), [300.0, 200.0], &mut open, |ui| {
             egui::Grid::new("round").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
                 ui.label(tr("Radius"));
-                crate::units_ui::drag_len(ui, units, &mut self.fillet_radius, 0.1, Some((0.05, 500.0)));
+                crate::units_ui::drag_len(ui, units, &mut self.ed.fillet_radius, 0.1, Some((0.05, 500.0)));
                 ui.end_row();
             });
             ui.label(egui::RichText::new(if pair { tr("Two straight lines are selected: they are joined with a rounded corner.") } else { tr("Every straight corner of the selected shapes is rounded.") }).color(theme::text_dim()));
             apply = ui.button(tr("Round")).clicked();
         });
         if apply {
-            self.round_corners(self.fillet_radius);
+            self.round_corners(self.ed.fillet_radius);
             open = false;
         }
         self.show_round = open;
