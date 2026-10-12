@@ -1,3 +1,4 @@
+use base_ui::editor::EditorCanvas;
 use base_ui::editor::EditorHost;
 use crate::laser::{self, Cmd, ConsoleLine, Evt, LaserLink};
 use crate::units_ui::{drag_len, fmt_len};
@@ -1858,6 +1859,58 @@ impl base_ui::editor::EditorHost for App {
     }
     fn delete_button(&self, ui: &mut egui::Ui, enabled: bool, text: &str) -> egui::Response {
         crate::window_ui::delete_button_enabled(ui, enabled, text)
+    }
+    fn work_size(&self) -> (f64, f64) {
+        self.doc.device.work_size()
+    }
+    fn units(&self) -> lc_core::Units {
+        self.doc.device.units
+    }
+    fn workspace_fill(&self) -> egui::Color32 {
+        App::workspace_fill(self)
+    }
+    fn bed_fill(&self) -> egui::Color32 {
+        App::bed_fill(self)
+    }
+    fn shape_color(&self, layer: usize) -> Option<egui::Color32> {
+        let l = self.doc.layers.get(layer)?;
+        if !l.visible {
+            return None;
+        }
+        let mut c = crate::canvas::col(l.color);
+        if self.preview_on {
+            c = c.gamma_multiply(0.25);
+        } else if !l.output {
+            c = c.gamma_multiply(0.45);
+        }
+        Some(c)
+    }
+    fn layer_color(&self, layer: usize) -> egui::Color32 {
+        crate::canvas::col(layer)
+    }
+    fn dim_pictures(&self) -> bool {
+        self.preview_on
+    }
+    fn paint_work_area(&mut self, v: &base_ui::editor::CanvasView) {
+        self.paint_machine_area(v)
+    }
+    fn paint_under_shapes(&mut self, v: &base_ui::editor::CanvasView) {
+        self.paint_camera_overlay(v)
+    }
+    fn paint_over_shapes(&mut self, v: &base_ui::editor::CanvasView) {
+        self.paint_preview(v)
+    }
+    fn paint_lock(&self, ui: &egui::Ui, rect: egui::Rect) {
+        crate::icons::paint(ui, rect, "lock", theme::accent());
+    }
+    fn pointer_claimed(&mut self, resp: &egui::Response, origin: egui::Pos2, press: Option<egui::Pos2>, hover: Option<egui::Pos2>) -> bool {
+        self.overlay_interact(resp, origin, press, hover)
+    }
+    fn canvas_context_menu(&mut self, ui: &mut egui::Ui, resp: &egui::Response) {
+        self.laser_context_menu(ui, resp)
+    }
+    fn place_text(&mut self, at: lc_core::Pt) {
+        self.add_text_at(at)
     }
     fn say(&mut self, msg: String) {
         self.status = msg;

@@ -1,5 +1,4 @@
 //! Tests of node editing (the operations live in base-ui).
-pub use base_ui::editor::NodeRef;
 #[cfg(test)]
 use crate::app::App;
 #[cfg(test)]
