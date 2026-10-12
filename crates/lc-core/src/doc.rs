@@ -602,7 +602,7 @@ fn d_tcp_port() -> u16 {
 }
 
 fn d_jog_step() -> f64 {
-    5.0
+    10.0
 }
 fn d_jog_feed() -> f64 {
     3000.0
@@ -909,6 +909,26 @@ impl Streaming {
     }
 }
 
+/// Where a job and a frame start from.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum StartFrom {
+    /// The design sits where it is on the work area, counted from the machine's zero (the default).
+    #[default]
+    Home,
+    /// The top-left corner of the design is put where the laser head stands now, and the job ends there.
+    CurrentPosition,
+}
+
+impl StartFrom {
+    pub const ALL: [StartFrom; 2] = [StartFrom::Home, StartFrom::CurrentPosition];
+    pub fn label(self) -> &'static str {
+        match self {
+            StartFrom::Home => "Home (machine zero)",
+            StartFrom::CurrentPosition => "Current position of the laser",
+        }
+    }
+}
+
 /// How the program reaches the machine.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Connection {
@@ -1108,6 +1128,10 @@ pub struct Device {
     pub maintenance: Maintenance,
     /// The user's own notes about the machine, in Markdown.
     pub notes: String,
+    /// Show where the laser head is, as a dot on the work area, while the device is connected.
+    pub live_position: bool,
+    /// Whether a job counts from the machine's zero or from where the head stands.
+    pub start_from: StartFrom,
 }
 
 /// A counter of working time that can be reset, with an optional limit after which it asks for attention.
@@ -1331,6 +1355,10 @@ struct DeviceWire {
     maintenance: Maintenance,
     #[serde(default)]
     notes: String,
+    #[serde(default)]
+    live_position: bool,
+    #[serde(default)]
+    start_from: StartFrom,
     // Flat fields of profiles saved before the groups existed.
     origin: Option<Origin>,
     bed_w: Option<f64>,
@@ -1397,6 +1425,8 @@ impl From<DeviceWire> for Device {
             template_notes: w.template_notes,
             maintenance: w.maintenance,
             notes: w.notes,
+            live_position: w.live_position,
+            start_from: w.start_from,
         };
         dev.ensure_materials();
         dev
@@ -1610,7 +1640,7 @@ impl Default for Device {
             gcode: GcodeCfg::default(),
             connection: Connection::default(),
             heads: vec![LaserHead::default()],
-            jog_step: 5.0,
+            jog_step: 10.0,
             jog_feed: 3000.0,
             camera: None,
             cameras: vec![],
@@ -1625,6 +1655,8 @@ impl Default for Device {
             template_notes: String::new(),
             maintenance: Maintenance::default(),
             notes: String::new(),
+            live_position: false,
+            start_from: StartFrom::Home,
         }
     }
 }

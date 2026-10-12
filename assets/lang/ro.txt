@@ -1069,3 +1069,9 @@
 1068|Frază de acces
 1069|Folosește această frază de acces de acum
 1070|Fraza de acces nu poate fi goală și nu poate avea caractere de control.
+1071|Poziția laserului în direct
+1072|Arată poziția capului laser ca un punct pe zona de lucru. Pornită cât timp mașina stă, face mai întâi homing; în timpul unei lucrări sau al unui cadru arată doar poziția, reîmprospătată în fiecare secundă. Necesită un dispozitiv conectat.
+1073|Pornește de la
+1074|Home (zero mașină)
+1075|Poziția curentă a laserului
+1076|Home: desenul este ars acolo unde se află pe zona de lucru, numărând de la zeroul mașinii. Poziția curentă: colțul stânga-sus al desenului este pus acolo unde se află acum capul laser (lucrări, cadre și rulare în gol), iar lucrarea se termină acolo. Fișierele exportate numără întotdeauna de la zeroul mașinii.

@@ -1069,3 +1069,9 @@
 1068|Frase de acesso
 1069|Usar esta frase de acesso a partir de agora
 1070|A frase de acesso não pode estar vazia nem ter caracteres de controlo.
+1071|Posição do laser em direto
+1072|Mostra a posição da cabeça laser como um ponto na área de trabalho. Ativada com a máquina parada, faz primeiro o homing; durante um trabalho ou um contorno só mostra a posição, atualizada a cada segundo. Requer um dispositivo ligado.
+1073|Começar a partir de
+1074|Home (zero da máquina)
+1075|Posição atual do laser
+1076|Home: o desenho é gravado onde está na área de trabalho, contando a partir do zero da máquina. Posição atual: o canto superior esquerdo do desenho é posto onde está agora a cabeça laser (trabalhos, contornos e ensaio em seco) e o trabalho termina aí. Os ficheiros exportados contam sempre a partir do zero da máquina.

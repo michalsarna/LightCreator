@@ -1069,3 +1069,9 @@
 1068|Abairt rochtana
 1069|Úsáid an abairt rochtana seo as seo amach
 1070|Ní féidir an abairt rochtana a bheith folamh ná carachtair rialaithe a bheith inti.
+1071|Suíomh an léasair beo
+1072|Taispeánann sé suíomh cheann an léasair mar phoncán ar an limistéar oibre. Nuair a chuirtear air é agus an meaisín ina sheasamh, déanann sé homing ar dtús; le linn jab nó frámaí ní thaispeánann sé ach an suíomh, athnuaite gach soicind. Teastaíonn gléas ceangailte.
+1073|Tosaigh ó
+1074|Baile (nialas an mheaisín)
+1075|Suíomh reatha an léasair
+1076|Baile: dóitear an dearadh san áit a luíonn sé ar an limistéar oibre, ag comhaireamh ó nialas an mheaisín. Suíomh reatha: cuirtear ceathrú uachtarach clé an deartha san áit a bhfuil ceann an léasair anois (jabanna, frámaí agus rith tirim), agus críochnaíonn an jab ansin. Comhaireann comhaid easpórtáilte i gcónaí ó nialas an mheaisín.

@@ -2,6 +2,27 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.1.5
+
+**Device**
+* **Live laser Position:** a switch in the Device tab (off by default, saved with the device, greyed out without a
+  connection) that shows the head as a red dot on the work area. Switched on while the machine stands still it homes
+  first; during a job, a frame or a jog it only shows the dot, refreshed once a second.
+* **Start from:** a device setting, *Home (machine zero)* (the default, as before) or *Current position of the laser*:
+  the top-left corner of what is burned is put where the head stands, for the job, the frame and the dry run; the check
+  before the job tests the moved design, and the job ends where it started instead of at the machine zero. Exported
+  files and the preview keep the design where it is.
+* The default jog step is 10 mm (was 5 mm); saved profiles keep their step.
+
+**Look**
+* The open-project icon on the tool bar is orange (new project blue, save green).
+
+**Tests and wiki**
+* A stuck job in the GRBL simulator tests fails after 20 s and says how many `ok` came and which replies were not a plain
+  `ok`, to find the sporadic failure of the long-job test (not reproduced yet).
+* The wiki has a page with all keyboard and mouse shortcuts and a page with the GRBL codes (real-time characters,
+  `$` commands, the G and M codes the program writes, settings, states, `error:N` and `ALARM:N`), in English and Polish.
+
 ## v0.1.4
 
 **Look**

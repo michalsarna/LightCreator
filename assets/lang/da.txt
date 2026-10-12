@@ -1069,3 +1069,9 @@
 1068|Adgangssætning
 1069|Brug denne adgangssætning fra nu af
 1070|Adgangssætningen må ikke være tom eller have styretegn.
+1071|Laserposition live
+1072|Viser laserhovedets position som en prik på arbejdsområdet. Slået til, mens maskinen står stille, homer den først; under et job eller en ramme viser den kun positionen, opdateret hvert sekund. Kræver en tilsluttet enhed.
+1073|Start fra
+1074|Home (maskinens nulpunkt)
+1075|Laserens aktuelle position
+1076|Home: designet brændes, hvor det ligger på arbejdsområdet, regnet fra maskinens nulpunkt. Aktuel position: designets øverste venstre hjørne placeres, hvor laserhovedet står nu (jobs, rammer og tørkørsel), og jobbet slutter der. Eksporterede filer regnes altid fra maskinens nulpunkt.

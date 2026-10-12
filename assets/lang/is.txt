@@ -1069,3 +1069,9 @@
 1068|Aðgangssetning
 1069|Nota þessa aðgangssetningu héðan í frá
 1070|Aðgangssetningin má ekki vera tóm eða innihalda stjórnstafi.
+1071|Staða leysis í beinni
+1072|Sýnir stöðu leysihaussins sem punkt á vinnusvæðinu. Ef kveikt er á því þegar vélin stendur kyrr fer hún fyrst í heimastöðu; meðan á verki eða ramma stendur sýnir það aðeins stöðuna, uppfærða á hverri sekúndu. Krefst tengds tækis.
+1073|Byrja frá
+1074|Heima (núllpunktur vélar)
+1075|Núverandi staða leysisins
+1076|Heima: hönnunin er brennd þar sem hún liggur á vinnusvæðinu, talið frá núllpunkti vélarinnar. Núverandi staða: efra vinstra horn hönnunarinnar er sett þar sem leysihausinn stendur núna (verk, rammar og þurrkeyrsla) og verkinu lýkur þar. Útfluttar skrár telja alltaf frá núllpunkti vélarinnar.

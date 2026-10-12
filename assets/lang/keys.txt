@@ -1069,3 +1069,9 @@
 1068	Access phrase
 1069	Use this access phrase from now on
 1070	The access phrase cannot be empty or have control characters.
+1071	Live laser Position
+1072	Shows the position of the laser head as a dot on the work area. Switched on while the machine stands still, it homes first; during a job or a frame it only shows the position, refreshed every second. Needs a connected device.
+1073	Start from
+1074	Home (machine zero)
+1075	Current position of the laser
+1076	Home: the design is burned where it lies on the work area, counted from the machine's zero. Current position: the top-left corner of the design is put where the laser head stands now (jobs, frames and the dry run), and the job ends there. Exported files always count from the machine's zero.

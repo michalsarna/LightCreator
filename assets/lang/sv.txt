@@ -1069,3 +1069,9 @@
 1068|Åtkomstfras
 1069|Använd den här åtkomstfrasen från och med nu
 1070|Åtkomstfrasen får inte vara tom eller ha styrtecken.
+1071|Laserposition live
+1072|Visar laserhuvudets position som en prick på arbetsytan. Påslaget medan maskinen står still homar den först; under ett jobb eller en ram visas bara positionen, uppdaterad varje sekund. Kräver en ansluten enhet.
+1073|Starta från
+1074|Home (maskinens nollpunkt)
+1075|Laserns aktuella position
+1076|Home: designen bränns där den ligger på arbetsytan, räknat från maskinens nollpunkt. Aktuell position: designens övre vänstra hörn läggs där laserhuvudet står nu (jobb, ramar och torrkörning), och jobbet slutar där. Exporterade filer räknas alltid från maskinens nollpunkt.

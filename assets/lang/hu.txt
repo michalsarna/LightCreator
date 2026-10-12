@@ -1069,3 +1069,9 @@
 1068|Hozzáférési mondat
 1069|Ezt a hozzáférési mondatot használja mostantól
 1070|A hozzáférési mondat nem lehet üres, és nem tartalmazhat vezérlőkaraktert.
+1071|A lézer élő pozíciója
+1072|A lézerfej helyét pontként mutatja a munkaterületen. Álló gépnél bekapcsolva először referenciafutást végez; munka vagy keret közben csak megmutatja a pozíciót, másodpercenként frissítve. Csatlakoztatott eszközt igényel.
+1073|Indulás innen
+1074|Home (a gép nullpontja)
+1075|A lézer jelenlegi helye
+1076|Home: a terv ott ég, ahol a munkaterületen fekszik, a gép nullpontjától számítva. Jelenlegi hely: a terv bal felső sarka oda kerül, ahol a lézerfej most áll (munkák, keretek és szárazfutás), és a munka ott ér véget. Az exportált fájlok mindig a gép nullpontjától számolnak.

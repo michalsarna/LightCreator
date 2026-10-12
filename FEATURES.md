@@ -89,6 +89,13 @@
   holds bitmap images. In the Device tab the jog arrows, Home, Unlock, Pause and Resume are equal icon buttons (STOP
   stays red and plain), and jog step, jog feed and frame power sit together above them. The console output has its
   own background colour.
+* **Live laser position:** a switch in the Device tab (off by default, saved with the device, greyed out without a
+  connection) that shows the head as a red dot on the work area. Switched on at rest it homes the machine first;
+  during a job, a frame or a jog it only shows the dot, refreshed once a second.
+* **Jog step:** the default is 10 mm (profiles that already have a step keep theirs).
+* **Start from:** a device setting, home (machine zero, the default) or the current position of the laser: the
+  top-left corner of the design is put where the head stands, for the job, the frame and the dry run, and the job ends
+  there. Exported files always count from the machine zero.
 * **Image import dialog:** preview with rotate (90° steps and free angle), flip, brightness, contrast, gamma,
   auto levels, negative and size. The same dialog adjusts an image already on the page.
 * **Trace image:** turn the dark (or light) areas of a bitmap into Bézier outlines with threshold, speckle
@@ -219,7 +226,8 @@
   and were prepared with machine help: corrections from native speakers are welcome. Russian is not included. The quick
   guide exists in English and Polish; the other languages show the English text there.
 * The status bar shows the state of the device and of the web server (off, on with the port, error). Save buttons are
-  green, import buttons blue and delete buttons red.
+  green, import buttons blue and delete buttons red; on the tool bar the icons are blue for a new project, orange for
+  opening one and green for saving.
 * Colour schemes (14): Dark, Light Dark, Medium Light, Light, and a dark and a light one in blue, green, purple, brown and orange (the greys and the accent take the colour).
 * Application icon in every place the platform supports.
 * All interface icons (tool bar, menus, context menu, buttons) are SVG files and all text fonts (Noto Sans,

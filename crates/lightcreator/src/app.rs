@@ -57,7 +57,7 @@ impl Tool {
 }
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.1.4";
+pub const APP_VERSION: &str = "v0.1.5";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
@@ -319,6 +319,8 @@ pub struct App {
     pub job_last_secs: f64,
     /// The counters (by index) that have been announced as due in this session.
     pub maintenance_notified: std::collections::HashSet<usize>,
+    /// The laser position that is shown on the work area (live position) and when it was taken.
+    pub live_shown: Option<(std::time::Instant, (f64, f64))>,
     /// For this session only: aim with the pointer dot (the frame and the dry run move back by its offset).
     pub pointer_align: bool,
     pub connected: bool,
@@ -504,6 +506,7 @@ impl App {
             job_est: 0.0,
             job_last_secs: 0.0,
             maintenance_notified: Default::default(),
+            live_shown: None,
             pointer_align: false,
             connected: false,
             machine: (tr("Disconnected").into(), 0.0, 0.0),
@@ -889,7 +892,8 @@ impl App {
         self.focus_off();
         self.stamp_job();
         // The job is written for the design as it is: the pointer alignment never moves it.
-        let job = gcode::generate(&self.doc);
+        let (doc, back) = self.job_doc();
+        let job = gcode::generate_from(&doc, back);
         if job.moves.is_empty() {
             self.status = tr("Nothing to burn: no shapes on output layers").into();
             return;
@@ -938,10 +942,35 @@ impl App {
             self.status = tr("Connect to a laser first (Laser panel)").into();
             return;
         }
-        let b = self.aim(b);
+        let b = self.aim(self.placed_rect(b));
         if self.guard(crate::check_ui::Pending::Frame, Some(b)) {
             self.frame_bounds = Some(b);
             self.frame_now();
+        }
+    }
+
+    /// Where the head stands, in design coordinates, when the position is known.
+    pub fn head_point(&self) -> Option<Pt> {
+        (self.connected && self.machine.1.is_finite() && self.machine.2.is_finite()).then(|| self.doc.device.from_machine(self.machine.1, self.machine.2))
+    }
+
+    /// The document as the laser gets it: as it is, or (start from the current position) moved so that its top-left
+    /// corner lies on the head. The second value is where such a job ends, instead of the machine's zero.
+    pub fn job_doc(&self) -> (std::borrow::Cow<'_, lc_core::Document>, Option<Pt>) {
+        match (self.doc.device.start_from, self.head_point()) {
+            (lc_core::StartFrom::CurrentPosition, Some(head)) => (std::borrow::Cow::Owned(gcode::placed_at(&self.doc, head)), Some(head)),
+            _ => (std::borrow::Cow::Borrowed(&self.doc), None),
+        }
+    }
+
+    /// A frame box moved the same way as the job: its top-left corner on the head when starting from the current position.
+    pub fn placed_rect(&self, r: lc_core::Rect) -> lc_core::Rect {
+        match (self.doc.device.start_from, self.head_point()) {
+            (lc_core::StartFrom::CurrentPosition, Some(head)) => {
+                let (dx, dy) = (head.x - r.min.x, head.y - r.min.y);
+                lc_core::Rect { min: Pt::new(r.min.x + dx, r.min.y + dy), max: Pt::new(r.max.x + dx, r.max.y + dy) }
+            }
+            _ => r,
         }
     }
 
@@ -1027,6 +1056,7 @@ impl App {
                     }
                     self.read_on_connected(c);
                     if !c {
+                        self.live_shown = None;
                         self.machine.0 = tr("Disconnected").into();
                         self.fw_warn = None;
                         self.stall = None;
@@ -1440,6 +1470,7 @@ impl App {
                 let ink = match act {
                     Act::Save => crate::window_ui::SAVE_GREEN,
                     Act::New => crate::window_ui::NEW_BLUE,
+                    Act::Open => crate::window_ui::OPEN_ORANGE,
                     _ => theme::text(),
                 };
                 if icon_button_ink(ui, icon, &tr(tip), true, 28.0, ink) {
@@ -2410,5 +2441,104 @@ mod shape_popup_tests {
     fn spiral_tool_is_in_the_insert_group_with_its_own_key() {
         assert!(Tool::ALL.iter().any(|t| t.0 == Tool::Spiral && t.2 == egui::Key::I));
         assert!(!Tool::Spiral.is_edit() && !Tool::Spiral.is_nav());
+    }
+}
+
+#[cfg(test)]
+mod live_position_tests {
+    use super::*;
+
+    fn app() -> App {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.connected = true;
+        a.machine = ("Idle".into(), 10.0, 20.0);
+        a
+    }
+
+    #[test]
+    fn it_is_off_by_default_and_shows_nothing() {
+        let mut a = app();
+        assert!(!a.doc.device.live_position);
+        assert_eq!(a.live_point(), None);
+    }
+
+    #[test]
+    fn it_shows_the_head_in_design_coordinates_only_with_a_link() {
+        let mut a = app();
+        a.doc.device.live_position = true;
+        let expected = a.doc.device.from_machine(10.0, 20.0);
+        assert_eq!(a.live_point(), Some(expected));
+        a.connected = false;
+        assert_eq!(a.live_point(), None);
+        a.connected = true;
+        a.machine.1 = f64::NAN;
+        assert_eq!(a.live_point(), None, "no position known yet");
+    }
+
+    #[test]
+    fn homing_only_when_it_is_connected_and_the_machine_stands_still() {
+        let mut a = app();
+        assert!(a.live_position_homes());
+        a.machine.0 = "Run".into();
+        assert!(!a.live_position_homes(), "frame or jog under way");
+        a.machine.0 = "Idle".into();
+        a.progress = (1, 10);
+        assert!(!a.live_position_homes(), "job running");
+        a.progress = (0, 0);
+        a.connected = false;
+        assert!(!a.live_position_homes(), "no link");
+        a.set_live_position(true);
+        assert!(a.doc.device.live_position);
+        assert!(a.live_shown.is_none());
+    }
+
+    #[test]
+    fn while_the_machine_works_the_dot_moves_once_a_second() {
+        let mut a = app();
+        a.doc.device.live_position = true;
+        a.machine.0 = "Run".into();
+        let first = a.live_point().unwrap();
+        a.machine.1 = 50.0;
+        assert_eq!(a.live_point(), Some(first), "less than a second later");
+        a.live_shown = a.live_shown.map(|(t, p)| (t - std::time::Duration::from_millis(1100), p));
+        assert_eq!(a.live_point(), Some(a.doc.device.from_machine(50.0, 20.0)));
+        // Standing still, it follows at once.
+        a.machine.0 = "Idle".into();
+        a.machine.1 = 60.0;
+        assert_eq!(a.live_point(), Some(a.doc.device.from_machine(60.0, 20.0)));
+    }
+
+    #[test]
+    fn a_job_from_the_current_position_is_placed_on_the_head() {
+        let mut a = app();
+        a.doc.add(0, lc_core::Kind::Rect { w: 10.0, h: 10.0 }, lc_core::Xf::translate(50.0, 60.0));
+        let head = a.doc.device.from_machine(10.0, 20.0);
+        let (doc, back) = a.job_doc();
+        assert!(back.is_none() && matches!(doc, std::borrow::Cow::Borrowed(_)), "from home nothing moves");
+        drop(doc);
+        a.doc.device.start_from = lc_core::StartFrom::CurrentPosition;
+        let (doc, back) = a.job_doc();
+        assert_eq!(back, Some(head));
+        let c = gcode::burn_corner(&doc).unwrap();
+        assert!(c.dist(head) < 1e-6, "{c:?} {head:?}");
+        let r = a.placed_rect(lc_core::Rect { min: Pt::new(50.0, 60.0), max: Pt::new(60.0, 70.0) });
+        assert!(r.min.dist(head) < 1e-6 && ((r.max.x - r.min.x) - 10.0).abs() < 1e-9);
+        // Without a position (no link) the design stays where it is.
+        a.connected = false;
+        assert!(a.job_doc().1.is_none());
+    }
+
+    #[test]
+    fn the_switch_is_saved_with_the_device_and_old_profiles_load_with_it_off() {
+        let mut d = lc_core::Device::default();
+        assert!(!d.live_position);
+        d.live_position = true;
+        let back: lc_core::Device = serde_json::from_str(&serde_json::to_string(&d).unwrap()).unwrap();
+        assert!(back.live_position);
+        let mut v: serde_json::Value = serde_json::to_value(&d).unwrap();
+        v.as_object_mut().unwrap().remove("live_position");
+        let old: lc_core::Device = serde_json::from_value(v).unwrap();
+        assert!(!old.live_position);
     }
 }

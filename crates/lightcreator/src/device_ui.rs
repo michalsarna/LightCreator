@@ -1156,12 +1156,13 @@ impl App {
     /// leaves the allowed area) come back as issues.
     pub fn dry_run_lines(&self) -> Result<Vec<String>, Vec<lc_core::check::Issue>> {
         let h = self.doc.device.head(0);
-        let moved = lc_core::gcode::shifted(&self.doc, -h.pointer_dx, -h.pointer_dy);
+        let (base, back) = self.job_doc();
+        let moved = lc_core::gcode::shifted(&base, -h.pointer_dx, -h.pointer_dy);
         let errors: Vec<_> = lc_core::check::job_check(&moved).into_iter().filter(|i| i.level == lc_core::check::Level::Error).collect();
         if !errors.is_empty() {
             return Err(errors);
         }
-        let job = lc_core::gcode::generate(&moved);
+        let job = lc_core::gcode::generate_from(&moved, back.map(|p| lc_core::Pt::new(p.x - h.pointer_dx, p.y - h.pointer_dy)));
         Ok(laser::clean_gcode(&lc_core::gcode::without_power(&job.gcode)))
     }
 
@@ -1256,6 +1257,44 @@ impl App {
             return None;
         }
         Some(dev.controller.jog_z(dz, dev.jog_feed))
+    }
+
+    /// The machine is moving (a job, a frame, a jog, homing): its position changes all the time.
+    pub fn machine_busy(&self) -> bool {
+        self.job_running() || matches!(self.machine.0.split(':').next().unwrap_or(""), "Run" | "Hold" | "Jog" | "Home")
+    }
+
+    /// Switching the live position on homes the machine only when it is connected and stands still.
+    pub fn live_position_homes(&self) -> bool {
+        self.connected && !self.machine_busy()
+    }
+
+    /// Switch the live laser position on or off. Switching it on while the machine stands still homes it, so that
+    /// the position is known; while it works or frames, it only starts to show the position.
+    pub fn set_live_position(&mut self, on: bool) {
+        self.doc.device.live_position = on;
+        self.live_shown = None;
+        if on && self.live_position_homes() {
+            let ctrl = self.doc.device.controller;
+            self.run_action(ctrl.home());
+        }
+    }
+
+    /// Where the laser head is, in design coordinates, when the live position is on. While the machine moves the
+    /// shown position is refreshed once a second, otherwise at once.
+    pub fn live_point(&mut self) -> Option<lc_core::Pt> {
+        if !self.doc.device.live_position || !self.connected || !self.machine.1.is_finite() || !self.machine.2.is_finite() {
+            return None;
+        }
+        let now = std::time::Instant::now();
+        let due = match self.live_shown {
+            None => true,
+            Some((t, _)) => !self.machine_busy() || now.duration_since(t) >= std::time::Duration::from_secs(1),
+        };
+        if due {
+            self.live_shown = Some((now, (self.machine.1, self.machine.2)));
+        }
+        self.live_shown.map(|(_, (x, y))| self.doc.device.from_machine(x, y))
     }
 
     /// A jog step in the design's directions (x right, y down), kept inside the allowed area. `None` when there is no room.
@@ -1437,10 +1476,24 @@ impl App {
             ui.label(tr("Jog feed"));
             drag_speed(ui, units, self.doc.device.speed_unit, true, &mut self.doc.device.jog_feed, 10.0, Some((10.0, 20000.0)));
             ui.end_row();
+            ui.label(tr("Start from"));
+            let start = &mut self.doc.device.start_from;
+            egui::ComboBox::from_id_salt("start_from").width(150.0).truncate().selected_text(tr(start.label())).show_ui(ui, |ui| {
+                for m in lc_core::StartFrom::ALL {
+                    ui.selectable_value(start, m, tr(m.label()));
+                }
+            })
+            .response
+            .on_hover_text(tr("Home: the design is burned where it lies on the work area, counted from the machine's zero. Current position: the top-left corner of the design is put where the laser head stands now (jobs, frames and the dry run), and the job ends there. Exported files always count from the machine's zero."));
+            ui.end_row();
             ui.label(tr("Frame power"));
             ui.add(egui::DragValue::new(&mut self.doc.device.heads[0].frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
             ui.end_row();
         }));
+        let mut live = self.doc.device.live_position;
+        if ui.add_enabled(self.connected, egui::Checkbox::new(&mut live, tr("Live laser Position"))).on_hover_text(tr("Shows the position of the laser head as a dot on the work area. Switched on while the machine stands still, it homes first; during a job or a frame it only shows the position, refreshed every second. Needs a connected device.")).changed() {
+            self.set_live_position(live);
+        }
         ui.separator();
         ui.add_enabled_ui(self.connected, |ui| {
             let s = self.doc.device.jog_step;

@@ -99,7 +99,7 @@ fn old_device_json_gets_new_fields() {
     let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
     let d: Device = serde_json::from_str(old).unwrap();
     assert_eq!(d.controller, Controller::Grbl);
-    assert_eq!(d.jog_step, 5.0);
+    assert_eq!(d.jog_step, 10.0);
     assert!(d.connection.port.is_empty());
 }
 
@@ -2079,4 +2079,39 @@ fn one_camera_is_on_at_a_time_and_a_new_one_without_an_address_is_allowed() {
     // A bad address that is on is still refused.
     d.cameras[2].kind = CameraKind::Url("rtsp://x".into());
     assert!(profiles::import_profile(&profiles::export_profile(&d, "v0.1.2")).is_err());
+}
+
+#[test]
+fn a_job_from_the_current_position_puts_the_top_left_corner_on_the_head_and_ends_there() {
+    let mut d = Document::default();
+    d.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(50.0, 60.0));
+    assert_eq!(d.device.start_from, StartFrom::Home);
+    let c = gcode::burn_corner(&d).unwrap();
+    assert!((c.x - 50.0).abs() < 1e-6 && (c.y - 60.0).abs() < 1e-6, "{c:?}");
+    let head = Pt::new(20.0, 30.0);
+    let moved = gcode::placed_at(&d, head);
+    let c = gcode::burn_corner(&moved).unwrap();
+    assert!((c.x - head.x).abs() < 1e-6 && (c.y - head.y).abs() < 1e-6, "{c:?}");
+    // The way back goes to the head, not to the machine's zero.
+    d.device.gcode.return_home = true;
+    let job = gcode::generate_from(&moved, Some(head));
+    let last = job.moves.last().unwrap();
+    assert!(last.b.dist(head) < 1e-6 && !last.laser, "{last:?}");
+    let home = gcode::generate(&moved);
+    assert!(home.moves.last().unwrap().b.dist(moved.device.home_point()) < 1e-6);
+    // Nothing burned: the document stays as it is.
+    let empty = Document::default();
+    assert!(gcode::burn_corner(&empty).is_none());
+    assert_eq!(gcode::placed_at(&empty, head).shapes.len(), 0);
+}
+
+#[test]
+fn start_from_is_saved_with_the_device_and_old_profiles_start_from_home() {
+    let mut dev = Device::default();
+    dev.start_from = StartFrom::CurrentPosition;
+    let back: Device = serde_json::from_str(&serde_json::to_string(&dev).unwrap()).unwrap();
+    assert_eq!(back.start_from, StartFrom::CurrentPosition);
+    let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
+    let d: Device = serde_json::from_str(old).unwrap();
+    assert_eq!(d.start_from, StartFrom::Home);
 }
