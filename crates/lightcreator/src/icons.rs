@@ -5,6 +5,9 @@ use crate::menu::Act;
 pub use base_ui::icons::*;
 
 pub fn act_icon(a: Act) -> Option<&'static str> {
+    if let Some(s) = a.std() {
+        return Some(s.icon());
+    }
     Some(match a {
         Act::New => "file-plus",
         Act::Open => "folder-open",
@@ -18,32 +21,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::Print => "printer",
         Act::ExportGcode => "file-code",
         Act::Quit => "x",
-        Act::Undo => "undo-2",
-        Act::Redo => "redo-2",
-        Act::Copy => "copy",
-        Act::Paste => "clipboard-paste",
-        Act::Duplicate => "copy-plus",
-        Act::Delete => "trash",
-        Act::SelectAll => "lasso-select",
-        Act::Align(0) => "align-start-vertical",
-        Act::Align(1) => "align-center-vertical",
-        Act::Align(2) => "align-end-vertical",
-        Act::Align(3) => "align-start-horizontal",
-        Act::Align(4) => "align-center-horizontal",
-        Act::Align(_) => "align-end-horizontal",
-        Act::CenterOnBed => "focus",
-        Act::CenterEachOther => "target",
-        Act::FlipH => "flip-horizontal",
-        Act::FlipV => "flip-vertical",
-        Act::RotCw => "rotate-cw",
-        Act::RotCcw => "rotate-ccw",
-        Act::ToFront => "bring-to-front",
-        Act::ToBack => "send-to-back",
-        Act::ToPath | Act::ToCurves | Act::EditNodes => "spline",
-        Act::Group => "group",
-        Act::Ungroup => "ungroup",
-        Act::Lock => "lock",
-        Act::Unlock => "lock-open",
+        Act::ToCurves => "spline",
         Act::BoolUnion => "squares-unite",
         Act::BoolIntersect => "squares-intersect",
         Act::BoolSubtract => "squares-subtract",
@@ -53,15 +31,8 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::QuickGuide => "book-open",
         Act::OpenGithub => "globe",
         Act::GridArray => "grid-3x3",
-        Act::ToggleGrid => "grid-3x3",
-        Act::ToggleSnap => "magnet",
-        Act::ToggleSnapObjects => "target",
         Act::TogglePreview => "route",
         Act::PreviewWindow => "play",
-        Act::FitBed | Act::ToggleAutoFit => "scan",
-        Act::FitAll => "expand",
-        Act::ZoomIn => "zoom-in",
-        Act::ZoomOut => "zoom-out",
         Act::CameraView => "video",
         Act::ToggleOverlay | Act::CameraOverlay => "layers",
         Act::ToggleZones => "eye",
@@ -78,6 +49,8 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::About => "info",
         Act::TraceImage => "portrait",
         Act::AdjustImage => "sliders-horizontal",
+        // The standard commands were answered above.
+        Act::Undo | Act::Redo | Act::Copy | Act::Paste | Act::Duplicate | Act::Delete | Act::SelectAll | Act::Align(_) | Act::CenterOnBed | Act::CenterEachOther | Act::FlipH | Act::FlipV | Act::RotCw | Act::RotCcw | Act::ToFront | Act::ToBack | Act::ToPath | Act::EditNodes | Act::Group | Act::Ungroup | Act::Lock | Act::Unlock | Act::ToggleGrid | Act::ToggleSnap | Act::ToggleSnapObjects | Act::FitBed | Act::FitAll | Act::ZoomIn | Act::ZoomOut | Act::ToggleAutoFit => return None,
         Act::SetLang(_) | Act::SetScheme(_) => return None,
     })
 }
@@ -91,7 +64,7 @@ mod tests {
     fn all_requested_icons_exist() {
         let have: std::collections::HashSet<&str> = all_names().into_iter().collect();
         for (_, entries) in crate::menu::menus() {
-            fn walk(es: &[crate::menu::Entry], have: &std::collections::HashSet<&str>) {
+            fn walk(es: &[crate::menu::Entry<Act>], have: &std::collections::HashSet<&str>) {
                 for e in es {
                     match e {
                         crate::menu::Entry::Item(a, _, _) => {

@@ -4,7 +4,7 @@ use base_ui::editor::EditorHost;
 use crate::laser::{self, Cmd, ConsoleLine, Evt, LaserLink};
 use crate::units_ui::{drag_len, fmt_len};
 use crate::i18n::{self, tr, trf, Lang};
-use crate::menu::{menus, Act, Entry};
+use crate::menu::{menus, Act};
 use crate::theme::{self, Scheme};
 use eframe::egui::{self, Color32, Key, Modifiers, RichText};
 use lc_core::{gcode, svg, Document, Pt, Shape, Xf};
@@ -375,7 +375,7 @@ impl App {
             scheme,
             logo: crate::load_logo(ctx),
             #[cfg(target_os = "macos")]
-            native_menu: native_menu.then(|| crate::native_menu::NativeMenu::install(ctx)),
+            native_menu: native_menu.then(|| crate::native_menu::install(ctx)),
             link: LaserLink::spawn(ctx.clone()),
             ports,
             port_info,
@@ -944,14 +944,13 @@ impl App {
 
     /// Is this action's check mark set? (None = not a check item.)
     pub fn act_checked(&self, a: Act) -> Option<bool> {
+        if let Some(s) = a.std() {
+            return s.checked(self);
+        }
         match a {
-            Act::ToggleGrid => Some(self.ed.show_grid),
-            Act::ToggleSnap => Some(self.ed.snap),
-            Act::ToggleSnapObjects => Some(self.ed.snap_objects),
             Act::TogglePreview => Some(self.preview_on),
             Act::ToggleOverlay => Some(self.overlay.is_some() && self.overlay_visible),
             Act::ToggleZones => Some(self.zones_visible),
-            Act::ToggleAutoFit => Some(self.ed.view.auto_fit),
             Act::SetLang(l) => Some(self.lang == l),
             Act::SetScheme(s) => Some(self.scheme == s),
             _ => None,
@@ -959,13 +958,13 @@ impl App {
     }
 
     pub fn act_enabled(&self, a: Act) -> bool {
+        if let Some(s) = a.std() {
+            return s.enabled(self);
+        }
         match a {
-            Act::Undo => !self.undo.is_empty(),
-            Act::Redo => !self.redo.is_empty(),
             Act::ClearRecent => !self.recent.is_empty(),
             Act::Frame => self.connected && !self.job_running(),
             Act::StartJob => self.can_start() && !self.job_running(),
-            Act::CenterEachOther => self.ed.sel.len() >= 2,
             Act::ToggleOverlay => self.overlay.is_some(),
             Act::ToggleZones => !self.doc.device.zones.is_empty(),
             _ => true,
@@ -975,6 +974,10 @@ impl App {
     pub fn do_act(&mut self, ctx: &egui::Context, a: Act) {
         // On the start screen only application-level actions are available.
         if self.screen == Screen::Start && !matches!(a, Act::Quit | Act::About | Act::SetLang(_) | Act::SetScheme(_) | Act::RestoreBackup | Act::CheckUpdates) {
+            return;
+        }
+        if let Some(s) = a.std() {
+            s.run(self);
             return;
         }
         match a {
@@ -999,29 +1002,7 @@ impl App {
             Act::ExportGcode => self.export_gcode(),
             Act::ExportCam => self.export_cam(),
             Act::Quit => self.request_close(ctx),
-            Act::Undo => self.do_undo(),
-            Act::Redo => self.do_redo(),
-            Act::Copy => self.copy(),
-            Act::Paste => self.paste(),
-            Act::Duplicate => self.duplicate(),
-            Act::Delete => self.delete_selection(),
-            Act::SelectAll => self.select_all(),
-            Act::Align(m) => self.align(m),
-            Act::CenterOnBed => self.center_on_bed(),
-            Act::CenterEachOther => self.center_on_each_other(),
-            Act::FlipH => self.flip(true),
-            Act::FlipV => self.flip(false),
-            Act::RotCw => self.rotate_sel(90.0),
-            Act::RotCcw => self.rotate_sel(-90.0),
-            Act::ToFront => self.reorder(true),
-            Act::ToBack => self.reorder(false),
-            Act::ToPath => self.to_path(),
             Act::ToCurves => self.to_curves(),
-            Act::EditNodes => self.start_node_edit(),
-            Act::Group => self.group_selection(),
-            Act::Lock => self.lock_selection(true),
-            Act::Unlock => self.lock_selection(false),
-            Act::Ungroup => self.ungroup_selection(),
             Act::ImportAi => self.import_ai(),
             Act::OnlineClipart => {
                 self.side_tab = SideTab::Clipart;
@@ -1064,27 +1045,8 @@ impl App {
                 }
             }
             Act::GridArray => self.show_array = true,
-            Act::ToggleGrid => self.ed.show_grid = !self.ed.show_grid,
             Act::ToggleZones => self.zones_visible = !self.zones_visible,
-            Act::ToggleSnap => self.ed.snap = !self.ed.snap,
-            Act::ToggleSnapObjects => self.ed.snap_objects = !self.ed.snap_objects,
             Act::TogglePreview => self.preview_on = !self.preview_on,
-            Act::FitBed => {
-                self.ed.view.need_fit = true;
-                self.ed.view.auto_fit = true;
-            }
-            Act::FitAll => {
-                self.ed.view.auto_fit = false;
-                self.ed.fit_all_req = true;
-            }
-            Act::ZoomIn => self.zoom_about_centre(1.5),
-            Act::ZoomOut => self.zoom_about_centre(1.0 / 1.5),
-            Act::ToggleAutoFit => {
-                self.ed.view.auto_fit = !self.ed.view.auto_fit;
-                if self.ed.view.auto_fit {
-                    self.ed.view.need_fit = true;
-                }
-            }
             Act::DeviceSettings => self.show_device = true,
             Act::SwitchDevice => {
                 self.start_sel = self.active;
@@ -1094,6 +1056,8 @@ impl App {
             Act::Frame => self.frame(),
             Act::StartJob => self.send_job(),
             Act::About => self.show_about = true,
+            // The standard editing commands were carried out above.
+            Act::Undo | Act::Redo | Act::Copy | Act::Paste | Act::Duplicate | Act::Delete | Act::SelectAll | Act::Align(_) | Act::CenterOnBed | Act::CenterEachOther | Act::FlipH | Act::FlipV | Act::RotCw | Act::RotCcw | Act::ToFront | Act::ToBack | Act::ToPath | Act::EditNodes | Act::Group | Act::Ungroup | Act::Lock | Act::Unlock | Act::ToggleGrid | Act::ToggleSnap | Act::ToggleSnapObjects | Act::FitBed | Act::FitAll | Act::ZoomIn | Act::ZoomOut | Act::ToggleAutoFit => {}
             Act::SetLang(l) => {
                 self.lang = l;
                 i18n::set_lang(l);
@@ -1101,71 +1065,6 @@ impl App {
             Act::SetScheme(sc) => {
                 self.scheme = sc;
                 theme::apply(ctx, sc);
-            }
-        }
-    }
-
-    fn menu_entries(&mut self, ui: &mut egui::Ui, entries: &[Entry], pending: &mut Option<Act>) {
-        for e in entries {
-            match e {
-                Entry::Sep => {
-                    ui.separator();
-                }
-                Entry::Sub(title, children) => {
-                    let ink = theme::text();
-                    ui.menu_button((crate::icons::slot(crate::icons::submenu_icon(title), ink), tr(title)), |ui| self.menu_entries(ui, children, pending));
-                }
-                Entry::Recent => {
-                    let ink = theme::text();
-                    let recent = self.recent.clone();
-                    ui.menu_button((crate::icons::slot(Some("history"), ink), tr("Open recent")), |ui| {
-                        if recent.is_empty() {
-                            ui.add_enabled(false, egui::Button::new(tr("(empty)")));
-                        }
-                        for (i, p) in recent.iter().enumerate() {
-                            let name = p.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_else(|| p.display().to_string());
-                            let btn = egui::Button::image_and_text(crate::icons::slot(Some("file"), ink), name);
-                            if ui.add(btn).on_hover_text(p.display().to_string()).clicked() {
-                                *pending = Some(Act::OpenRecent(i as u8));
-                                ui.close();
-                            }
-                        }
-                        if !recent.is_empty() {
-                            ui.separator();
-                            let btn = egui::Button::image_and_text(crate::icons::slot(Some("trash"), ink), tr("Clear list"));
-                            if ui.add(btn).clicked() {
-                                *pending = Some(Act::ClearRecent);
-                                ui.close();
-                            }
-                        }
-                    });
-                }
-                Entry::Item(act, label, accel) => {
-                    let enabled = self.act_enabled(*act);
-                    let ink = if enabled { theme::text() } else { theme::text().gamma_multiply(0.4) };
-                    // A tick marks switched-on options; other entries show their own icon.
-                    let (icon, ink) = match self.act_checked(*act) {
-                        Some(true) => (Some("check"), ink),
-                        // Switched off: the entry's own icon, faded, so every entry has one.
-                        Some(false) => {
-                            let own = match act {
-                                Act::SetLang(_) => Some("languages"),
-                                Act::SetScheme(_) => Some("palette"),
-                                _ => crate::icons::act_icon(*act),
-                            };
-                            (own, ink.gamma_multiply(0.45))
-                        }
-                        None => (crate::icons::act_icon(*act), ink),
-                    };
-                    let mut btn = egui::Button::image_and_text(crate::icons::slot(icon, ink), tr(label));
-                    if let Some((_, shown)) = accel {
-                        btn = btn.shortcut_text(*shown);
-                    }
-                    if ui.add_enabled(enabled, btn).clicked() {
-                        *pending = Some(*act);
-                        ui.close();
-                    }
-                }
             }
         }
     }
@@ -1178,24 +1077,6 @@ impl App {
         }
         nm.sync(|a| self.act_checked(a), |a| self.act_enabled(a), &self.recent);
         self.native_menu = Some(nm);
-    }
-
-    /// In-window menu bar (Windows / Linux, and macOS when no native menu is installed).
-    fn menu_bar(&mut self, ui: &mut egui::Ui) {
-        let mut pending = None;
-        egui::MenuBar::new().ui(ui, |ui| {
-            for (title, entries) in menus() {
-                let icon = crate::icons::menu_title_icon(title).and_then(|n| crate::icons::image(n, 15.0, theme::text()));
-                match icon {
-                    Some(img) => ui.menu_button((img, tr(title)), |ui| self.menu_entries(ui, &entries, &mut pending)),
-                    None => ui.menu_button(tr(title), |ui| self.menu_entries(ui, &entries, &mut pending)),
-                };
-            }
-        });
-        if let Some(a) = pending {
-            let ctx = ui.ctx().clone();
-            self.do_act(&ctx, a);
-        }
     }
 
     fn control_bar(&mut self, ui: &mut egui::Ui) {
@@ -1713,6 +1594,18 @@ impl base_ui::editor::EditorHost for App {
     fn touch(&mut self) {
         App::touch(self)
     }
+    fn undo(&mut self) {
+        self.do_undo()
+    }
+    fn redo(&mut self) {
+        self.do_redo()
+    }
+    fn can_undo(&self) -> bool {
+        !self.undo.is_empty()
+    }
+    fn can_redo(&self) -> bool {
+        !self.redo.is_empty()
+    }
     fn drop_checkpoint(&mut self) {
         self.undo.pop();
     }
@@ -1776,6 +1669,34 @@ impl base_ui::editor::EditorHost for App {
     }
     fn said(&self) -> &str {
         &self.status
+    }
+}
+
+impl base_ui::menu::MenuHost for App {
+    type Act = Act;
+    fn menus(&self) -> base_ui::menu::Menus<Act> {
+        menus()
+    }
+    fn act_enabled(&self, a: Act) -> bool {
+        App::act_enabled(self, a)
+    }
+    fn act_checked(&self, a: Act) -> Option<bool> {
+        App::act_checked(self, a)
+    }
+    fn act_icon(&self, a: Act) -> Option<&'static str> {
+        crate::icons::act_icon(a)
+    }
+    fn recent_files(&self) -> Vec<PathBuf> {
+        self.recent.clone()
+    }
+    fn open_recent_act(&self, i: usize) -> Option<Act> {
+        Some(Act::OpenRecent(i as u8))
+    }
+    fn clear_recent_act(&self) -> Option<Act> {
+        Some(Act::ClearRecent)
+    }
+    fn run_act(&mut self, ctx: &egui::Context, a: Act) {
+        self.do_act(ctx, a)
     }
 }
 
@@ -1927,7 +1848,7 @@ impl App {
         #[cfg(not(target_os = "macos"))]
         let in_window_menu = true;
         if in_window_menu {
-            egui::Panel::top("menu").frame(chrome).show(ui, |ui| self.menu_bar(ui));
+            egui::Panel::top("menu").frame(chrome).show(ui, |ui| base_ui::menu::menu_bar(self, ui));
         }
         egui::Panel::top("controls").frame(chrome).exact_size(36.0).show(ui, |ui| self.control_bar(ui));
         egui::Panel::bottom("status").frame(chrome).exact_size(26.0).show(ui, |ui| self.status_bar(ui));
