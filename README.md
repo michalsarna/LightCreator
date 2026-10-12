@@ -89,7 +89,7 @@ About window and the Linux desktop entry.
 
 The part that does not need a laser (geometry, Bézier contours, boolean ops and offsets, text outlines, the scene of
 shapes, SVG / PDF reading, clipart, units, and the colour schemes, fonts, translation layer and Markdown viewer of the
-interface, and the editor of the work area with its tools, node editing and selection commands) lives in [baseCreator](https://github.com/michalsarna/baseCreator), shared with
+interface, the menus, icons and dialogs that need no laser, and the editor of the work area with its tools, node editing and selection commands) lives in [baseCreator](https://github.com/michalsarna/baseCreator), shared with
 [MillCreator](https://github.com/michalsarna/MillCreator). LightCreator pins a tag of it (`base-core` and `base-ui`
 in `crates/*/Cargo.toml`); Cargo fetches it by itself. `lc-core` re-exports those modules, so `lc_core::geom` and
 the like still work.
