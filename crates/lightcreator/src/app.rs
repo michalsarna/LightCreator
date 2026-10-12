@@ -1221,24 +1221,9 @@ impl App {
     }
 
     fn tool_bar(&mut self, ui: &mut egui::Ui) {
-        ui.add_space(6.0);
-        let out = egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| ui.vertical_centered(|ui| {
-            // Selecting and node editing.
-            for (t, tip, _) in Tool::ALL.into_iter().filter(|t| t.0.is_edit()) {
-                self.tool_button(ui, t, tip);
-            }
-            // Tools that insert new objects.
-            ui.add_space(4.0);
-            ui.separator();
-            ui.add_space(4.0);
-            for (t, tip, _) in Tool::ALL.into_iter().filter(|t| !t.0.is_edit() && !t.0.is_nav()) {
-                self.tool_button(ui, t, tip);
-            }
-            // Shape operations on the selected objects.
-            ui.add_space(4.0);
-            ui.separator();
-            ui.add_space(4.0);
-            let multi = self.ed.sel.len() >= 2;
+        // Shape operations on the selected objects sit between the tools that insert and those that navigate.
+        let mut shape_ops = |app: &mut App, ui: &mut egui::Ui| {
+            let multi = app.ed.sel.len() >= 2;
             let mut op = None;
             for (a, icon, tip) in [
                 (Act::BoolUnion, "squares-unite", "Union"),
@@ -1252,112 +1237,15 @@ impl App {
             }
             if let Some(a) = op {
                 let ctx = ui.ctx().clone();
-                self.do_act(&ctx, a);
+                app.do_act(&ctx, a);
             }
-            // View navigation, apart from the rest.
-            ui.add_space(4.0);
-            ui.separator();
-            ui.add_space(4.0);
-            for (t, tip, _) in Tool::ALL.into_iter().filter(|t| t.0.is_nav()) {
-                self.tool_button(ui, t, tip);
-            }
-            let ink = theme::text();
-            let mut act = None;
-            for (a, icon, tip) in [(Act::FitBed, "scan", "Fit work area (Ctrl+0)"), (Act::FitAll, "expand", "Fit all objects (Ctrl+9)")] {
-                let (rect, resp) = ui.allocate_exact_size(egui::vec2(36.0, 36.0), egui::Sense::click());
-                if resp.hovered() {
-                    ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
-                }
-                crate::icons::paint(ui, rect.shrink(7.0), icon, ink);
-                if resp.on_hover_text(tr(tip)).clicked() {
-                    act = Some(a);
-                }
-                ui.add_space(2.0);
-            }
-            if let Some(a) = act {
-                let ctx = ui.ctx().clone();
-                self.do_act(&ctx, a);
-            }
-        }));
-        scroll_hints(ui, &out);
+        };
+        base_ui::editor::tool_palette(self, ui, Some(&mut shape_ops));
     }
 
     /// Narrow strip between the work area and the side panel: align, turn, mirror and group the selection.
     fn arrange_bar(&mut self, ui: &mut egui::Ui) {
-        let has_sel = !self.ed.sel.is_empty();
-        let any_unlocked = self.ed.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| !s.locked));
-        let any_locked = self.ed.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.locked));
-        let grouped = self.ed.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.group.is_some()));
-        let multi = self.ed.sel.len() >= 2;
-        let _ = has_sel;
-        let sections: [Vec<(Act, bool, &str)>; 4] = [
-            vec![
-                (Act::Align(0), any_unlocked, "Align left"),
-                (Act::Align(1), any_unlocked, "Align centre (H)"),
-                (Act::Align(2), any_unlocked, "Align right"),
-                (Act::Align(3), any_unlocked, "Align top"),
-                (Act::Align(4), any_unlocked, "Align centre (V)"),
-                (Act::Align(5), any_unlocked, "Align bottom"),
-                (Act::CenterOnBed, any_unlocked, "Centre on bed"),
-                (Act::CenterEachOther, multi, "Centre on each other"),
-            ],
-            vec![
-                (Act::RotCcw, any_unlocked, "Rotate 90° CCW"),
-                (Act::RotCw, any_unlocked, "Rotate 90° CW"),
-                (Act::FlipH, any_unlocked, "Flip horizontal"),
-                (Act::FlipV, any_unlocked, "Flip vertical"),
-            ],
-            vec![
-                (Act::Group, multi, "Group"),
-                (Act::Ungroup, grouped, "Ungroup"),
-                (Act::Lock, any_unlocked, "Lock"),
-                (Act::Unlock, any_locked, "Unlock"),
-            ],
-            vec![(Act::ToFront, any_unlocked, "Bring to front"), (Act::ToBack, any_unlocked, "Send to back")],
-        ];
-        let mut chosen = None;
-        let out = egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
-            ui.add_space(6.0);
-            for (i, section) in sections.iter().enumerate() {
-                if i > 0 {
-                    ui.add_space(2.0);
-                    ui.separator();
-                    ui.add_space(2.0);
-                }
-                ui.vertical_centered(|ui| {
-                    ui.spacing_mut().item_spacing = egui::vec2(2.0, 2.0);
-                    for (act, on, tip) in section {
-                        let icon = crate::icons::act_icon(*act).unwrap_or("shapes");
-                        if icon_button(ui, icon, &tr(tip), *on, 28.0) {
-                            chosen = Some(*act);
-                        }
-                    }
-                });
-            }
-        });
-        scroll_hints(ui, &out);
-        if let Some(a) = chosen {
-            let ctx = ui.ctx().clone();
-            self.do_act(&ctx, a);
-        }
-    }
-
-    fn tool_button(&mut self, ui: &mut egui::Ui, t: Tool, tip: &'static str) {
-        let (rect, resp) = ui.allocate_exact_size(egui::vec2(36.0, 36.0), egui::Sense::click());
-        let on = self.ed.tool == t;
-        if on {
-            ui.painter().rect_filled(rect, 6.0, theme::accent());
-        } else if resp.hovered() {
-            ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
-        }
-        crate::icons::paint(ui, rect.shrink(7.0), crate::icons::tool_icon(t), if on { Color32::WHITE } else { theme::text() });
-        if resp.on_hover_text(tr(tip)).clicked() {
-            self.ed.tool = t;
-            self.ed.space_prev = None;
-            self.ed.pen_pts.clear();
-            self.ed.show_shape_popup = matches!(t, Tool::Polygon | Tool::Spiral);
-        }
-        ui.add_space(2.0);
+        base_ui::editor::arrange_bar(self, ui);
     }
 
     fn swatches(&mut self, ui: &mut egui::Ui) {
@@ -1720,65 +1608,7 @@ impl eframe::App for App {
     }
 }
 
-/// Double chevrons at the top and / or bottom edge of a scrolled icon strip when more icons lie beyond it.
-fn scroll_hints<R>(ui: &egui::Ui, out: &egui::scroll_area::ScrollAreaOutput<R>) {
-    let view = out.inner_rect;
-    let (up, down) = (out.state.offset.y > 1.0, out.state.offset.y + view.height() < out.content_size.y - 1.0);
-    for (show, name, top) in [(up, "chevrons-up", true), (down, "chevrons-down", false)] {
-        if !show {
-            continue;
-        }
-        let h = 16.0;
-        let rect = if top {
-            egui::Rect::from_min_size(view.left_top(), egui::vec2(view.width(), h))
-        } else {
-            egui::Rect::from_min_size(egui::pos2(view.left(), view.bottom() - h), egui::vec2(view.width(), h))
-        };
-        let painter = ui.painter().with_clip_rect(view);
-        painter.rect_filled(rect, 0.0, theme::panel().gamma_multiply(0.92));
-        crate::icons::paint(ui, egui::Rect::from_center_size(rect.center(), egui::vec2(h - 2.0, h - 2.0)), name, theme::accent());
-    }
-}
-
-/// Text button for a window that can be open or closed: light blue while it is open.
-pub fn window_toggle(ui: &mut egui::Ui, text: &str, tip: &str, open: bool, enabled: bool) -> bool {
-    let btn = if open {
-        egui::Button::new(RichText::new(text).color(Color32::WHITE)).fill(Color32::from_rgb(0x3f, 0xa9, 0xf5))
-    } else {
-        egui::Button::new(text)
-    };
-    ui.add_enabled(enabled, btn).on_hover_text(tip).clicked()
-}
-
-/// An icon button that stays highlighted while `on`.
-pub fn toggle_icon(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool) -> bool {
-    let (rect, resp) = ui.allocate_exact_size(egui::vec2(28.0, 28.0), egui::Sense::click());
-    if on {
-        ui.painter().rect_filled(rect, 6.0, theme::accent().gamma_multiply(0.3));
-    } else if resp.hovered() {
-        ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
-    }
-    crate::icons::paint(ui, rect.shrink(5.6), icon, if on { theme::accent() } else { theme::text() });
-    resp.on_hover_text(tip).clicked()
-}
-
-/// A square icon-only button with a tooltip; greyed out and inert when `on` is false.
-pub fn icon_button(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool, size: f32) -> bool {
-    icon_button_ink(ui, icon, tip, on, size, theme::text())
-}
-
-pub fn icon_button_ink(ui: &mut egui::Ui, icon: &str, tip: &str, on: bool, size: f32, color: Color32) -> bool {
-    let sense = if on { egui::Sense::click() } else { egui::Sense::hover() };
-    let (rect, resp) = ui.allocate_exact_size(egui::vec2(size, size), sense);
-    if on && resp.hovered() {
-        ui.painter().rect_filled(rect, 6.0, theme::panel_dark());
-    }
-    let ink = if on { color } else { color.gamma_multiply(0.35) };
-    crate::icons::paint(ui, rect.shrink(size * 0.2), icon, ink);
-    let resp = resp.on_hover_text(tip);
-    ui.add_space(2.0);
-    on && resp.clicked()
-}
+pub use base_ui::widgets::{icon_button, icon_button_ink, toggle_icon, window_toggle};
 
 impl App {
     /// Everything the program remembers between runs, as the key / value strings kept in `app.ron`.
