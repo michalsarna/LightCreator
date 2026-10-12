@@ -215,6 +215,10 @@ pub struct App {
     /// The add-device window read the controller.
     pub add_dev_read: bool,
     pub add_dev_read_done: bool,
+    /// The last read in the add-device window failed (no connection, no answer): the button shows it.
+    pub add_dev_read_err: bool,
+    /// A read was running in the previous frame, to see how it ended.
+    pub add_dev_was_reading: bool,
     /// The user left the first-run setup: do not start it again this session.
     pub add_dev_skipped: bool,
     /// The focus beam is on.
@@ -383,6 +387,8 @@ impl App {
             add_dev: None,
             add_dev_read: false,
             add_dev_read_done: false,
+            add_dev_read_err: false,
+            add_dev_was_reading: false,
             add_dev_skipped: false,
             focus_on: false,
             macros_ok: false,
@@ -1641,6 +1647,8 @@ impl App {
         #[cfg(target_os = "macos")]
         self.window_edge_drag(&ctx);
         if self.screen == Screen::Start {
+            // The first-run read from the device runs here too: it sends its request and gives up after a timeout.
+            self.read_tick(&ctx);
             self.start_screen(ui);
             self.dialogs(&ctx);
             return;

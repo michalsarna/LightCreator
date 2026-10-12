@@ -1075,3 +1075,5 @@
 1074|Home (nulpunt van de machine)
 1075|Huidige positie van de laser
 1076|Home: het ontwerp wordt gebrand waar het op het werkgebied ligt, geteld vanaf het nulpunt van de machine. Huidige positie: de linkerbovenhoek van het ontwerp komt waar de laserkop nu staat (opdrachten, kaders en droogloop), en de opdracht eindigt daar. Geëxporteerde bestanden tellen altijd vanaf het nulpunt van de machine.
+1077|Gelezen
+1078|Fout bij lezen

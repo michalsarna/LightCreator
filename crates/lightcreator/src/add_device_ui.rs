@@ -106,6 +106,7 @@ impl App {
         self.start_sel = self.profiles.len() - 1;
         self.add_dev = None;
         self.add_dev_read = false;
+        self.add_dev_read_err = false;
         self.status = tr("The device was added. Press Continue to start.").to_string();
     }
 
@@ -124,7 +125,23 @@ impl App {
         let mut by_hand = false;
         let mut read = false;
         let reading = self.read_cfg.is_some();
+        // How the last read ended: it is over when the read state is gone, and it worked when it filled the draft.
+        if self.add_dev_was_reading && !reading {
+            if self.add_dev_read_done {
+                self.add_dev_read = true;
+                self.add_dev_read_err = false;
+            } else {
+                self.add_dev_read = false;
+                self.add_dev_read_err = true;
+            }
+            self.add_dev_read_done = false;
+        }
+        if reading {
+            self.add_dev_read_err = false;
+        }
+        self.add_dev_was_reading = reading;
         let was_read = self.add_dev_read;
+        let read_err = self.add_dev_read_err;
         let mut open = true;
         let mut close = false;
         let mut test_cam = None;
@@ -173,9 +190,17 @@ impl App {
                         ui.end_row();
                     }
                     ui.label("");
-                    let label = if reading { tr("Reading…") } else { tr("Read from device") };
-                    let blue = egui::Button::new(RichText::new(label).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2a, 0x6f, 0xd6));
-                    if ui.add_enabled(!reading && d.has_target() && d.controller.settings_request().is_some(), blue).on_hover_text(tr("If the machine is connected now, its work area and speed can be read from the controller.")).clicked() {
+                    let (label, fill) = if reading {
+                        (tr("Reading…"), Color32::from_rgb(0x2a, 0x6f, 0xd6))
+                    } else if was_read {
+                        (tr("Read OK"), Color32::from_rgb(0x2a, 0x6f, 0xd6))
+                    } else if read_err {
+                        (tr("Error reading"), Color32::from_rgb(0xc0, 0x30, 0x30))
+                    } else {
+                        (tr("Read from device"), Color32::from_rgb(0x2a, 0x6f, 0xd6))
+                    };
+                    let blue = egui::Button::new(RichText::new(label).color(Color32::WHITE).strong()).fill(fill);
+                    if ui.add_enabled(!reading && !was_read && d.has_target() && d.controller.settings_request().is_some(), blue).on_hover_text(tr("If the machine is connected now, its work area and speed can be read from the controller.")).clicked() {
                         read = true;
                     }
                     ui.end_row();
@@ -254,11 +279,10 @@ impl App {
         if read {
             let draft = cfg.draft.clone();
             self.add_dev_read = false;
-            self.start_read(&draft);
-        }
-        if self.add_dev_read_done {
-            self.add_dev_read = true;
+            self.add_dev_read_err = false;
+            self.add_dev_read_err = false;
             self.add_dev_read_done = false;
+            self.start_read(&draft);
         }
         if finish {
             self.finish_add_device(cfg.draft);
@@ -273,6 +297,7 @@ impl App {
         if close || !open {
             self.add_dev = None;
             self.add_dev_read = false;
+            self.add_dev_read_err = false;
             if self.profiles.is_empty() {
                 // Without any profile the program cannot start: cancelling the first setup quits.
                 self.cfg = None;
@@ -369,5 +394,40 @@ mod tests {
         });
         out.textures_delta.clear();
         assert_eq!(d.cameras.len(), 1);
+    }
+
+    /// One frame of the window, then what the button says about the last read.
+    fn frame(a: &mut App, ctx: &egui::Context) {
+        let mut out = ctx.run_ui(egui::RawInput::default(), |_| {});
+        a.add_device_window(ctx);
+        out.textures_delta.clear();
+    }
+
+    #[test]
+    fn the_read_button_shows_how_the_read_ended() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.profiles.clear();
+        a.start_add_device();
+        a.connected = true;
+        let draft = a.cfg.as_ref().unwrap().draft.clone();
+        // A read that gets no answer is an error, and a new read clears it.
+        a.start_read(&draft);
+        frame(&mut a, &ctx);
+        assert!(a.read_cfg.is_some() && !a.add_dev_read_err);
+        a.finish_read();
+        frame(&mut a, &ctx);
+        assert!(a.add_dev_read_err && !a.add_dev_read);
+        // A read that gives settings is OK, and they land in the draft.
+        a.start_read(&draft);
+        a.read_tick(&ctx);
+        frame(&mut a, &ctx);
+        for l in ["$30=255", "$130=300", "$131=200", "ok"] {
+            a.read_feed(l);
+        }
+        frame(&mut a, &ctx);
+        assert!(a.add_dev_read && !a.add_dev_read_err);
+        let d = &a.cfg.as_ref().unwrap().draft;
+        assert_eq!((d.area.bed_w, d.area.bed_h, d.heads[0].s_max), (300.0, 200.0, 255.0));
     }
 }

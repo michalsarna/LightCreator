@@ -1075,3 +1075,5 @@
 1074|Home (żero tal-magna)
 1075|Pożizzjoni preżenti tal-lejżer
 1076|Home: id-disinn jinħaraq fejn jinsab fiż-żona tax-xogħol, jgħodd miż-żero tal-magna. Pożizzjoni preżenti: l-irkien ta' fuq xellug tad-disinn jitqiegħed fejn hu r-ras tal-lejżer issa (xogħlijiet, oqfsa u eżekuzzjoni niexfa), u x-xogħol jintemm hemm. Fajls esportati dejjem jgħoddu miż-żero tal-magna.
+1077|Qari OK
+1078|Żball fil-qari

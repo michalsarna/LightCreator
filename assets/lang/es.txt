@@ -1075,3 +1075,5 @@
 1074|Home (cero de la máquina)
 1075|Posición actual del láser
 1076|Home: el diseño se graba donde está en el área de trabajo, contando desde el cero de la máquina. Posición actual: la esquina superior izquierda del diseño se pone donde está ahora el cabezal láser (trabajos, contornos y prueba en seco) y el trabajo termina allí. Los archivos exportados siempre cuentan desde el cero de la máquina.
+1077|Lectura OK
+1078|Error de lectura

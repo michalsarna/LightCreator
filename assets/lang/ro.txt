@@ -1075,3 +1075,5 @@
 1074|Home (zero mașină)
 1075|Poziția curentă a laserului
 1076|Home: desenul este ars acolo unde se află pe zona de lucru, numărând de la zeroul mașinii. Poziția curentă: colțul stânga-sus al desenului este pus acolo unde se află acum capul laser (lucrări, cadre și rulare în gol), iar lucrarea se termină acolo. Fișierele exportate numără întotdeauna de la zeroul mașinii.
+1077|Citit OK
+1078|Eroare la citire

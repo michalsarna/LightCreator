@@ -1075,3 +1075,5 @@
 1074	Home (machine zero)
 1075	Current position of the laser
 1076	Home: the design is burned where it lies on the work area, counted from the machine's zero. Current position: the top-left corner of the design is put where the laser head stands now (jobs, frames and the dry run), and the job ends there. Exported files always count from the machine's zero.
+1077	Read OK
+1078	Error reading

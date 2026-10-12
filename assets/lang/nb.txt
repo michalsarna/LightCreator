@@ -1075,3 +1075,5 @@
 1074|Home (maskinens nullpunkt)
 1075|Laserens nåværende posisjon
 1076|Home: designet brennes der det ligger på arbeidsområdet, regnet fra maskinens nullpunkt. Nåværende posisjon: designets øvre venstre hjørne plasseres der laserhodet står nå (jobber, rammer og tørrkjøring), og jobben slutter der. Eksporterte filer regnes alltid fra maskinens nullpunkt.
+1077|Lest OK
+1078|Feil ved lesing

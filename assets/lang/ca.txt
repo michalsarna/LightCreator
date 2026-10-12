@@ -1075,3 +1075,5 @@
 1074|Home (zero de la màquina)
 1075|Posició actual del làser
 1076|Home: el disseny es grava allà on és a l'àrea de treball, comptant des del zero de la màquina. Posició actual: la cantonada superior esquerra del disseny es posa on és ara el cap làser (feines, contorns i prova en buit) i la feina acaba allà. Els fitxers exportats sempre compten des del zero de la màquina.
+1077|Llegit
+1078|Error de lectura
