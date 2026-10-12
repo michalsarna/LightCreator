@@ -1069,3 +1069,5 @@
 1068|Tilgangssetning
 1069|Bruk denne tilgangssetningen fra nå av
 1070|Tilgangssetningen kan ikke være tom eller ha kontrolltegn.
+1071|Laserposisjon direkte
+1072|Viser posisjonen til laserhodet som en prikk på arbeidsområdet. Slått på mens maskinen står stille, homer den først; under en jobb eller en ramme viser den bare posisjonen, oppdatert hvert sekund. Krever en tilkoblet enhet.

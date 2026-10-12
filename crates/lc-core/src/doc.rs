@@ -1108,6 +1108,8 @@ pub struct Device {
     pub maintenance: Maintenance,
     /// The user's own notes about the machine, in Markdown.
     pub notes: String,
+    /// Show where the laser head is, as a dot on the work area, while the device is connected.
+    pub live_position: bool,
 }
 
 /// A counter of working time that can be reset, with an optional limit after which it asks for attention.
@@ -1331,6 +1333,8 @@ struct DeviceWire {
     maintenance: Maintenance,
     #[serde(default)]
     notes: String,
+    #[serde(default)]
+    live_position: bool,
     // Flat fields of profiles saved before the groups existed.
     origin: Option<Origin>,
     bed_w: Option<f64>,
@@ -1397,6 +1401,7 @@ impl From<DeviceWire> for Device {
             template_notes: w.template_notes,
             maintenance: w.maintenance,
             notes: w.notes,
+            live_position: w.live_position,
         };
         dev.ensure_materials();
         dev
@@ -1625,6 +1630,7 @@ impl Default for Device {
             template_notes: String::new(),
             maintenance: Maintenance::default(),
             notes: String::new(),
+            live_position: false,
         }
     }
 }

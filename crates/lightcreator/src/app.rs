@@ -319,6 +319,8 @@ pub struct App {
     pub job_last_secs: f64,
     /// The counters (by index) that have been announced as due in this session.
     pub maintenance_notified: std::collections::HashSet<usize>,
+    /// The laser position that is shown on the work area (live position) and when it was taken.
+    pub live_shown: Option<(std::time::Instant, (f64, f64))>,
     /// For this session only: aim with the pointer dot (the frame and the dry run move back by its offset).
     pub pointer_align: bool,
     pub connected: bool,
@@ -504,6 +506,7 @@ impl App {
             job_est: 0.0,
             job_last_secs: 0.0,
             maintenance_notified: Default::default(),
+            live_shown: None,
             pointer_align: false,
             connected: false,
             machine: (tr("Disconnected").into(), 0.0, 0.0),
@@ -1027,6 +1030,7 @@ impl App {
                     }
                     self.read_on_connected(c);
                     if !c {
+                        self.live_shown = None;
                         self.machine.0 = tr("Disconnected").into();
                         self.fw_warn = None;
                         self.stall = None;
@@ -2410,5 +2414,84 @@ mod shape_popup_tests {
     fn spiral_tool_is_in_the_insert_group_with_its_own_key() {
         assert!(Tool::ALL.iter().any(|t| t.0 == Tool::Spiral && t.2 == egui::Key::I));
         assert!(!Tool::Spiral.is_edit() && !Tool::Spiral.is_nav());
+    }
+}
+
+#[cfg(test)]
+mod live_position_tests {
+    use super::*;
+
+    fn app() -> App {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.connected = true;
+        a.machine = ("Idle".into(), 10.0, 20.0);
+        a
+    }
+
+    #[test]
+    fn it_is_off_by_default_and_shows_nothing() {
+        let mut a = app();
+        assert!(!a.doc.device.live_position);
+        assert_eq!(a.live_point(), None);
+    }
+
+    #[test]
+    fn it_shows_the_head_in_design_coordinates_only_with_a_link() {
+        let mut a = app();
+        a.doc.device.live_position = true;
+        let expected = a.doc.device.from_machine(10.0, 20.0);
+        assert_eq!(a.live_point(), Some(expected));
+        a.connected = false;
+        assert_eq!(a.live_point(), None);
+        a.connected = true;
+        a.machine.1 = f64::NAN;
+        assert_eq!(a.live_point(), None, "no position known yet");
+    }
+
+    #[test]
+    fn homing_only_when_it_is_connected_and_the_machine_stands_still() {
+        let mut a = app();
+        assert!(a.live_position_homes());
+        a.machine.0 = "Run".into();
+        assert!(!a.live_position_homes(), "frame or jog under way");
+        a.machine.0 = "Idle".into();
+        a.progress = (1, 10);
+        assert!(!a.live_position_homes(), "job running");
+        a.progress = (0, 0);
+        a.connected = false;
+        assert!(!a.live_position_homes(), "no link");
+        a.set_live_position(true);
+        assert!(a.doc.device.live_position);
+        assert!(a.live_shown.is_none());
+    }
+
+    #[test]
+    fn while_the_machine_works_the_dot_moves_once_a_second() {
+        let mut a = app();
+        a.doc.device.live_position = true;
+        a.machine.0 = "Run".into();
+        let first = a.live_point().unwrap();
+        a.machine.1 = 50.0;
+        assert_eq!(a.live_point(), Some(first), "less than a second later");
+        a.live_shown = a.live_shown.map(|(t, p)| (t - std::time::Duration::from_millis(1100), p));
+        assert_eq!(a.live_point(), Some(a.doc.device.from_machine(50.0, 20.0)));
+        // Standing still, it follows at once.
+        a.machine.0 = "Idle".into();
+        a.machine.1 = 60.0;
+        assert_eq!(a.live_point(), Some(a.doc.device.from_machine(60.0, 20.0)));
+    }
+
+    #[test]
+    fn the_switch_is_saved_with_the_device_and_old_profiles_load_with_it_off() {
+        let mut d = lc_core::Device::default();
+        assert!(!d.live_position);
+        d.live_position = true;
+        let back: lc_core::Device = serde_json::from_str(&serde_json::to_string(&d).unwrap()).unwrap();
+        assert!(back.live_position);
+        let mut v: serde_json::Value = serde_json::to_value(&d).unwrap();
+        v.as_object_mut().unwrap().remove("live_position");
+        let old: lc_core::Device = serde_json::from_value(v).unwrap();
+        assert!(!old.live_position);
     }
 }

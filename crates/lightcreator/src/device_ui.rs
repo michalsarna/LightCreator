@@ -1258,6 +1258,44 @@ impl App {
         Some(dev.controller.jog_z(dz, dev.jog_feed))
     }
 
+    /// The machine is moving (a job, a frame, a jog, homing): its position changes all the time.
+    pub fn machine_busy(&self) -> bool {
+        self.job_running() || matches!(self.machine.0.split(':').next().unwrap_or(""), "Run" | "Hold" | "Jog" | "Home")
+    }
+
+    /// Switching the live position on homes the machine only when it is connected and stands still.
+    pub fn live_position_homes(&self) -> bool {
+        self.connected && !self.machine_busy()
+    }
+
+    /// Switch the live laser position on or off. Switching it on while the machine stands still homes it, so that
+    /// the position is known; while it works or frames, it only starts to show the position.
+    pub fn set_live_position(&mut self, on: bool) {
+        self.doc.device.live_position = on;
+        self.live_shown = None;
+        if on && self.live_position_homes() {
+            let ctrl = self.doc.device.controller;
+            self.run_action(ctrl.home());
+        }
+    }
+
+    /// Where the laser head is, in design coordinates, when the live position is on. While the machine moves the
+    /// shown position is refreshed once a second, otherwise at once.
+    pub fn live_point(&mut self) -> Option<lc_core::Pt> {
+        if !self.doc.device.live_position || !self.connected || !self.machine.1.is_finite() || !self.machine.2.is_finite() {
+            return None;
+        }
+        let now = std::time::Instant::now();
+        let due = match self.live_shown {
+            None => true,
+            Some((t, _)) => !self.machine_busy() || now.duration_since(t) >= std::time::Duration::from_secs(1),
+        };
+        if due {
+            self.live_shown = Some((now, (self.machine.1, self.machine.2)));
+        }
+        self.live_shown.map(|(_, (x, y))| self.doc.device.from_machine(x, y))
+    }
+
     /// A jog step in the design's directions (x right, y down), kept inside the allowed area. `None` when there is no room.
     pub(crate) fn jog_action(&mut self, dx: f64, dy: f64) -> Option<Action> {
         let dev = &self.doc.device;
@@ -1441,6 +1479,10 @@ impl App {
             ui.add(egui::DragValue::new(&mut self.doc.device.heads[0].frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
             ui.end_row();
         }));
+        let mut live = self.doc.device.live_position;
+        if ui.add_enabled(self.connected, egui::Checkbox::new(&mut live, tr("Live laser Position"))).on_hover_text(tr("Shows the position of the laser head as a dot on the work area. Switched on while the machine stands still, it homes first; during a job or a frame it only shows the position, refreshed every second. Needs a connected device.")).changed() {
+            self.set_live_position(live);
+        }
         ui.separator();
         ui.add_enabled_ui(self.connected, |ui| {
             let s = self.doc.device.jog_step;

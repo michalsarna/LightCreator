@@ -1069,3 +1069,5 @@
 1068|Abairt rochtana
 1069|Úsáid an abairt rochtana seo as seo amach
 1070|Ní féidir an abairt rochtana a bheith folamh ná carachtair rialaithe a bheith inti.
+1071|Suíomh an léasair beo
+1072|Taispeánann sé suíomh cheann an léasair mar phoncán ar an limistéar oibre. Nuair a chuirtear air é agus an meaisín ina sheasamh, déanann sé homing ar dtús; le linn jab nó frámaí ní thaispeánann sé ach an suíomh, athnuaite gach soicind. Teastaíonn gléas ceangailte.

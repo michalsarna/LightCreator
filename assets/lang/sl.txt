@@ -1069,3 +1069,5 @@
 1068|Dostopna fraza
 1069|Odslej uporabljaj to dostopno frazo
 1070|Dostopna fraza ne sme biti prazna ali vsebovati kontrolnih znakov.
+1071|Položaj laserja v živo
+1072|Prikaže položaj laserske glave kot piko na delovni površini. Če ga vklopite, ko stroj miruje, najprej opravi homing; med delom ali okvirjem samo prikazuje položaj, osvežen vsako sekundo. Potrebuje povezano napravo.

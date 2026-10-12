@@ -1069,3 +1069,5 @@
 1068|Hozzáférési mondat
 1069|Ezt a hozzáférési mondatot használja mostantól
 1070|A hozzáférési mondat nem lehet üres, és nem tartalmazhat vezérlőkaraktert.
+1071|A lézer élő pozíciója
+1072|A lézerfej helyét pontként mutatja a munkaterületen. Álló gépnél bekapcsolva először referenciafutást végez; munka vagy keret közben csak megmutatja a pozíciót, másodpercenként frissítve. Csatlakoztatott eszközt igényel.

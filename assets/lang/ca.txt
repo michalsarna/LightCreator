@@ -1069,3 +1069,5 @@
 1068|Frase d'accés
 1069|Utilitza aquesta frase d'accés a partir d'ara
 1070|La frase d'accés no pot estar buida ni tenir caràcters de control.
+1071|Posició del làser en directe
+1072|Mostra la posició del cap làser com un punt a l'àrea de treball. Activada amb la màquina aturada, primer fa l'homing; durant una feina o un contorn només mostra la posició, actualitzada cada segon. Necessita un dispositiu connectat.

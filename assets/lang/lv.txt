@@ -1069,3 +1069,5 @@
 1068|Piekļuves frāze
 1069|Turpmāk izmantot šo piekļuves frāzi
 1070|Piekļuves frāze nedrīkst būt tukša vai saturēt vadības rakstzīmes.
+1071|Lāzera pozīcija reāllaikā
+1072|Rāda lāzera galviņas pozīciju kā punktu darba laukā. Ieslēdzot, kamēr iekārta stāv, tā vispirms veic bāzēšanu; darba vai rāmja laikā tikai rāda pozīciju, atjaunojot to ik sekundi. Nepieciešama pievienota ierīce.

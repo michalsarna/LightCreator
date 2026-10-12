@@ -1069,3 +1069,5 @@
 1068|Adgangssætning
 1069|Brug denne adgangssætning fra nu af
 1070|Adgangssætningen må ikke være tom eller have styretegn.
+1071|Laserposition live
+1072|Viser laserhovedets position som en prik på arbejdsområdet. Slået til, mens maskinen står stille, homer den først; under et job eller en ramme viser den kun positionen, opdateret hvert sekund. Kræver en tilsluttet enhed.

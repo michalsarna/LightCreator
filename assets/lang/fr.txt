@@ -1069,3 +1069,5 @@
 1068|Phrase d'accès
 1069|Utiliser cette phrase d'accès à partir de maintenant
 1070|La phrase d'accès ne peut pas être vide ni contenir de caractères de contrôle.
+1071|Position du laser en direct
+1072|Affiche la position de la tête laser sous forme de point sur la zone de travail. Activée machine à l'arrêt, elle lance d'abord la prise d'origine ; pendant un travail ou un cadrage, elle n'affiche que la position, actualisée chaque seconde. Nécessite un appareil connecté.

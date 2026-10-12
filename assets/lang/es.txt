@@ -1069,3 +1069,5 @@
 1068|Frase de acceso
 1069|Usar esta frase de acceso a partir de ahora
 1070|La frase de acceso no puede estar vacía ni tener caracteres de control.
+1071|Posición del láser en vivo
+1072|Muestra la posición del cabezal láser como un punto en el área de trabajo. Si se activa con la máquina parada, primero hace el homing; durante un trabajo o un contorno solo muestra la posición, actualizada cada segundo. Necesita un dispositivo conectado.

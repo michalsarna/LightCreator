@@ -65,6 +65,7 @@ Okno startowe wybiera **profil urządzenia** i go zapamiętuje. Profil zawiera s
 ## Zakładka Device i pasek sterowania
 * **Start** jest aktywny, gdy laser jest podłączony (Ruida i Trocen eksportują plik), a podczas pracy zamienia się w czerwony **STOP**; **Frame** wymaga połączenia i jest wyłączony w trakcie pracy. Ikona **Home** między *Save G-code* a *Frame* robi to samo co Home w zakładce Device i jest wyłączona w tych samych przypadkach (brak połączenia albo trwa zadanie).
 * W zakładce Device osiem strzałek ręcznego przesuwania (cztery ukośne przesuwają X i Y naraz o jeden krok), Home, Unlock, Pause i Resume to duże przyciski-ikony jednej wielkości (pomarańczowy kwadrat anuluje ruch); STOP to szeroki czerwony przycisk pod nimi. Krok, posuw i moc obrysu są razem nad nimi.
+* **Live laser Position** (Pozycja lasera na żywo; zakładka Device, przełącznik urządzenia, domyślnie wyłączony, zapisywany z profilem; wyszarzony bez połączenia): pokazuje głowicę jako czerwoną kropkę na obszarze roboczym. Włączony, gdy maszyna stoi, najpierw **wykonuje bazowanie**, żeby pozycja była znana; włączony w trakcie pracy, obrysu lub ruchu tylko pokazuje kropkę, która wtedy przesuwa się raz na sekundę. Nic z tego nie było sprawdzane na prawdziwej maszynie.
 
 ![Zakładka Device](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/27-device-tab.png)
 

@@ -89,6 +89,9 @@
   holds bitmap images. In the Device tab the jog arrows, Home, Unlock, Pause and Resume are equal icon buttons (STOP
   stays red and plain), and jog step, jog feed and frame power sit together above them. The console output has its
   own background colour.
+* **Live laser position:** a switch in the Device tab (off by default, saved with the device, greyed out without a
+  connection) that shows the head as a red dot on the work area. Switched on at rest it homes the machine first;
+  during a job, a frame or a jog it only shows the dot, refreshed once a second.
 * **Image import dialog:** preview with rotate (90° steps and free angle), flip, brightness, contrast, gamma,
   auto levels, negative and size. The same dialog adjusts an image already on the page.
 * **Trace image:** turn the dark (or light) areas of a bitmap into Bézier outlines with threshold, speckle

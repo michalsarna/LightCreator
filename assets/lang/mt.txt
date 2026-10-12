@@ -1069,3 +1069,5 @@
 1068|Frażi ta' aċċess
 1069|Uża din il-frażi ta' aċċess minn issa
 1070|Il-frażi ta' aċċess ma tistax tkun vojta jew ikollha karattri ta' kontroll.
+1071|Pożizzjoni tal-lejżer dirett
+1072|Turi l-pożizzjoni tar-ras tal-lejżer bħala tikka fuq iż-żona tax-xogħol. Meta titqabbad waqt li l-magna tkun wieqfa, l-ewwel tagħmel homing; waqt xogħol jew qafas turi biss il-pożizzjoni, imġedda kull sekonda. Teħtieġ apparat imqabbad.

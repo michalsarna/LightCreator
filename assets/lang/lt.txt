@@ -1069,3 +1069,5 @@
 1068|Prieigos frazė
 1069|Nuo dabar naudoti šią prieigos frazę
 1070|Prieigos frazė negali būti tuščia ar turėti valdymo simbolių.
+1071|Lazerio padėtis gyvai
+1072|Parodo lazerio galvutės padėtį kaip tašką darbo srityje. Įjungus, kai staklės stovi, pirmiausia atliekamas bazavimas; darbo ar rėmo metu tik rodoma padėtis, atnaujinama kas sekundę. Reikia prijungto įrenginio.

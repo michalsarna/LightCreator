@@ -1069,3 +1069,5 @@
 1068	Access phrase
 1069	Use this access phrase from now on
 1070	The access phrase cannot be empty or have control characters.
+1071	Live laser Position
+1072	Shows the position of the laser head as a dot on the work area. Switched on while the machine stands still, it homes first; during a job or a frame it only shows the position, refreshed every second. Needs a connected device.

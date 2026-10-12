@@ -1069,3 +1069,5 @@
 1068|Frase de acesso
 1069|Usar esta frase de acesso a partir de agora
 1070|A frase de acesso não pode estar vazia nem ter caracteres de controlo.
+1071|Posição do laser em direto
+1072|Mostra a posição da cabeça laser como um ponto na área de trabalho. Ativada com a máquina parada, faz primeiro o homing; durante um trabalho ou um contorno só mostra a posição, atualizada a cada segundo. Requer um dispositivo ligado.

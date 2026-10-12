@@ -1069,3 +1069,5 @@
 1068|Přístupová fráze
 1069|Používat tuto přístupovou frázi od nynějška
 1070|Přístupová fráze nesmí být prázdná ani obsahovat řídicí znaky.
+1071|Poloha laseru živě
+1072|Zobrazuje polohu laserové hlavy jako tečku na pracovní ploše. Zapnete-li ji při stojícím stroji, nejprve provede homing; během úlohy nebo rámování polohu jen ukazuje, obnovuje se každou sekundu. Vyžaduje připojené zařízení.

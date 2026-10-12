@@ -1069,3 +1069,5 @@
 1068|Juurdepääsufraas
 1069|Kasuta nüüdsest seda juurdepääsufraasi
 1070|Juurdepääsufraas ei tohi olla tühi ega sisaldada juhtmärke.
+1071|Laseri asukoht reaalajas
+1072|Näitab laserpea asukohta punktina tööalal. Kui see lülitada sisse seisva masina juures, teeb masin kõigepealt nullimise; töö või raami ajal näitab see ainult asukohta, mida uuendatakse iga sekund. Vajab ühendatud seadet.

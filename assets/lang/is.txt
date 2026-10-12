@@ -1069,3 +1069,5 @@
 1068|Aðgangssetning
 1069|Nota þessa aðgangssetningu héðan í frá
 1070|Aðgangssetningin má ekki vera tóm eða innihalda stjórnstafi.
+1071|Staða leysis í beinni
+1072|Sýnir stöðu leysihaussins sem punkt á vinnusvæðinu. Ef kveikt er á því þegar vélin stendur kyrr fer hún fyrst í heimastöðu; meðan á verki eða ramma stendur sýnir það aðeins stöðuna, uppfærða á hverri sekúndu. Krefst tengds tækis.

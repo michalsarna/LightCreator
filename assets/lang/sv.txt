@@ -1069,3 +1069,5 @@
 1068|Åtkomstfras
 1069|Använd den här åtkomstfrasen från och med nu
 1070|Åtkomstfrasen får inte vara tom eller ha styrtecken.
+1071|Laserposition live
+1072|Visar laserhuvudets position som en prick på arbetsytan. Påslaget medan maskinen står still homar den först; under ett jobb eller en ram visas bara positionen, uppdaterad varje sekund. Kräver en ansluten enhet.

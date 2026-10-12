@@ -394,6 +394,11 @@ impl App {
         }
         // Origin marker (machine zero)
         painter.circle_filled(self.w2s(o, self.doc.device.home_point()), 4.0, theme::accent());
+        if let Some(p) = self.live_point() {
+            let c = self.w2s(o, p);
+            painter.circle_filled(c, 6.0, Color32::from_rgb(0xe0, 0x30, 0x30));
+            painter.circle_stroke(c, 6.0, Stroke::new(1.5, Color32::WHITE));
+        }
 
         // ---- camera overlay (under the design) ----
         if self.overlay_visible {
