@@ -193,3 +193,19 @@ setting must allow desktop apps. This feature has only been compile-checked on m
 cargo test --workspace                       # unit tests
 cargo build --release -p lightcreator        # binary in target/release/
 ```
+
+## Working on baseCreator and LightCreator together
+
+Part of the code is in [baseCreator](https://github.com/michalsarna/baseCreator) and comes in as a git dependency
+pinned to a tag. To change both at once, clone baseCreator next to this repository and tell Cargo to use your checkout.
+Put this in `.cargo/config.toml` here (the file is not tracked, keep it out of commits) or in `~/.cargo/config.toml`:
+
+```toml
+[patch."https://github.com/michalsarna/baseCreator"]
+base-core = { path = "../baseCreator/crates/base-core" }
+base-ui   = { path = "../baseCreator/crates/base-ui" }
+```
+
+A change in baseCreator goes through a pull request and a new tag there; then the tag in `crates/lc-core/Cargo.toml` and
+`crates/lightcreator/Cargo.toml` is raised in a pull request here. A tag in baseCreator never starts a release of
+LightCreator.
