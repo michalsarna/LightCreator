@@ -16,7 +16,8 @@ fn blank_device() -> Device {
 
 /// The optional camera of a new device: nothing until "Add a camera"; then its name, where the picture comes from and
 /// the switch-off. Rotation, picture and lens settings are in the device window.
-fn camera_section(ui: &mut egui::Ui, d: &mut Device) {
+fn camera_section(ui: &mut egui::Ui, d: &mut Device) -> Option<lc_core::CameraSource> {
+    let mut test = None;
     egui::CollapsingHeader::new(RichText::new(tr("Camera")).strong()).id_salt("add_cam").default_open(!d.cameras.is_empty()).show(ui, |ui| {
         let mut remove = false;
         if let Some(c) = d.cameras.first_mut() {
@@ -49,6 +50,19 @@ fn camera_section(ui: &mut egui::Ui, d: &mut Device) {
                     });
                 }
             }
+            let testable = match &c.kind {
+                lc_core::CameraKind::Url(u) => lc_core::camimg::valid_url(u),
+                lc_core::CameraKind::Local(_) => crate::camera::SUPPORTED,
+            };
+            ui.horizontal(|ui| {
+                if ui.add_enabled(testable, egui::Button::new(tr("Test"))).on_hover_text(tr("Opens the picture of this camera as set here, without saving")).clicked() {
+                    test = Some(c.clone());
+                }
+                ui.label(tr("Camera rotation"));
+                for q in 0..4u8 {
+                    ui.selectable_value(&mut c.rotation, q, format!("{}°", q as u32 * 90));
+                }
+            });
         } else if ui.button(tr("Add a camera")).clicked() {
             crate::device_ui::add_camera(d);
         }
@@ -57,6 +71,7 @@ fn camera_section(ui: &mut egui::Ui, d: &mut Device) {
             d.active_camera = 0;
         }
     });
+    test
 }
 
 impl App {
@@ -112,6 +127,7 @@ impl App {
         let was_read = self.add_dev_read;
         let mut open = true;
         let mut close = false;
+        let mut test_cam = None;
         crate::window_ui::popup(ctx, "first_setup", &tr("Add a device"), [520.0, 640.0], &mut open, |ui| {
             let d = &mut cfg.draft;
             egui::ScrollArea::vertical().max_height((ui.ctx().content_rect().height() - 190.0).clamp(200.0, 600.0)).auto_shrink([false, true]).show(ui, |ui| {
@@ -205,7 +221,7 @@ impl App {
                     ui.end_row();
                 });
                 ui.add_space(4.0);
-                camera_section(ui, d);
+                test_cam = camera_section(ui, d);
                 if was_read {
                     ui.label(RichText::new(tr("The settings were read from the controller.")).color(Color32::from_rgb(0x2e, 0xa0, 0x4f)));
                 }
@@ -232,6 +248,9 @@ impl App {
                 }
             });
         });
+        if let Some(cam) = test_cam {
+            self.start_cam_test(ctx, cam);
+        }
         if read {
             let draft = cfg.draft.clone();
             self.add_dev_read = false;
@@ -345,7 +364,9 @@ mod tests {
         d.cameras.clear();
         crate::device_ui::add_camera(&mut d);
         assert_eq!(d.cameras.len(), 1);
-        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| camera_section(ui, &mut d));
+        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| {
+            camera_section(ui, &mut d);
+        });
         out.textures_delta.clear();
         assert_eq!(d.cameras.len(), 1);
     }
