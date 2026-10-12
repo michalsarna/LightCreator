@@ -538,7 +538,6 @@ fn render_screenshots() {
         if let Some(c) = a.cfg.as_mut() {
             c.draft.name = "Diode laser 400 × 400".into();
         }
-        a.add_dev_material = "Birch plywood 3 mm".into();
     }
     save(&mut h, "33-add-device.png");
     {

@@ -1,4 +1,4 @@
-//! Adding a device: one window with the basic settings (and a first material at the bottom). It opens by itself when
+//! Adding a device: one window with the basic settings (and an optional camera). It opens by itself when
 //! there is no device yet. Nothing is predefined.
 use crate::app::App;
 use crate::device_ui::CfgEdit;
@@ -12,6 +12,66 @@ fn blank_device() -> Device {
     d.name = String::new();
     d.speed_unit = lc_core::SpeedUnit::PerMinute;
     d
+}
+
+/// The optional camera of a new device: nothing until "Add a camera"; then its name, where the picture comes from and
+/// the switch-off. Rotation, picture and lens settings are in the device window.
+fn camera_section(ui: &mut egui::Ui, d: &mut Device) -> Option<lc_core::CameraSource> {
+    let mut test = None;
+    egui::CollapsingHeader::new(RichText::new(tr("Camera")).strong()).id_salt("add_cam").default_open(!d.cameras.is_empty()).show(ui, |ui| {
+        let mut remove = false;
+        if let Some(c) = d.cameras.first_mut() {
+            ui.horizontal(|ui| {
+                ui.add(egui::TextEdit::singleline(&mut c.name).hint_text(tr("Camera name")).desired_width(180.0));
+                if crate::window_ui::delete_icon(ui, &tr("Delete this camera")).clicked() {
+                    remove = true;
+                }
+            });
+            ui.horizontal(|ui| {
+                let local = matches!(c.kind, lc_core::CameraKind::Local(_));
+                let mut want_local = local;
+                ui.radio_value(&mut want_local, false, tr("Address"));
+                ui.radio_value(&mut want_local, true, tr("Camera of this computer"));
+                if want_local != local {
+                    c.kind = if want_local { lc_core::CameraKind::Local(0) } else { lc_core::CameraKind::Url(String::new()) };
+                }
+            });
+            match &mut c.kind {
+                lc_core::CameraKind::Url(u) => {
+                    ui.add(egui::TextEdit::singleline(u).hint_text("http://raspberrypi.local:8080/stream.mjpg").desired_width(300.0));
+                    if !lc_core::camimg::valid_url(u) && !u.trim().is_empty() {
+                        ui.label(RichText::new(tr("Not an http or https address.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
+                    }
+                }
+                lc_core::CameraKind::Local(i) => {
+                    ui.horizontal(|ui| {
+                        ui.label(tr("Camera number"));
+                        ui.add(egui::DragValue::new(i).range(0..=15));
+                    });
+                }
+            }
+            let testable = match &c.kind {
+                lc_core::CameraKind::Url(u) => lc_core::camimg::valid_url(u),
+                lc_core::CameraKind::Local(_) => crate::camera::SUPPORTED,
+            };
+            ui.horizontal(|ui| {
+                if ui.add_enabled(testable, egui::Button::new(tr("Test"))).on_hover_text(tr("Opens the picture of this camera as set here, without saving")).clicked() {
+                    test = Some(c.clone());
+                }
+                ui.label(tr("Camera rotation"));
+                for q in 0..4u8 {
+                    ui.selectable_value(&mut c.rotation, q, format!("{}°", q as u32 * 90));
+                }
+            });
+        } else if ui.button(tr("Add a camera")).clicked() {
+            crate::device_ui::add_camera(d);
+        }
+        if remove {
+            d.cameras.clear();
+            d.active_camera = 0;
+        }
+    });
+    test
 }
 
 impl App {
@@ -37,22 +97,16 @@ impl App {
         w
     }
 
-    /// The device is made: it gets the starter materials of its laser type and the material typed at the bottom, and
+    /// The device is made: it gets the starter materials of its laser type (the default material is selected), and
     /// joins the list of devices.
     pub fn finish_add_device(&mut self, mut dev: Device) {
         dev.name = dev.name.trim().to_string();
         dev.add_starter_materials();
-        let typed = self.add_dev_material.trim().to_string();
-        if !typed.is_empty() {
-            let names: Vec<String> = dev.materials.iter().map(|m| m.name.clone()).collect();
-            dev.materials.push(lc_core::materials::Material::new(&lc_core::materials::free_name(&names, &typed)));
-            dev.active_material = dev.materials.len() - 1;
-        }
-        self.add_dev_material.clear();
         self.profiles.push(dev);
         self.start_sel = self.profiles.len() - 1;
         self.add_dev = None;
         self.add_dev_read = false;
+        self.add_dev_read_err = false;
         self.status = tr("The device was added. Press Continue to start.").to_string();
     }
 
@@ -71,12 +125,29 @@ impl App {
         let mut by_hand = false;
         let mut read = false;
         let reading = self.read_cfg.is_some();
+        // How the last read ended: it is over when the read state is gone, and it worked when it filled the draft.
+        if self.add_dev_was_reading && !reading {
+            if self.add_dev_read_done {
+                self.add_dev_read = true;
+                self.add_dev_read_err = false;
+            } else {
+                self.add_dev_read = false;
+                self.add_dev_read_err = true;
+            }
+            self.add_dev_read_done = false;
+        }
+        if reading {
+            self.add_dev_read_err = false;
+        }
+        self.add_dev_was_reading = reading;
         let was_read = self.add_dev_read;
+        let read_err = self.add_dev_read_err;
         let mut open = true;
         let mut close = false;
-        crate::window_ui::popup(ctx, "first_setup", &tr("Add a device"), [520.0, 560.0], &mut open, |ui| {
+        let mut test_cam = None;
+        crate::window_ui::popup(ctx, "first_setup", &tr("Add a device"), [520.0, 640.0], &mut open, |ui| {
             let d = &mut cfg.draft;
-            egui::ScrollArea::vertical().max_height((ui.ctx().content_rect().height() - 190.0).clamp(200.0, 520.0)).auto_shrink([false, true]).show(ui, |ui| {
+            egui::ScrollArea::vertical().max_height((ui.ctx().content_rect().height() - 190.0).clamp(200.0, 600.0)).auto_shrink([false, true]).show(ui, |ui| {
                 egui::Grid::new("add_dev").num_columns(2).min_col_width(140.0).spacing([12.0, 6.0]).show(ui, |ui| {
                     ui.label(tr("Name"));
                     ui.add(egui::TextEdit::singleline(&mut d.name).hint_text(tr("e.g. My diode laser")));
@@ -87,44 +158,6 @@ impl App {
                             ui.selectable_value(&mut d.controller, c, c.label());
                         }
                     });
-                    ui.end_row();
-                    ui.label(tr("Laser type"));
-                    egui::ComboBox::from_id_salt("add_laser").selected_text(tr(d.heads[0].laser.label())).show_ui(ui, |ui| {
-                        for k in lc_core::LaserKind::ALL {
-                            ui.selectable_value(&mut d.heads[0].laser, k, tr(k.label()));
-                        }
-                    });
-                    ui.end_row();
-                    ui.label(tr("Units"));
-                    egui::ComboBox::from_id_salt("add_units").selected_text(tr(d.units.label())).show_ui(ui, |ui| {
-                        for u in Units::ALL {
-                            ui.selectable_value(&mut d.units, u, tr(u.label()));
-                        }
-                    });
-                    ui.end_row();
-                    ui.label(tr("Speed units"));
-                    egui::ComboBox::from_id_salt("add_speed_units").selected_text(tr(d.speed_unit.label())).show_ui(ui, |ui| {
-                        for k in lc_core::SpeedUnit::ALL {
-                            ui.selectable_value(&mut d.speed_unit, k, tr(k.label()));
-                        }
-                    });
-                    ui.end_row();
-                    let u = d.units;
-                    ui.label(tr("Work area X"));
-                    crate::units_ui::drag_len(ui, u, &mut d.area.bed_w, 1.0, Some((10.0, 5000.0)));
-                    ui.end_row();
-                    ui.label(tr("Work area Y"));
-                    crate::units_ui::drag_len(ui, u, &mut d.area.bed_h, 1.0, Some((10.0, 5000.0)));
-                    ui.end_row();
-                    ui.label(tr("Machine zero (0,0)"));
-                    egui::ComboBox::from_id_salt("add_origin").selected_text(tr(d.axes.origin.label())).show_ui(ui, |ui| {
-                        for o in lc_core::Origin::ALL {
-                            ui.selectable_value(&mut d.axes.origin, o, tr(o.label()));
-                        }
-                    });
-                    ui.end_row();
-                    ui.label(tr("S-value max ($30)"));
-                    ui.add(egui::DragValue::new(&mut d.heads[0].s_max).range(1.0..=100000.0));
                     ui.end_row();
                     ui.label(tr("Connection type"));
                     egui::ComboBox::from_id_salt("add_link").selected_text(tr(d.connection.link.label())).show_ui(ui, |ui| {
@@ -157,25 +190,74 @@ impl App {
                         ui.end_row();
                     }
                     ui.label("");
-                    let label = if reading { tr("Reading…") } else { tr("Read from device") };
-                    if ui.add_enabled(!reading && d.has_target() && d.controller.settings_request().is_some(), egui::Button::new(label)).on_hover_text(tr("If the machine is connected now, its work area and speed can be read from the controller.")).clicked() {
+                    let (label, fill) = if reading {
+                        (tr("Reading…"), Color32::from_rgb(0x2a, 0x6f, 0xd6))
+                    } else if was_read {
+                        (tr("Read OK"), Color32::from_rgb(0x2a, 0x6f, 0xd6))
+                    } else if read_err {
+                        (tr("Error reading"), Color32::from_rgb(0xc0, 0x30, 0x30))
+                    } else {
+                        (tr("Read from device"), Color32::from_rgb(0x2a, 0x6f, 0xd6))
+                    };
+                    let blue = egui::Button::new(RichText::new(label).color(Color32::WHITE).strong()).fill(fill);
+                    if ui.add_enabled(!reading && !was_read && d.has_target() && d.controller.settings_request().is_some(), blue).on_hover_text(tr("If the machine is connected now, its work area and speed can be read from the controller.")).clicked() {
                         read = true;
                     }
                     ui.end_row();
+                    ui.label(tr("Units"));
+                    egui::ComboBox::from_id_salt("add_units").selected_text(tr(d.units.label())).show_ui(ui, |ui| {
+                        for u in Units::ALL {
+                            ui.selectable_value(&mut d.units, u, tr(u.label()));
+                        }
+                    });
+                    ui.end_row();
+                    ui.label(tr("Speed units"));
+                    egui::ComboBox::from_id_salt("add_speed_units").selected_text(tr(d.speed_unit.label())).show_ui(ui, |ui| {
+                        for k in lc_core::SpeedUnit::ALL {
+                            ui.selectable_value(&mut d.speed_unit, k, tr(k.label()));
+                        }
+                    });
+                    ui.end_row();
+                    let u = d.units;
+                    ui.label(tr("Work area"));
+                    ui.horizontal(|ui| {
+                        ui.label("X");
+                        crate::units_ui::drag_len(ui, u, &mut d.area.bed_w, 1.0, Some((10.0, 5000.0)));
+                        ui.label("Y");
+                        crate::units_ui::drag_len(ui, u, &mut d.area.bed_h, 1.0, Some((10.0, 5000.0)));
+                    });
+                    ui.end_row();
+                    ui.label(tr("Machine zero (0,0)"));
+                    egui::ComboBox::from_id_salt("add_origin").selected_text(tr(d.axes.origin.label())).show_ui(ui, |ui| {
+                        for o in lc_core::Origin::ALL {
+                            ui.selectable_value(&mut d.axes.origin, o, tr(o.label()));
+                        }
+                    });
+                    ui.end_row();
+                    ui.label(tr("S-value max ($30)"));
+                    ui.add(egui::DragValue::new(&mut d.heads[0].s_max).range(1.0..=100000.0));
+                    ui.end_row();
+                    ui.label(tr("Laser type"));
+                    egui::ComboBox::from_id_salt("add_laser").selected_text(tr(d.heads[0].laser.label())).show_ui(ui, |ui| {
+                        for k in lc_core::LaserKind::ALL {
+                            ui.selectable_value(&mut d.heads[0].laser, k, tr(k.label()));
+                        }
+                    });
+                    ui.end_row();
                 });
+                ui.add_space(4.0);
+                test_cam = camera_section(ui, d);
                 if was_read {
                     ui.label(RichText::new(tr("The settings were read from the controller.")).color(Color32::from_rgb(0x2e, 0xa0, 0x4f)));
                 }
                 ui.add_space(6.0);
                 ui.label(RichText::new(tr("Worth checking")).strong());
                 for w in Self::add_dev_warnings(d, was_read) {
-                    ui.label(RichText::new(format!("• {w}")).small().color(Color32::from_rgb(0xe8, 0x8a, 0x1f)));
+                    egui::Frame::new().fill(Color32::from_rgb(0xe8, 0x8a, 0x1f)).corner_radius(3).inner_margin(egui::Margin::symmetric(6, 3)).show(ui, |ui| {
+                        ui.set_width(ui.available_width());
+                        ui.label(RichText::new(format!("• {w}")).size(14.0).color(Color32::BLACK));
+                    });
                 }
-            });
-            ui.add_space(6.0);
-            ui.horizontal(|ui| {
-                ui.label(RichText::new(tr("Material")).strong());
-                ui.add(egui::TextEdit::singleline(&mut self.add_dev_material).hint_text(tr("Add a material, e.g. Birch plywood 3 mm (optional)")).desired_width(ui.available_width().max(80.0)));
             });
             ui.add_space(8.0);
             ui.horizontal(|ui| {
@@ -191,14 +273,16 @@ impl App {
                 }
             });
         });
+        if let Some(cam) = test_cam {
+            self.start_cam_test(ctx, cam);
+        }
         if read {
             let draft = cfg.draft.clone();
             self.add_dev_read = false;
-            self.start_read(&draft);
-        }
-        if self.add_dev_read_done {
-            self.add_dev_read = true;
+            self.add_dev_read_err = false;
+            self.add_dev_read_err = false;
             self.add_dev_read_done = false;
+            self.start_read(&draft);
         }
         if finish {
             self.finish_add_device(cfg.draft);
@@ -213,10 +297,11 @@ impl App {
         if close || !open {
             self.add_dev = None;
             self.add_dev_read = false;
+            self.add_dev_read_err = false;
             if self.profiles.is_empty() {
-                // Without any profile the program cannot start: the plain device window comes back.
-                self.add_dev_skipped = true;
-                self.cfg = Some(cfg);
+                // Without any profile the program cannot start: cancelling the first setup quits.
+                self.cfg = None;
+                ctx.send_viewport_cmd(egui::ViewportCommand::Close);
             }
             return;
         }
@@ -252,7 +337,7 @@ mod tests {
     }
 
     #[test]
-    fn leaving_the_setup_brings_the_plain_device_window_and_does_not_ask_again() {
+    fn the_device_window_stays_out_of_the_way_while_the_setup_is_open() {
         let ctx = egui::Context::default();
         let mut a = App::build(&ctx, None, false);
         a.profiles.clear();
@@ -283,22 +368,66 @@ mod tests {
     }
 
     #[test]
-    fn a_new_device_gets_starter_materials_and_the_material_typed_at_the_bottom() {
+    fn a_new_device_gets_the_starter_materials_with_the_default_one_selected() {
         let ctx = egui::Context::default();
         let mut a = App::build(&ctx, None, false);
         a.profiles.clear();
         let mut d = Device::default();
         d.name = "  My laser ".into();
-        a.add_dev_material = "Birch plywood 3 mm".into();
-        a.finish_add_device(d.clone());
+        a.finish_add_device(d);
         let p = &a.profiles[0];
         assert_eq!(p.name, "My laser");
-        assert_eq!(p.material().name, "Birch plywood 3 mm");
-        assert!(p.materials.len() >= 5 && p.materials[0].name == lc_core::materials::DEFAULT_MATERIAL, "starters stay available");
-        assert!(a.add_dev_material.is_empty());
-        // Without a typed material the empty default stays selected.
-        a.finish_add_device(d);
-        assert_eq!(a.profiles[1].material().name, lc_core::materials::DEFAULT_MATERIAL);
-        assert_eq!(a.start_sel, 1);
+        assert_eq!(p.material().name, lc_core::materials::DEFAULT_MATERIAL);
+        assert!(p.materials.len() >= 5, "starters stay available");
+        assert_eq!(a.start_sel, 0);
+    }
+
+    #[test]
+    fn the_camera_of_a_new_device_is_added_and_removed_in_the_setup() {
+        let ctx = egui::Context::default();
+        let mut d = Device::default();
+        d.cameras.clear();
+        crate::device_ui::add_camera(&mut d);
+        assert_eq!(d.cameras.len(), 1);
+        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| {
+            camera_section(ui, &mut d);
+        });
+        out.textures_delta.clear();
+        assert_eq!(d.cameras.len(), 1);
+    }
+
+    /// One frame of the window, then what the button says about the last read.
+    fn frame(a: &mut App, ctx: &egui::Context) {
+        let mut out = ctx.run_ui(egui::RawInput::default(), |_| {});
+        a.add_device_window(ctx);
+        out.textures_delta.clear();
+    }
+
+    #[test]
+    fn the_read_button_shows_how_the_read_ended() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.profiles.clear();
+        a.start_add_device();
+        a.connected = true;
+        let draft = a.cfg.as_ref().unwrap().draft.clone();
+        // A read that gets no answer is an error, and a new read clears it.
+        a.start_read(&draft);
+        frame(&mut a, &ctx);
+        assert!(a.read_cfg.is_some() && !a.add_dev_read_err);
+        a.finish_read();
+        frame(&mut a, &ctx);
+        assert!(a.add_dev_read_err && !a.add_dev_read);
+        // A read that gives settings is OK, and they land in the draft.
+        a.start_read(&draft);
+        a.read_tick(&ctx);
+        frame(&mut a, &ctx);
+        for l in ["$30=255", "$130=300", "$131=200", "ok"] {
+            a.read_feed(l);
+        }
+        frame(&mut a, &ctx);
+        assert!(a.add_dev_read && !a.add_dev_read_err);
+        let d = &a.cfg.as_ref().unwrap().draft;
+        assert_eq!((d.area.bed_w, d.area.bed_h, d.heads[0].s_max), (300.0, 200.0, 255.0));
     }
 }

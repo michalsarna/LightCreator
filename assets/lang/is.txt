@@ -1075,3 +1075,5 @@
 1074|Heima (núllpunktur vélar)
 1075|Núverandi staða leysisins
 1076|Heima: hönnunin er brennd þar sem hún liggur á vinnusvæðinu, talið frá núllpunkti vélarinnar. Núverandi staða: efra vinstra horn hönnunarinnar er sett þar sem leysihausinn stendur núna (verk, rammar og þurrkeyrsla) og verkinu lýkur þar. Útfluttar skrár telja alltaf frá núllpunkti vélarinnar.
+1077|Lestur tókst
+1078|Villa við lestur

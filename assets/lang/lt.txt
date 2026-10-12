@@ -1075,3 +1075,5 @@
 1074|Home (staklių nulis)
 1075|Dabartinė lazerio padėtis
 1076|Home: maketas deginamas ten, kur jis yra darbo srityje, skaičiuojant nuo staklių nulio. Dabartinė padėtis: maketo viršutinis kairysis kampas dedamas ten, kur dabar yra lazerio galvutė (darbai, rėmai ir bandomoji eiga), ir darbas baigiasi ten. Eksportuoti failai visada skaičiuojami nuo staklių nulio.
+1077|Nuskaityta
+1078|Skaitymo klaida
