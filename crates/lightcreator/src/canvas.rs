@@ -36,15 +36,15 @@ fn col(i: usize) -> Color32 {
 
 impl App {
     fn w2s(&self, o: Pos2, p: Pt) -> Pos2 {
-        o + self.view.pan + egui::vec2(p.x as f32 * self.view.zoom, p.y as f32 * self.view.zoom)
+        o + self.ed.view.pan + egui::vec2(p.x as f32 * self.ed.view.zoom, p.y as f32 * self.ed.view.zoom)
     }
     fn s2w(&self, o: Pos2, s: Pos2) -> Pt {
-        let v = s - o - self.view.pan;
-        Pt::new((v.x / self.view.zoom) as f64, (v.y / self.view.zoom) as f64)
+        let v = s - o - self.ed.view.pan;
+        Pt::new((v.x / self.ed.view.zoom) as f64, (v.y / self.ed.view.zoom) as f64)
     }
     fn snapped(&self, p: Pt) -> Pt {
-        if self.snap {
-            let g = self.grid;
+        if self.ed.snap {
+            let g = self.ed.grid;
             Pt::new((p.x / g).round() * g, (p.y / g).round() * g)
         } else {
             p
@@ -52,7 +52,7 @@ impl App {
     }
 
     fn hit_shape(&self, p: Pt) -> Option<u64> {
-        let tol = 5.0 / self.view.zoom as f64;
+        let tol = 5.0 / self.ed.view.zoom as f64;
         let visible = || self.doc.scene.shapes.iter().rev().filter(|s| self.doc.layers[s.layer].visible);
         if let Some(s) = visible().find(|s| s.polys().iter().any(|q| q.dist_to(p) <= tol)) {
             return Some(s.id);
@@ -75,7 +75,7 @@ impl App {
 
     /// Selected Bézier shapes with their id.
     fn bezier_shapes(&self) -> Vec<(u64, &Vec<lc_core::Contour>)> {
-        self.sel
+        self.ed.sel
             .iter()
             .filter_map(|id| {
                 let s = self.doc.shape(*id).filter(|s| !s.locked)?;
@@ -104,7 +104,7 @@ impl App {
 
     /// A handle of a selected node under the mouse: (node, is_outgoing).
     fn hit_node_handle(&self, o: Pos2, mouse: Pos2) -> Option<(NodeRef, bool)> {
-        for r in &self.node_sel {
+        for r in &self.ed.node_sel {
             let Some(n) = self.node_at(*r) else { continue };
             if n.has_out() && self.w2s(o, n.hout).distance(mouse) <= 7.0 {
                 return Some((*r, true));
@@ -118,7 +118,7 @@ impl App {
 
     /// The segment of a selected Bézier shape close to `w`: ((shape, contour, segment), t).
     fn hit_segment(&self, w: Pt) -> Option<(NodeRef, f64)> {
-        let tol = 6.0 / self.view.zoom as f64;
+        let tol = 6.0 / self.ed.view.zoom as f64;
         let mut best: Option<(f64, NodeRef, f64)> = None;
         for (id, cs) in self.bezier_shapes() {
             for (ci, c) in cs.iter().enumerate() {
@@ -139,15 +139,15 @@ impl App {
             if let Kind::Image(im) = &s.kind {
                 let key = (s.id, im.invert);
                 keep.push(key);
-                if !self.image_tex.contains_key(&key) {
+                if !self.ed.image_tex.contains_key(&key) {
                     let px: Vec<u8> = if im.invert { im.gray.iter().map(|g| 255 - g).collect() } else { im.gray.clone() };
                     let img = egui::ColorImage::from_gray([im.px_w as usize, im.px_h as usize], &px);
                     let tex = ctx.load_texture(format!("img-{}-{}", s.id, im.invert), img, egui::TextureOptions::LINEAR);
-                    self.image_tex.insert(key, tex);
+                    self.ed.image_tex.insert(key, tex);
                 }
             }
         }
-        self.image_tex.retain(|k, _| keep.contains(k));
+        self.ed.image_tex.retain(|k, _| keep.contains(k));
     }
 
     /// Corner dragging for the camera overlay. Returns true while it owns the pointer.
@@ -181,24 +181,24 @@ impl App {
 
     /// Outline of the automatic shape for the active tool in a `w` x `h` mm box.
     fn auto_contour(&self, w: f64, h: f64) -> Option<lc_core::Contour> {
-        match self.tool {
+        match self.ed.tool {
             Tool::Triangle => Some(lc_core::Contour::triangle(w, h)),
             Tool::Star => Some(lc_core::Contour::star(5, 0.382, w, h)),
-            Tool::Polygon => Some(lc_core::Contour::polygon(self.polygon_sides, w, h)),
+            Tool::Polygon => Some(lc_core::Contour::polygon(self.ed.polygon_sides, w, h)),
             Tool::Heart => Some(lc_core::Contour::heart(w, h)),
-            Tool::Spiral => Some(lc_core::Contour::spiral(self.spiral_turns, w, h)),
+            Tool::Spiral => Some(lc_core::Contour::spiral(self.ed.spiral_turns, w, h)),
             _ => None,
         }
     }
 
     fn finish_pen(&mut self, closed: bool) {
-        if self.pen_pts.len() >= 2 {
+        if self.ed.pen_pts.len() >= 2 {
             self.checkpoint();
-            let pts = std::mem::take(&mut self.pen_pts);
-            let id = self.doc.add(self.active_layer, Kind::Path(vec![Polyline::new(pts, closed)]), Xf::IDENTITY);
-            self.sel = vec![id];
+            let pts = std::mem::take(&mut self.ed.pen_pts);
+            let id = self.doc.add(self.ed.active_layer, Kind::Path(vec![Polyline::new(pts, closed)]), Xf::IDENTITY);
+            self.ed.sel = vec![id];
         }
-        self.pen_pts.clear();
+        self.ed.pen_pts.clear();
     }
 
     pub fn canvas(&mut self, ui: &mut egui::Ui) {
@@ -208,28 +208,28 @@ impl App {
         let o = rect.min;
         let (bw, bh) = self.doc.device.work_size();
 
-        self.canvas_avail = (rect.width(), rect.height());
-        self.canvas_origin = rect.min;
+        self.ed.canvas_avail = (rect.width(), rect.height());
+        self.ed.canvas_origin = rect.min;
         // Fit everything on the page once, on request.
-        if self.fit_all_req && rect.width() > 50.0 {
-            self.fit_all_req = false;
+        if self.ed.fit_all_req && rect.width() > 50.0 {
+            self.ed.fit_all_req = false;
             let all: Vec<u64> = self.doc.scene.shapes.iter().filter(|s| self.doc.layers[s.layer].visible).map(|s| s.id).collect();
             let (min, size) = match self.doc.bounds_of(&all) {
                 Some(b) => ((b.min.x, b.min.y), (b.width().max(1.0), b.height().max(1.0))),
                 None => ((0.0, 0.0), (bw, bh)),
             };
             let (z, pan) = fit_region((rect.width(), rect.height()), min, size, 50.0);
-            self.view.zoom = z;
-            self.view.pan = pan;
-            self.view.need_fit = false;
-            self.view.auto_fit = false;
+            self.ed.view.zoom = z;
+            self.ed.view.pan = pan;
+            self.ed.view.need_fit = false;
+            self.ed.view.auto_fit = false;
         }
         // Fit on request, and keep fitting while the window or the panels are resized.
-        if (self.view.need_fit || self.view.auto_fit) && rect.width() > 50.0 {
+        if (self.ed.view.need_fit || self.ed.view.auto_fit) && rect.width() > 50.0 {
             let (z, pan) = fit_view((rect.width(), rect.height()), (bw, bh), 50.0);
-            self.view.zoom = z;
-            self.view.pan = pan;
-            self.view.need_fit = false;
+            self.ed.view.zoom = z;
+            self.ed.view.pan = pan;
+            self.ed.view.need_fit = false;
         }
 
         // ---- zoom / pan ----
@@ -239,18 +239,18 @@ impl App {
             if (f - 1.0).abs() > 1e-4 {
                 if let Some(m) = resp.hover_pos() {
                     let before = self.s2w(o, m);
-                    self.view.zoom = (self.view.zoom * f).clamp(0.05, 200.0);
+                    self.ed.view.zoom = (self.ed.view.zoom * f).clamp(0.05, 200.0);
                     let after = self.w2s(o, before);
-                    self.view.pan += m - after;
-                    self.view.auto_fit = false;
+                    self.ed.view.pan += m - after;
+                    self.ed.view.auto_fit = false;
                 }
             }
         }
-        if resp.dragged_by(PointerButton::Middle) || (self.tool == Tool::Pan && resp.dragged_by(PointerButton::Primary)) {
-            self.view.pan += resp.drag_delta();
-            self.view.auto_fit = false;
+        if resp.dragged_by(PointerButton::Middle) || (self.ed.tool == Tool::Pan && resp.dragged_by(PointerButton::Primary)) {
+            self.ed.view.pan += resp.drag_delta();
+            self.ed.view.auto_fit = false;
         }
-        self.cursor_mm = resp.hover_pos().map(|m| self.s2w(o, m));
+        self.ed.cursor_mm = resp.hover_pos().map(|m| self.s2w(o, m));
 
         // ---- background, bed, grid ----
         painter.rect_filled(rect, 0.0, self.workspace_fill());
@@ -259,8 +259,8 @@ impl App {
         painter.rect_filled(bed, 0.0, self.bed_fill());
         let painter = painter.with_clip_rect(rect);
         {
-            let gp = &self.grid_prefs;
-            let z = self.view.zoom as f64;
+            let gp = &self.ed.grid_prefs;
+            let z = self.ed.view.zoom as f64;
             let lines = |step: f64, color: [u8; 4], width: f32| {
                 // Skip grids so dense that the lines would merge into a tint.
                 if step * z < 2.5 || step <= 0.0 {
@@ -281,10 +281,10 @@ impl App {
                 }
             };
             if gp.minor_on {
-                lines(gp.minor_mm.min(self.grid * 0.99), gp.minor_color, 0.6);
+                lines(gp.minor_mm.min(self.ed.grid * 0.99), gp.minor_color, 0.6);
             }
-            if self.show_grid {
-                lines(self.grid, gp.main_color, 1.0);
+            if self.ed.show_grid {
+                lines(self.ed.grid, gp.main_color, 1.0);
             }
         }
         painter.rect_stroke(bed, 0.0, Stroke::new(1.0, Color32::from_gray(0x99)), egui::StrokeKind::Outside);
@@ -349,7 +349,7 @@ impl App {
                     }
                     lc_core::ZoneShape::Circle { x, y, r } => {
                         let c = self.w2s(o, Pt::new(x, y));
-                        painter.circle(c, r.abs() as f32 * self.view.zoom, fill, Stroke::new(1.5, edge));
+                        painter.circle(c, r.abs() as f32 * self.ed.view.zoom, fill, Stroke::new(1.5, edge));
                     }
                 }
                 let at = self.w2s(o, Pt::new(b.min.x, b.min.y));
@@ -405,7 +405,7 @@ impl App {
             if !self.doc.layers[s.layer].visible {
                 continue;
             }
-            if let Some(tex) = self.image_tex.get(&(s.id, im.invert)) {
+            if let Some(tex) = self.ed.image_tex.get(&(s.id, im.invert)) {
                 let corners = [Pt::new(0.0, 0.0), Pt::new(im.w, 0.0), Pt::new(im.w, im.h), Pt::new(0.0, im.h)];
                 let uv = [egui::pos2(0.0, 0.0), egui::pos2(1.0, 0.0), egui::pos2(1.0, 1.0), egui::pos2(0.0, 1.0)];
                 let tint = Color32::from_white_alpha(if preview { 70 } else { 255 });
@@ -428,7 +428,7 @@ impl App {
             } else if !layer.output {
                 c = c.gamma_multiply(0.45);
             }
-            let st = Stroke::new(self.grid_prefs.line_width, c);
+            let st = Stroke::new(self.ed.grid_prefs.line_width, c);
             for p in s.polys() {
                 let pts: Vec<Pos2> = p.pts.iter().map(|q| self.w2s(o, *q)).collect();
                 if pts.len() < 2 {
@@ -447,7 +447,7 @@ impl App {
                         continue;
                     }
                     let st = if m.laser {
-                        Stroke::new(self.grid_prefs.line_width.max(1.2), contrasting(col(self.doc.layers[m.layer].color), bed_c))
+                        Stroke::new(self.ed.grid_prefs.line_width.max(1.2), contrasting(col(self.doc.layers[m.layer].color), bed_c))
                     } else {
                         Stroke::new(0.6, contrasting(Color32::from_rgb(0x90, 0x90, 0xa0), bed_c))
                     };
@@ -467,19 +467,19 @@ impl App {
             }
         }
         // ---- selection ----
-        if self.sel.is_empty() || self.tool != Tool::Select {
-            self.rotate_mode = false;
+        if self.ed.sel.is_empty() || self.ed.tool != Tool::Select {
+            self.ed.rotate_mode = false;
         }
         if let Some(b) = self.sel_bounds() {
             let sr = egui::Rect::from_min_max(self.w2s(o, b.min), self.w2s(o, b.max));
             // Red while the handles resize, blue while they turn and slant.
-            let ink = if self.rotate_mode { Color32::from_rgb(0x2f, 0x7f, 0xe8) } else { Color32::from_rgb(0xe0, 0x30, 0x30) };
+            let ink = if self.ed.rotate_mode { Color32::from_rgb(0x2f, 0x7f, 0xe8) } else { Color32::from_rgb(0xe0, 0x30, 0x30) };
             painter.rect_stroke(sr, 0.0, Stroke::new(1.0, ink), egui::StrokeKind::Outside);
-            let all_locked = self.sel.iter().filter_map(|id| self.doc.shape(*id)).all(|s| s.locked);
-            if self.tool == Tool::Select && !all_locked {
+            let all_locked = self.ed.sel.iter().filter_map(|id| self.doc.shape(*id)).all(|s| s.locked);
+            if self.ed.tool == Tool::Select && !all_locked {
                 for (i, h) in handle_pts(&b).into_iter().enumerate() {
                     let p = self.w2s(o, h);
-                    if !self.rotate_mode {
+                    if !self.ed.rotate_mode {
                         let r = egui::Rect::from_center_size(p, egui::vec2(8.0, 8.0));
                         painter.rect_filled(r, 1.0, Color32::WHITE);
                         painter.rect_stroke(r, 1.0, Stroke::new(1.2, ink), egui::StrokeKind::Middle);
@@ -498,9 +498,9 @@ impl App {
         }
 
         // ---- node overlay ----
-        if self.tool == Tool::Node {
+        if self.ed.tool == Tool::Node {
             let acc = theme::accent();
-            let sel_nodes = self.node_sel.clone();
+            let sel_nodes = self.ed.node_sel.clone();
             for (id, cs) in self.bezier_shapes() {
                 for (ci, c) in cs.iter().enumerate() {
                     for (ni, n) in c.nodes.iter().enumerate() {
@@ -526,7 +526,7 @@ impl App {
                             painter.rect_stroke(r, 1.0, Stroke::new(1.3, acc), egui::StrokeKind::Middle);
                         }
                     }
-                    if let Some((aid, aci, asi)) = self.active_seg {
+                    if let Some((aid, aci, asi)) = self.ed.active_seg {
                         if aid == id && aci == ci && asi < c.seg_count() {
                             let poly: Vec<Pos2> = (0..=16).map(|k| self.w2s(o, c.point_at(asi, k as f64 / 16.0))).collect();
                             painter.add(egui::Shape::line(poly, Stroke::new(3.0, acc.gamma_multiply(0.6))));
@@ -542,16 +542,16 @@ impl App {
         let press = if resp.drag_started() { ui.input(|i| i.pointer.press_origin()).or(hpos) } else { hpos };
         let shift = ui.input(|i| i.modifiers.shift);
         // Right click selects what is under the pointer, then the context menu offers the usual commands.
-        if resp.secondary_clicked() && self.tool == Tool::Select {
+        if resp.secondary_clicked() && self.ed.tool == Tool::Select {
             if let Some(m) = hpos {
                 match self.hit_shape(self.s2w(o, m)) {
-                    Some(id) if !self.sel.contains(&id) => self.sel = self.doc.group_of(id),
-                    None => self.sel.clear(),
+                    Some(id) if !self.ed.sel.contains(&id) => self.ed.sel = self.doc.group_of(id),
+                    None => self.ed.sel.clear(),
                     _ => {}
                 }
             }
         }
-        if !matches!(self.tool, Tool::Pen | Tool::Pan | Tool::Zoom | Tool::ZoomOut) && !self.overlay_edit {
+        if !matches!(self.ed.tool, Tool::Pen | Tool::Pan | Tool::Zoom | Tool::ZoomOut) && !self.overlay_edit {
             let mut act: Option<Act> = None;
             resp.context_menu(|ui| act = self.context_menu(ui));
             if let Some(a) = act {
@@ -561,7 +561,7 @@ impl App {
         }
         let overlay_busy = self.overlay_interact(&resp, o, press, hpos);
         if !overlay_busy {
-        match self.tool {
+        match self.ed.tool {
             Tool::Select => {
                 // Double-clicking a shape opens it in the node tool (text and pictures excluded).
                 if resp.double_clicked() {
@@ -569,16 +569,16 @@ impl App {
                         if let Some(id) = self.hit_shape(self.s2w(o, m)) {
                             let editable = self.doc.shape(id).is_some_and(|s| !s.locked && !matches!(s.kind, Kind::Text(_) | Kind::Image(_)));
                             if editable {
-                                self.sel = self.doc.group_of(id);
-                                self.node_sel.clear();
-                                self.tool = Tool::Node;
+                                self.ed.sel = self.doc.group_of(id);
+                                self.ed.node_sel.clear();
+                                self.ed.tool = Tool::Node;
                             }
                         }
                     }
                 }
                 if let Some(m) = mouse {
                     if let Some(h) = self.hit_handle(o, m) {
-                        ui.ctx().set_cursor_icon(match (self.rotate_mode, h) {
+                        ui.ctx().set_cursor_icon(match (self.ed.rotate_mode, h) {
                             (true, 0 | 2 | 4 | 6) => CursorIcon::Alias,
                             (true, 1 | 5) => CursorIcon::ResizeHorizontal,
                             (true, _) => CursorIcon::ResizeVertical,
@@ -598,8 +598,8 @@ impl App {
                             let b = self.sel_bounds().unwrap();
                             let hp = handle_pts(&b);
                             self.checkpoint();
-                            let orig = self.sel.iter().filter_map(|i| self.doc.shape(*i).filter(|s| !s.locked).map(|s| (*i, s.xf))).collect();
-                            self.drag = Some(if !self.rotate_mode {
+                            let orig = self.ed.sel.iter().filter_map(|i| self.doc.shape(*i).filter(|s| !s.locked).map(|s| (*i, s.xf))).collect();
+                            self.ed.drag = Some(if !self.ed.rotate_mode {
                                 Drag::Scale { anchor: hp[(h + 4) % 8], grab: hp[h], handle: h, orig }
                             } else if h % 2 == 0 {
                                 let centre = b.center();
@@ -609,43 +609,43 @@ impl App {
                                 Drag::Skew { horizontal: h % 4 == 1, anchor: hp[(h + 4) % 8], grab: hp[h], orig }
                             });
                         } else if let Some(id) = self.hit_shape(w) {
-                            if !self.sel.contains(&id) {
+                            if !self.ed.sel.contains(&id) {
                                 if !shift {
-                                    self.sel.clear();
+                                    self.ed.sel.clear();
                                 }
                                 for m in self.doc.group_of(id) {
-                                    if !self.sel.contains(&m) {
-                                        self.sel.push(m);
+                                    if !self.ed.sel.contains(&m) {
+                                        self.ed.sel.push(m);
                                     }
                                 }
                             }
                             self.checkpoint();
-                            let orig = self.sel.iter().filter_map(|i| self.doc.shape(*i).filter(|s| !s.locked).map(|s| (*i, s.xf))).collect();
-                            self.drag = Some(Drag::Move { start: w, orig });
+                            let orig = self.ed.sel.iter().filter_map(|i| self.doc.shape(*i).filter(|s| !s.locked).map(|s| (*i, s.xf))).collect();
+                            self.ed.drag = Some(Drag::Move { start: w, orig });
                         } else {
                             if !shift {
-                                self.sel.clear();
+                                self.ed.sel.clear();
                             }
-                            self.drag = Some(Drag::Marquee { start: w });
+                            self.ed.drag = Some(Drag::Marquee { start: w });
                         }
                     }
                 } else if resp.clicked() && hpos.is_some_and(|m| self.hit_handle(o, m).is_some()) {
                     // A click on a handle swaps between resizing and turning / slanting.
-                    self.rotate_mode = !self.rotate_mode;
+                    self.ed.rotate_mode = !self.ed.rotate_mode;
                 } else if resp.clicked() {
                     if let Some(m) = hpos {
                         let hit = self.hit_shape(self.s2w(o, m));
                         match hit {
                             Some(id) if shift => {
                                 let members = self.doc.group_of(id);
-                                if self.sel.contains(&id) {
-                                    self.sel.retain(|x| !members.contains(x));
+                                if self.ed.sel.contains(&id) {
+                                    self.ed.sel.retain(|x| !members.contains(x));
                                 } else {
-                                    self.sel.extend(members);
+                                    self.ed.sel.extend(members);
                                 }
                             }
-                            Some(id) => self.sel = self.doc.group_of(id),
-                            None => self.sel.clear(),
+                            Some(id) => self.ed.sel = self.doc.group_of(id),
+                            None => self.ed.sel.clear(),
                         }
                     }
                 }
@@ -662,24 +662,24 @@ impl App {
                         let w = self.s2w(o, m);
                         if let Some((nr, out)) = self.hit_node_handle(o, m) {
                             self.checkpoint();
-                            self.drag = Some(Drag::HandleMove { node: nr, out });
+                            self.ed.drag = Some(Drag::HandleMove { node: nr, out });
                         } else if let Some(nr) = self.hit_node(o, m) {
-                            if !self.node_sel.contains(&nr) {
+                            if !self.ed.node_sel.contains(&nr) {
                                 if !shift {
-                                    self.node_sel.clear();
+                                    self.ed.node_sel.clear();
                                 }
-                                self.node_sel.push(nr);
+                                self.ed.node_sel.push(nr);
                             }
-                            self.active_seg = None;
+                            self.ed.active_seg = None;
                             self.checkpoint();
-                            let orig: Vec<(NodeRef, Node)> = self.node_sel.iter().filter_map(|r| self.node_at(*r).map(|n| (*r, n))).collect();
-                            self.drag = Some(Drag::NodeMove { start: w, orig });
+                            let orig: Vec<(NodeRef, Node)> = self.ed.node_sel.iter().filter_map(|r| self.node_at(*r).map(|n| (*r, n))).collect();
+                            self.ed.drag = Some(Drag::NodeMove { start: w, orig });
                         } else {
                             if !shift {
-                                self.node_sel.clear();
+                                self.ed.node_sel.clear();
                             }
-                            self.active_seg = None;
-                            self.drag = Some(Drag::NodeMarquee { start: w });
+                            self.ed.active_seg = None;
+                            self.ed.drag = Some(Drag::NodeMarquee { start: w });
                         }
                     }
                 } else if resp.double_clicked() {
@@ -693,26 +693,26 @@ impl App {
                         let w = self.s2w(o, m);
                         if let Some(nr) = self.hit_node(o, m) {
                             if shift {
-                                if let Some(i) = self.node_sel.iter().position(|x| *x == nr) {
-                                    self.node_sel.remove(i);
+                                if let Some(i) = self.ed.node_sel.iter().position(|x| *x == nr) {
+                                    self.ed.node_sel.remove(i);
                                 } else {
-                                    self.node_sel.push(nr);
+                                    self.ed.node_sel.push(nr);
                                 }
                             } else {
-                                self.node_sel = vec![nr];
+                                self.ed.node_sel = vec![nr];
                             }
-                            self.active_seg = None;
+                            self.ed.active_seg = None;
                         } else if let Some((seg, _)) = self.hit_segment(w) {
-                            self.active_seg = Some(seg);
-                            self.node_sel.clear();
+                            self.ed.active_seg = Some(seg);
+                            self.ed.node_sel.clear();
                         } else if let Some(id) = self.hit_shape(w) {
-                            self.sel = vec![id];
-                            self.node_sel.clear();
-                            self.active_seg = None;
+                            self.ed.sel = vec![id];
+                            self.ed.node_sel.clear();
+                            self.ed.active_seg = None;
                         } else {
-                            self.sel.clear();
-                            self.node_sel.clear();
-                            self.active_seg = None;
+                            self.ed.sel.clear();
+                            self.ed.node_sel.clear();
+                            self.ed.active_seg = None;
                         }
                     }
                 }
@@ -731,8 +731,8 @@ impl App {
                 if resp.drag_started_by(PointerButton::Primary) {
                     if let Some(m) = press {
                         // Starting another polygon or spiral brings the small window back.
-                        self.show_shape_popup = matches!(self.tool, Tool::Polygon | Tool::Spiral);
-                        self.drag = Some(Drag::Create { start: self.snapped(self.s2w(o, m)) });
+                        self.ed.show_shape_popup = matches!(self.ed.tool, Tool::Polygon | Tool::Spiral);
+                        self.ed.drag = Some(Drag::Create { start: self.snapped(self.s2w(o, m)) });
                     }
                 }
             }
@@ -741,16 +741,16 @@ impl App {
                 if resp.clicked_by(PointerButton::Primary) {
                     if let Some(m) = hpos {
                         let p = self.snapped(self.s2w(o, m));
-                        let close = self.pen_pts.len() >= 3 && self.w2s(o, self.pen_pts[0]).distance(m) < 9.0;
+                        let close = self.ed.pen_pts.len() >= 3 && self.w2s(o, self.ed.pen_pts[0]).distance(m) < 9.0;
                         if close {
                             self.finish_pen(true);
                         } else {
-                            self.pen_pts.push(p);
+                            self.ed.pen_pts.push(p);
                         }
                     }
                 }
                 if resp.double_clicked() {
-                    self.pen_pts.pop();
+                    self.ed.pen_pts.pop();
                     self.finish_pen(false);
                 }
                 if resp.secondary_clicked() || ui.input(|i| i.key_pressed(egui::Key::Enter)) {
@@ -759,16 +759,16 @@ impl App {
             }
             Tool::Zoom | Tool::ZoomOut => {
                 // Zoom in clicks in, zoom out clicks out; Shift swaps them.
-                let out = (self.tool == Tool::ZoomOut) != shift;
+                let out = (self.ed.tool == Tool::ZoomOut) != shift;
                 ui.ctx().set_cursor_icon(if out { CursorIcon::ZoomOut } else { CursorIcon::ZoomIn });
                 if resp.clicked() {
                     if let Some(m) = hpos {
                         let f = if out { 0.5 } else { 2.0 };
                         let before = self.s2w(o, m);
-                        self.view.zoom = (self.view.zoom * f).clamp(0.05, 200.0);
+                        self.ed.view.zoom = (self.ed.view.zoom * f).clamp(0.05, 200.0);
                         let after = self.w2s(o, before);
-                        self.view.pan += m - after;
-                        self.view.auto_fit = false;
+                        self.ed.view.pan += m - after;
+                        self.ed.view.auto_fit = false;
                     }
                 }
             }
@@ -778,22 +778,22 @@ impl App {
 
         // drag update
         if resp.dragged_by(PointerButton::Primary) {
-            if let (Some(m), Some(d)) = (hpos, self.drag.as_ref()) {
+            if let (Some(m), Some(d)) = (hpos, self.ed.drag.as_ref()) {
                 let w = self.s2w(o, m);
                 match d {
                     Drag::Move { start, orig } => {
                         let (mut dx, mut dy) = (w.x - start.x, w.y - start.y);
-                        if self.snap {
-                            dx = (dx / self.grid).round() * self.grid;
-                            dy = (dy / self.grid).round() * self.grid;
+                        if self.ed.snap {
+                            dx = (dx / self.ed.grid).round() * self.ed.grid;
+                            dy = (dy / self.ed.grid).round() * self.ed.grid;
                         }
                         let orig = orig.clone();
-                        if self.snap_objects {
+                        if self.ed.snap_objects {
                             // Where the selection would be, against the other objects: lines within a few pixels join.
                             let ids: Vec<u64> = orig.iter().map(|(id, _)| *id).collect();
-                            if self.snap_targets.is_none() {
+                            if self.ed.snap_targets.is_none() {
                                 let others = self.doc.scene.shapes.iter().filter(|s| !ids.contains(&s.id) && self.doc.layers[s.layer].visible).filter_map(|s| s.bounds()).collect();
-                                self.snap_targets = Some(others);
+                                self.ed.snap_targets = Some(others);
                             }
                             for (id, xf) in &orig {
                                 if let Some(s) = self.doc.unlocked_mut(*id) {
@@ -802,10 +802,10 @@ impl App {
                             }
                             if let Some(b) = self.doc.bounds_of(&ids) {
                                 let moved = Rect { min: Pt::new(b.min.x + dx, b.min.y + dy), max: Pt::new(b.max.x + dx, b.max.y + dy) };
-                                let s = lc_core::snap::snap_to_objects(moved, self.snap_targets.as_deref().unwrap_or(&[]), 8.0 / self.view.zoom as f64);
+                                let s = lc_core::snap::snap_to_objects(moved, self.ed.snap_targets.as_deref().unwrap_or(&[]), 8.0 / self.ed.view.zoom as f64);
                                 dx += s.dx;
                                 dy += s.dy;
-                                self.snap_guides = (s.guide_x, s.guide_y);
+                                self.ed.snap_guides = (s.guide_x, s.guide_y);
                             }
                         }
                         for (id, xf) in orig {
@@ -875,9 +875,9 @@ impl App {
                     }
                     Drag::NodeMove { start, orig } => {
                         let (mut dx, mut dy) = (w.x - start.x, w.y - start.y);
-                        if self.snap {
-                            dx = (dx / self.grid).round() * self.grid;
-                            dy = (dy / self.grid).round() * self.grid;
+                        if self.ed.snap {
+                            dx = (dx / self.ed.grid).round() * self.ed.grid;
+                            dy = (dy / self.ed.grid).round() * self.ed.grid;
                         }
                         let orig = orig.clone();
                         for ((id, ci, ni), n0) in orig {
@@ -915,9 +915,9 @@ impl App {
                     }
                     Drag::Create { start } => {
                         let end = self.snapped(w);
-                        let st = Stroke::new(self.grid_prefs.line_width, col(self.active_layer));
+                        let st = Stroke::new(self.ed.grid_prefs.line_width, col(self.ed.active_layer));
                         let (a, b) = (self.w2s(o, *start), self.w2s(o, end));
-                        match self.tool {
+                        match self.ed.tool {
                             Tool::Rect => {
                                 painter.rect_stroke(egui::Rect::from_two_pos(a, b), 0.0, st, egui::StrokeKind::Middle);
                             }
@@ -933,9 +933,9 @@ impl App {
                             }
                             Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart | Tool::Spiral => {
                                 let r = egui::Rect::from_two_pos(a, b);
-                                let (wm, hm) = ((r.width() / self.view.zoom) as f64, (r.height() / self.view.zoom) as f64);
+                                let (wm, hm) = ((r.width() / self.ed.view.zoom) as f64, (r.height() / self.ed.view.zoom) as f64);
                                 if let Some(ct) = self.auto_contour(wm, hm) {
-                                    let pts: Vec<Pos2> = ct.flatten(0.1).pts.iter().map(|p| r.min + egui::vec2(p.x as f32 * self.view.zoom, p.y as f32 * self.view.zoom)).collect();
+                                    let pts: Vec<Pos2> = ct.flatten(0.1).pts.iter().map(|p| r.min + egui::vec2(p.x as f32 * self.ed.view.zoom, p.y as f32 * self.ed.view.zoom)).collect();
                                     painter.add(if ct.closed { egui::Shape::closed_line(pts, st) } else { egui::Shape::line(pts, st) });
                                 }
                             }
@@ -948,21 +948,21 @@ impl App {
             }
         }
         // Guide lines of the object snapping, through the whole work area.
-        if self.drag.is_some() {
+        if self.ed.drag.is_some() {
             let st = Stroke::new(1.0, Color32::from_rgb(0xe0, 0x30, 0xc0));
-            if let Some(x) = self.snap_guides.0 {
+            if let Some(x) = self.ed.snap_guides.0 {
                 let sx = self.w2s(o, Pt::new(x, 0.0)).x;
                 painter.line_segment([Pos2::new(sx, bed.min.y), Pos2::new(sx, bed.max.y)], st);
             }
-            if let Some(y) = self.snap_guides.1 {
+            if let Some(y) = self.ed.snap_guides.1 {
                 let sy = self.w2s(o, Pt::new(0.0, y)).y;
                 painter.line_segment([Pos2::new(bed.min.x, sy), Pos2::new(bed.max.x, sy)], st);
             }
         }
         if resp.drag_stopped_by(PointerButton::Primary) {
-            self.snap_guides = (None, None);
-            self.snap_targets = None;
-            if let (Some(d), Some(m)) = (self.drag.take(), hpos) {
+            self.ed.snap_guides = (None, None);
+            self.ed.snap_targets = None;
+            if let (Some(d), Some(m)) = (self.ed.drag.take(), hpos) {
                 let w = self.s2w(o, m);
                 match d {
                     Drag::Marquee { start } => {
@@ -970,8 +970,8 @@ impl App {
                         let hits = self.marquee_hits(&r, w.x >= start.x);
                         for id in hits {
                             for m in self.doc.group_of(id) {
-                                if !self.sel.contains(&m) {
-                                    self.sel.push(m);
+                                if !self.ed.sel.contains(&m) {
+                                    self.ed.sel.push(m);
                                 }
                             }
                         }
@@ -989,22 +989,22 @@ impl App {
                             }
                         }
                         for h in hits {
-                            if !self.node_sel.contains(&h) {
-                                self.node_sel.push(h);
+                            if !self.ed.node_sel.contains(&h) {
+                                self.ed.node_sel.push(h);
                             }
                         }
                     }
                     Drag::Create { start } => {
                         let mut end = self.snapped(w);
-                        if shift && matches!(self.tool, Tool::Rect | Tool::Ellipse | Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart | Tool::Spiral) {
+                        if shift && matches!(self.ed.tool, Tool::Rect | Tool::Ellipse | Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart | Tool::Spiral) {
                             let s = (end.x - start.x).abs().max((end.y - start.y).abs());
                             end = Pt::new(start.x + s * (end.x - start.x).signum(), start.y + s * (end.y - start.y).signum());
                         }
                         let r = Rect::from_pts([start, end]).unwrap();
                         if r.width().max(r.height()) > 0.2 {
                             self.checkpoint();
-                            let layer = self.active_layer;
-                            let id = match self.tool {
+                            let layer = self.ed.active_layer;
+                            let id = match self.ed.tool {
                                 Tool::Rect => self.doc.add(layer, Kind::Rect { w: r.width(), h: r.height() }, Xf::translate(r.min.x, r.min.y)),
                                 Tool::Ellipse => self.doc.add(layer, Kind::Ellipse { w: r.width(), h: r.height() }, Xf::translate(r.min.x, r.min.y)),
                                 Tool::Triangle | Tool::Star | Tool::Polygon | Tool::Heart | Tool::Spiral => match self.auto_contour(r.width(), r.height()) {
@@ -1013,10 +1013,10 @@ impl App {
                                 },
                                 _ => self.doc.add(layer, Kind::Path(vec![Polyline::new(vec![start, end], false)]), Xf::IDENTITY),
                             };
-                            self.sel = vec![id];
-                            if matches!(self.tool, Tool::Polygon | Tool::Spiral) {
+                            self.ed.sel = vec![id];
+                            if matches!(self.ed.tool, Tool::Polygon | Tool::Spiral) {
                                 // The small window stays while the tool is active; its number now edits this shape.
-                                self.last_param = Some((self.tool, id, r.width(), r.height()));
+                                self.ed.last_param = Some((self.ed.tool, id, r.width(), r.height()));
                             }
                         }
                     }
@@ -1026,9 +1026,9 @@ impl App {
         }
 
         // pen preview
-        if self.tool == Tool::Pen && !self.pen_pts.is_empty() {
-            let st = Stroke::new(self.grid_prefs.line_width, col(self.active_layer));
-            let mut pts: Vec<Pos2> = self.pen_pts.iter().map(|p| self.w2s(o, *p)).collect();
+        if self.ed.tool == Tool::Pen && !self.ed.pen_pts.is_empty() {
+            let st = Stroke::new(self.ed.grid_prefs.line_width, col(self.ed.active_layer));
+            let mut pts: Vec<Pos2> = self.ed.pen_pts.iter().map(|p| self.w2s(o, *p)).collect();
             if let Some(m) = mouse {
                 pts.push(m);
             }
@@ -1042,12 +1042,12 @@ impl App {
 
         // Floating node-editing toolbar: it goes away when you click another window, such as the preview, and comes
         // back when you click the work area again.
-        if self.tool != Tool::Node {
-            self.node_bar_active = true;
+        if self.ed.tool != Tool::Node {
+            self.ed.node_bar_active = true;
         } else if let Some(p) = ui.input(|i| if i.pointer.any_pressed() { i.pointer.interact_pos() } else { None }) {
-            self.node_bar_active = ui.ctx().layer_id_at(p).map_or(true, |l| l.order == egui::Order::Background || l.id == egui::Id::new("node_bar"));
+            self.ed.node_bar_active = ui.ctx().layer_id_at(p).map_or(true, |l| l.order == egui::Order::Background || l.id == egui::Id::new("node_bar"));
         }
-        if self.tool == Tool::Node && self.node_bar_active {
+        if self.ed.tool == Tool::Node && self.ed.node_bar_active {
             let ctx = ui.ctx().clone();
             egui::Area::new(egui::Id::new("node_bar")).order(egui::Order::Middle).fixed_pos(rect.min + egui::vec2(28.0, 26.0)).show(&ctx, |ui| {
                 egui::Frame::popup(ui.style()).show(ui, |ui| {
@@ -1065,7 +1065,7 @@ impl App {
         // Work in display units: `k` is millimetres per unit, `z` pixels per millimetre.
         let units = self.doc.device.units;
         let k = units.to_mm(1.0);
-        let z = self.view.zoom as f64;
+        let z = self.ed.view.zoom as f64;
         let major = nice_step(60.0 / (z * k));
         let minor = major / 5.0;
         let decimals = if major >= 1.0 { 0 } else { (-major.log10()).ceil() as usize };
@@ -1073,10 +1073,10 @@ impl App {
         let font = egui::FontId::proportional(9.5);
         let tick = Stroke::new(1.0, theme::text_dim());
         // horizontal
-        let (x0, x1) = ((-self.view.pan.x) as f64 / (z * k), (rect.width() - self.view.pan.x) as f64 / (z * k));
+        let (x0, x1) = ((-self.ed.view.pan.x) as f64 / (z * k), (rect.width() - self.ed.view.pan.x) as f64 / (z * k));
         let mut v = (x0 / minor).floor() * minor;
         while v <= x1 {
-            let sx = rect.min.x + self.view.pan.x + (v * k * z) as f32;
+            let sx = rect.min.x + self.ed.view.pan.x + (v * k * z) as f32;
             let is_major = ((v / major).round() * major - v).abs() < minor * 0.01;
             if sx > rect.min.x + t {
                 painter.line_segment([Pos2::new(sx, rect.min.y + if is_major { 2.0 } else { 12.0 }), Pos2::new(sx, rect.min.y + t)], tick);
@@ -1086,10 +1086,10 @@ impl App {
             }
             v += minor;
         }
-        let (y0, y1) = ((-self.view.pan.y) as f64 / (z * k), (rect.height() - self.view.pan.y) as f64 / (z * k));
+        let (y0, y1) = ((-self.ed.view.pan.y) as f64 / (z * k), (rect.height() - self.ed.view.pan.y) as f64 / (z * k));
         let mut v = (y0 / minor).floor() * minor;
         while v <= y1 {
-            let sy = rect.min.y + self.view.pan.y + (v * k * z) as f32;
+            let sy = rect.min.y + self.ed.view.pan.y + (v * k * z) as f32;
             let is_major = ((v / major).round() * major - v).abs() < minor * 0.01;
             if sy > rect.min.y + t {
                 painter.line_segment([Pos2::new(rect.min.x + if is_major { 2.0 } else { 12.0 }, sy), Pos2::new(rect.min.x + t, sy)], tick);

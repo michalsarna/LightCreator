@@ -95,7 +95,7 @@ fn render_screenshots() {
         a.select_all();
         a.preview_on = true;
         a.side_tab = SideTab::Properties;
-        a.view.need_fit = true;
+        a.ed.view.need_fit = true;
         // Keep local paths and ports out of the pictures.
         a.status = "Imported 4 paths from badge.svg".into();
         a.ports = vec!["/dev/ttyUSB0".into()];
@@ -105,10 +105,10 @@ fn render_screenshots() {
     save(&mut h, "02-editor-properties.png");
 
     // The same selection in turn / slant mode: blue round and diamond handles.
-    app(&mut h).rotate_mode = true;
+    app(&mut h).ed.rotate_mode = true;
     h.run_steps(2);
     save(&mut h, "28-rotate-mode.png");
-    app(&mut h).rotate_mode = false;
+    app(&mut h).ed.rotate_mode = false;
     h.run_steps(2);
 
     // The question asked when closing with unsaved work.
@@ -174,10 +174,10 @@ fn render_screenshots() {
         a.doc.scene.shapes.clear();
         a.preview_on = false;
         let id = a.doc.add(2, Kind::Ellipse { w: 120.0, h: 70.0 }, Xf::translate(40.0, 60.0));
-        a.sel = vec![id];
-        a.tool = Tool::Node;
+        a.ed.sel = vec![id];
+        a.ed.tool = Tool::Node;
         a.nodes_prepare();
-        a.node_sel = vec![(id, 0, 0), (id, 0, 1)];
+        a.ed.node_sel = vec![(id, 0, 0), (id, 0, 1)];
         a.side_tab = SideTab::Properties;
         a.status = "Ready".into();
     }
@@ -185,14 +185,14 @@ fn render_screenshots() {
 
     {
         let a = app(&mut h);
-        a.tool = Tool::Select;
+        a.ed.tool = Tool::Select;
         a.doc.scene.shapes.clear();
-        a.node_sel.clear();
+        a.ed.node_sel.clear();
         let t = TextData { text: "LightCreator\nlaser studio".into(), size: 22.0, bold: false, ..TextData::default() };
         let id = a.doc.add(0, Kind::Text(t), Xf::translate(30.0, 40.0));
         let ring = a.doc.add(5, Kind::Rect { w: 190.0, h: 80.0 }, Xf::translate(20.0, 30.0));
         let _ = ring;
-        a.sel = vec![id];
+        a.ed.sel = vec![id];
     }
     save(&mut h, "08-text.png");
 
@@ -210,10 +210,10 @@ fn render_screenshots() {
         let im = ImageData { name: "photo.png".into(), px_w: w, px_h: hh, gray, w: 96.0, h: 64.0, invert: false };
         a.doc.layers[0].interval = 0.4;
         let id = a.doc.add(0, Kind::Image(im), Xf::translate(60.0, 60.0));
-        a.sel = vec![id];
+        a.ed.sel = vec![id];
         a.preview_on = true;
         a.side_tab = SideTab::Layers;
-        a.active_layer = 0;
+        a.ed.active_layer = 0;
     }
     save(&mut h, "09-image.png");
 
@@ -241,7 +241,7 @@ fn render_screenshots() {
         }
         a.overlay_edit = true;
         let id = a.doc.add(0, Kind::Text(TextData { text: "Hello".into(), size: 40.0, ..TextData::default() }), Xf::translate(110.0, 150.0));
-        a.sel = vec![id];
+        a.ed.sel = vec![id];
         a.show_overlay = true;
         a.status = "Ready".into();
     }
@@ -266,7 +266,7 @@ fn render_screenshots() {
         a.doc.add(5, Kind::Rect { w: 70.0, h: 50.0 }, Xf::translate(140.0, 30.0));
         a.doc.add(1, Kind::Rect { w: 190.0, h: 120.0 }, Xf::translate(25.0, 20.0));
         a.doc.add(0, Kind::Text(TextData { text: "LightCreator".into(), size: 18.0, ..TextData::default() }), Xf::translate(40.0, 110.0));
-        a.sel.clear();
+        a.ed.sel.clear();
         a.touch();
         a.show_preview = true;
         a.pv.show_travel = true;
@@ -306,7 +306,7 @@ fn render_screenshots() {
             invert: false,
         };
         let id = a.doc.add(0, Kind::Image(im), Xf::translate(60.0, 60.0));
-        a.sel = vec![id];
+        a.ed.sel = vec![id];
         a.open_trace();
     }
     save(&mut h, "14-trace.png");
@@ -314,14 +314,14 @@ fn render_screenshots() {
         let a = app(&mut h);
         a.trace_dlg = None;
         a.doc.scene.shapes.clear();
-        a.grid_prefs.minor_on = true;
-        a.grid_prefs.minor_mm = 5.0;
-        a.grid_prefs.minor_color = [0xc8, 0xd8, 0xf0, 0xff];
-        a.grid_prefs.main_color = [0x90, 0xa8, 0xd0, 0xff];
-        a.grid = 20.0;
+        a.ed.grid_prefs.minor_on = true;
+        a.ed.grid_prefs.minor_mm = 5.0;
+        a.ed.grid_prefs.minor_color = [0xc8, 0xd8, 0xf0, 0xff];
+        a.ed.grid_prefs.main_color = [0x90, 0xa8, 0xd0, 0xff];
+        a.ed.grid = 20.0;
         a.show_prefs = true;
         a.side_tab = SideTab::Layers;
-        a.active_layer = 2;
+        a.ed.active_layer = 2;
         a.show_all_layers = false;
         let l = a.doc.add(2, Kind::Rect { w: 40.0, h: 30.0 }, Xf::translate(40.0, 40.0));
         let _ = l;
@@ -336,8 +336,8 @@ fn render_screenshots() {
         let a = app(&mut h);
         a.show_prefs = false;
         a.doc.scene.shapes.clear();
-        a.grid_prefs.minor_on = false;
-        a.grid = 10.0;
+        a.ed.grid_prefs.minor_on = false;
+        a.ed.grid = 10.0;
         a.side_tab = SideTab::Properties;
         let add = |a: &mut App, ct: lc_core::Contour, x: f64, layer: usize| {
             a.doc.add(layer, Kind::Bezier(vec![ct]), Xf::translate(x, 60.0))
@@ -346,10 +346,10 @@ fn render_screenshots() {
         add(a, lc_core::Contour::star(5, 0.382, 60.0, 57.0), 110.0, 5);
         add(a, lc_core::Contour::heart(60.0, 54.0), 270.0, 2);
         let id = add(a, lc_core::Contour::polygon(9, 60.0, 60.0), 190.0, 1);
-        a.sel = vec![id];
-        a.tool = Tool::Polygon;
-        a.polygon_sides = 9;
-        a.show_shape_popup = true;
+        a.ed.sel = vec![id];
+        a.ed.tool = Tool::Polygon;
+        a.ed.polygon_sides = 9;
+        a.ed.show_shape_popup = true;
     }
     save(&mut h, "16-shapes.png");
 
@@ -357,10 +357,10 @@ fn render_screenshots() {
     {
         let a = app(&mut h);
         a.show_prefs = false;
-        a.show_shape_popup = false;
-        a.grid_prefs = crate::prefs::GridPrefs::default();
-        a.grid = 10.0;
-        a.tool = Tool::Select;
+        a.ed.show_shape_popup = false;
+        a.ed.grid_prefs = crate::prefs::GridPrefs::default();
+        a.ed.grid = 10.0;
+        a.ed.tool = Tool::Select;
         a.doc.scene.shapes.clear();
         a.doc.device.cameras = vec![lc_core::CameraSource::url("Camera 1", "http://127.0.0.1:9/stream.mjpg", 1)];
         a.stream_mode = crate::stream_ui::StreamMode::Tab;
@@ -396,8 +396,8 @@ fn render_screenshots() {
         let a = app(&mut h);
         a.show_ser2net_off();
         a.doc.scene.shapes.clear();
-        a.grid_prefs = crate::prefs::GridPrefs::default();
-        a.grid = 20.0;
+        a.ed.grid_prefs = crate::prefs::GridPrefs::default();
+        a.ed.grid = 20.0;
         a.show_prefs = false;
         a.show_stream = false;
         a.side_tab = SideTab::Layers;
@@ -406,9 +406,9 @@ fn render_screenshots() {
         a.doc.layers[5].name = "Engrave".into();
         let r = a.doc.add(2, Kind::Rect { w: 70.0, h: 45.0 }, Xf::translate(40.0, 40.0));
         a.doc.add(5, Kind::Ellipse { w: 60.0, h: 45.0 }, Xf::translate(150.0, 40.0));
-        a.sel = vec![r];
+        a.ed.sel = vec![r];
         a.lock_selection(true);
-        a.active_layer = 2;
+        a.ed.active_layer = 2;
         a.layer_dlg = Some(2);
         a.status = "Locked 1 object(s).".into();
     }
@@ -458,13 +458,13 @@ fn render_screenshots() {
         a.doc.scene.shapes.clear();
         a.doc.layers[2].name = "C02".into();
         let r = a.doc.add(2, Kind::Rect { w: 80.0, h: 50.0 }, Xf::translate(40.0, 50.0));
-        a.sel = vec![r];
+        a.ed.sel = vec![r];
         a.fillet_radius = 8.0;
         a.round_corners(8.0);
         let tri = a.doc.add(5, Kind::Bezier(vec![lc_core::Contour::triangle(60.0, 50.0)]), Xf::translate(150.0, 50.0));
-        a.sel = vec![tri];
+        a.ed.sel = vec![tri];
         a.round_corners(6.0);
-        a.sel.clear();
+        a.ed.sel.clear();
         a.show_round = true;
         a.show_guide = true;
         a.status = "Rounded 3 corner(s).".into();
@@ -590,8 +590,8 @@ fn node_bar_hides_when_another_window_is_clicked() {
         a.cfg = None;
         a.enter_editor(0);
         a.doc.add(0, Kind::Rect { w: 40.0, h: 30.0 }, Xf::translate(60.0, 60.0));
-        a.tool = Tool::Node;
-        a.sel = vec![a.doc.scene.shapes[0].id];
+        a.ed.tool = Tool::Node;
+        a.ed.sel = vec![a.doc.scene.shapes[0].id];
         a.show_preview = true;
     }
     h.run_steps(4);
@@ -602,21 +602,21 @@ fn node_bar_hides_when_another_window_is_clicked() {
         h.event(Event::PointerButton { pos, button: PointerButton::Primary, pressed: true, modifiers: Modifiers::NONE });
         h.event(Event::PointerButton { pos, button: PointerButton::Primary, pressed: false, modifiers: Modifiers::NONE });
     };
-    assert!(app(&mut h).node_bar_active, "shown while editing nodes");
+    assert!(app(&mut h).ed.node_bar_active, "shown while editing nodes");
     // A click inside the preview window hides the bar.
     press(&h, 800.0, 400.0);
     h.run_steps(3);
-    assert!(!app(&mut h).node_bar_active, "the bar goes away");
+    assert!(!app(&mut h).ed.node_bar_active, "the bar goes away");
     assert_ne!(ctx.layer_id_at(eframe::egui::pos2(150.0, 122.0)).map(|l| l.id), Some(eframe::egui::Id::new("node_bar")));
     // A click on the work area brings it back.
     press(&h, 150.0, 400.0);
     h.run_steps(3);
-    assert!(app(&mut h).node_bar_active, "and returns");
+    assert!(app(&mut h).ed.node_bar_active, "and returns");
     // Leaving the node tool resets it for the next time.
-    app(&mut h).tool = Tool::Select;
-    app(&mut h).node_bar_active = false;
+    app(&mut h).ed.tool = Tool::Select;
+    app(&mut h).ed.node_bar_active = false;
     h.run_steps(2);
-    assert!(app(&mut h).node_bar_active);
+    assert!(app(&mut h).ed.node_bar_active);
 }
 
 /// Clicking a handle of the selection swaps resizing for turning (corners) and slanting (edges).
@@ -637,15 +637,15 @@ fn clicking_a_handle_switches_between_resize_and_rotate() {
         a.cfg = None;
         a.enter_editor(0);
         a.doc.add(0, Kind::Rect { w: 40.0, h: 40.0 }, Xf::translate(100.0, 100.0));
-        a.tool = Tool::Select;
-        a.sel = vec![a.doc.scene.shapes[0].id];
-        a.view.auto_fit = false;
+        a.ed.tool = Tool::Select;
+        a.ed.sel = vec![a.doc.scene.shapes[0].id];
+        a.ed.view.auto_fit = false;
     }
     h.run_steps(4);
     // Screen position of a point of the design.
     let at = |h: &mut Shot, x: f64, y: f64| {
         let a = app(h);
-        a.canvas_origin + a.view.pan + eframe::egui::vec2(x as f32 * a.view.zoom, y as f32 * a.view.zoom)
+        a.ed.canvas_origin + a.ed.view.pan + eframe::egui::vec2(x as f32 * a.ed.view.zoom, y as f32 * a.ed.view.zoom)
     };
     let button = |h: &Shot, pos: eframe::egui::Pos2, pressed: bool| h.event(Event::PointerButton { pos, button: PointerButton::Primary, pressed, modifiers: Modifiers::NONE });
     // A plain click on the bottom right corner handle turns the handles into rotate / skew handles.
@@ -654,7 +654,7 @@ fn clicking_a_handle_switches_between_resize_and_rotate() {
     button(&h, corner, true);
     button(&h, corner, false);
     h.run_steps(3);
-    assert!(app(&mut h).rotate_mode, "first click swaps to rotating");
+    assert!(app(&mut h).ed.rotate_mode, "first click swaps to rotating");
     // Dragging that corner a quarter turn about the middle rotates the shape.
     let from = corner;
     let to = at(&mut h, 100.0, 140.0);
@@ -696,7 +696,7 @@ fn clicking_a_handle_switches_between_resize_and_rotate() {
     button(&h, corner, true);
     button(&h, corner, false);
     h.run_steps(3);
-    assert!(!app(&mut h).rotate_mode, "second click swaps back");
+    assert!(!app(&mut h).ed.rotate_mode, "second click swaps back");
 }
 
 /// A picture from the gallery placed on the work area and opened in the node tool.
@@ -722,7 +722,7 @@ fn render_clipart_node_editing() {
         let svg = crate::clipart_ui::BUILTIN_CLIPART.iter().find(|c| c.1 == "owl").map(|c| c.2).unwrap();
         a.clip.size_mm = 160.0;
         a.place_clip(svg, "owl");
-        a.view.need_fit = true;
+        a.ed.view.need_fit = true;
         a.start_node_edit();
         a.side_tab = SideTab::Properties;
         a.status = "Ready".into();
@@ -730,12 +730,12 @@ fn render_clipart_node_editing() {
     h.run_steps(4);
     {
         let a = app(&mut h);
-        let id = a.sel[0];
+        let id = a.ed.sel[0];
         let n = match &a.doc.shape(id).unwrap().kind {
             Kind::Bezier(cs) => cs[0].nodes.len().min(4),
             _ => 0,
         };
-        a.node_sel = (0..n).map(|k| (id, 0, k)).collect();
+        a.ed.node_sel = (0..n).map(|k| (id, 0, k)).collect();
     }
     h.run_steps(3);
     let img = h.render().expect("render");
@@ -763,23 +763,23 @@ fn fit_all_objects_shows_every_shape() {
         a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(120.0, 90.0));
     }
     h.run_steps(3);
-    let before = app(&mut h).view.zoom;
+    let before = app(&mut h).ed.view.zoom;
     let ctx = h.ctx.clone();
     app(&mut h).do_act(&ctx, crate::menu::Act::FitAll);
     h.run_steps(3);
     let a = app(&mut h);
-    assert!(a.view.zoom > before * 1.5, "zoomed in on the objects: {before} -> {}", a.view.zoom);
-    assert!(!a.view.auto_fit);
-    let (w, hh) = a.canvas_avail;
+    assert!(a.ed.view.zoom > before * 1.5, "zoomed in on the objects: {before} -> {}", a.ed.view.zoom);
+    assert!(!a.ed.view.auto_fit);
+    let (w, hh) = a.ed.canvas_avail;
     for p in [(20.0f32, 20.0f32), (130.0, 100.0)] {
-        let (x, y) = (p.0 * a.view.zoom + a.view.pan.x, p.1 * a.view.zoom + a.view.pan.y);
+        let (x, y) = (p.0 * a.ed.view.zoom + a.ed.view.pan.x, p.1 * a.ed.view.zoom + a.ed.view.pan.y);
         assert!(x > 0.0 && x < w && y > 0.0 && y < hh, "({x}, {y}) inside {w} x {hh}");
     }
     // The work-area button brings the whole bed back and keeps it fitted.
     app(&mut h).do_act(&ctx, crate::menu::Act::FitBed);
     h.run_steps(3);
     let a = app(&mut h);
-    assert!(a.view.auto_fit && (a.view.zoom - before).abs() < 0.01 * before.max(1.0));
+    assert!(a.ed.view.auto_fit && (a.ed.view.zoom - before).abs() < 0.01 * before.max(1.0));
 }
 
 /// The Space key really switches to the hand tool while it is held down.
@@ -797,15 +797,15 @@ fn space_key_pans_while_held() {
         let a = app(&mut h);
         a.profiles = vec![Device::default()];
         a.enter_editor(0);
-        a.tool = Tool::Rect;
+        a.ed.tool = Tool::Rect;
     }
     h.run_steps(2);
     h.key_down(eframe::egui::Key::Space);
     h.run_steps(2);
-    assert_eq!(app(&mut h).tool, Tool::Pan, "hand tool while Space is held");
+    assert_eq!(app(&mut h).ed.tool, Tool::Pan, "hand tool while Space is held");
     h.key_up(eframe::egui::Key::Space);
     h.run_steps(2);
-    assert_eq!(app(&mut h).tool, Tool::Rect, "back to the rectangle tool");
+    assert_eq!(app(&mut h).ed.tool, Tool::Rect, "back to the rectangle tool");
 }
 
 /// Renders every embedded icon (`target/menu-icons.png`) so the whole set can be checked by eye.
@@ -848,24 +848,24 @@ fn work_area_follows_window_resizes() {
         a.enter_editor(0);
     }
     h.run_steps(3);
-    let big = app(&mut h).view.zoom;
+    let big = app(&mut h).ed.view.zoom;
     h.set_size(eframe::egui::vec2(700.0, 520.0));
     h.run_steps(3);
-    let small = app(&mut h).view.zoom;
+    let small = app(&mut h).ed.view.zoom;
     assert!(small < big * 0.8, "zoom shrinks with the window: {big} -> {small}");
     h.set_size(eframe::egui::vec2(1400.0, 900.0));
     h.run_steps(3);
-    let bigger = app(&mut h).view.zoom;
+    let bigger = app(&mut h).ed.view.zoom;
     assert!(bigger > big, "zoom grows with the window: {big} -> {bigger}");
     // After a manual zoom the view is left alone.
     {
         let a = app(&mut h);
-        a.view.auto_fit = false;
-        a.view.zoom = 3.0;
+        a.ed.view.auto_fit = false;
+        a.ed.view.zoom = 3.0;
     }
     h.set_size(eframe::egui::vec2(900.0, 600.0));
     h.run_steps(3);
-    assert_eq!(app(&mut h).view.zoom, 3.0);
+    assert_eq!(app(&mut h).ed.view.zoom, 3.0);
 }
 
 /// The Escape key reaches the editor (the double-press logic itself is tested in `app`).
@@ -883,7 +883,7 @@ fn escape_key_reaches_the_editor() {
         let a = app(&mut h);
         a.profiles = vec![Device::default()];
         a.enter_editor(0);
-        a.tool = Tool::Rect;
+        a.ed.tool = Tool::Rect;
     }
     h.run_steps(2);
     h.key_press(eframe::egui::Key::Escape);

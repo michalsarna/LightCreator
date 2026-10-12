@@ -10,7 +10,7 @@ impl App {
     /// Make every selected shape an editable Bézier shape with its transform baked in.
     pub fn nodes_prepare(&mut self) {
         let todo: Vec<u64> = self
-            .sel
+            .ed.sel
             .iter()
             .copied()
             .filter(|id| {
@@ -21,8 +21,8 @@ impl App {
                 })
             })
             .collect();
-        let only_text_or_image = !self.sel.is_empty()
-            && self.sel.iter().all(|id| self.doc.shape(*id).is_some_and(|s| matches!(s.kind, Kind::Text(_) | Kind::Image { .. })));
+        let only_text_or_image = !self.ed.sel.is_empty()
+            && self.ed.sel.iter().all(|id| self.doc.shape(*id).is_some_and(|s| matches!(s.kind, Kind::Text(_) | Kind::Image { .. })));
         if only_text_or_image && self.status != tr("Convert text to curves, or trace the image, to edit its nodes.") {
             self.status = tr("Convert text to curves, or trace the image, to edit its nodes.").to_string();
         }
@@ -35,17 +35,17 @@ impl App {
                 s.to_bezier();
             }
         }
-        self.node_sel.clear();
+        self.ed.node_sel.clear();
     }
 
     /// Switch to the node tool for the selected shapes.
     pub fn start_node_edit(&mut self) {
-        if self.sel.is_empty() {
+        if self.ed.sel.is_empty() {
             self.status = tr("Select a shape first, then edit its nodes.").to_string();
             return;
         }
-        self.tool = crate::app::Tool::Node;
-        self.pen_pts.clear();
+        self.ed.tool = crate::app::Tool::Node;
+        self.ed.pen_pts.clear();
     }
 
     pub fn contour_mut(&mut self, id: u64, ci: usize) -> Option<&mut Contour> {
@@ -64,14 +64,14 @@ impl App {
 
     /// Selected nodes grouped per contour, highest index first (safe for removals).
     fn sel_sorted(&self) -> Vec<NodeRef> {
-        let mut v = self.node_sel.clone();
+        let mut v = self.ed.node_sel.clone();
         v.sort_by(|a, b| (b.0, b.1, b.2).cmp(&(a.0, a.1, a.2)));
         v.dedup();
         v
     }
 
     pub fn delete_nodes(&mut self) {
-        if self.node_sel.is_empty() {
+        if self.ed.node_sel.is_empty() {
             return;
         }
         self.checkpoint();
@@ -87,18 +87,18 @@ impl App {
             }
         }
         self.doc.scene.shapes.retain(|s| !matches!(&s.kind, Kind::Bezier(cs) if cs.is_empty()));
-        self.sel.retain(|id| self.doc.shape(*id).is_some());
-        self.node_sel.clear();
-        self.active_seg = None;
+        self.ed.sel.retain(|id| self.doc.shape(*id).is_some());
+        self.ed.node_sel.clear();
+        self.ed.active_seg = None;
         self.touch();
     }
 
     pub fn nodes_smooth(&mut self, smooth: bool) {
-        if self.node_sel.is_empty() {
+        if self.ed.node_sel.is_empty() {
             return;
         }
         self.checkpoint();
-        for (id, ci, ni) in self.node_sel.clone() {
+        for (id, ci, ni) in self.ed.node_sel.clone() {
             if let Some(c) = self.contour_mut(id, ci) {
                 if ni < c.nodes.len() {
                     if smooth {
@@ -114,8 +114,8 @@ impl App {
 
     /// Turn the segment after each selected node (or the clicked segment) into a line or a curve.
     pub fn segments_set(&mut self, curve: bool) {
-        let mut segs: Vec<NodeRef> = self.node_sel.clone();
-        if let Some(s) = self.active_seg {
+        let mut segs: Vec<NodeRef> = self.ed.node_sel.clone();
+        if let Some(s) = self.ed.active_seg {
             segs.push(s);
         }
         if segs.is_empty() {
@@ -144,7 +144,7 @@ impl App {
                 if let Some(c) = self.contour_mut(id, ci) {
                     if si < c.seg_count() {
                         let ni = c.insert_node(si, t);
-                        self.node_sel = vec![(id, ci, ni)];
+                        self.ed.node_sel = vec![(id, ci, ni)];
                     }
                 }
             }
@@ -158,16 +158,16 @@ impl App {
                         fresh.push((id, ci, ni));
                     }
                 }
-                self.node_sel = fresh;
+                self.ed.node_sel = fresh;
             }
         }
-        self.active_seg = None;
+        self.ed.active_seg = None;
         self.touch();
     }
 
     /// Close an open contour, or open a closed one at the selected node.
     pub fn nodes_toggle_closed(&mut self) {
-        let Some(&(id, ci, ni)) = self.node_sel.first() else { return };
+        let Some(&(id, ci, ni)) = self.ed.node_sel.first() else { return };
         self.checkpoint();
         if let Some(c) = self.contour_mut(id, ci) {
             if c.closed {
@@ -182,13 +182,13 @@ impl App {
                 c.closed = true;
             }
         }
-        self.node_sel.clear();
+        self.ed.node_sel.clear();
         self.touch();
     }
 
     pub fn node_bar(&mut self, ui: &mut egui::Ui) {
-        let has_nodes = !self.node_sel.is_empty();
-        let has_seg = has_nodes || self.active_seg.is_some();
+        let has_nodes = !self.ed.node_sel.is_empty();
+        let has_seg = has_nodes || self.ed.active_seg.is_some();
         if ui.add_enabled(has_nodes, egui::Button::new(tr("Corner"))).on_hover_text(tr("Make the selected nodes corners")).clicked() {
             self.nodes_smooth(false);
         }
@@ -202,7 +202,7 @@ impl App {
             self.segments_set(true);
         }
         if ui.add_enabled(has_seg, egui::Button::new(tr("Add node"))).on_hover_text(tr("Insert a node (or double-click a segment)")).clicked() {
-            let at = self.active_seg.map(|s| (s, 0.5));
+            let at = self.ed.active_seg.map(|s| (s, 0.5));
             self.nodes_insert(at);
         }
         if crate::window_ui::delete_button_enabled(ui, has_nodes, &tr("Delete node")).clicked() {
@@ -239,10 +239,10 @@ mod tests {
     fn delete_insert_and_undo_nodes() {
         let mut a = app();
         let id = a.doc.add(0, Kind::Ellipse { w: 20.0, h: 10.0 }, Xf::translate(5.0, 5.0));
-        a.sel = vec![id];
+        a.ed.sel = vec![id];
         a.nodes_prepare();
         assert_eq!(nodes_of(&a, id), 4);
-        a.node_sel = vec![(id, 0, 0)];
+        a.ed.node_sel = vec![(id, 0, 0)];
         a.delete_nodes();
         assert_eq!(nodes_of(&a, id), 3);
         a.do_undo();
@@ -250,7 +250,7 @@ mod tests {
         a.nodes_insert(Some(((id, 0, 1), 0.5)));
         assert_eq!(nodes_of(&a, id), 5);
         // Smooth then corner changes the flag only.
-        a.node_sel = vec![(id, 0, 2)];
+        a.ed.node_sel = vec![(id, 0, 2)];
         a.nodes_smooth(false);
         assert!(!a.node_at((id, 0, 2)).unwrap().smooth);
     }
@@ -260,7 +260,7 @@ mod tests {
         let mut a = app();
         let s1 = a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(0.0, 0.0));
         let s2 = a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(5.0, 0.0));
-        a.sel = vec![s1, s2];
+        a.ed.sel = vec![s1, s2];
         a.bool_op(BoolOp::Union);
         assert_eq!(a.doc.scene.shapes.len(), 1);
         let b = a.doc.scene.shapes[0].bounds().unwrap();
@@ -273,10 +273,10 @@ mod tests {
     fn offset_creates_a_new_shape() {
         let mut a = app();
         let s = a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(10.0, 10.0));
-        a.sel = vec![s];
+        a.ed.sel = vec![s];
         a.offset_selected(-1.0, true);
         assert_eq!(a.doc.scene.shapes.len(), 2);
-        let b = a.doc.shape(a.sel[0]).unwrap().bounds().unwrap();
+        let b = a.doc.shape(a.ed.sel[0]).unwrap().bounds().unwrap();
         assert!((b.width() - 8.0).abs() < 0.05, "{}", b.width());
     }
 
@@ -285,11 +285,11 @@ mod tests {
         let mut a = app();
         let svg = crate::clipart_ui::BUILTIN_CLIPART.iter().find(|c| c.1 == "cat").map(|c| c.2).expect("cat clipart");
         a.place_clip(svg, "cat");
-        let ids = a.sel.clone();
+        let ids = a.ed.sel.clone();
         assert!(!ids.is_empty());
         let before = a.doc.bounds_of(&ids).unwrap();
         // Entering the node tool bakes the placement scale into the nodes without moving anything.
-        a.tool = crate::app::Tool::Node;
+        a.ed.tool = crate::app::Tool::Node;
         a.nodes_prepare();
         for id in &ids {
             let s = a.doc.shape(*id).unwrap();
@@ -308,7 +308,7 @@ mod tests {
         };
         let n = count(&a);
         assert!(n > 3);
-        a.node_sel = vec![(id, 0, 1)];
+        a.ed.node_sel = vec![(id, 0, 1)];
         a.delete_nodes();
         assert_eq!(count(&a), n - 1);
         a.do_undo();
@@ -321,11 +321,11 @@ mod tests {
     fn edit_nodes_command_switches_tool_and_text_is_never_converted_silently() {
         let mut a = app();
         a.start_node_edit();
-        assert_eq!(a.tool, crate::app::Tool::Select, "needs a selection first");
+        assert_eq!(a.ed.tool, crate::app::Tool::Select, "needs a selection first");
         let t = a.doc.add(0, Kind::Text(lc_core::TextData::default()), Xf::IDENTITY);
-        a.sel = vec![t];
+        a.ed.sel = vec![t];
         a.start_node_edit();
-        assert_eq!(a.tool, crate::app::Tool::Node);
+        assert_eq!(a.ed.tool, crate::app::Tool::Node);
         a.nodes_prepare();
         assert!(matches!(a.doc.shape(t).unwrap().kind, Kind::Text(_)), "text stays text");
         assert!(a.status.contains("Convert text to curves"));

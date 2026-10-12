@@ -128,7 +128,7 @@ impl App {
         let mut open = true;
         let units = self.doc.device.units;
         let bed_fill = self.bed_fill();
-        let line_w = self.grid_prefs.line_width;
+        let line_w = self.ed.grid_prefs.line_width;
         let (bw, bh) = self.doc.device.work_size();
         let Some((_, job)) = self.pv.job.take() else { return };
         // A slim frame: the default window margin leaves a wide empty strip under the totals.

@@ -121,9 +121,9 @@ impl App {
     pub fn place_clip(&mut self, svg: &[u8], label: &str) {
         let (bw, bh) = self.doc.device.work_size();
         self.checkpoint();
-        match lc_core::clipart::import_clip(svg, &mut self.doc, self.active_layer, self.clip.size_mm, Pt::new(bw / 2.0, bh / 2.0)) {
+        match lc_core::clipart::import_clip(svg, &mut self.doc, self.ed.active_layer, self.clip.size_mm, Pt::new(bw / 2.0, bh / 2.0)) {
             Ok(ids) => {
-                self.sel = ids;
+                self.ed.sel = ids;
                 self.status = trf("Placed {}", &[&label]);
             }
             Err(e) => {
@@ -658,12 +658,12 @@ mod tests {
     #[test]
     fn placing_a_picture_uses_the_active_layer_and_selects_it() {
         let mut a = app();
-        a.active_layer = 5;
+        a.ed.active_layer = 5;
         a.clip.size_mm = 30.0;
         a.place_clip(BUILTIN_CLIPART[0].2, "x");
-        assert!(!a.sel.is_empty());
+        assert!(!a.ed.sel.is_empty());
         assert!(a.doc.scene.shapes.iter().all(|s| s.layer == 5));
-        let b = a.doc.bounds_of(&a.sel).unwrap();
+        let b = a.doc.bounds_of(&a.ed.sel).unwrap();
         assert!(b.center().dist(Pt::new(a.doc.device.work_size().0 / 2.0, a.doc.device.work_size().1 / 2.0)) < 1e-6);
         a.do_undo();
         assert!(a.doc.scene.shapes.is_empty(), "one undo removes the whole picture");

@@ -182,7 +182,7 @@ impl App {
             });
         });
         if let Some(ids) = select {
-            self.sel = ids;
+            self.ed.sel = ids;
         }
         if go {
             if let Some(d) = self.check_dlg.take() {
