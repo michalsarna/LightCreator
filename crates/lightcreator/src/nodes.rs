@@ -2,6 +2,8 @@
 #[cfg(test)]
 use crate::app::App;
 #[cfg(test)]
+use base_ui::clipart_ui::ClipGallery;
+#[cfg(test)]
 use base_ui::editor::EditorHost;
 #[cfg(test)]
 use lc_core::{Kind, Xf};

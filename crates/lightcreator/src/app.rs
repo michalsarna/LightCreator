@@ -1,3 +1,4 @@
+use base_ui::clipart_ui::ClipGallery;
 use base_ui::editor::EditorImages;
 use base_ui::editor::EditorCommands;
 use base_ui::editor::EditorCanvas;
@@ -333,7 +334,7 @@ impl App {
             focus_text: false,
             show_offset: false,
             show_prefs: false,
-            clip: crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(eframe::storage_dir("lightcreator").unwrap_or_else(std::env::temp_dir).join("clipart"))),
+            clip: crate::clipart_ui::new_state(lc_core::clipart::Library::open(eframe::storage_dir("lightcreator").unwrap_or_else(std::env::temp_dir).join("clipart"))),
             show_guide: false,
             guide_filter: String::new(),
             show_round: false,

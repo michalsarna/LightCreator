@@ -236,7 +236,7 @@ mod tests {
         std::fs::create_dir_all(clip.join("Mine")).unwrap();
         std::fs::write(clip.join("index.json"), "{}").unwrap();
         std::fs::write(clip.join("Mine/star.svg"), "<svg/>").unwrap();
-        a.clip = crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(clip));
+        a.clip = crate::clipart_ui::new_state(lc_core::clipart::Library::open(clip));
         a.profiles = vec![lc_core::Device::default()];
         let zip_path = dir.join("backup.zip");
         let n = a.write_backup(&zip_path).expect("backup written");
@@ -266,7 +266,7 @@ mod tests {
         std::fs::create_dir_all(clip.join("Mine")).unwrap();
         std::fs::write(clip.join("index.json"), "{\"items\":[]}").unwrap();
         std::fs::write(clip.join("Mine/star.svg"), "<svg/>").unwrap();
-        a.clip = crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(clip));
+        a.clip = crate::clipart_ui::new_state(lc_core::clipart::Library::open(clip));
         let mut dev = lc_core::Device::default();
         dev.name = "My laser".into();
         a.profiles = vec![dev];
@@ -276,7 +276,7 @@ mod tests {
         // A fresh program with nothing: no profiles, empty clipart folder.
         let mut b = App::build(&ctx, None, false);
         let fresh = dir.join("new/clipart");
-        b.clip = crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(fresh.clone()));
+        b.clip = crate::clipart_ui::new_state(lc_core::clipart::Library::open(fresh.clone()));
         b.profiles.clear();
         assert!(b.restore_backup(&ctx, &zip_path).is_ok());
         assert_eq!(b.profiles.len(), 1);

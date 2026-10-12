@@ -3,7 +3,6 @@ mod api_ui;
 mod app;
 mod check_ui;
 mod cam_test_ui;
-mod clip_net;
 mod clipart_ui;
 mod canvas;
 mod device_ui;
