@@ -2,6 +2,7 @@
 //!
 //! `cargo test -p lightcreator --release render_screenshots -- --ignored --nocapture`
 //! writes PNG files into `docs/screenshots/`.
+use base_ui::editor::EditorHost;
 use crate::app::{App, Screen, SideTab, Tool};
 use crate::i18n::{self, Lang};
 use crate::laser::{ConsoleLine, Dir};

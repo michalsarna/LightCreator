@@ -1,3 +1,4 @@
+use base_ui::editor::EditorHost;
 use crate::laser::{self, Cmd, ConsoleLine, Evt, LaserLink};
 use crate::units_ui::{drag_len, fmt_len};
 use crate::i18n::{self, tr, trf, Lang};
@@ -436,9 +437,6 @@ impl App {
             self.ed.sel.retain(|id| self.doc.shape(*id).is_some());
             self.touch();
         }
-    }
-    pub fn sel_bounds(&self) -> Option<Rect> {
-        self.doc.bounds_of(&self.ed.sel)
     }
     pub fn transform_selection(&mut self, xf: Xf) {
         for id in self.ed.sel.clone() {
@@ -1833,6 +1831,36 @@ pub fn fmt_clock(s: f64) -> String {
 pub fn fmt_time(s: f64) -> String {
     let s = s as u64;
     format!("{}:{:02}:{:02}", s / 3600, s / 60 % 60, s % 60)
+}
+
+impl base_ui::editor::EditorHost for App {
+    fn ed(&self) -> &base_ui::editor::EditorState {
+        &self.ed
+    }
+    fn ed_mut(&mut self) -> &mut base_ui::editor::EditorState {
+        &mut self.ed
+    }
+    fn scene(&self) -> &lc_core::Scene {
+        &self.doc.scene
+    }
+    fn scene_mut(&mut self) -> &mut lc_core::Scene {
+        &mut self.doc.scene
+    }
+    fn layer_visible(&self, layer: usize) -> bool {
+        self.doc.layers.get(layer).is_some_and(|l| l.visible)
+    }
+    fn checkpoint(&mut self) {
+        App::checkpoint(self)
+    }
+    fn touch(&mut self) {
+        App::touch(self)
+    }
+    fn say(&mut self, msg: String) {
+        self.status = msg;
+    }
+    fn said(&self) -> &str {
+        &self.status
+    }
 }
 
 impl eframe::App for App {

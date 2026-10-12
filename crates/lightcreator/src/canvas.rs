@@ -1,3 +1,4 @@
+use base_ui::editor::EditorHost;
 use crate::app::{App, Tool};
 use crate::menu::Act;
 use crate::theme;
@@ -35,121 +36,6 @@ fn col(i: usize) -> Color32 {
 
 
 impl App {
-    fn w2s(&self, o: Pos2, p: Pt) -> Pos2 {
-        o + self.ed.view.pan + egui::vec2(p.x as f32 * self.ed.view.zoom, p.y as f32 * self.ed.view.zoom)
-    }
-    fn s2w(&self, o: Pos2, s: Pos2) -> Pt {
-        let v = s - o - self.ed.view.pan;
-        Pt::new((v.x / self.ed.view.zoom) as f64, (v.y / self.ed.view.zoom) as f64)
-    }
-    fn snapped(&self, p: Pt) -> Pt {
-        if self.ed.snap {
-            let g = self.ed.grid;
-            Pt::new((p.x / g).round() * g, (p.y / g).round() * g)
-        } else {
-            p
-        }
-    }
-
-    fn hit_shape(&self, p: Pt) -> Option<u64> {
-        let tol = 5.0 / self.ed.view.zoom as f64;
-        let visible = || self.doc.scene.shapes.iter().rev().filter(|s| self.doc.layers[s.layer].visible);
-        if let Some(s) = visible().find(|s| s.polys().iter().any(|q| q.dist_to(p) <= tol)) {
-            return Some(s.id);
-        }
-        // Inside a closed shape: pick the smallest one that contains the point.
-        visible()
-            .filter_map(|s| {
-                let polys = s.polys();
-                let inside = polys.iter().filter(|q| q.closed).fold(false, |a, q| a ^ q.contains(p));
-                inside.then(|| (s.id, polys.iter().map(|q| q.area().abs()).sum::<f64>()))
-            })
-            .min_by(|a, b| a.1.partial_cmp(&b.1).unwrap())
-            .map(|(id, _)| id)
-    }
-
-    fn hit_handle(&self, o: Pos2, mouse: Pos2) -> Option<usize> {
-        let b = self.sel_bounds()?;
-        handle_pts(&b).iter().position(|h| self.w2s(o, *h).distance(mouse) <= 8.0)
-    }
-
-    /// Selected Bézier shapes with their id.
-    fn bezier_shapes(&self) -> Vec<(u64, &Vec<lc_core::Contour>)> {
-        self.ed.sel
-            .iter()
-            .filter_map(|id| {
-                let s = self.doc.shape(*id).filter(|s| !s.locked)?;
-                match &s.kind {
-                    Kind::Bezier(cs) => Some((*id, cs)),
-                    _ => None,
-                }
-            })
-            .collect()
-    }
-
-    fn hit_node(&self, o: Pos2, mouse: Pos2) -> Option<NodeRef> {
-        let mut best: Option<(f32, NodeRef)> = None;
-        for (id, cs) in self.bezier_shapes() {
-            for (ci, c) in cs.iter().enumerate() {
-                for (ni, n) in c.nodes.iter().enumerate() {
-                    let d = self.w2s(o, n.p).distance(mouse);
-                    if d <= 8.0 && best.map_or(true, |b| d < b.0) {
-                        best = Some((d, (id, ci, ni)));
-                    }
-                }
-            }
-        }
-        best.map(|b| b.1)
-    }
-
-    /// A handle of a selected node under the mouse: (node, is_outgoing).
-    fn hit_node_handle(&self, o: Pos2, mouse: Pos2) -> Option<(NodeRef, bool)> {
-        for r in &self.ed.node_sel {
-            let Some(n) = self.node_at(*r) else { continue };
-            if n.has_out() && self.w2s(o, n.hout).distance(mouse) <= 7.0 {
-                return Some((*r, true));
-            }
-            if n.has_in() && self.w2s(o, n.hin).distance(mouse) <= 7.0 {
-                return Some((*r, false));
-            }
-        }
-        None
-    }
-
-    /// The segment of a selected Bézier shape close to `w`: ((shape, contour, segment), t).
-    fn hit_segment(&self, w: Pt) -> Option<(NodeRef, f64)> {
-        let tol = 6.0 / self.ed.view.zoom as f64;
-        let mut best: Option<(f64, NodeRef, f64)> = None;
-        for (id, cs) in self.bezier_shapes() {
-            for (ci, c) in cs.iter().enumerate() {
-                if let Some((seg, t, d)) = c.nearest(w) {
-                    if d <= tol && best.map_or(true, |b| d < b.0) {
-                        best = Some((d, (id, ci, seg), t));
-                    }
-                }
-            }
-        }
-        best.map(|b| (b.1, b.2))
-    }
-
-    /// Upload image textures that are missing and drop those of deleted images.
-    fn ensure_textures(&mut self, ctx: &egui::Context) {
-        let mut keep = vec![];
-        for s in &self.doc.scene.shapes {
-            if let Kind::Image(im) = &s.kind {
-                let key = (s.id, im.invert);
-                keep.push(key);
-                if !self.ed.image_tex.contains_key(&key) {
-                    let px: Vec<u8> = if im.invert { im.gray.iter().map(|g| 255 - g).collect() } else { im.gray.clone() };
-                    let img = egui::ColorImage::from_gray([im.px_w as usize, im.px_h as usize], &px);
-                    let tex = ctx.load_texture(format!("img-{}-{}", s.id, im.invert), img, egui::TextureOptions::LINEAR);
-                    self.ed.image_tex.insert(key, tex);
-                }
-            }
-        }
-        self.ed.image_tex.retain(|k, _| keep.contains(k));
-    }
-
     /// Corner dragging for the camera overlay. Returns true while it owns the pointer.
     fn overlay_interact(&mut self, resp: &egui::Response, o: Pos2, press: Option<Pos2>, hpos: Option<Pos2>) -> bool {
         if !self.overlay_edit || self.overlay.is_none() {
@@ -177,28 +63,6 @@ impl App {
             return true;
         }
         false
-    }
-
-    /// Outline of the automatic shape for the active tool in a `w` x `h` mm box.
-    fn auto_contour(&self, w: f64, h: f64) -> Option<lc_core::Contour> {
-        match self.ed.tool {
-            Tool::Triangle => Some(lc_core::Contour::triangle(w, h)),
-            Tool::Star => Some(lc_core::Contour::star(5, 0.382, w, h)),
-            Tool::Polygon => Some(lc_core::Contour::polygon(self.ed.polygon_sides, w, h)),
-            Tool::Heart => Some(lc_core::Contour::heart(w, h)),
-            Tool::Spiral => Some(lc_core::Contour::spiral(self.ed.spiral_turns, w, h)),
-            _ => None,
-        }
-    }
-
-    fn finish_pen(&mut self, closed: bool) {
-        if self.ed.pen_pts.len() >= 2 {
-            self.checkpoint();
-            let pts = std::mem::take(&mut self.ed.pen_pts);
-            let id = self.doc.add(self.ed.active_layer, Kind::Path(vec![Polyline::new(pts, closed)]), Xf::IDENTITY);
-            self.ed.sel = vec![id];
-        }
-        self.ed.pen_pts.clear();
     }
 
     pub fn canvas(&mut self, ui: &mut egui::Ui) {

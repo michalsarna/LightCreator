@@ -1,4 +1,5 @@
 //! Document-level operations: boolean shape operations, offsetting, curve conversion, images and text.
+use base_ui::editor::EditorHost;
 use crate::app::App;
 use crate::i18n::{tr, trf};
 use crate::icons;
@@ -66,24 +67,6 @@ impl App {
         }
         self.ed.sel = made;
         self.ed.node_sel.clear();
-    }
-
-    /// Shapes picked by a selection rectangle: dragged left to right only what lies wholly inside,
-    /// right to left everything the rectangle touches. Groups are completed by the caller.
-    pub fn marquee_hits(&self, r: &lc_core::Rect, left_to_right: bool) -> Vec<u64> {
-        self.doc
-            .scene.shapes
-            .iter()
-            .filter(|s| self.doc.layers[s.layer].visible)
-            .filter(|s| {
-                if left_to_right {
-                    s.bounds().is_some_and(|b| r.contains(b.min) && r.contains(b.max))
-                } else {
-                    s.intersects_rect(r)
-                }
-            })
-            .map(|s| s.id)
-            .collect()
     }
 
     /// Group the selected shapes. Layers are untouched; a group moves, scales and selects as one.

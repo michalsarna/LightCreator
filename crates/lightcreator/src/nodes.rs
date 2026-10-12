@@ -1,8 +1,9 @@
 //! Bézier node editing: operations on the selected nodes and the node-tool bar.
+use base_ui::editor::EditorHost;
 use crate::app::App;
 use crate::i18n::tr;
 use eframe::egui;
-use lc_core::{Contour, Kind, Node, Xf};
+use lc_core::{Kind, Xf};
 
 pub use base_ui::editor::NodeRef;
 
@@ -46,20 +47,6 @@ impl App {
         }
         self.ed.tool = crate::app::Tool::Node;
         self.ed.pen_pts.clear();
-    }
-
-    pub fn contour_mut(&mut self, id: u64, ci: usize) -> Option<&mut Contour> {
-        match &mut self.doc.unlocked_mut(id)?.kind {
-            Kind::Bezier(cs) => cs.get_mut(ci),
-            _ => None,
-        }
-    }
-
-    pub fn node_at(&self, r: NodeRef) -> Option<Node> {
-        match &self.doc.shape(r.0)?.kind {
-            Kind::Bezier(cs) => cs.get(r.1)?.nodes.get(r.2).copied(),
-            _ => None,
-        }
     }
 
     /// Selected nodes grouped per contour, highest index first (safe for removals).

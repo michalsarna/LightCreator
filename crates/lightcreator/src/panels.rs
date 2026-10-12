@@ -1,3 +1,4 @@
+use base_ui::editor::EditorHost;
 use crate::app::{App, SideTab};
 use crate::units_ui::{drag_len, drag_speed};
 use crate::i18n::{tr, trf};
