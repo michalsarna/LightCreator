@@ -70,13 +70,13 @@ impl App {
     }
 
     pub fn open_adjust(&mut self) {
-        if let Some(Kind::Image(im)) = self.sel.first().and_then(|id| self.doc.shape(*id)).map(|s| s.kind.clone()) {
-            self.img_dlg = Some(ImgDlg::new(self.sel.first().copied(), im));
+        if let Some(Kind::Image(im)) = self.ed.sel.first().and_then(|id| self.doc.shape(*id)).map(|s| s.kind.clone()) {
+            self.img_dlg = Some(ImgDlg::new(self.ed.sel.first().copied(), im));
         }
     }
 
     pub fn open_trace(&mut self) {
-        let Some(id) = self.sel.first().copied() else { return };
+        let Some(id) = self.ed.sel.first().copied() else { return };
         if let Some(Kind::Image(im)) = self.doc.shape(id).map(|s| s.kind.clone()) {
             self.trace_dlg = Some(TraceDlg { shape: id, params: TraceParams::default(), delete_original: false, thumb: im.downscaled(600), tex: None, preview: vec![], shown: None });
         }
@@ -183,8 +183,8 @@ impl App {
                     self.checkpoint();
                     let (w, h) = (im.w, im.h);
                     let name = im.name.clone();
-                    let id = self.doc.add(self.active_layer, Kind::Image(im), Xf::translate(((bw - w) / 2.0).max(0.0), ((bh - h) / 2.0).max(0.0)));
-                    self.sel = vec![id];
+                    let id = self.doc.add(self.ed.active_layer, Kind::Image(im), Xf::translate(((bw - w) / 2.0).max(0.0), ((bh - h) / 2.0).max(0.0)));
+                    self.ed.sel = vec![id];
                     self.status = trf("Imported image {}", &[&name]);
                 }
             }
@@ -280,7 +280,7 @@ impl App {
         }
         let n = contours.len();
         let id = self.doc.add(shape.layer, Kind::Bezier(contours), Xf::IDENTITY);
-        self.sel = vec![id];
+        self.ed.sel = vec![id];
         self.status = trf("Traced {} outlines", &[&n]);
     }
 }

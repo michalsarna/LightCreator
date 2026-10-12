@@ -125,7 +125,7 @@ impl App {
             self.doc.select_material(self.doc.device.active_material);
         }
         self.touch();
-        self.view.need_fit = true;
+        self.ed.view.need_fit = true;
         self.screen = Screen::Editor;
         true
     }

@@ -1,60 +1,16 @@
+use base_ui::editor::EditorCommands;
+use base_ui::editor::EditorCanvas;
+use base_ui::editor::EditorHost;
 use crate::laser::{self, Cmd, ConsoleLine, Evt, LaserLink};
 use crate::units_ui::{drag_len, fmt_len};
 use crate::i18n::{self, tr, trf, Lang};
 use crate::menu::{menus, Act, Entry};
 use crate::theme::{self, Scheme};
 use eframe::egui::{self, Color32, Key, Modifiers, RichText};
-use lc_core::{gcode, svg, Document, Pt, Rect, Shape, Xf};
+use lc_core::{gcode, svg, Document, Pt, Shape, Xf};
 use std::path::PathBuf;
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
-pub enum Tool {
-    Select,
-    Node,
-    Rect,
-    Ellipse,
-    Triangle,
-    Star,
-    Polygon,
-    Heart,
-    Spiral,
-    Line,
-    Pen,
-    Text,
-    Pan,
-    Zoom,
-    ZoomOut,
-}
-
-impl Tool {
-    pub const ALL: [(Tool, &'static str, Key); 15] = [
-        (Tool::Select, "Select (V)", Key::V),
-        (Tool::Node, "Node edit (N)", Key::N),
-        (Tool::Rect, "Rectangle (R)", Key::R),
-        (Tool::Ellipse, "Ellipse (E)", Key::E),
-        (Tool::Triangle, "Triangle (Y)", Key::Y),
-        (Tool::Star, "Star (S)", Key::S),
-        (Tool::Polygon, "Polygon (G)", Key::G),
-        (Tool::Heart, "Heart (K)", Key::K),
-        (Tool::Spiral, "Spiral (I)", Key::I),
-        (Tool::Line, "Line (L)", Key::L),
-        (Tool::Pen, "Polyline / pen (P)", Key::P),
-        (Tool::Text, "Text (T)", Key::T),
-        (Tool::Pan, "Pan (H)", Key::H),
-        (Tool::Zoom, "Zoom in (Z)", Key::Z),
-        (Tool::ZoomOut, "Zoom out (X)", Key::X),
-    ];
-
-    /// Selecting and editing tools, kept apart from the tools that insert new objects.
-    pub fn is_edit(self) -> bool {
-        matches!(self, Tool::Select | Tool::Node)
-    }
-
-    /// View navigation tools, kept apart from the drawing and editing tools.
-    pub fn is_nav(self) -> bool {
-        matches!(self, Tool::Pan | Tool::Zoom | Tool::ZoomOut)
-    }
-}
+pub use base_ui::editor::{Tool, View};
 
 /// Human-facing release label (branch name matches it).
 pub const APP_VERSION: &str = "v0.1.5";
@@ -121,28 +77,13 @@ pub enum Screen {
     Editor,
 }
 
-pub struct View {
-    pub zoom: f32, // screen px per mm
-    pub pan: egui::Vec2,
-    pub need_fit: bool,
-    /// Keep the work area fitted to the window as it is resized. Zooming or panning by hand turns this off.
-    pub auto_fit: bool,
-}
-
 pub struct App {
     pub doc: Document,
+    /// The state of the editor itself (selection, tool, view, grid, snapping), shared with other applications.
+    pub ed: base_ui::editor::EditorState,
     pub undo: Vec<Document>,
     pub redo: Vec<Document>,
-    pub sel: Vec<u64>,
-    pub tool: Tool,
-    pub active_layer: usize,
-    pub view: View,
-    pub drag: Option<crate::canvas::Drag>,
-    pub pen_pts: Vec<Pt>,
-    pub clipboard: Vec<Shape>,
     pub path: Option<PathBuf>,
-    /// The selection handles turn and slant (true) instead of resizing (false); a click on a handle swaps them.
-    pub rotate_mode: bool,
     /// Most recently opened or saved project files, newest first (at most `MAX_RECENT`).
     pub recent: Vec<PathBuf>,
     pub status: String,
@@ -184,22 +125,13 @@ pub struct App {
     /// Look for a newer release on GitHub when the program starts.
     pub check_updates: bool,
     pub update: crate::update_ui::UpdateState,
-    pub show_grid: bool,
     /// Draw the no-go zones on the work area (kept between sessions).
     pub zones_visible: bool,
-    pub snap: bool,
-    /// Snap a moved selection to the edges and centres of the other objects (guides are drawn while it holds).
-    pub snap_objects: bool,
-    /// Boxes of the objects a drag can snap to (taken when the drag starts) and the guide lines now shown.
-    pub snap_targets: Option<Vec<Rect>>,
-    pub snap_guides: (Option<f64>, Option<f64>),
-    pub grid: f64,
     pub preview_on: bool,
     pub preview: Option<(u64, gcode::Job)>,
     pub lock_aspect: bool,
     pub rot_input: f64,
     pub show_all_layers: bool,
-    pub cursor_mm: Option<Pt>,
     pub last_layer_undo: f64,
     // dialogs
     pub show_device: bool,
@@ -212,29 +144,15 @@ pub struct App {
     pub show_array: bool,
     pub array: (u32, u32, f64, f64),
     pub show_about: bool,
-    pub node_sel: Vec<crate::nodes::NodeRef>,
-    pub active_seg: Option<crate::nodes::NodeRef>,
     pub text_default: lc_core::TextData,
     pub font_filter: String,
     pub focus_text: bool,
-    pub image_tex: std::collections::HashMap<(u64, bool), egui::TextureHandle>,
     pub show_offset: bool,
     pub show_prefs: bool,
-    /// The node-editing bar is shown while the canvas, the bar or the tool bars were the last thing clicked.
-    pub node_bar_active: bool,
-    /// The tool to return to when Space (temporary pan) is released.
-    pub space_prev: Option<Tool>,
-    /// Size in pixels of the canvas as last drawn.
-    pub canvas_avail: (f32, f32),
-    /// Top-left corner of the work area on screen, for tests and overlays.
-    pub canvas_origin: egui::Pos2,
-    /// Fit the view to all objects on the next frame.
-    pub fit_all_req: bool,
     pub clip: crate::clipart_ui::ClipState,
     pub show_guide: bool,
     pub guide_filter: String,
     pub show_round: bool,
-    pub fillet_radius: f64,
     pub esc_time: f64,
     pub layer_dlg: Option<usize>,
     pub show_stream: bool,
@@ -252,18 +170,11 @@ pub struct App {
     pub stream_tex: Option<egui::TextureHandle>,
     pub stream_err: String,
     pub stream_overlay: bool,
-    pub polygon_sides: u32,
-    /// The small window with the number of sides (polygon) or turns (spiral).
-    pub show_shape_popup: bool,
-    pub spiral_turns: u32,
-    /// The last polygon or spiral drawn: tool, shape id and the box it was drawn in. The popup edits it.
-    pub last_param: Option<(Tool, u64, f64, f64)>,
     pub read_cfg: Option<crate::device_ui::ReadCfg>,
     pub img_dlg: Option<crate::image_ui::ImgDlg>,
     pub trace_dlg: Option<crate::image_ui::TraceDlg>,
     pub show_preview: bool,
     pub pv: crate::preview_ui::PreviewState,
-    pub grid_prefs: crate::prefs::GridPrefs,
     pub overlay: Option<crate::overlay::Overlay>,
     pub overlay_visible: bool,
     pub overlay_edit: bool,
@@ -363,17 +274,16 @@ impl App {
         lc_core::text::preload();
         App {
             doc: Document::default(),
+            ed: base_ui::editor::EditorState {
+                snap_objects: saved("snap_objects").map(|v| v == "1").unwrap_or(false),
+                grid,
+                show_grid,
+                grid_prefs,
+                ..base_ui::editor::EditorState::new()
+            },
             undo: vec![],
             redo: vec![],
-            sel: vec![],
-            tool: Tool::Select,
-            active_layer: 0,
-            view: View { zoom: 2.0, pan: egui::vec2(40.0, 40.0), need_fit: true, auto_fit: true },
-            drag: None,
-            pen_pts: vec![],
-            clipboard: vec![],
             path: None,
-            rotate_mode: false,
             recent: saved("recent_files").and_then(|j| serde_json::from_str::<Vec<PathBuf>>(&j).ok()).unwrap_or_default().into_iter().take(crate::menu::MAX_RECENT).collect(),
             status: tr("Ready").into(),
             revision: 0,
@@ -402,19 +312,12 @@ impl App {
             show_options: false,
             check_updates: saved("check_updates").map(|v| v != "0").unwrap_or(true),
             update: Default::default(),
-            show_grid,
             zones_visible: saved("zones_visible").map(|v| v != "0").unwrap_or(true),
-            snap: false,
-            snap_objects: saved("snap_objects").map(|v| v == "1").unwrap_or(false),
-            snap_targets: None,
-            snap_guides: (None, None),
-            grid,
             preview_on: false,
             preview: None,
             lock_aspect: true,
             rot_input: 15.0,
             show_all_layers: false,
-            cursor_mm: None,
             last_layer_undo: -10.0,
             show_device: false,
             screen: Screen::Start,
@@ -426,24 +329,15 @@ impl App {
             show_array: false,
             array: (3, 3, 5.0, 5.0),
             show_about: false,
-            node_sel: vec![],
-            active_seg: None,
             text_default: lc_core::TextData::default(),
             font_filter: String::new(),
             focus_text: false,
-            image_tex: Default::default(),
             show_offset: false,
             show_prefs: false,
-            node_bar_active: true,
-            space_prev: None,
-            canvas_avail: (900.0, 600.0),
-            canvas_origin: egui::Pos2::ZERO,
-            fit_all_req: false,
             clip: crate::clipart_ui::ClipState::new(lc_core::clipart::Library::open(eframe::storage_dir("lightcreator").unwrap_or_else(std::env::temp_dir).join("clipart"))),
             show_guide: false,
             guide_filter: String::new(),
             show_round: false,
-            fillet_radius: 2.0,
             esc_time: -10.0,
             layer_dlg: None,
             show_stream: false,
@@ -459,16 +353,11 @@ impl App {
             stream_tex: None,
             stream_err: String::new(),
             stream_overlay: false,
-            polygon_sides: 6,
-            show_shape_popup: false,
-            spiral_turns: 3,
-            last_param: None,
             read_cfg: None,
             img_dlg: None,
             trace_dlg: None,
             show_preview: false,
             pv: Default::default(),
-            grid_prefs,
             overlay: None,
             overlay_visible: true,
             overlay_edit: false,
@@ -536,177 +425,34 @@ impl App {
     pub fn do_undo(&mut self) {
         if let Some(d) = self.undo.pop() {
             self.redo.push(std::mem::replace(&mut self.doc, d));
-            self.sel.retain(|id| self.doc.shape(*id).is_some());
+            self.ed.sel.retain(|id| self.doc.shape(*id).is_some());
             self.touch();
         }
     }
     pub fn do_redo(&mut self) {
         if let Some(d) = self.redo.pop() {
             self.undo.push(std::mem::replace(&mut self.doc, d));
-            self.sel.retain(|id| self.doc.shape(*id).is_some());
+            self.ed.sel.retain(|id| self.doc.shape(*id).is_some());
             self.touch();
         }
     }
-    pub fn sel_bounds(&self) -> Option<Rect> {
-        self.doc.bounds_of(&self.sel)
-    }
-    pub fn transform_selection(&mut self, xf: Xf) {
-        for id in self.sel.clone() {
-            if let Some(s) = self.doc.unlocked_mut(id) {
-                s.xf = s.xf.then(xf);
-            }
-        }
-        self.touch();
-    }
-    pub fn delete_selection(&mut self) {
-        if self.sel.is_empty() {
-            return;
-        }
-        self.checkpoint();
-        let sel = std::mem::take(&mut self.sel);
-        // Locked shapes survive and stay selected.
-        self.doc.scene.shapes.retain(|s| !sel.contains(&s.id) || s.locked);
-        self.sel = sel.into_iter().filter(|id| self.doc.shape(*id).is_some()).collect();
-    }
-    pub fn copy(&mut self) {
-        // A copy of a locked object is a normal, editable object.
-        self.clipboard = self.sel.iter().filter_map(|i| self.doc.shape(*i).cloned()).map(|mut s| { s.locked = false; s }).collect();
-    }
-    pub fn paste(&mut self) {
-        if self.clipboard.is_empty() {
-            return;
-        }
-        self.checkpoint();
-        self.sel.clear();
-        // Pasted groups get their own group ids so they do not merge with the originals.
-        let mut gmap: std::collections::HashMap<u64, u64> = Default::default();
-        for mut s in self.clipboard.clone() {
-            s.xf = s.xf.then(Xf::translate(5.0, 5.0));
-            if let Some(g) = s.group {
-                let doc = &mut self.doc;
-                s.group = Some(*gmap.entry(g).or_insert_with(|| doc.new_group_id()));
-            }
-            let id = self.doc.add_shape(s);
-            self.sel.push(id);
-        }
-        // Next paste lands a bit further away.
-        self.clipboard = self.sel.iter().filter_map(|i| self.doc.shape(*i).cloned()).collect();
-    }
-    pub fn duplicate(&mut self) {
-        self.copy();
-        self.paste();
-    }
-    pub fn select_all(&mut self) {
-        let vis: Vec<u64> = self.doc.scene.shapes.iter().filter(|s| self.doc.layers[s.layer].visible).map(|s| s.id).collect();
-        self.sel = vis;
-    }
     pub fn assign_layer(&mut self, layer: usize) {
-        self.active_layer = layer;
-        if !self.sel.is_empty() {
+        self.ed.active_layer = layer;
+        if !self.ed.sel.is_empty() {
             self.checkpoint();
-            for id in self.sel.clone() {
+            for id in self.ed.sel.clone() {
                 if let Some(s) = self.doc.unlocked_mut(id) {
                     s.layer = layer;
                 }
             }
         }
     }
-    pub fn align(&mut self, mode: u8) {
-        let Some(b) = self.sel_bounds() else { return };
-        // A single object aligns to the bed, several align to each other.
-        let target = if self.sel.len() == 1 {
-            Rect { min: Pt::new(0.0, 0.0), max: { let (w, h) = self.doc.device.work_size(); Pt::new(w, h) } }
-        } else {
-            b
-        };
-        self.checkpoint();
-        for id in self.sel.clone() {
-            let Some(sb) = self.doc.shape(id).and_then(|s| s.bounds()) else { continue };
-            let (dx, dy) = match mode {
-                0 => (target.min.x - sb.min.x, 0.0),
-                1 => (target.center().x - sb.center().x, 0.0),
-                2 => (target.max.x - sb.max.x, 0.0),
-                3 => (0.0, target.min.y - sb.min.y),
-                4 => (0.0, target.center().y - sb.center().y),
-                _ => (0.0, target.max.y - sb.max.y),
-            };
-            if let Some(s) = self.doc.unlocked_mut(id) {
-                s.xf = s.xf.then(Xf::translate(dx, dy));
-            }
-        }
-    }
-    /// Move the selected objects so that their centres coincide, at the centre of the whole selection. A group
-    /// counts as one object. With the small shape inside the large one, the large one stays where it is.
-    pub fn center_on_each_other(&mut self) {
-        let Some(all) = self.sel_bounds() else { return };
-        let target = all.center();
-        // Objects are single shapes or whole groups.
-        let mut units: Vec<Vec<u64>> = vec![];
-        for id in self.sel.clone() {
-            if units.iter().any(|u| u.contains(&id)) {
-                continue;
-            }
-            units.push(self.doc.group_of(id));
-        }
-        if units.len() < 2 {
-            return;
-        }
-        self.checkpoint();
-        for unit in units {
-            let Some(b) = self.doc.bounds_of(&unit) else { continue };
-            let t = Xf::translate(target.x - b.center().x, target.y - b.center().y);
-            for id in unit {
-                if let Some(s) = self.doc.unlocked_mut(id) {
-                    s.xf = s.xf.then(t);
-                }
-            }
-        }
-    }
-    pub fn flip(&mut self, horizontal: bool) {
-        if let Some(b) = self.sel_bounds() {
-            self.checkpoint();
-            let c = b.center();
-            self.transform_selection(if horizontal { Xf::scale_about(-1.0, 1.0, c) } else { Xf::scale_about(1.0, -1.0, c) });
-        }
-    }
-    pub fn rotate_sel(&mut self, deg: f64) {
-        if let Some(b) = self.sel_bounds() {
-            self.checkpoint();
-            self.transform_selection(Xf::rotate_about(deg.to_radians(), b.center()));
-        }
-    }
-    pub fn center_on_bed(&mut self) {
-        if let Some(b) = self.sel_bounds() {
-            self.checkpoint();
-            let (c, d) = (b.center(), &self.doc.device);
-            let (bw, bh) = d.work_size();
-            let t = Xf::translate(bw / 2.0 - c.x, bh / 2.0 - c.y);
-            self.transform_selection(t);
-        }
-    }
-    pub fn to_path(&mut self) {
-        if self.sel.is_empty() {
-            return;
-        }
-        self.checkpoint();
-        for id in self.sel.clone() {
-            if let Some(s) = self.doc.unlocked_mut(id) {
-                s.bake();
-            }
-        }
-    }
-    pub fn reorder(&mut self, front: bool) {
-        self.checkpoint();
-        let sel = self.doc.unlocked_ids(&self.sel);
-        let (a, b): (Vec<Shape>, Vec<Shape>) = std::mem::take(&mut self.doc.scene.shapes).into_iter().partition(|s| sel.contains(&s.id));
-        self.doc.scene.shapes = if front { [b, a].concat() } else { [a, b].concat() };
-    }
     pub fn make_array(&mut self) {
         let (cols, rows, dx, dy) = self.array;
         let Some(b) = self.sel_bounds() else { return };
         self.checkpoint();
-        let base: Vec<Shape> = self.sel.iter().filter_map(|i| self.doc.shape(*i).cloned()).collect();
-        let mut new_sel = self.sel.clone();
+        let base: Vec<Shape> = self.ed.sel.iter().filter_map(|i| self.doc.shape(*i).cloned()).collect();
+        let mut new_sel = self.ed.sel.clone();
         for r in 0..rows {
             for c in 0..cols {
                 if r == 0 && c == 0 {
@@ -720,7 +466,7 @@ impl App {
                 }
             }
         }
-        self.sel = new_sel;
+        self.ed.sel = new_sel;
     }
 
     // ---------- file operations ----------
@@ -732,11 +478,11 @@ impl App {
         self.sync_profile();
         self.undo.clear();
         self.redo.clear();
-        self.sel.clear();
+        self.ed.sel.clear();
         self.path = None;
         self.touch();
         self.mark_saved();
-        self.view.need_fit = true;
+        self.ed.view.need_fit = true;
     }
     pub fn open(&mut self) {
         if let Some(p) = rfd::FileDialog::new().add_filter("LightCreator project", &["lcr"]).add_filter("SVG", &["svg"]).pick_file() {
@@ -769,13 +515,13 @@ impl App {
                 }
                 self.undo.clear();
                 self.redo.clear();
-                self.sel.clear();
+                self.ed.sel.clear();
                 self.status = trf("Opened {}", &[&p.display()]);
                 self.add_recent(&p);
                 self.path = Some(p);
                 self.touch();
                 self.mark_saved();
-                self.view.need_fit = true;
+                self.ed.view.need_fit = true;
             }
             Err(e) => self.status = trf("Open failed: {}", &[&e]),
         }
@@ -812,7 +558,7 @@ impl App {
         }) {
             Ok(ids) => {
                 self.status = trf("Imported {} paths from {}", &[&ids.len(), &p.display()]);
-                self.sel = ids;
+                self.ed.sel = ids;
                 true
             }
             Err(e) => {
@@ -1082,7 +828,7 @@ impl App {
     /// A second Escape within half a second goes back to the select tool.
     pub fn note_escape(&mut self, now: f64) {
         if now - self.esc_time < 0.5 {
-            self.tool = Tool::Select;
+            self.ed.tool = Tool::Select;
             self.esc_time = -10.0;
         } else {
             self.esc_time = now;
@@ -1115,12 +861,12 @@ impl App {
             self.group_selection();
         }
         if cmd(Key::Num0) {
-            self.view.need_fit = true;
-            self.view.auto_fit = true;
+            self.ed.view.need_fit = true;
+            self.ed.view.auto_fit = true;
         }
         if cmd(Key::Num9) {
-            self.view.auto_fit = false;
-            self.fit_all_req = true;
+            self.ed.view.auto_fit = false;
+            self.ed.fit_all_req = true;
         }
         if cmd(Key::Equals) || cmd(Key::Plus) {
             self.zoom_about_centre(1.5);
@@ -1162,7 +908,7 @@ impl App {
         }
         let plain = |k: Key| ctx.input_mut(|i| i.consume_key(Modifiers::NONE, k));
         if plain(Key::Delete) || plain(Key::Backspace) {
-            if self.tool == Tool::Node && !self.node_sel.is_empty() {
+            if self.ed.tool == Tool::Node && !self.ed.node_sel.is_empty() {
                 self.delete_nodes();
             } else {
                 self.delete_selection();
@@ -1170,25 +916,25 @@ impl App {
         }
         for (t, _, k) in Tool::ALL {
             if plain(k) {
-                self.tool = t;
-                self.pen_pts.clear();
-                self.show_shape_popup = matches!(t, Tool::Polygon | Tool::Spiral);
+                self.ed.tool = t;
+                self.ed.pen_pts.clear();
+                self.ed.show_shape_popup = matches!(t, Tool::Polygon | Tool::Spiral);
             }
         }
         if plain(Key::Escape) {
             let now = ctx.input(|i| i.time);
             self.note_escape(now);
-            self.pen_pts.clear();
-            if self.tool == Tool::Node && !self.node_sel.is_empty() {
-                self.node_sel.clear();
+            self.ed.pen_pts.clear();
+            if self.ed.tool == Tool::Node && !self.ed.node_sel.is_empty() {
+                self.ed.node_sel.clear();
             } else {
-                self.sel.clear();
+                self.ed.sel.clear();
             }
         }
         let step = if ctx.input(|i| i.modifiers.shift) { 10.0 } else { 1.0 };
         for (k, dx, dy) in [(Key::ArrowLeft, -step, 0.0), (Key::ArrowRight, step, 0.0), (Key::ArrowUp, 0.0, -step), (Key::ArrowDown, 0.0, step)] {
             if ctx.input_mut(|i| i.consume_key(Modifiers::NONE, k)) || ctx.input_mut(|i| i.consume_key(Modifiers::SHIFT, k)) {
-                if !self.sel.is_empty() {
+                if !self.ed.sel.is_empty() {
                     self.checkpoint();
                     self.transform_selection(Xf::translate(dx, dy));
                 }
@@ -1199,13 +945,13 @@ impl App {
     /// Is this action's check mark set? (None = not a check item.)
     pub fn act_checked(&self, a: Act) -> Option<bool> {
         match a {
-            Act::ToggleGrid => Some(self.show_grid),
-            Act::ToggleSnap => Some(self.snap),
-            Act::ToggleSnapObjects => Some(self.snap_objects),
+            Act::ToggleGrid => Some(self.ed.show_grid),
+            Act::ToggleSnap => Some(self.ed.snap),
+            Act::ToggleSnapObjects => Some(self.ed.snap_objects),
             Act::TogglePreview => Some(self.preview_on),
             Act::ToggleOverlay => Some(self.overlay.is_some() && self.overlay_visible),
             Act::ToggleZones => Some(self.zones_visible),
-            Act::ToggleAutoFit => Some(self.view.auto_fit),
+            Act::ToggleAutoFit => Some(self.ed.view.auto_fit),
             Act::SetLang(l) => Some(self.lang == l),
             Act::SetScheme(s) => Some(self.scheme == s),
             _ => None,
@@ -1219,7 +965,7 @@ impl App {
             Act::ClearRecent => !self.recent.is_empty(),
             Act::Frame => self.connected && !self.job_running(),
             Act::StartJob => self.can_start() && !self.job_running(),
-            Act::CenterEachOther => self.sel.len() >= 2,
+            Act::CenterEachOther => self.ed.sel.len() >= 2,
             Act::ToggleOverlay => self.overlay.is_some(),
             Act::ToggleZones => !self.doc.device.zones.is_empty(),
             _ => true,
@@ -1318,25 +1064,25 @@ impl App {
                 }
             }
             Act::GridArray => self.show_array = true,
-            Act::ToggleGrid => self.show_grid = !self.show_grid,
+            Act::ToggleGrid => self.ed.show_grid = !self.ed.show_grid,
             Act::ToggleZones => self.zones_visible = !self.zones_visible,
-            Act::ToggleSnap => self.snap = !self.snap,
-            Act::ToggleSnapObjects => self.snap_objects = !self.snap_objects,
+            Act::ToggleSnap => self.ed.snap = !self.ed.snap,
+            Act::ToggleSnapObjects => self.ed.snap_objects = !self.ed.snap_objects,
             Act::TogglePreview => self.preview_on = !self.preview_on,
             Act::FitBed => {
-                self.view.need_fit = true;
-                self.view.auto_fit = true;
+                self.ed.view.need_fit = true;
+                self.ed.view.auto_fit = true;
             }
             Act::FitAll => {
-                self.view.auto_fit = false;
-                self.fit_all_req = true;
+                self.ed.view.auto_fit = false;
+                self.ed.fit_all_req = true;
             }
             Act::ZoomIn => self.zoom_about_centre(1.5),
             Act::ZoomOut => self.zoom_about_centre(1.0 / 1.5),
             Act::ToggleAutoFit => {
-                self.view.auto_fit = !self.view.auto_fit;
-                if self.view.auto_fit {
-                    self.view.need_fit = true;
+                self.ed.view.auto_fit = !self.ed.view.auto_fit;
+                if self.ed.view.auto_fit {
+                    self.ed.view.need_fit = true;
                 }
             }
             Act::DeviceSettings => self.show_device = true,
@@ -1455,7 +1201,7 @@ impl App {
     fn control_bar(&mut self, ui: &mut egui::Ui) {
         ui.horizontal_centered(|ui| {
             // Name of the current tool in a box of fixed width, so the bar does not jump around.
-            let name = Tool::ALL.iter().find(|t| t.0 == self.tool).map(|t| t.1).unwrap_or("");
+            let name = Tool::ALL.iter().find(|t| t.0 == self.ed.tool).map(|t| t.1).unwrap_or("");
             ui.allocate_ui_with_layout(egui::vec2(96.0, 22.0), egui::Layout::left_to_right(egui::Align::Center), |ui| {
                 // The box keeps its width whatever the name is: it grows to the minimum and never past the maximum.
                 ui.set_min_size(egui::vec2(96.0, 22.0));
@@ -1478,18 +1224,18 @@ impl App {
                 }
             }
             ui.separator();
-            let minor = self.grid_prefs.minor_on;
-            if toggle_icon(ui, "grid-2x2", &tr("Show or hide the grid"), self.show_grid) {
-                self.show_grid = !self.show_grid;
+            let minor = self.ed.grid_prefs.minor_on;
+            if toggle_icon(ui, "grid-2x2", &tr("Show or hide the grid"), self.ed.show_grid) {
+                self.ed.show_grid = !self.ed.show_grid;
             }
             if toggle_icon(ui, "grid-3x3", &tr("Show or hide the secondary grid"), minor) {
-                self.grid_prefs.minor_on = !minor;
+                self.ed.grid_prefs.minor_on = !minor;
             }
-            if toggle_icon(ui, "magnet", &tr("Snap to grid"), self.snap) {
-                self.snap = !self.snap;
+            if toggle_icon(ui, "magnet", &tr("Snap to grid"), self.ed.snap) {
+                self.ed.snap = !self.ed.snap;
             }
-            if toggle_icon(ui, "target", &tr("Snap to objects"), self.snap_objects) {
-                self.snap_objects = !self.snap_objects;
+            if toggle_icon(ui, "target", &tr("Snap to objects"), self.ed.snap_objects) {
+                self.ed.snap_objects = !self.ed.snap_objects;
             }
             ui.separator();
             // Green while the toolpaths are shown, grey otherwise.
@@ -1536,7 +1282,7 @@ impl App {
                     self.export_gcode();
                 }
                 let (w, h) = self.sel_bounds().map(|b| (b.width(), b.height())).unwrap_or((0.0, 0.0));
-                if !self.sel.is_empty() {
+                if !self.ed.sel.is_empty() {
                     let u = self.doc.device.units;
                     ui.label(RichText::new(format!("{} × {}", fmt_len(u, w, 1), fmt_len(u, h, 1))).color(theme::text_dim()));
                 }
@@ -1568,16 +1314,16 @@ impl App {
 
     /// Space held down: pan with the hand tool, and go back to the previous tool when it is released.
     pub fn update_space(&mut self, down: bool) {
-        if down && self.space_prev.is_none() {
-            if self.tool != Tool::Pan {
-                self.space_prev = Some(self.tool);
-                self.tool = Tool::Pan;
-                self.pen_pts.clear();
+        if down && self.ed.space_prev.is_none() {
+            if self.ed.tool != Tool::Pan {
+                self.ed.space_prev = Some(self.ed.tool);
+                self.ed.tool = Tool::Pan;
+                self.ed.pen_pts.clear();
             }
         } else if !down {
-            if let Some(t) = self.space_prev.take() {
-                if self.tool == Tool::Pan {
-                    self.tool = t;
+            if let Some(t) = self.ed.space_prev.take() {
+                if self.ed.tool == Tool::Pan {
+                    self.ed.tool = t;
                 }
             }
         }
@@ -1585,12 +1331,12 @@ impl App {
 
     /// Zoom by `f` around the middle of the canvas.
     pub fn zoom_about_centre(&mut self, f: f32) {
-        let (w, h) = self.canvas_avail;
+        let (w, h) = self.ed.canvas_avail;
         let mid = egui::vec2(w / 2.0, h / 2.0);
-        let before = (mid - self.view.pan) / self.view.zoom;
-        self.view.zoom = (self.view.zoom * f).clamp(0.05, 200.0);
-        self.view.pan = mid - before * self.view.zoom;
-        self.view.auto_fit = false;
+        let before = (mid - self.ed.view.pan) / self.ed.view.zoom;
+        self.ed.view.zoom = (self.ed.view.zoom * f).clamp(0.05, 200.0);
+        self.ed.view.pan = mid - before * self.ed.view.zoom;
+        self.ed.view.auto_fit = false;
     }
 
     fn tool_bar(&mut self, ui: &mut egui::Ui) {
@@ -1611,7 +1357,7 @@ impl App {
             ui.add_space(4.0);
             ui.separator();
             ui.add_space(4.0);
-            let multi = self.sel.len() >= 2;
+            let multi = self.ed.sel.len() >= 2;
             let mut op = None;
             for (a, icon, tip) in [
                 (Act::BoolUnion, "squares-unite", "Union"),
@@ -1657,11 +1403,11 @@ impl App {
 
     /// Narrow strip between the work area and the side panel: align, turn, mirror and group the selection.
     fn arrange_bar(&mut self, ui: &mut egui::Ui) {
-        let has_sel = !self.sel.is_empty();
-        let any_unlocked = self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| !s.locked));
-        let any_locked = self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.locked));
-        let grouped = self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.group.is_some()));
-        let multi = self.sel.len() >= 2;
+        let has_sel = !self.ed.sel.is_empty();
+        let any_unlocked = self.ed.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| !s.locked));
+        let any_locked = self.ed.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.locked));
+        let grouped = self.ed.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.group.is_some()));
+        let multi = self.ed.sel.len() >= 2;
         let _ = has_sel;
         let sections: [Vec<(Act, bool, &str)>; 4] = [
             vec![
@@ -1717,7 +1463,7 @@ impl App {
 
     fn tool_button(&mut self, ui: &mut egui::Ui, t: Tool, tip: &'static str) {
         let (rect, resp) = ui.allocate_exact_size(egui::vec2(36.0, 36.0), egui::Sense::click());
-        let on = self.tool == t;
+        let on = self.ed.tool == t;
         if on {
             ui.painter().rect_filled(rect, 6.0, theme::accent());
         } else if resp.hovered() {
@@ -1725,10 +1471,10 @@ impl App {
         }
         crate::icons::paint(ui, rect.shrink(7.0), crate::icons::tool_icon(t), if on { Color32::WHITE } else { theme::text() });
         if resp.on_hover_text(tr(tip)).clicked() {
-            self.tool = t;
-            self.space_prev = None;
-            self.pen_pts.clear();
-            self.show_shape_popup = matches!(t, Tool::Polygon | Tool::Spiral);
+            self.ed.tool = t;
+            self.ed.space_prev = None;
+            self.ed.pen_pts.clear();
+            self.ed.show_shape_popup = matches!(t, Tool::Polygon | Tool::Spiral);
         }
         ui.add_space(2.0);
     }
@@ -1751,12 +1497,12 @@ impl App {
                     let (r, resp) = ui.allocate_exact_size(egui::vec2(w, 22.0), egui::Sense::click());
                     ui.painter().rect_filled(r, 3.0, fill);
                     ui.painter().galley(r.center() - galley.size() / 2.0, galley, ink);
-                    if self.active_layer == i {
+                    if self.ed.active_layer == i {
                         ui.painter().rect_stroke(r.expand(1.5), 4.0, egui::Stroke::new(2.0, theme::accent()), egui::StrokeKind::Outside);
                     }
                     let resp = resp.on_hover_text(trf("{} — click to assign selection / set active; double-click for options", &[&name]));
                     if resp.double_clicked() {
-                        self.active_layer = i;
+                        self.ed.active_layer = i;
                         self.layer_dlg = Some(i);
                     } else if resp.clicked() {
                         self.assign_layer(i);
@@ -1770,8 +1516,8 @@ impl App {
         ui.horizontal_centered(|ui| {
             ui.label(&self.status);
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                ui.label(format!("{}%", (self.view.zoom / 2.0 * 100.0).round()));
-                if let Some(p) = self.cursor_mm {
+                ui.label(format!("{}%", (self.ed.view.zoom / 2.0 * 100.0).round()));
+                if let Some(p) = self.ed.cursor_mm {
                     let u = self.doc.device.units;
                     let (x, y) = (u.from_mm(p.x), u.from_mm(p.y));
                     let d = if u == lc_core::Units::Mm { 2 } else { 3 };
@@ -1795,21 +1541,21 @@ impl App {
     /// area (not over the bars), looks like the preview window and has no OK button: a change applies at once, to
     /// the shape drawn last as well as to the next ones. It stays while the tool is active.
     fn shape_popup(&mut self, ctx: &egui::Context) {
-        let tool = self.tool;
-        if !self.show_shape_popup || !matches!(tool, Tool::Polygon | Tool::Spiral) {
+        let tool = self.ed.tool;
+        if !self.ed.show_shape_popup || !matches!(tool, Tool::Polygon | Tool::Spiral) {
             return;
         }
         let polygon = tool == Tool::Polygon;
         let mut open = true;
-        let before = if polygon { self.polygon_sides } else { self.spiral_turns };
+        let before = if polygon { self.ed.polygon_sides } else { self.ed.spiral_turns };
         let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 8, right: 8, top: 6, bottom: 6 });
-        let pos = self.canvas_origin + egui::vec2(12.0, 12.0);
+        let pos = self.ed.canvas_origin + egui::vec2(12.0, 12.0);
         egui::Window::new("shape_popup").title_bar(false).frame(frame).default_pos(pos).resizable(false).show(ctx, |ui| {
             crate::window_ui::mini_title(ui, &tr(if polygon { "Polygon" } else { "Spiral" }), &mut open, |_| {});
             let (value, range, label): (&mut u32, std::ops::RangeInclusive<u32>, &str) = if polygon {
-                (&mut self.polygon_sides, 3..=360, "Number of sides")
+                (&mut self.ed.polygon_sides, 3..=360, "Number of sides")
             } else {
-                (&mut self.spiral_turns, 1..=30, "Number of turns")
+                (&mut self.ed.spiral_turns, 1..=30, "Number of turns")
             };
             ui.horizontal(|ui| {
                 ui.label(tr(label));
@@ -1821,22 +1567,22 @@ impl App {
             ui.add(egui::Slider::new(value, slider).clamping(egui::SliderClamping::Never).show_value(false));
             ui.label(RichText::new(tr("Drag on the work area to draw it.")).color(theme::text_dim()));
         });
-        self.polygon_sides = self.polygon_sides.clamp(3, 360);
-        self.spiral_turns = self.spiral_turns.clamp(1, 30);
-        let now = if polygon { self.polygon_sides } else { self.spiral_turns };
+        self.ed.polygon_sides = self.ed.polygon_sides.clamp(3, 360);
+        self.ed.spiral_turns = self.ed.spiral_turns.clamp(1, 30);
+        let now = if polygon { self.ed.polygon_sides } else { self.ed.spiral_turns };
         if now != before {
             self.reshape_last(tool);
         }
-        self.show_shape_popup = open;
+        self.ed.show_shape_popup = open;
     }
 
     /// Give the polygon or spiral drawn last the number of sides / turns now set, keeping its place and size.
     pub fn reshape_last(&mut self, tool: Tool) {
-        let Some((t, id, w, h)) = self.last_param else { return };
+        let Some((t, id, w, h)) = self.ed.last_param else { return };
         if t != tool || self.doc.shape(id).is_none() {
             return;
         }
-        let contour = if tool == Tool::Polygon { lc_core::Contour::polygon(self.polygon_sides, w, h) } else { lc_core::Contour::spiral(self.spiral_turns, w, h) };
+        let contour = if tool == Tool::Polygon { lc_core::Contour::polygon(self.ed.polygon_sides, w, h) } else { lc_core::Contour::spiral(self.ed.spiral_turns, w, h) };
         self.checkpoint();
         if let Some(s) = self.doc.unlocked_mut(id) {
             s.kind = lc_core::Kind::Bezier(vec![contour]);
@@ -1945,6 +1691,94 @@ pub fn fmt_time(s: f64) -> String {
     format!("{}:{:02}:{:02}", s / 3600, s / 60 % 60, s % 60)
 }
 
+impl base_ui::editor::EditorHost for App {
+    fn ed(&self) -> &base_ui::editor::EditorState {
+        &self.ed
+    }
+    fn ed_mut(&mut self) -> &mut base_ui::editor::EditorState {
+        &mut self.ed
+    }
+    fn scene(&self) -> &lc_core::Scene {
+        &self.doc.scene
+    }
+    fn scene_mut(&mut self) -> &mut lc_core::Scene {
+        &mut self.doc.scene
+    }
+    fn layer_visible(&self, layer: usize) -> bool {
+        self.doc.layers.get(layer).is_some_and(|l| l.visible)
+    }
+    fn checkpoint(&mut self) {
+        App::checkpoint(self)
+    }
+    fn touch(&mut self) {
+        App::touch(self)
+    }
+    fn drop_checkpoint(&mut self) {
+        self.undo.pop();
+    }
+    fn delete_button(&self, ui: &mut egui::Ui, enabled: bool, text: &str) -> egui::Response {
+        crate::window_ui::delete_button_enabled(ui, enabled, text)
+    }
+    fn work_size(&self) -> (f64, f64) {
+        self.doc.device.work_size()
+    }
+    fn units(&self) -> lc_core::Units {
+        self.doc.device.units
+    }
+    fn workspace_fill(&self) -> egui::Color32 {
+        App::workspace_fill(self)
+    }
+    fn bed_fill(&self) -> egui::Color32 {
+        App::bed_fill(self)
+    }
+    fn shape_color(&self, layer: usize) -> Option<egui::Color32> {
+        let l = self.doc.layers.get(layer)?;
+        if !l.visible {
+            return None;
+        }
+        let mut c = crate::canvas::col(l.color);
+        if self.preview_on {
+            c = c.gamma_multiply(0.25);
+        } else if !l.output {
+            c = c.gamma_multiply(0.45);
+        }
+        Some(c)
+    }
+    fn layer_color(&self, layer: usize) -> egui::Color32 {
+        crate::canvas::col(layer)
+    }
+    fn dim_pictures(&self) -> bool {
+        self.preview_on
+    }
+    fn paint_work_area(&mut self, v: &base_ui::editor::CanvasView) {
+        self.paint_machine_area(v)
+    }
+    fn paint_under_shapes(&mut self, v: &base_ui::editor::CanvasView) {
+        self.paint_camera_overlay(v)
+    }
+    fn paint_over_shapes(&mut self, v: &base_ui::editor::CanvasView) {
+        self.paint_preview(v)
+    }
+    fn paint_lock(&self, ui: &egui::Ui, rect: egui::Rect) {
+        crate::icons::paint(ui, rect, "lock", theme::accent());
+    }
+    fn pointer_claimed(&mut self, resp: &egui::Response, origin: egui::Pos2, press: Option<egui::Pos2>, hover: Option<egui::Pos2>) -> bool {
+        self.overlay_interact(resp, origin, press, hover)
+    }
+    fn canvas_context_menu(&mut self, ui: &mut egui::Ui, resp: &egui::Response) {
+        self.laser_context_menu(ui, resp)
+    }
+    fn place_text(&mut self, at: lc_core::Pt) {
+        self.add_text_at(at)
+    }
+    fn say(&mut self, msg: String) {
+        self.status = msg;
+    }
+    fn said(&self) -> &str {
+        &self.status
+    }
+}
+
 impl eframe::App for App {
     fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
         // The focus beam must not stay on when the program goes away; give the link thread a moment to send the line.
@@ -2043,13 +1877,13 @@ impl App {
         if let Ok(j) = serde_json::to_string(&self.recent) {
             v.push(("recent_files", j));
         }
-        if let Ok(j) = serde_json::to_string(&self.grid_prefs) {
+        if let Ok(j) = serde_json::to_string(&self.ed.grid_prefs) {
             v.push(("grid_prefs", j));
         }
-        v.push(("grid_main_on", if self.show_grid { "1" } else { "0" }.into()));
-        v.push(("snap_objects", if self.snap_objects { "1" } else { "0" }.into()));
+        v.push(("grid_main_on", if self.ed.show_grid { "1" } else { "0" }.into()));
+        v.push(("snap_objects", if self.ed.snap_objects { "1" } else { "0" }.into()));
         v.push(("zones_visible", if self.zones_visible { "1" } else { "0" }.into()));
-        v.push(("grid_main_mm", self.grid.to_string()));
+        v.push(("grid_main_mm", self.ed.grid.to_string()));
         v.push(("tab_order", self.tab_order.iter().map(|(t, _)| t.id()).collect::<Vec<_>>().join(",")));
         v
     }
@@ -2117,18 +1951,18 @@ mod tests {
     fn two_quick_escapes_select_the_select_tool() {
         let ctx = egui::Context::default();
         let mut a = App::build(&ctx, None, false);
-        a.tool = Tool::Rect;
+        a.ed.tool = Tool::Rect;
         a.note_escape(10.0);
-        assert_eq!(a.tool, Tool::Rect, "one Escape alone keeps the tool");
+        assert_eq!(a.ed.tool, Tool::Rect, "one Escape alone keeps the tool");
         a.note_escape(10.3);
-        assert_eq!(a.tool, Tool::Select, "the second one, quickly after, selects");
+        assert_eq!(a.ed.tool, Tool::Select, "the second one, quickly after, selects");
         // Slow presses never count as a pair.
-        a.tool = Tool::Star;
+        a.ed.tool = Tool::Star;
         a.note_escape(20.0);
         a.note_escape(21.0);
-        assert_eq!(a.tool, Tool::Star);
+        assert_eq!(a.ed.tool, Tool::Star);
         a.note_escape(21.2);
-        assert_eq!(a.tool, Tool::Select);
+        assert_eq!(a.ed.tool, Tool::Select);
     }
 
     #[test]
@@ -2149,11 +1983,11 @@ mod tests {
         let ctx = egui::Context::default();
         let mut a = App::build(&ctx, None, false);
         a.screen = Screen::Editor;
-        assert!(a.view.auto_fit);
+        assert!(a.ed.view.auto_fit);
         a.do_act(&ctx, crate::menu::Act::ToggleAutoFit);
-        assert!(!a.view.auto_fit);
+        assert!(!a.ed.view.auto_fit);
         a.do_act(&ctx, crate::menu::Act::FitBed);
-        assert!(a.view.auto_fit && a.view.need_fit);
+        assert!(a.ed.view.auto_fit && a.ed.view.need_fit);
     }
 
     #[test]
@@ -2167,42 +2001,42 @@ mod tests {
     fn holding_space_pans_and_releasing_restores_the_tool() {
         let ctx = egui::Context::default();
         let mut a = App::build(&ctx, None, false);
-        a.tool = Tool::Rect;
+        a.ed.tool = Tool::Rect;
         a.update_space(true);
-        assert_eq!(a.tool, Tool::Pan);
+        assert_eq!(a.ed.tool, Tool::Pan);
         a.update_space(true); // key repeat changes nothing
-        assert_eq!(a.tool, Tool::Pan);
+        assert_eq!(a.ed.tool, Tool::Pan);
         a.update_space(false);
-        assert_eq!(a.tool, Tool::Rect);
+        assert_eq!(a.ed.tool, Tool::Rect);
         // Already on the hand tool: nothing to restore, the tool stays.
-        a.tool = Tool::Pan;
+        a.ed.tool = Tool::Pan;
         a.update_space(true);
         a.update_space(false);
-        assert_eq!(a.tool, Tool::Pan);
+        assert_eq!(a.ed.tool, Tool::Pan);
         // Choosing another tool while Space is held wins over the restore.
-        a.tool = Tool::Star;
+        a.ed.tool = Tool::Star;
         a.update_space(true);
-        a.tool = Tool::Ellipse;
+        a.ed.tool = Tool::Ellipse;
         a.update_space(false);
-        assert_eq!(a.tool, Tool::Ellipse);
+        assert_eq!(a.ed.tool, Tool::Ellipse);
     }
 
     #[test]
     fn zoom_buttons_keep_the_middle_of_the_canvas_fixed() {
         let ctx = egui::Context::default();
         let mut a = App::build(&ctx, None, false);
-        a.canvas_avail = (800.0, 600.0);
-        a.view.zoom = 2.0;
-        a.view.pan = egui::vec2(100.0, 50.0);
+        a.ed.canvas_avail = (800.0, 600.0);
+        a.ed.view.zoom = 2.0;
+        a.ed.view.pan = egui::vec2(100.0, 50.0);
         let mid = egui::vec2(400.0, 300.0);
-        let world = (mid - a.view.pan) / a.view.zoom;
+        let world = (mid - a.ed.view.pan) / a.ed.view.zoom;
         a.zoom_about_centre(1.5);
-        assert!((a.view.zoom - 3.0).abs() < 1e-6);
-        let again = (mid - a.view.pan) / a.view.zoom;
+        assert!((a.ed.view.zoom - 3.0).abs() < 1e-6);
+        let again = (mid - a.ed.view.pan) / a.ed.view.zoom;
         assert!((again - world).length() < 1e-4);
-        assert!(!a.view.auto_fit);
+        assert!(!a.ed.view.auto_fit);
         a.zoom_about_centre(1.0 / 1.5);
-        assert!((a.view.zoom - 2.0).abs() < 1e-6);
+        assert!((a.ed.view.zoom - 2.0).abs() < 1e-6);
         let (z, pan) = crate::canvas::fit_region((900.0, 700.0), (100.0, 50.0), (200.0, 100.0), 50.0);
         assert!((z - 4.0).abs() < 1e-6, "{z}");
         // The region's centre lands in the middle of the area.
@@ -2322,7 +2156,7 @@ mod centre_tests {
         a.screen = Screen::Editor;
         let big = a.doc.add(0, lc_core::Kind::Rect { w: 100.0, h: 60.0 }, Xf::translate(10.0, 10.0));
         let small = a.doc.add(0, lc_core::Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(20.0, 15.0));
-        a.sel = vec![big, small];
+        a.ed.sel = vec![big, small];
         a.do_act(&ctx, Act::CenterEachOther);
         let (cb, cs) = (a.doc.shape(big).unwrap().bounds().unwrap().center(), a.doc.shape(small).unwrap().bounds().unwrap().center());
         assert!((cb.x - 60.0).abs() < 1e-6 && (cb.y - 40.0).abs() < 1e-6, "the large one stays: {cb:?}");
@@ -2334,7 +2168,7 @@ mod centre_tests {
         for id in [g1, g2] {
             a.doc.shape_mut(id).unwrap().group = Some(gid);
         }
-        a.sel = vec![big, g1, g2];
+        a.ed.sel = vec![big, g1, g2];
         let gap = a.doc.shape(g2).unwrap().bounds().unwrap().min.x - a.doc.shape(g1).unwrap().bounds().unwrap().min.x;
         a.do_act(&ctx, Act::CenterEachOther);
         let gb = a.doc.bounds_of(&[g1, g2]).unwrap().center();
@@ -2343,7 +2177,7 @@ mod centre_tests {
         let gap2 = a.doc.shape(g2).unwrap().bounds().unwrap().min.x - a.doc.shape(g1).unwrap().bounds().unwrap().min.x;
         assert!((gap - gap2).abs() < 1e-9);
         // One object alone is not enough.
-        a.sel = vec![big];
+        a.ed.sel = vec![big];
         assert!(!a.act_enabled(Act::CenterEachOther));
     }
 }
@@ -2388,7 +2222,7 @@ mod tool_name_tests {
         a.screen = Screen::Editor;
         let mut xs = vec![];
         for tool in [Tool::Select, Tool::Node, Tool::Polygon, Tool::Text] {
-            a.tool = tool;
+            a.ed.tool = tool;
             let mut x = 0.0;
             let mut out = ctx.run_ui(egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1400.0, 900.0))), ..Default::default() }, |ui| {
                 a.draw(ui);
@@ -2414,9 +2248,9 @@ mod shape_popup_tests {
         a.screen = Screen::Editor;
         let ct = lc_core::Contour::polygon(6, 30.0, 20.0);
         let id = a.doc.add(0, lc_core::Kind::Bezier(vec![ct]), Xf::translate(10.0, 10.0));
-        a.last_param = Some((Tool::Polygon, id, 30.0, 20.0));
-        a.tool = Tool::Polygon;
-        a.polygon_sides = 9;
+        a.ed.last_param = Some((Tool::Polygon, id, 30.0, 20.0));
+        a.ed.tool = Tool::Polygon;
+        a.ed.polygon_sides = 9;
         a.reshape_last(Tool::Polygon);
         let nodes = match &a.doc.shape(id).unwrap().kind {
             lc_core::Kind::Bezier(cs) => cs[0].nodes.len(),
@@ -2426,13 +2260,13 @@ mod shape_popup_tests {
         // The place is kept.
         assert_eq!(a.doc.shape(id).unwrap().xf.e, 10.0);
         // A spiral change does not touch a polygon.
-        a.spiral_turns = 5;
+        a.ed.spiral_turns = 5;
         a.reshape_last(Tool::Spiral);
         assert!(matches!(&a.doc.shape(id).unwrap().kind, lc_core::Kind::Bezier(cs) if cs[0].closed));
         // Spiral as the last shape: its turns change.
         let sp = a.doc.add(0, lc_core::Kind::Bezier(vec![lc_core::Contour::spiral(3, 30.0, 30.0)]), Xf::IDENTITY);
-        a.last_param = Some((Tool::Spiral, sp, 30.0, 30.0));
-        a.spiral_turns = 6;
+        a.ed.last_param = Some((Tool::Spiral, sp, 30.0, 30.0));
+        a.ed.spiral_turns = 6;
         a.reshape_last(Tool::Spiral);
         assert!(matches!(&a.doc.shape(sp).unwrap().kind, lc_core::Kind::Bezier(cs) if cs[0].nodes.len() == 6 * 12 + 1));
     }

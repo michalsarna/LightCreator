@@ -1,4 +1,7 @@
 //! Document-level operations: boolean shape operations, offsetting, curve conversion, images and text.
+#[cfg(test)]
+use base_ui::editor::EditorCommands;
+use base_ui::editor::EditorHost;
 use crate::app::App;
 use crate::i18n::{tr, trf};
 use crate::icons;
@@ -15,7 +18,7 @@ impl App {
 
     /// Combine the selected shapes (in selection order) with a boolean operation.
     pub fn bool_op(&mut self, op: BoolOp) {
-        let ids: Vec<u64> = self.sel.iter().copied().filter(|id| self.doc.shape(*id).is_some_and(|s| !s.is_image() && !s.locked)).collect();
+        let ids: Vec<u64> = self.ed.sel.iter().copied().filter(|id| self.doc.shape(*id).is_some_and(|s| !s.is_image() && !s.locked)).collect();
         if ids.len() < 2 {
             self.status_is(tr("Select at least two shapes (not images)."));
             return;
@@ -30,17 +33,17 @@ impl App {
             self.status_is(tr("The result is empty."));
             return;
         }
-        let layer = self.doc.shape(ids[0]).map(|s| s.layer).unwrap_or(self.active_layer);
+        let layer = self.doc.shape(ids[0]).map(|s| s.layer).unwrap_or(self.ed.active_layer);
         self.checkpoint();
         self.doc.scene.shapes.retain(|s| !ids.contains(&s.id));
         let id = self.doc.add(layer, Kind::Path(acc), Xf::IDENTITY);
-        self.sel = vec![id];
-        self.node_sel.clear();
+        self.ed.sel = vec![id];
+        self.ed.node_sel.clear();
     }
 
     /// Offset the outlines of the selected shapes by `d` mm (negative shrinks).
     pub fn offset_selected(&mut self, d: f64, keep_original: bool) {
-        let ids: Vec<u64> = self.sel.clone();
+        let ids: Vec<u64> = self.ed.sel.clone();
         let mut made = vec![];
         let mut created: Vec<(usize, Vec<Polyline>)> = vec![];
         for id in &ids {
@@ -64,73 +67,8 @@ impl App {
         for (layer, polys) in created {
             made.push(self.doc.add(layer, Kind::Path(polys), Xf::IDENTITY));
         }
-        self.sel = made;
-        self.node_sel.clear();
-    }
-
-    /// Shapes picked by a selection rectangle: dragged left to right only what lies wholly inside,
-    /// right to left everything the rectangle touches. Groups are completed by the caller.
-    pub fn marquee_hits(&self, r: &lc_core::Rect, left_to_right: bool) -> Vec<u64> {
-        self.doc
-            .scene.shapes
-            .iter()
-            .filter(|s| self.doc.layers[s.layer].visible)
-            .filter(|s| {
-                if left_to_right {
-                    s.bounds().is_some_and(|b| r.contains(b.min) && r.contains(b.max))
-                } else {
-                    s.intersects_rect(r)
-                }
-            })
-            .map(|s| s.id)
-            .collect()
-    }
-
-    /// Group the selected shapes. Layers are untouched; a group moves, scales and selects as one.
-    pub fn group_selection(&mut self) {
-        if self.sel.len() < 2 {
-            self.status_is(tr("Select at least two objects to group."));
-            return;
-        }
-        self.checkpoint();
-        let g = self.doc.new_group_id();
-        for id in self.sel.clone() {
-            if let Some(s) = self.doc.shape_mut(id) {
-                s.group = Some(g);
-            }
-        }
-        self.status_is(tr("Grouped. The objects keep their layers."));
-    }
-
-    /// Lock or unlock the selected objects (a group is selected as a whole, so it locks as a whole).
-    pub fn lock_selection(&mut self, lock: bool) {
-        if !self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.locked != lock)) {
-            return;
-        }
-        self.checkpoint();
-        let mut n = 0;
-        for id in self.sel.clone() {
-            if let Some(s) = self.doc.shape_mut(id) {
-                if s.locked != lock {
-                    s.locked = lock;
-                    n += 1;
-                }
-            }
-        }
-        self.node_sel.clear();
-        self.status_is(if lock { trf("Locked {} object(s).", &[&n]) } else { trf("Unlocked {} object(s).", &[&n]) });
-    }
-
-    pub fn ungroup_selection(&mut self) {
-        if !self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.group.is_some())) {
-            return;
-        }
-        self.checkpoint();
-        for id in self.sel.clone() {
-            if let Some(s) = self.doc.shape_mut(id) {
-                s.group = None;
-            }
-        }
+        self.ed.sel = made;
+        self.ed.node_sel.clear();
     }
 
     pub fn import_ai(&mut self) {
@@ -147,7 +85,7 @@ impl App {
         match res {
             Ok(ids) => {
                 self.status_is(trf("Imported {} paths from {}", &[&ids.len(), &p.display()]));
-                self.sel = ids;
+                self.ed.sel = ids;
             }
             Err(e) => {
                 // Nothing was added: drop the checkpoint taken for the failed import.
@@ -160,12 +98,12 @@ impl App {
     /// Context menu for the canvas. Returns the chosen action.
     pub fn context_menu(&mut self, ui: &mut egui::Ui) -> Option<crate::menu::Act> {
         use crate::menu::Act;
-        let has_sel = !self.sel.is_empty();
-        let multi = self.sel.len() >= 2;
-        let any_unlocked = self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| !s.locked));
-        let any_locked = self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.locked));
-        let grouped = self.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.group.is_some()));
-        let single_image = self.sel.len() == 1 && self.doc.shape(self.sel[0]).is_some_and(|s| s.is_image());
+        let has_sel = !self.ed.sel.is_empty();
+        let multi = self.ed.sel.len() >= 2;
+        let any_unlocked = self.ed.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| !s.locked));
+        let any_locked = self.ed.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.locked));
+        let grouped = self.ed.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.group.is_some()));
+        let single_image = self.ed.sel.len() == 1 && self.doc.shape(self.ed.sel[0]).is_some_and(|s| s.is_image());
         let chosen: std::cell::Cell<Option<Act>> = std::cell::Cell::new(None);
         // Every entry has its icon from the assets in front of the text.
         let item = |ui: &mut egui::Ui, on: bool, act: Act, label: &'static str| {
@@ -177,7 +115,7 @@ impl App {
             }
         };
         item(ui, has_sel, Act::Copy, "Copy");
-        item(ui, !self.clipboard.is_empty(), Act::Paste, "Paste");
+        item(ui, !self.ed.clipboard.is_empty(), Act::Paste, "Paste");
         item(ui, has_sel, Act::Duplicate, "Duplicate");
         item(ui, any_unlocked, Act::Delete, "Delete");
         item(ui, true, Act::SelectAll, "Select all");
@@ -226,7 +164,7 @@ impl App {
 
     /// The two selected shapes, if both are single straight lines (end points in design coordinates).
     pub fn selected_line_pair(&self) -> Option<[(u64, (Pt, Pt)); 2]> {
-        let ids = self.doc.unlocked_ids(&self.sel);
+        let ids = self.doc.unlocked_ids(&self.ed.sel);
         if ids.len() != 2 {
             return None;
         }
@@ -252,16 +190,16 @@ impl App {
                 self.status_is(tr("These lines cannot be joined (parallel, or the radius does not fit)."));
                 return;
             };
-            let layer = self.doc.shape(a).map(|s| s.layer).unwrap_or(self.active_layer);
+            let layer = self.doc.shape(a).map(|s| s.layer).unwrap_or(self.ed.active_layer);
             self.checkpoint();
             self.doc.scene.shapes.retain(|s| s.id != a && s.id != b);
             let id = self.doc.add(layer, Kind::Bezier(vec![contour]), Xf::IDENTITY);
-            self.sel = vec![id];
-            self.node_sel.clear();
+            self.ed.sel = vec![id];
+            self.ed.node_sel.clear();
             self.status_is(tr("Joined the two lines with a rounded corner."));
             return;
         }
-        let ids: Vec<u64> = self.doc.unlocked_ids(&self.sel).into_iter().filter(|id| self.doc.shape(*id).is_some_and(|s| !s.is_image())).collect();
+        let ids: Vec<u64> = self.doc.unlocked_ids(&self.ed.sel).into_iter().filter(|id| self.doc.shape(*id).is_some_and(|s| !s.is_image())).collect();
         if ids.is_empty() {
             self.status_is(tr("Select shapes to round first."));
             return;
@@ -284,35 +222,7 @@ impl App {
             self.undo.pop();
             self.status_is(tr("There are no straight corners to round."));
         } else {
-            self.node_sel.clear();
-            self.status_is(trf("Rounded {} corner(s).", &[&total]));
-        }
-    }
-
-    /// Round the selected nodes (node tool) with `radius` mm.
-    pub fn round_selected_nodes(&mut self, radius: f64) {
-        if self.node_sel.is_empty() || radius <= 0.0 {
-            return;
-        }
-        self.checkpoint();
-        let mut by_contour: std::collections::BTreeMap<(u64, usize), std::collections::HashSet<usize>> = Default::default();
-        for (id, ci, ni) in &self.node_sel {
-            by_contour.entry((*id, *ci)).or_default().insert(*ni);
-        }
-        let mut total = 0;
-        for ((id, ci), only) in by_contour {
-            if let Some(c) = self.contour_mut(id, ci) {
-                let (rounded, n) = lc_core::fillet::round_contour(c, radius, Some(&only));
-                *c = rounded;
-                total += n;
-            }
-        }
-        self.node_sel.clear();
-        self.active_seg = None;
-        if total == 0 {
-            self.undo.pop();
-            self.status_is(tr("There are no straight corners to round."));
-        } else {
+            self.ed.node_sel.clear();
             self.status_is(trf("Rounded {} corner(s).", &[&total]));
         }
     }
@@ -328,32 +238,32 @@ impl App {
         crate::window_ui::popup(ctx, "round_window", &tr("Round corners"), [300.0, 200.0], &mut open, |ui| {
             egui::Grid::new("round").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
                 ui.label(tr("Radius"));
-                crate::units_ui::drag_len(ui, units, &mut self.fillet_radius, 0.1, Some((0.05, 500.0)));
+                crate::units_ui::drag_len(ui, units, &mut self.ed.fillet_radius, 0.1, Some((0.05, 500.0)));
                 ui.end_row();
             });
             ui.label(egui::RichText::new(if pair { tr("Two straight lines are selected: they are joined with a rounded corner.") } else { tr("Every straight corner of the selected shapes is rounded.") }).color(theme::text_dim()));
             apply = ui.button(tr("Round")).clicked();
         });
         if apply {
-            self.round_corners(self.fillet_radius);
+            self.round_corners(self.ed.fillet_radius);
             open = false;
         }
         self.show_round = open;
     }
 
     pub fn to_curves(&mut self) {
-        if self.sel.is_empty() {
+        if self.ed.sel.is_empty() {
             return;
         }
         self.checkpoint();
-        for id in self.sel.clone() {
+        for id in self.ed.sel.clone() {
             if let Some(s) = self.doc.unlocked_mut(id) {
                 if !s.is_image() {
                     s.to_bezier();
                 }
             }
         }
-        self.node_sel.clear();
+        self.ed.node_sel.clear();
     }
 
     pub fn import_image(&mut self) {
@@ -370,8 +280,8 @@ impl App {
     pub fn add_text_at(&mut self, at: Pt) {
         self.checkpoint();
         let t: TextData = self.text_default.clone();
-        let id = self.doc.add(self.active_layer, Kind::Text(t), Xf::translate(at.x, at.y));
-        self.sel = vec![id];
+        let id = self.doc.add(self.ed.active_layer, Kind::Text(t), Xf::translate(at.x, at.y));
+        self.ed.sel = vec![id];
         self.side_tab = crate::app::SideTab::Properties;
         self.focus_text = true;
     }
@@ -404,7 +314,7 @@ mod tests {
         let mut a = app();
         let s1 = a.doc.add(0, lc_core::Kind::Rect { w: 5.0, h: 5.0 }, Xf::IDENTITY);
         let s2 = a.doc.add(3, lc_core::Kind::Rect { w: 5.0, h: 5.0 }, Xf::translate(10.0, 0.0));
-        a.sel = vec![s1, s2];
+        a.ed.sel = vec![s1, s2];
         a.group_selection();
         let g = a.doc.shape(s1).unwrap().group;
         assert!(g.is_some() && g == a.doc.shape(s2).unwrap().group);
@@ -417,11 +327,11 @@ mod tests {
         assert_eq!(groups.len(), 2);
         // Ungroup the copies only.
         a.ungroup_selection();
-        assert!(a.sel.iter().all(|id| a.doc.shape(*id).unwrap().group.is_none()));
+        assert!(a.ed.sel.iter().all(|id| a.doc.shape(*id).unwrap().group.is_none()));
         assert_eq!(a.doc.group_of(s1).len(), 2);
         // Undo restores the group.
         a.do_undo();
-        assert!(a.sel.iter().all(|id| a.doc.shape(*id).map_or(true, |s| s.group.is_some())));
+        assert!(a.ed.sel.iter().all(|id| a.doc.shape(*id).map_or(true, |s| s.group.is_some())));
     }
 
     #[test]
@@ -456,7 +366,7 @@ mod tests {
     fn locked_objects_do_not_move_or_vanish_but_copy_unlocked() {
         let mut a = app();
         let id = a.doc.add(0, lc_core::Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(5.0, 5.0));
-        a.sel = vec![id];
+        a.ed.sel = vec![id];
         a.lock_selection(true);
         assert!(a.doc.shape(id).unwrap().locked);
         let before = a.doc.shape(id).unwrap().xf;
@@ -473,13 +383,13 @@ mod tests {
         // Copy and paste gives an editable copy; the original stays locked.
         a.duplicate();
         assert_eq!(a.doc.scene.shapes.len(), 2);
-        let copy = a.doc.shape(a.sel[0]).unwrap();
+        let copy = a.doc.shape(a.ed.sel[0]).unwrap();
         assert!(!copy.locked);
         a.transform_selection(Xf::translate(1.0, 0.0));
-        assert!(a.doc.shape(a.sel[0]).unwrap().xf != before);
+        assert!(a.doc.shape(a.ed.sel[0]).unwrap().xf != before);
         assert!(a.doc.shape(id).unwrap().locked);
         // Unlock makes it editable again.
-        a.sel = vec![id];
+        a.ed.sel = vec![id];
         a.lock_selection(false);
         a.transform_selection(Xf::translate(2.0, 0.0));
         assert!(a.doc.shape(id).unwrap().xf != before);
@@ -493,7 +403,7 @@ mod tests {
         a.scheme = crate::theme::Scheme::Dark;
         let g = a.bed_fill();
         assert!(g.r() > 0xdd && g.r() < 0xff, "very light grey, not white: {g:?}");
-        a.grid_prefs.bed_color = Some([10, 20, 30, 255]);
+        a.ed.grid_prefs.bed_color = Some([10, 20, 30, 255]);
         assert_eq!(a.bed_fill(), eframe::egui::Color32::from_rgb(10, 20, 30));
     }
 
@@ -501,7 +411,7 @@ mod tests {
     fn rounding_corners_of_shapes_and_of_two_lines() {
         let mut a = app();
         let r = a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 20.0 }, Xf::translate(5.0, 5.0));
-        a.sel = vec![r];
+        a.ed.sel = vec![r];
         a.round_corners(3.0);
         let before: f64 = 400.0;
         let area = a.doc.shape(r).unwrap().polys()[0].area().abs();
@@ -513,7 +423,7 @@ mod tests {
         a.doc.scene.shapes.clear();
         let h = a.doc.add(0, lc_core::Kind::Path(vec![lc_core::Polyline::new(vec![Pt::new(0.0, 10.0), Pt::new(14.0, 10.0)], false)]), Xf::IDENTITY);
         let v = a.doc.add(1, lc_core::Kind::Path(vec![lc_core::Polyline::new(vec![Pt::new(10.0, 0.0), Pt::new(10.0, 25.0)], false)]), Xf::IDENTITY);
-        a.sel = vec![h, v];
+        a.ed.sel = vec![h, v];
         assert!(a.selected_line_pair().is_some());
         a.round_corners(3.0);
         assert_eq!(a.doc.scene.shapes.len(), 1, "the two lines became one rounded path");
@@ -522,13 +432,13 @@ mod tests {
         // Nothing to round: a smooth ellipse leaves the document untouched (and no stray undo step).
         a.doc.scene.shapes.clear();
         let e = a.doc.add(0, lc_core::Kind::Ellipse { w: 10.0, h: 10.0 }, Xf::IDENTITY);
-        a.sel = vec![e];
+        a.ed.sel = vec![e];
         let undo_len = a.undo.len();
         a.round_corners(1.0);
         assert_eq!(a.undo.len(), undo_len);
         // Locked shapes are skipped.
         let rr = a.doc.add(0, lc_core::Kind::Rect { w: 10.0, h: 10.0 }, Xf::IDENTITY);
-        a.sel = vec![rr];
+        a.ed.sel = vec![rr];
         a.lock_selection(true);
         a.round_corners(1.0);
         assert!(matches!(a.doc.shape(rr).unwrap().kind, lc_core::Kind::Rect { .. }));

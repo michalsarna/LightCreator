@@ -1,3 +1,5 @@
+use base_ui::editor::EditorCommands;
+use base_ui::editor::EditorHost;
 use crate::app::{App, SideTab};
 use crate::units_ui::{drag_len, drag_speed};
 use crate::i18n::{tr, trf};
@@ -92,7 +94,7 @@ impl App {
     }
 
     fn properties(&mut self, ui: &mut egui::Ui) {
-        let picked: Vec<_> = self.sel.iter().filter_map(|id| self.doc.shape(*id)).collect();
+        let picked: Vec<_> = self.ed.sel.iter().filter_map(|id| self.doc.shape(*id)).collect();
         let locked = !picked.is_empty() && picked.iter().all(|s| s.locked);
         if locked {
             ui.horizontal_wrapped(|ui| {
@@ -200,7 +202,7 @@ impl App {
         ui.separator();
         // Layer of selection
         section_title(ui, "layers", &tr("Layer"));
-        let first = self.doc.shape(self.sel[0]).map(|s| s.layer).unwrap_or(0);
+        let first = self.doc.shape(self.ed.sel[0]).map(|s| s.layer).unwrap_or(0);
         let mut layer = first;
         ui.horizontal_wrapped(|ui| {
             let lc = PALETTE[self.doc.layers[layer].color.min(29)];
@@ -217,14 +219,14 @@ impl App {
         if layer != first {
             self.assign_layer(layer);
         }
-        if self.sel.len() == 1 {
+        if self.ed.sel.len() == 1 {
             self.text_props(ui);
             self.image_props(ui);
         }
     }
 
     fn text_props(&mut self, ui: &mut egui::Ui) {
-        let id = self.sel[0];
+        let id = self.ed.sel[0];
         let Some(Kind::Text(orig)) = self.doc.shape(id).map(|s| s.kind.clone()) else { return };
         let units = self.doc.device.units;
         let mut t: TextData = orig.clone();
@@ -296,7 +298,7 @@ impl App {
     }
 
     fn image_props(&mut self, ui: &mut egui::Ui) {
-        let id = self.sel[0];
+        let id = self.ed.sel[0];
         let Some(Kind::Image(im)) = self.doc.shape(id).map(|s| s.kind.clone()) else { return };
         let units = self.doc.device.units;
         ui.separator();
@@ -334,7 +336,7 @@ impl App {
         let order = self.doc.layer_order();
         let mut move_req: Option<(usize, bool)> = None;
         for &i in &order {
-            if !(used[i] || self.show_all_layers || i == self.active_layer) {
+            if !(used[i] || self.show_all_layers || i == self.ed.active_layer) {
                 continue;
             }
             let c = PALETTE[i];
@@ -348,19 +350,19 @@ impl App {
                 }
                 let (r, resp) = ui.allocate_exact_size(egui::vec2(18.0, 18.0), egui::Sense::click());
                 ui.painter().rect_filled(r, 3.0, Color32::from_rgb(c[0], c[1], c[2]));
-                if self.active_layer == i {
+                if self.ed.active_layer == i {
                     ui.painter().rect_stroke(r.expand(1.5), 4.0, egui::Stroke::new(2.0, theme::accent()), egui::StrokeKind::Outside);
                 }
                 if resp.clicked() {
-                    self.active_layer = i;
+                    self.ed.active_layer = i;
                 }
                 let l = &mut self.doc.layers[i];
-                let name = ui.selectable_label(self.active_layer == i, &l.name).on_hover_text(tr("Double-click to edit the layer options"));
+                let name = ui.selectable_label(self.ed.active_layer == i, &l.name).on_hover_text(tr("Double-click to edit the layer options"));
                 if name.clicked() {
-                    self.active_layer = i;
+                    self.ed.active_layer = i;
                 }
                 if name.double_clicked() {
-                    self.active_layer = i;
+                    self.ed.active_layer = i;
                     self.layer_dlg = Some(i);
                 }
                 drag_speed(ui, units, su, false, &mut l.speed, 0.5, Some((0.5, 1000.0)));
@@ -381,10 +383,10 @@ impl App {
         }
         ui.checkbox(&mut self.show_all_layers, tr("Show all 30 layers"));
         ui.separator();
-        let has_images = self.doc.scene.shapes.iter().any(|s| s.layer == self.active_layer && s.is_image());
+        let has_images = self.doc.scene.shapes.iter().any(|s| s.layer == self.ed.active_layer && s.is_image());
         let mut layer_ctx = LayerCtx::of(&self.doc.device);
-        layer_ctx.image_only = self.doc.is_image_layer(self.active_layer);
-        let l = &mut self.doc.layers[self.active_layer];
+        layer_ctx.image_only = self.doc.is_image_layer(self.ed.active_layer);
+        let l = &mut self.doc.layers[self.ed.active_layer];
         ui.horizontal(|ui| {
             let c = PALETTE[l.color.min(29)];
             let (r, _) = ui.allocate_exact_size(egui::vec2(16.0, 16.0), egui::Sense::hover());
@@ -392,7 +394,7 @@ impl App {
             ui.painter().rect_stroke(r, 3.0, egui::Stroke::new(1.0, theme::border()), egui::StrokeKind::Inside);
             ui.label(RichText::new(trf("Cut settings — {}", &[&l.name])).strong());
         });
-        let panel_scope = format!("panel-{}", self.active_layer);
+        let panel_scope = format!("panel-{}", self.ed.active_layer);
         layer_settings_ui(ui, (units, su), l, panel_scope.as_str(), has_images, &layer_ctx);
         let now = ui.input(|i| i.time);
         self.commit_layer_edit(now, before);

@@ -1,4 +1,5 @@
 //! The check before a job is sent, framed or exported: errors stop it, warnings can be confirmed.
+use base_ui::editor::EditorCommands;
 use crate::app::App;
 use crate::i18n::{tr, trf};
 use crate::theme;
@@ -182,7 +183,7 @@ impl App {
             });
         });
         if let Some(ids) = select {
-            self.sel = ids;
+            self.ed.sel = ids;
         }
         if go {
             if let Some(d) = self.check_dlg.take() {

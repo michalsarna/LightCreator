@@ -153,19 +153,19 @@ impl App {
             self.recent = r.into_iter().take(crate::menu::MAX_RECENT).collect();
         }
         if let Some(g) = get("grid_prefs").and_then(|j| serde_json::from_str(j).ok()) {
-            self.grid_prefs = g;
+            self.ed.grid_prefs = g;
         }
         if let Some(v) = get("grid_main_on") {
-            self.show_grid = v != "0";
+            self.ed.show_grid = v != "0";
         }
         if let Some(v) = get("snap_objects") {
-            self.snap_objects = v == "1";
+            self.ed.snap_objects = v == "1";
         }
         if let Some(v) = get("zones_visible") {
             self.zones_visible = v != "0";
         }
         if let Some(v) = get("grid_main_mm").and_then(|v| v.parse::<f64>().ok()) {
-            self.grid = v;
+            self.ed.grid = v;
         }
         if let Some(o) = get("tab_order") {
             self.tab_order = crate::app::SideTab::arranged(o);

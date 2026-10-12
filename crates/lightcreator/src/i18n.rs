@@ -1,6 +1,8 @@
 //! The texts of LightCreator. The translation layer (`tr`, `trf`, `Lang`) is in base-ui; this file holds the table
 //! and the language files and registers them with it. English is the source language.
-use base_ui::i18n::{self, Texts, TABLE_LANGS};
+use base_ui::i18n::{self, Texts};
+#[cfg(test)]
+use base_ui::i18n::TABLE_LANGS;
 use std::fmt::Display;
 use std::sync::Once;
 
