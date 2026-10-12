@@ -269,7 +269,7 @@ impl App {
         let grid = saved("grid_main_mm").and_then(|v| v.parse::<f64>().ok()).filter(|g| *g >= 0.1).unwrap_or(10.0);
         i18n::set_lang(lang);
         theme::apply(ctx, scheme);
-        egui_extras::install_image_loaders(ctx);
+        base_ui::icons::install(ctx);
         crate::fonts::install(ctx);
         lc_core::text::preload();
         App {

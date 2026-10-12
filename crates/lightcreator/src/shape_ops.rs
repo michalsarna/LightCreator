@@ -1,7 +1,8 @@
 //! Document-level operations: boolean shape operations, offsetting, curve conversion, images and text.
 #[cfg(test)]
-use base_ui::editor::EditorCommands;
+#[cfg(test)]
 use base_ui::editor::EditorHost;
+use base_ui::editor::EditorCommands;
 use crate::app::App;
 use crate::i18n::{tr, trf};
 use crate::icons;
