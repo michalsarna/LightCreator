@@ -2,6 +2,23 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.1.6
+
+**First run**
+* The *Add a device* window has a new order: name, controller, connection (type, port and a blue *Read from device*
+  button), units, speed units, work area (X and Y on one line), machine zero, S-value max and laser type.
+* An optional camera can be set there, with a *Test* button and the picture rotation.
+* *Read from device* now works on the first run (it used to stay on *Reading…*): the button turns grey with *Read OK*
+  or red with *Error reading* (in all 30 languages).
+* The material field is gone (the device gets the default material), the warnings are black on orange and larger, and
+  *Cancel* on the first run quits the program.
+
+**Under the hood**
+* The scene, the editor of the work area, the menus, the icons and the generic dialogs (view options, About, quick
+  guide, update check, picture dialogs, clipart gallery) moved to the shared baseCreator (v0.3.0), together with the
+  new MillCreator app. The `.lcr` file format and the look are unchanged (byte-identical screenshots, a test reads a
+  project written by v0.1.5).
+
 ## v0.1.5
 
 **Device**
