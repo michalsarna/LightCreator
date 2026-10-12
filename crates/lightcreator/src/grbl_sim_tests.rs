@@ -104,7 +104,18 @@ impl Session {
             }
             std::thread::sleep(Duration::from_millis(10));
         }
-        panic!("timed out waiting for {what}; state {:?} at {:?}, progress {:?}, last replies {:?}", self.seen.state, self.seen.pos, self.seen.progress, last(&self.seen.rx, 12));
+        panic!("timed out waiting for {what}; {}", self.report());
+    }
+
+    /// Everything that helps to tell a lost line from a lost reply when a wait fails: the state, the progress, how many
+    /// `ok` were seen and every reply that is not a plain `ok` (an `ok` torn by another reply shows up there).
+    fn report(&self) -> String {
+        let oks = self.seen.rx.iter().filter(|l| *l == "ok").count();
+        let others: Vec<&String> = self.seen.rx.iter().filter(|l| *l != "ok").take(20).collect();
+        format!(
+            "state {:?} at {:?}, progress {:?}, {} x ok, other replies {:?}, last replies {:?}",
+            self.seen.state, self.seen.pos, self.seen.progress, oks, others, last(&self.seen.rx, 12)
+        )
     }
 
     /// Wait for GRBL's banner after the soft reset the worker sends on connect. Replies up to here are not checked.
@@ -131,7 +142,16 @@ impl Session {
     fn run_job(&mut self, lines: Vec<String>, secs: f32) {
         let n = lines.len();
         self.link.send(Cmd::Job(lines));
-        self.wait("every job line acknowledged", secs, |v| v.progress == (n, n));
+        // Give up early when nothing moves any more: the machine idle and no new acknowledgement for a while means a
+        // line or its reply got lost, and waiting for the whole time limit only hides that.
+        let (mut last_done, mut since) = (0, Instant::now());
+        self.wait("every job line acknowledged", secs, |v| {
+            if v.progress.0 != last_done {
+                (last_done, since) = (v.progress.0, Instant::now());
+            }
+            assert!(!(v.state == "Idle" && v.progress.0 > 0 && since.elapsed().as_secs_f32() > 20.0), "the job stopped at {:?} of {n} lines with the machine idle", v.progress);
+            v.progress == (n, n)
+        });
     }
 
     fn wait_idle_at(&mut self, x: f64, y: f64, secs: f32) {
