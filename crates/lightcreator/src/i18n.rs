@@ -1,144 +1,10 @@
-//! Tiny translation layer. English is the source language: `tr("English text")` returns the
-//! translation for the active language, or the English text itself when none exists.
-use std::collections::HashMap;
+//! The texts of LightCreator. The translation layer (`tr`, `trf`, `Lang`) is in base-ui; this file holds the table
+//! and the language files and registers them with it. English is the source language.
+use base_ui::i18n::{self, Texts, TABLE_LANGS};
 use std::fmt::Display;
-use std::sync::atomic::{AtomicU8, Ordering};
-use std::sync::OnceLock;
+use std::sync::Once;
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
-pub enum Lang {
-    En,
-    Pl,
-    De,
-    It,
-    Fi,
-    Zh,
-    Hi,
-    // European languages whose texts live in `assets/lang/<code>.txt` (see `extra_map`).
-    Bg,
-    Ca,
-    Hr,
-    Cs,
-    Da,
-    Nl,
-    Et,
-    Fr,
-    El,
-    Hu,
-    Is,
-    Ga,
-    Lv,
-    Lt,
-    Mt,
-    Nb,
-    Pt,
-    Ro,
-    Sk,
-    Sl,
-    Es,
-    Sv,
-    Uk,
-}
-
-impl Lang {
-    pub const ALL: [Lang; 30] = [Lang::En, Lang::Pl, Lang::De, Lang::It, Lang::Fi, Lang::Zh, Lang::Hi, Lang::Bg, Lang::Ca, Lang::Hr, Lang::Cs, Lang::Da, Lang::Nl, Lang::Et, Lang::Fr, Lang::El, Lang::Hu, Lang::Is, Lang::Ga, Lang::Lv, Lang::Lt, Lang::Mt, Lang::Nb, Lang::Pt, Lang::Ro, Lang::Sk, Lang::Sl, Lang::Es, Lang::Sv, Lang::Uk];
-
-    /// Name shown in the language menu (always in the language itself, plus English for scripts that
-    /// might lack a font on a bare system).
-    pub fn name(self) -> &'static str {
-        match self {
-            Lang::En => "English",
-            Lang::Pl => "Polski",
-            Lang::De => "Deutsch",
-            Lang::It => "Italiano",
-            Lang::Fi => "Suomi",
-            Lang::Zh => "中文 (Chinese)",
-            Lang::Hi => "हिन्दी (Hindi)",
-            Lang::Bg => "Български",
-            Lang::Ca => "Català",
-            Lang::Hr => "Hrvatski",
-            Lang::Cs => "Čeština",
-            Lang::Da => "Dansk",
-            Lang::Nl => "Nederlands",
-            Lang::Et => "Eesti",
-            Lang::Fr => "Français",
-            Lang::El => "Ελληνικά",
-            Lang::Hu => "Magyar",
-            Lang::Is => "Íslenska",
-            Lang::Ga => "Gaeilge",
-            Lang::Lv => "Latviešu",
-            Lang::Lt => "Lietuvių",
-            Lang::Mt => "Malti",
-            Lang::Nb => "Norsk bokmål",
-            Lang::Pt => "Português",
-            Lang::Ro => "Română",
-            Lang::Sk => "Slovenčina",
-            Lang::Sl => "Slovenščina",
-            Lang::Es => "Español",
-            Lang::Sv => "Svenska",
-            Lang::Uk => "Українська",
-        }
-    }
-    pub fn code(self) -> &'static str {
-        match self {
-            Lang::En => "en",
-            Lang::Pl => "pl",
-            Lang::De => "de",
-            Lang::It => "it",
-            Lang::Fi => "fi",
-            Lang::Zh => "zh",
-            Lang::Hi => "hi",
-            Lang::Bg => "bg",
-            Lang::Ca => "ca",
-            Lang::Hr => "hr",
-            Lang::Cs => "cs",
-            Lang::Da => "da",
-            Lang::Nl => "nl",
-            Lang::Et => "et",
-            Lang::Fr => "fr",
-            Lang::El => "el",
-            Lang::Hu => "hu",
-            Lang::Is => "is",
-            Lang::Ga => "ga",
-            Lang::Lv => "lv",
-            Lang::Lt => "lt",
-            Lang::Mt => "mt",
-            Lang::Nb => "nb",
-            Lang::Pt => "pt",
-            Lang::Ro => "ro",
-            Lang::Sk => "sk",
-            Lang::Sl => "sl",
-            Lang::Es => "es",
-            Lang::Sv => "sv",
-            Lang::Uk => "uk",
-        }
-    }
-    pub fn from_code(s: &str) -> Option<Lang> {
-        Lang::ALL.into_iter().find(|l| l.code() == s)
-    }
-    fn index(self) -> u8 {
-        Lang::ALL.iter().position(|l| *l == self).unwrap_or(0) as u8
-    }
-}
-
-static CURRENT: AtomicU8 = AtomicU8::new(0);
-
-pub fn set_lang(l: Lang) {
-    CURRENT.store(l.index(), Ordering::Relaxed);
-}
-
-#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
-pub fn lang() -> Lang {
-    Lang::ALL[CURRENT.load(Ordering::Relaxed) as usize % Lang::ALL.len()]
-}
-
-/// Translate an English UI string.
-pub fn tr(s: &'static str) -> &'static str {
-    lookup(CURRENT.load(Ordering::Relaxed) as usize, s)
-}
-
-/// Number of languages that come from `TABLE` (English plus six).
-const TABLE_LANGS: usize = 7;
+pub use base_ui::i18n::{lang, set_lang, Lang};
 
 /// The texts of the other languages, in the order of `Lang::ALL` after the first seven. One line each:
 /// `id|translation`, where the id is the line of the English text in `assets/lang/keys.txt`.
@@ -169,48 +35,22 @@ const EXTRA_FILES: [&str; 23] = [
 ];
 const KEYS: &str = include_str!("../../../assets/lang/keys.txt");
 
-/// English text → translation for the language with column `i` (7 or more).
-fn extra_map(i: usize) -> &'static HashMap<&'static str, &'static str> {
-    static MAPS: [OnceLock<HashMap<&'static str, &'static str>>; 23] = [const { OnceLock::new() }; 23];
-    static ENGLISH: OnceLock<HashMap<usize, &'static str>> = OnceLock::new();
-    let english = ENGLISH.get_or_init(|| KEYS.lines().filter_map(|l| l.split_once('\t')).filter_map(|(id, text)| Some((id.parse().ok()?, text))).collect());
-    MAPS[i - TABLE_LANGS].get_or_init(|| {
-        EXTRA_FILES[i - TABLE_LANGS]
-            .lines()
-            .filter_map(|l| l.split_once('|'))
-            .filter_map(|(id, text)| Some((*english.get(&id.parse::<usize>().ok()?)?, text)))
-            .collect()
-    })
+static TEXTS: Texts = Texts::new(TABLE, KEYS, EXTRA_FILES);
+
+fn registered() {
+    static ONCE: Once = Once::new();
+    ONCE.call_once(|| i18n::register(&TEXTS));
 }
 
-/// Translate `s` into the language with table column `i` (0 = English); unknown strings pass through.
-fn lookup(i: usize, s: &'static str) -> &'static str {
-    if i == 0 {
-        return s;
-    }
-    if i >= TABLE_LANGS {
-        return extra_map(i).get(s).copied().unwrap_or(s);
-    }
-    static MAP: OnceLock<HashMap<&'static str, &'static [&'static str; 7]>> = OnceLock::new();
-    let map = MAP.get_or_init(|| TABLE.iter().map(|row| (row[0], row)).collect());
-    match map.get(s) {
-        Some(row) if !row[i].is_empty() => row[i],
-        _ => s,
-    }
-}
-
-/// Substitute each `{}` in `text` with the next argument.
-fn fill(text: &str, args: &[&dyn Display]) -> String {
-    let mut out = text.to_string();
-    for a in args {
-        out = out.replacen("{}", &a.to_string(), 1);
-    }
-    out
+/// Translate an English UI string.
+pub fn tr(s: &'static str) -> &'static str {
+    registered();
+    i18n::tr(s)
 }
 
 /// Translate and substitute each `{}` with the next argument.
 pub fn trf(s: &'static str, args: &[&dyn Display]) -> String {
-    fill(tr(s), args)
+    i18n::fill(tr(s), args)
 }
 
 // Columns: English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी
@@ -1426,10 +1266,10 @@ mod tests {
     #[test]
     fn the_new_languages_translate() {
         let fr = Lang::Fr.index() as usize;
-        assert_eq!(lookup(fr, "Save"), "Enregistrer");
+        assert_eq!(TEXTS.lookup(fr, "Save").unwrap_or("Save"), "Enregistrer");
         let uk = Lang::Uk.index() as usize;
-        assert_eq!(lookup(uk, "Help"), "Довідка");
-        assert_eq!(lookup(uk, "not in table"), "not in table");
+        assert_eq!(TEXTS.lookup(uk, "Help").unwrap_or("Help"), "Довідка");
+        assert_eq!(TEXTS.lookup(uk, "not in table").unwrap_or("not in table"), "not in table");
         assert_eq!(Lang::from_code("sv"), Some(Lang::Sv));
         assert_eq!(Lang::ALL.len(), 30);
         let mut codes: Vec<_> = Lang::ALL.iter().map(|l| l.code()).collect();
@@ -1443,9 +1283,9 @@ mod tests {
     #[test]
     fn lookup_and_fallback() {
         let de = Lang::De.index() as usize;
-        assert_eq!(lookup(de, "Save"), "Speichern");
-        assert_eq!(lookup(de, "not in table"), "not in table");
-        assert_eq!(fill(lookup(de, "Opened {}"), &[&"x.svg"]), "x.svg geöffnet");
-        assert_eq!(lookup(0, "Save"), "Save");
+        assert_eq!(TEXTS.lookup(de, "Save").unwrap_or("Save"), "Speichern");
+        assert_eq!(TEXTS.lookup(de, "not in table").unwrap_or("not in table"), "not in table");
+        assert_eq!(i18n::fill(TEXTS.lookup(de, "Opened {}").unwrap_or("Opened {}"), &[&"x.svg"]), "x.svg geöffnet");
+        assert_eq!(TEXTS.lookup(0, "Save"), None, "English needs no lookup");
     }
 }
