@@ -1,5 +1,6 @@
 //! Document-level operations: boolean shape operations, offsetting, curve conversion, images and text.
 #[cfg(test)]
+use base_ui::editor::EditorCommands;
 use base_ui::editor::EditorHost;
 use crate::app::App;
 use crate::i18n::{tr, trf};
@@ -70,53 +71,6 @@ impl App {
         self.ed.node_sel.clear();
     }
 
-    /// Group the selected shapes. Layers are untouched; a group moves, scales and selects as one.
-    pub fn group_selection(&mut self) {
-        if self.ed.sel.len() < 2 {
-            self.status_is(tr("Select at least two objects to group."));
-            return;
-        }
-        self.checkpoint();
-        let g = self.doc.new_group_id();
-        for id in self.ed.sel.clone() {
-            if let Some(s) = self.doc.shape_mut(id) {
-                s.group = Some(g);
-            }
-        }
-        self.status_is(tr("Grouped. The objects keep their layers."));
-    }
-
-    /// Lock or unlock the selected objects (a group is selected as a whole, so it locks as a whole).
-    pub fn lock_selection(&mut self, lock: bool) {
-        if !self.ed.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.locked != lock)) {
-            return;
-        }
-        self.checkpoint();
-        let mut n = 0;
-        for id in self.ed.sel.clone() {
-            if let Some(s) = self.doc.shape_mut(id) {
-                if s.locked != lock {
-                    s.locked = lock;
-                    n += 1;
-                }
-            }
-        }
-        self.ed.node_sel.clear();
-        self.status_is(if lock { trf("Locked {} object(s).", &[&n]) } else { trf("Unlocked {} object(s).", &[&n]) });
-    }
-
-    pub fn ungroup_selection(&mut self) {
-        if !self.ed.sel.iter().any(|id| self.doc.shape(*id).is_some_and(|s| s.group.is_some())) {
-            return;
-        }
-        self.checkpoint();
-        for id in self.ed.sel.clone() {
-            if let Some(s) = self.doc.shape_mut(id) {
-                s.group = None;
-            }
-        }
-    }
-
     pub fn import_ai(&mut self) {
         if let Some(p) = rfd::FileDialog::new().add_filter("Adobe Illustrator / PDF", &["ai", "pdf"]).pick_file() {
             self.import_ai_path(p);
@@ -161,7 +115,7 @@ impl App {
             }
         };
         item(ui, has_sel, Act::Copy, "Copy");
-        item(ui, !self.clipboard.is_empty(), Act::Paste, "Paste");
+        item(ui, !self.ed.clipboard.is_empty(), Act::Paste, "Paste");
         item(ui, has_sel, Act::Duplicate, "Duplicate");
         item(ui, any_unlocked, Act::Delete, "Delete");
         item(ui, true, Act::SelectAll, "Select all");

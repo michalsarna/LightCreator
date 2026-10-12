@@ -1,4 +1,5 @@
 //! The check before a job is sent, framed or exported: errors stop it, warnings can be confirmed.
+use base_ui::editor::EditorCommands;
 use crate::app::App;
 use crate::i18n::{tr, trf};
 use crate::theme;

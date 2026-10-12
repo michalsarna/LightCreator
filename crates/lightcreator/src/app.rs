@@ -1,3 +1,4 @@
+use base_ui::editor::EditorCommands;
 use base_ui::editor::EditorCanvas;
 use base_ui::editor::EditorHost;
 use crate::laser::{self, Cmd, ConsoleLine, Evt, LaserLink};
@@ -6,7 +7,7 @@ use crate::i18n::{self, tr, trf, Lang};
 use crate::menu::{menus, Act, Entry};
 use crate::theme::{self, Scheme};
 use eframe::egui::{self, Color32, Key, Modifiers, RichText};
-use lc_core::{gcode, svg, Document, Pt, Rect, Shape, Xf};
+use lc_core::{gcode, svg, Document, Pt, Shape, Xf};
 use std::path::PathBuf;
 
 pub use base_ui::editor::{Tool, View};
@@ -82,7 +83,6 @@ pub struct App {
     pub ed: base_ui::editor::EditorState,
     pub undo: Vec<Document>,
     pub redo: Vec<Document>,
-    pub clipboard: Vec<Shape>,
     pub path: Option<PathBuf>,
     /// Most recently opened or saved project files, newest first (at most `MAX_RECENT`).
     pub recent: Vec<PathBuf>,
@@ -283,7 +283,6 @@ impl App {
             },
             undo: vec![],
             redo: vec![],
-            clipboard: vec![],
             path: None,
             recent: saved("recent_files").and_then(|j| serde_json::from_str::<Vec<PathBuf>>(&j).ok()).unwrap_or_default().into_iter().take(crate::menu::MAX_RECENT).collect(),
             status: tr("Ready").into(),
@@ -437,56 +436,6 @@ impl App {
             self.touch();
         }
     }
-    pub fn transform_selection(&mut self, xf: Xf) {
-        for id in self.ed.sel.clone() {
-            if let Some(s) = self.doc.unlocked_mut(id) {
-                s.xf = s.xf.then(xf);
-            }
-        }
-        self.touch();
-    }
-    pub fn delete_selection(&mut self) {
-        if self.ed.sel.is_empty() {
-            return;
-        }
-        self.checkpoint();
-        let sel = std::mem::take(&mut self.ed.sel);
-        // Locked shapes survive and stay selected.
-        self.doc.scene.shapes.retain(|s| !sel.contains(&s.id) || s.locked);
-        self.ed.sel = sel.into_iter().filter(|id| self.doc.shape(*id).is_some()).collect();
-    }
-    pub fn copy(&mut self) {
-        // A copy of a locked object is a normal, editable object.
-        self.clipboard = self.ed.sel.iter().filter_map(|i| self.doc.shape(*i).cloned()).map(|mut s| { s.locked = false; s }).collect();
-    }
-    pub fn paste(&mut self) {
-        if self.clipboard.is_empty() {
-            return;
-        }
-        self.checkpoint();
-        self.ed.sel.clear();
-        // Pasted groups get their own group ids so they do not merge with the originals.
-        let mut gmap: std::collections::HashMap<u64, u64> = Default::default();
-        for mut s in self.clipboard.clone() {
-            s.xf = s.xf.then(Xf::translate(5.0, 5.0));
-            if let Some(g) = s.group {
-                let doc = &mut self.doc;
-                s.group = Some(*gmap.entry(g).or_insert_with(|| doc.new_group_id()));
-            }
-            let id = self.doc.add_shape(s);
-            self.ed.sel.push(id);
-        }
-        // Next paste lands a bit further away.
-        self.clipboard = self.ed.sel.iter().filter_map(|i| self.doc.shape(*i).cloned()).collect();
-    }
-    pub fn duplicate(&mut self) {
-        self.copy();
-        self.paste();
-    }
-    pub fn select_all(&mut self) {
-        let vis: Vec<u64> = self.doc.scene.shapes.iter().filter(|s| self.doc.layers[s.layer].visible).map(|s| s.id).collect();
-        self.ed.sel = vis;
-    }
     pub fn assign_layer(&mut self, layer: usize) {
         self.ed.active_layer = layer;
         if !self.ed.sel.is_empty() {
@@ -497,96 +446,6 @@ impl App {
                 }
             }
         }
-    }
-    pub fn align(&mut self, mode: u8) {
-        let Some(b) = self.sel_bounds() else { return };
-        // A single object aligns to the bed, several align to each other.
-        let target = if self.ed.sel.len() == 1 {
-            Rect { min: Pt::new(0.0, 0.0), max: { let (w, h) = self.doc.device.work_size(); Pt::new(w, h) } }
-        } else {
-            b
-        };
-        self.checkpoint();
-        for id in self.ed.sel.clone() {
-            let Some(sb) = self.doc.shape(id).and_then(|s| s.bounds()) else { continue };
-            let (dx, dy) = match mode {
-                0 => (target.min.x - sb.min.x, 0.0),
-                1 => (target.center().x - sb.center().x, 0.0),
-                2 => (target.max.x - sb.max.x, 0.0),
-                3 => (0.0, target.min.y - sb.min.y),
-                4 => (0.0, target.center().y - sb.center().y),
-                _ => (0.0, target.max.y - sb.max.y),
-            };
-            if let Some(s) = self.doc.unlocked_mut(id) {
-                s.xf = s.xf.then(Xf::translate(dx, dy));
-            }
-        }
-    }
-    /// Move the selected objects so that their centres coincide, at the centre of the whole selection. A group
-    /// counts as one object. With the small shape inside the large one, the large one stays where it is.
-    pub fn center_on_each_other(&mut self) {
-        let Some(all) = self.sel_bounds() else { return };
-        let target = all.center();
-        // Objects are single shapes or whole groups.
-        let mut units: Vec<Vec<u64>> = vec![];
-        for id in self.ed.sel.clone() {
-            if units.iter().any(|u| u.contains(&id)) {
-                continue;
-            }
-            units.push(self.doc.group_of(id));
-        }
-        if units.len() < 2 {
-            return;
-        }
-        self.checkpoint();
-        for unit in units {
-            let Some(b) = self.doc.bounds_of(&unit) else { continue };
-            let t = Xf::translate(target.x - b.center().x, target.y - b.center().y);
-            for id in unit {
-                if let Some(s) = self.doc.unlocked_mut(id) {
-                    s.xf = s.xf.then(t);
-                }
-            }
-        }
-    }
-    pub fn flip(&mut self, horizontal: bool) {
-        if let Some(b) = self.sel_bounds() {
-            self.checkpoint();
-            let c = b.center();
-            self.transform_selection(if horizontal { Xf::scale_about(-1.0, 1.0, c) } else { Xf::scale_about(1.0, -1.0, c) });
-        }
-    }
-    pub fn rotate_sel(&mut self, deg: f64) {
-        if let Some(b) = self.sel_bounds() {
-            self.checkpoint();
-            self.transform_selection(Xf::rotate_about(deg.to_radians(), b.center()));
-        }
-    }
-    pub fn center_on_bed(&mut self) {
-        if let Some(b) = self.sel_bounds() {
-            self.checkpoint();
-            let (c, d) = (b.center(), &self.doc.device);
-            let (bw, bh) = d.work_size();
-            let t = Xf::translate(bw / 2.0 - c.x, bh / 2.0 - c.y);
-            self.transform_selection(t);
-        }
-    }
-    pub fn to_path(&mut self) {
-        if self.ed.sel.is_empty() {
-            return;
-        }
-        self.checkpoint();
-        for id in self.ed.sel.clone() {
-            if let Some(s) = self.doc.unlocked_mut(id) {
-                s.bake();
-            }
-        }
-    }
-    pub fn reorder(&mut self, front: bool) {
-        self.checkpoint();
-        let sel = self.doc.unlocked_ids(&self.ed.sel);
-        let (a, b): (Vec<Shape>, Vec<Shape>) = std::mem::take(&mut self.doc.scene.shapes).into_iter().partition(|s| sel.contains(&s.id));
-        self.doc.scene.shapes = if front { [b, a].concat() } else { [a, b].concat() };
     }
     pub fn make_array(&mut self) {
         let (cols, rows, dx, dy) = self.array;
