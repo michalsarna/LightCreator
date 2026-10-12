@@ -5,19 +5,8 @@ use eframe::egui::{self, Color32, CursorIcon, PointerButton, Pos2, Sense, Stroke
 use crate::nodes::NodeRef;
 use lc_core::{Kind, Node, Polyline, Pt, Rect, Xf, PALETTE};
 
-pub enum Drag {
-    Move { start: Pt, orig: Vec<(u64, Xf)> },
-    Scale { anchor: Pt, grab: Pt, handle: usize, orig: Vec<(u64, Xf)> },
-    /// Turn about the middle of the selection; `from` is the angle of the point that was grabbed.
-    Rotate { centre: Pt, from: f64, orig: Vec<(u64, Xf)> },
-    /// Slant along an edge: `horizontal` shears x by the distance from the opposite edge `anchor`.
-    Skew { horizontal: bool, anchor: Pt, grab: Pt, orig: Vec<(u64, Xf)> },
-    Marquee { start: Pt },
-    Create { start: Pt },
-    NodeMove { start: Pt, orig: Vec<(NodeRef, Node)> },
-    HandleMove { node: NodeRef, out: bool },
-    NodeMarquee { start: Pt },
-}
+pub use base_ui::editor::{fit_region, fit_view, Drag};
+use base_ui::editor::{handle_pts, nice_step};
 
 fn luminance(c: Color32) -> f32 {
     (0.299 * c.r() as f32 + 0.587 * c.g() as f32 + 0.114 * c.b() as f32) / 255.0
@@ -41,34 +30,9 @@ fn col(i: usize) -> Color32 {
     Color32::from_rgb(c[0], c[1], c[2])
 }
 
-/// 8 resize handles: TL, T, TR, R, BR, B, BL, L.
-fn handle_pts(b: &Rect) -> [Pt; 8] {
-    let (l, r, t, bt) = (b.min.x, b.max.x, b.min.y, b.max.y);
-    let (cx, cy) = (b.center().x, b.center().y);
-    [Pt::new(l, t), Pt::new(cx, t), Pt::new(r, t), Pt::new(r, cy), Pt::new(r, bt), Pt::new(cx, bt), Pt::new(l, bt), Pt::new(l, cy)]
-}
 
-/// Zoom (pixels per mm) and pan that centre a `bed` (mm) in an area of `avail` pixels with `margin` pixels around.
-pub fn fit_view(avail: (f32, f32), bed: (f64, f64), margin: f32) -> (f32, egui::Vec2) {
-    let z = ((avail.0 - 2.0 * margin) / bed.0 as f32).min((avail.1 - 2.0 * margin) / bed.1 as f32).max(0.05);
-    (z, egui::vec2((avail.0 - bed.0 as f32 * z) / 2.0, (avail.1 - bed.1 as f32 * z) / 2.0))
-}
 
-/// Zoom and pan that centre the region `min` / `size` (mm) in an area of `avail` pixels with `margin` around it.
-pub fn fit_region(avail: (f32, f32), min: (f64, f64), size: (f64, f64), margin: f32) -> (f32, egui::Vec2) {
-    let z = ((avail.0 - 2.0 * margin) / size.0 as f32).min((avail.1 - 2.0 * margin) / size.1 as f32).clamp(0.05, 200.0);
-    let (cx, cy) = (min.0 as f32 + size.0 as f32 / 2.0, min.1 as f32 + size.1 as f32 / 2.0);
-    (z, egui::vec2(avail.0 / 2.0 - cx * z, avail.1 / 2.0 - cy * z))
-}
 
-fn nice_step(min_mm: f64) -> f64 {
-    for m in [1.0, 2.0, 5.0] .iter().cycle().zip(0..).map(|(m, i)| m * 10f64.powi(i / 3 - 2)) {
-        if m >= min_mm {
-            return m;
-        }
-    }
-    1000.0
-}
 
 impl App {
     fn w2s(&self, o: Pos2, p: Pt) -> Pos2 {

@@ -4,37 +4,8 @@ use crate::i18n::tr;
 use crate::theme;
 use crate::units_ui::drag_len;
 use eframe::egui::{self, Color32, RichText};
-use serde::{Deserialize, Serialize};
 
-/// Appearance of the work-area grids. The main grid's switch and spacing live in `App::show_grid` / `App::grid`
-/// because snapping uses them too.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct GridPrefs {
-    pub main_color: [u8; 4],
-    pub minor_on: bool,
-    /// Spacing of the secondary grid in mm. Always smaller than the main spacing.
-    pub minor_mm: f64,
-    pub minor_color: [u8; 4],
-    /// Colour of the work-area sheet; `None` picks one that suits the colour scheme.
-    #[serde(default)]
-    pub bed_color: Option<[u8; 4]>,
-    /// Colour of the space around the work area; `None` takes the one of the colour scheme.
-    #[serde(default)]
-    pub workspace_color: Option<[u8; 4]>,
-    /// Thickness of the outlines drawn in the editor, in points. Previews use a little less.
-    #[serde(default = "default_line_width")]
-    pub line_width: f32,
-}
-
-fn default_line_width() -> f32 {
-    1.0
-}
-
-impl Default for GridPrefs {
-    fn default() -> Self {
-        GridPrefs { main_color: [0xc4, 0xc4, 0xcc, 0xff], minor_on: false, minor_mm: 2.0, minor_color: [0xe6, 0xe6, 0xea, 0xff], bed_color: None, workspace_color: None, line_width: 1.0 }
-    }
-}
+pub use base_ui::editor::GridPrefs;
 
 fn c32(c: [u8; 4]) -> Color32 {
     Color32::from_rgba_unmultiplied(c[0], c[1], c[2], c[3])

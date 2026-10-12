@@ -4,8 +4,7 @@ use crate::i18n::tr;
 use eframe::egui;
 use lc_core::{Contour, Kind, Node, Xf};
 
-/// A node address: shape id, contour index, node index.
-pub type NodeRef = (u64, usize, usize);
+pub use base_ui::editor::NodeRef;
 
 impl App {
     /// Make every selected shape an editable Bézier shape with its transform baked in.

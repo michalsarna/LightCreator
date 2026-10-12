@@ -7,54 +7,7 @@ use eframe::egui::{self, Color32, Key, Modifiers, RichText};
 use lc_core::{gcode, svg, Document, Pt, Rect, Shape, Xf};
 use std::path::PathBuf;
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
-pub enum Tool {
-    Select,
-    Node,
-    Rect,
-    Ellipse,
-    Triangle,
-    Star,
-    Polygon,
-    Heart,
-    Spiral,
-    Line,
-    Pen,
-    Text,
-    Pan,
-    Zoom,
-    ZoomOut,
-}
-
-impl Tool {
-    pub const ALL: [(Tool, &'static str, Key); 15] = [
-        (Tool::Select, "Select (V)", Key::V),
-        (Tool::Node, "Node edit (N)", Key::N),
-        (Tool::Rect, "Rectangle (R)", Key::R),
-        (Tool::Ellipse, "Ellipse (E)", Key::E),
-        (Tool::Triangle, "Triangle (Y)", Key::Y),
-        (Tool::Star, "Star (S)", Key::S),
-        (Tool::Polygon, "Polygon (G)", Key::G),
-        (Tool::Heart, "Heart (K)", Key::K),
-        (Tool::Spiral, "Spiral (I)", Key::I),
-        (Tool::Line, "Line (L)", Key::L),
-        (Tool::Pen, "Polyline / pen (P)", Key::P),
-        (Tool::Text, "Text (T)", Key::T),
-        (Tool::Pan, "Pan (H)", Key::H),
-        (Tool::Zoom, "Zoom in (Z)", Key::Z),
-        (Tool::ZoomOut, "Zoom out (X)", Key::X),
-    ];
-
-    /// Selecting and editing tools, kept apart from the tools that insert new objects.
-    pub fn is_edit(self) -> bool {
-        matches!(self, Tool::Select | Tool::Node)
-    }
-
-    /// View navigation tools, kept apart from the drawing and editing tools.
-    pub fn is_nav(self) -> bool {
-        matches!(self, Tool::Pan | Tool::Zoom | Tool::ZoomOut)
-    }
-}
+pub use base_ui::editor::{Tool, View};
 
 /// Human-facing release label (branch name matches it).
 pub const APP_VERSION: &str = "v0.1.5";
@@ -119,14 +72,6 @@ impl SideTab {
 pub enum Screen {
     Start,
     Editor,
-}
-
-pub struct View {
-    pub zoom: f32, // screen px per mm
-    pub pan: egui::Vec2,
-    pub need_fit: bool,
-    /// Keep the work area fitted to the window as it is resized. Zooming or panning by hand turns this off.
-    pub auto_fit: bool,
 }
 
 pub struct App {
