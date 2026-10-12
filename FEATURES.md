@@ -92,6 +92,7 @@
 * **Live laser position:** a switch in the Device tab (off by default, saved with the device, greyed out without a
   connection) that shows the head as a red dot on the work area. Switched on at rest it homes the machine first;
   during a job, a frame or a jog it only shows the dot, refreshed once a second.
+* **Jog step:** the default is 10 mm (profiles that already have a step keep theirs).
 * **Start from:** a device setting, home (machine zero, the default) or the current position of the laser: the
   top-left corner of the design is put where the head stands, for the job, the frame and the dry run, and the job ends
   there. Exported files always count from the machine zero.

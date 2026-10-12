@@ -602,7 +602,7 @@ fn d_tcp_port() -> u16 {
 }
 
 fn d_jog_step() -> f64 {
-    5.0
+    10.0
 }
 fn d_jog_feed() -> f64 {
     3000.0
@@ -1640,7 +1640,7 @@ impl Default for Device {
             gcode: GcodeCfg::default(),
             connection: Connection::default(),
             heads: vec![LaserHead::default()],
-            jog_step: 5.0,
+            jog_step: 10.0,
             jog_feed: 3000.0,
             camera: None,
             cameras: vec![],

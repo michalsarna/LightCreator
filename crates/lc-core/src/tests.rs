@@ -99,7 +99,7 @@ fn old_device_json_gets_new_fields() {
     let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
     let d: Device = serde_json::from_str(old).unwrap();
     assert_eq!(d.controller, Controller::Grbl);
-    assert_eq!(d.jog_step, 5.0);
+    assert_eq!(d.jog_step, 10.0);
     assert!(d.connection.port.is_empty());
 }
 
