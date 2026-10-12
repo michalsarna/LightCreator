@@ -2,7 +2,7 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
-## v0.1.5 (in preparation)
+## v0.1.5
 
 **Device**
 * **Live laser Position:** a switch in the Device tab (off by default, saved with the device, greyed out without a
