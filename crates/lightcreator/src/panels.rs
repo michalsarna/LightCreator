@@ -1,13 +1,12 @@
+use base_ui::widgets::section_title;
 use base_ui::clipart_ui::ClipGallery;
-use base_ui::editor::EditorCommands;
-use base_ui::editor::EditorHost;
 use crate::app::{App, SideTab};
 use crate::units_ui::{drag_len, drag_speed};
 use crate::i18n::{tr, trf};
 use crate::laser::{Cmd, ConsoleLine, Dir};
 use crate::theme;
 use eframe::egui::{self, Color32, RichText};
-use lc_core::{Dither, Kind, LayerMode, TextData, Xf, PALETTE};
+use lc_core::{Dither, Kind, LayerMode, TextData, PALETTE};
 
 impl App {
     pub fn side_panel(&mut self, ui: &mut egui::Ui) {
@@ -109,96 +108,10 @@ impl App {
     }
 
     fn properties_inner(&mut self, ui: &mut egui::Ui) {
-        let Some(b) = self.sel_bounds() else {
+        // Position and size, rotation, mirror and centre, alignment: the sections shared with MillCreator.
+        if !base_ui::editor::properties_sections(self, ui) {
             ui.label(RichText::new(tr("Nothing selected")).color(theme::text_dim()));
             return;
-        };
-        let units = self.doc.device.units;
-        let (mut x, mut y, mut w, mut h) = (b.min.x, b.min.y, b.width(), b.height());
-        let mut changed = None;
-        section_title(ui, "move", &tr("Position and size"));
-        egui::Grid::new("props").num_columns(4).spacing([6.0, 6.0]).show(ui, |ui| {
-            ui.spacing_mut().interact_size.x = 78.0;
-            let f = |ui: &mut egui::Ui, label: &str, v: &mut f64| -> egui::Response {
-                ui.label(label);
-                drag_len(ui, units, v, 0.1, None)
-            };
-            let rx = f(ui, "X", &mut x);
-            let ry = f(ui, "Y", &mut y);
-            ui.end_row();
-            let rw = f(ui, "W", &mut w);
-            let rh = f(ui, "H", &mut h);
-            ui.end_row();
-            for (r, which) in [(&rx, 0), (&ry, 1), (&rw, 2), (&rh, 3)] {
-                if r.drag_started() || r.gained_focus() {
-                    self.checkpoint();
-                }
-                if r.changed() {
-                    changed = Some(which);
-                }
-            }
-        });
-        ui.checkbox(&mut self.lock_aspect, tr("Lock aspect ratio"));
-        if let Some(which) = changed {
-            let t = match which {
-                0 | 1 => Xf::translate(x - b.min.x, y - b.min.y),
-                _ => {
-                    let (mut sx, mut sy) = (if b.width() > 1e-9 { w / b.width() } else { 1.0 }, if b.height() > 1e-9 { h / b.height() } else { 1.0 });
-                    if self.lock_aspect {
-                        if which == 2 {
-                            sy = sx;
-                        } else {
-                            sx = sy;
-                        }
-                    }
-                    Xf::scale_about(sx.max(1e-4), sy.max(1e-4), b.min)
-                }
-            };
-            self.transform_selection(t);
-        }
-        // Rotate, mirror, align and layer: each section in its own block, buttons of one size.
-        ui.separator();
-        section_title(ui, "rotate-cw", &tr("Rotation"));
-        let bw = (ui.available_width() - 12.0) / 3.0;
-        egui::Grid::new("props_rotate").num_columns(3).spacing([6.0, 6.0]).show(ui, |ui| {
-            ui.allocate_ui_with_layout(egui::vec2(bw, 24.0), egui::Layout::left_to_right(egui::Align::Center), |ui| {
-                // A label as well would not fit in every language; the section title says what this is.
-                ui.add(egui::DragValue::new(&mut self.rot_input).suffix("°")).on_hover_text(tr("Rotate"));
-            });
-            let ink = theme::text();
-            if ui.add_sized([bw, 24.0], egui::Button::image_and_text(crate::icons::slot(Some("check"), ink), tr("Apply")).truncate()).clicked() {
-                self.rotate_sel(self.rot_input);
-            }
-            if ui.add_sized([bw, 24.0], egui::Button::image_and_text(crate::icons::slot(Some("rotate-cw"), ink), "90°")).clicked() {
-                self.rotate_sel(90.0);
-            }
-            ui.end_row();
-        });
-        ui.separator();
-        section_title(ui, "flip-horizontal", &tr("Mirror and centre"));
-        let flips = [
-            (tr("Flip H"), tr("Flip horizontal"), "flip-horizontal"),
-            (tr("Flip V"), tr("Flip vertical"), "flip-vertical"),
-            (tr("Centre"), tr("Centre on bed"), "focus"),
-        ];
-        match button_grid(ui, "props_flip", &flips) {
-            Some(0) => self.flip(true),
-            Some(1) => self.flip(false),
-            Some(2) => self.center_on_bed(),
-            _ => {}
-        }
-        ui.separator();
-        section_title(ui, "align-center-vertical", &tr("Alignment"));
-        let aligns = [
-            (tr("Left"), tr("Align left"), "align-start-vertical"),
-            (tr("Mid-H"), tr("Align centre"), "align-center-vertical"),
-            (tr("Right"), tr("Align right"), "align-end-vertical"),
-            (tr("Top"), tr("Align top"), "align-start-horizontal"),
-            (tr("Mid-V"), tr("Align middle"), "align-center-horizontal"),
-            (tr("Bottom"), tr("Align bottom"), "align-end-horizontal"),
-        ];
-        if let Some(i) = button_grid(ui, "props_align", &aligns) {
-            self.align(i as u8);
         }
         ui.separator();
         // Layer of selection
@@ -496,33 +409,6 @@ impl App {
 
 /// Width of the cell of one of the switches (output, visible, air pump) in the layer list.
 const SWITCH_W: f32 = 22.0;
-
-/// Heading of a block in a side-panel tab: a small icon and a bold title.
-fn section_title(ui: &mut egui::Ui, icon: &str, title: &str) {
-    ui.horizontal(|ui| {
-        ui.add(crate::icons::slot(Some(icon), theme::text_dim()));
-        ui.label(RichText::new(title).strong().color(theme::text_dim()));
-    });
-    ui.add_space(2.0);
-}
-
-/// Buttons of one size in rows of three, as a table. Returns the index of the clicked one.
-fn button_grid(ui: &mut egui::Ui, id: &str, cells: &[(&str, &str, &str)]) -> Option<usize> {
-    let mut clicked = None;
-    let bw = (ui.available_width() - 12.0) / 3.0;
-    egui::Grid::new(id).num_columns(3).spacing([6.0, 6.0]).show(ui, |ui| {
-        for (i, (label, tip, icon)) in cells.iter().enumerate() {
-            let btn = egui::Button::image_and_text(crate::icons::slot(Some(icon), theme::text()), *label).truncate();
-            if ui.add_sized([bw, 24.0], btn).on_hover_text(*tip).clicked() {
-                clicked = Some(i);
-            }
-            if i % 3 == 2 {
-                ui.end_row();
-            }
-        }
-    });
-    clicked
-}
 
 /// The cut settings of one layer: mode, speed, power, passes, fill options and image options.
 /// `id_scope` keeps the widget ids apart when the same settings are shown in the panel and in the dialog.

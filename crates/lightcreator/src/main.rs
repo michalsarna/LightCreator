@@ -41,17 +41,13 @@ pub use base_ui::{camera, camera_stream, fonts, markdown_ui, theme, units_ui};
 const ICON_256: &[u8] = include_bytes!("../../../assets/icons/icon-256.png");
 const ICON_512: &[u8] = include_bytes!("../../../assets/icons/icon-512.png");
 
-/// Decode the bundled PNG logo into a texture for the About window.
+/// Decode the bundled PNG logo into a texture for the title bar, the start screen and the About window.
 pub fn load_logo(ctx: &eframe::egui::Context) -> Option<eframe::egui::TextureHandle> {
-    let img = image::load_from_memory_with_format(ICON_256, image::ImageFormat::Png).ok()?.to_rgba8();
-    let size = [img.width() as usize, img.height() as usize];
-    let color = eframe::egui::ColorImage::from_rgba_unmultiplied(size, img.as_raw());
-    Some(ctx.load_texture("lightcreator-logo", color, eframe::egui::TextureOptions::LINEAR))
+    base_ui::start::load_logo(ctx, ICON_256, "lightcreator-logo")
 }
 
 fn window_icon() -> Option<eframe::egui::IconData> {
-    let img = image::load_from_memory_with_format(ICON_512, image::ImageFormat::Png).ok()?.to_rgba8();
-    Some(eframe::egui::IconData { width: img.width(), height: img.height(), rgba: img.into_raw() })
+    base_ui::start::window_icon(ICON_512)
 }
 
 fn main() -> eframe::Result {
