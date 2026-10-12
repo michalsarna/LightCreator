@@ -1,3 +1,4 @@
+use base_ui::editor::EditorImages;
 use base_ui::editor::EditorCommands;
 use base_ui::editor::EditorCanvas;
 use base_ui::editor::EditorHost;
@@ -171,8 +172,6 @@ pub struct App {
     pub stream_err: String,
     pub stream_overlay: bool,
     pub read_cfg: Option<crate::device_ui::ReadCfg>,
-    pub img_dlg: Option<crate::image_ui::ImgDlg>,
-    pub trace_dlg: Option<crate::image_ui::TraceDlg>,
     pub show_preview: bool,
     pub pv: crate::preview_ui::PreviewState,
     pub overlay: Option<crate::overlay::Overlay>,
@@ -354,8 +353,6 @@ impl App {
             stream_err: String::new(),
             stream_overlay: false,
             read_cfg: None,
-            img_dlg: None,
-            trace_dlg: None,
             show_preview: false,
             pv: Default::default(),
             overlay: None,

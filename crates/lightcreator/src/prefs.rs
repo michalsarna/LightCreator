@@ -1,5 +1,4 @@
 //! Global preferences: grids (the window is in base-ui).
-use base_ui::editor::EditorHost;
 use crate::app::App;
 use eframe::egui;
 
@@ -17,6 +16,7 @@ impl App {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use base_ui::editor::EditorHost;
     use crate::theme;
     use eframe::egui::Color32;
 

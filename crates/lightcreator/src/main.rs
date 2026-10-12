@@ -15,7 +15,6 @@ mod i18n;
 mod guide;
 mod help_ui;
 mod icons;
-mod image_ui;
 mod laser;
 mod materials_ui;
 mod menu;

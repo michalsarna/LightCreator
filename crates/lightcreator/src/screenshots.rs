@@ -2,6 +2,7 @@
 //!
 //! `cargo test -p lightcreator --release render_screenshots -- --ignored --nocapture`
 //! writes PNG files into `docs/screenshots/`.
+use base_ui::editor::EditorImages;
 use base_ui::editor::EditorCommands;
 use base_ui::editor::EditorHost;
 use crate::app::{App, Screen, SideTab, Tool};
@@ -297,7 +298,7 @@ fn render_screenshots() {
     save(&mut h, "13-image-import.png");
     {
         let a = app(&mut h);
-        a.img_dlg = None;
+        a.ed.img_dlg = None;
         let im = ImageData {
             name: "logo.png".into(),
             px_w: 200,
@@ -314,7 +315,7 @@ fn render_screenshots() {
     save(&mut h, "14-trace.png");
     {
         let a = app(&mut h);
-        a.trace_dlg = None;
+        a.ed.trace_dlg = None;
         a.doc.scene.shapes.clear();
         a.ed.grid_prefs.minor_on = true;
         a.ed.grid_prefs.minor_mm = 5.0;
