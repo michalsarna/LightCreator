@@ -1081,3 +1081,4 @@
 1080|Vissa delar av LightBurn-projektet kunde inte användas: {}
 1081|Jag har ingen enhet
 1082|Arbeta med ett projekt utan maskin: en enkel enhet som heter Dummy med standardarbetsyta och standardhastigheter
+1083|Importera LightBurn-projekt…

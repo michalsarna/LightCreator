@@ -1081,3 +1081,4 @@
 1080|Sommige onderdelen van het LightBurn-project konden niet worden gebruikt: {}
 1081|Ik heb geen apparaat
 1082|Werk aan een project zonder machine: een gewoon apparaat genaamd Dummy, met het standaardwerkgebied en de standaardsnelheden
+1083|LightBurn-project importeren…

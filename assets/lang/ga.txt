@@ -1081,3 +1081,4 @@
 1080|Níorbh fhéidir codanna áirithe de thionscadal LightBurn a úsáid: {}
 1081|Níl feiste agam
 1082|Oibrigh ar thionscadal gan meaisín: gnáthfheiste darb ainm Dummy, leis an limistéar oibre agus na luasanna réamhshocraithe
+1083|Iompórtáil tionscadal LightBurn…

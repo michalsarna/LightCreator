@@ -1081,3 +1081,4 @@
 1080|Dažas LightBurn projekta daļas nevarēja izmantot: {}
 1081|Man nav ierīces
 1082|Strādājiet ar projektu bez iekārtas: parasta ierīce ar nosaukumu Dummy ar noklusējuma darba laukumu un ātrumiem
+1083|Importēt LightBurn projektu…
