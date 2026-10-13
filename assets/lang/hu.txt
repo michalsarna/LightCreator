@@ -1078,3 +1078,4 @@
 1077|Beolvasva
 1078|Olvasási hiba
 1079|Ez a projekt másik gépbeállításhoz készült ({}). Indítás előtt ellenőrizd az eszközt.
+1080|A LightBurn-projekt egyes részei nem használhatók: {}

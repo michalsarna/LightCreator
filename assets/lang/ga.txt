@@ -1078,3 +1078,4 @@
 1077|Léite go maith
 1078|Earráid léite
 1079|Rinneadh an tionscadal seo do shocrú meaisín eile ({}). Seiceáil an gléas sula dtosaíonn tú.
+1080|Níorbh fhéidir codanna áirithe de thionscadal LightBurn a úsáid: {}

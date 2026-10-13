@@ -1078,3 +1078,4 @@
 1077|Lectura OK
 1078|Error de lectura
 1079|Este proyecto se creó para otra configuración de máquina ({}). Comprueba el dispositivo antes de empezar.
+1080|Algunas partes del proyecto de LightBurn no se pudieron usar: {}

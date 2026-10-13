@@ -1722,6 +1722,38 @@ impl Document {
         Ok(Document { scene: p.scene, layers, device, order, description: p.description, job_info: JobInfo::default(), others: Others { sections, extra } })
     }
 
+    /// A document from a LightBurn project read by `base_core::lightburn::import`: the shapes, and for each layer the
+    /// name, mode, speed, power, passes and (when the file says) the interval. `device` is the machine the document is
+    /// for (the project file does not carry one).
+    pub fn from_lightburn(imp: base_core::lightburn::Import, device: Device) -> Document {
+        use base_core::lightburn::CutKind;
+        let mut d = Document { scene: imp.scene, device, ..Document::default() };
+        let layer_count = d.layers.len();
+        for c in imp.cuts.iter().filter(|c| c.index < layer_count) {
+            let l = &mut d.layers[c.index];
+            if !c.name.is_empty() {
+                l.name = c.name.clone();
+            }
+            l.mode = match c.kind {
+                CutKind::Line => LayerMode::Line,
+                CutKind::Fill => LayerMode::Fill,
+                CutKind::Offset => LayerMode::Offset,
+                CutKind::Image => LayerMode::Image,
+            };
+            l.speed = c.speed_mm_s;
+            l.power = c.power_max;
+            l.min_power = c.power_min.min(c.power_max);
+            l.passes = c.passes;
+            if let Some(i) = c.interval_mm {
+                l.interval = i;
+            }
+        }
+        d.normalize_image_layers();
+        d.device.ensure_materials();
+        d.sync_material();
+        d
+    }
+
     /// The text of a project file (`.cre`).
     pub fn to_json(&self) -> String {
         self.to_project().to_json()

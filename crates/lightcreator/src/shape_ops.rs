@@ -293,7 +293,7 @@ impl App {
             let ext = p.extension().map(|e| e.to_string_lossy().to_lowercase()).unwrap_or_default();
             match ext.as_str() {
                 "png" | "jpg" | "jpeg" | "bmp" | "gif" | "webp" => self.import_image_path(p),
-                "svg" | "cre" => self.open_path(p),
+                "svg" | "cre" | "lbrn2" | "lbrn" => self.open_path(p),
                 "ai" | "pdf" => self.import_ai_path(p),
                 _ => {}
             }

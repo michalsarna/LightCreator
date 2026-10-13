@@ -1078,3 +1078,4 @@
 1077|Pročitano
 1078|Greška pri čitanju
 1079|Ovaj je projekt izrađen za drugačiju postavku stroja ({}). Provjerite uređaj prije početka.
+1080|Neki dijelovi LightBurn projekta nisu se mogli upotrijebiti: {}

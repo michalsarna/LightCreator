@@ -1078,3 +1078,4 @@
 1077|Citit OK
 1078|Eroare la citire
 1079|Acest proiect a fost creat pentru o altă configurare a mașinii ({}). Verificați dispozitivul înainte de a începe.
+1080|Unele părți ale proiectului LightBurn nu au putut fi folosite: {}

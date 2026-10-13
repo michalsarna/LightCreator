@@ -1078,3 +1078,4 @@
 1077|Qari OK
 1078|Żball fil-qari
 1079|Dan il-proġett inħoloq għal konfigurazzjoni differenti tal-magna ({}). Iċċekkja l-apparat qabel tibda.
+1080|Xi partijiet tal-proġett LightBurn ma setgħux jintużaw: {}

@@ -1078,3 +1078,4 @@
 1077|Lestur tókst
 1078|Villa við lestur
 1079|Þetta verkefni var gert fyrir aðra vélauppsetningu ({}). Athugaðu tækið áður en þú byrjar.
+1080|Ekki var hægt að nota suma hluta LightBurn-verkefnisins: {}

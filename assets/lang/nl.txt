@@ -1078,3 +1078,4 @@
 1077|Gelezen
 1078|Fout bij lezen
 1079|Dit project is gemaakt voor een andere machine-instelling ({}). Controleer het apparaat voordat je begint.
+1080|Sommige onderdelen van het LightBurn-project konden niet worden gebruikt: {}

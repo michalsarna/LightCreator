@@ -1078,3 +1078,4 @@
 1077|Nuskaityta
 1078|Skaitymo klaida
 1079|Šis projektas buvo sukurtas kitai staklių sąrankai ({}). Prieš pradėdami patikrinkite įrenginį.
+1080|Kai kurių LightBurn projekto dalių nepavyko panaudoti: {}

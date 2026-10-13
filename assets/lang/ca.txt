@@ -1078,3 +1078,4 @@
 1077|Llegit
 1078|Error de lectura
 1079|Aquest projecte es va fer per a una altra configuració de la màquina ({}). Comprova el dispositiu abans de començar.
+1080|Algunes parts del projecte de LightBurn no s'han pogut utilitzar: {}
