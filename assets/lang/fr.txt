@@ -1077,3 +1077,4 @@
 1076|Home : le dessin est gravé là où il se trouve dans la zone de travail, à partir du zéro machine. Position actuelle : le coin supérieur gauche du dessin est placé là où se trouve la tête laser en ce moment (travaux, cadrages et essai à blanc), et le travail se termine là. Les fichiers exportés comptent toujours à partir du zéro machine.
 1077|Lecture OK
 1078|Erreur de lecture
+1079|Ce projet a été créé pour une autre configuration de machine ({}). Vérifiez l'appareil avant de commencer.

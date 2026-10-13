@@ -46,4 +46,4 @@ Przesuwanie (H), powiększanie (Z), pomniejszanie (X), *Fit work area* (Ctrl+0),
   ![Trasowanie](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/14-trace.png)
 
 ## Zapis i eksport
-Własne projekty `.lcr` (z osadzonymi obrazami), SVG, G-code, HPGL (`.plt`) i DXF.
+Własne projekty `.cre` (z osadzonymi obrazami), SVG, G-code, HPGL (`.plt`) i DXF.

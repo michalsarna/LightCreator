@@ -1077,3 +1077,4 @@
 1076|Baile: dóitear an dearadh san áit a luíonn sé ar an limistéar oibre, ag comhaireamh ó nialas an mheaisín. Suíomh reatha: cuirtear ceathrú uachtarach clé an deartha san áit a bhfuil ceann an léasair anois (jabanna, frámaí agus rith tirim), agus críochnaíonn an jab ansin. Comhaireann comhaid easpórtáilte i gcónaí ó nialas an mheaisín.
 1077|Léite go maith
 1078|Earráid léite
+1079|Rinneadh an tionscadal seo do shocrú meaisín eile ({}). Seiceáil an gléas sula dtosaíonn tú.

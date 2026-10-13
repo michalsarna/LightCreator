@@ -1077,3 +1077,4 @@
 1076|Home: o desenho é gravado onde está na área de trabalho, contando a partir do zero da máquina. Posição atual: o canto superior esquerdo do desenho é posto onde está agora a cabeça laser (trabalhos, contornos e ensaio em seco) e o trabalho termina aí. Os ficheiros exportados contam sempre a partir do zero da máquina.
 1077|Leitura OK
 1078|Erro de leitura
+1079|Este projeto foi criado para outra configuração de máquina ({}). Verifique o dispositivo antes de começar.

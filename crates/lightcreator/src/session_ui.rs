@@ -14,7 +14,7 @@ pub const DEFAULT_AUTOSAVE_SECS: u32 = 120;
 /// A temporary file for work that has not been saved under a name yet. Not a fixed name, so two running
 /// copies of the program do not overwrite each other's work.
 pub fn temp_autosave_path() -> PathBuf {
-    std::env::temp_dir().join("lightcreator-autosave").join(format!("untitled-{}.lcr", std::process::id()))
+    std::env::temp_dir().join("lightcreator-autosave").join(format!("untitled-{}.cre", std::process::id()))
 }
 
 impl App {
@@ -323,7 +323,7 @@ mod tests {
         let mut a = App::build(&ctx, None, false);
         let dir = std::env::temp_dir().join(format!("lc-autosave-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
-        let file = dir.join("work.lcr");
+        let file = dir.join("work.cre");
         a.path = Some(file.clone());
         a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::IDENTITY);
         a.touch();
@@ -331,7 +331,7 @@ mod tests {
         assert_eq!(a.autosave_now(), Some(file.clone()));
         assert!(file.is_file());
         assert!(!a.is_dirty(), "the real file is up to date");
-        a.toast("File saved: work.lcr".into());
+        a.toast("File saved: work.cre".into());
         assert!(a.toast.is_some());
         let _ = std::fs::remove_dir_all(&dir);
     }

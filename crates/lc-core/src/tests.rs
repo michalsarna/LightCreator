@@ -270,8 +270,8 @@ fn layer_order_groups_and_old_files() {
     assert_eq!((d.shape(a).unwrap().layer, d.shape(b).unwrap().layer), (0, 1));
     // A document saved before these fields existed still loads.
     let mut v: serde_json::Value = serde_json::from_str(&Document::default().to_json()).unwrap();
-    v.as_object_mut().unwrap().remove("order");
-    v.as_object_mut().unwrap().remove("next_group");
+    v["sections"]["laser"].as_object_mut().unwrap().remove("order");
+    v["scene"].as_object_mut().unwrap().remove("next_group");
     assert_eq!(Document::from_json(&v.to_string()).unwrap().layer_order().len(), 30);
 }
 
@@ -477,7 +477,7 @@ fn locked_shapes_refuse_editing_access() {
     assert_eq!(d.unlocked_ids(&[a, b, 999]), vec![b]);
     // Old files without the flag load as unlocked.
     let mut v: serde_json::Value = serde_json::from_str(&d.to_json()).unwrap();
-    for s in v["shapes"].as_array_mut().unwrap() {
+    for s in v["scene"]["shapes"].as_array_mut().unwrap() {
         s.as_object_mut().unwrap().remove("locked");
     }
     assert!(Document::from_json(&v.to_string()).unwrap().scene.shapes.iter().all(|s| !s.locked));
@@ -2001,9 +2001,10 @@ fn materials_travel_with_the_profile_and_with_the_project_and_are_checked_on_imp
     d.layers[1].speed = 12.0;
     d.sync_material();
     d.add_material("Acrylic");
+    // The project carries the selected material with its layers; the library belongs to the device.
     let back = Document::from_json(&d.to_json()).unwrap();
-    assert_eq!(back.device.materials, d.device.materials);
-    assert_eq!(back.device.active_material, 1);
+    assert_eq!(back.device.materials, vec![d.device.materials[1].clone()]);
+    assert_eq!(back.device.active_material, 0);
     let ok = profiles::import_profile(&profiles::export_profile(&d.device, "v0.1.2")).unwrap();
     assert_eq!(ok.materials, d.device.materials);
     // A wrong selected material is simply brought back to the first.
@@ -2114,4 +2115,70 @@ fn start_from_is_saved_with_the_device_and_old_profiles_start_from_home() {
     let old = r#"{"name":"x","bed_w":300.0,"bed_h":200.0,"origin":"FrontLeft","s_max":1000.0,"dynamic_power":true,"travel_speed":3000.0,"return_home":true,"baud":115200}"#;
     let d: Device = serde_json::from_str(old).unwrap();
     assert_eq!(d.start_from, StartFrom::Home);
+}
+
+#[test]
+fn a_project_keeps_the_machine_it_was_made_for_but_not_the_connection_or_cameras() {
+    let mut d = Document::default();
+    d.device.name = "Garage laser".into();
+    d.device.area.bed_w = 410.0;
+    d.device.connection.host = "192.168.1.50".into();
+    d.device.connection.port = "/dev/secret-port".into();
+    d.device.cameras = vec![CameraSource::url("Cam", "http://user:pass@10.0.0.9/stream", 0)];
+    d.device.notes = "private notes".into();
+    let text = d.to_json();
+    for secret in ["192.168.1.50", "secret-port", "user:pass", "private notes"] {
+        assert!(!text.contains(secret), "{secret} is in the project file");
+    }
+    let back = Document::from_json(&text).unwrap();
+    assert_eq!(back.device.name, "Garage laser");
+    assert_eq!(back.device.area.bed_w, 410.0);
+    assert!(back.device.connection.host.is_empty() && back.device.cameras.is_empty());
+}
+
+#[test]
+fn machines_that_differ_are_reported_in_words_of_the_interface() {
+    let a = Machine::of(&Device::default());
+    let mut b = a.clone();
+    assert!(a.differences(&b).is_empty());
+    b.area.bed_w += 100.0;
+    b.name = "Another name".into();
+    assert_eq!(a.differences(&b), vec!["Work area"]);
+    b.controller = Controller::Marlin;
+    assert_eq!(a.differences(&b), vec!["Controller", "Work area"]);
+}
+
+#[test]
+fn the_parts_of_other_programs_survive_opening_and_saving_here() {
+    let mut p = Document::default().to_project();
+    p.set_section("mill", &serde_json::json!({ "format": 2, "tools": ["6 mm flat"] }));
+    let mut v: serde_json::Value = serde_json::from_str(&p.to_json()).unwrap();
+    v["future"] = serde_json::json!(true);
+    let mut d = Document::from_json(&v.to_string()).unwrap();
+    d.add(0, Kind::Rect { w: 5.0, h: 5.0 }, Xf::IDENTITY);
+    let v2: serde_json::Value = serde_json::from_str(&d.to_json()).unwrap();
+    assert_eq!(v2["sections"]["mill"]["tools"][0], "6 mm flat");
+    assert_eq!(v2["future"], true);
+    assert_eq!(v2["scene"]["shapes"].as_array().unwrap().len(), 1);
+}
+
+#[test]
+fn a_project_made_by_another_program_opens_with_the_default_layers() {
+    let mut p = base_core::project::Project::default();
+    p.scene.add(0, Kind::Rect { w: 5.0, h: 5.0 }, Xf::IDENTITY);
+    p.set_section("pen", &serde_json::json!({ "format": 1 }));
+    let d = Document::from_json(&p.to_json()).unwrap();
+    assert_eq!((d.scene.shapes.len(), d.layers.len(), d.layer_order().len()), (1, 30, 30));
+    assert!(d.to_json().contains("\"pen\""));
+}
+
+#[test]
+fn a_project_file_is_saved_again_unchanged() {
+    let path = format!("{}/tests/fixtures/every-kind.cre", env!("CARGO_MANIFEST_DIR"));
+    let text = std::fs::read_to_string(path).unwrap();
+    let doc = Document::from_json(&text).unwrap();
+    assert_eq!(doc.scene.shapes.len(), 5);
+    assert_eq!(doc.group_of(1), vec![1, 2]);
+    assert!(doc.shape(5).unwrap().locked);
+    assert_eq!(doc.to_json(), text);
 }

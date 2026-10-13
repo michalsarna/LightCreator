@@ -1077,3 +1077,4 @@
 1076|Home: načrt se zažge tam, kjer leži na delovni površini, šteto od ničle stroja. Trenutni položaj: zgornji levi kot načrta se postavi tja, kjer je laserska glava zdaj (opravila, okviri in suhi tek), opravilo pa se tam konča. Izvožene datoteke vedno štejejo od ničle stroja.
 1077|Prebrano
 1078|Napaka pri branju
+1079|Ta projekt je nastal za drugačno nastavitev stroja ({}). Pred začetkom preverite napravo.

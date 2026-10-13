@@ -1077,3 +1077,4 @@
 1076|Home: návrh se vypálí tam, kde leží na pracovní ploše, počítáno od nuly stroje. Aktuální poloha: levý horní roh návrhu se umístí tam, kde laserová hlava právě stojí (úlohy, rámování a suchý běh), a úloha tam končí. Exportované soubory se vždy počítají od nuly stroje.
 1077|Načteno
 1078|Chyba čtení
+1079|Tento projekt vznikl pro jiné nastavení stroje ({}). Před spuštěním zkontrolujte zařízení.

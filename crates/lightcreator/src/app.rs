@@ -482,7 +482,7 @@ impl App {
         self.ed.view.need_fit = true;
     }
     pub fn open(&mut self) {
-        if let Some(p) = rfd::FileDialog::new().add_filter("LightCreator project", &["lcr"]).add_filter("SVG", &["svg"]).pick_file() {
+        if let Some(p) = rfd::FileDialog::new().add_filter("Project", &[lc_core::project::EXTENSION]).add_filter("SVG", &["svg"]).pick_file() {
             self.open_path(p);
         }
     }
@@ -504,8 +504,11 @@ impl App {
         match std::fs::read_to_string(&p).map_err(|e| e.to_string()).and_then(|s| Document::from_json(&s)) {
             Ok(d) => {
                 let incoming = d.device.material().clone();
+                let made_for = lc_core::Machine::of(&d.device);
                 self.doc = d;
+                let mut other_setup = vec![];
                 if let Some(p) = self.profiles.get(self.active) {
+                    other_setup = made_for.differences(&lc_core::Machine::of(p));
                     self.doc.device = p.clone();
                     // The material the project was made with joins the library of the device.
                     self.adopt_project_material(incoming);
@@ -514,6 +517,11 @@ impl App {
                 self.redo.clear();
                 self.ed.sel.clear();
                 self.status = trf("Opened {}", &[&p.display()]);
+                if !other_setup.is_empty() {
+                    // The project was made for a machine that differs where it matters: say so before anything is burned.
+                    let what = other_setup.iter().map(|w| tr(w)).collect::<Vec<_>>().join(", ");
+                    self.toast(trf("This project was made for a different machine setup ({}). Check the device before you start.", &[&what]));
+                }
                 self.add_recent(&p);
                 self.path = Some(p);
                 self.touch();
@@ -525,7 +533,7 @@ impl App {
     }
     pub fn save(&mut self, as_new: bool) {
         let path = if as_new || self.path.is_none() {
-            rfd::FileDialog::new().add_filter("LightCreator project", &["lcr"]).set_file_name("untitled.lcr").save_file()
+            rfd::FileDialog::new().add_filter("Project", &[lc_core::project::EXTENSION]).set_file_name("untitled.cre").save_file()
         } else {
             self.path.clone()
         };
@@ -1768,7 +1776,7 @@ mod recent_tests {
         std::fs::create_dir_all(&dir).unwrap();
         let files: Vec<PathBuf> = (0..12)
             .map(|i| {
-                let f = dir.join(format!("f{i}.lcr"));
+                let f = dir.join(format!("f{i}.cre"));
                 std::fs::write(&f, Document::default().to_json()).unwrap();
                 f
             })
@@ -2086,5 +2094,36 @@ mod live_position_tests {
         v.as_object_mut().unwrap().remove("live_position");
         let old: lc_core::Device = serde_json::from_value(v).unwrap();
         assert!(!old.live_position);
+    }
+}
+
+#[cfg(test)]
+mod project_open_tests {
+    use super::*;
+
+    #[test]
+    fn a_project_made_for_another_machine_setup_warns_when_opened() {
+        let mut a = App::build(&egui::Context::default(), None, false);
+        a.profiles = vec![lc_core::Device::default()];
+        a.active = 0;
+        let dir = std::env::temp_dir().join(format!("lc-open-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        // The same machine: no warning.
+        let same = dir.join("same.cre");
+        std::fs::write(&same, Document::default().to_json()).unwrap();
+        a.open_path(same);
+        assert!(a.toast.is_none());
+        // Another work area and controller: the warning names both.
+        let mut d = Document::default();
+        d.device.area.bed_w += 150.0;
+        d.device.controller = lc_core::Controller::Marlin;
+        let other = dir.join("other.cre");
+        std::fs::write(&other, d.to_json()).unwrap();
+        a.open_path(other);
+        let (text, _) = a.toast.clone().expect("a warning");
+        assert!(text.contains("Controller") && text.contains("Work area"), "{text}");
+        // The device in use is still the local one.
+        assert_eq!(a.doc.device.area.bed_w, lc_core::Device::default().area.bed_w);
+        std::fs::remove_dir_all(dir).ok();
     }
 }

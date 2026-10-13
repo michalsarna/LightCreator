@@ -80,7 +80,7 @@
   warning when objects reach outside the work area. *Print* sends the page to the system printer (`lp` on macOS and Linux
   with a choice of printer, the PDF viewer's Print verb on Windows); *Save as PDF…* and *Open the PDF* are the alternatives.
   Layers are drawn in their colours, filled shapes lightly tinted, images in grey.
-* **Export** submenu: SVG, G-code, and HPGL (`.plt`) / DXF. Native `.lcr` projects embed images.
+* **Export** submenu: SVG, G-code, and HPGL (`.plt`) / DXF. Native `.cre` projects (shared with MillCreator) embed images.
 * **Layer list:** the three switches at the end of each row (output, visible, air pump) have icon headings above
   the list; the layer colour is shown next to the title of the cut settings.
 * **Tab order:** the tabs of the side panel can be dragged to another place; the order is kept in the settings and in backups.

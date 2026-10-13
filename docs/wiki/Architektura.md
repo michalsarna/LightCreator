@@ -17,7 +17,7 @@ Kod, który nie potrzebuje lasera, jest w [baseCreator](https://github.com/micha
 `lc-core` re-eksportuje moduły base-core, więc `lc_core::geom` itp. nadal działają.
 
 ## lc-core
-`doc` (laserowa część dokumentu: warstwy, urządzenie, `.lcr`; scena pochodzi z base-core) · `gcode`, `export` (G-code, PLT / DXF) · `raster`, `cutopts` · `svg`, `pdf`, `clipart` (układanie importów na warstwach) · `materials`, `profiles`, `zones`, `check`, `hooks` · `controller`.
+`doc` (laserowa część dokumentu: warstwy, urządzenie, sekcja lasera w projekcie `.cre`; scena i kontener projektu pochodzą z base-core) · `gcode`, `export` (G-code, PLT / DXF) · `raster`, `cutopts` · `svg`, `pdf`, `clipart` (układanie importów na warstwach) · `materials`, `profiles`, `zones`, `check`, `hooks` · `controller`.
 
 ## lightcreator
 `app` (główny stan, implementuje `EditorHost` i `MenuHost`) · `canvas` (oznaczenia stołu, strefy, pozycja na żywo, obraz z kamery i podgląd jako haki edytora), `shape_ops`, `overlay` · `menu` (lista akcji), `icons` (ikona każdej akcji), `native_menu`, `panels`, `i18n` (teksty), `guide`, `help_ui`, `update_ui`, `prefs`, `window_ui` · `laser` (wątek portu szeregowego / TCP dla GRBL i Marlin) · `device_ui`, `ser2net_ui`, `stream_ui` (urządzenia, kamera) · `clipart_ui` (obrazy dostarczane z programem), `materials_ui`, `preview_ui`, `print_ui`, `check_ui` · `screenshots` (renderowanie bez okna).
