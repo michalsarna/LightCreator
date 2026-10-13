@@ -1079,3 +1079,5 @@
 1078|Chyba čítania
 1079|Tento projekt vznikol pre iné nastavenie stroja ({}). Pred spustením skontrolujte zariadenie.
 1080|Niektoré časti projektu LightBurn sa nepodarilo použiť: {}
+1081|Nemám zariadenie
+1082|Práca na projekte bez stroja: obyčajné zariadenie s názvom Dummy s predvolenou pracovnou plochou a rýchlosťami

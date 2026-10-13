@@ -1079,3 +1079,5 @@
 1078	Error reading
 1079	This project was made for a different machine setup ({}). Check the device before you start.
 1080	Some parts of the LightBurn project could not be used: {}
+1081	I have no device
+1082	Work on a project without a machine: a plain device called Dummy, with the default work area and speeds

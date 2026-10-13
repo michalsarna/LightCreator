@@ -110,7 +110,31 @@ impl CfgPage {
     }
 }
 
+/// The name of the stand-in device for working without a machine. It is a name, not a text: it is the same in every
+/// language, so the one profile is found again after the language is changed.
+pub const DUMMY_NAME: &str = "Dummy";
+
 impl App {
+    /// "I have no device": the plain stand-in device (the program's default work area, speeds and settings, no
+    /// connection) is made once, kept in the list of devices, selected and used. The project is saved with it like with
+    /// any other device.
+    pub fn use_dummy_device(&mut self) -> bool {
+        let idx = match self.profiles.iter().position(|p| p.name == DUMMY_NAME) {
+            Some(i) => i,
+            None => {
+                let mut d = Device::default();
+                d.name = DUMMY_NAME.to_string();
+                d.add_starter_materials();
+                self.profiles.push(d);
+                self.profiles.len() - 1
+            }
+        };
+        self.add_dev = None;
+        self.cfg = None;
+        self.start_sel = idx;
+        self.enter_editor(idx)
+    }
+
     /// Switch to the editor with the selected profile. Refuses (returns false) without a valid profile.
     pub fn enter_editor(&mut self, idx: usize) -> bool {
         let Some(dev) = self.profiles.get(idx).cloned() else { return false };
@@ -270,6 +294,9 @@ impl App {
             }
             if ui.button(tr("Add device…")).clicked() {
                 self.start_add_device();
+            }
+            if ui.button(tr("I have no device")).on_hover_text(tr("Work on a project without a machine: a plain device called Dummy, with the default work area and speeds")).clicked() {
+                self.use_dummy_device();
             }
             if ui.add_enabled(has, egui::Button::new(tr("Edit…"))).clicked() {
                 self.open_cfg_edit(self.start_sel);

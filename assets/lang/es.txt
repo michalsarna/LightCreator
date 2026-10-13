@@ -1079,3 +1079,5 @@
 1078|Error de lectura
 1079|Este proyecto se creó para otra configuración de máquina ({}). Comprueba el dispositivo antes de empezar.
 1080|Algunas partes del proyecto de LightBurn no se pudieron usar: {}
+1081|No tengo dispositivo
+1082|Trabaja en un proyecto sin máquina: un dispositivo sencillo llamado Dummy, con el área de trabajo y las velocidades predeterminadas

@@ -1079,3 +1079,5 @@
 1078|Fejl ved læsning
 1079|Dette projekt er lavet til en anden maskinopsætning ({}). Kontroller enheden, før du starter.
 1080|Nogle dele af LightBurn-projektet kunne ikke bruges: {}
+1081|Jeg har ingen enhed
+1082|Arbejd på et projekt uden maskine: en almindelig enhed kaldet Dummy med standardarbejdsområde og -hastigheder

@@ -1079,3 +1079,5 @@
 1078|Żball fil-qari
 1079|Dan il-proġett inħoloq għal konfigurazzjoni differenti tal-magna ({}). Iċċekkja l-apparat qabel tibda.
 1080|Xi partijiet tal-proġett LightBurn ma setgħux jintużaw: {}
+1081|M'għandi l-ebda apparat
+1082|Aħdem fuq proġett mingħajr magna: apparat sempliċi jisimu Dummy, bl-erja tax-xogħol u s-veloċitajiet awtomatiċi

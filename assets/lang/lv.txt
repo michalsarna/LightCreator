@@ -1079,3 +1079,5 @@
 1078|Lasīšanas kļūda
 1079|Šis projekts tika izveidots citam iekārtas iestatījumam ({}). Pirms sākšanas pārbaudiet ierīci.
 1080|Dažas LightBurn projekta daļas nevarēja izmantot: {}
+1081|Man nav ierīces
+1082|Strādājiet ar projektu bez iekārtas: parasta ierīce ar nosaukumu Dummy ar noklusējuma darba laukumu un ātrumiem

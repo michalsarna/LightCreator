@@ -1079,3 +1079,5 @@
 1078|Greška pri čitanju
 1079|Ovaj je projekt izrađen za drugačiju postavku stroja ({}). Provjerite uređaj prije početka.
 1080|Neki dijelovi LightBurn projekta nisu se mogli upotrijebiti: {}
+1081|Nemam uređaj
+1082|Radite na projektu bez stroja: običan uređaj naziva Dummy s zadanim radnim područjem i brzinama
