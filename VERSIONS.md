@@ -2,6 +2,15 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.1.9
+
+**Projects**
+* LightBurn projects are imported with **File → Import → Import LightBurn project…** instead of **File → Open**; dropping the file on the window still works. An import is not added to the recent files.
+* The **Description** tab now comes from the shared baseCreator (0.8.0), so MillCreator has the same tab and the same text in the shared `.cre` project file.
+
+**Devices**
+* *I have no device* is the same in the start screen and the *Add a device* window (v0.1.8).
+
 ## v0.1.8
 
 **Projects**
