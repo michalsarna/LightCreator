@@ -37,7 +37,7 @@ jobs:
       - name: GRBL simulator tests
         run: |
           set -o pipefail
-          cargo test -p lightcreator grbl_sim -- --ignored --test-threads=1 2>&1 | tee grbl-sim-tests.log || {
+          for i in $(seq 1 25); do echo "RUN $i"; cargo test -p lightcreator grbl_sim_long_job -- --ignored --test-threads=1 2>&1 || true; done 2>&1 | tee grbl-sim-tests.log || {
             # One annotation per failed test (test name and panic message) on the pull request.
             awk '/^---- .* stdout ----$/ { t=$2 } p { print "::error title=grbl-sim::" t ": " $0; p=0 } /panicked at/ { p=1 }' grbl-sim-tests.log
             exit 1

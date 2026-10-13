@@ -59,6 +59,9 @@ struct Seen {
     state: String,
     pos: (f64, f64),
     progress: (usize, usize),
+    /// The last status reports and progress changes with the time they came, to see how the machine got where it is.
+    trail: Vec<String>,
+    started: Option<Instant>,
     /// Replies before this index are ignored by `errors()` (start-up output, see `wait_banner`).
     mark: usize,
 }
@@ -86,10 +89,20 @@ impl Session {
                 Evt::Connected(c) => self.seen.connected = Some(c),
                 Evt::Traffic(l) if l.dir == Dir::Rx && !l.poll => self.seen.rx.push(l.text),
                 Evt::Status { state, x, y, .. } => {
+                    let t = self.seen.started.get_or_insert_with(Instant::now).elapsed().as_secs_f32();
+                    if self.seen.trail.last().map(|l| !l.ends_with(&format!("{state} {x:.3},{y:.3}"))).unwrap_or(true) {
+                        self.seen.trail.push(format!("{t:.1}s {state} {x:.3},{y:.3}"));
+                    }
                     self.seen.state = state;
                     self.seen.pos = (x, y);
                 }
-                Evt::Progress { done, total } => self.seen.progress = (done, total),
+                Evt::Progress { done, total } => {
+                    let t = self.seen.started.get_or_insert_with(Instant::now).elapsed().as_secs_f32();
+                    if done + 3 >= total || done % 250 == 0 {
+                        self.seen.trail.push(format!("{t:.1}s progress {done}/{total}"));
+                    }
+                    self.seen.progress = (done, total)
+                }
                 _ => {}
             }
         }
@@ -113,8 +126,8 @@ impl Session {
         let oks = self.seen.rx.iter().filter(|l| *l == "ok").count();
         let others: Vec<&String> = self.seen.rx.iter().filter(|l| *l != "ok").take(20).collect();
         format!(
-            "state {:?} at {:?}, progress {:?}, {} x ok, other replies {:?}, last replies {:?}",
-            self.seen.state, self.seen.pos, self.seen.progress, oks, others, last(&self.seen.rx, 12)
+            "state {:?} at {:?}, progress {:?}, {} x ok, other replies {:?}, last replies {:?}, trail {:?}",
+            self.seen.state, self.seen.pos, self.seen.progress, oks, others, last(&self.seen.rx, 12), last(&self.seen.trail, 25)
         )
     }
 
