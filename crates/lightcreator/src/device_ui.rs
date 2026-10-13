@@ -2,9 +2,9 @@
 //! The editor can only be entered once at least one device profile exists and one is selected.
 use crate::app::{App, Screen, APP_VERSION};
 use crate::laser::{self, Cmd, Target};
-use crate::i18n::{tr, trf, Lang};
+use crate::i18n::{tr, trf};
 use crate::menu::Act;
-use crate::theme::{self, Scheme};
+use crate::theme;
 use eframe::egui::{self, Align, Color32, Layout, RichText};
 use crate::units_ui::{drag_len, drag_speed, fmt_len, fmt_speed};
 use lc_core::controller::Action;
@@ -206,12 +206,7 @@ impl App {
         let ctx = ui.ctx().clone();
         egui::CentralPanel::default().show(ui, |ui| {
             ui.vertical_centered(|ui| {
-                ui.add_space((ui.available_height() * 0.06).max(12.0));
-                if let Some(logo) = &self.logo {
-                    ui.image((logo.id(), egui::vec2(96.0, 96.0)));
-                }
-                ui.label(RichText::new("LightCreator").size(28.0).strong());
-                ui.label(RichText::new(APP_VERSION).color(theme::text_dim()));
+                base_ui::start::start_header(ui, self.logo.as_ref(), "LightCreator", APP_VERSION);
                 ui.add_space(18.0);
                 ui.label(RichText::new(tr("Select device")).size(16.0).strong());
                 ui.label(RichText::new(tr("Choose the device you will work with.")).color(theme::text_dim()));
@@ -222,31 +217,13 @@ impl App {
                     ui.with_layout(Layout::top_down(Align::LEFT), |ui| self.device_list(ui));
                 });
                 ui.add_space(14.0);
-                ui.horizontal(|ui| {
-                    // centre the two combo boxes
-                    ui.add_space(((ui.available_width() - 360.0) / 2.0).max(0.0));
-                    ui.label(tr("Language"));
-                    let mut lang = self.lang;
-                    egui::ComboBox::from_id_salt("start_lang").selected_text(lang.name()).show_ui(ui, |ui| {
-                        for l in Lang::ALL {
-                            ui.selectable_value(&mut lang, l, l.name());
-                        }
-                    });
-                    if lang != self.lang {
-                        self.do_act(&ctx, Act::SetLang(lang));
-                    }
-                    ui.add_space(12.0);
-                    ui.label(tr("Colour scheme"));
-                    let mut sc = self.scheme;
-                    egui::ComboBox::from_id_salt("start_scheme").selected_text(tr(sc.label())).show_ui(ui, |ui| {
-                        for s in Scheme::ALL {
-                            ui.selectable_value(&mut sc, s, tr(s.label()));
-                        }
-                    });
-                    if sc != self.scheme {
-                        self.do_act(&ctx, Act::SetScheme(sc));
-                    }
-                });
+                let (lang, scheme) = base_ui::start::start_prefs(ui, self.lang, self.scheme);
+                if let Some(l) = lang {
+                    self.do_act(&ctx, Act::SetLang(l));
+                }
+                if let Some(sc) = scheme {
+                    self.do_act(&ctx, Act::SetScheme(sc));
+                }
             });
         });
     }

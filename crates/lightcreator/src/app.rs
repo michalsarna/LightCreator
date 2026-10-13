@@ -4,7 +4,7 @@ use base_ui::editor::EditorCommands;
 use base_ui::editor::EditorCanvas;
 use base_ui::editor::EditorHost;
 use crate::laser::{self, Cmd, ConsoleLine, Evt, LaserLink};
-use crate::units_ui::{drag_len, fmt_len};
+use crate::units_ui::drag_len;
 use crate::i18n::{self, tr, trf, Lang};
 use crate::menu::{menus, Act};
 use crate::theme::{self, Scheme};
@@ -131,8 +131,6 @@ pub struct App {
     pub zones_visible: bool,
     pub preview_on: bool,
     pub preview: Option<(u64, gcode::Job)>,
-    pub lock_aspect: bool,
-    pub rot_input: f64,
     pub show_all_layers: bool,
     pub last_layer_undo: f64,
     // dialogs
@@ -317,8 +315,6 @@ impl App {
             zones_visible: saved("zones_visible").map(|v| v != "0").unwrap_or(true),
             preview_on: false,
             preview: None,
-            lock_aspect: true,
-            rot_input: 15.0,
             show_all_layers: false,
             last_layer_undo: -10.0,
             show_device: false,
@@ -1083,15 +1079,7 @@ impl App {
     fn control_bar(&mut self, ui: &mut egui::Ui) {
         ui.horizontal_centered(|ui| {
             // Name of the current tool in a box of fixed width, so the bar does not jump around.
-            let name = Tool::ALL.iter().find(|t| t.0 == self.ed.tool).map(|t| t.1).unwrap_or("");
-            ui.allocate_ui_with_layout(egui::vec2(96.0, 22.0), egui::Layout::left_to_right(egui::Align::Center), |ui| {
-                // The box keeps its width whatever the name is: it grows to the minimum and never past the maximum.
-                ui.set_min_size(egui::vec2(96.0, 22.0));
-                ui.set_max_width(96.0);
-                ui.add(egui::Label::new(RichText::new(tr(name).split(" (").next().unwrap_or("")).strong()).truncate());
-            });
-            // Where the box ends, for the test that checks it does not move.
-            ui.ctx().data_mut(|d| d.insert_temp(egui::Id::new("tool_name_right"), ui.cursor().left()));
+            base_ui::editor::control_name(self, ui);
             ui.separator();
             let ctx = ui.ctx().clone();
             for (act, icon, tip) in [(Act::New, "file-plus", "New"), (Act::Open, "folder-open", "Open…"), (Act::Save, "save", "Save")] {
@@ -1106,19 +1094,7 @@ impl App {
                 }
             }
             ui.separator();
-            let minor = self.ed.grid_prefs.minor_on;
-            if toggle_icon(ui, "grid-2x2", &tr("Show or hide the grid"), self.ed.show_grid) {
-                self.ed.show_grid = !self.ed.show_grid;
-            }
-            if toggle_icon(ui, "grid-3x3", &tr("Show or hide the secondary grid"), minor) {
-                self.ed.grid_prefs.minor_on = !minor;
-            }
-            if toggle_icon(ui, "magnet", &tr("Snap to grid"), self.ed.snap) {
-                self.ed.snap = !self.ed.snap;
-            }
-            if toggle_icon(ui, "target", &tr("Snap to objects"), self.ed.snap_objects) {
-                self.ed.snap_objects = !self.ed.snap_objects;
-            }
+            base_ui::editor::grid_toggles(self, ui);
             ui.separator();
             // Green while the toolpaths are shown, grey otherwise.
             let on = self.preview_on;
@@ -1163,11 +1139,7 @@ impl App {
                 if crate::window_ui::save_button(ui, &tr("Save G-code")).clicked() {
                     self.export_gcode();
                 }
-                let (w, h) = self.sel_bounds().map(|b| (b.width(), b.height())).unwrap_or((0.0, 0.0));
-                if !self.ed.sel.is_empty() {
-                    let u = self.doc.device.units;
-                    ui.label(RichText::new(format!("{} × {}", fmt_len(u, w, 1), fmt_len(u, h, 1))).color(theme::text_dim()));
-                }
+                base_ui::editor::selection_size(self, ui);
             });
         });
     }
@@ -1286,13 +1258,7 @@ impl App {
         ui.horizontal_centered(|ui| {
             ui.label(&self.status);
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                ui.label(format!("{}%", (self.ed.view.zoom / 2.0 * 100.0).round()));
-                if let Some(p) = self.ed.cursor_mm {
-                    let u = self.doc.device.units;
-                    let (x, y) = (u.from_mm(p.x), u.from_mm(p.y));
-                    let d = if u == lc_core::Units::Mm { 2 } else { 3 };
-                    ui.label(format!("X {:.*}  Y {:.*}{}", d, x, d, y, u.suffix()));
-                }
+                base_ui::editor::zoom_and_cursor(self, ui);
                 let web = if self.api.server.is_some() { (trf("Web server: on, port {}", &[&self.api.server.as_ref().map(|s| s.addr.port()).unwrap_or(0)]), Color32::from_rgb(0x2e, 0xa0, 0x4f)) } else if self.api_on { (tr("Web server: error").to_string(), Color32::from_rgb(0xc0, 0x30, 0x30)) } else { (tr("Web server: off").to_string(), theme::text_dim()) };
                 ui.label(RichText::new(web.0).color(web.1));
                 ui.separator();

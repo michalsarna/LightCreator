@@ -12,7 +12,7 @@ The repository is a Cargo workspace with two crates.
 ## baseCreator (shared with MillCreator)
 The code that needs no laser lives in [baseCreator](https://github.com/michalsarna/baseCreator) and is pinned to a tag in `crates/lc-core/Cargo.toml` and `crates/lightcreator/Cargo.toml`.
 * **base-core**: `geom`, `bezier`, `arcs`, `fillet`, `snap` (geometry, contours, round corners) · `ops` (boolean ops, offsets) · `text` (outlines) · `image`, `trace`, `camimg` · `scene` (shapes, groups, ids) · `svg`, `pdf` (readers) · `clipart` (library) · `units` · `grbl_settings`, `ser2net`.
-* **base-ui**: `theme`, `fonts`, `icons`, `i18n` / `texts` · `menu`, `native_menu` (entries, in-window and macOS bars, the standard editing commands) · `window` (frame, pop-ups, buttons), `widgets` · `dialogs` (About, quick guide, update check) · `clipart_ui` · `editor` (canvas, tools, selection, node editing, editing commands, picture dialogs, view options, tool palette, arrange bar behind the `EditorHost` trait) · `markdown_ui`, `units_ui`, `camera`, `camera_stream`.
+* **base-ui**: `theme`, `fonts`, `icons`, `i18n` / `texts` · `menu`, `native_menu` (entries, in-window and macOS bars, the standard editing commands) · `window` (frame, pop-ups, buttons), `widgets` · `dialogs` (About, quick guide, update check) · `clipart_ui` · `editor` (canvas, tools, selection, node editing, editing commands, picture dialogs, view options, tool palette, arrange bar, the Properties sections, the pieces of the control and status bar behind the `EditorHost` trait) · `start` (start screen header, language and colour scheme row, window icon) · `markdown_ui`, `units_ui`, `camera`, `camera_stream`.
 
 `lc-core` re-exports the modules of base-core, so `lc_core::geom` and the like keep working.
 
