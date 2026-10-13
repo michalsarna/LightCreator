@@ -13,4 +13,4 @@ A side-panel tab with **310 single-colour pictures in 9 categories** (animals, n
 * Your pictures live in the `clipart` folder next to `app.ron` with an `index.json` ([Settings and Files](Settings-and-Files)).
 
 ## Licences
-The bundled pictures are unchanged copies from [Material Design Icons](https://pictogrammers.com/library/mdi/) by Pictogrammers (Apache License 2.0, © Pictogrammers and contributors). To add bundled pictures, drop SVGs into a category folder in `assets/clipart/` and rebuild; only add files whose licence allows redistribution.
+The bundled pictures are unchanged copies from [Material Design Icons](https://pictogrammers.com/library/mdi/) by Pictogrammers (Apache License 2.0, © Pictogrammers and contributors). To add bundled pictures, drop SVGs into a category folder in `assets/clipart/` of the [baseCreator](https://github.com/michalsarna/baseCreator) repository (the pictures are shared by all its programs) and rebuild; only add files whose licence allows redistribution.

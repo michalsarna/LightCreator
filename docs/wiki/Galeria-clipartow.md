@@ -13,4 +13,4 @@ Zakładka panelu bocznego z **310 jednokolorowymi obrazkami w 9 kategoriach** (z
 * Twoje obrazki leżą w folderze `clipart` obok `app.ron` wraz z `index.json` ([Ustawienia i pliki](Ustawienia-i-pliki)).
 
 ## Licencje
-Dołączone obrazki to niezmienione kopie z [Material Design Icons](https://pictogrammers.com/library/mdi/) autorstwa Pictogrammers (Apache License 2.0, © Pictogrammers i współtwórcy). Aby dodać własne do programu, wrzuć SVG do folderu kategorii w `assets/clipart/` i zbuduj ponownie; dodawaj tylko pliki, których licencja zezwala na redystrybucję.
+Dołączone obrazki to niezmienione kopie z [Material Design Icons](https://pictogrammers.com/library/mdi/) autorstwa Pictogrammers (Apache License 2.0, © Pictogrammers i współtwórcy). Aby dodać własne do programu, wrzuć SVG do folderu kategorii w `assets/clipart/` repozytorium [baseCreator](https://github.com/michalsarna/baseCreator) (obrazki są wspólne dla wszystkich jego programów) i zbuduj ponownie; dodawaj tylko pliki, których licencja zezwala na redystrybucję.
