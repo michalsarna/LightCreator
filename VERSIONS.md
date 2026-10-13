@@ -2,6 +2,15 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.1.7
+
+**Under the hood** (no change in what you see, apart from the details below)
+* The Properties sections, the pieces of the control bar and the status bar, the start screen header, the window icon
+  and the clipart gallery pictures now come from the shared baseCreator (v0.5.1). MillCreator uses the same code and
+  the same 310 pictures, so the two programs look and behave alike.
+* With a selection that points at shapes that no longer exist, the control bar no longer shows `0.0 mm × 0.0 mm`.
+* The simulator test of a long job no longer fails when grbl-sim ends a few millimetres off the end position.
+
 ## v0.1.6
 
 **First run**
