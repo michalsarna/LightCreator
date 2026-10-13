@@ -1077,3 +1077,4 @@
 1076|Home: a terv ott ég, ahol a munkaterületen fekszik, a gép nullpontjától számítva. Jelenlegi hely: a terv bal felső sarka oda kerül, ahol a lézerfej most áll (munkák, keretek és szárazfutás), és a munka ott ér véget. Az exportált fájlok mindig a gép nullpontjától számolnak.
 1077|Beolvasva
 1078|Olvasási hiba
+1079|Ez a projekt másik gépbeállításhoz készült ({}). Indítás előtt ellenőrizd az eszközt.

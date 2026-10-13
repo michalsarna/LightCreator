@@ -20,7 +20,7 @@ days; a fix is released as a new version.
 
 ## What counts
 
-LightCreator opens files from other people (SVG, PDF / Illustrator, bitmaps, `.lcr` projects) and talks to
+LightCreator opens files from other people (SVG, PDF / Illustrator, bitmaps, `.cre` projects) and talks to
 hardware over a serial port. Reports about crashes, hangs or memory use when opening a crafted file, and about
 anything that could send unintended commands to a laser controller, are in scope.
 

@@ -1077,3 +1077,4 @@
 1076|Sākums: dizains tiek dedzināts tur, kur tas atrodas darba laukā, skaitot no iekārtas nulles. Pašreizējā pozīcija: dizaina augšējais kreisais stūris tiek novietots tur, kur tagad atrodas lāzera galviņa (darbi, rāmji un sausā darbināšana), un darbs beidzas tur. Eksportētie faili vienmēr skaita no iekārtas nulles.
 1077|Nolasīts
 1078|Lasīšanas kļūda
+1079|Šis projekts tika izveidots citam iekārtas iestatījumam ({}). Pirms sākšanas pārbaudiet ierīci.

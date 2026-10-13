@@ -1,6 +1,7 @@
 //! Document model: shapes, layers (LightBurn "cuts"), and machine settings.
 use base_core::camimg::{CameraKind, CameraSource};
 use base_core::geom::*;
+use base_core::project::Project;
 pub use base_core::scene::{Kind, Scene, Shape};
 use serde::{Deserialize, Serialize};
 
@@ -1471,63 +1472,69 @@ pub struct Document {
     pub description: String,
     /// What hooks may print about the job; set by the program before the G-code is made, never saved.
     pub job_info: JobInfo,
+    /// The parts of the project file that belong to other programs (mill, pen...): kept as they were read and
+    /// written back, so opening and saving here loses nothing of theirs.
+    pub others: Others,
 }
 
-/// The saved form of a `Document`: the scene is written flat (`shapes`, `next_id`, `next_group` next to `layers`),
-/// in the order of the first versions, so project files stay the same in both directions.
-#[derive(Deserialize)]
-struct DocumentWire {
-    shapes: Vec<Shape>,
-    layers: Vec<Layer>,
-    device: Device,
-    next_id: u64,
-    #[serde(default = "identity_order")]
-    order: Vec<usize>,
-    #[serde(default)]
-    next_group: u64,
-    #[serde(default)]
-    description: String,
+/// Sections and top-level entries of a project file this program does not own.
+#[derive(Clone, Debug, Default)]
+pub struct Others {
+    pub sections: std::collections::BTreeMap<String, serde_json::Value>,
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 
-/// Borrowed twin of `DocumentWire` for saving without copying the shapes.
-#[derive(Serialize)]
-struct DocumentRef<'a> {
-    shapes: &'a [Shape],
-    layers: &'a [Layer],
-    device: &'a Device,
-    next_id: u64,
-    order: &'a [usize],
-    next_group: u64,
-    description: &'a str,
+/// What a project keeps of the machine it was made for: enough to see that the machine at hand is a different one
+/// (and to work when the program has no device yet), never the connection, the cameras or other things of one computer.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Machine {
+    pub name: String,
+    pub units: Units,
+    pub speed_unit: SpeedUnit,
+    pub controller: Controller,
+    pub axes: Axes,
+    pub area: Area,
+    pub speeds: Speeds,
+    pub gcode: GcodeCfg,
+    pub heads: Vec<LaserHead>,
 }
 
-impl Serialize for Document {
-    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
-        let (next_id, next_group) = self.scene.counters();
-        DocumentRef {
-            shapes: &self.scene.shapes,
-            layers: &self.layers,
-            device: &self.device,
-            next_id,
-            order: &self.order,
-            next_group,
-            description: &self.description,
-        }
-        .serialize(s)
+impl Machine {
+    pub fn of(d: &Device) -> Machine {
+        Machine { name: d.name.clone(), units: d.units, speed_unit: d.speed_unit, controller: d.controller, axes: d.axes.clone(), area: d.area.clone(), speeds: d.speeds.clone(), gcode: d.gcode.clone(), heads: d.heads.clone() }
     }
-}
 
-impl<'de> Deserialize<'de> for Document {
-    fn deserialize<D: serde::Deserializer<'de>>(d: D) -> Result<Self, D::Error> {
-        let w = DocumentWire::deserialize(d)?;
-        Ok(Document {
-            scene: Scene::from_parts(w.shapes, w.next_id, w.next_group),
-            layers: w.layers,
-            device: w.device,
-            order: w.order,
-            description: w.description,
-            job_info: JobInfo::default(),
-        })
+    /// A device with these machine settings and the defaults for the rest.
+    pub fn into_device(self) -> Device {
+        let mut d = Device::default();
+        d.name = self.name;
+        d.units = self.units;
+        d.speed_unit = self.speed_unit;
+        d.controller = self.controller;
+        d.axes = self.axes;
+        d.area = self.area;
+        d.speeds = self.speeds;
+        d.gcode = self.gcode;
+        if !self.heads.is_empty() {
+            d.heads = self.heads;
+        }
+        d
+    }
+
+    /// What differs from `other` in a way that changes where or how the job is made, as English labels of the
+    /// interface (empty when the two machines agree on them).
+    pub fn differences(&self, other: &Machine) -> Vec<&'static str> {
+        let mut v = vec![];
+        if self.controller != other.controller {
+            v.push("Controller");
+        }
+        if self.area != other.area {
+            v.push("Work area");
+        }
+        if self.axes != other.axes {
+            v.push("Machine zero (0,0)");
+        }
+        v
     }
 }
 
@@ -1537,6 +1544,22 @@ pub struct JobInfo {
     pub name: String,
     pub date: String,
     pub time: String,
+}
+
+/// The name of the section of a laser program in the project file.
+pub const LASER_SECTION: &str = "laser";
+const LASER_SECTION_FORMAT: u32 = 1;
+
+/// The laser part of a project file: the machine it was made for, the material and the layers.
+#[derive(Serialize, Deserialize)]
+struct LaserSection {
+    format: u32,
+    machine: Machine,
+    /// The selected material with the settings of its layers.
+    material: crate::materials::Material,
+    layers: Vec<Layer>,
+    #[serde(default = "identity_order")]
+    order: Vec<usize>,
 }
 
 fn identity_order() -> Vec<usize> {
@@ -1552,6 +1575,7 @@ impl Default for Document {
             order: identity_order(),
             description: String::new(),
             job_info: JobInfo::default(),
+            others: Others::default(),
         }
     }
 }
@@ -1648,10 +1672,61 @@ impl Document {
     pub fn bounds_of(&self, ids: &[u64]) -> Option<Rect> {
         self.scene.bounds_of(ids)
     }
+    /// The project file as the container of baseCreator: the drawing, the description, the laser section and the
+    /// sections of other programs as they were read.
+    pub fn to_project(&self) -> Project {
+        let mut p = Project::new(self.scene.clone());
+        p.description = self.description.clone();
+        p.restore_sections(&self.others.sections);
+        p.restore_extra(&self.others.extra);
+        p.set_section(LASER_SECTION, &LaserSection { format: LASER_SECTION_FORMAT, machine: Machine::of(&self.device), material: self.device.material().clone(), layers: self.layers.clone(), order: self.order.clone() });
+        p
+    }
+
+    /// A document from a project file. Without a laser section (a file made by another program) the drawing comes
+    /// with the default layers and device. The device holds only the machine settings of the file and its material:
+    /// a program that has devices of its own puts one of them in its place.
+    pub fn from_project(p: Project) -> Result<Document, String> {
+        let laser: Option<LaserSection> = p.section(LASER_SECTION)?;
+        let (layers, order, device) = match laser {
+            Some(l) => {
+                if l.format > LASER_SECTION_FORMAT {
+                    return Err(format!("the laser part of the project has format {}, this program reads up to {LASER_SECTION_FORMAT}; update the program", l.format));
+                }
+                let mut device = l.machine.into_device();
+                device.materials = vec![l.material];
+                device.active_material = 0;
+                device.ensure_materials();
+                let mut layers = l.layers;
+                layers.truncate(30);
+                while layers.len() < 30 {
+                    layers.push(Layer::new(layers.len()));
+                }
+                let mut order: Vec<usize> = l.order.into_iter().filter(|i| *i < 30).collect();
+                for i in 0..30 {
+                    if !order.contains(&i) {
+                        order.push(i);
+                    }
+                }
+                (layers, order, device)
+            }
+            None => ((0..30).map(Layer::new).collect(), identity_order(), Device::default()),
+        };
+        let mut sections = std::collections::BTreeMap::new();
+        for n in p.section_names() {
+            if n != LASER_SECTION {
+                sections.insert(n.to_string(), p.section::<serde_json::Value>(n)?.unwrap_or_default());
+            }
+        }
+        let extra = p.extra().clone();
+        Ok(Document { scene: p.scene, layers, device, order, description: p.description, job_info: JobInfo::default(), others: Others { sections, extra } })
+    }
+
+    /// The text of a project file (`.cre`).
     pub fn to_json(&self) -> String {
-        serde_json::to_string_pretty(self).unwrap_or_default()
+        self.to_project().to_json()
     }
     pub fn from_json(s: &str) -> Result<Document, String> {
-        serde_json::from_str(s).map_err(|e| e.to_string())
+        Document::from_project(Project::from_json(s)?)
     }
 }

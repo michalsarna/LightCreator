@@ -29,7 +29,7 @@ Pictures you saved or downloaded for the clipart gallery are kept in the `clipar
 `index.json` that records each picture's name, category, source, licence and author.
 
 The file is written when the application closes. Delete it to reset everything to the defaults (the start
-window then asks for a device profile again). Projects (`.lcr`), SVG and G-code files are saved wherever you
+window then asks for a device profile again). Projects (`.cre`), SVG and G-code files are saved wherever you
 choose in the file dialog.
 
 ## Features

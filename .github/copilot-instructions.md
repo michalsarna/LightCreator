@@ -8,6 +8,6 @@ Focus on:
   and must not send power above the configured `S` max. Flag any change that could fire the laser unexpectedly.
 - **Serial / G-code input** – validate anything sent to the controller; avoid unbounded buffers and panics
   in the serial worker thread.
-- **File parsing** – SVG and `.lcr` project files are untrusted input: no panics, no unbounded allocation.
+- **File parsing** – SVG and `.cre` project files are untrusted input: no panics, no unbounded allocation.
 - **Rust quality** – avoid `unwrap()` on user-controlled data, keep `lc-core` free of UI dependencies,
   and keep `cargo test --workspace` and `cargo clippy` clean.

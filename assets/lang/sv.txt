@@ -1077,3 +1077,4 @@
 1076|Home: designen bränns där den ligger på arbetsytan, räknat från maskinens nollpunkt. Aktuell position: designens övre vänstra hörn läggs där laserhuvudet står nu (jobb, ramar och torrkörning), och jobbet slutar där. Exporterade filer räknas alltid från maskinens nollpunkt.
 1077|Läst OK
 1078|Fel vid läsning
+1079|Det här projektet gjordes för en annan maskininställning ({}). Kontrollera enheten innan du startar.

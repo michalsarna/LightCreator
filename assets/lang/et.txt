@@ -1077,3 +1077,4 @@
 1076|Kodu: kujundus põletatakse seal, kus see tööalal asub, lugedes masina nullist. Praegune asukoht: kujunduse vasak ülanurk pannakse sinna, kus laserpea praegu on (tööd, raamid ja kuivkäik), ja töö lõpeb seal. Eksporditud failid loevad alati masina nullist.
 1077|Loetud
 1078|Lugemisviga
+1079|See projekt tehti teistsuguse masinaseadistuse ({}) jaoks. Kontrolli seadet enne alustamist.

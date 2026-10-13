@@ -46,4 +46,4 @@ Pan (H), zoom in (Z), zoom out (X), *Fit work area* (Ctrl+0), *Fit all objects* 
   ![Trace](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/14-trace.png)
 
 ## Saving and export
-Native `.lcr` projects (images embedded), SVG, G-code, HPGL (`.plt`) and DXF.
+Native `.cre` projects (images embedded), SVG, G-code, HPGL (`.plt`) and DXF.

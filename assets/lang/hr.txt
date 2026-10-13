@@ -1077,3 +1077,4 @@
 1076|Home: dizajn se pali tamo gdje leži na radnoj površini, računajući od nule stroja. Trenutni položaj: gornji lijevi kut dizajna stavlja se tamo gdje je laserska glava sada (poslovi, okviri i suhi hod), a posao tamo završava. Izvezene datoteke uvijek računaju od nule stroja.
 1077|Pročitano
 1078|Greška pri čitanju
+1079|Ovaj je projekt izrađen za drugačiju postavku stroja ({}). Provjerite uređaj prije početka.

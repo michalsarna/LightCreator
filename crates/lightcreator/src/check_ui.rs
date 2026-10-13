@@ -394,7 +394,7 @@ mod stamp_tests {
     fn the_job_carries_the_file_name_and_the_time_for_hooks() {
         let ctx = egui::Context::default();
         let mut a = App::build(&ctx, None, false);
-        a.path = Some(std::path::PathBuf::from("/tmp/projects/badge.lcr"));
+        a.path = Some(std::path::PathBuf::from("/tmp/projects/badge.cre"));
         a.stamp_job();
         let i = &a.doc.job_info;
         assert_eq!(i.name, "badge");
