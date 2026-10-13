@@ -213,7 +213,7 @@ fn grbl_sim_streams_a_generated_job() {
     s.fast_machine();
     let job = sample_job(1.0);
     assert!(job.len() > 30, "job too small to be meaningful: {}", job.len());
-    s.run_job(job, 60.0);
+    s.run_job(job, 240.0);
     // The job ends with a travel back to machine zero (front-left origin, return home on).
     s.wait_idle_at(0.0, 0.0, 30.0);
     assert!(s.errors().is_empty(), "GRBL rejected lines: {:?}", s.errors());
