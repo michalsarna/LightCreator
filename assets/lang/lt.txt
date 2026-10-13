@@ -1079,3 +1079,5 @@
 1078|Skaitymo klaida
 1079|Šis projektas buvo sukurtas kitai staklių sąrankai ({}). Prieš pradėdami patikrinkite įrenginį.
 1080|Kai kurių LightBurn projekto dalių nepavyko panaudoti: {}
+1081|Neturiu įrenginio
+1082|Dirbkite su projektu be staklių: paprastas įrenginys pavadinimu Dummy su numatytuoju darbo plotu ir greičiais

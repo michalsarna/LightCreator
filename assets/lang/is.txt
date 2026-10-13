@@ -1079,3 +1079,5 @@
 1078|Villa við lestur
 1079|Þetta verkefni var gert fyrir aðra vélauppsetningu ({}). Athugaðu tækið áður en þú byrjar.
 1080|Ekki var hægt að nota suma hluta LightBurn-verkefnisins: {}
+1081|Ég á ekkert tæki
+1082|Vinndu í verkefni án vélar: einfalt tæki sem heitir Dummy með sjálfgefnu vinnusvæði og hraða

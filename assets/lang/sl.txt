@@ -1079,3 +1079,5 @@
 1078|Napaka pri branju
 1079|Ta projekt je nastal za drugačno nastavitev stroja ({}). Pred začetkom preverite napravo.
 1080|Nekaterih delov projekta LightBurn ni bilo mogoče uporabiti: {}
+1081|Nimam naprave
+1082|Delo na projektu brez stroja: preprosta naprava z imenom Dummy s privzetim delovnim območjem in hitrostmi

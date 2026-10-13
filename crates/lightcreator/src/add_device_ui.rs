@@ -123,6 +123,7 @@ impl App {
         };
         let mut finish = false;
         let mut by_hand = false;
+        let mut dummy = false;
         let mut read = false;
         let reading = self.read_cfg.is_some();
         // How the last read ended: it is over when the read state is gone, and it worked when it filled the draft.
@@ -268,6 +269,9 @@ impl App {
                 if ui.button(tr("More settings…")).on_hover_text(tr("Open the whole device window with what is entered here")).clicked() {
                     by_hand = true;
                 }
+                if ui.button(tr("I have no device")).on_hover_text(tr("Work on a project without a machine: a plain device called Dummy, with the default work area and speeds")).clicked() {
+                    dummy = true;
+                }
                 if ui.button(tr("Cancel")).clicked() {
                     close = true;
                 }
@@ -283,6 +287,10 @@ impl App {
             self.add_dev_read_err = false;
             self.add_dev_read_done = false;
             self.start_read(&draft);
+        }
+        if dummy {
+            self.use_dummy_device();
+            return;
         }
         if finish {
             self.finish_add_device(cfg.draft);
@@ -380,6 +388,30 @@ mod tests {
         assert_eq!(p.material().name, lc_core::materials::DEFAULT_MATERIAL);
         assert!(p.materials.len() >= 5, "starters stay available");
         assert_eq!(a.start_sel, 0);
+    }
+
+    #[test]
+    fn without_a_device_the_project_gets_the_dummy_and_saves_with_it() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.profiles.clear();
+        a.start_add_device();
+        assert!(a.use_dummy_device());
+        assert_eq!(a.screen, crate::app::Screen::Editor);
+        assert!(a.add_dev.is_none() && a.cfg.is_none(), "the setup window is gone");
+        assert_eq!(a.profiles.len(), 1);
+        assert_eq!(a.doc.device.name, crate::device_ui::DUMMY_NAME);
+        let plain = Device::default();
+        assert_eq!((a.doc.device.area.bed_w, a.doc.device.area.bed_h), (plain.area.bed_w, plain.area.bed_h), "default work area");
+        assert!(a.doc.device.materials.len() >= 5, "starter materials");
+        // The second time it is the same profile, not another one.
+        a.screen = crate::app::Screen::Start;
+        assert!(a.use_dummy_device());
+        assert_eq!(a.profiles.len(), 1);
+        // The project is saved with the Dummy as its machine.
+        let text = a.doc.to_json();
+        let back = lc_core::Document::from_json(&text).unwrap();
+        assert_eq!(back.device.name, crate::device_ui::DUMMY_NAME);
     }
 
     #[test]

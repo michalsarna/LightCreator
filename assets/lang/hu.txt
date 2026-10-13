@@ -1079,3 +1079,5 @@
 1078|Olvasási hiba
 1079|Ez a projekt másik gépbeállításhoz készült ({}). Indítás előtt ellenőrizd az eszközt.
 1080|A LightBurn-projekt egyes részei nem használhatók: {}
+1081|Nincs eszközöm
+1082|Dolgozzon projekten gép nélkül: egy Dummy nevű egyszerű eszköz az alapértelmezett munkaterülettel és sebességekkel

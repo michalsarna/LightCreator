@@ -1079,3 +1079,5 @@
 1078|Lugemisviga
 1079|See projekt tehti teistsuguse masinaseadistuse ({}) jaoks. Kontrolli seadet enne alustamist.
 1080|Mõnda LightBurni projekti osa ei saanud kasutada: {}
+1081|Mul pole seadet
+1082|Tööta projektiga ilma masinata: lihtne seade nimega Dummy vaiketööala ja vaikekiirustega
