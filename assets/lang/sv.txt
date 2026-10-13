@@ -1078,3 +1078,4 @@
 1077|Läst OK
 1078|Fel vid läsning
 1079|Det här projektet gjordes för en annan maskininställning ({}). Kontrollera enheten innan du startar.
+1080|Vissa delar av LightBurn-projektet kunde inte användas: {}

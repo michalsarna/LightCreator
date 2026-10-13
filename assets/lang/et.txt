@@ -1078,3 +1078,4 @@
 1077|Loetud
 1078|Lugemisviga
 1079|See projekt tehti teistsuguse masinaseadistuse ({}) jaoks. Kontrolli seadet enne alustamist.
+1080|Mõnda LightBurni projekti osa ei saanud kasutada: {}

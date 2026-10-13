@@ -42,6 +42,7 @@ Przesuwanie (H), powiększanie (Z), pomniejszanie (X), *Fit work area* (Ctrl+0),
 * **Bitmapy:** PNG, JPEG, BMP, GIF, WebP, z obrotem, odbiciem, jasnością, kontrastem, gammą, automatycznymi poziomami i negatywem.
   ![Import obrazu](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/13-image-import.png)
 * **Illustrator / PDF:** pierwsza strona, ścieżki wektorowe (pliki Illustratora muszą mieć zgodność z PDF).
+* **Projekty LightBurn (`.lbrn2`, `.lbrn`):** *File → Open* (albo przeciągnięcie pliku) wczytuje prostokąty, elipsy, wielokąty, gwiazdy, ścieżki z krzywymi, grupy, tekst (jako kontury, więc wygląda tak samo bez czcionki) i bitmapy z obrotem i odbiciem. Warstwy przychodzą z rodzajem (linia, wypełnienie, wypełnienie offsetem, obraz), prędkością, mocą, przejściami i odstępem, a rysunek jest odwracany do osi Y tego programu według wysokości pola roboczego wybranego urządzenia. Wynikiem jest nowy, niezapisany projekt. To, co LightBurn ma, a nie jest jeszcze wczytywane (np. warstwy narzędziowe T1/T2, tekst zmienny, kody QR), jest pomijane i wymienione w komunikacie. Sprawdzone na projektach zapisanych przez LightBurn 2.1.04.
 * **Trasowanie obrazu:** zamienia ciemne lub jasne obszary na krzywe Béziera z progiem, filtrem plamek, uproszczeniem i wygładzaniem.
   ![Trasowanie](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/14-trace.png)
 

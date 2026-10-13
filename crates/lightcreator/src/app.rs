@@ -482,7 +482,7 @@ impl App {
         self.ed.view.need_fit = true;
     }
     pub fn open(&mut self) {
-        if let Some(p) = rfd::FileDialog::new().add_filter("Project", &[lc_core::project::EXTENSION]).add_filter("SVG", &["svg"]).pick_file() {
+        if let Some(p) = rfd::FileDialog::new().add_filter("Project", &[lc_core::project::EXTENSION]).add_filter("LightBurn", &["lbrn2", "lbrn"]).add_filter("SVG", &["svg"]).pick_file() {
             self.open_path(p);
         }
     }
@@ -494,6 +494,10 @@ impl App {
         self.recent.truncate(crate::menu::MAX_RECENT);
     }
     pub fn open_path(&mut self, p: PathBuf) {
+        if p.extension().is_some_and(|e| e.eq_ignore_ascii_case("lbrn2") || e.eq_ignore_ascii_case("lbrn")) {
+            self.import_lightburn(p);
+            return;
+        }
         let is_svg = p.extension().is_some_and(|e| e.eq_ignore_ascii_case("svg"));
         if is_svg {
             if self.import_svg_path(p.clone()) {
@@ -527,6 +531,39 @@ impl App {
                 self.touch();
                 self.mark_saved();
                 self.ed.view.need_fit = true;
+            }
+            Err(e) => self.status = trf("Open failed: {}", &[&e]),
+        }
+    }
+    /// Open a LightBurn project as a new, unsaved document on the selected device: its shapes, and its layers with their
+    /// mode, speed and power. LightBurn counts Y up from the bottom, so the drawing is turned over with the height of
+    /// the work area.
+    pub fn import_lightburn(&mut self, p: PathBuf) {
+        let device = self.profiles.get(self.active).cloned().unwrap_or_else(|| self.doc.device.clone());
+        let name = p.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
+        let read = std::fs::read(&p).map_err(|e| e.to_string()).and_then(|b| String::from_utf8(b).map_err(|_| "this is not a LightBurn project".to_string())).and_then(|t| lc_core::lightburn::import(&t, device.work_size().1));
+        match read {
+            Ok(imp) => {
+                let warnings = imp.warnings.join("; ");
+                let doc = Document::from_lightburn(imp, device);
+                let n = doc.scene.shapes.len();
+                self.doc = doc;
+                self.undo.clear();
+                self.redo.clear();
+                self.ed.sel.clear();
+                self.path = None;
+                self.status = trf("Opened {}", &[&p.display()]);
+                self.touch();
+                self.ed.view.need_fit = true;
+                self.add_recent(&p);
+                if self.profiles.get(self.active).is_some() {
+                    self.sync_profile();
+                }
+                if warnings.is_empty() {
+                    self.toast(trf("Imported {} paths from {}", &[&n, &name]));
+                } else {
+                    self.toast(trf("Some parts of the LightBurn project could not be used: {}", &[&warnings]));
+                }
             }
             Err(e) => self.status = trf("Open failed: {}", &[&e]),
         }
@@ -2124,6 +2161,50 @@ mod project_open_tests {
         assert!(text.contains("Controller") && text.contains("Work area"), "{text}");
         // The device in use is still the local one.
         assert_eq!(a.doc.device.area.bed_w, lc_core::Device::default().area.bed_w);
+        std::fs::remove_dir_all(dir).ok();
+    }
+}
+
+#[cfg(test)]
+mod lightburn_open_tests {
+    use super::*;
+
+    const LB: &str = r#"<LightBurnProject DeviceName="No Machine">
+        <CutSetting type="Scan"><index Value="3"/><name Value="C03"/><maxPower Value="42"/><speed Value="25"/></CutSetting>
+        <Shape Type="Rect" CutIndex="3" W="30" H="10" Cr="0"><XForm>1 0 0 1 50 20</XForm></Shape>
+        <Shape Type="Mystery" CutIndex="3"/></LightBurnProject>"#;
+
+    #[test]
+    fn a_lightburn_project_opens_as_a_new_document_on_the_selected_device() {
+        let mut a = App::build(&egui::Context::default(), None, false);
+        a.profiles = vec![lc_core::Device::default()];
+        a.active = 0;
+        let dir = std::env::temp_dir().join(format!("lc-lb-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let file = dir.join("job.lbrn2");
+        std::fs::write(&file, LB).unwrap();
+        a.open_path(file);
+        assert_eq!(a.doc.scene.shapes.len(), 1);
+        assert_eq!((a.doc.layers[3].mode, a.doc.layers[3].power, a.doc.layers[3].speed), (lc_core::LayerMode::Fill, 42.0, 25.0));
+        assert!(a.path.is_none(), "the next save asks for a name");
+        assert!(a.is_dirty(), "an imported project is unsaved work");
+        // The unknown shape is named in the message.
+        let (text, _) = a.toast.clone().expect("a message");
+        assert!(text.contains("Mystery"), "{text}");
+        std::fs::remove_dir_all(dir).ok();
+    }
+
+    #[test]
+    fn a_broken_lightburn_file_changes_nothing() {
+        let mut a = App::build(&egui::Context::default(), None, false);
+        a.doc.add(0, lc_core::Kind::Rect { w: 5.0, h: 5.0 }, lc_core::Xf::IDENTITY);
+        let dir = std::env::temp_dir().join(format!("lc-lb-bad-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let file = dir.join("bad.lbrn2");
+        std::fs::write(&file, "not xml at all").unwrap();
+        a.open_path(file);
+        assert_eq!(a.doc.scene.shapes.len(), 1);
+        assert!(a.status.starts_with("Open failed"), "{}", a.status);
         std::fs::remove_dir_all(dir).ok();
     }
 }

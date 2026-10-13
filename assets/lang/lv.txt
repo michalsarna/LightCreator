@@ -1078,3 +1078,4 @@
 1077|Nolasīts
 1078|Lasīšanas kļūda
 1079|Šis projekts tika izveidots citam iekārtas iestatījumam ({}). Pirms sākšanas pārbaudiet ierīci.
+1080|Dažas LightBurn projekta daļas nevarēja izmantot: {}

@@ -1078,3 +1078,4 @@
 1077	Read OK
 1078	Error reading
 1079	This project was made for a different machine setup ({}). Check the device before you start.
+1080	Some parts of the LightBurn project could not be used: {}

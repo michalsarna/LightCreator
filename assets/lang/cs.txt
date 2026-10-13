@@ -1078,3 +1078,4 @@
 1077|Načteno
 1078|Chyba čtení
 1079|Tento projekt vznikl pro jiné nastavení stroje ({}). Před spuštěním zkontrolujte zařízení.
+1080|Některé části projektu LightBurn nebylo možné použít: {}
