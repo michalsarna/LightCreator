@@ -1081,3 +1081,4 @@
 1080|Některé části projektu LightBurn nebylo možné použít: {}
 1081|Nemám zařízení
 1082|Práce na projektu bez stroje: obyčejné zařízení jménem Dummy s výchozí pracovní plochou a rychlostmi
+1083|Importovat projekt LightBurn…

@@ -82,13 +82,9 @@ impl App {
         }
     }
 
-    /// The description of the project: a plain text of several lines, saved in the project file.
+    /// The description of the project, saved in the project file (the tab is the one of baseCreator).
     fn description_panel(&mut self, ui: &mut egui::Ui) {
-        let h = ui.available_height().max(120.0);
-        let r = egui::ScrollArea::vertical().id_salt("tab_description").auto_shrink([false, false]).show(ui, |ui| {
-            ui.add_sized([ui.available_width(), h - 12.0], egui::TextEdit::multiline(&mut self.doc.description).hint_text(tr("Describe the project: what it is, the settings that worked, notes for next time.")).desired_width(f32::INFINITY))
-        });
-        if r.inner.changed() {
+        if base_ui::description_ui::panel(ui, &mut self.doc.description) {
             self.touch();
         }
     }

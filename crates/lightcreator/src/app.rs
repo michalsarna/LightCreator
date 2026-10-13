@@ -15,7 +15,7 @@ use std::path::PathBuf;
 pub use base_ui::editor::{Tool, View};
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.1.8";
+pub const APP_VERSION: &str = "v0.1.9";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
@@ -482,7 +482,7 @@ impl App {
         self.ed.view.need_fit = true;
     }
     pub fn open(&mut self) {
-        if let Some(p) = rfd::FileDialog::new().add_filter("Project", &[lc_core::project::EXTENSION]).add_filter("LightBurn", &["lbrn2", "lbrn"]).add_filter("SVG", &["svg"]).pick_file() {
+        if let Some(p) = rfd::FileDialog::new().add_filter("Project", &[lc_core::project::EXTENSION]).add_filter("SVG", &["svg"]).pick_file() {
             self.open_path(p);
         }
     }
@@ -535,7 +535,12 @@ impl App {
             Err(e) => self.status = trf("Open failed: {}", &[&e]),
         }
     }
-    /// Open a LightBurn project as a new, unsaved document on the selected device: its shapes, and its layers with their
+    pub fn import_lightburn_dialog(&mut self) {
+        if let Some(p) = rfd::FileDialog::new().add_filter("LightBurn", &["lbrn2", "lbrn"]).pick_file() {
+            self.import_lightburn(p);
+        }
+    }
+    /// Import a LightBurn project as a new, unsaved document on the selected device: its shapes, and its layers with their
     /// mode, speed and power. LightBurn counts Y up from the bottom, so the drawing is turned over with the height of
     /// the work area.
     pub fn import_lightburn(&mut self, p: PathBuf) {
@@ -555,7 +560,6 @@ impl App {
                 self.status = trf("Opened {}", &[&p.display()]);
                 self.touch();
                 self.ed.view.need_fit = true;
-                self.add_recent(&p);
                 if self.profiles.get(self.active).is_some() {
                     self.sync_profile();
                 }
@@ -1046,6 +1050,7 @@ impl App {
             Act::Quit => self.request_close(ctx),
             Act::ToCurves => self.to_curves(),
             Act::ImportAi => self.import_ai(),
+            Act::ImportLightburn => self.import_lightburn_dialog(),
             Act::OnlineClipart => {
                 self.side_tab = SideTab::Clipart;
                 self.open_online_clipart(ctx);
@@ -2183,7 +2188,9 @@ mod lightburn_open_tests {
         std::fs::create_dir_all(&dir).unwrap();
         let file = dir.join("job.lbrn2");
         std::fs::write(&file, LB).unwrap();
-        a.open_path(file);
+        let recent = a.recent.clone();
+        a.import_lightburn(file);
+        assert_eq!(a.recent, recent, "an import is not a project to reopen");
         assert_eq!(a.doc.scene.shapes.len(), 1);
         assert_eq!((a.doc.layers[3].mode, a.doc.layers[3].power, a.doc.layers[3].speed), (lc_core::LayerMode::Fill, 42.0, 25.0));
         assert!(a.path.is_none(), "the next save asks for a name");

@@ -1081,3 +1081,4 @@
 1080|Algumas partes do projeto LightBurn não puderam ser usadas: {}
 1081|Não tenho dispositivo
 1082|Trabalhe num projeto sem máquina: um dispositivo simples chamado Dummy, com a área de trabalho e as velocidades predefinidas
+1083|Importar projeto do LightBurn…

@@ -1081,3 +1081,4 @@
 1080|Nekaterih delov projekta LightBurn ni bilo mogoče uporabiti: {}
 1081|Nimam naprave
 1082|Delo na projektu brez stroja: preprosta naprava z imenom Dummy s privzetim delovnim območjem in hitrostmi
+1083|Uvozi projekt LightBurn…

@@ -1081,3 +1081,4 @@
 1080|A LightBurn-projekt egyes részei nem használhatók: {}
 1081|Nincs eszközöm
 1082|Dolgozzon projekten gép nélkül: egy Dummy nevű egyszerű eszköz az alapértelmezett munkaterülettel és sebességekkel
+1083|LightBurn-projekt importálása…
