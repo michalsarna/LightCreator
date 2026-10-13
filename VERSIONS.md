@@ -2,6 +2,23 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.1.8
+
+**Projects**
+* The project file is now the shared `.cre` of baseCreator (the same file MillCreator uses). Each program keeps its
+  own section and leaves the sections of the other programs untouched, so a project passes between them without losing
+  anything. The old `.lcr` files are no longer read.
+* The project keeps a snapshot of the machine it was made for (name, units, controller, work area, speeds). When it is
+  opened with a device that differs in controller, work area or machine zero, a warning is shown.
+* LightBurn projects (`.lbrn2`, `.lbrn`) can be opened with *Open* or by dropping them on the window: shapes, rounded
+  rectangles, ellipses, polygons and stars, paths with curves, text as outlines, bitmaps and groups, with the speed,
+  power, passes and interval of the layers. The project opens as a new, unsaved document on the selected device. What
+  cannot be used (for example variable text or QR codes) is listed in a message.
+
+**Devices**
+* *I have no device* (on the start screen and in the *Add a device* window) makes a plain device called Dummy with the
+  default work area and speeds and opens the editor, so a project can be prepared without a machine.
+
 ## v0.1.7
 
 **Under the hood** (no change in what you see, apart from the details below)
