@@ -809,6 +809,8 @@ pub struct Device {
     pub live_position: bool,
     /// Whether a job counts from the machine's zero or from where the head stands.
     pub start_from: StartFrom,
+    /// Copies of the settings of the controller, kept with the profile.
+    pub fw_copies: base_core::control::FwCopies,
 }
 
 /// A counter of working time that can be reset, with an optional limit after which it asks for attention.
@@ -951,6 +953,8 @@ struct DeviceWire {
     live_position: bool,
     #[serde(default)]
     start_from: StartFrom,
+    #[serde(default)]
+    fw_copies: base_core::control::FwCopies,
     // Flat fields of profiles saved before the groups existed.
     origin: Option<Origin>,
     bed_w: Option<f64>,
@@ -1019,6 +1023,7 @@ impl From<DeviceWire> for Device {
             notes: w.notes,
             live_position: w.live_position,
             start_from: w.start_from,
+            fw_copies: w.fw_copies,
         };
         dev.ensure_materials();
         dev
@@ -1249,6 +1254,7 @@ impl Default for Device {
             notes: String::new(),
             live_position: false,
             start_from: StartFrom::Home,
+            fw_copies: Default::default(),
         }
     }
 }

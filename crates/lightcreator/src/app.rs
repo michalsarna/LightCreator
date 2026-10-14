@@ -15,7 +15,7 @@ use std::path::PathBuf;
 pub use base_ui::editor::{Tool, View};
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.2.4";
+pub const APP_VERSION: &str = "v0.2.5";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
@@ -207,6 +207,10 @@ pub struct App {
     pub single_axis_homing: bool,
     /// The Firmware ($$) page.
     pub fw: crate::firmware_ui::FwUi,
+    /// "Start from line…": the window, the program it works on, and the window of the calibration.
+    pub start_from: base_ui::job_ui::StartFrom,
+    pub start_lines: Vec<String>,
+    pub cal: base_ui::tools_ui::CalUi,
     /// The window with the templates for a new device is open.
     /// The first-run setup is open at this step.
     pub add_dev: Option<usize>,
@@ -377,6 +381,9 @@ impl App {
             connect_actions_at: None,
             single_axis_homing: false,
             fw: Default::default(),
+            start_from: Default::default(),
+            start_lines: vec![],
+            cal: Default::default(),
             add_dev: None,
             add_dev_read: false,
             add_dev_read_done: false,
@@ -687,6 +694,11 @@ impl App {
     }
 
     pub fn send_job_now(&mut self) {
+        self.send_job_from(0);
+    }
+
+    /// The lines of the whole program, or `None` (with the reason in the status bar) when there is nothing to burn.
+    pub fn program_lines(&mut self) -> Option<Vec<String>> {
         self.focus_off();
         self.stamp_job();
         // The job is written for the design as it is: the pointer alignment never moves it.
@@ -694,11 +706,23 @@ impl App {
         let job = gcode::generate_from(&doc, back);
         if job.moves.is_empty() {
             self.status = tr("Nothing to burn: no shapes on output layers").into();
-            return;
+            return None;
         }
-        let lines = laser::clean_gcode(&job.gcode);
-        self.push_console(ConsoleLine::info(trf("Starting job: {} lines, ~{}", &[&lines.len(), &fmt_time(job.est_seconds)])));
         self.job_est = job.est_seconds;
+        Some(laser::clean_gcode(&job.gcode))
+    }
+
+    /// Send the job, starting at line `from` of the program (0-based; 0 is all of it).
+    pub fn send_job_from(&mut self, from: usize) {
+        let Some(all) = self.program_lines() else { return };
+        let lines = match lc_core::resume::plan(&all, from, 5.0, 0.0) {
+            Ok(l) => l,
+            Err(e) => {
+                self.status = trf("Cannot start here: {}", &[&tr(e)]);
+                return;
+            }
+        };
+        self.push_console(ConsoleLine::info(trf("Starting job: {} lines, ~{}", &[&lines.len(), &fmt_time(self.job_est)])));
         self.job_last_secs = 0.0;
         self.link.send(Cmd::Job(lines));
     }
@@ -834,10 +858,23 @@ impl App {
             match e {
                 Evt::Log(s) => self.push_console(ConsoleLine::info(s)),
                 Evt::Traffic(l) => {
+                    let mut explain = None;
                     if l.dir == crate::laser::Dir::Rx && !l.poll {
                         self.read_feed(&l.text);
+                        explain = lc_core::grbl_codes::explain(&l.text);
                     }
-                    self.push_console(l)
+                    self.push_console(l);
+                    // What an alarm or an error means, in a line under it and in the status bar.
+                    if let Some(x) = explain {
+                        let word = match x.kind {
+                            lc_core::grbl_codes::Kind::Alarm => "Alarm",
+                            lc_core::grbl_codes::Kind::Error => "Error",
+                        };
+                        if let Some(t) = x.text {
+                            self.push_console(ConsoleLine::info(format!("   ↳ {}", tr(t))));
+                            self.status = trf("{} {}: {}", &[&tr(word), &x.code, &tr(t)]);
+                        }
+                    }
                 }
                 Evt::Connected(c) => {
                     let lost = self.connected && !c;
@@ -869,6 +906,8 @@ impl App {
                     }
                 }
                 Evt::Stalled { secs, state } => self.stall = Some((secs, state)),
+                // Pauses are left to the controller here, and the full report is not used.
+                Evt::Report(_) | Evt::Barrier { .. } => {}
             }
         }
     }
@@ -1014,6 +1053,7 @@ impl App {
             Act::ClearRecent => !self.recent.is_empty(),
             Act::Frame => self.connected && !self.job_running(),
             Act::StartJob => self.can_start() && !self.job_running(),
+            Act::StartFrom => self.connected && !self.job_running(),
             Act::ToggleOverlay => self.overlay.is_some(),
             Act::ToggleZones => !self.doc.device.zones.is_empty(),
             _ => true,
@@ -1133,6 +1173,13 @@ impl App {
             }
             Act::Frame => self.frame(),
             Act::StartJob => self.send_job(),
+            Act::StartFrom => {
+                if let Some(lines) = self.program_lines() {
+                    self.start_lines = lines;
+                    self.start_from.open = true;
+                }
+            }
+            Act::Calibration => self.cal.open = true,
             Act::About => self.show_about = true,
             // The standard editing commands were carried out above.
             Act::Undo | Act::Redo | Act::Copy | Act::Paste | Act::Duplicate | Act::Delete | Act::SelectAll | Act::Align(_) | Act::CenterOnBed | Act::CenterEachOther | Act::FlipH | Act::FlipV | Act::RotCw | Act::RotCcw | Act::ToFront | Act::ToBack | Act::ToPath | Act::EditNodes | Act::Group | Act::Ungroup | Act::Lock | Act::Unlock | Act::ToggleGrid | Act::ToggleSnap | Act::ToggleSnapObjects | Act::FitBed | Act::FitAll | Act::ZoomIn | Act::ZoomOut | Act::ToggleAutoFit => {}
@@ -1477,6 +1524,12 @@ impl App {
         self.fw_window(ctx);
         self.stall_window(ctx);
         self.fw_windows(ctx);
+        let mut cal = std::mem::take(&mut self.cal);
+        base_ui::tools_ui::calibration_window(ctx, &mut cal, self);
+        self.cal = cal;
+        if let Some(from) = base_ui::job_ui::start_from_window(ctx, &mut self.start_from, &self.start_lines, 5.0, 0.0) {
+            self.send_job_from(from);
+        }
         self.add_device_window(ctx);
         self.overlay_window(ctx);
         self.prefs_window(ctx);
@@ -2245,5 +2298,31 @@ mod lightburn_open_tests {
         assert_eq!(a.doc.scene.shapes.len(), 1);
         assert!(a.status.starts_with("Open failed"), "{}", a.status);
         std::fs::remove_dir_all(dir).ok();
+    }
+}
+
+impl base_ui::tools_ui::CalHost for App {
+    fn connected(&self) -> bool {
+        self.connected
+    }
+    fn setting(&self, id: u32) -> Option<f64> {
+        self.fw.values.get(&id).and_then(|v| v.trim().parse::<f64>().ok())
+    }
+    fn reading(&self) -> bool {
+        self.fw.reading
+    }
+    fn read_settings(&mut self) {
+        self.fw_read();
+    }
+    fn job_running(&self) -> bool {
+        App::job_running(self)
+    }
+    fn send(&mut self, lines: Vec<String>) {
+        for l in lines {
+            self.link.send(Cmd::Line(l));
+        }
+    }
+    fn ask_write(&mut self, id: u32, value: String) {
+        self.run_fw_acts(vec![crate::firmware_ui::FwAct::Write(id, value)]);
     }
 }

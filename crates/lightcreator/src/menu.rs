@@ -83,6 +83,8 @@ pub enum Act {
     ToggleSnapObjects,
     Frame,
     StartJob,
+    StartFrom,
+    Calibration,
     About,
     SetLang(Lang),
     SetScheme(Scheme),
@@ -215,6 +217,9 @@ pub fn menus() -> base_ui::menu::Menus<Act> {
         Item(Act::DeviceSettings, "Device settings…", None),
         Item(Act::Frame, "Frame", None),
         Item(Act::StartJob, "Start job", None),
+        Item(Act::StartFrom, "Start from line…", None),
+        Sep,
+        Item(Act::Calibration, "Calibration…", None),
     ];
     // Sharing a local serial port with ser2net is a Linux feature.
     if cfg!(target_os = "linux") {

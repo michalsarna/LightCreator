@@ -13,6 +13,7 @@ use std::time::{Duration, Instant};
 /// What the page asks the application to do (it cannot do it itself while it is drawn).
 #[derive(Debug, PartialEq)]
 pub enum FwAct {
+    Copy(base_ui::firmware_ui::CopyAct),
     Read,
     Write(u32, String),
     Export,
@@ -42,13 +43,17 @@ pub struct FwUi {
     pub import: Option<FwImport>,
     pub reset_open: bool,
     pub reset_text: String,
+    /// What differed from the newest copy of the profile when the settings were last read.
+    pub changes: Vec<lc_core::control::Change>,
+    /// A write was made here: the next reading is its result, not a surprise.
+    pub own_change: bool,
 }
 
 /// The word that has to be typed before the factory settings are restored.
 pub const RESET_WORD: &str = "RESET";
 
 /// The page. `connected` says whether there is a link to read from.
-pub fn page(ui: &mut egui::Ui, fw: &mut FwUi, connected: bool, controller: Controller, acts: &mut Vec<FwAct>) {
+pub fn page(ui: &mut egui::Ui, fw: &mut FwUi, copies: &lc_core::control::FwCopies, connected: bool, controller: Controller, acts: &mut Vec<FwAct>) {
     if controller == Controller::Marlin {
         marlin_page(ui, fw, connected, acts);
         return;
@@ -60,6 +65,9 @@ pub fn page(ui: &mut egui::Ui, fw: &mut FwUi, connected: bool, controller: Contr
     if !connected {
         ui.label(RichText::new(tr("Connect to the machine first (Device tab).")).color(theme::text_dim()));
         return;
+    }
+    if let Some(a) = base_ui::firmware_ui::copies_ui(ui, copies, !fw.values.is_empty(), &fw.changes) {
+        acts.push(FwAct::Copy(a));
     }
     ui.horizontal_wrapped(|ui| {
         let read = if fw.reading { tr("Reading…") } else { tr("Read the settings ($$)") };
@@ -153,6 +161,7 @@ impl App {
     pub fn run_fw_acts(&mut self, acts: Vec<FwAct>) {
         for a in acts {
             match a {
+                FwAct::Copy(c) => self.fw_copy_act(c),
                 FwAct::Read => self.fw_read(),
                 FwAct::Write(id, v) => {
                     let old = self.fw.values.get(&id).cloned().unwrap_or_default();
@@ -189,6 +198,7 @@ impl App {
         }
         self.fw.values = gs::parse_report(&lines);
         self.fw.typed.clear();
+        self.fw_note_copies();
         if let Some(want) = self.fw.verify.take() {
             let bad: Vec<String> = want.iter().filter(|(id, v)| self.fw.values.get(id).map_or(true, |now| !gs::same_value(now, v))).map(|(id, v)| format!("${id}: {} {}, {} {}", tr("File"), v, tr("Controller"), self.fw.values.get(id).cloned().unwrap_or_else(|| "–".into()))).collect();
             self.fw.report = if bad.is_empty() { vec![trf("All {} settings of the file are in the controller now.", &[&want.len()])] } else { std::iter::once(trf("{} of {} settings differ after writing:", &[&bad.len(), &want.len()])).chain(bad).collect() };
@@ -196,6 +206,64 @@ impl App {
         // The build info, for the page and for the options (`$I`).
         let now = Instant::now();
         self.read_cfg = Some(crate::device_ui::ReadCfg { controller: Controller::Grbl, waiting_connect: false, request_at: Some(now), sent_at: None, lines: vec![], started: now, kind: crate::device_ui::ReadKind::Info });
+    }
+
+    /// The settings were read: compare them with the newest copy kept with the profile, make a new one when they differ and
+    /// say so.
+    pub fn fw_note_copies(&mut self) {
+        let own = std::mem::take(&mut self.fw.own_change);
+        if self.fw.values.is_empty() {
+            return;
+        }
+        let secs = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0);
+        let firmware = self.fw.info.iter().find_map(|l| l.strip_prefix("[VER:")).map(|v| format!("Grbl {}", v.trim_end_matches(']').split(':').next().unwrap_or("").split('.').take(2).collect::<Vec<_>>().join("."))).unwrap_or_default();
+        self.fw.changes.clear();
+        let noted = self.doc.device.fw_copies.note(secs, &firmware, &self.fw.values, own);
+        // The same profile in the list of profiles keeps the copies too.
+        let line = match noted {
+            lc_core::control::Noted::First => Some(trf("A copy of the {} settings of the controller was saved with the device.", &[&self.fw.values.len()])),
+            lc_core::control::Noted::Changed(ch) => {
+                let line = trf("Settings that differ from the copy saved with the device: {}. A new copy was saved.", &[&ch.len()]);
+                self.push_console(base_ui::link::ConsoleLine::info(line.clone()));
+                for c in ch.iter().take(12) {
+                    self.push_console(base_ui::link::ConsoleLine::info(format!("   ${}: {} → {}", c.id, c.old.as_deref().unwrap_or("–"), c.new.as_deref().unwrap_or("–"))));
+                }
+                self.fw.changes = ch;
+                Some(line)
+            }
+            lc_core::control::Noted::Own(ch) => Some(trf("A new copy of the settings was saved after your change ({} settings differ from the one before).", &[&ch.len()])),
+            _ => None,
+        };
+        if let Some(l) = line {
+            self.status = l.clone();
+            self.toast(l);
+        }
+        if let Some(k) = self.profiles.get_mut(self.active) {
+            k.fw_copies = self.doc.device.fw_copies.clone();
+        }
+    }
+
+    /// What the list of copies asked.
+    pub fn fw_copy_act(&mut self, act: base_ui::firmware_ui::CopyAct) {
+        use base_ui::firmware_ui::CopyAct;
+        match act {
+            CopyAct::Make => {
+                let secs = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0);
+                let firmware = String::new();
+                if self.doc.device.fw_copies.make(secs, &firmware, &self.fw.values) {
+                    self.status = trf("A copy of the {} settings was saved with the device.", &[&self.fw.values.len()]);
+                }
+            }
+            CopyAct::Restore(i) => {
+                if let Some(c) = self.doc.device.fw_copies.0.get(i) {
+                    self.fw.import = Some(FwImport { file: c.values.iter().map(|(k, v)| (*k, v.clone())).collect() });
+                }
+            }
+            CopyAct::Delete(i) => self.doc.device.fw_copies.remove(i),
+        }
+        if let Some(k) = self.profiles.get_mut(self.active) {
+            k.fw_copies = self.doc.device.fw_copies.clone();
+        }
     }
 
     /// Read the settings again a moment after something was written.
@@ -326,6 +394,7 @@ impl App {
 
     /// Write the settings of an import, one line each; they are read back afterwards and compared.
     pub fn fw_write_all(&mut self, settings: Vec<(u32, String)>) {
+        self.fw.own_change = true;
         for (id, v) in &settings {
             self.link.send(crate::laser::Cmd::Line(gs::write_line(*id, v)));
         }
@@ -414,5 +483,37 @@ mod tests {
         off.connected = false;
         off.fw_read();
         assert!(off.read_cfg.is_none());
+    }
+
+    #[test]
+    fn the_settings_are_copied_with_the_profile_and_a_change_is_noticed() {
+        let mut a = app();
+        a.fw_got(lines(&["$110=3000.000", "$130=400.000", "ok"]));
+        assert_eq!(a.doc.device.fw_copies.0.len(), 1);
+        a.fw_got(lines(&["$110=3000.000", "$130=400.000"]));
+        assert_eq!(a.doc.device.fw_copies.0.len(), 1, "the same again");
+        a.fw_got(lines(&["$110=5000.000", "$130=400.000"]));
+        assert_eq!(a.doc.device.fw_copies.0.len(), 2);
+        assert_eq!(a.fw.changes.len(), 1, "somebody changed $110");
+        // A change made here is not a surprise.
+        a.fw.own_change = true;
+        a.fw_got(lines(&["$110=6000.000", "$130=400.000"]));
+        assert_eq!(a.doc.device.fw_copies.0.len(), 3);
+        assert!(a.fw.changes.is_empty());
+        assert_eq!(a.doc.device.fw_copies.newest().unwrap().why, "own");
+        // The profile in the list keeps the copies, and a copy can be made by hand and deleted.
+        assert_eq!(a.profiles[a.active].fw_copies.0.len(), 3);
+        a.fw_copy_act(base_ui::firmware_ui::CopyAct::Make);
+        assert_eq!(a.profiles[a.active].fw_copies.0.len(), 4);
+        a.fw_copy_act(base_ui::firmware_ui::CopyAct::Delete(0));
+        assert_eq!(a.doc.device.fw_copies.0.len(), 3);
+        // Restoring a copy opens the comparison with what the controller has.
+        a.fw_copy_act(base_ui::firmware_ui::CopyAct::Restore(0));
+        assert!(a.fw.import.as_ref().is_some_and(|i| i.file.len() == 2));
+        // And the copies are in the JSON of the profile (so in the backup).
+        let j = serde_json::to_string(&a.doc.device).unwrap();
+        assert!(j.contains("fw_copies") && j.contains("5000.000"));
+        let back: lc_core::Device = serde_json::from_str(&j).unwrap();
+        assert_eq!(back.fw_copies.0.len(), 3);
     }
 }

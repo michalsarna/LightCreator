@@ -47,3 +47,5 @@ Regenerate them with
 | Description tab, saved in the project | Program options with the web server; its state is in the status bar |
 | ![Dark purple scheme](screenshots/37-theme-dark-purple.png) | ![Light orange scheme](screenshots/38-theme-light-orange.png) |
 | Colour scheme Dark Purple (there are ten coloured ones: dark and light blue, green, purple, brown, orange) | Colour scheme Light Orange |
+| ![Calibration: steps per millimetre and squareness](screenshots/39-calibration.png) | ![Start from line](screenshots/40-start-from-line.png) |
+| Calibration (Laser menu): steps per millimetre and squareness of the axes | Start from line (Laser menu) |

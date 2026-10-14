@@ -2,6 +2,14 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.2.5
+
+* **Start from line…** (Laser menu): starts a job in the middle; the laser is first brought into the state the program has at that line.
+* **Calibration…** (Laser menu): steps per millimetre and squareness of the axes.
+* Alarms and errors of GRBL are explained in the console and the status bar, in 30 languages.
+* **Copies of the settings of the controller** are kept with every profile: one at the first connection and again whenever the settings differ from the newest copy, with a message saying what changed; make, restore and delete them on the Firmware page. They are part of the backup of the program.
+* baseCreator v0.9.6.
+
 ## v0.2.4
 
 * No more moving of settings from the old per-program folders (v0.2.3 did it once); the shared folder is simply used. baseCreator v0.9.5.

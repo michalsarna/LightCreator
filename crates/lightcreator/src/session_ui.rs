@@ -213,6 +213,7 @@ impl App {
         match act {
             ConfirmAct::WriteSetting(id, v) => {
                 self.link.send(crate::laser::Cmd::Line(lc_core::grbl_settings::write_line(id, &v)));
+                self.fw.own_change = true;
                 self.fw.reread_at = Some(std::time::Instant::now() + std::time::Duration::from_millis(600));
             }
             ConfirmAct::ImportSettings(settings) => self.fw_write_all(settings),
@@ -236,6 +237,7 @@ impl App {
             }
             ConfirmAct::ResetSettings => {
                 self.link.send(crate::laser::Cmd::Line("$RST=$".into()));
+                self.fw.own_change = true;
                 self.fw.values.clear();
                 self.fw.typed.clear();
                 self.fw.report.clear();

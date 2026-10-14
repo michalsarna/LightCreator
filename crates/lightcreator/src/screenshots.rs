@@ -573,6 +573,28 @@ fn render_screenshots() {
     }
     app(&mut h).scheme = Scheme::LightDark;
     theme::apply(&ctx, Scheme::LightDark);
+    // The calibration window and "Start from line".
+    {
+        let a = app(&mut h);
+        a.side_tab = SideTab::Properties;
+        a.connected = true;
+        a.fw.values = [(100, "80.000".to_string()), (101, "80.000".to_string())].into_iter().collect();
+        a.cal.open = true;
+    }
+    save(&mut h, "39-calibration.png");
+    {
+        let a = app(&mut h);
+        a.cal.open = false;
+        a.start_lines = "G21 G90\nM5\nG0 X10 Y10\nS600 M4\nF3000\nG1 X50 Y10\nG1 X50 Y40\nG1 X10 Y40\nG1 X10 Y10\nM5".lines().map(String::from).collect();
+        a.start_from.line = 7;
+        a.start_from.open = true;
+    }
+    save(&mut h, "40-start-from-line.png");
+    {
+        let a = app(&mut h);
+        a.start_from.open = false;
+        a.connected = false;
+    }
 }
 
 /// The node-editing bar disappears when another window (the preview) is clicked and returns on a click in the canvas.
