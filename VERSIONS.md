@@ -2,6 +2,16 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.2.0
+
+**Interface** (for all three programs)
+* The pointer is the tool's only over the work area (crosshair, text cursor and so on); outside it, it is the ordinary pointer.
+* The line that resizes the side panel lights up red and gets thicker under the pointer, so it is clear that it moves.
+* In the Layers tab the line between the list of layers and their options is dragged up and down to change the size of the list; it lights up the same way.
+
+**Internal**
+* The serial / TCP link to the controller (streaming, status, jobs) and the controller types (`Controller`, `Connection`, `Rotary`) now live in baseCreator (v0.9.0), where MillCreator uses them too.
+
 ## v0.1.10
 
 **Start screen**

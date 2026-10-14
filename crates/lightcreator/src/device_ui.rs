@@ -1,5 +1,6 @@
 //! Start screen (device chooser) and the device configuration window.
 //! The editor can only be entered once at least one device profile exists and one is selected.
+use lc_core::ControllerSettings;
 use crate::app::{App, Screen, APP_VERSION};
 use crate::laser::{self, Cmd, Target};
 use crate::i18n::{tr, trf};
@@ -1277,7 +1278,7 @@ impl App {
     /// Open the link of the active device again, now (used after the link was lost).
     pub fn connect_now(&mut self) {
         let dev = self.doc.device.clone();
-        if let Some(target) = Target::of(&dev) {
+        if let Some(target) = crate::laser::target_of(&dev) {
             self.link.send(Cmd::Connect { target, controller: dev.controller, streaming: dev.connection.streaming });
         }
     }
@@ -1511,7 +1512,7 @@ impl App {
                 dev.connection.port = port.clone();
                 let green = egui::Button::new(RichText::new(tr("Connect")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f));
                 if ui.add_enabled(dev.has_target(), green).clicked() {
-                    if let Some(target) = Target::of(&dev) {
+                    if let Some(target) = crate::laser::target_of(&dev) {
                         self.want_link = true;
                         self.link.send(Cmd::Connect { target, controller: ctrl, streaming: self.doc.device.connection.streaming });
                     }
@@ -1686,7 +1687,7 @@ impl App {
             st.request_at = Some(std::time::Instant::now());
         } else {
             st.waiting_connect = true;
-            match Target::of(draft) {
+            match crate::laser::target_of(draft) {
                 Some(target) => self.link.send(Cmd::Connect { target, controller: c, streaming: draft.connection.streaming }),
                 None => return,
             }

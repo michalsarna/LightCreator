@@ -1,174 +1,7 @@
-//! Controller dialects: the small differences between GRBL and Marlin that the UI and the serial worker need.
+//! Controller dialects: the small differences between GRBL and Marlin that the UI and the serial worker need. The
+//! dialects themselves are in base-core; what is here reads the settings of a controller into a laser profile.
 use crate::doc::Controller;
-
-/// How the periodic status poll is done.
-pub enum StatusPoll {
-    /// A single realtime byte (GRBL `?`).
-    Byte(u8),
-    /// A normal queued line (Marlin `M114`).
-    Line(&'static str),
-    /// Not supported.
-    None,
-}
-
-/// Realtime-style actions the Device tab offers.
-pub enum Action {
-    /// One or more lines queued like any other command.
-    Lines(Vec<String>),
-    /// A single realtime byte, sent immediately.
-    Byte(u8),
-    None,
-}
-
-impl Controller {
-    pub fn status_poll(self) -> StatusPoll {
-        match self {
-            Controller::Grbl | Controller::Smoothieware => StatusPoll::Byte(b'?'),
-            Controller::Marlin => StatusPoll::Line("M114"),
-            _ => StatusPoll::None,
-        }
-    }
-    /// Milliseconds between status polls.
-    pub fn poll_interval_ms(self) -> u64 {
-        match self {
-            Controller::Marlin => 1000,
-            _ => 250,
-        }
-    }
-    pub fn home(self) -> Action {
-        match self {
-            Controller::Grbl | Controller::Smoothieware => Action::Lines(vec!["$H".into()]),
-            Controller::Marlin => Action::Lines(vec!["G28 X Y".into()]),
-            _ => Action::None,
-        }
-    }
-    /// Clear an alarm / halted state.
-    pub fn unlock(self) -> Action {
-        match self {
-            Controller::Grbl => Action::Lines(vec!["$X".into()]),
-            Controller::Marlin | Controller::Smoothieware => Action::Lines(vec!["M999".into()]),
-            _ => Action::None,
-        }
-    }
-    pub fn pause(self) -> Action {
-        match self {
-            Controller::Grbl | Controller::Smoothieware => Action::Byte(b'!'),
-            Controller::Marlin => Action::Lines(vec!["M25".into()]),
-            _ => Action::None,
-        }
-    }
-    pub fn resume(self) -> Action {
-        match self {
-            Controller::Grbl | Controller::Smoothieware => Action::Byte(b'~'),
-            Controller::Marlin => Action::Lines(vec!["M24".into()]),
-            _ => Action::None,
-        }
-    }
-    pub fn cancel_jog(self) -> Action {
-        match self {
-            Controller::Grbl => Action::Byte(0x85),
-            Controller::Marlin => Action::Lines(vec!["M410".into()]),
-            _ => Action::None,
-        }
-    }
-    /// Jog by (dx, dy) millimetres at `feed` mm/min.
-    pub fn jog(self, dx: f64, dy: f64, feed: f64) -> Action {
-        match self {
-            Controller::Grbl => Action::Lines(vec![format!("$J=G91 G21 X{dx} Y{dy} F{feed}")]),
-            Controller::Marlin | Controller::Smoothieware => Action::Lines(vec!["G91".into(), format!("G0 X{dx} Y{dy} F{feed}"), "G90".into()]),
-            _ => Action::None,
-        }
-    }
-    /// Jog the Z axis by `dz` millimetres at `feed` mm/min.
-    pub fn jog_z(self, dz: f64, feed: f64) -> Action {
-        match self {
-            Controller::Grbl => Action::Lines(vec![format!("$J=G91 G21 Z{dz} F{feed}")]),
-            Controller::Marlin | Controller::Smoothieware => Action::Lines(vec!["G91".into(), format!("G0 Z{dz} F{feed}"), "G90".into()]),
-            _ => Action::None,
-        }
-    }
-    /// Byte(s) sent right after connecting.
-    pub fn on_connect(self) -> Option<u8> {
-        match self {
-            Controller::Grbl => Some(0x18),
-            _ => None,
-        }
-    }
-    /// Emergency stop / abort byte, if the controller has a realtime one.
-    pub fn abort_byte(self) -> Option<u8> {
-        match self {
-            Controller::Grbl | Controller::Smoothieware => Some(0x18),
-            _ => None,
-        }
-    }
-    /// Line queued after an abort for controllers without a realtime abort.
-    pub fn abort_line(self) -> Option<&'static str> {
-        match self {
-            Controller::Marlin => Some("M410"),
-            _ => None,
-        }
-    }
-}
-
-/// The Z position of a status report, when it has one (`MPos:1,2,3` of GRBL and Smoothieware, `Z:3.00` of Marlin).
-pub fn parse_status_z(line: &str) -> Option<f64> {
-    if let Some(inner) = line.strip_prefix('<').and_then(|l| l.strip_suffix('>')) {
-        let sep = if inner.contains('|') { '|' } else { ',' };
-        let parts: Vec<&str> = inner.split(sep).collect();
-        let at = parts.iter().position(|p| p.starts_with("MPos:") || p.starts_with("WPos:"))?;
-        let first = parts[at].split(':').nth(1)?;
-        // GRBL: "MPos:x,y,z" in one part; Smoothieware: the values are separate parts.
-        let nums: Vec<f64> = if sep == '|' { first.split(',').filter_map(|s| s.parse().ok()).collect() } else { std::iter::once(first).chain(parts[at + 1..].iter().copied()).take(3).filter_map(|s| s.parse().ok()).collect() };
-        return nums.get(2).copied();
-    }
-    if line.starts_with("X:") {
-        return line.split_whitespace().find_map(|t| t.strip_prefix("Z:")).and_then(|v| v.parse::<f64>().ok());
-    }
-    None
-}
-
-/// The option letters GRBL reports in its build info (`$I`): `[OPT:VH,15,128]` gives `"VH"`.
-pub fn grbl_options(lines: &[String]) -> Option<String> {
-    lines.iter().find_map(|l| l.trim().strip_prefix("[OPT:")).map(|o| o.split([',', ']']).next().unwrap_or("").to_string())
-}
-
-/// Was this GRBL built with `$HX` / `$HY` / `$HZ` (single-axis homing, option letter `H`)?
-pub fn single_axis_homing(options: &str) -> bool {
-    options.contains('H')
-}
-
-/// Parse a status report into (state, x, y). GRBL: `<Idle|MPos:1,2,0|...>`; Marlin: `X:1.00 Y:2.00 Z:0.00 ...`.
-pub fn parse_status(line: &str) -> Option<(String, f64, f64)> {
-    // Smoothieware: `<Idle,MPos:1.0000,2.0000,3.0000,WPos:...>` (commas everywhere).
-    if let Some(inner) = line.strip_prefix('<').and_then(|l| l.strip_suffix('>')).filter(|l| !l.contains('|') && l.contains(',')) {
-        let parts: Vec<&str> = inner.split(',').collect();
-        let state = parts.first()?.to_string();
-        let at = parts.iter().position(|p| p.starts_with("MPos:") || p.starts_with("WPos:"))?;
-        let x = parts[at].split(':').nth(1)?.parse::<f64>().ok()?;
-        let y = parts.get(at + 1)?.parse::<f64>().ok()?;
-        return Some((state, x, y));
-    }
-    if let Some(inner) = line.strip_prefix('<').and_then(|l| l.strip_suffix('>')) {
-        let mut parts = inner.split('|');
-        let state = parts.next()?.to_string();
-        for p in parts {
-            if let Some(v) = p.strip_prefix("MPos:").or_else(|| p.strip_prefix("WPos:")) {
-                let n: Vec<f64> = v.split(',').filter_map(|s| s.parse().ok()).collect();
-                if n.len() >= 2 {
-                    return Some((state, n[0], n[1]));
-                }
-            }
-        }
-        return Some((state, f64::NAN, f64::NAN));
-    }
-    if line.starts_with("X:") {
-        let num = |key: &str| line.split_whitespace().find_map(|t| t.strip_prefix(key)).and_then(|v| v.parse::<f64>().ok());
-        if let (Some(x), Some(y)) = (num("X:"), num("Y:")) {
-            return Some(("Idle".into(), x, y));
-        }
-    }
-    None
-}
+pub use base_core::machine::{grbl_options, parse_status, parse_status_z, single_axis_homing, Action, StatusPoll};
 
 /// Machine values that could be read from a controller.
 #[derive(Clone, Debug, Default, PartialEq)]
@@ -214,9 +47,15 @@ impl Reading {
     }
 }
 
-impl Controller {
+/// Reading the settings of a controller (laser profile values).
+pub trait ControllerSettings {
+    fn settings_request(self) -> Option<&'static str>;
+    fn parse_settings(self, lines: &[String]) -> Reading;
+}
+
+impl ControllerSettings for Controller {
     /// Command that makes the controller list its settings.
-    pub fn settings_request(self) -> Option<&'static str> {
+    fn settings_request(self) -> Option<&'static str> {
         match self {
             Controller::Grbl => Some("$$"),
             Controller::Marlin => Some("M503"),
@@ -225,7 +64,7 @@ impl Controller {
     }
 
     /// Pull machine values out of the controller's settings report.
-    pub fn parse_settings(self, lines: &[String]) -> Reading {
+    fn parse_settings(self, lines: &[String]) -> Reading {
         let mut r = Reading::default();
         match self {
             Controller::Grbl => {

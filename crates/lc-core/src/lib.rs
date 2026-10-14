@@ -18,6 +18,7 @@ pub mod zones;
 
 pub use base_core::bezier::*;
 pub use base_core::camimg::{CameraKind, CameraSource, CameraView, ImageSettings, Lens, RefPoint};
+pub use controller::ControllerSettings;
 pub use doc::*;
 pub use base_core::geom::*;
 pub use base_core::image::{Adjust, ImageData};

@@ -245,6 +245,7 @@ impl App {
         });
         let order = self.doc.layer_order();
         let mut move_req: Option<(usize, bool)> = None;
+        base_ui::widgets::list_with_splitter(ui, "layers_list", 230.0, |ui| {
         for &i in &order {
             if !(used[i] || self.show_all_layers || i == self.ed.active_layer) {
                 continue;
@@ -287,12 +288,12 @@ impl App {
                 });
             });
         }
+        });
         if let Some((i, up)) = move_req {
             self.checkpoint();
             self.doc.move_layer(i, up);
         }
         ui.checkbox(&mut self.show_all_layers, tr("Show all 30 layers"));
-        ui.separator();
         let has_images = self.doc.scene.shapes.iter().any(|s| s.layer == self.ed.active_layer && s.is_image());
         let mut layer_ctx = LayerCtx::of(&self.doc.device);
         layer_ctx.image_only = self.doc.is_image_layer(self.ed.active_layer);

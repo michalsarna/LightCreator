@@ -8,6 +8,7 @@
 //! ```
 //!
 //! `LC_GRBL_SIM_EXE` overrides the simulator path. See docs/grbl-sim.md.
+use lc_core::ControllerSettings;
 use crate::laser::{Cmd, Dir, Evt, LaserLink, Target};
 use lc_core::{gcode, Controller, Document, Kind, LayerMode, Xf};
 use std::io::{BufRead, BufReader};

@@ -1,5 +1,6 @@
 //! Adding a device: one window with the basic settings (and an optional camera). It opens by itself when
 //! there is no device yet. Nothing is predefined.
+use lc_core::ControllerSettings;
 use crate::app::App;
 use crate::device_ui::CfgEdit;
 use crate::i18n::tr;
