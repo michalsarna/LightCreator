@@ -1082,3 +1082,5 @@
 1081|No tengo dispositivo
 1082|Trabaja en un proyecto sin máquina: un dispositivo sencillo llamado Dummy, con el área de trabajo y las velocidades predeterminadas
 1083|Importar proyecto de LightBurn…
+1084|Aún no hay dispositivo. Añade uno o trabaja sin máquina.
+1085|Abre un proyecto o empieza uno vacío.

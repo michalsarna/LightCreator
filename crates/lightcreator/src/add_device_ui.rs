@@ -306,11 +306,7 @@ impl App {
             self.add_dev = None;
             self.add_dev_read = false;
             self.add_dev_read_err = false;
-            if self.profiles.is_empty() {
-                // Without any profile the program cannot start: cancelling the first setup quits.
-                self.cfg = None;
-                ctx.send_viewport_cmd(egui::ViewportCommand::Close);
-            }
+            self.cfg = None;
             return;
         }
         self.cfg = Some(cfg);
@@ -396,22 +392,47 @@ mod tests {
         let mut a = App::build(&ctx, None, false);
         a.profiles.clear();
         a.start_add_device();
+        // "I have no device" makes and selects the Dummy; the start screen stays.
         assert!(a.use_dummy_device());
-        assert_eq!(a.screen, crate::app::Screen::Editor);
+        assert_eq!(a.screen, crate::app::Screen::Start);
         assert!(a.add_dev.is_none() && a.cfg.is_none(), "the setup window is gone");
+        assert_eq!((a.profiles.len(), a.start_sel), (1, 0));
+        // The second time it is the same profile, not another one.
+        assert!(a.use_dummy_device());
         assert_eq!(a.profiles.len(), 1);
+        a.do_act(&ctx, crate::menu::Act::New);
+        assert_eq!(a.screen, crate::app::Screen::Editor);
         assert_eq!(a.doc.device.name, crate::device_ui::DUMMY_NAME);
         let plain = Device::default();
         assert_eq!((a.doc.device.area.bed_w, a.doc.device.area.bed_h), (plain.area.bed_w, plain.area.bed_h), "default work area");
         assert!(a.doc.device.materials.len() >= 5, "starter materials");
-        // The second time it is the same profile, not another one.
-        a.screen = crate::app::Screen::Start;
-        assert!(a.use_dummy_device());
-        assert_eq!(a.profiles.len(), 1);
         // The project is saved with the Dummy as its machine.
         let text = a.doc.to_json();
         let back = lc_core::Document::from_json(&text).unwrap();
         assert_eq!(back.device.name, crate::device_ui::DUMMY_NAME);
+    }
+
+    #[test]
+    fn new_without_any_device_makes_the_dummy_and_with_a_selected_one_uses_it() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.profiles.clear();
+        a.screen = crate::app::Screen::Start;
+        a.do_act(&ctx, crate::menu::Act::New);
+        assert_eq!(a.screen, crate::app::Screen::Editor);
+        assert_eq!((a.profiles.len(), a.doc.device.name.as_str()), (1, crate::device_ui::DUMMY_NAME));
+        // A selected device is the one the project gets.
+        let mut mine = Device::default();
+        mine.name = "Mine".into();
+        a.profiles.push(mine);
+        a.start_sel = 1;
+        a.screen = crate::app::Screen::Start;
+        a.do_act(&ctx, crate::menu::Act::New);
+        assert_eq!(a.doc.device.name, "Mine");
+        // A file that cannot be opened keeps the start screen.
+        a.screen = crate::app::Screen::Start;
+        a.start_project(|app| app.open_path(std::path::PathBuf::from("/nonexistent/x.cre")));
+        assert_eq!(a.screen, crate::app::Screen::Start);
     }
 
     #[test]

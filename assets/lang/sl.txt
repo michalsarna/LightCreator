@@ -1082,3 +1082,5 @@
 1081|Nimam naprave
 1082|Delo na projektu brez stroja: preprosta naprava z imenom Dummy s privzetim delovnim območjem in hitrostmi
 1083|Uvozi projekt LightBurn…
+1084|Še ni naprave. Dodajte jo ali delajte brez stroja.
+1085|Odprite projekt ali začnite praznega.

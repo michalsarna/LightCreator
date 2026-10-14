@@ -1082,3 +1082,5 @@
 1081|Je n'ai pas d'appareil
 1082|Travaillez sur un projet sans machine : un appareil simple nommé Dummy, avec la zone de travail et les vitesses par défaut
 1083|Importer un projet LightBurn…
+1084|Pas encore d'appareil. Ajoutez-en un, ou travaillez sans machine.
+1085|Ouvrez un projet ou commencez-en un vide.

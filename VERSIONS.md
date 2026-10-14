@@ -2,6 +2,16 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.1.10
+
+**Start screen**
+* The start screen looks and works like the one of MillCreator and PenCreator: the list of devices on top, then **New**, **Open…** and the recent files. The buttons of the device section are centred: *Add device…*, *Edit…*, *Duplicate* and *Import…* in the first row, *I have no device* in the second; *Export…* and *Delete* are in the window of *Edit…*.
+* *I have no device* makes the Dummy and selects it. **New**, **Open…**, a recent file and a dropped file start the project with the selected device, or with the Dummy when there is none; a file that cannot be opened keeps the start screen. The first-run setup window no longer opens by itself and cancelling it no longer quits the program.
+* Two new texts in 30 languages; the quick guide and the wiki follow.
+
+**Internal**
+* baseCreator v0.8.1 (`centered_row`).
+
 ## v0.1.9
 
 **Projects**

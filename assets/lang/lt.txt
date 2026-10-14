@@ -1082,3 +1082,5 @@
 1081|Neturiu įrenginio
 1082|Dirbkite su projektu be staklių: paprastas įrenginys pavadinimu Dummy su numatytuoju darbo plotu ir greičiais
 1083|Importuoti „LightBurn“ projektą…
+1084|Dar nėra įrenginio. Pridėkite vieną arba dirbkite be staklių.
+1085|Atidarykite projektą arba pradėkite tuščią.

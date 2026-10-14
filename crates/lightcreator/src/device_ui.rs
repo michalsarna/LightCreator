@@ -115,11 +115,10 @@ impl CfgPage {
 pub const DUMMY_NAME: &str = "Dummy";
 
 impl App {
-    /// "I have no device": the plain stand-in device (the program's default work area, speeds and settings, no
-    /// connection) is made once, kept in the list of devices, selected and used. The project is saved with it like with
-    /// any other device.
-    pub fn use_dummy_device(&mut self) -> bool {
-        let idx = match self.profiles.iter().position(|p| p.name == DUMMY_NAME) {
+    /// The place of the stand-in device in the list: it is made once (the program's default work area, speeds and
+    /// settings, no connection) and kept like any other device, so a project is saved with it as its machine.
+    fn dummy_index(&mut self) -> usize {
+        match self.profiles.iter().position(|p| p.name == DUMMY_NAME) {
             Some(i) => i,
             None => {
                 let mut d = Device::default();
@@ -128,11 +127,28 @@ impl App {
                 self.profiles.push(d);
                 self.profiles.len() - 1
             }
-        };
+        }
+    }
+
+    /// "I have no device": the stand-in device is made once and selected on the start screen.
+    pub fn use_dummy_device(&mut self) -> bool {
+        let idx = self.dummy_index();
         self.add_dev = None;
         self.cfg = None;
         self.start_sel = idx;
-        self.enter_editor(idx)
+        self.confirm_delete = false;
+        true
+    }
+
+    /// New or Open on the start screen: the selected device is the one to work with; without any device it is the Dummy.
+    /// `run` makes or opens the project; when it brought none (the dialog was cancelled, the file was refused) the start
+    /// screen stays.
+    pub fn start_project(&mut self, run: impl FnOnce(&mut App) -> bool) {
+        let idx = if self.profiles.is_empty() { self.dummy_index() } else { self.start_sel.min(self.profiles.len() - 1) };
+        self.start_sel = idx;
+        if self.enter_editor(idx) && !run(self) {
+            self.screen = Screen::Start;
+        }
     }
 
     /// Switch to the editor with the selected profile. Refuses (returns false) without a valid profile.
@@ -213,32 +229,53 @@ impl App {
     }
 
     pub fn open_cfg_edit(&mut self, idx: usize) {
+        self.confirm_delete = false;
         if let Some(d) = self.profiles.get(idx) {
             self.cfg = Some(CfgEdit { idx: Some(idx), draft: d.clone(), page: CfgPage::General, head: 0 });
         }
     }
 
     pub fn start_screen(&mut self, ui: &mut egui::Ui) {
-        // No profile yet: the user must create one before anything else. The first run goes through a short setup.
-        if self.profiles.is_empty() && self.cfg.is_none() {
-            if self.add_dev_skipped {
-                self.open_cfg_new();
-            } else {
-                self.start_add_device();
-            }
-        }
         let ctx = ui.ctx().clone();
         egui::CentralPanel::default().show(ui, |ui| {
             ui.vertical_centered(|ui| {
                 base_ui::start::start_header(ui, self.logo.as_ref(), "LightCreator", APP_VERSION);
                 ui.add_space(18.0);
-                ui.label(RichText::new(tr("Select device")).size(16.0).strong());
-                ui.label(RichText::new(tr("Choose the device you will work with.")).color(theme::text_dim()));
-                ui.add_space(8.0);
                 let frame = egui::Frame::group(ui.style()).inner_margin(egui::Margin::same(12));
                 frame.show(ui, |ui| {
                     ui.set_width(460.0);
                     ui.with_layout(Layout::top_down(Align::LEFT), |ui| self.device_list(ui));
+                });
+                ui.add_space(12.0);
+                ui.label(RichText::new(tr("Start")).size(16.0).strong());
+                ui.label(RichText::new(tr("Open a project or start an empty one.")).color(theme::text_dim()));
+                ui.add_space(8.0);
+                let frame = egui::Frame::group(ui.style()).inner_margin(egui::Margin::same(12));
+                frame.show(ui, |ui| {
+                    ui.set_width(460.0);
+                    let new = egui::Button::image_and_text(crate::icons::slot(Some("file-plus"), Color32::WHITE), RichText::new(tr("New")).color(Color32::WHITE).strong()).fill(theme::accent());
+                    if ui.add_sized([ui.available_width(), 30.0], new).clicked() {
+                        self.do_act(&ctx, Act::New);
+                    }
+                    ui.add_space(4.0);
+                    let open = egui::Button::image_and_text(crate::icons::slot(Some("folder-open"), theme::text()), tr("Open…"));
+                    if ui.add_sized([ui.available_width(), 30.0], open).clicked() {
+                        self.do_act(&ctx, Act::Open);
+                    }
+                    if !self.recent.is_empty() {
+                        ui.add_space(8.0);
+                        ui.label(RichText::new(tr("Open recent")).color(theme::text_dim()));
+                        let mut chosen = None;
+                        for (i, p) in self.recent.iter().enumerate().take(5) {
+                            let name = p.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
+                            if ui.add_sized([ui.available_width(), 24.0], egui::Button::new(name)).on_hover_text(p.display().to_string()).clicked() {
+                                chosen = Some(i as u8);
+                            }
+                        }
+                        if let Some(i) = chosen {
+                            self.do_act(&ctx, Act::OpenRecent(i));
+                        }
+                    }
                 });
                 ui.add_space(14.0);
                 let (lang, scheme) = base_ui::start::start_prefs(ui, self.lang, self.scheme);
@@ -253,8 +290,11 @@ impl App {
     }
 
     fn device_list(&mut self, ui: &mut egui::Ui) {
+        ui.label(RichText::new(tr("Device")).size(16.0).strong());
+        ui.label(RichText::new(tr("Choose the device you will work with.")).color(theme::text_dim()));
+        ui.add_space(6.0);
         if self.profiles.is_empty() {
-            ui.label(RichText::new(tr("Create at least one device profile to continue.")).color(theme::text_dim()));
+            ui.label(RichText::new(tr("No device yet. Add one, or work without a machine.")).color(theme::text_dim()));
             // No profile found: offer to bring the settings back from a backup.
             ui.add_space(4.0);
             ui.label(RichText::new(tr("No profile files were found. Have a backup?")).color(theme::text_dim()));
@@ -266,8 +306,7 @@ impl App {
             ui.add_space(6.0);
         }
         self.start_sel = self.start_sel.min(self.profiles.len().saturating_sub(1));
-        let mut go = false;
-        egui::ScrollArea::vertical().max_height(220.0).auto_shrink([false, true]).show(ui, |ui| {
+        egui::ScrollArea::vertical().max_height(150.0).auto_shrink([false, true]).show(ui, |ui| {
             for i in 0..self.profiles.len() {
                 let d = &self.profiles[i];
                 let due: Vec<&str> = d.maintenance.due().iter().map(|c| c.name.as_str()).collect();
@@ -275,28 +314,17 @@ impl App {
                 if !due.is_empty() {
                     text.push_str(&format!("    ⚠ {}", trf("Maintenance due: {}", &[&due.join(", ")])));
                 }
-                let r = ui.add_sized([ui.available_width(), 28.0], egui::Button::selectable(self.start_sel == i, text));
-                if r.clicked() {
+                if ui.add_sized([ui.available_width(), 26.0], egui::Button::selectable(self.start_sel == i, text)).clicked() {
                     self.start_sel = i;
                     self.confirm_delete = false;
-                }
-                if r.double_clicked() {
-                    go = true;
                 }
             }
         });
         ui.add_space(8.0);
         let has = !self.profiles.is_empty();
-        ui.horizontal_wrapped(|ui| {
-            let cont = egui::Button::new(RichText::new(format!("  {}  ", tr("Continue"))).color(Color32::WHITE).strong()).fill(theme::accent());
-            if ui.add_enabled(has, cont).clicked() {
-                go = true;
-            }
+        base_ui::widgets::centered_row(ui, "device_buttons_1", |ui| {
             if ui.button(tr("Add device…")).clicked() {
                 self.start_add_device();
-            }
-            if ui.button(tr("I have no device")).on_hover_text(tr("Work on a project without a machine: a plain device called Dummy, with the default work area and speeds")).clicked() {
-                self.use_dummy_device();
             }
             if ui.add_enabled(has, egui::Button::new(tr("Edit…"))).clicked() {
                 self.open_cfg_edit(self.start_sel);
@@ -304,28 +332,15 @@ impl App {
             if ui.add_enabled(has, egui::Button::new(tr("Duplicate"))).on_hover_text(tr("A copy of this profile")).clicked() {
                 self.duplicate_profile(self.start_sel);
             }
-            if crate::window_ui::save_button_enabled(ui, has, &tr("Export…")).on_hover_text(tr("Save this profile to a file")).clicked() {
-                self.export_profile_dialog(self.start_sel);
-            }
             if crate::window_ui::import_button(ui, &tr("Import…")).on_hover_text(tr("Read a profile from a file")).clicked() {
                 self.import_profile_dialog();
             }
-            if self.confirm_delete && has {
-                if crate::window_ui::delete_button(ui, &tr("Confirm delete")).clicked() {
-                    self.profiles.remove(self.start_sel);
-                    self.confirm_delete = false;
-                    self.active = 0;
-                }
-                if ui.button(tr("Cancel")).clicked() {
-                    self.confirm_delete = false;
-                }
-            } else if crate::window_ui::delete_button_enabled(ui, has, &tr("Delete")).clicked() {
-                self.confirm_delete = true;
+        });
+        base_ui::widgets::centered_row(ui, "device_buttons_2", |ui| {
+            if ui.button(tr("I have no device")).on_hover_text(tr("Work on a project without a machine: a plain device called Dummy, with the default work area and speeds")).clicked() {
+                self.use_dummy_device();
             }
         });
-        if go {
-            self.enter_editor(self.start_sel);
-        }
     }
 
     /// Device configuration window (create or edit a profile). Closable only when a profile exists.
@@ -342,7 +357,12 @@ impl App {
             return;
         }
         let Some(mut cfg) = self.cfg.take() else { return };
-        let must_create = self.profiles.is_empty();
+        let must_create = false;
+        let mut export = false;
+        let mut ask_delete = false;
+        let mut delete = false;
+        let confirm = self.confirm_delete;
+        let on_start = self.screen == Screen::Start;
         let title = if cfg.idx.is_some() { tr("Device configuration") } else { tr("New device") };
         let mut save = false;
         let mut cancel = false;
@@ -1103,10 +1123,40 @@ impl App {
                 if !must_create && ui.button(tr("Cancel")).clicked() {
                     cancel = true;
                 }
+                if cfg.idx.is_some() {
+                    ui.separator();
+                    if crate::window_ui::save_button_enabled(ui, true, &tr("Export…")).on_hover_text(tr("Save this profile to a file")).clicked() {
+                        export = true;
+                    }
+                    if on_start {
+                        if confirm {
+                            if crate::window_ui::delete_button(ui, &tr("Confirm delete")).clicked() {
+                                delete = true;
+                            }
+                        } else if crate::window_ui::delete_button(ui, &tr("Delete")).clicked() {
+                            ask_delete = true;
+                        }
+                    }
+                }
             });
         });
         if let Some(cam) = test_cam {
             self.start_cam_test(ctx, cam);
+        }
+        if let Some(i) = cfg.idx {
+            if export {
+                self.export_profile_dialog(i);
+            }
+            if ask_delete {
+                self.confirm_delete = true;
+            }
+            if delete && i < self.profiles.len() {
+                self.profiles.remove(i);
+                self.confirm_delete = false;
+                self.active = if self.active > i { self.active - 1 } else if self.active == i { 0 } else { self.active };
+                self.start_sel = self.start_sel.min(self.profiles.len().saturating_sub(1));
+                return;
+            }
         }
         if !cfg_open && !must_create {
             cancel = true;

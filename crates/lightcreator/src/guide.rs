@@ -8,7 +8,7 @@ const EN: &[Section] = &[
     Section {
         title: "Getting started",
         lines: &[
-            "The start window asks which device you work with. Create a device profile first (Add device…): name, controller (GRBL, Marlin, Ruida, Trocen), laser type, work area, units and how to connect. Pick the profile and press Continue.",
+            "The start window asks which device you work with. Create a device profile first (Add device…): name, controller (GRBL, Marlin, Ruida, Trocen), laser type, work area, units and how to connect. Pick the profile and press New or Open…. Without a machine press I have no device (or just press New): the stand-in Dummy is used.",
             "Laser > Switch device… returns to the start window; Laser > Device settings… edits the active profile. Everything is stored in your profile list and remembered.",
             "Settings > Language and Colour scheme change the interface; Settings > View options sets the grids, the work-area background colour and the line thickness.",
         ],
@@ -88,7 +88,7 @@ const PL: &[Section] = &[
     Section {
         title: "Pierwsze kroki",
         lines: &[
-            "Okno startowe pyta, z którym urządzeniem pracujesz. Najpierw utwórz profil urządzenia (Add device…): nazwa, sterownik (GRBL, Marlin, Ruida, Trocen), typ lasera, obszar roboczy, jednostki i sposób połączenia. Wybierz profil i naciśnij Continue.",
+            "Okno startowe pyta, z którym urządzeniem pracujesz. Najpierw utwórz profil urządzenia (Add device…): nazwa, sterownik (GRBL, Marlin, Ruida, Trocen), typ lasera, obszar roboczy, jednostki i sposób połączenia. Wybierz profil i naciśnij New lub Open…. Bez maszyny naciśnij I have no device (albo po prostu New): użyte będzie zastępcze urządzenie Dummy.",
             "Laser > Switch device… wraca do okna startowego, a Laser > Device settings… edytuje aktywny profil. Profile są zapamiętywane.",
             "Settings > Language i Colour scheme zmieniają interfejs; Settings > View options ustawia siatki, kolor tła obszaru roboczego i grubość linii.",
         ],

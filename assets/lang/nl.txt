@@ -1082,3 +1082,5 @@
 1081|Ik heb geen apparaat
 1082|Werk aan een project zonder machine: een gewoon apparaat genaamd Dummy, met het standaardwerkgebied en de standaardsnelheden
 1083|LightBurn-project importeren…
+1084|Nog geen apparaat. Voeg er een toe of werk zonder machine.
+1085|Open een project of begin met een leeg project.
