@@ -229,6 +229,7 @@ impl App {
     }
 
     pub fn open_cfg_edit(&mut self, idx: usize) {
+        self.confirm_delete = false;
         if let Some(d) = self.profiles.get(idx) {
             self.cfg = Some(CfgEdit { idx: Some(idx), draft: d.clone(), page: CfgPage::General, head: 0 });
         }
@@ -321,12 +322,9 @@ impl App {
         });
         ui.add_space(8.0);
         let has = !self.profiles.is_empty();
-        ui.horizontal_wrapped(|ui| {
+        base_ui::widgets::centered_row(ui, "device_buttons_1", |ui| {
             if ui.button(tr("Add device…")).clicked() {
                 self.start_add_device();
-            }
-            if ui.button(tr("I have no device")).on_hover_text(tr("Work on a project without a machine: a plain device called Dummy, with the default work area and speeds")).clicked() {
-                self.use_dummy_device();
             }
             if ui.add_enabled(has, egui::Button::new(tr("Edit…"))).clicked() {
                 self.open_cfg_edit(self.start_sel);
@@ -334,23 +332,13 @@ impl App {
             if ui.add_enabled(has, egui::Button::new(tr("Duplicate"))).on_hover_text(tr("A copy of this profile")).clicked() {
                 self.duplicate_profile(self.start_sel);
             }
-            if crate::window_ui::save_button_enabled(ui, has, &tr("Export…")).on_hover_text(tr("Save this profile to a file")).clicked() {
-                self.export_profile_dialog(self.start_sel);
-            }
             if crate::window_ui::import_button(ui, &tr("Import…")).on_hover_text(tr("Read a profile from a file")).clicked() {
                 self.import_profile_dialog();
             }
-            if self.confirm_delete && has {
-                if crate::window_ui::delete_button(ui, &tr("Confirm delete")).clicked() {
-                    self.profiles.remove(self.start_sel);
-                    self.confirm_delete = false;
-                    self.active = 0;
-                }
-                if ui.button(tr("Cancel")).clicked() {
-                    self.confirm_delete = false;
-                }
-            } else if crate::window_ui::delete_button_enabled(ui, has, &tr("Delete")).clicked() {
-                self.confirm_delete = true;
+        });
+        base_ui::widgets::centered_row(ui, "device_buttons_2", |ui| {
+            if ui.button(tr("I have no device")).on_hover_text(tr("Work on a project without a machine: a plain device called Dummy, with the default work area and speeds")).clicked() {
+                self.use_dummy_device();
             }
         });
     }
@@ -370,6 +358,11 @@ impl App {
         }
         let Some(mut cfg) = self.cfg.take() else { return };
         let must_create = false;
+        let mut export = false;
+        let mut ask_delete = false;
+        let mut delete = false;
+        let confirm = self.confirm_delete;
+        let on_start = self.screen == Screen::Start;
         let title = if cfg.idx.is_some() { tr("Device configuration") } else { tr("New device") };
         let mut save = false;
         let mut cancel = false;
@@ -1130,10 +1123,40 @@ impl App {
                 if !must_create && ui.button(tr("Cancel")).clicked() {
                     cancel = true;
                 }
+                if cfg.idx.is_some() {
+                    ui.separator();
+                    if crate::window_ui::save_button_enabled(ui, true, &tr("Export…")).on_hover_text(tr("Save this profile to a file")).clicked() {
+                        export = true;
+                    }
+                    if on_start {
+                        if confirm {
+                            if crate::window_ui::delete_button(ui, &tr("Confirm delete")).clicked() {
+                                delete = true;
+                            }
+                        } else if crate::window_ui::delete_button(ui, &tr("Delete")).clicked() {
+                            ask_delete = true;
+                        }
+                    }
+                }
             });
         });
         if let Some(cam) = test_cam {
             self.start_cam_test(ctx, cam);
+        }
+        if let Some(i) = cfg.idx {
+            if export {
+                self.export_profile_dialog(i);
+            }
+            if ask_delete {
+                self.confirm_delete = true;
+            }
+            if delete && i < self.profiles.len() {
+                self.profiles.remove(i);
+                self.confirm_delete = false;
+                self.active = if self.active > i { self.active - 1 } else if self.active == i { 0 } else { self.active };
+                self.start_sel = self.start_sel.min(self.profiles.len().saturating_sub(1));
+                return;
+            }
         }
         if !cfg_open && !must_create {
             cancel = true;
