@@ -291,7 +291,7 @@ impl App {
         let files: Vec<PathBuf> = ctx.input(|i| i.raw.dropped_files.iter().map(|f| f.path().to_path_buf()).collect());
         for p in files {
             let ext = p.extension().map(|e| e.to_string_lossy().to_lowercase()).unwrap_or_default();
-            let project = matches!(ext.as_str(), "svg" | "cre" | "lbrn2" | "lbrn" | "ugsd");
+            let project = matches!(ext.as_str(), "svg" | "cre" | "lbrn2" | "lbrn" | "ugsd") || self.plugin_reads(&p);
             if self.screen == crate::app::Screen::Start && !project {
                 continue;
             }
@@ -302,6 +302,7 @@ impl App {
                     self.open_path(p);
                 }
                 "ai" | "pdf" => self.import_ai_path(p),
+                _ if self.plugin_reads(&p) => self.plugin_import_from_start(p),
                 _ => {}
             }
         }

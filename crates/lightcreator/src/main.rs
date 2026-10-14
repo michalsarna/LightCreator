@@ -22,6 +22,7 @@ mod nodes;
 mod native_menu;
 mod overlay;
 mod panels;
+mod plugins_glue;
 mod preview_ui;
 mod prefs;
 mod print_ui;

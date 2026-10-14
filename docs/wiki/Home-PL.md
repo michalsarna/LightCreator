@@ -35,4 +35,4 @@ Otwartoźródłowy odpowiednik [LightBurn](https://lightburnsoftware.com/) dla g
 
 > ⚠️ **Bezpieczeństwo:** lasery są niebezpieczne. Testuj G-code przy niskiej mocy, noś okulary ochronne, nie zostawiaj pracującej maszyny bez nadzoru. Zobacz [Bezpieczeństwo i ograniczenia](Bezpieczenstwo-i-ograniczenia).
 
-Najnowsza wersja: **v0.2.6** · [Wydania](https://github.com/michalsarna/LightCreator/releases) · [Zgłoszenia](https://github.com/michalsarna/LightCreator/issues) · Licencja: [MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) lub [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE), do wyboru
+Najnowsza wersja: **v0.2.7** · [Wydania](https://github.com/michalsarna/LightCreator/releases) · [Zgłoszenia](https://github.com/michalsarna/LightCreator/issues) · Licencja: [MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) lub [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE), do wyboru
