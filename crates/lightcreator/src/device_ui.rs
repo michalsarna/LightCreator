@@ -2,7 +2,7 @@
 //! The editor can only be entered once at least one device profile exists and one is selected.
 use lc_core::ControllerSettings;
 use crate::app::{App, Screen, APP_VERSION};
-use crate::laser::{self, Cmd, Target};
+use crate::laser::{self, Cmd};
 use crate::i18n::{tr, trf};
 use crate::menu::Act;
 use crate::theme;

@@ -2,6 +2,11 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.2.1
+
+* An unused import left a compiler warning; it is gone.
+* baseCreator v0.9.1.
+
 ## v0.2.0
 
 **Interface** (for all three programs)
