@@ -1,5 +1,6 @@
 //! Document model: shapes, layers (LightBurn "cuts"), and machine settings.
 use base_core::camimg::{CameraKind, CameraSource};
+pub use base_core::machine::{parse_usb_id, Connection, Controller, LinkKind, Rotary, RotaryKind, RotaryMode, Streaming};
 use base_core::geom::*;
 use base_core::project::Project;
 pub use base_core::scene::{Kind, Scene, Shape};
@@ -291,39 +292,6 @@ impl Orientation {
 /// and the G-code always carries mm/min after `G21`, whatever is chosen here.
 pub use base_core::units::{SpeedUnit, Units};
 
-/// Which controller family a device speaks.
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-pub enum Controller {
-    /// GRBL 1.1 over a serial port (streamed live).
-    #[default]
-    Grbl,
-    /// Marlin firmware with laser support over a serial port (streamed live).
-    Marlin,
-    /// Ruida DSP controllers: jobs are exported as `.rd` files.
-    Ruida,
-    /// Trocen DSP controllers: jobs are exported as HPGL `.plt` files.
-    Trocen,
-    /// Smoothieware firmware over a serial port (streamed live like GRBL).
-    Smoothieware,
-}
-
-impl Controller {
-    pub const ALL: [Controller; 5] = [Controller::Grbl, Controller::Marlin, Controller::Smoothieware, Controller::Ruida, Controller::Trocen];
-    pub fn label(self) -> &'static str {
-        match self {
-            Controller::Grbl => "GRBL",
-            Controller::Marlin => "Marlin",
-            Controller::Ruida => "Ruida",
-            Controller::Trocen => "Trocen",
-            Controller::Smoothieware => "Smoothieware",
-        }
-    }
-    /// Can LightCreator talk to this controller over a serial port?
-    pub fn is_serial(self) -> bool {
-        matches!(self, Controller::Grbl | Controller::Marlin | Controller::Smoothieware)
-    }
-}
-
 /// Laser source type.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum LaserKind {
@@ -374,30 +342,6 @@ pub struct CameraCfg {
     /// Which camera to use (index in the system's camera list).
     #[serde(default)]
     pub index: u32,
-}
-
-/// How LightCreator reaches the controller.
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-pub enum LinkKind {
-    /// A serial (USB) port.
-    #[default]
-    Serial,
-    /// A TCP socket, for example a Raspberry Pi running `ser2net`.
-    Tcp,
-}
-
-impl LinkKind {
-    pub const ALL: [LinkKind; 2] = [LinkKind::Serial, LinkKind::Tcp];
-    pub fn label(self) -> &'static str {
-        match self {
-            LinkKind::Serial => "Serial port",
-            LinkKind::Tcp => "Network (TCP, e.g. ser2net)",
-        }
-    }
-}
-
-fn d_tcp_port() -> u16 {
-    3333
 }
 
 fn d_jog_step() -> f64 {
@@ -688,26 +632,6 @@ impl GcodeCfg {
     }
 }
 
-/// How a job is fed to the controller.
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-pub enum Streaming {
-    /// Several lines are in the controller's buffer at once; the program counts the bytes (fast, the default).
-    #[default]
-    Counting,
-    /// One line at a time: send, wait for `ok`, send the next. Slow, but for firmware that answers wrongly.
-    Simple,
-}
-
-impl Streaming {
-    pub const ALL: [Streaming; 2] = [Streaming::Counting, Streaming::Simple];
-    pub fn label(self) -> &'static str {
-        match self {
-            Streaming::Counting => "Count the buffer",
-            Streaming::Simple => "Simple (wait for each ok)",
-        }
-    }
-}
-
 /// Where a job and a frame start from.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum StartFrom {
@@ -726,52 +650,6 @@ impl StartFrom {
             StartFrom::CurrentPosition => "Current position of the laser",
         }
     }
-}
-
-/// How the program reaches the machine.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Connection {
-    /// Serial port or TCP socket.
-    #[serde(default)]
-    pub link: LinkKind,
-    /// TCP host (name or address) when `link` is `Tcp`.
-    #[serde(default)]
-    pub host: String,
-    #[serde(default = "d_tcp_port")]
-    pub tcp_port: u16,
-    /// Serial port used for this device (empty = none chosen yet).
-    #[serde(default)]
-    pub port: String,
-    pub baud: u32,
-    #[serde(default)]
-    pub streaming: Streaming,
-    /// USB vendor and product id of the controller (`0403:6001`); when set the port is found by it, even after its
-    /// name changed (empty = bound to the port name only).
-    #[serde(default)]
-    pub usb_id: String,
-    /// Connect again by itself, every few seconds, when the link was lost without the user asking for it.
-    #[serde(default)]
-    pub auto_reconnect: bool,
-    /// Run the homing cycle (`$H`, `G28`) once the link is up.
-    #[serde(default)]
-    pub home_on_connect: bool,
-    /// Clear an alarm (`$X`, `M999`) once the link is up. This skips homing: only for machines whose head is known
-    /// to be in a safe place.
-    #[serde(default)]
-    pub unlock_on_connect: bool,
-}
-
-impl Default for Connection {
-    fn default() -> Self {
-        Connection { link: LinkKind::Serial, host: String::new(), tcp_port: 3333, port: String::new(), baud: 115_200, streaming: Streaming::Counting, usb_id: String::new(), auto_reconnect: false, home_on_connect: false, unlock_on_connect: false }
-    }
-}
-
-/// `0403:6001` (hexadecimal vendor and product id) as numbers.
-pub fn parse_usb_id(text: &str) -> Option<(u16, u16)> {
-    let (v, p) = text.trim().split_once(':')?;
-    let hex = |s: &str| (!s.is_empty() && s.len() <= 4 && s.chars().all(|c| c.is_ascii_hexdigit())).then(|| u16::from_str_radix(s, 16).ok()).flatten();
-    Some((hex(v.trim())?, hex(p.trim())?))
 }
 
 /// One laser head of the machine.
@@ -982,91 +860,6 @@ impl Maintenance {
         if let Some(c) = self.counters.get_mut(i) {
             c.secs = 0.0;
         }
-    }
-}
-
-/// How the rotation is written into the G-code.
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-pub enum RotaryMode {
-    /// The Y motor drives the rotary: Y stays a distance on the surface, the controller's steps per mm (`$101`) make
-    /// it right.
-    #[default]
-    ReplaceY,
-    /// A fourth axis A in degrees takes the place of Y (needs firmware with a fourth axis; GRBL 1.1 has three).
-    TrueA,
-}
-
-/// The kind of rotary attachment.
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-pub enum RotaryKind {
-    /// The work is clamped and turned by the motor: the angle follows the workpiece diameter.
-    #[default]
-    Chuck,
-    /// The work lies on two rollers and is turned by friction: the surface moves like the surface of a roller.
-    Roller,
-}
-
-/// The settings of a rotary attachment.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Rotary {
-    #[serde(default)]
-    pub enabled: bool,
-    #[serde(default)]
-    pub mode: RotaryMode,
-    #[serde(default)]
-    pub kind: RotaryKind,
-    /// Diameter of the workpiece, millimetres.
-    #[serde(default = "d_rot_diameter")]
-    pub diameter: f64,
-    /// Diameter of the rollers (for the roller kind), millimetres.
-    #[serde(default = "d_rot_roller")]
-    pub roller_diameter: f64,
-    /// Microsteps of the motor for one full turn of what it drives (the roller, or the chuck).
-    #[serde(default = "d_rot_micro")]
-    pub microsteps_per_rev: f64,
-}
-
-fn d_rot_diameter() -> f64 {
-    50.0
-}
-fn d_rot_roller() -> f64 {
-    30.0
-}
-fn d_rot_micro() -> f64 {
-    6400.0
-}
-
-impl Default for Rotary {
-    fn default() -> Self {
-        Rotary { enabled: false, mode: RotaryMode::ReplaceY, kind: RotaryKind::Chuck, diameter: 50.0, roller_diameter: 30.0, microsteps_per_rev: 6400.0 }
-    }
-}
-
-impl Rotary {
-    /// Distance round the workpiece, millimetres: the most the design may be high.
-    pub fn circumference(&self) -> f64 {
-        std::f64::consts::PI * self.diameter.max(0.0)
-    }
-
-    /// The diameter that sets how far the surface moves for a turn of the motor: the workpiece on a chuck, a roller
-    /// when the work is turned by rollers (the surface of the work moves like the surface of a roller).
-    pub fn drive_diameter(&self) -> f64 {
-        match self.kind {
-            RotaryKind::Chuck => self.diameter,
-            RotaryKind::Roller => self.roller_diameter,
-        }
-    }
-
-    /// Steps per millimetre of surface the controller's Y axis needs (`$101`) in the `ReplaceY` mode.
-    pub fn steps_per_mm(&self) -> f64 {
-        let c = std::f64::consts::PI * self.drive_diameter();
-        if c > 0.0 { self.microsteps_per_rev / c } else { 0.0 }
-    }
-
-    /// Degrees of the driven part for one millimetre of surface (`A` in the `TrueA` mode).
-    pub fn degrees_per_mm(&self) -> f64 {
-        let c = std::f64::consts::PI * self.drive_diameter();
-        if c > 0.0 { 360.0 / c } else { 0.0 }
     }
 }
 

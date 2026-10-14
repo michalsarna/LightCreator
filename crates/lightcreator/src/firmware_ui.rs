@@ -1,5 +1,6 @@
 //! The **Firmware ($$)** page of the device window: the settings of the controller read from the machine, edited one
 //! at a time, backed up to a text file and restored from it. GRBL only; for Marlin the report of `M503` is shown.
+use lc_core::ControllerSettings;
 use crate::app::App;
 use crate::i18n::{tr, trf};
 use crate::theme;

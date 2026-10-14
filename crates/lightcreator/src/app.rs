@@ -15,7 +15,7 @@ use std::path::PathBuf;
 pub use base_ui::editor::{Tool, View};
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.1.10";
+pub const APP_VERSION: &str = "v0.2.0";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
@@ -1735,7 +1735,8 @@ impl App {
         egui::Panel::bottom("status").frame(chrome).exact_size(26.0).show(ui, |ui| self.status_bar(ui));
         egui::Panel::bottom("swatches").frame(chrome).exact_size(36.0).show(ui, |ui| self.swatches(ui));
         egui::Panel::left("tools").frame(chrome).exact_size(52.0).resizable(false).show(ui, |ui| self.tool_bar(ui));
-        egui::Panel::right("side").frame(chrome.inner_margin(egui::Margin::same(8))).default_size(410.0).show(ui, |ui| self.side_panel(ui));
+        let side = egui::Panel::right("side").frame(chrome.inner_margin(egui::Margin::same(8))).default_size(410.0).show(ui, |ui| self.side_panel(ui));
+        base_ui::widgets::panel_edge_highlight(ui.ctx(), side.response.rect, base_ui::widgets::Edge::Left);
         egui::Panel::right("arrange_bar").frame(chrome.inner_margin(egui::Margin::symmetric(2, 4))).exact_size(40.0).resizable(false).show(ui, |ui| self.arrange_bar(ui));
         egui::CentralPanel::no_frame().show(ui, |ui| self.canvas(ui));
         self.dialogs(&ctx);
