@@ -1023,7 +1023,7 @@ impl App {
                                 if self.connected {
                                     ui.label(RichText::new(trf("Connected to: {}", &[&self.doc.device.target_label()])).small().color(theme::text_dim()));
                                 }
-                                crate::firmware_ui::page(ui, &mut self.fw, self.connected, d.controller, &mut fw_acts);
+                                crate::firmware_ui::page(ui, &mut self.fw, &self.doc.device.fw_copies.clone(), self.connected, d.controller, &mut fw_acts);
                             }
                             CfgPage::Advanced => {
                                 egui::Frame::new().fill(Color32::from_rgba_unmultiplied(0xc0, 0x30, 0x30, 40)).stroke(egui::Stroke::new(1.0, Color32::from_rgb(0xc0, 0x30, 0x30))).inner_margin(8.0).corner_radius(4.0).show(ui, |ui| {
@@ -1787,6 +1787,12 @@ impl App {
         let Some(r) = self.read_cfg.take() else { return };
         let reading = r.controller.parse_settings(&r.lines);
         if r.kind == ReadKind::Probe {
+            // The settings read at connecting are compared with the newest copy kept with the profile.
+            let values = lc_core::grbl_settings::parse_report(&r.lines);
+            if !values.is_empty() {
+                self.fw.values = values;
+                self.fw_note_copies();
+            }
             let check = reading.check(&self.doc.device);
             if !check.is_clean() {
                 self.fw_warn = Some(check);

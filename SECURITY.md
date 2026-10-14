@@ -6,7 +6,7 @@ Only the newest released version receives security fixes.
 
 | Version | Supported |
 |---------|-----------|
-| v0.2.4 (latest) | yes |
+| v0.2.5 (latest) | yes |
 | v0.2.1 | no, please update |
 | older | no, please update |
 

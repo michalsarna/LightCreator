@@ -40,6 +40,8 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::SwitchDevice => "refresh-cw",
         Act::Frame => "square-dashed",
         Act::StartJob => "play",
+        Act::StartFrom => "play",
+        Act::Calibration => "sliders-horizontal",
         Act::ShareSer2net => "wifi",
         Act::GridOptions => "sliders-horizontal",
         Act::ProgramOptions => "settings",
