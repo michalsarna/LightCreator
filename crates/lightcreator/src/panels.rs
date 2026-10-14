@@ -3,7 +3,7 @@ use base_ui::clipart_ui::ClipGallery;
 use crate::app::{App, SideTab};
 use crate::units_ui::{drag_len, drag_speed};
 use crate::i18n::{tr, trf};
-use crate::laser::{Cmd, ConsoleLine, Dir};
+use crate::laser::Cmd;
 use crate::theme;
 use eframe::egui::{self, Color32, RichText};
 use lc_core::{Dither, Kind, LayerMode, TextData, PALETTE};
@@ -366,41 +366,9 @@ impl App {
 
     /// Live view of everything crossing the serial port.
     fn console_panel(&mut self, ui: &mut egui::Ui) {
-        ui.horizontal_wrapped(|ui| {
-            ui.checkbox(&mut self.console_polls, tr("Status polls"));
-            ui.checkbox(&mut self.console_autoscroll, tr("Auto-scroll"));
-            if ui.button(tr("Clear")).clicked() {
-                self.console.clear();
-            }
-        });
-        let accent_tx = Color32::from_rgb(0x3b, 0x82, 0xd8);
-        let accent_rx = Color32::from_rgb(0x2e, 0xa0, 0x4f);
-        let show_polls = self.console_polls;
-        let rows: Vec<&ConsoleLine> = self.console.iter().filter(|l| show_polls || !l.poll).collect();
-        let row_h = 14.0;
-        let input_h = 34.0;
-        let h = (ui.available_height() - input_h).max(80.0);
-        egui::Frame::new().fill(theme::console_bg()).stroke(egui::Stroke::new(1.0, theme::border())).inner_margin(egui::Margin::same(4)).show(ui, |ui| {
-        egui::ScrollArea::vertical().id_salt("console").max_height(h - 10.0).auto_shrink([false, false]).stick_to_bottom(self.console_autoscroll).show_rows(ui, row_h, rows.len(), |ui, range| {
-            for l in &rows[range] {
-                let (prefix, color) = match l.dir {
-                    Dir::Tx => ("> ", accent_tx),
-                    Dir::Rx => ("< ", accent_rx),
-                    Dir::Info => ("# ", theme::text_dim()),
-                };
-                ui.label(RichText::new(format!("{prefix}{}", l.text)).monospace().size(11.0).color(color));
-            }
-        });
-        });
-        ui.horizontal(|ui| {
-            let r = ui.add(egui::TextEdit::singleline(&mut self.console_input).desired_width((ui.available_width() - 110.0).max(60.0)).hint_text(tr("send G-code / $ command")));
-            let send = ui.button(tr("Send")).clicked() || (r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)));
-            if send && self.connected && !self.console_input.trim().is_empty() {
-                self.link.send(Cmd::Line(self.console_input.trim().to_string()));
-                self.console_input.clear();
-                r.request_focus();
-            }
-        });
+        if let Some(line) = self.console.show(ui, self.connected) {
+            self.link.send(Cmd::Line(line));
+        }
     }
 }
 

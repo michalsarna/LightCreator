@@ -47,7 +47,7 @@ fn console_sample(a: &mut App) {
     }
     a.console.push(rx("error:20"));
     a.console.push(ConsoleLine::info("Aborted (soft reset)"));
-    a.console_polls = false;
+    a.console.polls = false;
 }
 
 #[test]
