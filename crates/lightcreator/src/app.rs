@@ -15,7 +15,7 @@ use std::path::PathBuf;
 pub use base_ui::editor::{Tool, View};
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.2.6";
+pub const APP_VERSION: &str = "v0.2.7";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
@@ -245,11 +245,13 @@ pub struct App {
     pub progress: (usize, usize),
     pub console: base_ui::console_ui::ConsoleState,
     pub side_tab: SideTab,
+    pub plugins: base_ui::plugins_ui::PluginsUi,
 }
 
 impl App {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         let mut app = Self::build(&cc.egui_ctx, cc.storage, true);
+        app.after_plugins_changed();
         if app.check_updates {
             app.start_update_check(&cc.egui_ctx, false);
         }
@@ -404,6 +406,7 @@ impl App {
             progress: (0, 0),
             console: Default::default(),
             side_tab: SideTab::Properties,
+            plugins: base_ui::plugins_ui::PluginsUi::new("lightcreator", &crate::data_paths().base),
         }
     }
 
@@ -679,7 +682,8 @@ impl App {
         self.stamp_job();
         if let Some(p) = rfd::FileDialog::new().add_filter("G-code", &["gcode", "nc"]).set_file_name("job.gcode").save_file() {
             let job = gcode::generate(&self.doc);
-            self.status = match std::fs::write(&p, job.gcode) {
+            let Some(text) = self.postprocessed(job.gcode) else { return };
+            self.status = match std::fs::write(&p, text) {
                 Ok(_) => trf("Saved G-code {}", &[&p.display()]),
                 Err(e) => trf("Export failed: {}", &[&e]),
             };
@@ -1159,6 +1163,9 @@ impl App {
             Act::ImportAi => self.import_ai(),
             Act::ImportLightburn => self.import_lightburn_dialog(),
             Act::ImportUgsd => self.import_ugsd_dialog(),
+            Act::ImportPlugin => self.import_with_plugin_dialog(),
+            Act::Plugins => self.plugins.open = true,
+            Act::GenerateShape => self.plugins.gen_open = true,
             Act::OnlineClipart => {
                 self.side_tab = SideTab::Clipart;
                 self.open_online_clipart(ctx);
@@ -1556,6 +1563,7 @@ impl App {
         self.guide_window(ctx);
         self.clip_dialogs(ctx);
         self.online_clipart_window(ctx);
+        self.plugin_windows(ctx);
         self.round_window(ctx);
         self.check_window(ctx);
         self.fw_window(ctx);
