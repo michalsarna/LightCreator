@@ -54,5 +54,6 @@ the projects they maintain. Licences are named for orientation; the exact terms 
 * **[Claude](https://claude.com/claude-code)** by Anthropic, the AI coding assistant that wrote most of the code, the tests, the
   documentation and the translations together with the author (the commits say which model did the work).
 * **[LightBurn](https://lightburnsoftware.com/)**: the workflow LightCreator aims to offer as open-source software.
+* **[Universal G-code Sender](https://github.com/winder/Universal-G-Code-Sender)**: the format of its Designer files (`.ugsd`) is read for import; the program contains none of its code.
 * **VectorCraft**: the interface that inspired the look and feel.
 * Everyone who tested the program, reported problems and corrected the translations. Thank you!
