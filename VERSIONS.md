@@ -7,7 +7,8 @@ Each release gets the next version number and a branch with the same name. Newes
 * One data folder for all programs: `baseCreator` (macOS `~/Library/Application Support/baseCreator`). The clipart gallery is now **shared** by LightCreator, MillCreator and PenCreator; settings, device profiles, materials and tools stay separate per program in `apps/<program>/app.ron`.
 * The first start after the update moves the old settings and pictures into the shared folder (the old folder is left untouched, identical pictures are not duplicated). `BASECREATOR_DIR` selects another folder.
 * The gallery index is written safely and re-read, so two programs open at once do not lose each other's pictures.
-* baseCreator v0.9.3.
+* Restore from backup no longer overwrites the shared gallery: the settings are replaced, the pictures are **added** (nothing is lost, nothing is doubled). A backup made by another program is refused. The zip and its dialogs now come from baseCreator, where MillCreator and PenCreator use the same ones.
+* baseCreator v0.9.4.
 
 ## v0.2.2
 

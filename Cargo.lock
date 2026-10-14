@@ -179,24 +179,26 @@ checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
 
 [[package]]
 name = "base-core"
-version = "0.9.3"
-source = "git+https://github.com/michalsarna/baseCreator?tag=v0.9.3#3c32eea9e351c714a9637f26cde82ce21cd9c90a"
+version = "0.9.4"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v0.9.4#dfaa6282fd3b8aaabd9627d41a389e8a69da8e28"
 dependencies = [
  "base64 0.23.1",
  "i_overlay",
  "image",
  "lopdf",
+ "ron",
  "roxmltree 0.21.1",
  "serde",
  "serde_json",
  "ttf-parser",
  "usvg 0.48.1",
+ "zip",
 ]
 
 [[package]]
 name = "base-ui"
-version = "0.9.3"
-source = "git+https://github.com/michalsarna/baseCreator?tag=v0.9.3#3c32eea9e351c714a9637f26cde82ce21cd9c90a"
+version = "0.9.4"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v0.9.4#dfaa6282fd3b8aaabd9627d41a389e8a69da8e28"
 dependencies = [
  "base-core",
  "egui",
