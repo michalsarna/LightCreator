@@ -51,15 +51,15 @@ fn window_icon() -> Option<eframe::egui::IconData> {
 }
 
 /// Where this program keeps its data: the settings in its own folder, the gallery shared with the other programs
-/// (see `base_core::paths`). The first call moves the data of an older version in.
+/// (see `base_core::paths`).
 pub fn data_paths() -> &'static lc_core::paths::DataPaths {
     static PATHS: std::sync::OnceLock<lc_core::paths::DataPaths> = std::sync::OnceLock::new();
     PATHS.get_or_init(|| {
         if cfg!(test) {
             // Tests never touch the real folders.
-            return lc_core::paths::prepare_in(&std::env::temp_dir().join(format!("lc-test-data-{}", std::process::id())), "lightcreator", None);
+            return lc_core::paths::prepare_in(&std::env::temp_dir().join(format!("lc-test-data-{}", std::process::id())), "lightcreator");
         }
-        lc_core::paths::prepare("lightcreator", eframe::storage_dir("lightcreator").as_deref())
+        lc_core::paths::prepare("lightcreator")
     })
 }
 
