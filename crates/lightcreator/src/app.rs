@@ -15,7 +15,7 @@ use std::path::PathBuf;
 pub use base_ui::editor::{Tool, View};
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.2.5";
+pub const APP_VERSION: &str = "v0.2.6";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
@@ -502,6 +502,9 @@ impl App {
         if p.extension().is_some_and(|e| e.eq_ignore_ascii_case("lbrn2") || e.eq_ignore_ascii_case("lbrn")) {
             return self.import_lightburn(p);
         }
+        if p.extension().is_some_and(|e| e.eq_ignore_ascii_case("ugsd")) {
+            return self.import_ugsd(p);
+        }
         let is_svg = p.extension().is_some_and(|e| e.eq_ignore_ascii_case("svg"));
         if is_svg {
             let ok = self.import_svg_path(p.clone());
@@ -549,41 +552,74 @@ impl App {
             self.import_lightburn(p);
         }
     }
-    /// Import a LightBurn project as a new, unsaved document on the selected device: its shapes, and its layers with their
-    /// mode, speed and power. LightBurn counts Y up from the bottom, so the drawing is turned over with the height of
-    /// the work area.
+    /// Import a LightBurn project into the drawing: its shapes are added (and selected, and can be undone), and its
+    /// layers with their mode, speed and power are taken for the layers that have no shapes yet. LightBurn counts Y up
+    /// from the bottom, so the drawing is turned over with the height of the work area.
     pub fn import_lightburn(&mut self, p: PathBuf) -> bool {
         let device = self.profiles.get(self.active).cloned().unwrap_or_else(|| self.doc.device.clone());
-        let name = p.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
         let read = std::fs::read(&p).map_err(|e| e.to_string()).and_then(|b| String::from_utf8(b).map_err(|_| "this is not a LightBurn project".to_string())).and_then(|t| lc_core::lightburn::import(&t, device.work_size().1));
         match read {
             Ok(imp) => {
                 let warnings = imp.warnings.join("; ");
+                let cut_layers: Vec<usize> = imp.cuts.iter().map(|c| c.index).collect();
                 let doc = Document::from_lightburn(imp, device);
-                let n = doc.scene.shapes.len();
-                self.doc = doc;
-                self.undo.clear();
-                self.redo.clear();
-                self.ed.sel.clear();
-                self.path = None;
-                self.status = trf("Opened {}", &[&p.display()]);
-                self.touch();
-                self.ed.view.need_fit = true;
-                if self.profiles.get(self.active).is_some() {
-                    self.sync_profile();
-                }
-                if warnings.is_empty() {
-                    self.toast(trf("Imported {} paths from {}", &[&n, &name]));
-                } else {
-                    self.toast(trf("Some parts of the LightBurn project could not be used: {}", &[&warnings]));
-                }
-                true
+                self.add_imported(&p, doc, &cut_layers, &warnings, "LightBurn project")
             }
             Err(e) => {
-                self.status = trf("Open failed: {}", &[&e]);
+                self.status = trf("Import failed: {}", &[&e]);
                 false
             }
         }
+    }
+    pub fn import_ugsd_dialog(&mut self) {
+        if let Some(p) = rfd::FileDialog::new().add_filter("UGS Designer", &["ugsd"]).pick_file() {
+            self.import_ugsd(p);
+        }
+    }
+    /// Import a UGS Designer file into the drawing: its shapes, and a layer for each way of cutting (outlines or fill)
+    /// where no shapes are yet. Its milling feeds and depths mean nothing for a laser and are not taken.
+    pub fn import_ugsd(&mut self, p: PathBuf) -> bool {
+        let device = self.profiles.get(self.active).cloned().unwrap_or_else(|| self.doc.device.clone());
+        let layers = self.doc.layers.len().max(1);
+        let read = std::fs::read(&p).map_err(|e| e.to_string()).and_then(|b| String::from_utf8(b).map_err(|_| "this is not a UGS design".to_string())).and_then(|t| lc_core::ugsd::import(&t, device.work_size().1, layers));
+        match read {
+            Ok(imp) => {
+                let warnings = imp.warnings.join("; ");
+                let cut_layers: Vec<usize> = imp.cuts.iter().map(|c| c.index).collect();
+                let doc = Document::from_ugsd(imp, device);
+                self.add_imported(&p, doc, &cut_layers, &warnings, "UGS design")
+            }
+            Err(e) => {
+                self.status = trf("Import failed: {}", &[&e]);
+                false
+            }
+        }
+    }
+    /// Put an imported document into the drawing: the shapes are added and selected, the layers the import describes
+    /// replace the ones without shapes.
+    fn add_imported(&mut self, p: &std::path::Path, doc: Document, cut_layers: &[usize], warnings: &str, what: &str) -> bool {
+        let name = p.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
+        self.checkpoint();
+        let used: std::collections::HashSet<usize> = self.doc.scene.shapes.iter().map(|s| s.layer).collect();
+        for &i in cut_layers.iter().filter(|i| !used.contains(i)) {
+            if let (Some(to), Some(from)) = (self.doc.layers.get_mut(i), doc.layers.get(i)) {
+                *to = from.clone();
+            }
+        }
+        let n = doc.scene.shapes.len();
+        let last = self.doc.layers.len().saturating_sub(1);
+        self.ed.sel = self.doc.scene.append(doc.scene, last);
+        self.status = trf("Imported {} paths from {}", &[&n, &p.display()]);
+        self.touch();
+        self.ed.view.need_fit = true;
+        if warnings.is_empty() {
+            self.toast(trf("Imported {} paths from {}", &[&n, &name]));
+        } else if what == "UGS design" {
+            self.toast(trf("Some parts of the UGS design could not be used: {}", &[&warnings]));
+        } else {
+            self.toast(trf("Some parts of the LightBurn project could not be used: {}", &[&warnings]));
+        }
+        true
     }
     pub fn save(&mut self, as_new: bool) {
         let path = if as_new || self.path.is_none() {
@@ -1122,6 +1158,7 @@ impl App {
             Act::ToCurves => self.to_curves(),
             Act::ImportAi => self.import_ai(),
             Act::ImportLightburn => self.import_lightburn_dialog(),
+            Act::ImportUgsd => self.import_ugsd_dialog(),
             Act::OnlineClipart => {
                 self.side_tab = SideTab::Clipart;
                 self.open_online_clipart(ctx);
@@ -2287,6 +2324,31 @@ mod lightburn_open_tests {
     }
 
     #[test]
+    fn a_ugs_design_opens_as_a_new_document_with_a_layer_for_each_cut() {
+        let mut a = App::build(&egui::Context::default(), None, false);
+        a.profiles = vec![lc_core::Device::default()];
+        a.active = 0;
+        let dir = std::env::temp_dir().join(format!("lc-ugsd-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let file = dir.join("job.ugsd");
+        std::fs::write(&file, r#"{"version":"1","entities":[
+          {"type":"RECTANGLE","cutType":"POCKET","cutDepth":4,"feedRate":700,"transform":{"m00":30,"m10":0,"m01":0,"m11":10,"m02":50,"m12":20}},
+          {"type":"ELLIPSE","cutType":"OUTSIDE_PATH","cutDepth":4,"feedRate":700,"transform":{"m00":3,"m10":0,"m01":0,"m11":3,"m02":5,"m12":5}}]}"#).unwrap();
+        a.doc.add(2, lc_core::Kind::Rect { w: 5.0, h: 5.0 }, lc_core::Xf::IDENTITY);
+        a.doc.layers[2].mode = lc_core::LayerMode::Fill;
+        let recent = a.recent.clone();
+        assert!(a.open_path(file));
+        assert_eq!(a.recent, recent, "an import is not a project to reopen");
+        assert_eq!(a.doc.scene.shapes.len(), 3, "added to the drawing");
+        assert_eq!(a.ed.sel.len(), 2);
+        assert_eq!(a.doc.layers[0].mode, lc_core::LayerMode::Fill);
+        assert_eq!(a.doc.layers[1].mode, lc_core::LayerMode::Line);
+        a.do_undo();
+        assert_eq!(a.doc.scene.shapes.len(), 1);
+        std::fs::remove_dir_all(dir).ok();
+    }
+
+    #[test]
     fn a_broken_lightburn_file_changes_nothing() {
         let mut a = App::build(&egui::Context::default(), None, false);
         a.doc.add(0, lc_core::Kind::Rect { w: 5.0, h: 5.0 }, lc_core::Xf::IDENTITY);
@@ -2296,7 +2358,7 @@ mod lightburn_open_tests {
         std::fs::write(&file, "not xml at all").unwrap();
         a.open_path(file);
         assert_eq!(a.doc.scene.shapes.len(), 1);
-        assert!(a.status.starts_with("Open failed"), "{}", a.status);
+        assert!(a.status.starts_with("Import failed"), "{}", a.status);
         std::fs::remove_dir_all(dir).ok();
     }
 }

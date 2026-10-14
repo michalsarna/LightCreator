@@ -14,7 +14,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::OpenRecent(_) => "file",
         Act::ClearRecent => "trash",
         Act::Save | Act::SaveAs => "save",
-        Act::ImportSvg | Act::ImportAi | Act::ImportLightburn => "file-input",
+        Act::ImportSvg | Act::ImportAi | Act::ImportLightburn | Act::ImportUgsd => "file-input",
         Act::ImportImage => "image",
         Act::OnlineClipart => "globe",
         Act::ExportSvg | Act::ExportCam => "file-output",

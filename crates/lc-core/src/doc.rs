@@ -1553,6 +1553,34 @@ impl Document {
         d
     }
 
+    /// A document from a UGS Designer file read by `base_core::ugsd::import`: the shapes, and a layer for each way they
+    /// are cut. The file is about milling, so its feeds and depths mean nothing for a laser: the layers keep their speed
+    /// and power, and the cut type only chooses between outlines and fill (and switches off what is not cut).
+    pub fn from_ugsd(imp: base_core::ugsd::Import, device: Device) -> Document {
+        use base_core::ugsd::CutType;
+        let mut d = Document { scene: imp.scene, device, ..Document::default() };
+        let layer_count = d.layers.len();
+        for c in imp.cuts.iter().filter(|c| c.index < layer_count) {
+            let l = &mut d.layers[c.index];
+            let what = match c.cut {
+                CutType::OutsidePath => "Outside",
+                CutType::InsidePath => "Inside",
+                CutType::Pocket => "Pocket",
+                CutType::LaserFill | CutType::PlotterFill => "Fill",
+                CutType::None => "Not cut",
+                _ => "On the line",
+            };
+            let depth = if (c.cut_depth - c.cut_depth.round()).abs() < 1e-9 { format!("{}", c.cut_depth as i64) } else { format!("{:.1}", c.cut_depth) };
+            l.name = format!("{what} {depth} mm");
+            l.mode = if c.cut.is_fill() { LayerMode::Fill } else { LayerMode::Line };
+            l.output = c.cut != CutType::None;
+        }
+        d.normalize_image_layers();
+        d.device.ensure_materials();
+        d.sync_material();
+        d
+    }
+
     /// The text of a project file (`.cre`).
     pub fn to_json(&self) -> String {
         self.to_project().to_json()

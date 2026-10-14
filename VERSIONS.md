@@ -2,6 +2,12 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.2.6
+
+* **Import of UGS Designer files** (`.ugsd`, File → Import → Import UGS design…, also drag and drop): shapes, rounded rectangles, ellipses, text and pictures; every way of cutting of the file (cut type, depth, feed, spindle speed) becomes a layer (outline or fill); milling feeds and depths are not used by the laser. Hidden objects are drawn too.
+* **Imports (LightBurn and UGS) are really imports now:** the shapes are added to the open drawing, selected and can be undone with one step; the layers of the file are used only for layers that have no shapes yet. They no longer replace the project or appear in the recent files.
+* baseCreator v0.9.7.
+
 ## v0.2.5
 
 * **Start from line…** (Laser menu): starts a job in the middle; the laser is first brought into the state the program has at that line.

@@ -291,14 +291,14 @@ impl App {
         let files: Vec<PathBuf> = ctx.input(|i| i.raw.dropped_files.iter().map(|f| f.path().to_path_buf()).collect());
         for p in files {
             let ext = p.extension().map(|e| e.to_string_lossy().to_lowercase()).unwrap_or_default();
-            let project = matches!(ext.as_str(), "svg" | "cre" | "lbrn2" | "lbrn");
+            let project = matches!(ext.as_str(), "svg" | "cre" | "lbrn2" | "lbrn" | "ugsd");
             if self.screen == crate::app::Screen::Start && !project {
                 continue;
             }
             match ext.as_str() {
                 "png" | "jpg" | "jpeg" | "bmp" | "gif" | "webp" => self.import_image_path(p),
-                "svg" | "cre" | "lbrn2" | "lbrn" if self.screen == crate::app::Screen::Start => self.start_project(|app| app.open_path(p)),
-                "svg" | "cre" | "lbrn2" | "lbrn" => {
+                "svg" | "cre" | "lbrn2" | "lbrn" | "ugsd" if self.screen == crate::app::Screen::Start => self.start_project(|app| app.open_path(p)),
+                "svg" | "cre" | "lbrn2" | "lbrn" | "ugsd" => {
                     self.open_path(p);
                 }
                 "ai" | "pdf" => self.import_ai_path(p),
