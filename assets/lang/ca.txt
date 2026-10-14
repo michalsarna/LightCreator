@@ -1082,3 +1082,5 @@
 1081|No tinc cap dispositiu
 1082|Treballa en un projecte sense màquina: un dispositiu simple anomenat Dummy, amb l'àrea de treball i les velocitats per defecte
 1083|Importa un projecte de LightBurn…
+1084|Encara no hi ha cap dispositiu. Afegeix-ne un o treballa sense màquina.
+1085|Obre un projecte o comença'n un de buit.

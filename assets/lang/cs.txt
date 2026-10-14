@@ -1082,3 +1082,5 @@
 1081|Nemám zařízení
 1082|Práce na projektu bez stroje: obyčejné zařízení jménem Dummy s výchozí pracovní plochou a rychlostmi
 1083|Importovat projekt LightBurn…
+1084|Zatím žádné zařízení. Přidejte jedno, nebo pracujte bez stroje.
+1085|Otevřete projekt, nebo začněte prázdný.

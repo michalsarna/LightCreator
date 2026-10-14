@@ -1082,3 +1082,5 @@
 1081	I have no device
 1082	Work on a project without a machine: a plain device called Dummy, with the default work area and speeds
 1083	Import LightBurn project…
+1084	No device yet. Add one, or work without a machine.
+1085	Open a project or start an empty one.

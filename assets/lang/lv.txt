@@ -1082,3 +1082,5 @@
 1081|Man nav ierīces
 1082|Strādājiet ar projektu bez iekārtas: parasta ierīce ar nosaukumu Dummy ar noklusējuma darba laukumu un ātrumiem
 1083|Importēt LightBurn projektu…
+1084|Vēl nav ierīces. Pievienojiet vienu vai strādājiet bez iekārtas.
+1085|Atveriet projektu vai sāciet tukšu.

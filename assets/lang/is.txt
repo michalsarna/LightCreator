@@ -1082,3 +1082,5 @@
 1081|Ég á ekkert tæki
 1082|Vinndu í verkefni án vélar: einfalt tæki sem heitir Dummy með sjálfgefnu vinnusvæði og hraða
 1083|Flytja inn LightBurn-verkefni…
+1084|Ekkert tæki enn. Bættu við einu eða vinndu án vélar.
+1085|Opnaðu verkefni eða byrjaðu á tómu.

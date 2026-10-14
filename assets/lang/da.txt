@@ -1082,3 +1082,5 @@
 1081|Jeg har ingen enhed
 1082|Arbejd på et projekt uden maskine: en almindelig enhed kaldet Dummy med standardarbejdsområde og -hastigheder
 1083|Importér LightBurn-projekt…
+1084|Ingen enhed endnu. Tilføj en, eller arbejd uden maskine.
+1085|Åbn et projekt, eller begynd et tomt.

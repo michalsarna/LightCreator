@@ -1082,3 +1082,5 @@
 1081|Mul pole seadet
 1082|Tööta projektiga ilma masinata: lihtne seade nimega Dummy vaiketööala ja vaikekiirustega
 1083|Impordi LightBurni projekt…
+1084|Seadet veel pole. Lisa üks või tööta ilma masinata.
+1085|Ava projekt või alusta tühjaga.

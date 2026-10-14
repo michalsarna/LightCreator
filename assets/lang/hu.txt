@@ -1082,3 +1082,5 @@
 1081|Nincs eszközöm
 1082|Dolgozzon projekten gép nélkül: egy Dummy nevű egyszerű eszköz az alapértelmezett munkaterülettel és sebességekkel
 1083|LightBurn-projekt importálása…
+1084|Még nincs eszköz. Adj hozzá egyet, vagy dolgozz gép nélkül.
+1085|Nyiss meg egy projektet, vagy kezdj egy üreset.

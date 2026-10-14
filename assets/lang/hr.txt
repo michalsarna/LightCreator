@@ -1082,3 +1082,5 @@
 1081|Nemam uređaj
 1082|Radite na projektu bez stroja: običan uređaj naziva Dummy s zadanim radnim područjem i brzinama
 1083|Uvezi LightBurn projekt…
+1084|Još nema uređaja. Dodajte jedan ili radite bez stroja.
+1085|Otvorite projekt ili započnite prazan.

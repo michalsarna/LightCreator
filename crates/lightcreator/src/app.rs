@@ -481,8 +481,11 @@ impl App {
         self.mark_saved();
         self.ed.view.need_fit = true;
     }
+    pub fn pick_project() -> Option<PathBuf> {
+        rfd::FileDialog::new().add_filter("Project", &[lc_core::project::EXTENSION]).add_filter("SVG", &["svg"]).pick_file()
+    }
     pub fn open(&mut self) {
-        if let Some(p) = rfd::FileDialog::new().add_filter("Project", &[lc_core::project::EXTENSION]).add_filter("SVG", &["svg"]).pick_file() {
+        if let Some(p) = Self::pick_project() {
             self.open_path(p);
         }
     }
@@ -493,17 +496,18 @@ impl App {
         self.recent.insert(0, p);
         self.recent.truncate(crate::menu::MAX_RECENT);
     }
-    pub fn open_path(&mut self, p: PathBuf) {
+    /// Open a project, an SVG or a LightBurn file; false when nothing came of it.
+    pub fn open_path(&mut self, p: PathBuf) -> bool {
         if p.extension().is_some_and(|e| e.eq_ignore_ascii_case("lbrn2") || e.eq_ignore_ascii_case("lbrn")) {
-            self.import_lightburn(p);
-            return;
+            return self.import_lightburn(p);
         }
         let is_svg = p.extension().is_some_and(|e| e.eq_ignore_ascii_case("svg"));
         if is_svg {
-            if self.import_svg_path(p.clone()) {
+            let ok = self.import_svg_path(p.clone());
+            if ok {
                 self.add_recent(&p);
             }
-            return;
+            return ok;
         }
         match std::fs::read_to_string(&p).map_err(|e| e.to_string()).and_then(|s| Document::from_json(&s)) {
             Ok(d) => {
@@ -531,8 +535,12 @@ impl App {
                 self.touch();
                 self.mark_saved();
                 self.ed.view.need_fit = true;
+                true
             }
-            Err(e) => self.status = trf("Open failed: {}", &[&e]),
+            Err(e) => {
+                self.status = trf("Open failed: {}", &[&e]);
+                false
+            }
         }
     }
     pub fn import_lightburn_dialog(&mut self) {
@@ -543,7 +551,7 @@ impl App {
     /// Import a LightBurn project as a new, unsaved document on the selected device: its shapes, and its layers with their
     /// mode, speed and power. LightBurn counts Y up from the bottom, so the drawing is turned over with the height of
     /// the work area.
-    pub fn import_lightburn(&mut self, p: PathBuf) {
+    pub fn import_lightburn(&mut self, p: PathBuf) -> bool {
         let device = self.profiles.get(self.active).cloned().unwrap_or_else(|| self.doc.device.clone());
         let name = p.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
         let read = std::fs::read(&p).map_err(|e| e.to_string()).and_then(|b| String::from_utf8(b).map_err(|_| "this is not a LightBurn project".to_string())).and_then(|t| lc_core::lightburn::import(&t, device.work_size().1));
@@ -568,8 +576,12 @@ impl App {
                 } else {
                     self.toast(trf("Some parts of the LightBurn project could not be used: {}", &[&warnings]));
                 }
+                true
             }
-            Err(e) => self.status = trf("Open failed: {}", &[&e]),
+            Err(e) => {
+                self.status = trf("Open failed: {}", &[&e]);
+                false
+            }
         }
     }
     pub fn save(&mut self, as_new: bool) {
@@ -1019,9 +1031,37 @@ impl App {
 
     pub fn do_act(&mut self, ctx: &egui::Context, a: Act) {
         // On the start screen only application-level actions are available.
-        if self.screen == Screen::Start && !matches!(a, Act::Quit | Act::About | Act::SetLang(_) | Act::SetScheme(_) | Act::RestoreBackup | Act::CheckUpdates) {
+        if self.screen == Screen::Start {
+            match a {
+                // Starting a project takes the selected device, or the Dummy when there is none.
+                Act::New => self.start_project(|app| {
+                    app.new_doc();
+                    true
+                }),
+                Act::Open => {
+                    if let Some(p) = Self::pick_project() {
+                        self.start_project(|app| app.open_path(p));
+                    }
+                }
+                Act::OpenRecent(i) => {
+                    if let Some(p) = self.recent.get(i as usize).cloned() {
+                        if p.is_file() {
+                            self.start_project(|app| app.open_path(p));
+                        } else {
+                            self.status = trf("Open failed: {}", &[&format!("{} {}", p.display(), tr("no longer exists"))]);
+                            self.recent.retain(|r| *r != p);
+                        }
+                    }
+                }
+                Act::Quit | Act::About | Act::SetLang(_) | Act::SetScheme(_) | Act::RestoreBackup | Act::CheckUpdates => self.do_app_act(ctx, a),
+                _ => {}
+            }
             return;
         }
+        self.do_app_act(ctx, a);
+    }
+
+    fn do_app_act(&mut self, ctx: &egui::Context, a: Act) {
         if let Some(s) = a.std() {
             s.run(self);
             return;

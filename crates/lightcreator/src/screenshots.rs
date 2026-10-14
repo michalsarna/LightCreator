@@ -612,7 +612,7 @@ fn node_bar_hides_when_another_window_is_clicked() {
     assert!(!app(&mut h).ed.node_bar_active, "the bar goes away");
     assert_ne!(ctx.layer_id_at(eframe::egui::pos2(150.0, 122.0)).map(|l| l.id), Some(eframe::egui::Id::new("node_bar")));
     // A click on the work area brings it back.
-    press(&h, 150.0, 400.0);
+    press(&h, 80.0, 400.0);
     h.run_steps(3);
     assert!(app(&mut h).ed.node_bar_active, "and returns");
     // Leaving the node tool resets it for the next time.
