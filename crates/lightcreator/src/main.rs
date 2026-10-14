@@ -50,6 +50,19 @@ fn window_icon() -> Option<eframe::egui::IconData> {
     base_ui::start::window_icon(ICON_512)
 }
 
+/// Where this program keeps its data: the settings in its own folder, the gallery shared with the other programs
+/// (see `base_core::paths`). The first call moves the data of an older version in.
+pub fn data_paths() -> &'static lc_core::paths::DataPaths {
+    static PATHS: std::sync::OnceLock<lc_core::paths::DataPaths> = std::sync::OnceLock::new();
+    PATHS.get_or_init(|| {
+        if cfg!(test) {
+            // Tests never touch the real folders.
+            return lc_core::paths::prepare_in(&std::env::temp_dir().join(format!("lc-test-data-{}", std::process::id())), "lightcreator", None);
+        }
+        lc_core::paths::prepare("lightcreator", eframe::storage_dir("lightcreator").as_deref())
+    })
+}
+
 fn main() -> eframe::Result {
     let mut viewport = eframe::egui::ViewportBuilder::default()
         .with_title(format!("LightCreator {}", app::APP_VERSION))
@@ -61,7 +74,7 @@ fn main() -> eframe::Result {
     if let Some(icon) = window_icon() {
         viewport = viewport.with_icon(icon);
     }
-    let opts = eframe::NativeOptions { viewport, ..Default::default() };
+    let opts = eframe::NativeOptions { viewport, persistence_path: Some(data_paths().settings.clone()), ..Default::default() };
     eframe::run_native(
         "LightCreator",
         opts,

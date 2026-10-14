@@ -15,7 +15,7 @@ use std::path::PathBuf;
 pub use base_ui::editor::{Tool, View};
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.2.2";
+pub const APP_VERSION: &str = "v0.2.3";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
@@ -329,7 +329,7 @@ impl App {
             focus_text: false,
             show_offset: false,
             show_prefs: false,
-            clip: crate::clipart_ui::new_state(lc_core::clipart::Library::open(eframe::storage_dir("lightcreator").unwrap_or_else(std::env::temp_dir).join("clipart"))),
+            clip: crate::clipart_ui::new_state(lc_core::clipart::Library::open(crate::data_paths().gallery.clone())),
             show_guide: false,
             guide_filter: String::new(),
             show_round: false,

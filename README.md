@@ -21,11 +21,11 @@ Language, colour scheme, device profiles (controller, units, port, camera alignm
 
 | System | Location |
 |--------|----------|
-| macOS | `~/Library/Application Support/lightcreator/app.ron` |
-| Windows | `%APPDATA%\lightcreator\data\app.ron` (usually `C:\Users\<you>\AppData\Roaming\lightcreator\data\app.ron`) |
-| Linux | `$XDG_DATA_HOME/lightcreator/app.ron`, by default `~/.local/share/lightcreator/app.ron` |
+| macOS | `~/Library/Application Support/baseCreator/apps/lightcreator/app.ron` |
+| Windows | `%APPDATA%\baseCreator\apps\lightcreator\app.ron` (usually `C:\Users\<you>\AppData\Roaming\baseCreator\apps\lightcreator\app.ron`) |
+| Linux | `$XDG_DATA_HOME/baseCreator/apps/lightcreator/app.ron`, by default `~/.local/share/baseCreator/apps/lightcreator/app.ron` |
 
-Pictures you saved or downloaded for the clipart gallery are kept in the `clipart` folder next to it, together with an
+Pictures you saved or downloaded for the clipart gallery are kept in the `clipart` folder of the shared `baseCreator` folder (next to `apps`), the same gallery for LightCreator, MillCreator and PenCreator, together with an
 `index.json` that records each picture's name, category, source, licence and author.
 
 The file is written when the application closes. Delete it to reset everything to the defaults (the start

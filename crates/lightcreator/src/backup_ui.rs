@@ -205,9 +205,10 @@ impl App {
             "LightCreator {APP_VERSION} backup\n\n\
              app.ron   your settings: device profiles, language, colour scheme, recent files\n\
              clipart/  the pictures you saved or downloaded, with index.json\n\n\
-             To restore, close LightCreator and copy app.ron and the clipart folder into its data folder\n\
-             (macOS: ~/Library/Application Support/lightcreator, Windows: %APPDATA%\\lightcreator\\data,\n\
-             Linux: ~/.local/share/lightcreator).\n"
+             To restore, close LightCreator, copy app.ron into apps/lightcreator and the clipart folder into\n\
+             clipart, both inside the baseCreator data folder shared by the programs\n\
+             (macOS: ~/Library/Application Support/baseCreator, Windows: %APPDATA%\\baseCreator,\n\
+             Linux: ~/.local/share/baseCreator).\n"
         );
         add(&mut zip, "README.txt", readme.as_bytes())?;
         zip.finish().map_err(|e| e.to_string())?;

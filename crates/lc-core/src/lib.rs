@@ -1,5 +1,5 @@
 //! LightCreator core: the laser side of the document (layers, device, jobs, G-code) on top of base-core.
-pub use base_core::{arcs, bezier, camimg, fillet, geom, grbl_settings, image, lightburn, ops, project, ser2net, snap, text, trace};
+pub use base_core::{arcs, bezier, camimg, fillet, geom, grbl_settings, image, lightburn, ops, paths, project, ser2net, snap, text, trace};
 pub mod check;
 pub mod clipart;
 pub mod controller;

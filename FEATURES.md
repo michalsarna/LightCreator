@@ -198,7 +198,7 @@
   and author of each result (orange dot when the licence asks for credit), and save a picture on your disk under a
   category of your choice, existing or new. Pictures can also be downloaded from a web address, or added from files.
   Saved pictures keep their source, licence and author and can be renamed, moved to another category, inspected
-  or deleted from the right-click menu. They live in the application's data folder next to `app.ron`, in the `clipart` folder (the location per system is in the README).
+  or deleted from the right-click menu. They live in the `clipart` folder of the shared `baseCreator` data folder, so LightCreator, MillCreator and PenCreator show the same gallery (the location per system is in the README).
 
 **Helpers**
 * **Camera overlay:** a photo or the live camera (build with `--features camera`) under the design, aligned
