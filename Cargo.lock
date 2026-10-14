@@ -179,24 +179,26 @@ checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
 
 [[package]]
 name = "base-core"
-version = "0.9.2"
-source = "git+https://github.com/michalsarna/baseCreator?tag=v0.9.2#e4215759328c83cd228a059e40e13bfbb7177e36"
+version = "0.9.4"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v0.9.4#dfaa6282fd3b8aaabd9627d41a389e8a69da8e28"
 dependencies = [
  "base64 0.23.1",
  "i_overlay",
  "image",
  "lopdf",
+ "ron",
  "roxmltree 0.21.1",
  "serde",
  "serde_json",
  "ttf-parser",
  "usvg 0.48.1",
+ "zip",
 ]
 
 [[package]]
 name = "base-ui"
-version = "0.9.2"
-source = "git+https://github.com/michalsarna/baseCreator?tag=v0.9.2#e4215759328c83cd228a059e40e13bfbb7177e36"
+version = "0.9.4"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v0.9.4#dfaa6282fd3b8aaabd9627d41a389e8a69da8e28"
 dependencies = [
  "base-core",
  "egui",
@@ -1965,7 +1967,7 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 
 [[package]]
 name = "lc-core"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "base-core",
  "image",
@@ -2011,7 +2013,7 @@ dependencies = [
 
 [[package]]
 name = "lightcreator"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "base-ui",
  "eframe",

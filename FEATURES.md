@@ -198,7 +198,7 @@
   and author of each result (orange dot when the licence asks for credit), and save a picture on your disk under a
   category of your choice, existing or new. Pictures can also be downloaded from a web address, or added from files.
   Saved pictures keep their source, licence and author and can be renamed, moved to another category, inspected
-  or deleted from the right-click menu. They live in the application's data folder next to `app.ron`, in the `clipart` folder (the location per system is in the README).
+  or deleted from the right-click menu. They live in the `clipart` folder of the shared `baseCreator` data folder, so LightCreator, MillCreator and PenCreator show the same gallery (the location per system is in the README).
 
 **Helpers**
 * **Camera overlay:** a photo or the live camera (build with `--features camera`) under the design, aligned
@@ -207,8 +207,9 @@
 **Help**
 * **Download backup…** (Help menu): asks where to save a zip file with everything the program keeps on this computer,
   the settings (`app.ron`: device profiles, language, colour scheme, recent files) and the whole
-  `clipart` folder, plus a README. **Restore from backup…** (Help menu) reads such a file back: settings and clipart
-  are replaced after a confirmation. When no profile files are found at start, the start window offers the same
+  shared `clipart` gallery, plus a README. **Restore from backup…** (Help menu) reads such a file back: the settings
+  are replaced after a confirmation and the pictures are added to the gallery (nothing is removed, so pictures that
+  MillCreator or PenCreator saved in the meantime stay; the same menu entries exist in both). When no profile files are found at start, the start window offers the same
   restore with a green button.
 * **Updates:** the program looks for a newer release on GitHub when it starts (switch it off in Settings → Program
   options…) and Help → Check for updates… does it on demand. A newer version opens a window with a button to the page

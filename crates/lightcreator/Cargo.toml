@@ -7,7 +7,7 @@ description = "LightCreator — open-source laser engraver / cutter design and c
 
 [dependencies]
 lc-core = { path = "../lc-core" }
-base-ui = { git = "https://github.com/michalsarna/baseCreator", tag = "v0.9.2" }
+base-ui = { git = "https://github.com/michalsarna/baseCreator", tag = "v0.9.4" }
 eframe = { version = "0.36", default-features = false, features = ["default_fonts", "glow", "x11", "wayland", "persistence", "links"] }
 rfd = "0.17"
 serialport = { version = "4", default-features = false }

@@ -1,39 +1,11 @@
 //! Help > Download backup…: one zip file with everything the program keeps on this computer, the settings
-//! (device profiles, language and so on) and the clipart you saved.
+//! (device profiles, language and so on) and the shared clipart gallery. The zip is made by `base_core::backup`.
 use crate::app::{App, APP_VERSION};
 use crate::i18n::trf;
 use std::collections::BTreeMap;
-use std::io::Write;
 use std::path::{Path, PathBuf};
 
-/// `yyyymmdd` of a Unix time, for the suggested file name.
-pub fn ymd(secs: u64) -> String {
-    // Days since 1970-01-01 to a calendar date (Howard Hinnant's algorithm).
-    let z = (secs / 86400) as i64 + 719_468;
-    let era = z.div_euclid(146_097);
-    let doe = z.rem_euclid(146_097);
-    let yoe = (doe - doe / 1460 + doe / 36_524 - doe / 146_096) / 365;
-    let y = yoe + era * 400;
-    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
-    let mp = (5 * doy + 2) / 153;
-    let d = doy - (153 * mp + 2) / 5 + 1;
-    let m = if mp < 10 { mp + 3 } else { mp - 9 };
-    format!("{:04}{:02}{:02}", if m <= 2 { y + 1 } else { y }, m, d)
-}
-
-fn files_in(dir: &Path, out: &mut Vec<PathBuf>) {
-    let Ok(rd) = std::fs::read_dir(dir) else { return };
-    let mut entries: Vec<_> = rd.flatten().collect();
-    entries.sort_by_key(|e| e.file_name());
-    for e in entries {
-        let p = e.path();
-        if p.is_dir() {
-            files_in(&p, out);
-        } else if p.is_file() {
-            out.push(p);
-        }
-    }
-}
+pub use lc_core::backup::ymd;
 
 impl App {
     /// Ask where to put the backup and write it.
@@ -58,7 +30,7 @@ impl App {
         if confirm {
             self.confirm = Some(crate::session_ui::Confirm {
                 title: crate::i18n::tr("Restore from backup").to_string(),
-                text: crate::i18n::tr("Your current settings and clipart will be replaced by the backup. Continue?").to_string(),
+                text: crate::i18n::tr("Your current settings will be replaced by the backup. Its pictures are added to the shared gallery. Continue?").to_string(),
                 act: crate::session_ui::ConfirmAct::RestoreBackup(src),
             });
             return;
@@ -78,41 +50,14 @@ impl App {
         }
     }
 
-    /// Put the settings and the clipart of a backup in place. Returns the number of files read.
+    /// Put the settings of a backup in place and add its pictures to the shared gallery. Returns the number of
+    /// pictures added plus the settings file.
     pub fn restore_backup(&mut self, ctx: &eframe::egui::Context, src: &Path) -> Result<usize, String> {
-        let file = std::fs::File::open(src).map_err(|e| e.to_string())?;
-        let mut zip = zip::ZipArchive::new(file).map_err(|e| e.to_string())?;
-        // Settings first: a backup without them is not one of ours.
-        let settings: BTreeMap<String, String> = {
-            let mut f = zip.by_name("app.ron").map_err(|_| "app.ron not found in the file".to_string())?;
-            let mut text = String::new();
-            std::io::Read::read_to_string(&mut f, &mut text).map_err(|e| e.to_string())?;
-            ron::from_str(&text).map_err(|e| e.to_string())?
-        };
-        let dir = self.clip.lib.dir().to_path_buf();
-        let mut count = 1usize;
-        for i in 0..zip.len() {
-            let mut f = zip.by_index(i).map_err(|e| e.to_string())?;
-            if f.is_dir() {
-                continue;
-            }
-            // Only files below `clipart/`, and never outside the folder.
-            let Some(rel) = f.enclosed_name().and_then(|p| p.strip_prefix("clipart").ok().map(Path::to_path_buf)) else { continue };
-            if rel.as_os_str().is_empty() {
-                continue;
-            }
-            let target = dir.join(rel);
-            if let Some(parent) = target.parent() {
-                std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
-            }
-            let mut out = std::fs::File::create(&target).map_err(|e| format!("{}: {}", target.display(), e))?;
-            std::io::copy(&mut f, &mut out).map_err(|e| e.to_string())?;
-            count += 1;
-        }
-        self.apply_settings(ctx, &settings);
-        self.clip.lib = lc_core::clipart::Library::open(dir);
+        let r = lc_core::backup::restore(src, "LightCreator", self.clip.lib.dir())?;
+        self.apply_settings(ctx, &r.settings);
+        self.clip.lib.refresh();
         self.clip.reload();
-        Ok(count)
+        Ok(r.pictures + 1)
     }
 
     /// Take the settings of a backup (the strings of `settings_pairs`) into the running program.
@@ -176,42 +121,10 @@ impl App {
         }
     }
 
-    /// Write the zip: `app.ron` (the settings as they are now), the whole `clipart` folder and a short README.
+    /// Write the zip: the settings as they are now, the whole shared gallery and a short README.
     /// Returns the number of files in it.
     pub fn write_backup(&self, dest: &Path) -> Result<usize, String> {
-        let file = std::fs::File::create(dest).map_err(|e| e.to_string())?;
-        let mut zip = zip::ZipWriter::new(file);
-        let opts = zip::write::SimpleFileOptions::default().compression_method(zip::CompressionMethod::Deflated);
-        let mut count = 0usize;
-        let mut add = |zip: &mut zip::ZipWriter<std::fs::File>, name: &str, data: &[u8]| -> Result<(), String> {
-            zip.start_file(name, opts).map_err(|e| e.to_string())?;
-            zip.write_all(data).map_err(|e| e.to_string())?;
-            count += 1;
-            Ok(())
-        };
-        // The same key / value strings the program stores itself, in the format of its settings file.
-        let map: BTreeMap<&str, String> = self.settings_pairs().into_iter().collect();
-        let ron_text = ron::ser::to_string_pretty(&map, ron::ser::PrettyConfig::default()).map_err(|e| e.to_string())?;
-        add(&mut zip, "app.ron", ron_text.as_bytes())?;
-        let dir = self.clip.lib.dir().to_path_buf();
-        let mut files = vec![];
-        files_in(&dir, &mut files);
-        for f in &files {
-            let rel = f.strip_prefix(&dir).unwrap_or(f).to_string_lossy().replace('\\', "/");
-            let data = std::fs::read(f).map_err(|e| format!("{}: {}", f.display(), e))?;
-            add(&mut zip, &format!("clipart/{rel}"), &data)?;
-        }
-        let readme = format!(
-            "LightCreator {APP_VERSION} backup\n\n\
-             app.ron   your settings: device profiles, language, colour scheme, recent files\n\
-             clipart/  the pictures you saved or downloaded, with index.json\n\n\
-             To restore, close LightCreator and copy app.ron and the clipart folder into its data folder\n\
-             (macOS: ~/Library/Application Support/lightcreator, Windows: %APPDATA%\\lightcreator\\data,\n\
-             Linux: ~/.local/share/lightcreator).\n"
-        );
-        add(&mut zip, "README.txt", readme.as_bytes())?;
-        zip.finish().map_err(|e| e.to_string())?;
-        Ok(count)
+        lc_core::backup::write(dest, "LightCreator", APP_VERSION, &self.settings_pairs(), self.clip.lib.dir())
     }
 }
 
@@ -219,6 +132,8 @@ impl App {
 mod tests {
     use super::*;
     use std::io::Read;
+
+    const SVG: &str = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><rect width='10' height='10'/></svg>";
 
     #[test]
     fn dates_come_out_right() {
@@ -233,17 +148,16 @@ mod tests {
         let mut a = App::build(&ctx, None, false);
         let dir = std::env::temp_dir().join(format!("lc-backup-{}", std::process::id()));
         let clip = dir.join("clipart");
-        std::fs::create_dir_all(clip.join("Mine")).unwrap();
-        std::fs::write(clip.join("index.json"), "{}").unwrap();
-        std::fs::write(clip.join("Mine/star.svg"), "<svg/>").unwrap();
-        a.clip = crate::clipart_ui::new_state(lc_core::clipart::Library::open(clip));
+        let mut lib = lc_core::clipart::Library::open(clip);
+        lib.add(SVG, "star", "Mine", "file", "", "").unwrap();
+        a.clip = crate::clipart_ui::new_state(lib);
         a.profiles = vec![lc_core::Device::default()];
         let zip_path = dir.join("backup.zip");
         let n = a.write_backup(&zip_path).expect("backup written");
         assert_eq!(n, 4);
         let mut z = zip::ZipArchive::new(std::fs::File::open(&zip_path).unwrap()).unwrap();
         let names: Vec<String> = (0..z.len()).map(|i| z.by_index(i).unwrap().name().unwrap_or_default().to_string()).collect();
-        for want in ["app.ron", "clipart/index.json", "clipart/Mine/star.svg", "README.txt"] {
+        for want in ["app.ron", "clipart/index.json", "clipart/star.svg", "README.txt"] {
             assert!(names.iter().any(|n| n == want), "{want} in {names:?}");
         }
         let mut ron_text = String::new();
@@ -263,10 +177,9 @@ mod tests {
         // The program that makes the backup.
         let mut a = App::build(&ctx, None, false);
         let clip = dir.join("old/clipart");
-        std::fs::create_dir_all(clip.join("Mine")).unwrap();
-        std::fs::write(clip.join("index.json"), "{\"items\":[]}").unwrap();
-        std::fs::write(clip.join("Mine/star.svg"), "<svg/>").unwrap();
-        a.clip = crate::clipart_ui::new_state(lc_core::clipart::Library::open(clip));
+        let mut lib = lc_core::clipart::Library::open(clip);
+        lib.add(SVG, "star", "Mine", "file", "", "").unwrap();
+        a.clip = crate::clipart_ui::new_state(lib);
         let mut dev = lc_core::Device::default();
         dev.name = "My laser".into();
         a.profiles = vec![dev];
@@ -282,7 +195,12 @@ mod tests {
         assert_eq!(b.profiles.len(), 1);
         assert_eq!(b.profiles[0].name, "My laser");
         assert_eq!(b.lang, crate::i18n::Lang::Pl);
-        assert!(fresh.join("Mine/star.svg").is_file(), "clipart files come back");
+        assert_eq!(b.clip.lib.items.len(), 1, "the picture comes back");
+        assert_eq!(b.clip.lib.items[0].name, "star");
+        // A picture another program saved in the meantime stays, and restoring twice does not double anything.
+        b.clip.lib.add(&SVG.replace("<rect", "<circle r='4'"), "newer", "Mine", "file", "", "").unwrap();
+        assert!(b.restore_backup(&ctx, &zip_path).is_ok());
+        assert_eq!(b.clip.lib.items.len(), 2, "{:?}", b.clip.lib.items);
         crate::i18n::set_lang(crate::i18n::Lang::En);
         // Something that is not a backup is refused.
         let junk = dir.join("junk.zip");
