@@ -2,6 +2,10 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.2.2
+
+* The Console tab now comes from baseCreator (v0.9.2), where MillCreator and PenCreator use the same one; it looks and works as before.
+
 ## v0.2.1
 
 * An unused import left a compiler warning; it is gone.

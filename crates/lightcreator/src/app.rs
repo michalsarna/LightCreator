@@ -15,7 +15,7 @@ use std::path::PathBuf;
 pub use base_ui::editor::{Tool, View};
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.2.1";
+pub const APP_VERSION: &str = "v0.2.2";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
@@ -239,11 +239,8 @@ pub struct App {
     /// The Z position the controller last reported (NaN when it does not report one).
     pub machine_z: f64,
     pub progress: (usize, usize),
-    pub console: Vec<ConsoleLine>,
+    pub console: base_ui::console_ui::ConsoleState,
     pub side_tab: SideTab,
-    pub console_polls: bool,
-    pub console_autoscroll: bool,
-    pub console_input: String,
 }
 
 impl App {
@@ -398,11 +395,8 @@ impl App {
             machine: (tr("Disconnected").into(), 0.0, 0.0),
             machine_z: f64::NAN,
             progress: (0, 0),
-            console: vec![],
+            console: Default::default(),
             side_tab: SideTab::Properties,
-            console_polls: false,
-            console_autoscroll: true,
-            console_input: String::new(),
         }
     }
 
@@ -798,10 +792,7 @@ impl App {
         }
     }
     pub fn push_console(&mut self, l: ConsoleLine) {
-        self.console.push(l);
-        if self.console.len() > 4000 {
-            self.console.drain(..1000);
-        }
+        self.console.push_capped(l);
     }
 
     /// Count the time a job really runs: from its start until the machine is idle again after the last line, or until
