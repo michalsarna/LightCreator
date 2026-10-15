@@ -11,4 +11,10 @@ Wtyczki dodają LightCreatorowi rzeczy bez zmieniania programu: **clipart, prese
 
 **Bezpieczeństwo.** Skrypty wtyczek (Rhai) działają w piaskownicy bez dostępu do plików, sieci, systemu i maszyny, z limitem czasu i pamięci. Mimo to wtyczka to czyjś kod, który decyduje, co usłyszy Twoja maszyna: instaluj tylko wtyczki, którym ufasz, i obejrzyj G-code nowego postprocesora, zanim go uruchomisz na maszynie.
 
+## Oficjalne wtyczki
+
+**Settings → Plugins… → Official plugins** pokazuje oficjalną listę wtyczek, prowadzoną w repozytorium [baseCreator-plugins](https://github.com/michalsarna/baseCreator-plugins). Naciśnij **Check for updates**, żeby ją wczytać: widać na niej *wszystkie* wtyczki, także te dla innego programu (oznaczone *For: …*). **Install** pobiera wtyczkę z oficjalnej strony (sprawdzana jest suma kontrolna) do folderu wtyczek wspólnego dla wszystkich programów; **Update** pojawia się, gdy lista ma nowszą wersję (opis zmian po najechaniu). Wtyczka wymagająca nowszego programu niż Twój jest pokazana, ale nie do instalacji. Sprawdzanie aktualizacji przy starcie programu jest **wyłączone**, dopóki nie zaznaczysz *Check for plugin updates at start*; nic nie instaluje się bez Twojego kliknięcia.
+
+Własną wtyczkę napiszesz i wyślesz na listę według [przewodnika dla autorów](https://github.com/michalsarna/baseCreator-plugins/blob/main/docs/GUIDE.md) (po angielsku) z szablonami w repozytorium wtyczek; błędy i pomysły zgłaszaj w issues tamtego repozytorium.
+
 Jak napisać wtyczkę (manifest, formularz, funkcje skryptu, przykłady): [PLUGINS.md w baseCreator](https://github.com/michalsarna/baseCreator/blob/main/docs/PLUGINS.md) (po angielsku).
