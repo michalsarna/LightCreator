@@ -2,6 +2,11 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.3.0
+
+* **Layer bar:** the selected layer's outline is no longer clipped, and the bar ends exactly at the work panel (not under the right panel).
+* **baseCreator v1.1.0:** windows keep their size, double Esc selects the Select tool, and the shared texts have new translations.
+
 ## v0.2.9
 
 * **Layer bar** under the editor, the same in all programs: one row of **64 layer colours** (arrows or the wheel scroll it; a dot marks layers with shapes). A click puts the selected shapes on that layer (or, with nothing selected, makes it the layer to draw on); a double click opens its options. One palette in all programs. Projects with fewer layers open with the rest added.
