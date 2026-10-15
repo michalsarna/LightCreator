@@ -88,7 +88,12 @@ jobs:
           codesign --force --deep --sign - target/release/bundle/osx/LightCreator.app
           codesign --verify --deep --strict --verbose=2 target/release/bundle/osx/LightCreator.app
           mkdir dmg && cp -R target/release/bundle/osx/LightCreator.app dmg/ && ln -s /Applications dmg/Applications
-          hdiutil create -volname LightCreator -srcfolder dmg -ov -format UDZO "lightcreator-${TAG}-${{ matrix.name }}.dmg"
+          # The disk image tool is sometimes still busy with the volume cargo-bundle ejected ("Resource busy"): try again.
+          for attempt in 1 2 3 4 5; do
+            hdiutil create -volname LightCreator -srcfolder dmg -ov -format UDZO "lightcreator-${TAG}-${{ matrix.name }}.dmg" && break
+            [ "$attempt" = 5 ] && exit 1
+            sleep 10
+          done
 
       - uses: actions/upload-artifact@v7
         with:
@@ -97,6 +102,8 @@ jobs:
 
   release:
     needs: build
+    # Also after a skipped check-main (a dry run); never after a failed build.
+    if: ${{ !cancelled() && needs.build.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v8
