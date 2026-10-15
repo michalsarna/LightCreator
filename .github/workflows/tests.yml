@@ -30,7 +30,7 @@ jobs:
 
       # End-to-end streaming tests against the real GRBL 1.1h firmware compiled for the PC (grbl-sim).
       - name: Cache grbl-sim
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: target/grbl-sim
           key: grbl-sim-${{ runner.os }}-${{ hashFiles('tools/grbl-sim/*') }}
