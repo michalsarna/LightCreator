@@ -1230,6 +1230,7 @@ const TABLE: &[[&str; 7]] = &[
     ["Open a project or start an empty one.", "Otwórz projekt albo zacznij pusty.", "Öffne ein Projekt oder starte ein leeres.", "Apri un progetto o iniziane uno vuoto.", "Avaa projekti tai aloita tyhjä.", "打开一个项目，或开始一个空白项目。", "कोई प्रोजेक्ट खोलें या खाली प्रोजेक्ट शुरू करें।"],
     ["Import UGS design…", "Importuj projekt UGS…", "UGS-Entwurf importieren…", "Importa progetto UGS…", "Tuo UGS-suunnitelma…", "导入 UGS 设计…", "UGS डिज़ाइन आयात करें…"],
     ["Some parts of the UGS design could not be used: {}", "Niektórych części projektu UGS nie dało się użyć: {}", "Einige Teile des UGS-Entwurfs konnten nicht verwendet werden: {}", "Alcune parti del progetto UGS non si sono potute usare: {}", "Joitakin UGS-suunnitelman osia ei voitu käyttää: {}", "UGS 设计的某些部分无法使用：{}", "UGS डिज़ाइन के कुछ हिस्सों का उपयोग नहीं किया जा सका: {}"],
+    ["Show all {} layers", "Pokaż wszystkie {} warstw", "Alle {} Ebenen anzeigen", "Mostra tutti i {} livelli", "Näytä kaikki {} tasoa", "显示全部 {} 个图层", "सभी {} लेयर दिखाएँ"],
 ];
 #[cfg(test)]
 mod tests {

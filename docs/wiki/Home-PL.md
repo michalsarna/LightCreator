@@ -28,11 +28,11 @@ Otwartoźródłowy odpowiednik [LightBurn](https://lightburnsoftware.com/) dla g
 ## W skrócie
 
 * **Projektowanie:** kształty, edycja węzłów Béziera, tekst, operacje logiczne, offset, zaokrąglanie rogów, grupowanie, blokowanie; import SVG / Illustrator / PDF i bitmap, trasowanie obrazów.
-* **Grawerowanie:** linia, wypełnienie, wypełnienie offsetem i obrazy rastrowe z sześcioma metodami ditheringu i mocą w skali szarości; 30 warstw cięcia w stylu LightBurn; podgląd z szacowanym czasem.
+* **Grawerowanie:** linia, wypełnienie, wypełnienie offsetem i obrazy rastrowe z sześcioma metodami ditheringu i mocą w skali szarości; 64 warstwy cięcia w stylu LightBurn; podgląd z szacowanym czasem.
 * **Urządzenia:** profil dla każdej maszyny; GRBL i Marlin przez port szeregowy lub TCP (ser2net); Ruida i Trocen przez eksport PLT / DXF.
 * **Pomocnicze:** nakładka z kamery z wyrównaniem czterech rogów, galeria 310 clipartów z wyszukiwaniem online.
 * **Interfejs:** 30 języków (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी i 23 inne europejskie) i 14 schematów kolorów.
 
 > ⚠️ **Bezpieczeństwo:** lasery są niebezpieczne. Testuj G-code przy niskiej mocy, noś okulary ochronne, nie zostawiaj pracującej maszyny bez nadzoru. Zobacz [Bezpieczeństwo i ograniczenia](Bezpieczenstwo-i-ograniczenia).
 
-Najnowsza wersja: **v0.2.8** · [Wydania](https://github.com/michalsarna/LightCreator/releases) · [Zgłoszenia](https://github.com/michalsarna/LightCreator/issues) · Licencja: [MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) lub [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE), do wyboru
+Najnowsza wersja: **v0.2.9** · [Wydania](https://github.com/michalsarna/LightCreator/releases) · [Zgłoszenia](https://github.com/michalsarna/LightCreator/issues) · Licencja: [MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) lub [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE), do wyboru

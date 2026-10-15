@@ -62,7 +62,7 @@ fn svg_roundtrip() {
     let mut d = Document::default();
     let ids = svg::import(svg, &mut d, None).unwrap();
     assert_eq!(ids.len(), 1);
-    assert_eq!(d.scene.shapes[0].layer, 2); // red -> C02
+    assert_eq!(d.scene.shapes[0].layer, nearest_palette([255, 0, 0])); // red -> the nearest colour
     let b = d.scene.shapes[0].bounds().unwrap();
     assert!((b.width() - 40.0 * 25.4 / 96.0).abs() < 1e-3);
     assert!(svg::export(&d).contains("<path"));
@@ -247,7 +247,7 @@ fn layer_order_groups_and_old_files() {
     // Broken order lists are repaired.
     d.order = vec![5, 5, 99, 1];
     let o = d.layer_order();
-    assert_eq!(o.len(), 30);
+    assert_eq!(o.len(), crate::LAYER_COUNT);
     assert_eq!(&o[..2], &[5, 1]);
     // Output follows the order: layer 1 is burnt before layer 0.
     let mut d = Document::default();
@@ -272,7 +272,7 @@ fn layer_order_groups_and_old_files() {
     let mut v: serde_json::Value = serde_json::from_str(&Document::default().to_json()).unwrap();
     v["sections"]["laser"].as_object_mut().unwrap().remove("order");
     v["scene"].as_object_mut().unwrap().remove("next_group");
-    assert_eq!(Document::from_json(&v.to_string()).unwrap().layer_order().len(), 30);
+    assert_eq!(Document::from_json(&v.to_string()).unwrap().layer_order().len(), crate::LAYER_COUNT);
 }
 
 fn tiny_pdf(content: &str) -> Vec<u8> {
@@ -304,13 +304,13 @@ fn illustrator_pdf_paths_become_shapes() {
     let ids = pdf::import(&data, &mut d, None).unwrap();
     assert_eq!(ids.len(), 2);
     let rect = d.shape(ids[0]).unwrap();
-    assert_eq!(rect.layer, 2); // red
+    assert_eq!(rect.layer, nearest_palette([255, 0, 0])); // red
     let b = rect.bounds().unwrap();
     // 100 pt wide = 35.28 mm; y is flipped: the top of the page is y = 0 (page is 100 pt = 35.28 mm tall).
     assert!((b.width() - 100.0 * 25.4 / 72.0).abs() < 1e-6);
     assert!((b.min.y - (100.0 - 60.0) * 25.4 / 72.0).abs() < 1e-6);
     let curve = d.shape(ids[1]).unwrap();
-    assert_eq!(curve.layer, 1); // blue
+    assert_eq!(curve.layer, nearest_palette([0, 0, 255])); // blue
     assert!(matches!(&curve.kind, Kind::Bezier(cs) if cs[0].nodes.len() == 2 && cs[0].seg_is_curve(0)));
 }
 
@@ -2168,7 +2168,7 @@ fn a_project_made_by_another_program_opens_with_the_default_layers() {
     p.scene.add(0, Kind::Rect { w: 5.0, h: 5.0 }, Xf::IDENTITY);
     p.set_section("pen", &serde_json::json!({ "format": 1 }));
     let d = Document::from_json(&p.to_json()).unwrap();
-    assert_eq!((d.scene.shapes.len(), d.layers.len(), d.layer_order().len()), (1, 30, 30));
+    assert_eq!((d.scene.shapes.len(), d.layers.len(), d.layer_order().len()), (1, crate::LAYER_COUNT, crate::LAYER_COUNT));
     assert!(d.to_json().contains("\"pen\""));
 }
 
@@ -2181,4 +2181,12 @@ fn a_project_file_is_saved_again_unchanged() {
     assert_eq!(doc.group_of(1), vec![1, 2]);
     assert!(doc.shape(5).unwrap().locked);
     assert_eq!(doc.to_json(), text);
+}
+
+#[test]
+#[ignore]
+fn regenerate_the_every_kind_fixture() {
+    let path = format!("{}/tests/fixtures/every-kind.cre", env!("CARGO_MANIFEST_DIR"));
+    let doc = Document::from_json(&std::fs::read_to_string(&path).unwrap()).unwrap();
+    std::fs::write(path, doc.to_json()).unwrap();
 }

@@ -1086,3 +1086,4 @@
 1085|Åbn et projekt, eller begynd et tomt.
 1086|Importér UGS-design…
 1087|Nogle dele af UGS-designet kunne ikke bruges: {}
+1088|Vis alle {} lag

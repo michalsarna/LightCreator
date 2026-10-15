@@ -43,7 +43,7 @@ const EN: &[Section] = &[
     Section {
         title: "Layers and cut settings",
         lines: &[
-            "Every object belongs to one of 30 colour layers. Click a colour in the strip at the bottom to make it active (selected objects move to it); double-click a layer name for all its options.",
+            "Every object belongs to one of 64 colour layers. Click a colour in the strip at the bottom to make it active (selected objects move to it); double-click a layer name for all its options.",
             "A layer has a mode (Line, Fill, Fill + Line, Offset fill), speed, power, passes, air assist, interval, scan angle, overscan and, for layers that hold pictures, a dithering method and minimum power. The Layers tab lists layers in burn order; use the arrows to change it. The three switches at the end of each row are output (burn), visible and air pump.",
             "Speeds are shown per second or per minute, in millimetres or inches, as set in the device options (Speed units). New layers start at 1000 mm/min; the settings of the layers belong to the project.",
         ],
@@ -123,7 +123,7 @@ const PL: &[Section] = &[
     Section {
         title: "Warstwy i ustawienia cięcia",
         lines: &[
-            "Każdy obiekt należy do jednej z 30 kolorowych warstw. Kliknij kolor na dolnym pasku, aby uczynić warstwę aktywną (zaznaczone obiekty przechodzą na nią); dwukrotne kliknięcie nazwy otwiera wszystkie opcje warstwy.",
+            "Każdy obiekt należy do jednej z 64 kolorowych warstw. Kliknij kolor na dolnym pasku, aby uczynić warstwę aktywną (zaznaczone obiekty przechodzą na nią); dwukrotne kliknięcie nazwy otwiera wszystkie opcje warstwy.",
             "Warstwa ma tryb (Line, Fill, Fill + Line, Offset fill), prędkość, moc, przejścia, pompę powietrza, odstęp, kąt, overscan, a dla warstw z obrazami rastrowanie i moc minimalną. Zakładka Layers pokazuje warstwy w kolejności wypalania; strzałkami zmieniasz ją. Trzy przełączniki na końcu wiersza to wyjście (wypalaj), widoczność i pompa powietrza.",
             "Prędkości są pokazywane na sekundę lub na minutę, w milimetrach lub calach, zależnie od opcji urządzenia (Speed units). Nowe warstwy startują z 1000 mm/min; ustawienia warstw należą do projektu.",
         ],

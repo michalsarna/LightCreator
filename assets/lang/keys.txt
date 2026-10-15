@@ -1086,3 +1086,4 @@
 1085	Open a project or start an empty one.
 1086	Import UGS design…
 1087	Some parts of the UGS design could not be used: {}
+1088	Show all {} layers

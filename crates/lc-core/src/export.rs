@@ -96,7 +96,7 @@ pub fn dxf(doc: &Document) -> String {
     let _ = write!(s, "0\nSECTION\n2\nTABLES\n0\nTABLE\n2\nLAYER\n70\n{}\n", layers.len());
     for &li in &layers {
         let l = &doc.layers[li];
-        let _ = write!(s, "0\nLAYER\n2\n{}\n70\n0\n62\n{}\n6\nCONTINUOUS\n", l.name, aci(PALETTE[l.color.min(29)]));
+        let _ = write!(s, "0\nLAYER\n2\n{}\n70\n0\n62\n{}\n6\nCONTINUOUS\n", l.name, aci(PALETTE[l.color.min(crate::LAYER_COUNT - 1)]));
     }
     s.push_str("0\nENDTAB\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n");
     for &li in &layers {

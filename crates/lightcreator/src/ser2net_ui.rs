@@ -39,17 +39,29 @@ fn run(cmd: &str, args: &[&str]) -> Option<String> {
     Some(s.trim().to_string())
 }
 
+fn cleanup(tmp: &std::path::Path) {
+    if let Some(dir) = tmp.parent() {
+        let _ = std::fs::remove_dir_all(dir);
+    }
+}
+
 /// Write the file as administrator (pkexec) and restart the service. Keeps the first backup of an existing file.
 fn install(text: &str, version: Version) -> Result<String, String> {
-    let tmp = std::env::temp_dir().join("lightcreator-ser2net.conf");
-    std::fs::write(&tmp, text).map_err(|e| e.to_string())?;
+    // The file is copied by an administrator: it must not be replaceable by anybody else meanwhile (a fixed name in /tmp
+    // could be), so it is made new, in a folder only this user can enter.
+    let tmp = lc_core::paths::private_temp_file("lightcreator-ser2net", "ser2net.conf", text.as_bytes())?;
     let tmp_s = tmp.to_string_lossy().to_string();
     if !shell_safe(&tmp_s) {
+        cleanup(&tmp);
         return Err("unsafe temporary path".into());
     }
     let t = version.file();
     let script = format!("if [ -f {t} ]; then cp -n {t} {t}.lightcreator.bak; fi; cp '{tmp_s}' {t} && (systemctl restart ser2net || systemctl restart ser2net.service)");
-    let out = std::process::Command::new("pkexec").arg("sh").arg("-c").arg(script).output().map_err(|e| format!("pkexec: {e}"))?;
+    let out = std::process::Command::new("pkexec").arg("sh").arg("-c").arg(script).output().map_err(|e| {
+        cleanup(&tmp);
+        format!("pkexec: {e}")
+    })?;
+    cleanup(&tmp);
     if out.status.success() {
         Ok(t.to_string())
     } else {

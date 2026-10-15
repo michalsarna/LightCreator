@@ -15,7 +15,7 @@ use std::path::PathBuf;
 pub use base_ui::editor::{Tool, View};
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.2.8";
+pub const APP_VERSION: &str = "v0.2.9";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
@@ -94,6 +94,10 @@ pub struct App {
     pub saved_revision: u64,
     pub autosaved_revision: u64,
     pub autosave_on: bool,
+    /// The shared data folder (the recovery file of this program is in it).
+    pub data_base: std::path::PathBuf,
+    /// An unsaved project left by an earlier run (offered on the start screen).
+    pub recovery: Option<lc_core::autosave::Found>,
     /// The web server and API (off by default): switched on, port, and reachable from the network.
     /// The material header of the Layers tab: adding or renaming.
     pub mat_edit: Option<crate::materials_ui::MatEdit>,
@@ -292,6 +296,8 @@ impl App {
             revision: 0,
             saved_revision: 0,
             autosaved_revision: 0,
+            data_base: crate::data_paths().base.clone(),
+            recovery: lc_core::autosave::find(&crate::data_paths().base, "lightcreator"),
             autosave_on: saved("autosave_on").map(|v| v != "0").unwrap_or(true),
             mat_edit: None,
             mat_rev: u64::MAX,
@@ -1393,39 +1399,6 @@ impl App {
         base_ui::editor::arrange_bar(self, ui);
     }
 
-    fn swatches(&mut self, ui: &mut egui::Ui) {
-        egui::ScrollArea::horizontal().auto_shrink([false, true]).show(ui, |ui| {
-            ui.horizontal_centered(|ui| {
-                ui.label(RichText::new(tr("Layers")).color(theme::text_dim()));
-                ui.spacing_mut().item_spacing.x = 3.0;
-                let font = egui::FontId::proportional(10.5);
-                for i in 0..30 {
-                    let c = lc_core::PALETTE[i];
-                    let fill = Color32::from_rgb(c[0], c[1], c[2]);
-                    // Black or white text, whichever reads better on the layer colour.
-                    let lum = 0.299 * c[0] as f32 + 0.587 * c[1] as f32 + 0.114 * c[2] as f32;
-                    let ink = if lum > 140.0 { Color32::BLACK } else { Color32::WHITE };
-                    let name = self.doc.layers[i].name.clone();
-                    let galley = ui.painter().layout_no_wrap(name.clone(), font.clone(), ink);
-                    let w = (galley.size().x + 12.0).max(30.0);
-                    let (r, resp) = ui.allocate_exact_size(egui::vec2(w, 22.0), egui::Sense::click());
-                    ui.painter().rect_filled(r, 3.0, fill);
-                    ui.painter().galley(r.center() - galley.size() / 2.0, galley, ink);
-                    if self.ed.active_layer == i {
-                        ui.painter().rect_stroke(r.expand(1.5), 4.0, egui::Stroke::new(2.0, theme::accent()), egui::StrokeKind::Outside);
-                    }
-                    let resp = resp.on_hover_text(trf("{} — click to assign selection / set active; double-click for options", &[&name]));
-                    if resp.double_clicked() {
-                        self.ed.active_layer = i;
-                        self.layer_dlg = Some(i);
-                    } else if resp.clicked() {
-                        self.assign_layer(i);
-                    }
-                }
-            });
-        });
-    }
-
     fn status_bar(&mut self, ui: &mut egui::Ui) {
         ui.horizontal_centered(|ui| {
             ui.label(&self.status);
@@ -1690,6 +1663,13 @@ impl base_ui::editor::EditorHost for App {
     fn place_text(&mut self, at: lc_core::Pt) {
         self.add_text_at(at)
     }
+    fn open_shape_generators(&mut self) {
+        self.plugins.gen_open = true;
+    }
+    fn open_online_clipart_search(&mut self, ctx: &egui::Context) {
+        self.side_tab = SideTab::Clipart;
+        base_ui::clipart_ui::ClipGallery::open_online_clipart(self, ctx);
+    }
     fn say(&mut self, msg: String) {
         self.status = msg;
     }
@@ -1822,7 +1802,7 @@ impl App {
         }
         egui::Panel::top("controls").frame(chrome).exact_size(36.0).show(ui, |ui| self.control_bar(ui));
         egui::Panel::bottom("status").frame(chrome).exact_size(26.0).show(ui, |ui| self.status_bar(ui));
-        egui::Panel::bottom("swatches").frame(chrome).exact_size(36.0).show(ui, |ui| self.swatches(ui));
+        egui::Panel::bottom("swatches").frame(chrome).exact_size(36.0).show(ui, |ui| base_ui::layer_bar::layer_bar(self, ui));
         egui::Panel::left("tools").frame(chrome).exact_size(52.0).resizable(false).show(ui, |ui| self.tool_bar(ui));
         let side = egui::Panel::right("side").frame(chrome.inner_margin(egui::Margin::same(8))).default_size(410.0).show(ui, |ui| self.side_panel(ui));
         base_ui::widgets::panel_edge_highlight(ui.ctx(), side.response.rect, base_ui::widgets::Edge::Left);
@@ -2394,5 +2374,17 @@ impl base_ui::tools_ui::CalHost for App {
     }
     fn ask_write(&mut self, id: u32, value: String) {
         self.run_fw_acts(vec![crate::firmware_ui::FwAct::Write(id, value)]);
+    }
+}
+
+impl base_ui::layer_bar::LayerBarHost for App {
+    fn layer_label(&self, layer: usize) -> String {
+        self.doc.layers.get(layer).map(|l| l.name.clone()).unwrap_or_default()
+    }
+    fn open_layer_options(&mut self, layer: usize) {
+        self.layer_dlg = Some(layer);
+    }
+    fn click_layer(&mut self, layer: usize) {
+        self.assign_layer(layer);
     }
 }

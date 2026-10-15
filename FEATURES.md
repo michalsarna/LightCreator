@@ -82,6 +82,7 @@
   Layers are drawn in their colours, filled shapes lightly tinted, images in grey.
 * **Import of LightBurn projects** (`.lbrn2`, `.lbrn`): shapes, text outlines, bitmaps and layer settings (shared reader in baseCreator, also used by MillCreator).
 * **Import of UGS Designer designs** (`.ugsd`): shapes, rectangles with rounded corners, ellipses, text and pictures; every way of cutting becomes a layer (outlines or fill). Milling feeds and depths are not used by the laser (shared reader in baseCreator).
+* **Layer bar** under the editor, the same in all programs: one row of the 64 layer colours (arrows or the wheel scroll it; a dot marks layers that have shapes). Click a colour to put the selected shapes on that layer (or, with nothing selected, to draw on it); double-click for its options.
 * **Plugins** (Settings → Plugins…, shared with the other programs on baseCreator): clipart, machine presets, translations, importers of other file formats, shape generators with a form, and G-code postprocessors, as folders or zips; scripts run in a sandbox (Rhai) and the postprocessor output is checked. An **official list** of plugins (all programs' plugins, Install / Update with a checksum, updates checked only when you ask or switch it on) is in Plugins… → Official plugins.
 * **Export** submenu: SVG, G-code, and HPGL (`.plt`) / DXF. Native `.cre` projects (shared with MillCreator) embed images.
 * **Layer list:** the three switches at the end of each row (output, visible, air pump) have icon headings above
@@ -105,7 +106,7 @@
   filter, simplification and curve smoothing.
 
 **Cuts and layers**
-* 30 colour layers with mode Line, Fill, Fill + Line or Offset fill; speed, power, passes, interval, scan
+* 64 colour layers with mode Line, Fill, Fill + Line or Offset fill; speed, power, passes, interval, scan
   angle, overscan and bidirectional scanning; output and visibility switches.
 * **Air assist:** each layer has an "Air pump on" switch; the G-code turns the pump on (M8, or the fan on Marlin)
   when a layer that wants it starts, off when a layer without it starts, and off at the end of the job.

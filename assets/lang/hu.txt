@@ -1086,3 +1086,4 @@
 1085|Nyiss meg egy projektet, vagy kezdj egy üreset.
 1086|UGS-terv importálása…
 1087|Az UGS-terv egyes részeit nem lehetett felhasználni: {}
+1088|Mind a {} réteg megjelenítése

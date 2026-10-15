@@ -29,7 +29,7 @@ fn contrasting(c: Color32, bg: Color32) -> Color32 {
 
 /// The colour of palette entry `i`.
 pub fn col(i: usize) -> Color32 {
-    let c = PALETTE[i.min(29)];
+    let c = PALETTE[i.min(lc_core::LAYER_COUNT - 1)];
     Color32::from_rgb(c[0], c[1], c[2])
 }
 

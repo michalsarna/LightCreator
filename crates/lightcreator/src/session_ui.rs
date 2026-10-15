@@ -11,10 +11,10 @@ use std::time::{Duration, Instant};
 const TOAST_SECS: u64 = 5;
 pub const DEFAULT_AUTOSAVE_SECS: u32 = 120;
 
-/// A temporary file for work that has not been saved under a name yet. Not a fixed name, so two running
-/// copies of the program do not overwrite each other's work.
-pub fn temp_autosave_path() -> PathBuf {
-    std::env::temp_dir().join("lightcreator-autosave").join(format!("untitled-{}.cre", std::process::id()))
+/// The file for work that has not been saved under a name yet: the same one on every run, so the start screen can offer
+/// to recover it after a crash (`lc_core::autosave`).
+pub fn temp_autosave_path(base: &std::path::Path) -> PathBuf {
+    lc_core::autosave::recovery_path(base, "lightcreator")
 }
 
 impl App {
@@ -27,7 +27,8 @@ impl App {
     pub fn mark_saved(&mut self) {
         self.saved_revision = self.revision;
         self.autosaved_revision = self.revision;
-        let _ = std::fs::remove_file(temp_autosave_path());
+        lc_core::autosave::clear(&self.data_base, "lightcreator");
+        self.recovery = None;
     }
 
     /// Show `text` for a few seconds.
@@ -39,13 +40,9 @@ impl App {
     pub fn autosave_now(&mut self) -> Option<PathBuf> {
         let target = match &self.path {
             Some(p) => p.clone(),
-            None => {
-                let t = temp_autosave_path();
-                let _ = std::fs::create_dir_all(t.parent()?);
-                t
-            }
+            None => temp_autosave_path(&self.data_base),
         };
-        std::fs::write(&target, self.doc.to_json()).ok()?;
+        lc_core::autosave::write_atomic(&target, &self.doc.to_json()).ok()?;
         self.autosaved_revision = self.revision;
         if self.path.is_some() {
             // The real file is up to date, so there is nothing left to ask about when closing.
@@ -151,7 +148,7 @@ impl App {
                 }
             }
             Some(Close::Discard) => {
-                let _ = std::fs::remove_file(temp_autosave_path());
+                lc_core::autosave::clear(&self.data_base, "lightcreator");
                 self.show_close_dlg = false;
                 self.allow_close = true;
                 ctx.send_viewport_cmd(egui::ViewportCommand::Close);
@@ -296,6 +293,7 @@ mod tests {
     fn unsaved_work_goes_to_a_temp_file_and_closing_asks_first() {
         let ctx = egui::Context::default();
         let mut a = App::build(&ctx, None, false);
+        a.data_base = std::env::temp_dir().join(format!("lc-session-test-{}", std::process::id()));
         a.screen = crate::app::Screen::Editor;
         // An empty new document is nothing to save.
         a.touch();
@@ -305,7 +303,7 @@ mod tests {
         assert!(a.is_dirty());
         // Auto-save of work without a name: temporary file, still counted as unsaved.
         let p = a.autosave_now().expect("written");
-        assert_eq!(p, temp_autosave_path());
+        assert_eq!(p, temp_autosave_path(&a.data_base));
         assert!(p.is_file());
         assert!(a.is_dirty());
         // Closing asks instead of closing.
@@ -336,5 +334,66 @@ mod tests {
         a.toast("File saved: work.cre".into());
         assert!(a.toast.is_some());
         let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn a_project_left_unsaved_is_offered_after_a_restart_and_recovered_without_a_name() {
+        let ctx = egui::Context::default();
+        let base = std::env::temp_dir().join(format!("lc-recover-test-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&base);
+        let mut a = App::build(&ctx, None, false);
+        a.data_base = base.clone();
+        a.screen = crate::app::Screen::Editor;
+        a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::IDENTITY);
+        a.doc.add(0, Kind::Rect { w: 20.0, h: 5.0 }, Xf::translate(30.0, 0.0));
+        a.touch();
+        a.autosave_now().expect("written");
+        // The program starts again.
+        let mut b = App::build(&ctx, None, false);
+        b.data_base = base.clone();
+        b.recovery = lc_core::autosave::find(&base, "lightcreator");
+        assert_eq!(b.recovery.as_ref().map(|f| f.shapes), Some(2));
+        let recent = b.recent.clone();
+        b.recovery_choice(base_ui::autosave_ui::Recovery::Recover);
+        assert_eq!(b.doc.scene.shapes.len(), 2);
+        assert!(b.path.is_none() && b.recent == recent && b.is_dirty(), "unsaved work, without a name");
+        assert!(lc_core::autosave::find(&base, "lightcreator").is_some(), "kept until it is saved");
+        // Saved: gone.
+        b.mark_saved();
+        assert!(lc_core::autosave::find(&base, "lightcreator").is_none());
+        // Discard removes it.
+        a.touch();
+        a.autosave_now().expect("written");
+        let mut c = App::build(&ctx, None, false);
+        c.data_base = base.clone();
+        c.recovery = lc_core::autosave::find(&base, "lightcreator");
+        c.recovery_choice(base_ui::autosave_ui::Recovery::Discard);
+        assert!(lc_core::autosave::find(&base, "lightcreator").is_none() && c.recovery.is_none());
+        let _ = std::fs::remove_dir_all(&base);
+    }
+}
+
+impl App {
+    /// The choice on the start screen: open the unsaved project (as one without a name), or throw it away.
+    pub fn recovery_choice(&mut self, choice: base_ui::autosave_ui::Recovery) {
+        use base_ui::autosave_ui::Recovery;
+        let Some(found) = self.recovery.take() else { return };
+        match choice {
+            Recovery::Discard => lc_core::autosave::clear(&self.data_base, "lightcreator"),
+            Recovery::Recover => {
+                let recent = self.recent.clone();
+                let path = found.path.clone();
+                self.start_project(|app| app.open_path(path));
+                // Still unsaved work: no name, not a recent file, and the recovery file is written again (opening a file
+                // forgets the temporary copy) and stays until the project is saved.
+                if self.screen == crate::app::Screen::Editor {
+                    self.path = None;
+                    self.recent = recent;
+                    self.touch();
+                    self.autosave_now();
+                    self.status = tr("Recovered the project that was not saved").to_string();
+                }
+            }
+        }
     }
 }

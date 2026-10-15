@@ -6,24 +6,12 @@ use base_core::project::Project;
 pub use base_core::scene::{Kind, Scene, Shape};
 use serde::{Deserialize, Serialize};
 
-/// The 30 layer colours LightBurn uses (C00..C29).
-pub const PALETTE: [[u8; 3]; 30] = [
-    [0x00, 0x00, 0x00], [0x00, 0x00, 0xFF], [0xFF, 0x00, 0x00], [0x00, 0xE0, 0x00],
-    [0xD0, 0xD0, 0x00], [0xFF, 0x80, 0x00], [0x00, 0xE0, 0xE0], [0xFF, 0x00, 0xFF],
-    [0xB4, 0xB4, 0xB4], [0x00, 0x00, 0xA0], [0xA0, 0x00, 0x00], [0x00, 0xA0, 0x00],
-    [0xA0, 0xA0, 0x00], [0xC0, 0x80, 0x00], [0x00, 0xA0, 0xFF], [0xA0, 0x00, 0xA0],
-    [0x80, 0x80, 0x80], [0x7D, 0x87, 0xB9], [0xBB, 0x77, 0x84], [0x4A, 0x6F, 0xE3],
-    [0xD3, 0x3F, 0x6A], [0x8C, 0xD7, 0x8C], [0xF0, 0xB9, 0x8D], [0xF6, 0xC4, 0xE1],
-    [0xFA, 0x9E, 0xD4], [0x50, 0x0A, 0x78], [0xB4, 0x5A, 0x00], [0x00, 0x47, 0x54],
-    [0x86, 0xFA, 0x88], [0xFF, 0xDB, 0x66],
-];
+/// The colours of the layers (shared by all programs, see `base_core::layers`) and how many layers there are.
+pub use base_core::layers::{LAYER_COUNT, PALETTE};
 
 /// Index of the palette colour closest to `rgb`.
 pub fn nearest_palette(rgb: [u8; 3]) -> usize {
-    let d = |c: &[u8; 3]| -> i32 {
-        (0..3).map(|i| (c[i] as i32 - rgb[i] as i32).pow(2)).sum()
-    };
-    (0..PALETTE.len()).min_by_key(|&i| d(&PALETTE[i])).unwrap_or(0)
+    base_core::layers::nearest(rgb)
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -1362,14 +1350,14 @@ struct LaserSection {
 }
 
 fn identity_order() -> Vec<usize> {
-    (0..30).collect()
+    (0..LAYER_COUNT).collect()
 }
 
 impl Default for Document {
     fn default() -> Self {
         Document {
             scene: Scene::default(),
-            layers: (0..30).map(Layer::new).collect(),
+            layers: (0..LAYER_COUNT).map(Layer::new).collect(),
             device: Device::default(),
             order: identity_order(),
             description: String::new(),
@@ -1497,19 +1485,19 @@ impl Document {
                 device.active_material = 0;
                 device.ensure_materials();
                 let mut layers = l.layers;
-                layers.truncate(30);
-                while layers.len() < 30 {
+                layers.truncate(LAYER_COUNT);
+                while layers.len() < LAYER_COUNT {
                     layers.push(Layer::new(layers.len()));
                 }
-                let mut order: Vec<usize> = l.order.into_iter().filter(|i| *i < 30).collect();
-                for i in 0..30 {
+                let mut order: Vec<usize> = l.order.into_iter().filter(|i| *i < LAYER_COUNT).collect();
+                for i in 0..LAYER_COUNT {
                     if !order.contains(&i) {
                         order.push(i);
                     }
                 }
                 (layers, order, device)
             }
-            None => ((0..30).map(Layer::new).collect(), identity_order(), Device::default()),
+            None => ((0..LAYER_COUNT).map(Layer::new).collect(), identity_order(), Device::default()),
         };
         let mut sections = std::collections::BTreeMap::new();
         for n in p.section_names() {
