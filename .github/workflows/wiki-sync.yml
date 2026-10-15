@@ -17,10 +17,10 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       # Needs the wiki enabled in Settings and its first page created once in the GitHub UI,
       # otherwise LightCreator.wiki.git does not exist yet and this checkout fails.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           repository: ${{ github.repository }}.wiki
           path: wiki

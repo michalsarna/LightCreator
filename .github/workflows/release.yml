@@ -15,7 +15,7 @@ jobs:
     if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Tag must point at a commit on main
@@ -41,7 +41,7 @@ jobs:
     env:
       TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'v0.0.0' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249 # stable
         with:
           toolchain: stable
@@ -88,23 +88,30 @@ jobs:
           codesign --force --deep --sign - target/release/bundle/osx/LightCreator.app
           codesign --verify --deep --strict --verbose=2 target/release/bundle/osx/LightCreator.app
           mkdir dmg && cp -R target/release/bundle/osx/LightCreator.app dmg/ && ln -s /Applications dmg/Applications
-          hdiutil create -volname LightCreator -srcfolder dmg -ov -format UDZO "lightcreator-${TAG}-${{ matrix.name }}.dmg"
+          # The disk image tool is sometimes still busy with the volume cargo-bundle ejected ("Resource busy"): try again.
+          for attempt in 1 2 3 4 5; do
+            hdiutil create -volname LightCreator -srcfolder dmg -ov -format UDZO "lightcreator-${TAG}-${{ matrix.name }}.dmg" && break
+            [ "$attempt" = 5 ] && exit 1
+            sleep 10
+          done
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.name }}
           path: lightcreator-*
 
   release:
     needs: build
+    # Also after a skipped check-main (a dry run); never after a failed build.
+    if: ${{ !cancelled() && needs.build.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           merge-multiple: true
       - name: Checksums
         run: sha256sum lightcreator-* > SHA256SUMS.txt
-      - uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+      - uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
           files: |
             lightcreator-*
