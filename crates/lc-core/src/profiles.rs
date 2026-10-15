@@ -147,7 +147,7 @@ pub fn validate(d: &Device) -> Result<(), String> {
         return bad("the materials");
     }
     for m in &d.materials {
-        let layers_ok = m.layers.len() <= 30 && m.layers.iter().enumerate().all(|(i, l)| l.index < 30 && m.layers.iter().take(i).all(|o| o.index != l.index) && layer_ok(&l.settings));
+        let layers_ok = m.layers.len() <= crate::LAYER_COUNT && m.layers.iter().enumerate().all(|(i, l)| l.index < crate::LAYER_COUNT && m.layers.iter().take(i).all(|o| o.index != l.index) && layer_ok(&l.settings));
         if !text_ok(&m.name, 100) || m.name.trim().is_empty() || !layers_ok {
             return bad("a material");
         }

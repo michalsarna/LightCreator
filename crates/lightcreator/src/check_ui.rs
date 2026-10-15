@@ -242,7 +242,7 @@ mod tests {
 
     #[test]
     fn issues_are_described_in_words() {
-        let names: Vec<String> = (0..30).map(|i| format!("C{i:02}")).collect();
+        let names: Vec<String> = (0..lc_core::LAYER_COUNT).map(|i| format!("C{i:02}")).collect();
         let i = Issue { level: Level::Warning, kind: IssueKind::ZeroPower, shapes: vec![1], layer: Some(3), zone: None };
         assert!(describe(&i, &names, &[], false).contains("C03"));
     }
@@ -485,7 +485,7 @@ mod zone_tests {
         assert!(dlg.issues.iter().any(|i| i.kind == IssueKind::NoGoZone));
         assert!(!a.guard(Pending::ExportGcode, None));
         let issue = a.check_dlg.take().unwrap().issues.into_iter().find(|i| i.kind == IssueKind::NoGoZone).unwrap();
-        let text = describe(&issue, &(0..30).map(|i| format!("C{i:02}")).collect::<Vec<_>>(), &["Clamp".to_string()], false);
+        let text = describe(&issue, &(0..lc_core::LAYER_COUNT).map(|i| format!("C{i:02}")).collect::<Vec<_>>(), &["Clamp".to_string()], false);
         assert!(text.contains("Clamp") && text.contains("C00"), "{text}");
         a.select_all();
         a.frame();

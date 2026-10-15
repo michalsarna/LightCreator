@@ -1086,3 +1086,4 @@
 1085|Abre un proyecto o empieza uno vacío.
 1086|Importar diseño de UGS…
 1087|Algunas partes del diseño de UGS no se pudieron usar: {}
+1088|Mostrar las {} capas

@@ -137,17 +137,24 @@ impl App {
                         None => String::new(),
                     },
                     _ => {
-                        let path = std::env::temp_dir().join(format!("lightcreator-print-{}.pdf", std::process::id()));
-                        match std::fs::write(&path, bytes) {
+                        // A private folder, so nobody else can put another file (or a link) in its place.
+                        match lc_core::paths::private_temp_file("lightcreator-print", "design.pdf", &bytes) {
                             Err(e) => trf("Save failed: {}", &[&e]),
-                            Ok(_) if action == 3 => match open_in_viewer(&path) {
+                            Ok(path) if action == 3 => match open_in_viewer(&path) {
                                 Ok(()) => tr("Opened in the PDF viewer.").to_string(),
                                 Err(e) => trf("Could not open the viewer: {}", &[&e]),
                             },
-                            Ok(_) => match send_to_printer(&path, &d.printer) {
-                                Ok(info) => trf("Sent to the printer. {}", &[&info]),
-                                Err(e) => trf("The printer did not take it: {}", &[&e]),
-                            },
+                            Ok(path) => {
+                                let r = match send_to_printer(&path, &d.printer) {
+                                    Ok(info) => trf("Sent to the printer. {}", &[&info]),
+                                    Err(e) => trf("The printer did not take it: {}", &[&e]),
+                                };
+                                // The printing command has finished with the file.
+                                if let Some(dir) = path.parent() {
+                                    let _ = std::fs::remove_dir_all(dir);
+                                }
+                                r
+                            }
                         }
                     }
                 },

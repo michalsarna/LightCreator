@@ -1086,3 +1086,4 @@
 1085|Ava projekt või alusta tühjaga.
 1086|Impordi UGS-i kujundus…
 1087|Mõnda UGS-i kujunduse osa ei saanud kasutada: {}
+1088|Näita kõiki {} kihti

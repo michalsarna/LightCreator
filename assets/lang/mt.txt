@@ -1086,3 +1086,4 @@
 1085|Iftaħ proġett jew ibda wieħed vojt.
 1086|Importa disinn UGS…
 1087|Xi partijiet tad-disinn UGS ma setgħux jintużaw: {}
+1088|Uri t-{} saff kollha

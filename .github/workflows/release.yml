@@ -37,15 +37,18 @@ jobs:
       TAG: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
+      - uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249 # stable
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
       - name: Linux build dependencies
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libxkbcommon-x11-dev libgl1-mesa-dev
       - run: cargo build --release -p lightcreator
 
-      # Plain archive (all platforms): binary + README + LICENSE
+      # Plain archive (Linux .tar.gz, Windows .zip): binary + README + LICENSE. macOS gets only the .dmg.
       - name: Archive
+        if: runner.os != 'macOS'
         shell: bash
         run: |
           mkdir dist
@@ -96,7 +99,7 @@ jobs:
           merge-multiple: true
       - name: Checksums
         run: sha256sum lightcreator-* > SHA256SUMS.txt
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
           files: |
             lightcreator-*

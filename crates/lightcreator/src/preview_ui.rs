@@ -210,7 +210,7 @@ impl App {
                                 let c = match self.pv.color_by {
                                     ColorBy::Operation => op_color(i, n_ops),
                                     ColorBy::Layer => {
-                                        let p = PALETTE[self.doc.layers[job.ops[i].layer].color.min(29)];
+                                        let p = PALETTE[self.doc.layers[job.ops[i].layer].color.min(lc_core::LAYER_COUNT - 1)];
                                         Color32::from_rgb(p[0], p[1], p[2])
                                     }
                                 };
@@ -285,7 +285,7 @@ impl App {
                         let c = match self.pv.color_by {
                             ColorBy::Operation => op_color(m.op, n_ops),
                             ColorBy::Layer => {
-                                let p = PALETTE[self.doc.layers[m.layer].color.min(29)];
+                                let p = PALETTE[self.doc.layers[m.layer].color.min(lc_core::LAYER_COUNT - 1)];
                                 Color32::from_rgb(p[0], p[1], p[2])
                             }
                         };

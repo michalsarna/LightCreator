@@ -30,7 +30,7 @@ pub fn export(doc: &Document) -> String {
         h = bh
     );
     for sh in &doc.scene.shapes {
-        let c = PALETTE[doc.layers[sh.layer].color.min(29)];
+        let c = PALETTE[doc.layers[sh.layer].color.min(crate::LAYER_COUNT - 1)];
         let mut data = String::new();
         for p in sh.polys() {
             for (i, q) in p.pts.iter().enumerate() {

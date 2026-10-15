@@ -1086,3 +1086,4 @@
 1085|Obre un projecte o comença'n un de buit.
 1086|Importa el disseny d'UGS…
 1087|Algunes parts del disseny d'UGS no s'han pogut utilitzar: {}
+1088|Mostra les {} capes

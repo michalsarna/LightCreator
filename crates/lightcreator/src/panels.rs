@@ -115,13 +115,13 @@ impl App {
         let first = self.doc.shape(self.ed.sel[0]).map(|s| s.layer).unwrap_or(0);
         let mut layer = first;
         ui.horizontal_wrapped(|ui| {
-            let lc = PALETTE[self.doc.layers[layer].color.min(29)];
+            let lc = PALETTE[self.doc.layers[layer].color.min(lc_core::LAYER_COUNT - 1)];
             let (r, _) = ui.allocate_exact_size(egui::vec2(16.0, 16.0), egui::Sense::hover());
             ui.painter().rect_filled(r, 3.0, Color32::from_rgb(lc[0], lc[1], lc[2]));
             ui.painter().rect_stroke(r, 3.0, egui::Stroke::new(1.0, theme::border()), egui::StrokeKind::Inside);
             ui.label(tr("Layer"));
             egui::ComboBox::from_id_salt("sel_layer").selected_text(self.doc.layers[layer].name.clone()).show_ui(ui, |ui| {
-                for i in 0..30 {
+                for i in 0..lc_core::LAYER_COUNT {
                     ui.selectable_value(&mut layer, i, self.doc.layers[i].name.clone());
                 }
             });
@@ -229,7 +229,7 @@ impl App {
     fn layers_panel(&mut self, ui: &mut egui::Ui) {
         let (units, su) = (self.doc.device.units, self.doc.device.speed_unit);
         let before = self.doc.layers.clone();
-        let used: Vec<bool> = (0..30).map(|i| self.doc.scene.shapes.iter().any(|s| s.layer == i)).collect();
+        let used: Vec<bool> = (0..lc_core::LAYER_COUNT).map(|i| self.doc.scene.shapes.iter().any(|s| s.layer == i)).collect();
         self.material_header(ui);
         ui.label(RichText::new(tr("Layers are burnt from top to bottom.")).color(theme::text_dim()));
         // Headings of the three switches at the end of each row.
@@ -293,13 +293,13 @@ impl App {
             self.checkpoint();
             self.doc.move_layer(i, up);
         }
-        ui.checkbox(&mut self.show_all_layers, tr("Show all 30 layers"));
+        ui.checkbox(&mut self.show_all_layers, trf("Show all {} layers", &[&lc_core::LAYER_COUNT]));
         let has_images = self.doc.scene.shapes.iter().any(|s| s.layer == self.ed.active_layer && s.is_image());
         let mut layer_ctx = LayerCtx::of(&self.doc.device);
         layer_ctx.image_only = self.doc.is_image_layer(self.ed.active_layer);
         let l = &mut self.doc.layers[self.ed.active_layer];
         ui.horizontal(|ui| {
-            let c = PALETTE[l.color.min(29)];
+            let c = PALETTE[l.color.min(lc_core::LAYER_COUNT - 1)];
             let (r, _) = ui.allocate_exact_size(egui::vec2(16.0, 16.0), egui::Sense::hover());
             ui.painter().rect_filled(r, 3.0, Color32::from_rgb(c[0], c[1], c[2]));
             ui.painter().rect_stroke(r, 3.0, egui::Stroke::new(1.0, theme::border()), egui::StrokeKind::Inside);
@@ -343,7 +343,7 @@ impl App {
                 ui.add(egui::TextEdit::singleline(&mut l.name).desired_width(140.0));
                 ui.end_row();
                 ui.label(tr("Colour"));
-                let c = PALETTE[l.color.min(29)];
+                let c = PALETTE[l.color.min(lc_core::LAYER_COUNT - 1)];
                 let (r, _) = ui.allocate_exact_size(egui::vec2(34.0, 18.0), egui::Sense::hover());
                 ui.painter().rect_filled(r, 3.0, Color32::from_rgb(c[0], c[1], c[2]));
                 ui.end_row();

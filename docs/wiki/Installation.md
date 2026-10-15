@@ -7,8 +7,8 @@ Every release on the [Releases page](https://github.com/michalsarna/LightCreator
 | System | Installer / package | Archive |
 |---|---|---|
 | Windows 10/11 (64-bit) | `lightcreator-vX.Y.Z-windows-x86_64-setup.exe` | `lightcreator-vX.Y.Z-windows-x86_64.zip` |
-| macOS, Apple silicon (M1 and later) | `lightcreator-vX.Y.Z-macos-arm64.dmg` | `lightcreator-vX.Y.Z-macos-arm64.tar.gz` |
-| macOS, Intel | `lightcreator-vX.Y.Z-macos-x86_64.dmg` | `lightcreator-vX.Y.Z-macos-x86_64.tar.gz` |
+| macOS, Apple silicon (M1 and later) | `lightcreator-vX.Y.Z-macos-arm64.dmg` | – |
+| macOS, Intel | `lightcreator-vX.Y.Z-macos-x86_64.dmg` | – |
 | Debian / Ubuntu and derivatives, x86_64 | `lightcreator-vX.Y.Z-linux-amd64.deb` | `lightcreator-vX.Y.Z-linux-x86_64.tar.gz` |
 | Debian / Ubuntu and derivatives, ARM64 (e.g. Raspberry Pi 4/5, 64-bit OS) | `lightcreator-vX.Y.Z-linux-arm64.deb` | `lightcreator-vX.Y.Z-linux-arm64.tar.gz` |
 | Other Linux (Fedora, Arch, openSUSE…) | – | the `.tar.gz` above |
@@ -31,7 +31,6 @@ The app is only ad-hoc signed, not notarized, so the first time use **right-clic
 xattr -cr /Applications/LightCreator.app
 ```
 
-**Archive.** `tar xzf lightcreator-vX.Y.Z-macos-arm64.tar.gz` (into an empty folder) gives a bare `lightcreator` binary; run it from a terminal (`./lightcreator`). The same quarantine rule applies (`xattr -d com.apple.quarantine lightcreator`).
 
 **Laser connection.** Ports appear as `/dev/cu.usbserial-*`; install the CH340 / CP210x driver if none shows up.
 
