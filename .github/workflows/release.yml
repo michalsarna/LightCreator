@@ -3,12 +3,16 @@ name: Release
 on:
   push:
     tags: ["v*"]
+  # A dry run: builds every package and makes a DRAFT release called dry-run (delete it afterwards). Use it to try the
+  # pipeline after a change of the build tools or of the actions it uses, without a tag.
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
   check-main:
+    if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,6 +27,7 @@ jobs:
 
   build:
     needs: check-main
+    if: ${{ !cancelled() && (needs.check-main.result == 'success' || needs.check-main.result == 'skipped') }}
     strategy:
       fail-fast: false
       matrix:
@@ -34,7 +39,7 @@ jobs:
           - { os: macos-15-intel, name: macos-x86_64 }
     runs-on: ${{ matrix.os }}
     env:
-      TAG: ${{ github.ref_name }}
+      TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'v0.0.0' }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249 # stable
@@ -105,3 +110,5 @@ jobs:
             lightcreator-*
             SHA256SUMS.txt
           generate_release_notes: true
+          draft: ${{ github.ref_type != 'tag' }}
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || 'dry-run' }}
