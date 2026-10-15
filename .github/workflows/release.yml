@@ -15,7 +15,7 @@ jobs:
     if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Tag must point at a commit on main
@@ -41,7 +41,7 @@ jobs:
     env:
       TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'v0.0.0' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249 # stable
         with:
           toolchain: stable
