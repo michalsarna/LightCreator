@@ -15,7 +15,7 @@ use std::path::PathBuf;
 pub use base_ui::editor::{Tool, View};
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.3.1";
+pub const APP_VERSION: &str = "v0.3.2";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
@@ -146,12 +146,10 @@ pub struct App {
     pub text_default: lc_core::TextData,
     pub font_filter: String,
     pub focus_text: bool,
-    pub show_offset: bool,
     pub show_prefs: bool,
     pub clip: crate::clipart_ui::ClipState,
     pub show_guide: bool,
     pub guide_filter: String,
-    pub show_round: bool,
     pub esc_time: f64,
     pub layer_dlg: Option<usize>,
     pub show_stream: bool,
@@ -185,8 +183,6 @@ pub struct App {
     pub tabs: base_ui::side_tabs::SideTabs,
     /// Width of the side panel as drawn in the last frame.
     pub side_w: f32,
-    pub offset_dist: f64,
-    pub offset_keep: bool,
     pub lang: Lang,
     pub scheme: Scheme,
     pub logo: Option<egui::TextureHandle>,
@@ -335,12 +331,10 @@ impl App {
             text_default: lc_core::TextData::default(),
             font_filter: String::new(),
             focus_text: false,
-            show_offset: false,
             show_prefs: false,
             clip: crate::clipart_ui::new_state(lc_core::clipart::Library::open(crate::data_paths().gallery.clone())),
             show_guide: false,
             guide_filter: String::new(),
-            show_round: false,
             esc_time: -10.0,
             layer_dlg: None,
             show_stream: false,
@@ -370,8 +364,6 @@ impl App {
             cam_worker: None,
             side_w: 0.0,
             tabs: base_ui::side_tabs::SideTabs::new(&SideTab::IDS, &saved("tab_order").unwrap_or_default(), saved("side_collapsed").is_some_and(|v| v == "1")),
-            offset_dist: -1.0,
-            offset_keep: true,
             lang,
             scheme,
             logo: crate::load_logo(ctx),
@@ -1197,7 +1189,6 @@ impl App {
             Act::ExportGcode => self.export_gcode(),
             Act::ExportCam => self.export_cam(),
             Act::Quit => self.request_close(ctx),
-            Act::ToCurves => self.to_curves(),
             Act::ImportAi => self.import_ai(),
             Act::ImportLightburn => self.import_lightburn_dialog(),
             Act::ImportUgsd => self.import_ugsd_dialog(),
@@ -1208,17 +1199,10 @@ impl App {
                 self.side_tab = SideTab::Clipart;
                 self.open_online_clipart(ctx);
             }
-            Act::TraceImage => self.open_trace(),
-            Act::AdjustImage => self.open_adjust(),
-            Act::BoolUnion => self.bool_op(lc_core::ops::BoolOp::Union),
-            Act::BoolIntersect => self.bool_op(lc_core::ops::BoolOp::Intersect),
-            Act::BoolSubtract => self.bool_op(lc_core::ops::BoolOp::Difference),
-            Act::BoolXor => self.bool_op(lc_core::ops::BoolOp::Xor),
-            Act::OffsetShape => self.show_offset = true,
-            Act::RoundCorners => self.show_round = true,
+            // The standard commands (also pictures and the operations on shapes) were run above, by baseCreator.
+            Act::ToCurves | Act::BoolUnion | Act::BoolIntersect | Act::BoolSubtract | Act::BoolXor | Act::OffsetShape | Act::RoundCorners | Act::ImportImage | Act::AdjustImage | Act::TraceImage => {}
             Act::QuickGuide => self.show_guide = true,
             Act::OpenGithub => ctx.open_url(egui::OpenUrl::new_tab(crate::help_ui::GITHUB_URL)),
-            Act::ImportImage => self.import_image(),
             Act::CameraOverlay => self.show_overlay = true,
             Act::GridOptions => self.show_prefs = true,
             Act::ProgramOptions => self.show_options = true,
@@ -1506,24 +1490,6 @@ impl App {
     fn dialogs(&mut self, ctx: &egui::Context) {
         self.shape_popup(ctx);
 
-        let mut open = self.show_offset;
-        let mut apply = false;
-        crate::window_ui::popup(ctx, "offset_window", &tr("Offset shape"), [300.0, 190.0], &mut open, |ui| {
-            egui::Grid::new("offs").num_columns(2).show(ui, |ui| {
-                ui.label(tr("Distance"));
-                drag_len(ui, self.doc.device.units, &mut self.offset_dist, 0.1, Some((-500.0, 500.0)));
-                ui.end_row();
-            });
-            ui.label(RichText::new(tr("Positive grows the outline, negative shrinks it.")).color(theme::text_dim()));
-            ui.checkbox(&mut self.offset_keep, tr("Keep the original"));
-            apply = ui.button(tr("Create offset")).clicked();
-        });
-        if apply {
-            self.offset_selected(self.offset_dist, self.offset_keep);
-            open = false;
-        }
-        self.show_offset = open;
-
         let mut open = self.show_array;
         let mut apply = false;
         crate::window_ui::popup(ctx, "array_window", &tr("Grid array"), [260.0, 220.0], &mut open, |ui| {
@@ -1569,7 +1535,6 @@ impl App {
         self.clip_dialogs(ctx);
         self.online_clipart_window(ctx);
         self.plugin_windows(ctx);
-        self.round_window(ctx);
         self.check_window(ctx);
         self.fw_window(ctx);
         self.stall_window(ctx);
@@ -1691,7 +1656,10 @@ impl base_ui::editor::EditorHost for App {
         self.overlay_interact(resp, origin, press, hover)
     }
     fn canvas_context_menu(&mut self, ui: &mut egui::Ui, resp: &egui::Response) {
-        self.laser_context_menu(ui, resp)
+        if self.overlay_edit {
+            return;
+        }
+        base_ui::editor::context_menu(self, ui, resp);
     }
     fn place_text(&mut self, at: lc_core::Pt) {
         self.add_text_at(at)

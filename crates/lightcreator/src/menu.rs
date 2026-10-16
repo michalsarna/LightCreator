@@ -133,6 +133,13 @@ impl From<StdAct> for Act {
             StdAct::ImportImage => Act::ImportImage,
             StdAct::AdjustImage => Act::AdjustImage,
             StdAct::TraceImage => Act::TraceImage,
+            StdAct::BoolUnion => Act::BoolUnion,
+            StdAct::BoolIntersect => Act::BoolIntersect,
+            StdAct::BoolSubtract => Act::BoolSubtract,
+            StdAct::BoolXor => Act::BoolXor,
+            StdAct::OffsetShape => Act::OffsetShape,
+            StdAct::RoundCorners => Act::RoundCorners,
+            StdAct::ToCurves => Act::ToCurves,
         }
     }
 }
@@ -171,6 +178,16 @@ impl Act {
             Act::ZoomIn => StdAct::ZoomIn,
             Act::ZoomOut => StdAct::ZoomOut,
             Act::ToggleAutoFit => StdAct::ToggleAutoFit,
+            Act::ImportImage => StdAct::ImportImage,
+            Act::AdjustImage => StdAct::AdjustImage,
+            Act::TraceImage => StdAct::TraceImage,
+            Act::BoolUnion => StdAct::BoolUnion,
+            Act::BoolIntersect => StdAct::BoolIntersect,
+            Act::BoolSubtract => StdAct::BoolSubtract,
+            Act::BoolXor => StdAct::BoolXor,
+            Act::OffsetShape => StdAct::OffsetShape,
+            Act::RoundCorners => StdAct::RoundCorners,
+            Act::ToCurves => StdAct::ToCurves,
             _ => return None,
         })
     }
