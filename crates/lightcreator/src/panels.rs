@@ -180,8 +180,7 @@ impl App {
         let id = self.ed.sel[0];
         let Some(Kind::Image(im)) = self.doc.shape(id).map(|s| s.kind.clone()) else { return };
         let units = self.doc.device.units;
-        ui.separator();
-        ui.label(RichText::new(tr("Image")).strong());
+        // The heading "Image" and the buttons Adjust image and Trace image come from the shared Properties sections.
         ui.label(RichText::new(&im.name).color(theme::text_dim()));
         let dpi = im.px_w as f64 / (im.w / 25.4).max(1e-6);
         ui.label(format!("{} × {} px   {:.0} DPI   {} × {}", im.px_w, im.px_h, dpi, crate::units_ui::fmt_len(units, im.w, 1), crate::units_ui::fmt_len(units, im.h, 1)));
