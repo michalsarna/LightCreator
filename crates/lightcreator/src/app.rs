@@ -15,7 +15,7 @@ use std::path::PathBuf;
 pub use base_ui::editor::{Tool, View};
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.3.0";
+pub const APP_VERSION: &str = "v0.3.1";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
@@ -53,23 +53,16 @@ impl SideTab {
         }
     }
 
-    /// The tabs in the order the user arranged them (`ids` comes from the settings); tabs it does not mention
-    /// keep their place at the end.
-    pub fn arranged(ids: &str) -> Vec<(SideTab, &'static str)> {
-        let mut out: Vec<(SideTab, &'static str)> = vec![];
-        for id in ids.split(',') {
-            if let Some(t) = SideTab::ALL.iter().find(|(t, _)| t.id() == id.trim()) {
-                if !out.contains(t) {
-                    out.push(*t);
-                }
-            }
-        }
-        for t in SideTab::ALL {
-            if !out.contains(&t) {
-                out.push(t);
-            }
-        }
-        out
+    /// The ids of the tabs that are always there, for the order the user arranges them in.
+    pub const IDS: [&'static str; 6] = ["properties", "layers", "device", "console", "clipart", "description"];
+
+    pub fn from_id(id: &str) -> Option<SideTab> {
+        SideTab::ALL.iter().map(|(t, _)| *t).chain([SideTab::Camera]).find(|t| t.id() == id)
+    }
+
+    /// The English name of the tab (translated where it is shown).
+    pub fn label(self) -> &'static str {
+        SideTab::ALL.iter().find(|(t, _)| *t == self).map(|(_, l)| *l).unwrap_or("Camera view")
     }
 }
 
@@ -116,6 +109,8 @@ pub struct App {
     /// A short message (text, until when) such as "file saved".
     pub toast: Option<(String, std::time::Instant)>,
     pub show_close_dlg: bool,
+    /// What the person has to look at now: an alarm, or an error in the middle of a job (a big window with STOP and UNLOCK).
+    pub problem: Option<base_ui::machine_ctl::Problem>,
     /// A question waiting for Yes / No, drawn by the application so it is in the chosen language.
     pub confirm: Option<crate::session_ui::Confirm>,
     /// The issues found before a job was sent, framed or exported.
@@ -186,8 +181,8 @@ pub struct App {
     pub cam_index: u32,
     pub cam_error: String,
     pub cam_worker: Option<crate::camera::Worker>,
-    /// The order of the tabs of the side panel.
-    pub tab_order: Vec<(SideTab, &'static str)>,
+    /// The order of the tabs of the side panel, and whether it is collapsed.
+    pub tabs: base_ui::side_tabs::SideTabs,
     /// Width of the side panel as drawn in the last frame.
     pub side_w: f32,
     pub offset_dist: f64,
@@ -313,6 +308,7 @@ impl App {
             toast: None,
             show_close_dlg: false,
             confirm: None,
+            problem: None,
             check_dlg: None,
             fw_warn: None,
             stall: None,
@@ -373,7 +369,7 @@ impl App {
             cam_error: String::new(),
             cam_worker: None,
             side_w: 0.0,
-            tab_order: SideTab::arranged(&saved("tab_order").unwrap_or_default()),
+            tabs: base_ui::side_tabs::SideTabs::new(&SideTab::IDS, &saved("tab_order").unwrap_or_default(), saved("side_collapsed").is_some_and(|v| v == "1")),
             offset_dist: -1.0,
             offset_keep: true,
             lang,
@@ -898,6 +894,41 @@ impl App {
         }
     }
 
+    /// The controller reported an alarm, or an error: an alarm always asks for attention, an error only in a running job.
+    pub(crate) fn raise_problem(&mut self, alarm: bool, code: u32, explanation: String) {
+        if alarm {
+            let title = format!("{} {code}", tr("Alarm").to_uppercase());
+            self.problem = Some(base_ui::machine_ctl::Problem { alarm: true, title, text: explanation, line: None });
+        } else if self.job_running() {
+            let text = if explanation.is_empty() { format!("error:{code}") } else { format!("error:{code}: {explanation}") };
+            self.problem = Some(base_ui::machine_ctl::Problem { alarm: false, title: tr("The job stopped").to_string(), text, line: None });
+        }
+    }
+
+    /// The big window for a problem, and what its buttons do.
+    pub(crate) fn problem_window(&mut self, ctx: &egui::Context) {
+        use base_ui::alert_ui::{forget_cleared_alarm, show, Choice};
+        let in_alarm = self.machine.0.split(':').next().is_some_and(|s| s.eq_ignore_ascii_case("alarm"));
+        let connected = self.connected;
+        forget_cleared_alarm(ctx, &mut self.problem, in_alarm, connected);
+        let Some(p) = self.problem.clone() else { return };
+        match show(ctx, &p) {
+            Choice::Nothing => {}
+            Choice::Stop => {
+                self.abort_job();
+                if !p.alarm {
+                    self.problem = None;
+                }
+            }
+            Choice::Unlock => {
+                let a = self.doc.device.controller.unlock();
+                self.run_action(a);
+                self.problem = None;
+            }
+            Choice::Close => self.problem = None,
+        }
+    }
+
     fn poll_laser(&mut self) {
         self.job_clock_tick();
         for e in self.link.poll() {
@@ -920,6 +951,7 @@ impl App {
                             self.push_console(ConsoleLine::info(format!("   ↳ {}", tr(t))));
                             self.status = trf("{} {}: {}", &[&tr(word), &x.code, &tr(t)]);
                         }
+                        self.raise_problem(x.kind == lc_core::grbl_codes::Kind::Alarm, x.code, x.text.map(|t| tr(t).to_string()).unwrap_or_default());
                     }
                 }
                 Evt::Connected(c) => {
@@ -1541,6 +1573,7 @@ impl App {
         self.check_window(ctx);
         self.fw_window(ctx);
         self.stall_window(ctx);
+        self.problem_window(ctx);
         self.fw_windows(ctx);
         let mut cal = std::mem::take(&mut self.cal);
         base_ui::tools_ui::calibration_window(ctx, &mut cal, self);
@@ -1753,7 +1786,8 @@ impl App {
         v.push(("snap_objects", if self.ed.snap_objects { "1" } else { "0" }.into()));
         v.push(("zones_visible", if self.zones_visible { "1" } else { "0" }.into()));
         v.push(("grid_main_mm", self.ed.grid.to_string()));
-        v.push(("tab_order", self.tab_order.iter().map(|(t, _)| t.id()).collect::<Vec<_>>().join(",")));
+        v.push(("tab_order", self.tabs.order_string()));
+        v.push(("side_collapsed", if self.tabs.collapsed { "1" } else { "0" }.into()));
         v
     }
 
@@ -1803,7 +1837,11 @@ impl App {
         egui::Panel::top("controls").frame(chrome).exact_size(36.0).show(ui, |ui| self.control_bar(ui));
         egui::Panel::bottom("status").frame(chrome).exact_size(26.0).show(ui, |ui| self.status_bar(ui));
         egui::Panel::left("tools").frame(chrome).exact_size(52.0).resizable(false).show(ui, |ui| self.tool_bar(ui));
-        let side = egui::Panel::right("side").frame(chrome.inner_margin(egui::Margin::same(8))).default_size(410.0).show(ui, |ui| self.side_panel(ui));
+        let side = if self.tabs.collapsed {
+            egui::Panel::right("side_strip").frame(chrome.inner_margin(egui::Margin::same(3))).exact_size(base_ui::side_tabs::STRIP_W).resizable(false).show(ui, |ui| self.side_strip(ui))
+        } else {
+            egui::Panel::right("side").frame(chrome.inner_margin(egui::Margin::same(8))).default_size(410.0).show(ui, |ui| self.side_panel(ui))
+        };
         base_ui::widgets::panel_edge_highlight(ui.ctx(), side.response.rect, base_ui::widgets::Edge::Left);
         egui::Panel::right("arrange_bar").frame(chrome.inner_margin(egui::Margin::symmetric(2, 4))).exact_size(40.0).resizable(false).show(ui, |ui| self.arrange_bar(ui));
         egui::Panel::bottom("swatches").frame(chrome).exact_size(36.0).show(ui, |ui| base_ui::layer_bar::layer_bar(self, ui));
@@ -1867,6 +1905,37 @@ mod tests {
         let nav: Vec<Tool> = Tool::ALL.iter().map(|t| t.0).filter(|t| t.is_nav()).collect();
         assert_eq!(nav, vec![Tool::Pan, Tool::Zoom, Tool::ZoomOut]);
         assert!(Tool::ALL.iter().filter(|t| !t.0.is_nav()).all(|t| !matches!(t.0, Tool::Pan | Tool::Zoom | Tool::ZoomOut)));
+    }
+
+    #[test]
+    fn an_alarm_always_raises_the_big_window_and_an_error_only_in_a_running_job() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        // An error with no job running is only a line in the console.
+        a.raise_problem(false, 20, "Unsupported command".into());
+        assert!(a.problem.is_none());
+        // In a running job it stops the job: the window offers STOP and UNLOCK.
+        a.progress = (3, 10);
+        a.raise_problem(false, 20, "Unsupported command".into());
+        let p = a.problem.clone().unwrap();
+        assert!(!p.alarm && p.text.contains("error:20") && p.text.contains("Unsupported command"), "{p:?}");
+        // An alarm raises it always, and replaces the error.
+        a.progress = (0, 0);
+        a.raise_problem(true, 2, "Soft limit".into());
+        let p = a.problem.clone().unwrap();
+        assert!(p.alarm && p.title.contains('2') && p.text == "Soft limit", "{p:?}");
+        // The window goes away by itself when the alarm was cleared, but not before the alarm state was seen.
+        a.connected = true;
+        let frame = |a: &mut App| {
+            let mut out = ctx.run_ui(egui::RawInput::default(), |ui| a.problem_window(ui.ctx()));
+            out.textures_delta.clear();
+        };
+        a.machine.0 = "Alarm".into();
+        frame(&mut a);
+        assert!(a.problem.is_some());
+        a.machine.0 = "Idle".into();
+        frame(&mut a);
+        assert!(a.problem.is_none(), "cleared alarm: no window");
     }
 
     #[test]

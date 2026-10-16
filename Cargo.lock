@@ -180,8 +180,8 @@ checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
 
 [[package]]
 name = "base-core"
-version = "1.1.0"
-source = "git+https://github.com/michalsarna/baseCreator?tag=v1.1.0#94d50d97d5b1875234b9474488a61866bb84034f"
+version = "1.2.0"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v1.2.0#da6e5604ee796ae23ad3f87b371814a4737e5b04"
 dependencies = [
  "base64 0.23.1",
  "i_overlay",
@@ -200,8 +200,8 @@ dependencies = [
 
 [[package]]
 name = "base-ui"
-version = "1.1.0"
-source = "git+https://github.com/michalsarna/baseCreator?tag=v1.1.0#94d50d97d5b1875234b9474488a61866bb84034f"
+version = "1.2.0"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v1.2.0#da6e5604ee796ae23ad3f87b371814a4737e5b04"
 dependencies = [
  "base-core",
  "egui",
@@ -2006,7 +2006,7 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 
 [[package]]
 name = "lc-core"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "base-core",
  "image",
@@ -2052,7 +2052,7 @@ dependencies = [
 
 [[package]]
 name = "lightcreator"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "base-ui",
  "eframe",
