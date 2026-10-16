@@ -2,6 +2,13 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.3.1
+
+* **Alarm window:** an alarm of the controller, or an error in the middle of a job, opens a big window that says what happened, with a red **STOP** and an orange **UNLOCK** button; it goes away by itself when the alarm is cleared.
+* **Side panel:** the tabs can be dragged into another order (remembered, also in backups), and a button collapses the panel to a narrow strip with the tab names written vertically; a click on a name opens the panel on that tab.
+* **Layer bar:** more room between the colours and at both ends, so the outline of the first one is not pressed against the arrow.
+* baseCreator v1.2.0.
+
 ## v0.3.0
 
 * **Layer bar:** the selected layer's outline is no longer clipped, and the bar ends exactly at the work panel (not under the right panel).
