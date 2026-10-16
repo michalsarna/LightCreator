@@ -2,6 +2,11 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.3.3
+
+* **Properties tab:** the buttons **Adjust image…** and **Trace image…** of a selected picture come from the shared editor (the same as in MillCreator and PenCreator).
+* baseCreator v1.5.0.
+
 ## v0.3.2
 
 * **Shared tools:** the operations on shapes (union, intersection, subtract, exclusive or, offset shape, round corners, convert to curves) and the right-click menu now come from the editor of baseCreator, the same as in MillCreator and PenCreator. The menu looks and works as before.
