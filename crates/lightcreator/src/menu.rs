@@ -130,6 +130,9 @@ impl From<StdAct> for Act {
             StdAct::ZoomIn => Act::ZoomIn,
             StdAct::ZoomOut => Act::ZoomOut,
             StdAct::ToggleAutoFit => Act::ToggleAutoFit,
+            StdAct::ImportImage => Act::ImportImage,
+            StdAct::AdjustImage => Act::AdjustImage,
+            StdAct::TraceImage => Act::TraceImage,
         }
     }
 }
