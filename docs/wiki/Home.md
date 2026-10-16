@@ -35,4 +35,4 @@ An open-source alternative to [LightBurn](https://lightburnsoftware.com/) for CN
 
 > ⚠️ **Safety:** lasers are dangerous. Test G-code at low power, wear eye protection, never leave a running machine unattended. See [Safety and Limitations](Safety-and-Limitations).
 
-Latest release: **v0.3.2** · [Releases](https://github.com/michalsarna/LightCreator/releases) · [Issues](https://github.com/michalsarna/LightCreator/issues) · Licence: [MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) or [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE), at your option
+Latest release: **v0.3.3** · [Releases](https://github.com/michalsarna/LightCreator/releases) · [Issues](https://github.com/michalsarna/LightCreator/issues) · Licence: [MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) or [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE), at your option

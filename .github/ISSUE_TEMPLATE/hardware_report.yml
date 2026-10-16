@@ -51,7 +51,7 @@ body:
     attributes:
       label: LightCreator version
       description: Exactly as the release name on the Releases page (also shown in Help → About), including the leading "v".
-      placeholder: v0.3.2
+      placeholder: v0.3.3
     validations:
       required: true
   - type: dropdown
