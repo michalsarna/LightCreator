@@ -2,6 +2,11 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.3.2
+
+* **Shared tools:** the operations on shapes (union, intersection, subtract, exclusive or, offset shape, round corners, convert to curves) and the right-click menu now come from the editor of baseCreator, the same as in MillCreator and PenCreator. The menu looks and works as before.
+* baseCreator v1.4.0.
+
 ## v0.3.1
 
 * **Alarm window:** an alarm of the controller, or an error in the middle of a job, opens a big window that says what happened, with a red **STOP** and an orange **UNLOCK** button; it goes away by itself when the alarm is cleared.

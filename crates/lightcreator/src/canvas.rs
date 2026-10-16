@@ -1,7 +1,6 @@
 //! The parts of the canvas that belong to the laser: what the machine's bed shows (unusable strips, limits, rotary
 //! marks, no-go zones, home and the live position), the camera picture and the tool path preview. The canvas
 //! itself is in base-ui; these are the hooks `App` gives it.
-use crate::menu::Act;
 use crate::app::App;
 use crate::theme;
 use base_ui::editor::{CanvasView, EditorHost};
@@ -211,18 +210,5 @@ impl App {
             return true;
         }
         false
-    }
-
-    /// The context menu of the work area: the application draws it, the command chosen is run here.
-    pub fn laser_context_menu(&mut self, ui: &mut egui::Ui, resp: &egui::Response) {
-        if self.overlay_edit {
-            return;
-        }
-        let mut act: Option<Act> = None;
-        resp.context_menu(|ui| act = self.context_menu(ui));
-        if let Some(a) = act {
-            let ctx = ui.ctx().clone();
-            self.do_act(&ctx, a);
-        }
     }
 }

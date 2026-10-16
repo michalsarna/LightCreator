@@ -1,5 +1,6 @@
 //! Tests of node editing (the operations live in base-ui).
 #[cfg(test)]
+use base_ui::editor::EditorShapeOps;
 use crate::app::App;
 #[cfg(test)]
 use base_ui::clipart_ui::ClipGallery;

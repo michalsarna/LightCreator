@@ -1,3 +1,4 @@
+use base_ui::editor::EditorShapeOps;
 use base_ui::widgets::section_title;
 use base_ui::clipart_ui::ClipGallery;
 use crate::app::{App, SideTab};

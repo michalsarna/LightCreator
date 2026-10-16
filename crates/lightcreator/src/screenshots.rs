@@ -6,6 +6,7 @@ use base_ui::clipart_ui::ClipGallery;
 use base_ui::editor::EditorImages;
 use base_ui::editor::EditorCommands;
 use base_ui::editor::EditorHost;
+use base_ui::editor::EditorShapeOps;
 use crate::app::{App, Screen, SideTab, Tool};
 use crate::i18n::{self, Lang};
 use crate::laser::{ConsoleLine, Dir};
@@ -469,7 +470,7 @@ fn render_screenshots() {
         a.ed.sel = vec![tri];
         a.round_corners(6.0);
         a.ed.sel.clear();
-        a.show_round = true;
+        a.ed.show_round = true;
         a.show_guide = true;
         a.status = "Rounded 3 corner(s).".into();
     }
@@ -477,7 +478,7 @@ fn render_screenshots() {
     {
         let a = app(&mut h);
         a.show_guide = false;
-        a.show_round = false;
+        a.ed.show_round = false;
     }
     save(&mut h, "23-rounded-shapes.png");
 
@@ -485,7 +486,7 @@ fn render_screenshots() {
     {
         let a = app(&mut h);
         a.show_guide = false;
-        a.show_round = false;
+        a.ed.show_round = false;
         a.doc.scene.shapes.clear();
         let dir = std::env::temp_dir().join(format!("lc-shot-clip-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
