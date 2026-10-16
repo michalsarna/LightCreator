@@ -109,6 +109,8 @@ pub struct App {
     /// A short message (text, until when) such as "file saved".
     pub toast: Option<(String, std::time::Instant)>,
     pub show_close_dlg: bool,
+    /// What the person has to look at now: an alarm, or an error in the middle of a job (a big window with STOP and UNLOCK).
+    pub problem: Option<base_ui::machine_ctl::Problem>,
     /// A question waiting for Yes / No, drawn by the application so it is in the chosen language.
     pub confirm: Option<crate::session_ui::Confirm>,
     /// The issues found before a job was sent, framed or exported.
@@ -306,6 +308,7 @@ impl App {
             toast: None,
             show_close_dlg: false,
             confirm: None,
+            problem: None,
             check_dlg: None,
             fw_warn: None,
             stall: None,
@@ -891,6 +894,41 @@ impl App {
         }
     }
 
+    /// The controller reported an alarm, or an error: an alarm always asks for attention, an error only in a running job.
+    pub(crate) fn raise_problem(&mut self, alarm: bool, code: u32, explanation: String) {
+        if alarm {
+            let title = format!("{} {code}", tr("Alarm").to_uppercase());
+            self.problem = Some(base_ui::machine_ctl::Problem { alarm: true, title, text: explanation, line: None });
+        } else if self.job_running() {
+            let text = if explanation.is_empty() { format!("error:{code}") } else { format!("error:{code}: {explanation}") };
+            self.problem = Some(base_ui::machine_ctl::Problem { alarm: false, title: tr("The job stopped").to_string(), text, line: None });
+        }
+    }
+
+    /// The big window for a problem, and what its buttons do.
+    pub(crate) fn problem_window(&mut self, ctx: &egui::Context) {
+        use base_ui::alert_ui::{forget_cleared_alarm, show, Choice};
+        let in_alarm = self.machine.0.split(':').next().is_some_and(|s| s.eq_ignore_ascii_case("alarm"));
+        let connected = self.connected;
+        forget_cleared_alarm(ctx, &mut self.problem, in_alarm, connected);
+        let Some(p) = self.problem.clone() else { return };
+        match show(ctx, &p) {
+            Choice::Nothing => {}
+            Choice::Stop => {
+                self.abort_job();
+                if !p.alarm {
+                    self.problem = None;
+                }
+            }
+            Choice::Unlock => {
+                let a = self.doc.device.controller.unlock();
+                self.run_action(a);
+                self.problem = None;
+            }
+            Choice::Close => self.problem = None,
+        }
+    }
+
     fn poll_laser(&mut self) {
         self.job_clock_tick();
         for e in self.link.poll() {
@@ -913,6 +951,7 @@ impl App {
                             self.push_console(ConsoleLine::info(format!("   ↳ {}", tr(t))));
                             self.status = trf("{} {}: {}", &[&tr(word), &x.code, &tr(t)]);
                         }
+                        self.raise_problem(x.kind == lc_core::grbl_codes::Kind::Alarm, x.code, x.text.map(|t| tr(t).to_string()).unwrap_or_default());
                     }
                 }
                 Evt::Connected(c) => {
@@ -1534,6 +1573,7 @@ impl App {
         self.check_window(ctx);
         self.fw_window(ctx);
         self.stall_window(ctx);
+        self.problem_window(ctx);
         self.fw_windows(ctx);
         let mut cal = std::mem::take(&mut self.cal);
         base_ui::tools_ui::calibration_window(ctx, &mut cal, self);
@@ -1865,6 +1905,37 @@ mod tests {
         let nav: Vec<Tool> = Tool::ALL.iter().map(|t| t.0).filter(|t| t.is_nav()).collect();
         assert_eq!(nav, vec![Tool::Pan, Tool::Zoom, Tool::ZoomOut]);
         assert!(Tool::ALL.iter().filter(|t| !t.0.is_nav()).all(|t| !matches!(t.0, Tool::Pan | Tool::Zoom | Tool::ZoomOut)));
+    }
+
+    #[test]
+    fn an_alarm_always_raises_the_big_window_and_an_error_only_in_a_running_job() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        // An error with no job running is only a line in the console.
+        a.raise_problem(false, 20, "Unsupported command".into());
+        assert!(a.problem.is_none());
+        // In a running job it stops the job: the window offers STOP and UNLOCK.
+        a.progress = (3, 10);
+        a.raise_problem(false, 20, "Unsupported command".into());
+        let p = a.problem.clone().unwrap();
+        assert!(!p.alarm && p.text.contains("error:20") && p.text.contains("Unsupported command"), "{p:?}");
+        // An alarm raises it always, and replaces the error.
+        a.progress = (0, 0);
+        a.raise_problem(true, 2, "Soft limit".into());
+        let p = a.problem.clone().unwrap();
+        assert!(p.alarm && p.title.contains('2') && p.text == "Soft limit", "{p:?}");
+        // The window goes away by itself when the alarm was cleared, but not before the alarm state was seen.
+        a.connected = true;
+        let frame = |a: &mut App| {
+            let mut out = ctx.run_ui(egui::RawInput::default(), |ui| a.problem_window(ui.ctx()));
+            out.textures_delta.clear();
+        };
+        a.machine.0 = "Alarm".into();
+        frame(&mut a);
+        assert!(a.problem.is_some());
+        a.machine.0 = "Idle".into();
+        frame(&mut a);
+        assert!(a.problem.is_none(), "cleared alarm: no window");
     }
 
     #[test]
