@@ -112,9 +112,7 @@ impl App {
         if let Some(v) = get("grid_main_mm").and_then(|v| v.parse::<f64>().ok()) {
             self.ed.grid = v;
         }
-        if let Some(o) = get("tab_order") {
-            self.tab_order = crate::app::SideTab::arranged(o);
-        }
+        self.tabs.restore(get("tab_order").unwrap_or(""), get("side_collapsed").is_some_and(|v| v == "1"));
         self.cfg = None;
         if self.screen == crate::app::Screen::Editor && !self.profiles.is_empty() {
             self.enter_editor(self.active);
@@ -206,6 +204,27 @@ mod tests {
         let junk = dir.join("junk.zip");
         std::fs::write(&junk, "not a zip").unwrap();
         assert!(b.restore_backup(&ctx, &junk).is_err());
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn the_order_of_the_tabs_and_the_collapsed_panel_are_in_the_backup() {
+        let ctx = eframe::egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        let dir = std::env::temp_dir().join(format!("lc-backup-tabs-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        a.clip = crate::clipart_ui::new_state(lc_core::clipart::Library::open(dir.join("clipart")));
+        a.profiles = vec![lc_core::Device::default()];
+        let mut order = a.tabs.order().to_vec();
+        order.swap(0, 3);
+        a.tabs.restore(&order.join(","), true);
+        let zip_path = dir.join("backup.zip");
+        a.write_backup(&zip_path).unwrap();
+        let mut b = App::build(&ctx, None, false);
+        b.clip = crate::clipart_ui::new_state(lc_core::clipart::Library::open(dir.join("clipart2")));
+        assert!(b.restore_backup(&ctx, &zip_path).is_ok());
+        assert_eq!(b.tabs.order(), a.tabs.order());
+        assert!(b.tabs.collapsed);
         let _ = std::fs::remove_dir_all(&dir);
     }
 }

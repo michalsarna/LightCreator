@@ -53,23 +53,16 @@ impl SideTab {
         }
     }
 
-    /// The tabs in the order the user arranged them (`ids` comes from the settings); tabs it does not mention
-    /// keep their place at the end.
-    pub fn arranged(ids: &str) -> Vec<(SideTab, &'static str)> {
-        let mut out: Vec<(SideTab, &'static str)> = vec![];
-        for id in ids.split(',') {
-            if let Some(t) = SideTab::ALL.iter().find(|(t, _)| t.id() == id.trim()) {
-                if !out.contains(t) {
-                    out.push(*t);
-                }
-            }
-        }
-        for t in SideTab::ALL {
-            if !out.contains(&t) {
-                out.push(t);
-            }
-        }
-        out
+    /// The ids of the tabs that are always there, for the order the user arranges them in.
+    pub const IDS: [&'static str; 6] = ["properties", "layers", "device", "console", "clipart", "description"];
+
+    pub fn from_id(id: &str) -> Option<SideTab> {
+        SideTab::ALL.iter().map(|(t, _)| *t).chain([SideTab::Camera]).find(|t| t.id() == id)
+    }
+
+    /// The English name of the tab (translated where it is shown).
+    pub fn label(self) -> &'static str {
+        SideTab::ALL.iter().find(|(t, _)| *t == self).map(|(_, l)| *l).unwrap_or("Camera view")
     }
 }
 
@@ -186,8 +179,8 @@ pub struct App {
     pub cam_index: u32,
     pub cam_error: String,
     pub cam_worker: Option<crate::camera::Worker>,
-    /// The order of the tabs of the side panel.
-    pub tab_order: Vec<(SideTab, &'static str)>,
+    /// The order of the tabs of the side panel, and whether it is collapsed.
+    pub tabs: base_ui::side_tabs::SideTabs,
     /// Width of the side panel as drawn in the last frame.
     pub side_w: f32,
     pub offset_dist: f64,
@@ -373,7 +366,7 @@ impl App {
             cam_error: String::new(),
             cam_worker: None,
             side_w: 0.0,
-            tab_order: SideTab::arranged(&saved("tab_order").unwrap_or_default()),
+            tabs: base_ui::side_tabs::SideTabs::new(&SideTab::IDS, &saved("tab_order").unwrap_or_default(), saved("side_collapsed").is_some_and(|v| v == "1")),
             offset_dist: -1.0,
             offset_keep: true,
             lang,
@@ -1753,7 +1746,8 @@ impl App {
         v.push(("snap_objects", if self.ed.snap_objects { "1" } else { "0" }.into()));
         v.push(("zones_visible", if self.zones_visible { "1" } else { "0" }.into()));
         v.push(("grid_main_mm", self.ed.grid.to_string()));
-        v.push(("tab_order", self.tab_order.iter().map(|(t, _)| t.id()).collect::<Vec<_>>().join(",")));
+        v.push(("tab_order", self.tabs.order_string()));
+        v.push(("side_collapsed", if self.tabs.collapsed { "1" } else { "0" }.into()));
         v
     }
 
@@ -1803,7 +1797,11 @@ impl App {
         egui::Panel::top("controls").frame(chrome).exact_size(36.0).show(ui, |ui| self.control_bar(ui));
         egui::Panel::bottom("status").frame(chrome).exact_size(26.0).show(ui, |ui| self.status_bar(ui));
         egui::Panel::left("tools").frame(chrome).exact_size(52.0).resizable(false).show(ui, |ui| self.tool_bar(ui));
-        let side = egui::Panel::right("side").frame(chrome.inner_margin(egui::Margin::same(8))).default_size(410.0).show(ui, |ui| self.side_panel(ui));
+        let side = if self.tabs.collapsed {
+            egui::Panel::right("side_strip").frame(chrome.inner_margin(egui::Margin::same(3))).exact_size(base_ui::side_tabs::STRIP_W).resizable(false).show(ui, |ui| self.side_strip(ui))
+        } else {
+            egui::Panel::right("side").frame(chrome.inner_margin(egui::Margin::same(8))).default_size(410.0).show(ui, |ui| self.side_panel(ui))
+        };
         base_ui::widgets::panel_edge_highlight(ui.ctx(), side.response.rect, base_ui::widgets::Edge::Left);
         egui::Panel::right("arrange_bar").frame(chrome.inner_margin(egui::Margin::symmetric(2, 4))).exact_size(40.0).resizable(false).show(ui, |ui| self.arrange_bar(ui));
         egui::Panel::bottom("swatches").frame(chrome).exact_size(36.0).show(ui, |ui| base_ui::layer_bar::layer_bar(self, ui));
