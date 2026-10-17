@@ -2213,6 +2213,9 @@ fn a_material_colour_is_saved_when_set_and_old_materials_have_none() {
     assert_eq!(a.layers, b.layers);
     a.color = b.color;
     assert_eq!(a, b);
+}
+
+#[test]
 fn a_layer_description_is_saved_comes_with_a_material_and_old_files_have_none() {
     let mut l = Layer::new(3);
     assert!(l.description.is_empty());
