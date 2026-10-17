@@ -2192,6 +2192,30 @@ fn regenerate_the_every_kind_fixture() {
 }
 
 #[test]
+fn a_material_colour_is_saved_when_set_and_old_materials_have_none() {
+    use crate::materials::Material;
+    let mut m = Material::new("Plywood");
+    assert!(m.color.is_none());
+    // Without a colour the file is the same as it always was.
+    let plain = serde_json::to_string(&m).unwrap();
+    assert!(!plain.contains("color"), "{plain}");
+    let old: Material = serde_json::from_str(&plain).unwrap();
+    assert_eq!(old.color, None);
+    // With one it is written and read back.
+    m.color = Some([200, 150, 90]);
+    let json = serde_json::to_string(&m).unwrap();
+    let back: Material = serde_json::from_str(&json).unwrap();
+    assert_eq!(back.color, Some([200, 150, 90]));
+    // The colour is only shown: the layers of two materials that differ only in it are the same settings.
+    let mut a = Material::new("A");
+    let mut b = Material::new("A");
+    b.color = Some([1, 2, 3]);
+    assert_eq!(a.layers, b.layers);
+    a.color = b.color;
+    assert_eq!(a, b);
+}
+
+#[test]
 fn a_layer_description_is_saved_comes_with_a_material_and_old_files_have_none() {
     let mut l = Layer::new(3);
     assert!(l.description.is_empty());

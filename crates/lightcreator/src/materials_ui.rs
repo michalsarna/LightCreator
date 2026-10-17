@@ -23,8 +23,10 @@ pub fn material_label(name: &str) -> String {
 /// What the header is doing besides showing the name.
 #[derive(Clone, Debug, PartialEq)]
 pub enum MatEdit {
-    New(String),
-    Rename(String),
+    /// The name of the new material and its colour (only shown).
+    New(String, Option<[u8; 3]>),
+    /// The new name of the selected material and its colour.
+    Rename(String, Option<[u8; 3]>),
 }
 
 impl App {
@@ -54,6 +56,7 @@ impl App {
     pub fn material_header(&mut self, ui: &mut egui::Ui) {
         let names: Vec<String> = self.doc.device.materials.iter().map(|m| material_label(&m.name)).collect();
         let active = self.doc.device.active_material.min(names.len().saturating_sub(1));
+        let colours: Vec<Option<[u8; 3]>> = self.doc.device.materials.iter().map(|m| m.color).collect();
         let mut pick: Option<usize> = None;
         let mut edit = self.mat_edit.take();
         let mut commit = false;
@@ -62,19 +65,27 @@ impl App {
         egui::Frame::group(ui.style()).show(ui, |ui| {
             ui.set_width((ui.available_width() - 16.0).max(60.0));
             ui.horizontal(|ui| {
-                ui.add(crate::icons::slot(Some("package"), theme::text())).on_hover_text(tr("Material"));
+                // The colour of the material (only shown) tints the icon in front of the list.
+                let tint = colours.get(active).copied().flatten().map(|c| Color32::from_rgb(c[0], c[1], c[2])).unwrap_or_else(theme::text);
+                ui.add(crate::icons::slot(Some("package"), tint)).on_hover_text(tr("Material"));
                 egui::ComboBox::from_id_salt("material_pick").width((ui.available_width() - 110.0).clamp(60.0, 260.0)).selected_text(names.get(active).cloned().unwrap_or_default()).show_ui(ui, |ui| {
                     for (i, n) in names.iter().enumerate() {
-                        if ui.selectable_label(i == active, n).clicked() {
-                            pick = Some(i);
-                        }
+                        ui.horizontal(|ui| {
+                            let (r, _) = ui.allocate_exact_size(egui::vec2(12.0, 12.0), egui::Sense::hover());
+                            if let Some(c) = colours.get(i).copied().flatten() {
+                                ui.painter().rect_filled(r, 2.0, Color32::from_rgb(c[0], c[1], c[2]));
+                            }
+                            if ui.selectable_label(i == active, n).clicked() {
+                                pick = Some(i);
+                            }
+                        });
                     }
                 });
                 if ui.add(egui::Button::image(crate::icons::slot(Some("plus"), theme::text()))).on_hover_text(tr("New, empty material")).clicked() {
-                    edit = Some(MatEdit::New(String::new()));
+                    edit = Some(MatEdit::New(String::new(), None));
                 }
                 if ui.add(egui::Button::image(crate::icons::slot(Some("pencil"), theme::text()))).on_hover_text(tr("Rename this material")).clicked() {
-                    edit = Some(MatEdit::Rename(names.get(active).cloned().unwrap_or_default()));
+                    edit = Some(MatEdit::Rename(names.get(active).cloned().unwrap_or_default(), colours.get(active).copied().flatten()));
                 }
                 let can = names.len() > 1;
                 if ui.add_enabled_ui(can, |ui| crate::window_ui::delete_icon(ui, &tr("Delete this material"))).inner.clicked() {
@@ -82,12 +93,25 @@ impl App {
                 }
             });
             if let Some(e) = &mut edit {
-                let (text, hint) = match e {
-                    MatEdit::New(t) => (t, tr("Name of the new material")),
-                    MatEdit::Rename(t) => (t, tr("New name")),
+                let (text, hint, colour) = match e {
+                    MatEdit::New(t, c) => (t, tr("Name of the new material"), c),
+                    MatEdit::Rename(t, c) => (t, tr("New name"), c),
                 };
                 ui.horizontal(|ui| {
-                    let r = ui.add(egui::TextEdit::singleline(text).hint_text(hint).desired_width((ui.available_width() - 130.0).max(60.0)));
+                    // The colour of the material: only shown, nothing is computed from it.
+                    let mut col = colour.unwrap_or([128, 128, 128]);
+                    let tip = tr("The colour of the material is only shown; it changes nothing.");
+                    let picked = ui.scope(|ui| {
+                        ui.spacing_mut().interact_size = egui::vec2(22.0, 20.0);
+                        ui.color_edit_button_srgb(&mut col).on_hover_text(tip).changed()
+                    });
+                    if picked.inner {
+                        *colour = Some(col);
+                    }
+                    if colour.is_some() && ui.add(egui::Button::image(crate::icons::slot(Some("x"), theme::text())).small()).on_hover_text(tr("Clear")).clicked() {
+                        *colour = None;
+                    }
+                    let r = ui.add(egui::TextEdit::singleline(text).hint_text(hint).desired_width((ui.available_width() - 130.0).max(40.0)));
                     let ok = !text.trim().is_empty();
                     let go = egui::Button::new(RichText::new(tr("Save")).color(Color32::WHITE).strong()).fill(crate::window_ui::SAVE_GREEN);
                     if ui.add_enabled(ok, go).clicked() || (r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) && ok) {
@@ -109,11 +133,18 @@ impl App {
         }
         if commit {
             match &edit {
-                Some(MatEdit::New(t)) => {
+                Some(MatEdit::New(t, c)) => {
                     self.checkpoint();
-                    self.doc.add_material(t);
+                    let i = self.doc.add_material(t);
+                    self.doc.device.materials[i].color = *c;
                 }
-                Some(MatEdit::Rename(t)) => self.doc.rename_material(t),
+                Some(MatEdit::Rename(t, c)) => {
+                    self.doc.rename_material(t);
+                    let a = self.doc.device.active_material;
+                    if let Some(m) = self.doc.device.materials.get_mut(a) {
+                        m.color = *c;
+                    }
+                }
                 None => {}
             }
             self.sync_profile();

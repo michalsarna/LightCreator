@@ -1087,3 +1087,4 @@
 1086|Importa el disseny d'UGS…
 1087|Algunes parts del disseny d'UGS no s'han pogut utilitzar: {}
 1088|Mostra les {} capes
+1089|El color del material només es mostra; no canvia res.

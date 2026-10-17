@@ -1087,3 +1087,4 @@
 1086|Importuoti UGS dizainą…
 1087|Kai kurių UGS dizaino dalių nepavyko panaudoti: {}
 1088|Rodyti visus {} sluoksnių
+1089|Medžiagos spalva tik rodoma; ji nieko nekeičia.

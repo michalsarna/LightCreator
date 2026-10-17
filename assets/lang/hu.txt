@@ -1087,3 +1087,4 @@
 1086|UGS-terv importálása…
 1087|Az UGS-terv egyes részeit nem lehetett felhasználni: {}
 1088|Mind a {} réteg megjelenítése
+1089|Az anyag színe csak megjelenik; semmin sem változtat.

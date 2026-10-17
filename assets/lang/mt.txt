@@ -1087,3 +1087,4 @@
 1086|Importa disinn UGS…
 1087|Xi partijiet tad-disinn UGS ma setgħux jintużaw: {}
 1088|Uri t-{} saff kollha
+1089|Il-kulur tal-materjal jintwera biss; ma jibdel xejn.

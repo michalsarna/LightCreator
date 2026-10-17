@@ -1087,3 +1087,4 @@
 1086|Importă designul UGS…
 1087|Unele părți ale designului UGS nu au putut fi folosite: {}
 1088|Arată toate cele {} de straturi
+1089|Culoarea materialului este doar afișată; nu schimbă nimic.

@@ -17,13 +17,17 @@ pub struct MaterialLayer {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Material {
     pub name: String,
+    /// A colour to tell the material apart in the lists. It is only shown: nothing is computed from it. Not written when there
+    /// is none, so older files stay the same.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub color: Option<[u8; 3]>,
     #[serde(default)]
     pub layers: Vec<MaterialLayer>,
 }
 
 impl Material {
     pub fn new(name: &str) -> Material {
-        Material { name: name.to_string(), layers: vec![] }
+        Material { name: name.to_string(), color: None, layers: vec![] }
     }
 
     pub fn layer(&self, index: usize) -> Option<&MaterialLayer> {
@@ -86,6 +90,7 @@ fn starter_layer(index: usize, mode: LayerMode, speed_mm_min: f64, power: f64, p
 fn starter(name: &str, engrave: (f64, f64), cut: (f64, f64, u32)) -> Material {
     Material {
         name: name.to_string(),
+        color: None,
         layers: vec![starter_layer(0, LayerMode::Fill, engrave.0, engrave.1, 1, 0.1), starter_layer(1, LayerMode::Line, cut.0, cut.1, cut.2, 0.1)],
     }
 }

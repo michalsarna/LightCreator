@@ -1087,3 +1087,4 @@
 1086|Impordi UGS-i kujundus…
 1087|Mõnda UGS-i kujunduse osa ei saanud kasutada: {}
 1088|Näita kõiki {} kihti
+1089|Materjali värvi ainult näidatakse; see ei muuda midagi.

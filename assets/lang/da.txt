@@ -1087,3 +1087,4 @@
 1086|Importér UGS-design…
 1087|Nogle dele af UGS-designet kunne ikke bruges: {}
 1088|Vis alle {} lag
+1089|Materialets farve vises kun; den ændrer ingenting.

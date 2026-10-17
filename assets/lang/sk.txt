@@ -1087,3 +1087,4 @@
 1086|Importovať návrh UGS…
 1087|Niektoré časti návrhu UGS sa nepodarilo použiť: {}
 1088|Zobraziť všetkých {} vrstiev
+1089|Farba materiálu sa iba zobrazuje; nič nemení.
