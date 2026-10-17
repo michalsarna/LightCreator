@@ -237,7 +237,8 @@ impl App {
                 }
                 let image_layer = self.doc.is_image_layer(i);
                 let l = &mut self.doc.layers[i];
-                let name = ui.selectable_label(self.ed.active_layer == i, &l.name).on_hover_text(tr("Double-click to edit the layer options"));
+                let tip = if l.description.trim().is_empty() { tr("Double-click to edit the layer options").to_string() } else { format!("{}\n\n{}", l.description.trim(), tr("Double-click to edit the layer options")) };
+                let name = ui.selectable_label(self.ed.active_layer == i, &l.name).on_hover_text(tip);
                 if name.clicked() {
                     self.ed.active_layer = i;
                 }
@@ -410,6 +411,10 @@ pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_cor
     let overscan_hint = |v: f64| (dev.accel > 0.0).then(|| v * v / (2.0 * dev.accel));
     let power_modes = dev.power_modes;
     egui::Grid::new(("cut", id_scope)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
+        ui.label(tr("Description"));
+        ui.add(egui::TextEdit::multiline(&mut l.description).desired_rows(2).desired_width(f32::INFINITY));
+        l.trim_description();
+        ui.end_row();
         ui.label(tr("Mode"));
         // A layer of images is in the Image mode and stays there; everything else can still be set.
         ui.add_enabled_ui(!dev.image_only, |ui| {
