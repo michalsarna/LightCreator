@@ -1151,6 +1151,12 @@ mod materials_window_tests {
             a.open_materials_window();
         }
         h.run_steps(4);
+        let height = |h: &mut Shot| h.ctx.memory(|m| m.area_rect(eframe::egui::Id::new(Some("materials_window")))).map(|r| r.height());
+        let first = height(&mut h);
+        h.run_steps(30);
+        let later = height(&mut h);
+        assert!(first.is_some() && (first.unwrap() - later.unwrap()).abs() < 1.0, "the window keeps its height: {first:?} then {later:?}");
+        assert!(later.unwrap() < 700.0, "and it does not fill the screen: {later:?}");
         let before = app(&mut h).doc.device.materials[0].layers.len();
         h.get_by_label("Add layer").click();
         h.run_steps(4);
