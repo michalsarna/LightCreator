@@ -42,49 +42,8 @@ impl LayerMode {
     }
 }
 
-/// How a grayscale image is turned into laser dots.
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-pub enum Dither {
-    /// Black or white at 50 %.
-    Threshold,
-    #[default]
-    FloydSteinberg,
-    Jarvis,
-    Stucki,
-    Atkinson,
-    /// 8x8 Bayer matrix.
-    Ordered,
-    /// Continuous power between `min_power` and `power`.
-    Grayscale,
-}
-
-impl Dither {
-    pub const ALL: [Dither; 7] = [Dither::Threshold, Dither::FloydSteinberg, Dither::Jarvis, Dither::Stucki, Dither::Atkinson, Dither::Ordered, Dither::Grayscale];
-    pub fn label(self) -> &'static str {
-        match self {
-            Dither::Threshold => "Threshold",
-            Dither::FloydSteinberg => "Floyd-Steinberg",
-            Dither::Jarvis => "Jarvis",
-            Dither::Stucki => "Stucki",
-            Dither::Atkinson => "Atkinson",
-            Dither::Ordered => "Ordered",
-            Dither::Grayscale => "Grayscale",
-        }
-    }
-
-    /// A short description of what the method does.
-    pub fn hint(self) -> &'static str {
-        match self {
-            Dither::Threshold => "Black or white only, split at half brightness. Sharp: good for line art and text.",
-            Dither::FloydSteinberg => "Spreads the rounding error to the neighbouring dots. A good all-round choice for photos.",
-            Dither::Jarvis => "Spreads the error over a wider area: smoother tones, a little slower.",
-            Dither::Stucki => "Like Jarvis, with crisper detail.",
-            Dither::Atkinson => "Keeps highlights clean and contrast high; loses some of the darkest and lightest detail.",
-            Dither::Ordered => "A fixed 8×8 pattern of dots: regular and fast, without noise.",
-            Dither::Grayscale => "No dots: every pixel burns with a power between the minimum and the layer's power.",
-        }
-    }
-}
+/// How a grayscale image is turned into laser dots (the shared code of baseCreator).
+pub use base_core::raster::Dither;
 
 fn d_min_power() -> f64 {
     0.0
