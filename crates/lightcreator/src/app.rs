@@ -2416,7 +2416,8 @@ impl base_ui::tools_ui::CalHost for App {
 
 impl base_ui::layer_bar::LayerBarHost for App {
     fn layer_label(&self, layer: usize) -> String {
-        self.doc.layers.get(layer).map(|l| l.name.clone()).unwrap_or_default()
+        // The description follows the name, so that the tip of the layer bar tells what the layer is for.
+        self.doc.layers.get(layer).map(|l| if l.description.trim().is_empty() { l.name.clone() } else { format!("{} — {}", l.name, l.description.trim()) }).unwrap_or_default()
     }
     fn open_layer_options(&mut self, layer: usize) {
         self.layer_dlg = Some(layer);

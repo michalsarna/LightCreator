@@ -2213,4 +2213,26 @@ fn a_material_colour_is_saved_when_set_and_old_materials_have_none() {
     assert_eq!(a.layers, b.layers);
     a.color = b.color;
     assert_eq!(a, b);
+fn a_layer_description_is_saved_comes_with_a_material_and_old_files_have_none() {
+    let mut l = Layer::new(3);
+    assert!(l.description.is_empty());
+    l.description = "cut through, two passes".into();
+    // Saved and read back.
+    let json = serde_json::to_string(&l).unwrap();
+    let back: Layer = serde_json::from_str(&json).unwrap();
+    assert_eq!(back.description, "cut through, two passes");
+    // A file from before the description existed has none.
+    let mut v: serde_json::Value = serde_json::from_str(&json).unwrap();
+    v.as_object_mut().unwrap().remove("description");
+    let old: Layer = serde_json::from_value(v).unwrap();
+    assert!(old.description.is_empty());
+    // It comes with the settings of a material (the name and the colour stay).
+    let mut other = Layer::new(5);
+    other.take_settings(&l);
+    assert_eq!(other.description, "cut through, two passes");
+    assert_eq!(other.name, "C05");
+    // It has a limit.
+    l.description = "x".repeat(MAX_LAYER_DESCRIPTION + 50);
+    l.trim_description();
+    assert_eq!(l.description.chars().count(), MAX_LAYER_DESCRIPTION);
 }
