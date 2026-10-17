@@ -18,6 +18,10 @@ impl App {
         if let Some(s) = plugins_ui::generator_window(ctx, &mut self.plugins, area) {
             self.add_plugin_shapes(s, &self.plugins.last_generator_name());
         }
+        // An importer with a form and a preview (an STL model, for example) waits in its own window.
+        if let Some((name, s)) = plugins_ui::import_window(ctx, &mut self.plugins) {
+            self.add_plugin_shapes(s, &name);
+        }
     }
 
     /// Pictures that plugins bring join the shared gallery (once).
@@ -44,8 +48,8 @@ impl App {
     pub fn import_with_plugin_dialog(&mut self) {
         let area = self.doc.device.work_size();
         match self.plugins.import_dialog(area) {
-            Some((p, r)) => {
-                self.finish_plugin_import(&p, r);
+            Some((p, start)) => {
+                self.start_plugin_import(&p, start);
             }
             None => self.status = tr("No plugin reads files: install one in the Plugins window").to_string(),
         }
@@ -54,8 +58,16 @@ impl App {
     /// A file a plugin reads (by its extension): imported into the drawing. `None` when no plugin reads it.
     pub fn try_plugin_import(&mut self, path: &Path) -> Option<bool> {
         let area = self.doc.device.work_size();
-        let r = self.plugins.import_file(path, area)?;
-        Some(self.finish_plugin_import(path, r))
+        let start = self.plugins.import_file(path, area)?;
+        Some(self.start_plugin_import(path, start))
+    }
+
+    /// The importer made the shapes at once, or opened its window (the shapes come from `plugin_windows` then).
+    fn start_plugin_import(&mut self, path: &Path, start: plugins_ui::ImportStart) -> bool {
+        match start {
+            plugins_ui::ImportStart::Done(r) => self.finish_plugin_import(path, r),
+            plugins_ui::ImportStart::Window => true,
+        }
     }
 
     fn finish_plugin_import(&mut self, path: &Path, r: Result<Shapes, String>) -> bool {

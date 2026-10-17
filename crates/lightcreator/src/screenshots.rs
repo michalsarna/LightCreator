@@ -1164,3 +1164,53 @@ mod materials_window_tests {
         }
     }
 }
+
+#[cfg(test)]
+mod plugin_import_window_tests {
+    use super::*;
+    use egui_kittest::kittest::Queryable;
+
+    /// An importer with a form and a preview: a window opens, the preview is made in the background, and Import puts the shapes
+    /// of the form as it was left into the drawing.
+    #[test]
+    fn an_importer_with_a_form_opens_its_window_and_import_adds_the_shapes() {
+        let base = std::env::temp_dir().join(format!("lc-import-window-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&base);
+        let p = base.join("plugins/form-demo");
+        std::fs::create_dir_all(&p).unwrap();
+        std::fs::write(p.join("plugin.json"), r#"{"id":"form-demo","name":"Form demo","importers":[{"id":"frm","name":"Form","extensions":["frm"],"script":"read.rhai","preview":true,"params":[{"id":"w","label":"Width","kind":"number","default":10}]}]}"#).unwrap();
+        std::fs::write(p.join("read.rhai"), "fn read(text, ctx) { rect(0.0, 0.0, ctx.p.w, 5.0) }").unwrap();
+        let file = base.join("a.frm");
+        std::fs::write(&file, "x").unwrap();
+        let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+            |ui, state: &mut Option<App>| {
+                let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+                a.draw(ui);
+            },
+            None,
+        );
+        h.run_steps(2);
+        {
+            let a = app(&mut h);
+            a.profiles = vec![Device::default()];
+            a.enter_editor(0);
+            a.plugins = base_ui::plugins_ui::PluginsUi::new("lightcreator", &base);
+            assert_eq!(a.try_plugin_import(&file), Some(true));
+            assert!(a.doc.scene.shapes.is_empty(), "nothing is added until Import is pressed");
+        }
+        for _ in 0..200 {
+            h.run_steps(2);
+            std::thread::sleep(std::time::Duration::from_millis(10));
+            if h.query_by_label_contains("10.0 × 5.0").is_some() {
+                break;
+            }
+        }
+        h.get_by_label("Import").click();
+        h.run_steps(4);
+        let a = app(&mut h);
+        assert_eq!(a.doc.scene.shapes.len(), 1, "{}", a.status);
+        let b = a.doc.scene.shapes[0].bounds().unwrap();
+        assert!((b.max.x - b.min.x - 10.0).abs() < 1e-6, "the width of the form: {b:?}");
+        let _ = std::fs::remove_dir_all(&base);
+    }
+}
