@@ -67,7 +67,7 @@ impl App {
         crate::window_ui::popup(ctx, "materials_window", &tr("Materials"), [820.0, 560.0], &mut open, |ui| {
             ui.horizontal_top(|ui| {
                 // The list of materials and what can be done with them.
-                ui.vertical(|ui| {
+                let left = ui.vertical(|ui| {
                     ui.set_width(230.0);
                     egui::ScrollArea::vertical().id_salt("materials_list").max_height(300.0).auto_shrink([false, false]).show(ui, |ui| {
                         for (i, (name, colour)) in names.iter().enumerate() {
@@ -119,7 +119,9 @@ impl App {
                         ui.label(RichText::new(&dlg.message).color(theme::text_dim()));
                     }
                 });
-                ui.separator();
+                // A line as tall as the list: a separator would take all the height the window offers and the window would grow.
+                let (line, _) = ui.allocate_exact_size(egui::vec2(8.0, left.response.rect.height()), egui::Sense::hover());
+                ui.painter().vline(line.center().x, line.y_range(), egui::Stroke::new(1.0, theme::border()));
                 // The selected material: its name, its colour and its layers.
                 ui.vertical(|ui| {
                     ui.horizontal(|ui| {
