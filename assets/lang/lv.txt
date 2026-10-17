@@ -1088,3 +1088,10 @@
 1087|Dažas UGS dizaina daļas nevarēja izmantot: {}
 1088|Rādīt visus {} slāņus
 1089|Materiāla krāsa tiek tikai rādīta; tā neko nemaina.
+1090|Eksportēt visu…
+1091|Aizstāt materiālus ar tādu pašu nosaukumu
+1092|Importēti {} materiāli; aizstāti {}.
+1093|Eksportēti {} materiāli: {}
+1094|Noņemt šo slāni no materiāla
+1095|Šim materiālam vēl nav slāņu. Pievienojiet vienu zemāk.
+1096|Materiāli…

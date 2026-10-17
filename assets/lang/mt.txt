@@ -1088,3 +1088,10 @@
 1087|Xi partijiet tad-disinn UGS ma setgħux jintużaw: {}
 1088|Uri t-{} saff kollha
 1089|Il-kulur tal-materjal jintwera biss; ma jibdel xejn.
+1090|Esporta kollox…
+1091|Ibdel materjali bl-istess isem
+1092|Ġew importati {} materjali; {} ġew sostitwiti.
+1093|Ġew esportati {} materjali: {}
+1094|Neħħi din is-saff mill-materjal
+1095|Dan il-materjal għad m'għandu l-ebda saff. Żid wieħed hawn taħt.
+1096|Materjali…

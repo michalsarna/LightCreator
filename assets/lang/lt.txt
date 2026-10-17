@@ -1088,3 +1088,10 @@
 1087|Kai kurių UGS dizaino dalių nepavyko panaudoti: {}
 1088|Rodyti visus {} sluoksnių
 1089|Medžiagos spalva tik rodoma; ji nieko nekeičia.
+1090|Eksportuoti viską…
+1091|Pakeisti vienodo pavadinimo medžiagas
+1092|Importuota medžiagų: {}; pakeista: {}.
+1093|Eksportuota medžiagų: {}: {}
+1094|Pašalinti šį sluoksnį iš medžiagos
+1095|Ši medžiaga dar neturi sluoksnių. Pridėkite vieną žemiau.
+1096|Medžiagos…

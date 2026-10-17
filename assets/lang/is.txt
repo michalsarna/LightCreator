@@ -1088,3 +1088,10 @@
 1087|Ekki var hægt að nota suma hluta UGS-hönnunarinnar: {}
 1088|Sýna öll {} lögin
 1089|Litur efnisins er aðeins sýndur; hann breytir engu.
+1090|Flytja allt út…
+1091|Skipta út efnum með sama nafni
+1092|{} efni flutt inn; {} skipt út.
+1093|{} efni flutt út: {}
+1094|Fjarlægja þetta lag úr efninu
+1095|Þetta efni hefur engin lög enn. Bættu við einu hér að neðan.
+1096|Efni…

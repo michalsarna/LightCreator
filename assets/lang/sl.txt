@@ -1088,3 +1088,10 @@
 1087|Nekaterih delov načrta UGS ni bilo mogoče uporabiti: {}
 1088|Pokaži vseh {} slojev
 1089|Barva materiala se samo prikaže; ničesar ne spremeni.
+1090|Izvozi vse…
+1091|Zamenjaj materiale z istim imenom
+1092|Uvoženih materialov: {}; zamenjanih: {}.
+1093|Izvoženih materialov: {}: {}
+1094|Odstrani ta sloj iz materiala
+1095|Ta material še nima slojev. Dodajte enega spodaj.
+1096|Materiali…

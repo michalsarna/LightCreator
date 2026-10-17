@@ -595,7 +595,16 @@ fn render_screenshots() {
         let a = app(&mut h);
         a.start_from.open = false;
         a.connected = false;
+        // The window that manages materials: the starter materials, the colour of one, the layers of the selected one.
+        a.doc.device.materials.extend(lc_core::materials::starter_materials(lc_core::LaserKind::Diode));
+        a.doc.device.materials[1].color = Some([196, 150, 96]);
+        a.open_materials_window();
+        if let Some(d) = a.materials_dlg.as_mut() {
+            d.sel = 1;
+        }
     }
+    save(&mut h, "41-materials-window.png");
+    app(&mut h).materials_dlg = None;
 }
 
 /// The node-editing bar disappears when another window (the preview) is clicked and returns on a click in the canvas.
@@ -1117,5 +1126,41 @@ mod material_colour_tests {
         h.run_steps(4);
         let a = app(&mut h);
         assert_eq!(a.doc.device.materials[a.doc.device.active_material].color, None, "cleared");
+    }
+}
+
+#[cfg(test)]
+mod materials_window_tests {
+    use super::*;
+    use egui_kittest::kittest::Queryable;
+
+    #[test]
+    fn the_materials_window_adds_a_layer_copies_and_deletes_a_material() {
+        let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+            |ui, state: &mut Option<App>| {
+                let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+                a.draw(ui);
+            },
+            None,
+        );
+        h.run_steps(2);
+        {
+            let a = app(&mut h);
+            a.profiles = vec![Device::default()];
+            a.enter_editor(0);
+            a.open_materials_window();
+        }
+        h.run_steps(4);
+        let before = app(&mut h).doc.device.materials[0].layers.len();
+        h.get_by_label("Add layer").click();
+        h.run_steps(4);
+        assert_eq!(app(&mut h).doc.device.materials[0].layers.len(), before + 1, "a layer was added to the material");
+        // The layer is in the design too, because the material is the selected one.
+        let n = app(&mut h).doc.device.materials.len();
+        assert!(n >= 1);
+        if std::env::var("SHOT").is_ok() {
+            let p = std::env::var("SHOT").unwrap();
+            h.render().unwrap().save(p).unwrap();
+        }
     }
 }

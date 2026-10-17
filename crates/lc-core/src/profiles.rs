@@ -64,6 +64,23 @@ fn layer_ok(l: &crate::doc::Layer) -> bool {
         && between(l.kerf, -50.0, 50.0)
         && l.head < 16
         && text_ok(&l.name, 100)
+        && l.description.chars().count() <= MAX_LAYER_DESCRIPTION
+        && text_ok(&l.description, MAX_LAYER_DESCRIPTION)
+        && between(l.perforation.cut, 0.0, 1000.0)
+        && between(l.perforation.skip, 0.0, 1000.0)
+        && [l.tabs.size, l.tabs.spacing, l.tabs.cut_power].iter().all(|v| between(*v, 0.0, 100_000.0))
+        && l.tabs.per_shape <= 1000
+        && l.tabs.min_tabs <= 1000
+        && l.tabs.max_tabs <= 100_000
+}
+
+/// Is a material that comes from a file within sane limits? The first thing wrong, in words.
+pub fn validate_material(m: &crate::materials::Material) -> Result<(), String> {
+    let layers_ok = m.layers.len() <= crate::LAYER_COUNT && m.layers.iter().enumerate().all(|(i, l)| l.index < crate::LAYER_COUNT && m.layers.iter().take(i).all(|o| o.index != l.index) && layer_ok(&l.settings));
+    if !text_ok(&m.name, 100) || m.name.trim().is_empty() || !layers_ok {
+        return Err("a material is out of range".into());
+    }
+    Ok(())
 }
 
 fn between(v: f64, lo: f64, hi: f64) -> bool {
@@ -147,8 +164,7 @@ pub fn validate(d: &Device) -> Result<(), String> {
         return bad("the materials");
     }
     for m in &d.materials {
-        let layers_ok = m.layers.len() <= crate::LAYER_COUNT && m.layers.iter().enumerate().all(|(i, l)| l.index < crate::LAYER_COUNT && m.layers.iter().take(i).all(|o| o.index != l.index) && layer_ok(&l.settings));
-        if !text_ok(&m.name, 100) || m.name.trim().is_empty() || !layers_ok {
+        if validate_material(m).is_err() {
             return bad("a material");
         }
     }

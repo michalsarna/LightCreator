@@ -26,6 +26,22 @@ pub struct Material {
 }
 
 impl Material {
+    /// Add a layer with the default settings (nothing when it is there already or the number is out of range).
+    pub fn add_layer(&mut self, index: usize) -> bool {
+        if index >= LAYER_COUNT || self.layer(index).is_some() {
+            return false;
+        }
+        self.put(index, &Layer::new(index));
+        true
+    }
+
+    /// Take a layer out of the material.
+    pub fn remove_layer(&mut self, index: usize) -> bool {
+        let n = self.layers.len();
+        self.layers.retain(|l| l.index != index);
+        self.layers.len() != n
+    }
+
     pub fn new(name: &str) -> Material {
         Material { name: name.to_string(), color: None, layers: vec![] }
     }
@@ -206,9 +222,13 @@ impl Document {
     }
 
     pub fn rename_material(&mut self, name: &str) {
-        let a = self.device.active_material;
-        let others: Vec<String> = self.device.materials.iter().enumerate().filter(|(i, _)| *i != a).map(|(_, m)| m.name.clone()).collect();
-        if let Some(m) = self.device.materials.get_mut(a) {
+        self.rename_material_at(self.device.active_material, name);
+    }
+
+    /// Give material `i` a new name; the name is made free when another material has it.
+    pub fn rename_material_at(&mut self, i: usize, name: &str) {
+        let others: Vec<String> = self.device.materials.iter().enumerate().filter(|(j, _)| *j != i).map(|(_, m)| m.name.clone()).collect();
+        if let Some(m) = self.device.materials.get_mut(i) {
             m.name = free_name(&others, name);
         }
     }
@@ -223,4 +243,134 @@ impl Document {
         self.select_material(next);
         true
     }
+}
+
+impl Document {
+    /// A copy of material `i` under a free name ("Name (copy)"); it becomes the selected one.
+    pub fn duplicate_material(&mut self, i: usize) -> Option<usize> {
+        self.sync_material();
+        let src = self.device.materials.get(i)?.clone();
+        let taken: Vec<String> = self.device.materials.iter().map(|m| m.name.clone()).collect();
+        if taken.len() >= MAX_MATERIALS {
+            return None;
+        }
+        let mut copy = src;
+        copy.name = crate::profiles::copy_name(&copy.name, &taken);
+        self.device.materials.insert(i + 1, copy);
+        self.select_material(i + 1);
+        Some(i + 1)
+    }
+
+    /// Delete material `i` (never the last one). The selected material stays selected (or the one before it, when it was
+    /// the one deleted).
+    pub fn delete_material_at(&mut self, i: usize) -> bool {
+        if self.device.materials.len() < 2 || i >= self.device.materials.len() {
+            return false;
+        }
+        self.sync_material();
+        let active = self.device.active_material;
+        self.device.materials.remove(i);
+        let next = if i < active {
+            active - 1
+        } else if i == active {
+            active.saturating_sub(1)
+        } else {
+            active
+        };
+        self.select_material(next.min(self.device.materials.len() - 1));
+        true
+    }
+
+    /// Move material `i` one place up or down in the list. Returns its new place. The selected material stays the same one.
+    pub fn move_material(&mut self, i: usize, up: bool) -> usize {
+        let n = self.device.materials.len();
+        let j = if up { i.checked_sub(1) } else { (i + 1 < n).then_some(i + 1) };
+        let Some(j) = j.filter(|j| i < n && *j < n) else { return i };
+        self.device.materials.swap(i, j);
+        let a = self.device.active_material;
+        self.device.active_material = if a == i {
+            j
+        } else if a == j {
+            i
+        } else {
+            a
+        };
+        j
+    }
+
+    /// Put what was edited in material `i` (not the selected one, or the selected one) into the layers of the design.
+    pub fn apply_material_edit(&mut self, i: usize) {
+        if i == self.device.active_material {
+            self.select_material(i);
+        }
+    }
+}
+
+/// The most materials a device keeps.
+pub const MAX_MATERIALS: usize = 200;
+/// The biggest file of materials that is read.
+pub const MAX_MATERIALS_FILE: usize = 2_000_000;
+/// The version of the file format written now.
+pub const MATERIALS_FORMAT: u32 = 1;
+const MATERIALS_KIND: &str = "lightcreator-materials";
+
+#[derive(Serialize, Deserialize)]
+struct MaterialsFile {
+    #[serde(default)]
+    kind: String,
+    #[serde(default)]
+    format: u32,
+    #[serde(default)]
+    app_version: String,
+    materials: Vec<Material>,
+}
+
+/// The text of a file that holds `materials` (all the settings of their layers, the names, the colours).
+pub fn export_materials(materials: &[Material], app_version: &str) -> String {
+    serde_json::to_string_pretty(&MaterialsFile { kind: MATERIALS_KIND.into(), format: MATERIALS_FORMAT, app_version: app_version.into(), materials: materials.to_vec() }).unwrap_or_default()
+}
+
+/// Read a file of materials. It comes from outside, so everything in it is checked: the size, the number of materials, every
+/// name and every number of a layer. A file made by a newer version is refused.
+pub fn import_materials(text: &str) -> Result<Vec<Material>, String> {
+    if text.len() > MAX_MATERIALS_FILE {
+        return Err(format!("the file is larger than {} KB", MAX_MATERIALS_FILE / 1000));
+    }
+    let f: MaterialsFile = serde_json::from_str(text).map_err(|_| "this is not a file of materials".to_string())?;
+    if f.kind != MATERIALS_KIND {
+        return Err("this is not a file of materials".into());
+    }
+    if f.format > MATERIALS_FORMAT {
+        return Err(format!("the file is of format {}, made by a newer version ({}); update the program", f.format, f.app_version));
+    }
+    if f.materials.is_empty() || f.materials.len() > MAX_MATERIALS {
+        return Err("the number of materials is out of range".into());
+    }
+    for m in &f.materials {
+        crate::profiles::validate_material(m)?;
+    }
+    Ok(f.materials)
+}
+
+/// Put imported materials into the list: a name that is there already is kept apart under a free name, or, with `replace`,
+/// the material with that name is replaced. Returns how many were added and how many replaced.
+pub fn merge_imported(list: &mut Vec<Material>, imported: Vec<Material>, replace: bool) -> (usize, usize) {
+    let (mut added, mut replaced) = (0, 0);
+    for mut m in imported {
+        let same = list.iter().position(|x| x.name.eq_ignore_ascii_case(&m.name));
+        match same {
+            Some(i) if replace => {
+                list[i] = m;
+                replaced += 1;
+            }
+            _ if list.len() >= MAX_MATERIALS => break,
+            _ => {
+                let taken: Vec<String> = list.iter().map(|x| x.name.clone()).collect();
+                m.name = free_name(&taken, &m.name);
+                list.push(m);
+                added += 1;
+            }
+        }
+    }
+    (added, replaced)
 }

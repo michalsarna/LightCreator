@@ -1088,3 +1088,10 @@
 1087	Some parts of the UGS design could not be used: {}
 1088	Show all {} layers
 1089	The colour of the material is only shown; it changes nothing.
+1090	Export all…
+1091	Replace materials that have the same name
+1092	Imported {} material(s); {} replaced.
+1093	Exported {} material(s): {}
+1094	Remove this layer from the material
+1095	This material has no layers yet. Add one below.
+1096	Materials…

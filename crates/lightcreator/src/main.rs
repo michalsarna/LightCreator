@@ -16,6 +16,7 @@ mod help_ui;
 mod icons;
 mod laser;
 mod materials_ui;
+mod materials_win;
 mod menu;
 mod nodes;
 #[cfg(target_os = "macos")]

@@ -1088,3 +1088,10 @@
 1087|Mõnda UGS-i kujunduse osa ei saanud kasutada: {}
 1088|Näita kõiki {} kihti
 1089|Materjali värvi ainult näidatakse; see ei muuda midagi.
+1090|Ekspordi kõik…
+1091|Asenda sama nimega materjalid
+1092|Imporditi {} materjali; {} asendati.
+1093|Eksporditi {} materjali: {}
+1094|Eemalda see kiht materjalist
+1095|Sellel materjalil pole veel kihte. Lisa allpool üks.
+1096|Materjalid…
