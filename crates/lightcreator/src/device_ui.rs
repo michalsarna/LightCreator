@@ -1575,36 +1575,18 @@ impl App {
                 crate::icons::paint(ui, egui::Rect::from_center_size(rect.center(), egui::vec2(27.0, 27.0)), name, ink);
                 resp.on_hover_text(tip).clicked()
             };
-            let jog_tip = |a: &'static str, b: &'static str| if b.is_empty() { tr(a).to_string() } else { format!("{} + {}", tr(a), tr(b)) };
             let centre = |ui: &mut egui::Ui, total: f32| ui.add_space(((ui.available_width() - total) / 2.0).max(0.0));
             // While a job runs the machine must not be moved by hand: only pause, resume and stop stay available.
             ui.add_enabled_ui(!running, |ui| ui.horizontal(|ui| {
-            centre(ui, 3.0 * size.x + 2.0 * 4.0);
-            egui::Grid::new("jog").spacing([4.0, 4.0]).show(ui, |ui| {
-                // The four diagonals move both axes by one step at once.
-                for (name, a, b, dx, dy) in [("arrow-up-left", "Up", "Left", -s, -s), ("arrow-up", "Up", "", 0.0, -s), ("arrow-up-right", "Up", "Right", s, -s)] {
-                    if icon(ui, name, jog_tip(a, b), None) {
-                        act = self.jog_action(dx, dy);
-                    }
-                }
-                ui.end_row();
-                if icon(ui, "arrow-left", tr("Left").to_string(), None) {
-                    act = self.jog_action(-s, 0.0);
-                }
-                if icon(ui, "square", tr("Cancel jog").to_string(), Some(Color32::from_rgb(0xe8, 0x8a, 0x1f))) {
-                    act = Some(ctrl.cancel_jog());
-                }
-                if icon(ui, "arrow-right", tr("Right").to_string(), None) {
-                    act = self.jog_action(s, 0.0);
-                }
-                ui.end_row();
-                for (name, a, b, dx, dy) in [("arrow-down-left", "Down", "Left", -s, s), ("arrow-down", "Down", "", 0.0, s), ("arrow-down-right", "Down", "Right", s, s)] {
-                    if icon(ui, name, jog_tip(a, b), None) {
-                        act = self.jog_action(dx, dy);
-                    }
-                }
-                ui.end_row();
-            });
+            centre(ui, 3.0 * 70.0 + 2.0 * 3.0);
+            let hit = base_ui::control_ui::xy_pad(ui, false);
+            if hit.stop {
+                act = Some(ctrl.cancel_jog());
+            }
+            if let Some(d) = hit.dir {
+                // The pad counts Y up towards the back; the laser's Y grows downwards on the screen.
+                act = self.jog_action(d[0] as f64 * s, -(d[1] as f64) * s);
+            }
             }));
             ui.add_space(4.0);
             ui.horizontal(|ui| {
