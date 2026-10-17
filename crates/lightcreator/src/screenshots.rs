@@ -933,6 +933,8 @@ fn side_width(lang: Lang, tab: SideTab) -> f32 {
         a.lang = lang;
         a.profiles = vec![Device::default()];
         a.enter_editor(0);
+        // The material has a colour: the heading of the Layers tab has the most in it then.
+        a.doc.device.materials[0].color = Some([200, 150, 90]);
         a.doc.add(0, Kind::Rect { w: 20.0, h: 10.0 }, Xf::IDENTITY);
         a.select_all();
         a.side_tab = tab;
@@ -1070,5 +1072,50 @@ mod resize_tests {
         drag(&mut h, r1.right_bottom() - egui::vec2(1.0, 1.0), r1.right_bottom() - egui::vec2(100.0, 70.0));
         let r2 = about_rect(&h);
         assert!(r2.width() < r1.width() - 60.0, "shrink: {r1:?} -> {r2:?}");
+    }
+}
+
+#[cfg(test)]
+mod material_colour_tests {
+    use super::*;
+    use egui_kittest::kittest::Queryable;
+
+    #[test]
+    fn the_colour_of_a_material_is_set_when_it_is_renamed_or_added_and_cleared_again() {
+        let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+            |ui, state: &mut Option<App>| {
+                let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+                a.draw(ui);
+            },
+            None,
+        );
+        h.run_steps(2);
+        {
+            let a = app(&mut h);
+            a.profiles = vec![Device::default()];
+            a.enter_editor(0);
+            a.side_tab = SideTab::Layers;
+            a.mat_edit = Some(crate::materials_ui::MatEdit::Rename("Birch".into(), Some([10, 20, 30])));
+        }
+        h.run_steps(4);
+        h.get_by_label("Save").click();
+        h.run_steps(4);
+        let a = app(&mut h);
+        let m = &a.doc.device.materials[a.doc.device.active_material];
+        assert_eq!((m.name.as_str(), m.color), ("Birch", Some([10, 20, 30])), "renamed with a colour");
+        // A new material takes its colour, and a rename without one clears it.
+        a.mat_edit = Some(crate::materials_ui::MatEdit::New("Acrylic".into(), Some([1, 2, 3])));
+        h.run_steps(4);
+        h.get_by_label("Save").click();
+        h.run_steps(4);
+        let a = app(&mut h);
+        let m = &a.doc.device.materials[a.doc.device.active_material];
+        assert_eq!((m.name.as_str(), m.color), ("Acrylic", Some([1, 2, 3])), "a new material");
+        a.mat_edit = Some(crate::materials_ui::MatEdit::Rename("Acrylic".into(), None));
+        h.run_steps(4);
+        h.get_by_label("Save").click();
+        h.run_steps(4);
+        let a = app(&mut h);
+        assert_eq!(a.doc.device.materials[a.doc.device.active_material].color, None, "cleared");
     }
 }
