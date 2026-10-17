@@ -235,6 +235,7 @@ impl App {
                 if resp.clicked() {
                     self.ed.active_layer = i;
                 }
+                let image_layer = self.doc.is_image_layer(i);
                 let l = &mut self.doc.layers[i];
                 let name = ui.selectable_label(self.ed.active_layer == i, &l.name).on_hover_text(tr("Double-click to edit the layer options"));
                 if name.clicked() {
@@ -244,6 +245,7 @@ impl App {
                     self.ed.active_layer = i;
                     self.layer_dlg = Some(i);
                 }
+                mode_button(ui, &mut l.mode, image_layer);
                 drag_speed(ui, units, su, false, &mut l.speed, 0.5, Some((0.5, 1000.0)));
                 ui.add(egui::DragValue::new(&mut l.power).range(0.0..=100.0).suffix(" %"));
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
@@ -342,6 +344,36 @@ impl App {
 
 /// Width of the cell of one of the switches (output, visible, air pump) in the layer list.
 const SWITCH_W: f32 = 22.0;
+
+/// The icon of a layer mode in the list of layers.
+fn mode_icon(m: LayerMode) -> &'static str {
+    match m {
+        LayerMode::Line => "route",
+        LayerMode::Fill => "grid-3x3",
+        LayerMode::FillAndLine => "layers",
+        LayerMode::Offset => "target",
+        LayerMode::Image => "image",
+    }
+}
+
+/// The mode of a layer in its row of the list: an icon (the name of the mode is in the tip) that opens the choice of another
+/// mode. A layer of pictures is always in the Image mode, so there is nothing to choose.
+fn mode_button(ui: &mut egui::Ui, mode: &mut LayerMode, image_layer: bool) {
+    let shown = if image_layer { LayerMode::Image } else { *mode };
+    let tip = format!("{}: {}", tr("Mode"), tr(shown.label()));
+    ui.add_enabled_ui(!image_layer, |ui| {
+        let r = ui.menu_button(crate::icons::slot(Some(mode_icon(shown)), theme::text()), |ui| {
+            for m in LayerMode::ALL {
+                let b = egui::Button::image_and_text(crate::icons::slot(Some(mode_icon(m)), theme::text()), tr(m.label())).selected(*mode == m);
+                if ui.add(b).clicked() {
+                    *mode = m;
+                    ui.close();
+                }
+            }
+        });
+        r.response.on_hover_text(tip);
+    });
+}
 
 /// The cut settings of one layer: mode, speed, power, passes, fill options and image options.
 /// `id_scope` keeps the widget ids apart when the same settings are shown in the panel and in the dialog.
@@ -559,4 +591,21 @@ fn cut_options_ui(ui: &mut egui::Ui, units: lc_core::Units, l: &mut lc_core::Lay
             });
         });
     });
+}
+
+#[cfg(test)]
+mod mode_tests {
+    use super::*;
+
+    #[test]
+    fn every_layer_mode_has_its_own_icon_that_exists() {
+        let have: std::collections::HashSet<&str> = base_ui::icons::all_names().into_iter().collect();
+        let modes = [LayerMode::Line, LayerMode::Fill, LayerMode::FillAndLine, LayerMode::Offset, LayerMode::Image];
+        let icons: Vec<&str> = modes.iter().map(|m| mode_icon(*m)).collect();
+        for i in &icons {
+            assert!(have.contains(i), "{i}");
+        }
+        let unique: std::collections::HashSet<&&str> = icons.iter().collect();
+        assert_eq!(unique.len(), modes.len(), "the icons differ: {icons:?}");
+    }
 }
