@@ -7,7 +7,7 @@
 ![Materiały](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/34-material-layers.png)
 
 ## Warstwy
-* 64 kolorowe warstwy. Każda ma **tryb** (Line, Fill, Fill + Line, Offset fill), prędkość, moc, liczbę przejść, interwał, kąt skanowania, overscan, skanowanie dwukierunkowe oraz przełączniki wyjścia i widoczności.
+* 64 kolorowe warstwy. Każda ma **tryb** (Line, Fill, Fill + Line, Offset fill), prędkość, moc, liczbę przejść, interwał, kąt skanowania, overscan, skanowanie dwukierunkowe oraz przełączniki wyjścia i widoczności. Warstwa może też mieć **opis** (do 500 znaków, w ustawieniach warstwy): do czego służy, na przykład „przecięcie na wylot, dwa przejścia”. Opis widać w podpowiedzi warstwy na liście i na pasku warstw, zapisuje się w projekcie i wędruje razem z ustawieniami warstwy w materiale.
 * Nowe warstwy startują z mocą 100 % i prędkością 1000 mm/min. Ustawienia warstw należą do **projektu**: plik projektu zawiera je razem z profilem urządzenia; sam profil urządzenia nie przechowuje prędkości warstw (starsze profile nadal zawierają starą listę, która jest ignorowana). Prędkości są pokazywane na sekundę lub na minutę (opcja urządzenia *Speed units*), w mm lub calach.
 * **Pompa powietrza:** każda warstwa ma przełącznik *Air pump on*. G-code włącza pompę (`M8`; w Marlinie wentylator), gdy zaczyna się warstwa, która jej chce, wyłącza, gdy zaczyna się warstwa bez niej, i na końcu.
 * Pasek kolorów u dołu pokazuje nazwy warstw. Dwukliknij nazwę (tam lub w zakładce **Layers**), aby otworzyć okno opcji warstwy.

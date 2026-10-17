@@ -7,7 +7,7 @@
 ![Materials](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/34-material-layers.png)
 
 ## Layers
-* 64 colour layers. Each has a **mode** (Line, Fill, Fill + Line, Offset fill), speed, power, passes, interval, scan angle, overscan, bidirectional scanning, and output / visibility switches.
+* 64 colour layers. Each has a **mode** (Line, Fill, Fill + Line, Offset fill), speed, power, passes, interval, scan angle, overscan, bidirectional scanning, and output / visibility switches. A layer can also have a **description** (up to 500 characters, in the layer settings): what the layer is for, for example "cut through, two passes". It is shown in the tip of the layer in the list and in the layer bar, it is saved with the project and it travels with the layer settings of a material.
 * New layers start at 100 % power and 1000 mm/min. The settings of the layers belong to the **project**: the project file carries them together with the device profile; the device profile itself does not keep layer speeds (older profiles still contain the old list, which is ignored). Speeds are shown per second or per minute (device option *Speed units*), in mm or inches.
 * **Air assist:** each layer has an *Air pump on* switch. The G-code turns the pump on (`M8`; on Marlin the fan) when a layer that wants it starts, off when a layer without it starts, and off at the end.
 * The colour strip at the bottom shows layer names. Double-click a name (there or in the **Layers** tab) to open the layer options window.

@@ -102,9 +102,16 @@ pub use base_core::scene::DEFAULT_FLATTEN_TOL;
 /// Default distance an arc may stray from the path it replaces.
 pub const DEFAULT_ARC_TOL: f64 = 0.01;
 
+/// The longest description of a layer (characters).
+pub const MAX_LAYER_DESCRIPTION: usize = 500;
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Layer {
     pub name: String,
+    /// What the layer is for: a short free text (kept with the settings in a material). Not written when empty, so that a
+    /// project without descriptions stays the same file.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub description: String,
     pub color: usize,
     pub mode: LayerMode,
     /// mm/s
@@ -158,6 +165,13 @@ pub struct Layer {
 }
 
 impl Layer {
+    /// The description cut to its longest length.
+    pub fn trim_description(&mut self) {
+        if self.description.chars().count() > MAX_LAYER_DESCRIPTION {
+            self.description = self.description.chars().take(MAX_LAYER_DESCRIPTION).collect();
+        }
+    }
+
     /// Does the layer use the kerf, perforation or tabs (so that its outlines are not written as they are)?
     pub fn has_cut_options(&self) -> bool {
         (self.kerf.is_finite() && self.kerf != 0.0) || self.perforation.enabled || self.tabs.enabled
@@ -199,6 +213,7 @@ impl Layer {
     pub fn new(color: usize) -> Layer {
         Layer {
             name: format!("C{:02}", color),
+            description: String::new(),
             color,
             mode: LayerMode::Line,
             speed: DEFAULT_LAYER_SPEED_MM_MIN / 60.0,
