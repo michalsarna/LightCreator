@@ -1088,3 +1088,10 @@
 1087|Algunes parts del disseny d'UGS no s'han pogut utilitzar: {}
 1088|Mostra les {} capes
 1089|El color del material només es mostra; no canvia res.
+1090|Exporta-ho tot…
+1091|Substitueix els materials amb el mateix nom
+1092|S'han importat {} materials; {} substituïts.
+1093|S'han exportat {} materials: {}
+1094|Elimina aquesta capa del material
+1095|Aquest material encara no té capes. Afegiu-ne una a sota.
+1096|Materials…

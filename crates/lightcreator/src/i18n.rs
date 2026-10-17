@@ -1232,6 +1232,13 @@ const TABLE: &[[&str; 7]] = &[
     ["Some parts of the UGS design could not be used: {}", "Niektórych części projektu UGS nie dało się użyć: {}", "Einige Teile des UGS-Entwurfs konnten nicht verwendet werden: {}", "Alcune parti del progetto UGS non si sono potute usare: {}", "Joitakin UGS-suunnitelman osia ei voitu käyttää: {}", "UGS 设计的某些部分无法使用：{}", "UGS डिज़ाइन के कुछ हिस्सों का उपयोग नहीं किया जा सका: {}"],
     ["Show all {} layers", "Pokaż wszystkie {} warstw", "Alle {} Ebenen anzeigen", "Mostra tutti i {} livelli", "Näytä kaikki {} tasoa", "显示全部 {} 个图层", "सभी {} लेयर दिखाएँ"],
     ["The colour of the material is only shown; it changes nothing.", "Kolor materiału jest tylko wyświetlany; nic nie zmienia.", "Die Farbe des Materials wird nur angezeigt; sie ändert nichts.", "Il colore del materiale è solo visualizzato; non cambia nulla.", "Materiaalin väri vain näytetään; se ei muuta mitään.", "材料颜色仅用于显示，不会改变任何内容。", "सामग्री का रंग केवल दिखाया जाता है; यह कुछ भी नहीं बदलता।"],
+    ["Export all…", "Eksportuj wszystkie…", "Alle exportieren…", "Esporta tutti…", "Vie kaikki…", "全部导出…", "सभी निर्यात करें…"],
+    ["Replace materials that have the same name", "Zastąp materiały o tej samej nazwie", "Materialien mit gleichem Namen ersetzen", "Sostituisci i materiali con lo stesso nome", "Korvaa samannimiset materiaalit", "替换同名材料", "समान नाम वाली सामग्री बदलें"],
+    ["Imported {} material(s); {} replaced.", "Zaimportowano materiałów: {}; zastąpiono: {}.", "{} Material(ien) importiert; {} ersetzt.", "Importati {} materiali; {} sostituiti.", "Tuotu {} materiaalia; {} korvattu.", "已导入 {} 个材料；已替换 {} 个。", "{} सामग्री आयात की गई; {} बदली गई।"],
+    ["Exported {} material(s): {}", "Wyeksportowano materiałów: {}: {}", "{} Material(ien) exportiert: {}", "Esportati {} materiali: {}", "Viety {} materiaalia: {}", "已导出 {} 个材料：{}", "{} सामग्री निर्यात की गई: {}"],
+    ["Remove this layer from the material", "Usuń tę warstwę z materiału", "Diese Ebene aus dem Material entfernen", "Rimuovi questo livello dal materiale", "Poista tämä taso materiaalista", "从材料中移除此图层", "इस लेयर को सामग्री से हटाएँ"],
+    ["This material has no layers yet. Add one below.", "Ten materiał nie ma jeszcze warstw. Dodaj jedną poniżej.", "Dieses Material hat noch keine Ebenen. Unten eine hinzufügen.", "Questo materiale non ha ancora livelli. Aggiungine uno qui sotto.", "Tässä materiaalissa ei ole vielä tasoja. Lisää yksi alla.", "此材料还没有图层。请在下方添加。", "इस सामग्री में अभी कोई लेयर नहीं है। नीचे एक जोड़ें।"],
+    ["Materials…", "Materiały…", "Materialien…", "Materiali…", "Materiaalit…", "材料…", "सामग्रियाँ…"],
 ];
 #[cfg(test)]
 mod tests {

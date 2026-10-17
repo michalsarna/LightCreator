@@ -1088,3 +1088,10 @@
 1087|Níorbh fhéidir codanna áirithe den dearadh UGS a úsáid: {}
 1088|Taispeáin gach ceann de na {} ciseal
 1089|Taispeántar dath an ábhair amháin; ní athraíonn sé aon rud.
+1090|Easpórtáil gach rud…
+1091|Ionadaigh ábhair a bhfuil an t-ainm céanna orthu
+1092|Iompórtáladh {} ábhar; ionadaíodh {}.
+1093|Easpórtáladh {} ábhar: {}
+1094|Bain an ciseal seo den ábhar
+1095|Níl aon chiseal ag an ábhar seo go fóill. Cuir ceann leis thíos.
+1096|Ábhair…

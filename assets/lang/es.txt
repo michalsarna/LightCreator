@@ -1088,3 +1088,10 @@
 1087|Algunas partes del diseño de UGS no se pudieron usar: {}
 1088|Mostrar las {} capas
 1089|El color del material solo se muestra; no cambia nada.
+1090|Exportar todo…
+1091|Reemplazar los materiales con el mismo nombre
+1092|Se importaron {} materiales; {} reemplazados.
+1093|Se exportaron {} materiales: {}
+1094|Quitar esta capa del material
+1095|Este material aún no tiene capas. Añada una abajo.
+1096|Materiales…

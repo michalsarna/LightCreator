@@ -1088,3 +1088,10 @@
 1087|Vissa delar av UGS-designen kunde inte användas: {}
 1088|Visa alla {} lager
 1089|Materialets färg visas bara; den ändrar ingenting.
+1090|Exportera alla…
+1091|Ersätt material med samma namn
+1092|Importerade {} material; {} ersatta.
+1093|Exporterade {} material: {}
+1094|Ta bort det här lagret från materialet
+1095|Det här materialet har inga lager än. Lägg till ett nedan.
+1096|Material…

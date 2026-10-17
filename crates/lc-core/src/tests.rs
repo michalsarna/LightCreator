@@ -2239,3 +2239,107 @@ fn a_layer_description_is_saved_comes_with_a_material_and_old_files_have_none() 
     l.trim_description();
     assert_eq!(l.description.chars().count(), MAX_LAYER_DESCRIPTION);
 }
+
+fn doc_with_materials(names: &[&str]) -> Document {
+    use crate::materials::Material;
+    let mut d = Document::default();
+    d.device.materials = names.iter().map(|n| Material::new(n)).collect();
+    d.device.active_material = 0;
+    d
+}
+
+#[test]
+fn materials_are_duplicated_deleted_and_moved_and_the_selected_one_stays_selected() {
+    let mut d = doc_with_materials(&["A", "B", "C"]);
+    d.device.materials[1].add_layer(4);
+    // A copy goes after the original with a free name and becomes the selected one.
+    assert_eq!(d.duplicate_material(1), Some(2));
+    assert_eq!(d.device.materials[2].name, "B (copy)");
+    assert!(d.device.materials[2].layer(4).is_some(), "with its layers");
+    assert_eq!(d.device.active_material, 2);
+    // Moving keeps the selected material the same one.
+    d.device.active_material = 0;
+    assert_eq!(d.move_material(0, false), 1);
+    assert_eq!(d.device.materials[1].name, "A");
+    assert_eq!(d.device.active_material, 1, "the selected material moved with its place");
+    assert_eq!(d.move_material(0, true), 0, "the first cannot go up");
+    // Deleting before the selected one keeps it selected; deleting the selected one takes the one before it.
+    let selected = d.device.materials[d.device.active_material].name.clone();
+    assert!(d.delete_material_at(0));
+    assert_eq!(d.device.materials[d.device.active_material].name, selected);
+    let n = d.device.materials.len();
+    assert!(d.delete_material_at(d.device.active_material));
+    assert_eq!(d.device.materials.len(), n - 1);
+    while d.device.materials.len() > 1 {
+        assert!(d.delete_material_at(0));
+    }
+    assert!(!d.delete_material_at(0), "never the last one");
+}
+
+#[test]
+fn a_material_gets_and_loses_layers() {
+    use crate::materials::Material;
+    let mut m = Material::new("M");
+    assert!(m.add_layer(3) && m.add_layer(1));
+    assert!(!m.add_layer(3), "once");
+    assert!(!m.add_layer(LAYER_COUNT), "out of range");
+    assert_eq!(m.layers.iter().map(|l| l.index).collect::<Vec<_>>(), vec![1, 3], "in order");
+    assert!(m.remove_layer(1) && !m.remove_layer(1));
+}
+
+#[test]
+fn materials_go_through_a_file_and_a_bad_file_is_refused() {
+    use crate::materials::{export_materials, import_materials, Material, MAX_MATERIALS_FILE};
+    let mut a = Material::new("Plywood");
+    a.color = Some([200, 150, 90]);
+    a.add_layer(0);
+    let mut l = Layer::new(0);
+    l.description = "engrave".into();
+    l.speed = 55.0;
+    a.layers[0].settings = l;
+    let text = export_materials(&[a.clone(), Material::new("Acrylic")], "v0.0.0");
+    let back = import_materials(&text).unwrap();
+    assert_eq!(back.len(), 2);
+    assert_eq!(back[0], a, "everything comes back: the colour, the description, the settings");
+    // Not a file of materials, a newer format, no materials, too many, too big.
+    assert!(import_materials("{\"a\":1}").is_err() && import_materials("nonsense").is_err());
+    assert!(import_materials(&text.replace("lightcreator-materials", "something")).is_err());
+    assert!(import_materials(&text.replace("\"format\": 1", "\"format\": 99")).unwrap_err().contains("newer"));
+    assert!(import_materials(&export_materials(&[], "v")).is_err());
+    let many: Vec<Material> = (0..201).map(|i| Material::new(&format!("m{i}"))).collect();
+    assert!(import_materials(&export_materials(&many, "v")).is_err());
+    assert!(import_materials(&" ".repeat(MAX_MATERIALS_FILE + 1)).is_err());
+    // A number out of range, a name that is empty, a layer twice, a layer out of range.
+    let mut bad = a.clone();
+    bad.layers[0].settings.power = 1000.0;
+    assert!(import_materials(&export_materials(&[bad], "v")).is_err());
+    assert!(import_materials(&export_materials(&[Material::new("  ")], "v")).is_err());
+    let mut twice = a.clone();
+    twice.layers.push(twice.layers[0].clone());
+    assert!(import_materials(&export_materials(&[twice], "v")).is_err());
+    let mut high = a.clone();
+    high.layers[0].index = LAYER_COUNT;
+    assert!(import_materials(&export_materials(&[high], "v")).is_err());
+    let mut long = a.clone();
+    long.layers[0].settings.description = "x".repeat(600);
+    assert!(import_materials(&export_materials(&[long], "v")).is_err());
+}
+
+#[test]
+fn imported_materials_keep_their_names_apart_or_replace_the_ones_with_the_same_name() {
+    use crate::materials::{merge_imported, Material};
+    let mut list = vec![Material::new("Plywood"), Material::new("Paper")];
+    let mut new_ply = Material::new("plywood");
+    new_ply.color = Some([1, 1, 1]);
+    // Kept apart: a free name.
+    assert_eq!(merge_imported(&mut list, vec![new_ply.clone(), Material::new("Felt")], false), (2, 0));
+    assert_eq!(list.iter().map(|m| m.name.as_str()).collect::<Vec<_>>(), vec!["Plywood", "Paper", "plywood (2)", "Felt"]);
+    // Replaced: the same name (any case) takes the new one.
+    assert_eq!(merge_imported(&mut list, vec![new_ply], true), (0, 1));
+    assert_eq!(list[0].color, Some([1, 1, 1]));
+    assert_eq!(list.len(), 4);
+    // The list has a limit.
+    let mut full: Vec<Material> = (0..200).map(|i| Material::new(&format!("m{i}"))).collect();
+    assert_eq!(merge_imported(&mut full, vec![Material::new("more")], false), (0, 0));
+    assert_eq!(full.len(), 200);
+}

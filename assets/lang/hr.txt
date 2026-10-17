@@ -1088,3 +1088,10 @@
 1087|Neki dijelovi UGS dizajna nisu se mogli upotrijebiti: {}
 1088|Prikaži svih {} slojeva
 1089|Boja materijala samo se prikazuje; ništa ne mijenja.
+1090|Izvezi sve…
+1091|Zamijeni materijale istog naziva
+1092|Uvezeno materijala: {}; zamijenjeno: {}.
+1093|Izvezeno materijala: {}: {}
+1094|Ukloni ovaj sloj iz materijala
+1095|Ovaj materijal još nema slojeva. Dodajte jedan ispod.
+1096|Materijali…

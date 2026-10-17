@@ -16,6 +16,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::Save | Act::SaveAs => "save",
         Act::ImportSvg | Act::ImportAi | Act::ImportLightburn | Act::ImportUgsd | Act::ImportPlugin => "file-input",
         Act::Plugins => "package-open",
+        Act::Materials => "package",
         Act::GenerateShape => "shapes",
         Act::ImportImage => "image",
         Act::OnlineClipart => "globe",

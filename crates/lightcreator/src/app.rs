@@ -94,6 +94,8 @@ pub struct App {
     /// The web server and API (off by default): switched on, port, and reachable from the network.
     /// The material header of the Layers tab: adding or renaming.
     pub mat_edit: Option<crate::materials_ui::MatEdit>,
+    /// The window that manages materials and their layers.
+    pub materials_dlg: Option<crate::materials_win::MaterialsDlg>,
     /// The revision the selected material was last compared with the layers at.
     pub mat_rev: u64,
     pub api_on: bool,
@@ -291,6 +293,7 @@ impl App {
             recovery: lc_core::autosave::find(&crate::data_paths().base, "lightcreator"),
             autosave_on: saved("autosave_on").map(|v| v != "0").unwrap_or(true),
             mat_edit: None,
+            materials_dlg: None,
             mat_rev: u64::MAX,
             api_on: saved("api_on").map(|v| v == "1").unwrap_or(false),
             api_port: saved("api_port").and_then(|v| v.parse::<u16>().ok()).filter(|p| *p >= 1024).unwrap_or(crate::api_ui::DEFAULT_PORT),
@@ -1194,6 +1197,7 @@ impl App {
             Act::ImportUgsd => self.import_ugsd_dialog(),
             Act::ImportPlugin => self.import_with_plugin_dialog(),
             Act::Plugins => self.plugins.open = true,
+            Act::Materials => self.open_materials_window(),
             Act::GenerateShape => self.plugins.gen_open = true,
             Act::OnlineClipart => {
                 self.side_tab = SideTab::Clipart;
@@ -1489,6 +1493,7 @@ impl App {
 
     fn dialogs(&mut self, ctx: &egui::Context) {
         self.shape_popup(ctx);
+        self.materials_window(ctx);
 
         let mut open = self.show_array;
         let mut apply = false;

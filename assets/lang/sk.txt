@@ -1088,3 +1088,10 @@
 1087|Niektoré časti návrhu UGS sa nepodarilo použiť: {}
 1088|Zobraziť všetkých {} vrstiev
 1089|Farba materiálu sa iba zobrazuje; nič nemení.
+1090|Exportovať všetko…
+1091|Nahradiť materiály s rovnakým názvom
+1092|Importovaných materiálov: {}; nahradených: {}.
+1093|Exportovaných materiálov: {}: {}
+1094|Odstrániť túto vrstvu z materiálu
+1095|Tento materiál ešte nemá žiadne vrstvy. Pridajte jednu nižšie.
+1096|Materiály…

@@ -1088,3 +1088,10 @@
 1087|Algumas partes do design UGS não puderam ser usadas: {}
 1088|Mostrar as {} camadas
 1089|A cor do material só é mostrada; não altera nada.
+1090|Exportar tudo…
+1091|Substituir materiais com o mesmo nome
+1092|{} material(is) importado(s); {} substituído(s).
+1093|{} material(is) exportado(s): {}
+1094|Remover esta camada do material
+1095|Este material ainda não tem camadas. Adicione uma abaixo.
+1096|Materiais…

@@ -1088,3 +1088,10 @@
 1087|Sommige delen van het UGS-ontwerp konden niet worden gebruikt: {}
 1088|Alle {} lagen tonen
 1089|De kleur van het materiaal wordt alleen getoond; ze verandert niets.
+1090|Alles exporteren…
+1091|Materialen met dezelfde naam vervangen
+1092|{} materiaal/materialen geïmporteerd; {} vervangen.
+1093|{} materiaal/materialen geëxporteerd: {}
+1094|Deze laag uit het materiaal verwijderen
+1095|Dit materiaal heeft nog geen lagen. Voeg hieronder een toe.
+1096|Materialen…

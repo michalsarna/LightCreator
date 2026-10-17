@@ -1088,3 +1088,10 @@
 1087|Unele părți ale designului UGS nu au putut fi folosite: {}
 1088|Arată toate cele {} de straturi
 1089|Culoarea materialului este doar afișată; nu schimbă nimic.
+1090|Exportă tot…
+1091|Înlocuiește materialele cu același nume
+1092|Au fost importate {} materiale; {} înlocuite.
+1093|Au fost exportate {} materiale: {}
+1094|Elimină acest strat din material
+1095|Acest material nu are încă straturi. Adaugă unul mai jos.
+1096|Materiale…
