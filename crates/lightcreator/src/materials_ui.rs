@@ -54,6 +54,8 @@ impl App {
     pub fn material_header(&mut self, ui: &mut egui::Ui) {
         let names: Vec<String> = self.doc.device.materials.iter().map(|m| material_label(&m.name)).collect();
         let active = self.doc.device.active_material.min(names.len().saturating_sub(1));
+        let colours: Vec<Option<[u8; 3]>> = self.doc.device.materials.iter().map(|m| m.color).collect();
+        let mut new_colour: Option<Option<[u8; 3]>> = None;
         let mut pick: Option<usize> = None;
         let mut edit = self.mat_edit.take();
         let mut commit = false;
@@ -63,11 +65,26 @@ impl App {
             ui.set_width((ui.available_width() - 16.0).max(60.0));
             ui.horizontal(|ui| {
                 ui.add(crate::icons::slot(Some("package"), theme::text())).on_hover_text(tr("Material"));
+                // The colour of the material: only shown, nothing is computed from it.
+                let mut col = colours.get(active).copied().flatten().unwrap_or([128, 128, 128]);
+                let tip = tr("The colour of the material is only shown; it changes nothing.");
+                if ui.color_edit_button_srgb(&mut col).on_hover_text(tip).changed() {
+                    new_colour = Some(Some(col));
+                }
+                if colours.get(active).copied().flatten().is_some() && ui.add(egui::Button::image(crate::icons::slot(Some("x"), theme::text())).small()).on_hover_text(tr("Clear")).clicked() {
+                    new_colour = Some(None);
+                }
                 egui::ComboBox::from_id_salt("material_pick").width((ui.available_width() - 110.0).clamp(60.0, 260.0)).selected_text(names.get(active).cloned().unwrap_or_default()).show_ui(ui, |ui| {
                     for (i, n) in names.iter().enumerate() {
-                        if ui.selectable_label(i == active, n).clicked() {
-                            pick = Some(i);
-                        }
+                        ui.horizontal(|ui| {
+                            let (r, _) = ui.allocate_exact_size(egui::vec2(12.0, 12.0), egui::Sense::hover());
+                            if let Some(c) = colours.get(i).copied().flatten() {
+                                ui.painter().rect_filled(r, 2.0, Color32::from_rgb(c[0], c[1], c[2]));
+                            }
+                            if ui.selectable_label(i == active, n).clicked() {
+                                pick = Some(i);
+                            }
+                        });
                     }
                 });
                 if ui.add(egui::Button::image(crate::icons::slot(Some("plus"), theme::text()))).on_hover_text(tr("New, empty material")).clicked() {
@@ -99,6 +116,14 @@ impl App {
                 });
             }
         });
+        if let Some(c) = new_colour {
+            let i = self.doc.device.active_material;
+            if self.doc.device.materials.get(i).is_some_and(|m| m.color != c) {
+                self.checkpoint();
+                self.doc.device.materials[i].color = c;
+                self.sync_profile();
+            }
+        }
         if let Some(i) = pick {
             self.choose_material(i);
         }

@@ -1087,3 +1087,4 @@
 1086|Importer un design UGS…
 1087|Certaines parties du design UGS n'ont pas pu être utilisées : {}
 1088|Afficher les {} calques
+1089|La couleur du matériau est seulement affichée ; elle ne change rien.

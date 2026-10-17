@@ -1087,3 +1087,4 @@
 1086|Importer UGS-design…
 1087|Noen deler av UGS-designet kunne ikke brukes: {}
 1088|Vis alle {} lag
+1089|Fargen på materialet vises bare; den endrer ingenting.

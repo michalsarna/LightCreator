@@ -1087,3 +1087,4 @@
 1086|UGS-ontwerp importeren…
 1087|Sommige delen van het UGS-ontwerp konden niet worden gebruikt: {}
 1088|Alle {} lagen tonen
+1089|De kleur van het materiaal wordt alleen getoond; ze verandert niets.

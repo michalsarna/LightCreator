@@ -1231,6 +1231,7 @@ const TABLE: &[[&str; 7]] = &[
     ["Import UGS design…", "Importuj projekt UGS…", "UGS-Entwurf importieren…", "Importa progetto UGS…", "Tuo UGS-suunnitelma…", "导入 UGS 设计…", "UGS डिज़ाइन आयात करें…"],
     ["Some parts of the UGS design could not be used: {}", "Niektórych części projektu UGS nie dało się użyć: {}", "Einige Teile des UGS-Entwurfs konnten nicht verwendet werden: {}", "Alcune parti del progetto UGS non si sono potute usare: {}", "Joitakin UGS-suunnitelman osia ei voitu käyttää: {}", "UGS 设计的某些部分无法使用：{}", "UGS डिज़ाइन के कुछ हिस्सों का उपयोग नहीं किया जा सका: {}"],
     ["Show all {} layers", "Pokaż wszystkie {} warstw", "Alle {} Ebenen anzeigen", "Mostra tutti i {} livelli", "Näytä kaikki {} tasoa", "显示全部 {} 个图层", "सभी {} लेयर दिखाएँ"],
+    ["The colour of the material is only shown; it changes nothing.", "Kolor materiału jest tylko wyświetlany; nic nie zmienia.", "Die Farbe des Materials wird nur angezeigt; sie ändert nichts.", "Il colore del materiale è solo visualizzato; non cambia nulla.", "Materiaalin väri vain näytetään; se ei muuta mitään.", "材料颜色仅用于显示，不会改变任何内容。", "सामग्री का रंग केवल दिखाया जाता है; यह कुछ भी नहीं बदलता।"],
 ];
 #[cfg(test)]
 mod tests {
