@@ -2343,3 +2343,21 @@ fn imported_materials_keep_their_names_apart_or_replace_the_ones_with_the_same_n
     assert_eq!(merge_imported(&mut full, vec![Material::new("more")], false), (0, 0));
     assert_eq!(full.len(), 200);
 }
+
+#[test]
+fn illustrator_layers_go_on_the_layers_of_the_program_in_file_order() {
+    use base_core::svg::Outline;
+    let c = || vec![base_core::bezier::Contour::from_polyline(&base_core::geom::Polyline::new(vec![Pt::new(0.0, 0.0), Pt::new(5.0, 0.0), Pt::new(5.0, 5.0)], true))];
+    let o = |layer: Option<&str>| Outline { contours: c(), color: [255, 0, 0], layer: layer.map(|s| s.to_string()) };
+    let make = || vec![o(Some("Cut")), o(Some("Engrave")), o(Some("Cut")), o(None)];
+    assert_eq!(pdf::layer_count(&make()), 2);
+    let mut by_colour = Document::default();
+    let ids = pdf::place_outlines(make(), &mut by_colour, false);
+    let colour_layer = by_colour.scene.shapes.iter().find(|s| s.id == ids[0]).unwrap().layer;
+    assert!(ids.iter().all(|id| by_colour.scene.shapes.iter().find(|s| s.id == *id).unwrap().layer == colour_layer), "all red: one layer");
+    let mut by_layers = Document::default();
+    let ids = pdf::place_outlines(make(), &mut by_layers, true);
+    let layers: Vec<usize> = ids.iter().map(|id| by_layers.scene.shapes.iter().find(|s| s.id == *id).unwrap().layer).collect();
+    assert_eq!(&layers[..3], &[0, 1, 0]);
+    assert_eq!(layers[3], colour_layer, "content outside of layers still goes by colour");
+}

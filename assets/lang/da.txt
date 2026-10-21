@@ -1095,3 +1095,6 @@
 1094|Fjern dette lag fra materialet
 1095|Dette materiale har endnu ingen lag. Tilføj et nedenfor.
 1096|Materialer…
+1097|Illustrator-lag
+1098|Filen har {} Illustrator-lag. Læg stierne på programmets lag efter:
+1099|Det første Illustrator-lag kommer på lag 1, det andet på lag 2 og så videre; resten kommer på det sidste lag.

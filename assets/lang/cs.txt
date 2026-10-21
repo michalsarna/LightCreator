@@ -1095,3 +1095,6 @@
 1094|Odebrat tuto vrstvu z materiálu
 1095|Tento materiál ještě nemá žádné vrstvy. Přidejte jednu níže.
 1096|Materiály…
+1097|Vrstvy Illustratoru
+1098|Soubor má {} vrstev Illustratoru. Umístit dráhy na vrstvy programu podle:
+1099|První vrstva Illustratoru jde na vrstvu 1, druhá na vrstvu 2 a tak dále; zbytek jde na poslední vrstvu.

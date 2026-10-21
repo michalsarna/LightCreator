@@ -1095,3 +1095,6 @@
 1094|Ta bort det här lagret från materialet
 1095|Det här materialet har inga lager än. Lägg till ett nedan.
 1096|Material…
+1097|Illustrator-lager
+1098|Filen har {} Illustrator-lager. Lägg banorna på programmets lager efter:
+1099|Det första Illustrator-lagret hamnar på lager 1, det andra på lager 2 och så vidare; resten hamnar på det sista lagret.

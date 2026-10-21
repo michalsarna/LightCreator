@@ -5,15 +5,19 @@ use std::fmt::Write;
 /// Import an SVG into `doc`. Elements are assigned to the layer whose palette colour is closest to their
 /// stroke (or fill) colour, unless `layer` forces one. Returns the new shape ids.
 pub fn import(data: &[u8], doc: &mut Document, layer: Option<usize>) -> Result<Vec<u64>, String> {
-    Ok(place(base_core::svg::parse(data)?, doc, layer))
+    Ok(place(base_core::svg::parse(data)?, doc, layer, false))
 }
 
-/// Put read outlines on layers: the forced one, or the layer whose palette colour is nearest to the outline's.
-pub(crate) fn place(outlines: Vec<base_core::svg::Outline>, doc: &mut Document, layer: Option<usize>) -> Vec<u64> {
+/// Put read outlines on layers: the forced one, or the layer whose palette colour is nearest to the outline's. With `by_layers`
+/// the outlines that are on an Illustrator layer go on the layer of the program with the number of that layer in the file (the
+/// first on layer 1, ...; the rest on the last one); the others still go by colour.
+pub(crate) fn place(outlines: Vec<base_core::svg::Outline>, doc: &mut Document, layer: Option<usize>, by_layers: bool) -> Vec<u64> {
+    let names = base_core::svg::layer_names(&outlines);
     outlines
         .into_iter()
         .map(|o| {
-            let l = layer.unwrap_or_else(|| nearest_palette(o.color));
+            let named = if by_layers { o.layer.as_ref().and_then(|n| names.iter().position(|x| x == n)) } else { None };
+            let l = layer.or(named.map(|k| k.min(LAYER_COUNT - 1))).unwrap_or_else(|| nearest_palette(o.color));
             doc.add(l, Kind::Bezier(o.contours), base_core::geom::Xf::IDENTITY)
         })
         .collect()

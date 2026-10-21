@@ -1095,3 +1095,6 @@
 1094|Deze laag uit het materiaal verwijderen
 1095|Dit materiaal heeft nog geen lagen. Voeg hieronder een toe.
 1096|Materialen…
+1097|Illustrator-lagen
+1098|Het bestand heeft {} Illustrator-lagen. Zet de paden op de lagen van het programma op basis van:
+1099|De eerste Illustrator-laag komt op laag 1, de tweede op laag 2, enzovoort; de rest komt op de laatste laag.

@@ -1095,3 +1095,6 @@
 1094|Ukloni ovaj sloj iz materijala
 1095|Ovaj materijal još nema slojeva. Dodajte jedan ispod.
 1096|Materijali…
+1097|Slojevi programa Illustrator
+1098|Datoteka ima {} sloja programa Illustrator. Postavite staze na slojeve programa prema:
+1099|Prvi sloj programa Illustrator ide na sloj 1, drugi na sloj 2 i tako dalje; ostali idu na zadnji sloj.

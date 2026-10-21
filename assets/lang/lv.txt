@@ -1095,3 +1095,6 @@
 1094|Noņemt šo slāni no materiāla
 1095|Šim materiālam vēl nav slāņu. Pievienojiet vienu zemāk.
 1096|Materiāli…
+1097|Illustrator slāņi
+1098|Failā ir {} Illustrator slāņi. Novietot ceļus programmas slāņos pēc:
+1099|Pirmais Illustrator slānis iet uz 1. slāni, otrais uz 2. slāni un tā tālāk; pārējie iet uz pēdējo slāni.

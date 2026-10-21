@@ -1095,3 +1095,6 @@
 1094|Elimina aquesta capa del material
 1095|Aquest material encara no té capes. Afegiu-ne una a sota.
 1096|Materials…
+1097|Capes d'Illustrator
+1098|El fitxer té {} capes d'Illustrator. Posa els traçats a les capes del programa segons:
+1099|La primera capa d'Illustrator va a la capa 1, la segona a la capa 2 i així successivament; la resta van a l'última capa.

@@ -1095,3 +1095,6 @@
 1094|Neħħi din is-saff mill-materjal
 1095|Dan il-materjal għad m'għandu l-ebda saff. Żid wieħed hawn taħt.
 1096|Materjali…
+1097|Is-saffi tal-Illustrator
+1098|Il-fajl għandu {} saffi tal-Illustrator. Poġġi t-toroq fuq is-saffi tal-programm skont:
+1099|L-ewwel saff tal-Illustrator imur fuq is-saff 1, it-tieni fuq is-saff 2 u hekk 'il quddiem; il-bqija jmorru fuq l-aħħar saff.

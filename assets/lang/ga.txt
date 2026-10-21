@@ -1095,3 +1095,6 @@
 1094|Bain an ciseal seo den ábhar
 1095|Níl aon chiseal ag an ábhar seo go fóill. Cuir ceann leis thíos.
 1096|Ábhair…
+1097|Sraitheanna Illustrator
+1098|Tá {} sraith Illustrator sa chomhad. Cuir na cosáin ar shraitheanna an chláir de réir:
+1099|Téann an chéad sraith Illustrator ar shraith 1, an dara ceann ar shraith 2, agus mar sin de; téann an chuid eile ar an tsraith dheireanach.

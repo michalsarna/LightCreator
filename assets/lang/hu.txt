@@ -1095,3 +1095,6 @@
 1094|Ennek a rétegnek az eltávolítása az anyagból
 1095|Ennek az anyagnak még nincs rétege. Adjon hozzá egyet lent.
 1096|Anyagok…
+1097|Illustrator-rétegek
+1098|A fájlban {} Illustrator-réteg van. Az útvonalakat a program rétegeire helyezze a következő szerint:
+1099|Az első Illustrator-réteg az 1. rétegre kerül, a második a 2. rétegre és így tovább; a többi az utolsó rétegre.
