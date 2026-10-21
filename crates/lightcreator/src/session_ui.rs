@@ -96,7 +96,7 @@ impl App {
             return;
         }
         ctx.request_repaint_after(left);
-        egui::Area::new(egui::Id::new("saved_toast")).order(egui::Order::Tooltip).anchor(egui::Align2::CENTER_BOTTOM, [0.0, -48.0]).show(ctx, |ui| {
+        egui::Area::new(egui::Id::unique("saved_toast")).order(egui::Order::Tooltip).anchor(egui::Align2::CENTER_BOTTOM, [0.0, -48.0]).show(ctx, |ui| {
             egui::Frame::popup(ui.style()).fill(crate::window_ui::SAVE_GREEN).show(ui, |ui| {
                 ui.horizontal(|ui| {
                     ui.add(crate::icons::slot(Some("check"), Color32::WHITE));
