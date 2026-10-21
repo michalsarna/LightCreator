@@ -1098,3 +1098,9 @@
 1097|Calques d'Illustrator
 1098|Le fichier a {} calques d'Illustrator. Placer les tracés sur les calques du programme selon :
 1099|Le premier calque d'Illustrator va sur le calque 1, le deuxième sur le calque 2, et ainsi de suite ; les autres vont sur le dernier calque.
+1100|Afficher un fichier G-code…
+1101|Réinitialiser la vue
+1102|Visionneuse G-code
+1103|Colorer par hauteur
+1104|Glisser : tourner · glisser avec le bouton droit ou Maj+glisser : déplacer · molette : zoom
+1105|Glisser : déplacer · molette : zoom

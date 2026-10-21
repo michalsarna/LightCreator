@@ -1098,3 +1098,9 @@
 1097	Illustrator layers
 1098	The file has {} Illustrator layers. Put the paths on the layers of the program by:
 1099	The first Illustrator layer goes on layer 1, the second on layer 2, and so on; the rest go on the last layer.
+1100	View G-code file…
+1101	Reset view
+1102	G-code viewer
+1103	Colour by height
+1104	Drag: rotate · right drag or Shift+drag: move · wheel: zoom
+1105	Drag: move · wheel: zoom

@@ -1098,3 +1098,9 @@
 1097|Capas de Illustrator
 1098|El archivo tiene {} capas de Illustrator. Colocar los trazados en las capas del programa según:
 1099|La primera capa de Illustrator va a la capa 1, la segunda a la capa 2 y así sucesivamente; el resto va a la última capa.
+1100|Ver archivo G-code…
+1101|Restablecer vista
+1102|Visor de G-code
+1103|Colorear por altura
+1104|Arrastrar: girar · arrastrar con el botón derecho o Mayús+arrastrar: mover · rueda: zoom
+1105|Arrastrar: mover · rueda: zoom

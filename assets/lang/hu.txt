@@ -1098,3 +1098,9 @@
 1097|Illustrator-rétegek
 1098|A fájlban {} Illustrator-réteg van. Az útvonalakat a program rétegeire helyezze a következő szerint:
 1099|Az első Illustrator-réteg az 1. rétegre kerül, a második a 2. rétegre és így tovább; a többi az utolsó rétegre.
+1100|G-kód fájl megtekintése…
+1101|Nézet visszaállítása
+1102|G-kód megjelenítő
+1103|Színezés magasság szerint
+1104|Húzás: forgatás · jobb gombos húzás vagy Shift+húzás: mozgatás · görgő: nagyítás
+1105|Húzás: mozgatás · görgő: nagyítás

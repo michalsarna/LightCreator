@@ -8,6 +8,7 @@ mod canvas;
 mod device_ui;
 mod firmware_ui;
 mod focus_ui;
+mod gcode_view_ui;
 #[cfg(test)]
 mod grbl_sim_tests;
 mod i18n;

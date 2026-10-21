@@ -1098,3 +1098,9 @@
 1097|Illustrator-lög
 1098|Skráin er með {} Illustrator-lög. Settu ferlana á lög forritsins eftir:
 1099|Fyrsta Illustrator-lagið fer á lag 1, annað á lag 2 og svo framvegis; afgangurinn fer á síðasta lagið.
+1100|Skoða G-kóða skrá…
+1101|Endurstilla sýn
+1102|G-kóða skoðari
+1103|Lita eftir hæð
+1104|Draga: snúa · hægri draga eða Shift+draga: færa · hjól: aðdráttur
+1105|Draga: færa · hjól: aðdráttur

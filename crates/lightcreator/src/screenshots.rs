@@ -1220,3 +1220,44 @@ mod plugin_import_window_tests {
         let _ = std::fs::remove_dir_all(&base);
     }
 }
+
+#[test]
+#[ignore = "writes docs/screenshots; run explicitly"]
+fn render_gcode_viewer() {
+    let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    app(&mut h).lang = Lang::En;
+    i18n::set_lang(Lang::En);
+    let ctx = h.ctx.clone();
+    theme::apply(&ctx, Scheme::LightDark);
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.cfg = None;
+        assert!(a.enter_editor(0));
+    }
+    // A flat laser file: a circle and a square with different power.
+    let flat = "G21 G90\nG0 X20 Y20\nM4 S1000\nG1 X80 Y20 F1000\nG1 X80 Y80 S400\nG1 X20 Y80\nG1 X20 Y20\nG0 X50 Y30\nG1 X50 Y30 S800\nG2 X50 Y30 I0 J20\nM5\n";
+    // A 3D file: a spiral going down.
+    let mut spiral = String::from("G21 G90\nG0 Z5\nG0 X30 Y0\nM3 S8000\n");
+    for i in 0..400 {
+        let a = i as f64 * 0.12;
+        spiral += &format!("G1 X{:.3} Y{:.3} Z{:.3} F400\n", 30.0 * a.cos(), 30.0 * a.sin(), 5.0 - i as f64 * 0.04);
+    }
+    spiral += "G0 Z10\nM5\n";
+    let dir = std::env::temp_dir().join("lc-gview-shots");
+    std::fs::create_dir_all(&dir).unwrap();
+    for (name, text) in [("gcode-viewer-2d.png", flat.to_string()), ("gcode-viewer-3d.png", spiral)] {
+        let p = dir.join("job.nc");
+        std::fs::write(&p, text).unwrap();
+        assert!(app(&mut h).open_gcode(p));
+        save(&mut h, name);
+    }
+    let _ = std::fs::remove_dir_all(&dir);
+}

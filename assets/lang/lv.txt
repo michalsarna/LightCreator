@@ -1098,3 +1098,9 @@
 1097|Illustrator slāņi
 1098|Failā ir {} Illustrator slāņi. Novietot ceļus programmas slāņos pēc:
 1099|Pirmais Illustrator slānis iet uz 1. slāni, otrais uz 2. slāni un tā tālāk; pārējie iet uz pēdējo slāni.
+1100|Skatīt G-koda failu…
+1101|Atiestatīt skatu
+1102|G-koda skatītājs
+1103|Krāsot pēc augstuma
+1104|Velciet: griezt · velciet ar labo pogu vai Shift+velciet: pārvietot · ritenītis: tālummaiņa
+1105|Velciet: pārvietot · ritenītis: tālummaiņa

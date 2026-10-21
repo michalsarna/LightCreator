@@ -1098,3 +1098,9 @@
 1097|Illustrator-lagen
 1098|Het bestand heeft {} Illustrator-lagen. Zet de paden op de lagen van het programma op basis van:
 1099|De eerste Illustrator-laag komt op laag 1, de tweede op laag 2, enzovoort; de rest komt op de laatste laag.
+1100|G-codebestand bekijken…
+1101|Weergave herstellen
+1102|G-codeviewer
+1103|Kleuren op hoogte
+1104|Slepen: draaien · rechts slepen of Shift+slepen: verschuiven · wiel: zoomen
+1105|Slepen: verschuiven · wiel: zoomen

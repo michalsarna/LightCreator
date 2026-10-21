@@ -1098,3 +1098,9 @@
 1097|Illustrator sluoksniai
 1098|Faile yra {} Illustrator sluoksnių. Padėti kelius ant programos sluoksnių pagal:
 1099|Pirmasis Illustrator sluoksnis patenka į 1 sluoksnį, antrasis į 2 sluoksnį ir taip toliau; likusieji į paskutinį sluoksnį.
+1100|Peržiūrėti G-kodo failą…
+1101|Atstatyti vaizdą
+1102|G-kodo peržiūra
+1103|Spalva pagal aukštį
+1104|Tempti: sukti · tempti dešiniuoju arba Shift+tempti: perstumti · ratukas: keisti mastelį
+1105|Tempti: perstumti · ratukas: keisti mastelį

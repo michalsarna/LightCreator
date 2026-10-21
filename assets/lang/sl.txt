@@ -1098,3 +1098,9 @@
 1097|Plasti Illustratorja
 1098|Datoteka ima {} plasti Illustratorja. Poti postavi na plasti programa glede na:
 1099|Prva plast Illustratorja gre na plast 1, druga na plast 2 in tako naprej; ostale gredo na zadnjo plast.
+1100|Prikaži datoteko G-code…
+1101|Ponastavi pogled
+1102|Pregledovalnik G-code
+1103|Barva po višini
+1104|Povleci: vrti · desni gumb ali Shift+povleci: premakni · kolesce: povečava
+1105|Povleci: premakni · kolesce: povečava

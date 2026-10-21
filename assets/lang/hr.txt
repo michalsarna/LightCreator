@@ -1098,3 +1098,9 @@
 1097|Slojevi programa Illustrator
 1098|Datoteka ima {} sloja programa Illustrator. Postavite staze na slojeve programa prema:
 1099|Prvi sloj programa Illustrator ide na sloj 1, drugi na sloj 2 i tako dalje; ostali idu na zadnji sloj.
+1100|Prikaži G-code datoteku…
+1101|Vrati pogled
+1102|Preglednik G-codea
+1103|Boja prema visini
+1104|Povuci: zakreni · desni gumb ili Shift+povuci: pomakni · kotačić: zoom
+1105|Povuci: pomakni · kotačić: zoom

@@ -47,6 +47,7 @@ pub enum Act {
     ImportAi,
     ImportLightburn,
     ImportUgsd,
+    ViewGcode,
     ImportPlugin,
     Plugins,
     Materials,
@@ -204,6 +205,7 @@ pub fn menus() -> base_ui::menu::Menus<Act> {
     let mut file = vec![
         Item(Act::New, "New", key("CmdOrCtrl+N", "Ctrl+N")),
         Item(Act::Open, "Open…", key("CmdOrCtrl+O", "Ctrl+O")),
+        Item(Act::ViewGcode, "View G-code file…", None),
         Recent,
         Item(Act::Save, "Save", key("CmdOrCtrl+S", "Ctrl+S")),
         Item(Act::SaveAs, "Save as…", key("CmdOrCtrl+Shift+S", "Ctrl+Shift+S")),

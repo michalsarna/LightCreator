@@ -1098,3 +1098,9 @@
 1097|Capes d'Illustrator
 1098|El fitxer té {} capes d'Illustrator. Posa els traçats a les capes del programa segons:
 1099|La primera capa d'Illustrator va a la capa 1, la segona a la capa 2 i així successivament; la resta van a l'última capa.
+1100|Mostra un fitxer G-code…
+1101|Restableix la vista
+1102|Visualitzador de G-code
+1103|Colora per alçada
+1104|Arrossega: gira · arrossega amb el botó dret o Maj+arrossega: mou · roda: zoom
+1105|Arrossega: mou · roda: zoom
