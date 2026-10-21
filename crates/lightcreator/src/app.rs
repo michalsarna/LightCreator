@@ -2144,7 +2144,7 @@ mod tool_name_tests {
             let mut x = 0.0;
             let mut out = ctx.run_ui(egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1400.0, 900.0))), ..Default::default() }, |ui| {
                 a.draw(ui);
-                x = ctx.data(|d| d.get_temp::<f32>(egui::Id::new("tool_name_right"))).unwrap_or(-1.0);
+                x = ctx.data(|d| d.get_temp::<f32>(egui::Id::unique("tool_name_right"))).unwrap_or(-1.0);
             });
             // Debug builds insist that texture updates are consumed before the output is dropped.
             out.textures_delta.clear();

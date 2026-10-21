@@ -95,7 +95,7 @@ impl App {
             }
         });
         if !t.err.is_empty() {
-            egui::Area::new(egui::Id::new("cam_test_err")).anchor(egui::Align2::CENTER_BOTTOM, [0.0, -8.0]).show(ctx, |ui| {
+            egui::Area::new(egui::Id::unique("cam_test_err")).anchor(egui::Align2::CENTER_BOTTOM, [0.0, -8.0]).show(ctx, |ui| {
                 ui.label(RichText::new(trf("Stream error: {}", &[&t.err.replace(match &t.cam.kind { CameraKind::Url(u) => u.as_str(), _ => "-" }, "…")])).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
             });
         }

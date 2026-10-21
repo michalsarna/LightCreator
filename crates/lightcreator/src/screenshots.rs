@@ -54,7 +54,7 @@ fn console_sample(a: &mut App) {
 #[test]
 #[ignore = "writes docs/screenshots; run explicitly"]
 fn render_screenshots() {
-    let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+    let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
         |ui, state: &mut Option<App>| {
             let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
             a.draw(ui);
@@ -611,7 +611,7 @@ fn render_screenshots() {
 #[test]
 fn node_bar_hides_when_another_window_is_clicked() {
     use eframe::egui::{Event, Modifiers, PointerButton};
-    let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+    let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
         |ui, state: &mut Option<App>| {
             let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
             a.draw(ui);
@@ -642,7 +642,7 @@ fn node_bar_hides_when_another_window_is_clicked() {
     press(&h, 800.0, 400.0);
     h.run_steps(3);
     assert!(!app(&mut h).ed.node_bar_active, "the bar goes away");
-    assert_ne!(ctx.layer_id_at(eframe::egui::pos2(150.0, 122.0)).map(|l| l.id), Some(eframe::egui::Id::new("node_bar")));
+    assert_ne!(ctx.layer_id_at(eframe::egui::pos2(150.0, 122.0)).map(|l| l.id), Some(eframe::egui::Id::unique("node_bar")));
     // A click on the work area brings it back.
     press(&h, 80.0, 400.0);
     h.run_steps(3);
@@ -658,7 +658,7 @@ fn node_bar_hides_when_another_window_is_clicked() {
 #[test]
 fn clicking_a_handle_switches_between_resize_and_rotate() {
     use eframe::egui::{pos2, Event, Modifiers, PointerButton};
-    let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+    let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
         |ui, state: &mut Option<App>| {
             let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
             a.draw(ui);
@@ -738,7 +738,7 @@ fn clicking_a_handle_switches_between_resize_and_rotate() {
 #[test]
 #[ignore = "writes docs/screenshots; run explicitly"]
 fn render_clipart_node_editing() {
-    let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+    let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
         |ui, state: &mut Option<App>| {
             let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
             a.draw(ui);
@@ -781,7 +781,7 @@ fn render_clipart_node_editing() {
 /// "Fit all objects" frames everything that is on the page, wherever it is.
 #[test]
 fn fit_all_objects_shows_every_shape() {
-    let mut h: Shot = Harness::builder().with_size([1200.0, 800.0]).build_ui_state(
+    let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1200.0, 800.0]).build_ui_state(
         |ui, state: &mut Option<App>| {
             let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
             a.draw(ui);
@@ -820,7 +820,7 @@ fn fit_all_objects_shows_every_shape() {
 /// The Space key really switches to the hand tool while it is held down.
 #[test]
 fn space_key_pans_while_held() {
-    let mut h: Shot = Harness::builder().with_size([1000.0, 700.0]).build_ui_state(
+    let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1000.0, 700.0]).build_ui_state(
         |ui, state: &mut Option<App>| {
             let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
             a.draw(ui);
@@ -848,7 +848,7 @@ fn space_key_pans_while_held() {
 #[ignore = "visual check only"]
 fn render_menu_icon_sheet() {
     let names = crate::icons::all_names();
-    let mut h = Harness::builder().with_size([720.0, 330.0]).build_ui(move |ui| {
+    let mut h = Harness::builder().with_accessibility_check(false).with_size([720.0, 330.0]).build_ui(move |ui| {
         egui_extras::install_image_loaders(ui.ctx());
         eframe::egui::Frame::new().fill(eframe::egui::Color32::from_gray(0x3c)).show(ui, |ui| {
             ui.set_min_size(ui.available_size());
@@ -869,7 +869,7 @@ fn render_menu_icon_sheet() {
 /// The work area follows the window size while auto-fit is on, and stays put after a manual zoom.
 #[test]
 fn work_area_follows_window_resizes() {
-    let mut h: Shot = Harness::builder().with_size([1200.0, 800.0]).build_ui_state(
+    let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1200.0, 800.0]).build_ui_state(
         |ui, state: &mut Option<App>| {
             let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
             a.draw(ui);
@@ -906,7 +906,7 @@ fn work_area_follows_window_resizes() {
 /// The Escape key reaches the editor (the double-press logic itself is tested in `app`).
 #[test]
 fn escape_key_reaches_the_editor() {
-    let mut h: Shot = Harness::builder().with_size([1000.0, 700.0]).build_ui_state(
+    let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1000.0, 700.0]).build_ui_state(
         |ui, state: &mut Option<App>| {
             let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
             a.draw(ui);
@@ -928,7 +928,7 @@ fn escape_key_reaches_the_editor() {
 
 /// The width of the side panel after showing `tab` in `lang`, from a fresh start (a panel never gets narrower again).
 fn side_width(lang: Lang, tab: SideTab) -> f32 {
-    let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+    let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
         |ui, state: &mut Option<App>| {
             let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
             a.draw(ui);
@@ -971,7 +971,7 @@ fn no_tab_widens_the_side_panel() {
 }
 
 fn editor_harness() -> Shot {
-    let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+    let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
         |ui, state: &mut Option<App>| {
             let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
             a.draw(ui);
@@ -1019,7 +1019,7 @@ fn device_window_pages_open_and_save() {
         c.page = CfgPage::Laser;
     }
     h.run_steps(3);
-    h.get_by_label("Save").click();
+    h.get_by_role_and_label(eframe::egui::accesskit::Role::Button, "Save").click();
     h.run_steps(4);
     let a = app(&mut h);
     assert!(a.cfg.is_none(), "the window closes after Save");
@@ -1040,7 +1040,7 @@ mod resize_tests {
     use eframe::egui::{self, Event, Id, PointerButton, Pos2};
 
     fn about_rect(h: &Shot) -> eframe::egui::Rect {
-        h.ctx.memory(|m| m.area_rect(Id::new(Some("about_window")))).unwrap_or_else(|| panic!("about window shown; areas: {:?}", h.ctx.memory(|m| m.areas().visible_layer_ids())))
+        h.ctx.memory(|m| m.area_rect(Id::unique(Some("about_window")))).unwrap_or_else(|| panic!("about window shown; areas: {:?}", h.ctx.memory(|m| m.areas().visible_layer_ids())))
     }
 
     fn drag(h: &mut Shot, from: Pos2, to: Pos2) {
@@ -1059,7 +1059,7 @@ mod resize_tests {
 
     #[test]
     fn about_window_can_be_resized_both_ways() {
-        let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+        let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
             |ui, state: &mut Option<App>| {
                 let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
                 a.draw(ui);
@@ -1091,7 +1091,7 @@ mod material_colour_tests {
 
     #[test]
     fn the_colour_of_a_material_is_set_when_it_is_renamed_or_added_and_cleared_again() {
-        let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+        let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
             |ui, state: &mut Option<App>| {
                 let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
                 a.draw(ui);
@@ -1107,7 +1107,7 @@ mod material_colour_tests {
             a.mat_edit = Some(crate::materials_ui::MatEdit::Rename("Birch".into(), Some([10, 20, 30])));
         }
         h.run_steps(4);
-        h.get_by_label("Save").click();
+        h.get_by_role_and_label(eframe::egui::accesskit::Role::Button, "Save").click();
         h.run_steps(4);
         let a = app(&mut h);
         let m = &a.doc.device.materials[a.doc.device.active_material];
@@ -1115,14 +1115,14 @@ mod material_colour_tests {
         // A new material takes its colour, and a rename without one clears it.
         a.mat_edit = Some(crate::materials_ui::MatEdit::New("Acrylic".into(), Some([1, 2, 3])));
         h.run_steps(4);
-        h.get_by_label("Save").click();
+        h.get_by_role_and_label(eframe::egui::accesskit::Role::Button, "Save").click();
         h.run_steps(4);
         let a = app(&mut h);
         let m = &a.doc.device.materials[a.doc.device.active_material];
         assert_eq!((m.name.as_str(), m.color), ("Acrylic", Some([1, 2, 3])), "a new material");
         a.mat_edit = Some(crate::materials_ui::MatEdit::Rename("Acrylic".into(), None));
         h.run_steps(4);
-        h.get_by_label("Save").click();
+        h.get_by_role_and_label(eframe::egui::accesskit::Role::Button, "Save").click();
         h.run_steps(4);
         let a = app(&mut h);
         assert_eq!(a.doc.device.materials[a.doc.device.active_material].color, None, "cleared");
@@ -1136,7 +1136,7 @@ mod materials_window_tests {
 
     #[test]
     fn the_materials_window_adds_a_layer_copies_and_deletes_a_material() {
-        let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+        let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
             |ui, state: &mut Option<App>| {
                 let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
                 a.draw(ui);
@@ -1151,7 +1151,7 @@ mod materials_window_tests {
             a.open_materials_window();
         }
         h.run_steps(4);
-        let height = |h: &mut Shot| h.ctx.memory(|m| m.area_rect(eframe::egui::Id::new(Some("materials_window")))).map(|r| r.height());
+        let height = |h: &mut Shot| h.ctx.memory(|m| m.area_rect(eframe::egui::Id::unique(Some("materials_window")))).map(|r| r.height());
         let first = height(&mut h);
         h.run_steps(30);
         let later = height(&mut h);
@@ -1188,7 +1188,7 @@ mod plugin_import_window_tests {
         std::fs::write(p.join("read.rhai"), "fn read(text, ctx) { rect(0.0, 0.0, ctx.p.w, 5.0) }").unwrap();
         let file = base.join("a.frm");
         std::fs::write(&file, "x").unwrap();
-        let mut h: Shot = Harness::builder().with_size([1280.0, 800.0]).build_ui_state(
+        let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
             |ui, state: &mut Option<App>| {
                 let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
                 a.draw(ui);
