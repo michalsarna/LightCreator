@@ -2,7 +2,7 @@
 
 # GRBL Codes
 
-What LightCreator sends to a GRBL controller and what the controller answers. Facts about GRBL are those of **GRBL 1.1** (the firmware most diode lasers run); other versions and forks (grblHAL, FluidNC, vendor builds) can differ. Nothing here was tried on a real machine; the program's own streaming was tested against the [GRBL simulator](GRBL-Simulator).
+What LightCreator sends to a GRBL controller and what the controller answers. Facts about GRBL are those of **GRBL 1.1** (the firmware most diode lasers run); other versions and forks (grblHAL, FluidNC, vendor builds) can differ. Tested on a Sculpfun S9 only; the program's own streaming was tested against the [GRBL simulator](GRBL-Simulator).
 
 ## Real-time characters
 

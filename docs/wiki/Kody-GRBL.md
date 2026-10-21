@@ -2,7 +2,7 @@
 
 # Kody GRBL
 
-Co LightCreator wysyła do sterownika GRBL i co sterownik odpowiada. Fakty o GRBL dotyczą **GRBL 1.1** (firmware większości laserów diodowych); inne wersje i odmiany (grblHAL, FluidNC, wersje producentów) mogą się różnić. Nic z tego nie było sprawdzane na prawdziwej maszynie; własne strumieniowanie programu testowano na [symulatorze GRBL](Symulator-GRBL).
+Co LightCreator wysyła do sterownika GRBL i co sterownik odpowiada. Fakty o GRBL dotyczą **GRBL 1.1** (firmware większości laserów diodowych); inne wersje i odmiany (grblHAL, FluidNC, wersje producentów) mogą się różnić. Sprawdzane tylko na Sculpfun S9; własne strumieniowanie programu testowano na [symulatorze GRBL](Symulator-GRBL).
 
 ## Znaki czasu rzeczywistego
 

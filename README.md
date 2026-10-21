@@ -55,8 +55,8 @@ A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
 ### What has and has not been verified
 
 All geometry, boolean, offset, raster, G-code, export and translation logic is covered by unit tests, and the
-screenshots are rendered from the real UI. Nothing has been run against real hardware yet: GRBL and
-Marlin streaming, the Ruida / Trocen import path and the live camera still need testing on actual machines.
+screenshots are rendered from the real UI. It has been tested on a Sculpfun S9 (a diode laser on GRBL) and works there. Marlin streaming, the Ruida / Trocen import path and
+the live camera still need testing on actual machines.
 GRBL streaming is exercised end to end against the real GRBL 1.1h firmware running in a simulator, see
 [docs/grbl-sim.md](docs/grbl-sim.md).
 Reading settings from a device and the Illustrator import (PDF-compatible files only) are
