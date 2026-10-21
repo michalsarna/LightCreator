@@ -1095,3 +1095,6 @@
 1094|Eemalda see kiht materjalist
 1095|Sellel materjalil pole veel kihte. Lisa allpool üks.
 1096|Materjalid…
+1097|Illustratori kihid
+1098|Failis on {} Illustratori kihti. Aseta rajad programmi kihtidele järgmise alusel:
+1099|Esimene Illustratori kiht läheb kihile 1, teine kihile 2 ja nii edasi; ülejäänud lähevad viimasele kihile.

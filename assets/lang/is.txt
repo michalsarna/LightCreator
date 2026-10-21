@@ -1095,3 +1095,6 @@
 1094|Fjarlægja þetta lag úr efninu
 1095|Þetta efni hefur engin lög enn. Bættu við einu hér að neðan.
 1096|Efni…
+1097|Illustrator-lög
+1098|Skráin er með {} Illustrator-lög. Settu ferlana á lög forritsins eftir:
+1099|Fyrsta Illustrator-lagið fer á lag 1, annað á lag 2 og svo framvegis; afgangurinn fer á síðasta lagið.

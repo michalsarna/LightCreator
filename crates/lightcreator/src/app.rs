@@ -121,6 +121,8 @@ pub struct App {
     pub fw_warn: Option<lc_core::controller::FwCheck>,
     /// A running job waits for an answer while the machine stands still: seconds and machine state.
     pub stall: Option<(u64, String)>,
+    /// A PDF / Illustrator file with layers waits for the choice of how to put them on the layers of the program: the path and the outlines.
+    pub ai_choice: Option<(std::path::PathBuf, lc_core::pdf::Outlines)>,
     /// The box the frame command traces.
     pub frame_bounds: Option<lc_core::Rect>,
     pub allow_close: bool,
@@ -311,6 +313,7 @@ impl App {
             check_dlg: None,
             fw_warn: None,
             stall: None,
+            ai_choice: None,
             frame_bounds: None,
             allow_close: false,
             show_options: false,
@@ -1543,6 +1546,7 @@ impl App {
         self.check_window(ctx);
         self.fw_window(ctx);
         self.stall_window(ctx);
+        self.ai_choice_window(ctx);
         self.problem_window(ctx);
         self.fw_windows(ctx);
         let mut cal = std::mem::take(&mut self.cal);

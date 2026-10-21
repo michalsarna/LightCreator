@@ -1095,3 +1095,6 @@
 1094|Pašalinti šį sluoksnį iš medžiagos
 1095|Ši medžiaga dar neturi sluoksnių. Pridėkite vieną žemiau.
 1096|Medžiagos…
+1097|Illustrator sluoksniai
+1098|Faile yra {} Illustrator sluoksnių. Padėti kelius ant programos sluoksnių pagal:
+1099|Pirmasis Illustrator sluoksnis patenka į 1 sluoksnį, antrasis į 2 sluoksnį ir taip toliau; likusieji į paskutinį sluoksnį.

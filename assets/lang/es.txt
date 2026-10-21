@@ -1095,3 +1095,6 @@
 1094|Quitar esta capa del material
 1095|Este material aún no tiene capas. Añada una abajo.
 1096|Materiales…
+1097|Capas de Illustrator
+1098|El archivo tiene {} capas de Illustrator. Colocar los trazados en las capas del programa según:
+1099|La primera capa de Illustrator va a la capa 1, la segunda a la capa 2 y así sucesivamente; el resto va a la última capa.

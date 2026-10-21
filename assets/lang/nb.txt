@@ -1095,3 +1095,6 @@
 1094|Fjern dette laget fra materialet
 1095|Dette materialet har ingen lag ennå. Legg til ett nedenfor.
 1096|Materialer…
+1097|Illustrator-lag
+1098|Filen har {} Illustrator-lag. Legg banene på programmets lag etter:
+1099|Det første Illustrator-laget havner på lag 1, det andre på lag 2 og så videre; resten havner på det siste laget.

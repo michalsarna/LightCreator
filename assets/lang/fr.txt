@@ -1095,3 +1095,6 @@
 1094|Retirer ce calque du matériau
 1095|Ce matériau n'a pas encore de calques. Ajoutez-en un ci-dessous.
 1096|Matériaux…
+1097|Calques d'Illustrator
+1098|Le fichier a {} calques d'Illustrator. Placer les tracés sur les calques du programme selon :
+1099|Le premier calque d'Illustrator va sur le calque 1, le deuxième sur le calque 2, et ainsi de suite ; les autres vont sur le dernier calque.

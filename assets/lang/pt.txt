@@ -1095,3 +1095,6 @@
 1094|Remover esta camada do material
 1095|Este material ainda não tem camadas. Adicione uma abaixo.
 1096|Materiais…
+1097|Camadas do Illustrator
+1098|O ficheiro tem {} camadas do Illustrator. Colocar os caminhos nas camadas do programa segundo:
+1099|A primeira camada do Illustrator vai para a camada 1, a segunda para a camada 2 e assim por diante; as restantes vão para a última camada.

@@ -1095,3 +1095,6 @@
 1094|Elimină acest strat din material
 1095|Acest material nu are încă straturi. Adaugă unul mai jos.
 1096|Materiale…
+1097|Straturile Illustrator
+1098|Fișierul are {} straturi Illustrator. Puneți traseele pe straturile programului după:
+1099|Primul strat Illustrator merge pe stratul 1, al doilea pe stratul 2 și așa mai departe; restul merg pe ultimul strat.

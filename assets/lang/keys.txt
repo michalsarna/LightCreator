@@ -1095,3 +1095,6 @@
 1094	Remove this layer from the material
 1095	This material has no layers yet. Add one below.
 1096	Materials…
+1097	Illustrator layers
+1098	The file has {} Illustrator layers. Put the paths on the layers of the program by:
+1099	The first Illustrator layer goes on layer 1, the second on layer 2, and so on; the rest go on the last layer.

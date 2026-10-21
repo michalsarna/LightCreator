@@ -1095,3 +1095,6 @@
 1094|Odstrani ta sloj iz materiala
 1095|Ta material še nima slojev. Dodajte enega spodaj.
 1096|Materiali…
+1097|Plasti Illustratorja
+1098|Datoteka ima {} plasti Illustratorja. Poti postavi na plasti programa glede na:
+1099|Prva plast Illustratorja gre na plast 1, druga na plast 2 in tako naprej; ostale gredo na zadnjo plast.
