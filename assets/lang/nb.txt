@@ -1098,3 +1098,9 @@
 1097|Illustrator-lag
 1098|Filen har {} Illustrator-lag. Legg banene på programmets lag etter:
 1099|Det første Illustrator-laget havner på lag 1, det andre på lag 2 og så videre; resten havner på det siste laget.
+1100|Vis G-code-fil…
+1101|Tilbakestill visning
+1102|G-code-visning
+1103|Farge etter høyde
+1104|Dra: roter · høyredra eller Shift+dra: flytt · hjul: zoom
+1105|Dra: flytt · hjul: zoom

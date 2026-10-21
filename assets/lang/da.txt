@@ -1098,3 +1098,9 @@
 1097|Illustrator-lag
 1098|Filen har {} Illustrator-lag. Læg stierne på programmets lag efter:
 1099|Det første Illustrator-lag kommer på lag 1, det andet på lag 2 og så videre; resten kommer på det sidste lag.
+1100|Vis G-code-fil…
+1101|Nulstil visning
+1102|G-code-fremviser
+1103|Farv efter højde
+1104|Træk: roter · højre træk eller Skift+træk: flyt · hjul: zoom
+1105|Træk: flyt · hjul: zoom

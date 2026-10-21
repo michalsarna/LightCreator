@@ -1098,3 +1098,9 @@
 1097|Illustrator-lager
 1098|Filen har {} Illustrator-lager. Lägg banorna på programmets lager efter:
 1099|Det första Illustrator-lagret hamnar på lager 1, det andra på lager 2 och så vidare; resten hamnar på det sista lagret.
+1100|Visa G-code-fil…
+1101|Återställ vyn
+1102|G-code-visare
+1103|Färglägg efter höjd
+1104|Dra: rotera · högerdra eller Skift+dra: flytta · hjul: zooma
+1105|Dra: flytta · hjul: zooma

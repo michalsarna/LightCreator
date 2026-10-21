@@ -85,11 +85,16 @@ impl App {
         let files: Vec<PathBuf> = ctx.input(|i| i.raw.dropped_files.iter().map(|f| f.path().to_path_buf()).collect());
         for p in files {
             let ext = p.extension().map(|e| e.to_string_lossy().to_lowercase()).unwrap_or_default();
-            let project = matches!(ext.as_str(), "svg" | "cre" | "lbrn2" | "lbrn" | "ugsd") || self.plugin_reads(&p);
+            let gcode = crate::gcode_view_ui::is_gcode(&p) && !self.plugin_reads(&p);
+            let project = matches!(ext.as_str(), "svg" | "cre" | "lbrn2" | "lbrn" | "ugsd") || self.plugin_reads(&p) || gcode;
             if self.screen == crate::app::Screen::Start && !project {
                 continue;
             }
             match ext.as_str() {
+                _ if gcode && self.screen == crate::app::Screen::Start => self.start_project(|app| app.open_gcode(p)),
+                _ if gcode => {
+                    self.open_gcode(p);
+                }
                 "png" | "jpg" | "jpeg" | "bmp" | "gif" | "webp" => self.import_image_path(p),
                 "svg" | "cre" | "lbrn2" | "lbrn" | "ugsd" if self.screen == crate::app::Screen::Start => self.start_project(|app| app.open_path(p)),
                 "svg" | "cre" | "lbrn2" | "lbrn" | "ugsd" => {

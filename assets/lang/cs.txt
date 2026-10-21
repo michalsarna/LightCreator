@@ -1098,3 +1098,9 @@
 1097|Vrstvy Illustratoru
 1098|Soubor má {} vrstev Illustratoru. Umístit dráhy na vrstvy programu podle:
 1099|První vrstva Illustratoru jde na vrstvu 1, druhá na vrstvu 2 a tak dále; zbytek jde na poslední vrstvu.
+1100|Zobrazit soubor G-code…
+1101|Obnovit pohled
+1102|Prohlížeč G-code
+1103|Barva podle výšky
+1104|Tažení: otáčení · pravé tlačítko nebo Shift+tažení: posun · kolečko: zoom
+1105|Tažení: posun · kolečko: zoom

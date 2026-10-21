@@ -1098,3 +1098,9 @@
 1097|Illustratori kihid
 1098|Failis on {} Illustratori kihti. Aseta rajad programmi kihtidele järgmise alusel:
 1099|Esimene Illustratori kiht läheb kihile 1, teine kihile 2 ja nii edasi; ülejäänud lähevad viimasele kihile.
+1100|Vaata G-koodi faili…
+1101|Lähtesta vaade
+1102|G-koodi vaatur
+1103|Värvi kõrguse järgi
+1104|Lohista: pööra · parem lohistamine või Shift+lohistamine: liiguta · ratas: suum
+1105|Lohista: liiguta · ratas: suum

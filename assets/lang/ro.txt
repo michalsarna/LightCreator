@@ -1098,3 +1098,9 @@
 1097|Straturile Illustrator
 1098|Fișierul are {} straturi Illustrator. Puneți traseele pe straturile programului după:
 1099|Primul strat Illustrator merge pe stratul 1, al doilea pe stratul 2 și așa mai departe; restul merg pe ultimul strat.
+1100|Vizualizează un fișier G-code…
+1101|Resetează vizualizarea
+1102|Vizualizator G-code
+1103|Colorează după înălțime
+1104|Trage: rotește · trage cu clic dreapta sau Shift+trage: mută · rotiță: zoom
+1105|Trage: mută · rotiță: zoom

@@ -123,6 +123,8 @@ pub struct App {
     pub stall: Option<(u64, String)>,
     /// A PDF / Illustrator file with layers waits for the choice of how to put them on the layers of the program: the path and the outlines.
     pub ai_choice: Option<(std::path::PathBuf, lc_core::pdf::Outlines)>,
+    /// A G-code file shown over the work area.
+    pub gcode_view: Option<crate::gcode_view_ui::GcodeViewer>,
     /// The box the frame command traces.
     pub frame_bounds: Option<lc_core::Rect>,
     pub allow_close: bool,
@@ -314,6 +316,7 @@ impl App {
             fw_warn: None,
             stall: None,
             ai_choice: None,
+            gcode_view: None,
             frame_bounds: None,
             allow_close: false,
             show_options: false,
@@ -1198,6 +1201,7 @@ impl App {
             Act::ImportAi => self.import_ai(),
             Act::ImportLightburn => self.import_lightburn_dialog(),
             Act::ImportUgsd => self.import_ugsd_dialog(),
+            Act::ViewGcode => self.view_gcode_dialog(),
             Act::ImportPlugin => self.import_with_plugin_dialog(),
             Act::Plugins => self.plugins.open = true,
             Act::Materials => self.open_materials_window(),
@@ -1822,7 +1826,11 @@ impl App {
         base_ui::widgets::panel_edge_highlight(ui.ctx(), side.response.rect, base_ui::widgets::Edge::Left);
         egui::Panel::right("arrange_bar").frame(chrome.inner_margin(egui::Margin::symmetric(2, 4))).exact_size(40.0).resizable(false).show(ui, |ui| self.arrange_bar(ui));
         egui::Panel::bottom("swatches").frame(chrome).exact_size(36.0).show(ui, |ui| base_ui::layer_bar::layer_bar(self, ui));
-        egui::CentralPanel::no_frame().show(ui, |ui| self.canvas(ui));
+        egui::CentralPanel::no_frame().show(ui, |ui| {
+            if !self.gcode_view_panel(ui) {
+                self.canvas(ui)
+            }
+        });
         self.dialogs(&ctx);
         if self.connected || self.progress.0 < self.progress.1 {
             ctx.request_repaint_after(std::time::Duration::from_millis(250));
