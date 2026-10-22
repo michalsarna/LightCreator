@@ -1789,7 +1789,13 @@ impl App {
         if self.screen == Screen::Start {
             // The first-run read from the device runs here too: it sends its request and gives up after a timeout.
             self.read_tick(&ctx);
-            self.start_screen(ui);
+            if self.gcode_view.is_some() {
+                egui::CentralPanel::no_frame().show(ui, |ui| {
+                    self.gcode_view_panel(ui);
+                });
+            } else {
+                self.start_screen(ui);
+            }
             self.dialogs(&ctx);
             return;
         }
