@@ -1261,3 +1261,30 @@ fn render_gcode_viewer() {
     }
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+/// Writes `examples/badge.cre` (the badge as a project) and `examples/badge.gcode` (its G-code).
+/// `cargo test -p lightcreator write_examples -- --ignored --nocapture`
+#[test]
+#[ignore = "writes examples/; run explicitly"]
+fn write_examples() {
+    let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    let dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../examples");
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.enter_editor(0);
+        a.open_path(dir.join("badge.svg").canonicalize().expect("example svg"));
+    }
+    h.run_steps(3);
+    let a = app(&mut h);
+    std::fs::write(dir.join("badge.cre"), a.doc.to_json()).expect("write project");
+    let job = lc_core::gcode::generate(&a.doc);
+    std::fs::write(dir.join("badge.gcode"), a.postprocessed(job.gcode).expect("no postprocessor")).expect("write G-code");
+}

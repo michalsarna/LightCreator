@@ -63,6 +63,10 @@ Reading settings from a device and the Illustrator import (PDF-compatible files 
 untested on real machines and files from Adobe. Complex scripts (Devanagari,
 Arabic) are not shaped by the text tool.
 
+## Examples
+
+[`examples/`](examples) has a small badge (`badge.svg`), the same as a LightCreator project (`badge.cre`, open it with *File → Open*) and the G-code the program makes from it (`badge.gcode`, for a GRBL laser; *File → View G-code file…* shows it). `cargo test -p lightcreator write_examples -- --ignored` writes the two files again.
+
 ## Building
 
 ```sh
