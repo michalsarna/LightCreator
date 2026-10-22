@@ -91,7 +91,6 @@ impl App {
                 continue;
             }
             match ext.as_str() {
-                _ if gcode && self.screen == crate::app::Screen::Start => self.start_project(|app| app.open_gcode(p)),
                 _ if gcode => {
                     self.open_gcode(p);
                 }
