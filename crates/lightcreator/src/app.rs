@@ -124,7 +124,7 @@ pub struct App {
     /// A PDF / Illustrator file with layers waits for the choice of how to put them on the layers of the program: the path and the outlines.
     pub ai_choice: Option<(std::path::PathBuf, lc_core::pdf::Outlines)>,
     /// A G-code file shown over the work area.
-    pub gcode_view: Option<crate::gcode_view_ui::GcodeViewer>,
+    pub gcode_view: Option<base_ui::gcode_view_ui::GcodeViewer>,
     /// The box the frame command traces.
     pub frame_bounds: Option<lc_core::Rect>,
     pub allow_close: bool,
