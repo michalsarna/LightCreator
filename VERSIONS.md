@@ -2,6 +2,17 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.3.4
+
+* **G-code viewer:** *File → View G-code file…* (or drop a `.gcode`, `.nc`, `.tap`… file on the window) opens a view over the whole work area that shows the toolpath: flat for a laser file, in 3D when Z changes. Zoom with the wheel, pan by dragging, rotate in 3D, **Reset view**; rapid moves can be hidden, 3D paths coloured by height; size, cutting length and an estimate of the time are shown.
+* **Materials window:** a place to manage materials and their layers, with export and import of materials; a material has a colour (a swatch in the Layers tab and in the list) and a layer has a description (saved in the project, shown in the tips).
+* **Layers list:** a mode column (an icon with a menu) before the speed column.
+* **Illustrator / PDF import:** asks whether to put the paths on layers by colour or by the Illustrator layers.
+* **Plugins:** the import window has a form, a preview and a 3D view; the generator window has a preview and pictures and closes after *Create*; a field of a form can be shown only for some choices. Plugins can import a KiCad board (`.kicad_pcb`), Gerber, EAGLE and EasyEDA boards, and make boxes with finger joints for a laser (from the official list).
+* **Device tab:** uses the shared XY jog pad; the dithering methods come from baseCreator (no change in the result).
+* The materials window no longer grows to the height of the screen.
+* egui / eframe 0.37; baseCreator v1.15.0.
+
 ## v0.3.3
 
 * **Properties tab:** the buttons **Adjust image…** and **Trace image…** of a selected picture come from the shared editor (the same as in MillCreator and PenCreator).
