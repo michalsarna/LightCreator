@@ -1163,6 +1163,7 @@ impl App {
                         }
                     }
                 }
+                Act::ViewGcode => self.view_gcode_dialog(),
                 Act::Quit | Act::About | Act::SetLang(_) | Act::SetScheme(_) | Act::RestoreBackup | Act::CheckUpdates => self.do_app_act(ctx, a),
                 _ => {}
             }
@@ -1789,6 +1790,7 @@ impl App {
         if self.screen == Screen::Start {
             // The first-run read from the device runs here too: it sends its request and gives up after a timeout.
             self.read_tick(&ctx);
+            self.handle_drops(&ctx);
             if self.gcode_view.is_some() {
                 egui::CentralPanel::no_frame().show(ui, |ui| {
                     self.gcode_view_panel(ui);
