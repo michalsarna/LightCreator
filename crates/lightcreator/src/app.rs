@@ -1821,7 +1821,7 @@ impl App {
         let side = if self.tabs.collapsed {
             egui::Panel::right("side_strip").frame(chrome.inner_margin(egui::Margin::same(3))).exact_size(base_ui::side_tabs::STRIP_W).resizable(false).show(ui, |ui| self.side_strip(ui))
         } else {
-            egui::Panel::right("side").frame(chrome.inner_margin(egui::Margin::same(8))).default_size(410.0).show(ui, |ui| self.side_panel(ui))
+            egui::Panel::right("side").frame(chrome.inner_margin(egui::Margin::same(8))).default_size(410.0).resizable(!base_ui::window::pointer_over_window(ui.ctx())).show(ui, |ui| self.side_panel(ui))
         };
         base_ui::widgets::panel_edge_highlight(ui.ctx(), side.response.rect, base_ui::widgets::Edge::Left);
         egui::Panel::right("arrange_bar").frame(chrome.inner_margin(egui::Margin::symmetric(2, 4))).exact_size(40.0).resizable(false).show(ui, |ui| self.arrange_bar(ui));
