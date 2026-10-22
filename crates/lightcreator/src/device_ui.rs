@@ -269,6 +269,11 @@ impl App {
                     if ui.add_sized([ui.available_width(), 30.0], open).clicked() {
                         self.do_act(&ctx, Act::Open);
                     }
+                    ui.add_space(4.0);
+                    let view = egui::Button::image_and_text(crate::icons::slot(Some("eye"), theme::text()), tr(base_ui::gcode_view_ui::MENU_VIEW));
+                    if ui.add_sized([ui.available_width(), 30.0], view).clicked() {
+                        self.do_act(&ctx, Act::ViewGcode);
+                    }
                     if !self.recent.is_empty() {
                         ui.add_space(8.0);
                         ui.label(RichText::new(tr("Open recent")).color(theme::text_dim()));

@@ -8,7 +8,12 @@ pub use base_ui::gcode_view_ui::is_gcode;
 impl App {
     pub fn view_gcode_dialog(&mut self) {
         if let Some(p) = base_ui::gcode_view_ui::pick_file() {
-            self.open_gcode(p);
+            if self.screen == crate::app::Screen::Start {
+                // From the start screen the editor opens first, with the selected device.
+                self.start_project(|app| app.open_gcode(p));
+            } else {
+                self.open_gcode(p);
+            }
         }
     }
 
