@@ -7,7 +7,6 @@ pub mod cutopts;
 pub mod doc;
 pub mod export;
 pub mod gcode;
-pub mod gcode_view;
 pub mod hooks;
 pub mod materials;
 pub mod print;
