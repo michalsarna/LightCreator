@@ -2,6 +2,14 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.3.5
+
+* **G-code viewer from the start screen:** the **View G-code file…** button (or a dropped file) opens the viewer straight away, without starting a project; closing it returns to the start screen. The viewer itself is now shared with MillCreator and PenCreator.
+* **Navigation cube** (like in FreeCAD) in every 3D view, i.e. in the G-code viewer and in the 3D view of a plugin's import window: click a face, an edge or a corner to look from there, the arrows turn the view by 15°, drag the cube to rotate.
+* The edge of the side panel no longer lights up and takes the drag while the pointer is over a window; the list in the Plugins window is not taller than its window.
+* `examples/`: a small badge as a project (`badge.cre`) and its G-code.
+* baseCreator v1.17.0.
+
 ## v0.3.4
 
 * **G-code viewer:** *File → View G-code file…* (or drop a `.gcode`, `.nc`, `.tap`… file on the window) opens a view over the whole work area that shows the toolpath: flat for a laser file, in 3D when Z changes. Zoom with the wheel, pan by dragging, rotate in 3D, **Reset view**; rapid moves can be hidden, 3D paths coloured by height; size, cutting length and an estimate of the time are shown.
