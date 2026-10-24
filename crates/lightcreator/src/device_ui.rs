@@ -242,8 +242,8 @@ impl App {
             ui.vertical_centered(|ui| {
                 base_ui::start::start_header(ui, self.logo.as_ref(), "LightCreator", APP_VERSION);
                 ui.add_space(18.0);
-                if let Some(found) = self.recovery.clone() {
-                    if let Some(choice) = base_ui::autosave_ui::banner(ui, &found, 460.0) {
+                if !self.recovery.is_empty() {
+                    if let Some(choice) = base_ui::autosave_ui::banner_all(ui, &self.recovery.clone(), 460.0) {
                         self.recovery_choice(choice);
                     }
                     ui.add_space(12.0);

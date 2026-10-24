@@ -1262,6 +1262,46 @@ fn render_gcode_viewer() {
     let _ = std::fs::remove_dir_all(&dir);
 }
 
+/// The tabs of open drawings: three of them, one with unsaved work.
+#[test]
+#[ignore = "writes docs/screenshots; run explicitly"]
+fn render_tabs() {
+    let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    app(&mut h).lang = Lang::En;
+    i18n::set_lang(Lang::En);
+    let ctx = h.ctx.clone();
+    theme::apply(&ctx, Scheme::LightDark);
+    let examples = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../examples");
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.cfg = None;
+        assert!(a.enter_editor(0));
+        assert!(a.open_path(examples.join("badge.svg").canonicalize().unwrap()));
+        a.select_all();
+        a.preview_on = true;
+        a.ports = vec!["/dev/ttyUSB0".into()];
+        a.doc.device.connection.port = "/dev/ttyUSB0".into();
+        // A project of its own in the second tab, and a third tab with a new drawing that is not saved.
+        assert!(a.open_path(examples.join("badge.cre").canonicalize().unwrap()));
+        a.new_tab();
+        a.doc.add(0, lc_core::Kind::Rect { w: 40.0, h: 25.0 }, lc_core::Xf::translate(30.0, 30.0));
+        a.touch();
+        a.ed.view.need_fit = true;
+        // Keep local paths out of the picture.
+        a.status = "Ready".into();
+    }
+    h.run_steps(4);
+    save(&mut h, "42-tabs.png");
+}
+
 /// Writes `examples/badge.cre` (the badge as a project) and `examples/badge.gcode` (its G-code).
 /// `cargo test -p lightcreator write_examples -- --ignored --nocapture`
 #[test]
@@ -1287,4 +1327,49 @@ fn write_examples() {
     std::fs::write(dir.join("badge.cre"), a.doc.to_json()).expect("write project");
     let job = lc_core::gcode::generate(&a.doc);
     std::fs::write(dir.join("badge.gcode"), a.postprocessed(job.gcode).expect("no postprocessor")).expect("write G-code");
+}
+
+/// The bar of the tabs answers to the pointer: "+" makes a tab, a click on a tab shows it, the cross closes it.
+#[cfg(test)]
+mod tab_click_tests {
+    use super::*;
+    use eframe::egui::{self, Event, Modifiers, PointerButton};
+
+    fn click(h: &mut Shot, pos: egui::Pos2) {
+        h.event(Event::PointerMoved(pos));
+        h.run_steps(2);
+        h.event(Event::PointerButton { pos, button: PointerButton::Primary, pressed: true, modifiers: Modifiers::NONE });
+        h.run_steps(2);
+        h.event(Event::PointerButton { pos, button: PointerButton::Primary, pressed: false, modifiers: Modifiers::NONE });
+        h.run_steps(3);
+    }
+
+    #[test]
+    fn the_plus_the_tab_and_the_cross_work() {
+        let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
+            |ui, state: &mut Option<App>| {
+                let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+                a.draw(ui);
+            },
+            None,
+        );
+        h.run_steps(2);
+        {
+            let a = app(&mut h);
+            a.profiles = vec![Device::default()];
+            a.cfg = None;
+            assert!(a.enter_editor(0));
+        }
+        h.run_steps(3);
+        // One tab, "Untitled" (about 86 px wide from x = 8), then the plus.
+        click(&mut h, egui::pos2(107.0, 125.0));
+        assert_eq!(app(&mut h).tab_count(), 2, "the plus makes a tab");
+        assert_eq!(app(&mut h).tabs_state.active, 1);
+        // The first tab is shown by a click on its name.
+        click(&mut h, egui::pos2(40.0, 125.0));
+        assert_eq!(app(&mut h).tabs_state.active, 0);
+        // The cross of a tab without unsaved work closes it at once.
+        click(&mut h, egui::pos2(81.0, 125.0));
+        assert_eq!(app(&mut h).tab_count(), 1, "the cross closes the tab");
+    }
 }

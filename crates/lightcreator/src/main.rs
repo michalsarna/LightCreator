@@ -34,6 +34,7 @@ mod stream_ui;
 #[cfg(test)]
 mod screenshots;
 mod session_ui;
+mod workspaces;
 mod update_ui;
 mod backup_ui;
 mod window_ui;

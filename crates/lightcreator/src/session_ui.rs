@@ -2,7 +2,6 @@
 //! program is closed with unsaved work, and the program options window that sets the auto-save interval.
 use crate::app::App;
 use crate::i18n::{tr, trf};
-use crate::theme;
 use eframe::egui::{self, Color32, RichText};
 use std::path::PathBuf;
 use std::time::{Duration, Instant};
@@ -13,8 +12,8 @@ pub const DEFAULT_AUTOSAVE_SECS: u32 = 120;
 
 /// The file for work that has not been saved under a name yet: the same one on every run, so the start screen can offer
 /// to recover it after a crash (`lc_core::autosave`).
-pub fn temp_autosave_path(base: &std::path::Path) -> PathBuf {
-    lc_core::autosave::recovery_path(base, "lightcreator")
+pub fn temp_autosave_path(base: &std::path::Path, slot: usize) -> PathBuf {
+    lc_core::autosave::slot_path(base, "lightcreator", slot)
 }
 
 impl App {
@@ -27,8 +26,9 @@ impl App {
     pub fn mark_saved(&mut self) {
         self.saved_revision = self.revision;
         self.autosaved_revision = self.revision;
-        lc_core::autosave::clear(&self.data_base, "lightcreator");
-        self.recovery = None;
+        lc_core::autosave::clear_slot(&self.data_base, "lightcreator", self.slot);
+        let slot = self.slot;
+        self.recovery.retain(|f| f.slot != slot);
     }
 
     /// Show `text` for a few seconds.
@@ -40,7 +40,7 @@ impl App {
     pub fn autosave_now(&mut self) -> Option<PathBuf> {
         let target = match &self.path {
             Some(p) => p.clone(),
-            None => temp_autosave_path(&self.data_base),
+            None => temp_autosave_path(&self.data_base, self.slot),
         };
         lc_core::autosave::write_atomic(&target, &self.doc.to_json()).ok()?;
         self.autosaved_revision = self.revision;
@@ -54,7 +54,7 @@ impl App {
 
     /// Close the program, after asking when there is unsaved work.
     pub fn request_close(&mut self, ctx: &egui::Context) {
-        if self.is_dirty() && !self.allow_close {
+        if self.any_dirty() && !self.allow_close {
             self.show_close_dlg = true;
         } else {
             self.allow_close = true;
@@ -65,17 +65,22 @@ impl App {
     /// Called every frame: auto-save, the close question, the saved message and the options window.
     pub fn session_tick(&mut self, ctx: &egui::Context) {
         // The window's own close button or the system asks to close.
-        if ctx.input(|i| i.viewport().close_requested()) && self.is_dirty() && !self.allow_close {
+        if ctx.input(|i| i.viewport().close_requested()) && self.any_dirty() && !self.allow_close {
             ctx.send_viewport_cmd(egui::ViewportCommand::CancelClose);
             self.show_close_dlg = true;
         }
-        // Auto-save.
-        if self.autosave_on && self.is_dirty() && self.revision != self.autosaved_revision {
+        // Auto-save: the shown tab, and the ones that are not shown.
+        let shown_due = self.is_dirty() && self.revision != self.autosaved_revision;
+        if self.autosave_on && (shown_due || self.parked_need_autosave()) {
             let every = Duration::from_secs(self.autosave_secs.max(5) as u64);
             if self.last_autosave.elapsed() >= every {
-                if let Some(p) = self.autosave_now() {
-                    self.status = trf("Auto-saved {}", &[&p.display()]);
+                if shown_due {
+                    if let Some(p) = self.autosave_now() {
+                        self.status = trf("Auto-saved {}", &[&p.display()]);
+                    }
                 }
+                self.autosave_parked();
+                self.last_autosave = Instant::now();
             }
             ctx.request_repaint_after(Duration::from_secs(1));
         }
@@ -106,56 +111,20 @@ impl App {
         });
     }
 
+    /// The questions about unsaved work: when the program is closed, tab by tab (`doc_tabs::quit_tick`), and when one tab is.
     fn close_dialog(&mut self, ctx: &egui::Context) {
-        if !self.show_close_dlg {
-            return;
-        }
-        let mut choice = None;
-        egui::Window::new("close_dialog").title_bar(false).collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {
-            ui.set_min_width(420.0);
-            ui.add_space(6.0);
-            ui.label(RichText::new(tr("Save your work before closing?")).size(18.0).strong());
-            ui.add_space(4.0);
-            ui.label(RichText::new(tr("The design has not been saved to a file.")).size(14.0).color(theme::text_dim()));
-            ui.add_space(14.0);
-            ui.horizontal(|ui| {
-                let size = egui::vec2((ui.available_width() - 2.0 * ui.spacing().item_spacing.x) / 3.0, 38.0);
-                let save = egui::Button::new(RichText::new(tr("Save")).size(15.0).color(Color32::WHITE).strong()).fill(crate::window_ui::SAVE_GREEN);
-                if ui.add_sized(size, save).clicked() {
-                    choice = Some(Close::Save);
-                }
-                let discard = egui::Button::new(RichText::new(tr("Discard")).size(15.0).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0xc0, 0x30, 0x30));
-                if ui.add_sized(size, discard).clicked() {
-                    choice = Some(Close::Discard);
-                }
-                if ui.add_sized(size, egui::Button::new(RichText::new(tr("Cancel")).size(15.0))).clicked() {
-                    choice = Some(Close::Cancel);
-                }
-            });
-            ui.add_space(4.0);
-        });
-        if ctx.input(|i| i.key_pressed(egui::Key::Escape)) {
-            choice = Some(Close::Cancel);
-        }
-        match choice {
-            Some(Close::Save) => {
-                self.save(false);
-                // A cancelled file dialog leaves the work unsaved: stay open.
-                if !self.is_dirty() {
+        if self.show_close_dlg {
+            match base_ui::doc_tabs::quit_tick(self, ctx, crate::window_ui::SAVE_GREEN) {
+                base_ui::doc_tabs::Quit::Done => {
                     self.show_close_dlg = false;
                     self.allow_close = true;
                     ctx.send_viewport_cmd(egui::ViewportCommand::Close);
                 }
+                base_ui::doc_tabs::Quit::Stopped => self.show_close_dlg = false,
+                base_ui::doc_tabs::Quit::Asking => {}
             }
-            Some(Close::Discard) => {
-                lc_core::autosave::clear(&self.data_base, "lightcreator");
-                self.show_close_dlg = false;
-                self.allow_close = true;
-                ctx.send_viewport_cmd(egui::ViewportCommand::Close);
-            }
-            Some(Close::Cancel) => self.show_close_dlg = false,
-            None => {}
         }
+        self.close_tab_question(ctx);
     }
 
     fn options_window(&mut self, ctx: &egui::Context) {
@@ -278,11 +247,6 @@ impl App {
     }
 }
 
-enum Close {
-    Save,
-    Discard,
-    Cancel,
-}
 
 #[cfg(test)]
 mod tests {
@@ -303,7 +267,7 @@ mod tests {
         assert!(a.is_dirty());
         // Auto-save of work without a name: temporary file, still counted as unsaved.
         let p = a.autosave_now().expect("written");
-        assert_eq!(p, temp_autosave_path(&a.data_base));
+        assert_eq!(p, temp_autosave_path(&a.data_base, 0));
         assert!(p.is_file());
         assert!(a.is_dirty());
         // Closing asks instead of closing.
@@ -351,8 +315,8 @@ mod tests {
         // The program starts again.
         let mut b = App::build(&ctx, None, false);
         b.data_base = base.clone();
-        b.recovery = lc_core::autosave::find(&base, "lightcreator");
-        assert_eq!(b.recovery.as_ref().map(|f| f.shapes), Some(2));
+        b.recovery = lc_core::autosave::find_all(&base, "lightcreator");
+        assert_eq!(b.recovery.first().map(|f| f.shapes), Some(2));
         let recent = b.recent.clone();
         b.recovery_choice(base_ui::autosave_ui::Recovery::Recover);
         assert_eq!(b.doc.scene.shapes.len(), 2);
@@ -366,32 +330,52 @@ mod tests {
         a.autosave_now().expect("written");
         let mut c = App::build(&ctx, None, false);
         c.data_base = base.clone();
-        c.recovery = lc_core::autosave::find(&base, "lightcreator");
+        c.recovery = lc_core::autosave::find_all(&base, "lightcreator");
         c.recovery_choice(base_ui::autosave_ui::Recovery::Discard);
-        assert!(lc_core::autosave::find(&base, "lightcreator").is_none() && c.recovery.is_none());
+        assert!(lc_core::autosave::find(&base, "lightcreator").is_none() && c.recovery.is_empty());
         let _ = std::fs::remove_dir_all(&base);
     }
 }
 
 impl App {
-    /// The choice on the start screen: open the unsaved project (as one without a name), or throw it away.
+    /// The choice on the start screen: open the unsaved projects (each in a tab, as one without a name), or throw them away.
     pub fn recovery_choice(&mut self, choice: base_ui::autosave_ui::Recovery) {
         use base_ui::autosave_ui::Recovery;
-        let Some(found) = self.recovery.take() else { return };
+        if self.recovery.is_empty() {
+            return;
+        }
         match choice {
-            Recovery::Discard => lc_core::autosave::clear(&self.data_base, "lightcreator"),
+            Recovery::Discard => {
+                for f in std::mem::take(&mut self.recovery) {
+                    lc_core::autosave::clear_slot(&self.data_base, "lightcreator", f.slot);
+                }
+            }
             Recovery::Recover => {
                 let recent = self.recent.clone();
-                let path = found.path.clone();
-                self.start_project(|app| app.open_path(path));
-                // Still unsaved work: no name, not a recent file, and the recovery file is written again (opening a file
-                // forgets the temporary copy) and stays until the project is saved.
-                if self.screen == crate::app::Screen::Editor {
-                    self.path = None;
-                    self.recent = recent;
-                    self.touch();
-                    self.autosave_now();
-                    self.status = tr("Recovered the project that was not saved").to_string();
+                let mut first = true;
+                // The files still to be opened keep their slots reserved, so that no new tab takes one and clears it.
+                while !self.recovery.is_empty() {
+                    let f = self.recovery.remove(0);
+                    let path = f.path.clone();
+                    if first {
+                        self.start_project(|app| app.open_path(path));
+                    } else {
+                        self.open_path(path);
+                    }
+                    first = false;
+                    // Still unsaved work: no name, not a recent file, and the recovery file is written again (opening a file
+                    // forgets the temporary copy) and stays until the project is saved. The tab keeps its own file.
+                    if self.screen == crate::app::Screen::Editor {
+                        if self.slot != f.slot {
+                            lc_core::autosave::clear_slot(&self.data_base, "lightcreator", self.slot);
+                            self.slot = f.slot;
+                        }
+                        self.path = None;
+                        self.recent = recent.clone();
+                        self.touch();
+                        self.autosave_now();
+                        self.status = tr("Recovered the project that was not saved").to_string();
+                    }
                 }
             }
         }

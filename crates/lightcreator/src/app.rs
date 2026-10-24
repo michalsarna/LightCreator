@@ -85,12 +85,15 @@ pub struct App {
     pub revision: u64,
     /// Revision at the last save by hand (or open / new), and at the last auto-save.
     pub saved_revision: u64,
+    /// The tabs of open drawings (the shown one is the live fields above), and the number of the recovery file of the shown one.
+    pub tabs_state: crate::workspaces::Tabs,
+    pub slot: usize,
     pub autosaved_revision: u64,
     pub autosave_on: bool,
     /// The shared data folder (the recovery file of this program is in it).
     pub data_base: std::path::PathBuf,
     /// An unsaved project left by an earlier run (offered on the start screen).
-    pub recovery: Option<lc_core::autosave::Found>,
+    pub recovery: Vec<lc_core::autosave::Found>,
     /// The web server and API (off by default): switched on, port, and reachable from the network.
     /// The material header of the Layers tab: adding or renaming.
     pub mat_edit: Option<crate::materials_ui::MatEdit>,
@@ -292,9 +295,11 @@ impl App {
             status: tr("Ready").into(),
             revision: 0,
             saved_revision: 0,
+            tabs_state: Default::default(),
+            slot: 0,
             autosaved_revision: 0,
             data_base: crate::data_paths().base.clone(),
-            recovery: lc_core::autosave::find(&crate::data_paths().base, "lightcreator"),
+            recovery: lc_core::autosave::find_all(&crate::data_paths().base, "lightcreator"),
             autosave_on: saved("autosave_on").map(|v| v != "0").unwrap_or(true),
             mat_edit: None,
             materials_dlg: None,
@@ -521,6 +526,10 @@ impl App {
         }
         match std::fs::read_to_string(&p).map_err(|e| e.to_string()).and_then(|s| Document::from_json(&s)) {
             Ok(d) => {
+                // A project goes into a tab of its own (a blank tab is used as it is); one that is open is shown.
+                if !self.tab_for_file(&p) {
+                    return self.path.as_ref().is_some_and(|q| q == &p || std::fs::canonicalize(q).ok() == std::fs::canonicalize(&p).ok());
+                }
                 let incoming = d.device.material().clone();
                 let made_for = lc_core::Machine::of(&d.device);
                 self.doc = d;
@@ -1067,7 +1076,7 @@ impl App {
                 self.import_svg();
             }
             if cmd(Key::N) {
-                self.new_doc();
+                self.new_tab();
             }
             if cmd(Key::Q) {
                 ctx.send_viewport_cmd(egui::ViewportCommand::Close);
@@ -1144,10 +1153,7 @@ impl App {
         if self.screen == Screen::Start {
             match a {
                 // Starting a project takes the selected device, or the Dummy when there is none.
-                Act::New => self.start_project(|app| {
-                    app.new_doc();
-                    true
-                }),
+                Act::New => self.start_project(|app| app.new_tab_from_start()),
                 Act::Open => {
                     if let Some(p) = Self::pick_project() {
                         self.start_project(|app| app.open_path(p));
@@ -1178,7 +1184,9 @@ impl App {
             return;
         }
         match a {
-            Act::New => self.new_doc(),
+            Act::New => {
+                self.new_tab();
+            }
             Act::Open => self.open(),
             Act::OpenRecent(i) => {
                 if let Some(p) = self.recent.get(i as usize).cloned() {
@@ -1824,6 +1832,7 @@ impl App {
             egui::Panel::top("menu").frame(chrome).show(ui, |ui| base_ui::menu::menu_bar(self, ui));
         }
         egui::Panel::top("controls").frame(chrome).exact_size(36.0).show(ui, |ui| self.control_bar(ui));
+        egui::Panel::top("doc_tabs").frame(chrome.inner_margin(egui::Margin::symmetric(8, 2))).exact_size(30.0).show(ui, |ui| self.doc_tab_bar(ui));
         egui::Panel::bottom("status").frame(chrome).exact_size(26.0).show(ui, |ui| self.status_bar(ui));
         egui::Panel::left("tools").frame(chrome).exact_size(52.0).resizable(false).show(ui, |ui| self.tool_bar(ui));
         let side = if self.tabs.collapsed {
@@ -1997,6 +2006,10 @@ mod recent_tests {
             .collect();
         for f in &files {
             a.open_path(f.clone());
+            // Every project opens in a tab of its own, and there are at most ten: close the one that was opened.
+            if a.tab_count() > 1 {
+                a.close_shown_tab();
+            }
         }
         assert_eq!(a.recent.len(), crate::menu::MAX_RECENT);
         assert_eq!(a.recent[0], std::fs::canonicalize(&files[11]).unwrap());

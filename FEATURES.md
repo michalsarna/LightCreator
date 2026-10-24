@@ -73,7 +73,8 @@
 **Files**
 * **Saving:** a "File saved" message appears for 5 seconds after saving by hand. Auto-save (Settings → Program options…,
   every 120 s by default) writes work without a file name to a temporary folder and a named file in place. Closing
-  with unsaved work asks: Save, Discard (also deletes the temporary file) or Cancel.
+  with unsaved work asks, tab by tab: Save, Discard (also deletes the temporary file) or Cancel.
+* **Tabs:** every open drawing has a tab above the work area (File → New and Open make one, up to 10; a project that is open is shown, a blank tab is used as it is). A dot marks a tab with unsaved work, the cross closes it (asking Save, Discard or Cancel when there is unsaved work), a middle click closes it too. Every tab with unsaved work has its own recovery file, and after a crash the start screen offers to recover them all, each in a tab. Closing the program asks about each tab with unsaved work in turn: the tab is shown, you answer, it is closed, the next one follows; Cancel stops the closing.
 * **Open recent** (File menu, under Open): the last 10 projects and SVG files you opened or saved, newest first, kept
   between sessions; "Clear list" empties it and a file that no longer exists is dropped when picked.
 * **Import** submenu: SVG (curves are kept as Béziers; colours map to layers), bitmaps (PNG, JPEG, BMP, GIF,
