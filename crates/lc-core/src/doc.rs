@@ -769,8 +769,6 @@ pub struct Device {
     pub notes: String,
     /// Show where the laser head is, as a dot on the work area, while the device is connected.
     pub live_position: bool,
-    /// The frame follows the outline that wraps all the shapes (a rubber band round them) instead of the box around them.
-    pub frame_outline: bool,
     /// Whether a job counts from the machine's zero or from where the head stands.
     pub start_from: StartFrom,
     /// Copies of the settings of the controller, kept with the profile.
@@ -916,8 +914,6 @@ struct DeviceWire {
     #[serde(default)]
     live_position: bool,
     #[serde(default)]
-    frame_outline: bool,
-    #[serde(default)]
     start_from: StartFrom,
     #[serde(default)]
     fw_copies: base_core::control::FwCopies,
@@ -988,7 +984,6 @@ impl From<DeviceWire> for Device {
             maintenance: w.maintenance,
             notes: w.notes,
             live_position: w.live_position,
-            frame_outline: w.frame_outline,
             start_from: w.start_from,
             fw_copies: w.fw_copies,
         };
@@ -1220,7 +1215,6 @@ impl Default for Device {
             maintenance: Maintenance::default(),
             notes: String::new(),
             live_position: false,
-            frame_outline: false,
             start_from: StartFrom::Home,
             fw_copies: Default::default(),
         }

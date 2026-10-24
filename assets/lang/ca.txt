@@ -1104,5 +1104,6 @@
 1103|Colora per alçada
 1104|Arrossega: gira · arrossega amb el botó dret o Maj+arrossega: mou · roda: zoom
 1105|Arrossega: mou · roda: zoom
-1106|Marc pel contorn
-1107|El marc segueix el contorn que envolta totes les formes, com una goma elàstica, en lloc del rectangle al seu voltant.
+1106|Contorn
+1107|Recorre la línia que envolta totes les formes, com una goma elàstica.
+1108|Marc del contorn

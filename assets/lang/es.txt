@@ -1104,5 +1104,6 @@
 1103|Colorear por altura
 1104|Arrastrar: girar · arrastrar con el botón derecho o Mayús+arrastrar: mover · rueda: zoom
 1105|Arrastrar: mover · rueda: zoom
-1106|Marco por el contorno
-1107|El marco sigue el contorno que envuelve todas las formas, como una goma elástica, en lugar del rectángulo a su alrededor.
+1106|Contorno
+1107|Recorre la línea que envuelve todas las formas, como una goma elástica.
+1108|Marco del contorno

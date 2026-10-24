@@ -1104,5 +1104,6 @@
 1103|Dathaigh de réir airde
 1104|Tarraing: rothlaigh · tarraing dheas nó Shift+tarraing: bog · rotha: súmáil
 1105|Tarraing: bog · rotha: súmáil
-1106|Fráma ar feadh an chruth
-1107|Leanann an fráma an chruth a chuimsíonn na cruthanna go léir, cosúil le banda rubair, in ionad an dronuilleog timpeall orthu.
+1106|Cruth
+1107|Leanann an líne a chuimsíonn na cruthanna go léir, cosúil le banda rubair.
+1108|Fráma cruth

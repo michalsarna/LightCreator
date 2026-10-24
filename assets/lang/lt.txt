@@ -1104,5 +1104,6 @@
 1103|Spalva pagal aukštį
 1104|Tempti: sukti · tempti dešiniuoju arba Shift+tempti: perstumti · ratukas: keisti mastelį
 1105|Tempti: perstumti · ratukas: keisti mastelį
-1106|Rėmelis pagal kontūrą
-1107|Rėmelis seka kontūrą, apimantį visas figūras kaip guma, o ne aplink jas esantį stačiakampį.
+1106|Kontūras
+1107|Eina linija, apimančia visas figūras kaip guma.
+1108|Kontūro rėmelis

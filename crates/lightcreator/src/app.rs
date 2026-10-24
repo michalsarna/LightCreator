@@ -827,6 +827,12 @@ impl App {
         self.progress.1 > 0 && self.progress.0 < self.progress.1
     }
     pub fn frame(&mut self) {
+        self.frame_with(false);
+    }
+
+    /// Trace the box round the shapes (the selected ones, or all), or, with `outline`, the outline that wraps them like a
+    /// rubber band.
+    pub fn frame_with(&mut self, outline: bool) {
         if self.job_running() {
             return;
         }
@@ -840,7 +846,7 @@ impl App {
         }
         let moved = self.aim(self.placed_rect(b));
         // Along the outline: the rubber band round the shapes, moved the same way as the box would be.
-        let path = self.doc.device.frame_outline.then(|| {
+        let path = outline.then(|| {
             let (dx, dy) = (moved.min.x - b.min.x, moved.min.y - b.min.y);
             self.doc.outline_of(&ids).into_iter().map(|p| Pt::new(p.x + dx, p.y + dy)).collect::<Vec<_>>()
         });
@@ -891,9 +897,9 @@ impl App {
     pub fn frame_now(&mut self) {
         let Some(b) = self.frame_bounds else { return };
         let h = self.doc.device.head(0);
-        let g = match (&self.frame_path, self.doc.device.frame_outline) {
-            (Some(path), true) => gcode::frame_path_gcode(path, &self.doc.device, h.frame_power, h.frame_speed),
-            _ => gcode::frame_gcode(b, &self.doc.device, h.frame_power, h.frame_speed),
+        let g = match &self.frame_path {
+            Some(path) => gcode::frame_path_gcode(path, &self.doc.device, h.frame_power, h.frame_speed),
+            None => gcode::frame_gcode(b, &self.doc.device, h.frame_power, h.frame_speed),
         };
         for l in laser::clean_gcode(&g) {
             self.link.send(Cmd::Line(l));
@@ -1355,46 +1361,7 @@ impl App {
             ui.separator();
             base_ui::editor::grid_toggles(self, ui);
             ui.separator();
-            // Green while the toolpaths are shown, grey otherwise.
-            let on = self.preview_on;
-            let (fill, ink) = if on { (Color32::from_rgb(0x2e, 0xa0, 0x4f), Color32::WHITE) } else { (theme::panel_dark(), theme::text_dim()) };
-            let btn = egui::Button::image_and_text(crate::icons::slot(Some("route"), ink), RichText::new(tr("Toolpaths")).color(ink)).fill(fill);
-            if ui.add(btn).on_hover_text(tr("Show the toolpaths on the work area")).clicked() {
-                self.preview_on = !self.preview_on;
-            }
-            if window_toggle(ui, &tr("Preview…"), &tr("Open the preview window"), self.show_preview, true) {
-                self.show_preview = !self.show_preview;
-            }
-            let has_camera = self.doc.device.stream_url().is_some();
-            if has_camera && window_toggle(ui, &tr("Camera view"), &tr("Show the live camera picture of this machine"), self.show_stream, true) {
-                self.show_stream = !self.show_stream;
-            }
-            let (overlay_on, can_overlay) = self.overlay_state();
-            if window_toggle(ui, &tr("Overlay"), &tr("Show or hide the camera overlay on the work area"), overlay_on, can_overlay) {
-                self.toggle_overlay_button();
-            }
-
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                let running = self.job_running();
-                if running {
-                    let stop = egui::Button::new(RichText::new(format!("   {}   ", tr("STOP").to_uppercase())).color(Color32::WHITE).strong())
-                        .fill(Color32::from_rgb(0xc0, 0x30, 0x30));
-                    if ui.add(stop).on_hover_text(tr("Abort the running job")).clicked() {
-                        self.abort_job();
-                    }
-                } else {
-                    let go = egui::Button::new(RichText::new(format!("   {}   ", tr("Start").to_uppercase())).color(Color32::WHITE).strong()).fill(theme::accent());
-                    let tip = if self.can_start() { tr("Stream the job to the connected laser") } else { tr("Connect to a laser first (Laser panel)") };
-                    if ui.add_enabled(self.can_start(), go).on_hover_text(tip).clicked() {
-                        self.send_job();
-                    }
-                }
-                let tip = if self.connected { tr("Trace the bounding box") } else { tr("Connect to a laser first (Laser panel)") };
-                if ui.add_enabled(self.connected && !running, egui::Button::new(tr("Frame"))).on_hover_text(tip).clicked() {
-                    self.frame();
-                }
-                self.focus_button(ui, false);
-                self.home_button(ui);
                 if crate::window_ui::save_button(ui, &tr("Save G-code")).clicked() {
                     self.export_gcode();
                 }
@@ -1408,22 +1375,6 @@ impl App {
         self.connected && !self.job_running()
     }
 
-    /// The Home button of the control bar: the same as the one in the Device tab, off when there is no link or a job runs.
-    pub fn home_button(&mut self, ui: &mut egui::Ui) {
-        let on = self.can_home();
-        let (rect, resp) = ui.allocate_exact_size(egui::vec2(28.0, 24.0), egui::Sense::click());
-        let hovered = resp.hovered() && on;
-        let fill = if hovered { theme::panel_dark() } else { ui.visuals().widgets.inactive.weak_bg_fill };
-        ui.painter().rect_filled(rect, 4.0, fill);
-        ui.painter().rect_stroke(rect, 4.0, egui::Stroke::new(1.0, theme::border()), egui::StrokeKind::Inside);
-        let ink = if on { theme::text() } else { theme::text().gamma_multiply(0.4) };
-        crate::icons::paint(ui, rect.shrink(4.0), "house", ink);
-        let tip = if self.connected { tr("Home") } else { tr("Connect to a laser first (Laser panel)") };
-        if resp.on_hover_text(tip).clicked() && on {
-            let ctrl = self.doc.device.controller;
-            self.run_action(ctrl.home());
-        }
-    }
 
     /// Space held down: pan with the hand tool, and go back to the previous tool when it is released.
     pub fn update_space(&mut self, down: bool) {
