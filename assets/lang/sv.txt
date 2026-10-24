@@ -1104,3 +1104,5 @@
 1103|Färglägg efter höjd
 1104|Dra: rotera · högerdra eller Skift+dra: flytta · hjul: zooma
 1105|Dra: flytta · hjul: zooma
+1106|Ram längs konturen
+1107|Ramen följer konturen som omsluter alla former, som ett gummiband, i stället för rektangeln runt dem.

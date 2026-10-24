@@ -233,6 +233,7 @@ impl App {
                 ui.add(egui::DragValue::new(&mut self.doc.device.heads[0].frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
                 ui.end_row();
             });
+            ui.checkbox(&mut self.doc.device.frame_outline, tr("Frame along the outline")).on_hover_text(tr("The frame follows the outline that wraps all the shapes, like a rubber band, instead of the box around them."));
         });
         let mut live = self.doc.device.live_position;
         if ui.add_enabled(self.connected, egui::Checkbox::new(&mut live, tr("Live laser Position"))).on_hover_text(tr("Shows the position of the laser head as a dot on the work area. Switched on while the machine stands still, it homes first; during a job or a frame it only shows the position, refreshed every second. Needs a connected device.")).changed() {
@@ -403,5 +404,30 @@ mod tests {
         for w in ["Start from", "Frame power", "Jog step", "Jog feed", "Live laser Position"] {
             assert!(h.query_by_label(w).is_none(), "{w} moved to the Control tab");
         }
+    }
+}
+
+#[cfg(test)]
+mod frame_tests {
+    use crate::app::App;
+    use lc_core::{Kind, Xf};
+
+    #[test]
+    fn the_frame_follows_the_outline_of_all_shapes_when_the_device_says_so() {
+        let mut a = App::build(&eframe::egui::Context::default(), None, false);
+        a.connected = true;
+        a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(20.0, 20.0));
+        a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(80.0, 80.0));
+        a.touch();
+        a.doc.device.frame_outline = false;
+        a.frame();
+        assert!(a.frame_bounds.is_some() && a.frame_path.is_none(), "the box, as before");
+        a.doc.device.frame_outline = true;
+        a.frame();
+        let path = a.frame_path.clone().expect("an outline");
+        assert_eq!(path.len(), 6, "{path:?}: two squares on a diagonal wrap into a hexagon");
+        // It lies inside the box that the other frame traces.
+        let b = a.frame_bounds.unwrap();
+        assert!(path.iter().all(|p| p.x >= b.min.x - 1e-9 && p.x <= b.max.x + 1e-9 && p.y >= b.min.y - 1e-9 && p.y <= b.max.y + 1e-9));
     }
 }

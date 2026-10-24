@@ -1104,3 +1104,5 @@
 1103|Lita eftir hæð
 1104|Draga: snúa · hægri draga eða Shift+draga: færa · hjól: aðdráttur
 1105|Draga: færa · hjól: aðdráttur
+1106|Rammi eftir útlínu
+1107|Rammann fylgir útlínunni sem umlykur öll form, eins og teygja, í stað ferhyrningsins í kringum þau.

@@ -1104,3 +1104,5 @@
 1103|Farv efter højde
 1104|Træk: roter · højre træk eller Skift+træk: flyt · hjul: zoom
 1105|Træk: flyt · hjul: zoom
+1106|Ramme langs konturen
+1107|Rammen følger konturen, der omslutter alle former som et elastik, i stedet for rektanglet omkring dem.

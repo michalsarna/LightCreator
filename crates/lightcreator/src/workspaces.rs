@@ -66,6 +66,7 @@ impl App {
         // Whatever refers to the drawing that was shown.
         self.preview = None;
         self.frame_bounds = None;
+        self.frame_path = None;
         self.layer_dlg = None;
         self.mat_edit = None;
         self.check_dlg = None;

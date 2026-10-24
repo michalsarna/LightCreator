@@ -2361,3 +2361,32 @@ fn illustrator_layers_go_on_the_layers_of_the_program_in_file_order() {
     assert_eq!(&layers[..3], &[0, 1, 0]);
     assert_eq!(layers[3], colour_layer, "content outside of layers still goes by colour");
 }
+
+#[test]
+fn the_outline_that_wraps_points_is_their_convex_hull() {
+    let pts: Vec<Pt> = [(0.0, 0.0), (10.0, 0.0), (10.0, 10.0), (0.0, 10.0), (5.0, 5.0), (5.0, 0.0), (3.0, 9.0), (0.0, 0.0)].iter().map(|(x, y)| Pt::new(*x, *y)).collect();
+    let h = gcode::convex_hull(&pts);
+    assert_eq!(h.len(), 4, "{h:?}: the points inside and on the sides are not corners");
+    for c in [(0.0, 0.0), (10.0, 0.0), (10.0, 10.0), (0.0, 10.0)] {
+        assert!(h.iter().any(|p| (p.x - c.0).abs() < 1e-9 && (p.y - c.1).abs() < 1e-9), "{c:?} missing in {h:?}");
+    }
+    // A triangle with a far point makes a quadrilateral; two points stay two.
+    assert_eq!(gcode::convex_hull(&[Pt::new(0.0, 0.0), Pt::new(4.0, 0.0), Pt::new(0.0, 3.0), Pt::new(9.0, 9.0)]).len(), 4);
+    assert_eq!(gcode::convex_hull(&[Pt::new(0.0, 0.0), Pt::new(1.0, 1.0)]).len(), 2);
+    assert!(gcode::convex_hull(&[]).is_empty());
+}
+
+#[test]
+fn a_frame_along_the_outline_of_two_far_shapes_is_not_their_box() {
+    let mut doc = Document::default();
+    let a = doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(0.0, 0.0));
+    let b = doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(60.0, 60.0));
+    let hull = doc.outline_of(&[a, b]);
+    // Two squares on a diagonal: the hull is a hexagon, the box has four corners.
+    assert_eq!(hull.len(), 6, "{hull:?}");
+    let g = gcode::frame_path_gcode(&hull, &doc.device, 1.0, 25.0);
+    assert_eq!(g.matches("G1 ").count(), 6, "six sides, back to the start: {g}");
+    // The box version is still the same four sides as before.
+    let boxed = gcode::frame_gcode(doc.bounds_of(&[a, b]).unwrap(), &doc.device, 1.0, 25.0);
+    assert_eq!(boxed.matches("G1 ").count(), 4, "{boxed}");
+}

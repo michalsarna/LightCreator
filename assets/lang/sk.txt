@@ -1104,3 +1104,5 @@
 1103|Farba podľa výšky
 1104|Ťahanie: otáčanie · pravé tlačidlo alebo Shift+ťahanie: posun · koliesko: zoom
 1105|Ťahanie: posun · koliesko: zoom
+1106|Rámik po obryse
+1107|Rámik sleduje obrys obopínajúci všetky tvary ako gumička, namiesto obdĺžnika okolo nich.

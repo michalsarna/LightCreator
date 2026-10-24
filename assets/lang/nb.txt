@@ -1104,3 +1104,5 @@
 1103|Farge etter høyde
 1104|Dra: roter · høyredra eller Shift+dra: flytt · hjul: zoom
 1105|Dra: flytt · hjul: zoom
+1106|Ramme langs omrisset
+1107|Rammen følger omrisset som omslutter alle formene, som et strikk, i stedet for rektangelet rundt dem.

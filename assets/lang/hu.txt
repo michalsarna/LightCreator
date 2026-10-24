@@ -1104,3 +1104,5 @@
 1103|Színezés magasság szerint
 1104|Húzás: forgatás · jobb gombos húzás vagy Shift+húzás: mozgatás · görgő: nagyítás
 1105|Húzás: mozgatás · görgő: nagyítás
+1106|Keret a körvonal mentén
+1107|A keret a minden alakzatot körülvevő körvonalat követi, mint egy gumiszalag, nem az őket körülvevő téglalapot.

@@ -646,8 +646,40 @@ fn timing(moves: &mut [Move], dev: &Device, plain_total: f64) -> f64 {
     moves.iter().map(|m| m.dur).sum()
 }
 
+/// The convex hull of points: the corners of the outline that wraps them like a rubber band, counter-clockwise on the screen
+/// axes, without repeats (fewer than three distinct points give those points).
+pub fn convex_hull(points: &[Pt]) -> Vec<Pt> {
+    let mut p: Vec<Pt> = points.iter().copied().filter(|q| q.x.is_finite() && q.y.is_finite()).collect();
+    p.sort_by(|a, b| a.x.total_cmp(&b.x).then(a.y.total_cmp(&b.y)));
+    p.dedup_by(|a, b| (a.x - b.x).abs() < 1e-9 && (a.y - b.y).abs() < 1e-9);
+    if p.len() < 3 {
+        return p;
+    }
+    let cross = |o: Pt, a: Pt, b: Pt| (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+    let half = |it: &mut dyn Iterator<Item = Pt>| {
+        let mut h: Vec<Pt> = vec![];
+        for q in it {
+            while h.len() >= 2 && cross(h[h.len() - 2], h[h.len() - 1], q) <= 1e-12 {
+                h.pop();
+            }
+            h.push(q);
+        }
+        h.pop();
+        h
+    };
+    let mut hull = half(&mut p.iter().copied());
+    hull.extend(half(&mut p.iter().rev().copied()));
+    hull
+}
+
 /// G-code that traces the bounding box of the design. `power` is percent (0 = laser off, 1-2 gives a visible dot on diodes).
 pub fn frame_gcode(bounds: Rect, dev: &Device, power: f64, speed_mm_s: f64) -> String {
+    let (a, b) = (bounds.min, bounds.max);
+    frame_path_gcode(&[a, Pt::new(b.x, a.y), b, Pt::new(a.x, b.y)], dev, power, speed_mm_s)
+}
+
+/// G-code that traces a closed path (the corners of `points`, and back to the first one) with the laser at `power`.
+pub fn frame_path_gcode(points: &[Pt], dev: &Device, power: f64, speed_mm_s: f64) -> String {
     let mut w = Writer::new(dev);
     match dev.dialect() {
         Dialect::Marlin => {
@@ -660,9 +692,9 @@ pub fn frame_gcode(bounds: Rect, dev: &Device, power: f64, speed_mm_s: f64) -> S
             let _ = writeln!(w.out, "G21\nG90\nM4 S0");
         }
     }
-    let (a, b) = (bounds.min, bounds.max);
-    w.travel(a);
-    for p in [Pt::new(b.x, a.y), b, Pt::new(a.x, b.y), a] {
+    let Some(first) = points.first().copied() else { return w.out };
+    w.travel(first);
+    for p in points.iter().skip(1).copied().chain(std::iter::once(first)) {
         w.line(p, power, speed_mm_s);
     }
     let _ = writeln!(w.out, "{}", if dev.dialect() == Dialect::Marlin { "M5 I" } else { "M5" });
