@@ -60,7 +60,7 @@
 * The node-editing bar on the canvas hides when you click another window such as the preview, and comes back when
   you click the work area again.
 * **Navigation:** pan, zoom in and zoom out sit in their own group under the drawing tools, together with two
-  fit buttons, "Fit work area" (Ctrl+0) and "Fit all objects" (Ctrl+9). Holding Space switches to panning with any
+  fit buttons, "Fit work area" (Ctrl+Shift+0) and "Fit all objects" (Ctrl+Shift+9). Holding Space switches to panning with any
   tool and returns to the previous tool on release (not while typing in a text field). Ctrl++ and Ctrl+- zoom
   around the middle of the view; the mouse wheel and the middle button still work everywhere.
 * **Auto-fit:** the work area is fitted to the window and refitted whenever the window or the side panels are
@@ -94,9 +94,14 @@
 * **Tab order:** the tabs of the side panel can be dragged to another place; the order is kept in the settings and in backups.
 * **Side panel layout:** Properties is laid out as a table with sections separated by lines (position and size,
   rotation, mirroring, alignment, layer) and buttons of one size. Image settings of a layer show only when the layer
-  holds bitmap images. In the Device tab the jog arrows, Home, Unlock, Pause and Resume are equal icon buttons (STOP
-  stays red and plain), and jog step, jog feed and frame power sit together above them. The console output has its
-  own background colour.
+  holds bitmap images. The Device tab has the connection and the position, a line, then Home, Unlock, Pause and Resume in a block of
+  2 × 2 with icons (Home blue, Unlock red, Pause orange, Resume green; the same in MillCreator and PenCreator) and STOP, and
+  below them jog step, jog feed, start from and frame power. The console output has its own background colour.
+* **Control tab** (the same tab as in MillCreator and PenCreator): the four buttons and STOP at the top, the position (work
+  and machine) read from the controller, the step and the speed of a jog (the same as the device's), the big jog buttons with
+  Z when the machine has a Z axis, hold to move and the arrow keys (GRBL), then the focus beam, homing of one axis, the macros
+  and the red-dot pointer. A job here counts from the machine's zero, so the work zero is not moved from this tab, and there
+  is no spindle and no probe. Jogs keep to the margins and the limits of the device and go through its controller.
 * **Live laser position:** a switch in the Device tab (off by default, saved with the device, greyed out without a
   connection) that shows the head as a red dot on the work area. Switched on at rest it homes the machine first;
   during a job, a frame or a jog it only shows the dot, refreshed once a second.
@@ -155,7 +160,7 @@
   any move (also travel) touches them; all validated before they are kept.
 * **Z axis and rotary:** an optional Z axis (range, layer heights and a step per pass, Z jog, checked heights) and a rotary
   attachment (chuck or rollers, Y or true A axis, steps per mm for `$101`, rotary layers, circumference check and marks).
-* **While a job runs** the Device tab locks jog, cancel jog, home, unlock and the jog options; pause, resume and STOP
+* **While a job runs** the Device and Control tabs lock jog, cancel jog, home, unlock and the jog options; pause, resume and STOP
   stay. Connect is green and Disconnect purple.
 * **Read from device:** the device configuration window can connect and read work area, S-value max, travel
   speed and laser mode from GRBL (and the feed rate from Marlin).

@@ -113,6 +113,11 @@ impl App {
 
     /// The questions about unsaved work: when the program is closed, tab by tab (`doc_tabs::quit_tick`), and when one tab is.
     fn close_dialog(&mut self, ctx: &egui::Context) {
+        if self.close_program {
+            self.close_program = false;
+            self.allow_close = true;
+            ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+        }
         if self.show_close_dlg {
             match base_ui::doc_tabs::quit_tick(self, ctx, crate::window_ui::SAVE_GREEN) {
                 base_ui::doc_tabs::Quit::Done => {

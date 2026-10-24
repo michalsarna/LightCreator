@@ -1309,11 +1309,18 @@ impl App {
         ctx.request_repaint_after(std::time::Duration::from_millis(500));
     }
 
-    /// A jog step of the Z axis, `dir` = 1 for up, -1 for down, kept inside the travel of the axis.
+    /// A jog step of the Z axis, `dir` = 1 for up, -1 for down, as long as the device's step.
+    #[cfg(test)]
     pub fn jog_z_action(&mut self, dir: f64) -> Option<Action> {
+        let (step, feed) = (self.doc.device.jog_step, self.doc.device.jog_feed);
+        self.jog_z_distance(dir * step, feed)
+    }
+
+    /// A jog of the Z axis by `dist` millimetres (positive is up) at `feed`, kept inside the travel of the axis.
+    pub fn jog_z_distance(&mut self, dist: f64, feed: f64) -> Option<Action> {
         let dev = &self.doc.device;
         let (lo, hi) = (dev.axes.z_min.min(dev.axes.z_max), dev.axes.z_min.max(dev.axes.z_max));
-        let mut dz = dir * if dev.axes.flip_z { -1.0 } else { 1.0 } * dev.jog_step;
+        let mut dz = dist * if dev.axes.flip_z { -1.0 } else { 1.0 };
         if self.connected && self.machine_z.is_finite() {
             let target = (self.machine_z + dz).clamp(lo, hi);
             dz = target - self.machine_z;
@@ -1322,7 +1329,7 @@ impl App {
             self.status = tr("The head is at the edge of the allowed area.").to_string();
             return None;
         }
-        Some(dev.controller.jog_z(dz, dev.jog_feed))
+        Some(dev.controller.jog_z(dz, feed))
     }
 
     /// The machine is moving (a job, a frame, a jog, homing): its position changes all the time.
@@ -1365,6 +1372,13 @@ impl App {
 
     /// A jog step in the design's directions (x right, y down), kept inside the allowed area. `None` when there is no room.
     pub(crate) fn jog_action(&mut self, dx: f64, dy: f64) -> Option<Action> {
+        let feed = self.doc.device.jog_feed;
+        self.jog_action_at(dx, dy, feed)
+    }
+
+    /// A jog of the head by `dx`, `dy` (screen directions: Y grows downwards) at `feed`, limited by the margins and the
+    /// software limits of the device.
+    pub(crate) fn jog_action_at(&mut self, dx: f64, dy: f64, feed: f64) -> Option<Action> {
         let dev = &self.doc.device;
         let at = (self.connected && self.machine.1.is_finite()).then_some((self.machine.1, self.machine.2));
         let (mx, my) = dev.limited_jog(at, dx, dy);
@@ -1372,7 +1386,7 @@ impl App {
             self.status = tr("The head is at the edge of the allowed area.").to_string();
             return None;
         }
-        Some(dev.controller.jog(mx, my, dev.jog_feed))
+        Some(dev.controller.jog(mx, my, feed))
     }
 
     /// Short description for the status bar / logs.
@@ -1532,9 +1546,19 @@ impl App {
         });
         self.doc.device.connection.port = port;
         ui.label(format!("{}: {}   X {:.2}  Y {:.2}", tr("State"), self.machine.0, self.machine.1, self.machine.2));
-        let mut act: Option<Action> = None;
-        // Options of the device that belong to jogging and framing, always editable.
+        // Home, Unlock, Pause and Resume, apart from the connection and the position by a line (the same in the Control tab).
+        ui.add_space(4.0);
+        ui.separator();
+        ui.add_space(4.0);
+        self.quick_row(ui);
+        ui.add_space(6.0);
+        if ui.add_sized([ui.available_width(), 40.0], egui::Button::new(RichText::new(tr("STOP")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0xc0, 0x30, 0x30))).clicked() {
+            self.abort_job();
+        }
+        ui.add_space(6.0);
+        ui.separator();
         let running = self.job_running();
+        // Options of the device that belong to jogging and framing, always editable.
         ui.add_enabled_ui(!running, |ui| egui::Grid::new("jog_opts").num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
             ui.label(tr("Jog step"));
             drag_len(ui, units, &mut self.doc.device.jog_step, 0.1, Some((0.1, 200.0)));
@@ -1559,114 +1583,6 @@ impl App {
         let mut live = self.doc.device.live_position;
         if ui.add_enabled(self.connected, egui::Checkbox::new(&mut live, tr("Live laser Position"))).on_hover_text(tr("Shows the position of the laser head as a dot on the work area. Switched on while the machine stands still, it homes first; during a job or a frame it only shows the position, refreshed every second. Needs a connected device.")).changed() {
             self.set_live_position(live);
-        }
-        ui.separator();
-        ui.add_enabled_ui(self.connected, |ui| {
-            let s = self.doc.device.jog_step;
-            // Arrow keys and the controls below are buttons of one size.
-            let size = egui::vec2(60.0, 48.0);
-            let icon = |ui: &mut egui::Ui, name: &str, tip: String, accent: Option<Color32>| -> bool {
-                let (rect, resp) = ui.allocate_exact_size(size, egui::Sense::click());
-                let hovered = resp.hovered() && ui.is_enabled();
-                let fill = match (accent, hovered) {
-                    (Some(c), true) => c.gamma_multiply(0.85),
-                    (Some(c), false) => c,
-                    (None, true) => theme::panel_dark(),
-                    (None, false) => ui.visuals().widgets.inactive.weak_bg_fill,
-                };
-                ui.painter().rect_filled(rect, 4.0, fill);
-                ui.painter().rect_stroke(rect, 4.0, egui::Stroke::new(1.0, theme::border()), egui::StrokeKind::Inside);
-                let ink = if accent.is_some() { Color32::WHITE } else if ui.is_enabled() { theme::text() } else { theme::text().gamma_multiply(0.4) };
-                crate::icons::paint(ui, egui::Rect::from_center_size(rect.center(), egui::vec2(27.0, 27.0)), name, ink);
-                resp.on_hover_text(tip).clicked()
-            };
-            let centre = |ui: &mut egui::Ui, total: f32| ui.add_space(((ui.available_width() - total) / 2.0).max(0.0));
-            // While a job runs the machine must not be moved by hand: only pause, resume and stop stay available.
-            ui.add_enabled_ui(!running, |ui| ui.horizontal(|ui| {
-            centre(ui, 3.0 * 70.0 + 2.0 * 3.0);
-            let hit = base_ui::control_ui::xy_pad(ui, false);
-            if hit.stop {
-                act = Some(ctrl.cancel_jog());
-            }
-            if let Some(d) = hit.dir {
-                // The pad counts Y up towards the back; the laser's Y grows downwards on the screen.
-                act = self.jog_action(d[0] as f64 * s, -(d[1] as f64) * s);
-            }
-            }));
-            ui.add_space(4.0);
-            ui.horizontal(|ui| {
-                centre(ui, 4.0 * size.x + 3.0 * ui.spacing().item_spacing.x);
-                ui.add_enabled_ui(!running, |ui| {
-                    if icon(ui, "house", tr("Home").to_string(), None) {
-                        act = Some(ctrl.home());
-                    }
-                });
-                if self.single_axis_homing {
-                    // Only when the firmware reported it was built with `$HX` / `$HY`.
-                    ui.add_enabled_ui(!running, |ui| {
-                        for axis in ["X", "Y"] {
-                            if ui.small_button(trf("Home {}", &[&axis])).on_hover_text(trf("Homes the {} axis only ($H{})", &[&axis, &axis])).clicked() {
-                                act = Some(Action::Lines(vec![format!("$H{axis}")]));
-                            }
-                        }
-                    });
-                }
-                ui.add_enabled_ui(!running, |ui| {
-                    if icon(ui, "lock-open", tr("Unlock").to_string(), None) {
-                        act = Some(ctrl.unlock());
-                    }
-                });
-                if icon(ui, "pause", tr("Pause").to_string(), None) {
-                    act = Some(ctrl.pause());
-                }
-                if icon(ui, "play", tr("Resume").to_string(), None) {
-                    act = Some(ctrl.resume());
-                }
-            });
-            ui.add_space(6.0);
-            if ui.add_sized([ui.available_width(), 40.0], egui::Button::new(RichText::new(tr("STOP")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0xc0, 0x30, 0x30))).clicked() {
-                self.abort_job();
-            }
-            ui.add_space(4.0);
-            self.focus_button(ui, true);
-            if self.doc.device.axes.has_z {
-                ui.add_space(4.0);
-                ui.horizontal(|ui| {
-                    ui.label(tr("Z"));
-                    ui.add_enabled_ui(!running, |ui| {
-                        if ui.button(tr("Up")).clicked() {
-                            act = self.jog_z_action(1.0);
-                        }
-                        if ui.button(tr("Down")).clicked() {
-                            act = self.jog_z_action(-1.0);
-                        }
-                    });
-                    if self.machine_z.is_finite() {
-                        ui.label(RichText::new(format!("Z {:.2}", self.machine_z)).color(theme::text_dim()));
-                    }
-                });
-            }
-            if !self.doc.device.macros.is_empty() {
-                ui.add_space(4.0);
-                ui.label(RichText::new(tr("Macros")).strong());
-                ui.horizontal_wrapped(|ui| {
-                    for m in self.doc.device.macros.clone() {
-                        if ui.add_enabled(self.connected && !running, egui::Button::new(&m.name)).on_hover_text(tr("Runs this macro on the machine")).clicked() {
-                            self.request_macro(&m.name);
-                        }
-                    }
-                });
-            }
-            if self.doc.device.head(0).has_pointer_offset() {
-                ui.add_space(4.0);
-                ui.checkbox(&mut self.pointer_align, tr("Align to the pointer")).on_hover_text(tr("This session only: the frame and the dry run move back by the offset of the red pointer dot, so the dot lands where the beam would. Jobs and jogging are never moved."));
-                if ui.add_enabled(self.connected && !running, egui::Button::new(tr("Dry run with the pointer"))).on_hover_text(tr("Runs the path of the job shifted by the pointer offset with the laser off, to see where it would go.")).clicked() {
-                    self.pointer_dry_run();
-                }
-            }
-        });
-        if let Some(a) = act {
-            self.run_action(a);
         }
         self.sync_profile();
     }

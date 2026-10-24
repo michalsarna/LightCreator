@@ -34,7 +34,7 @@ Kwadratowe uchwyty wokół zaznaczenia zmieniają rozmiar. **Kliknij uchwyt** (b
 Ramka z lewej do prawej: tylko obiekty w całości w środku. Z prawej do lewej: wszystko, czego dotyka. Shift+klik dodaje. Dwukrotne Escape wraca do narzędzia zaznaczania. Menu prawego przycisku zawiera najczęstsze polecenia.
 
 ## Widok i nawigacja
-Przesuwanie (H), powiększanie (Z), pomniejszanie (X), *Fit work area* (Ctrl+0), *Fit all objects* (Ctrl+9). Przytrzymaj **spację**, by przesuwać widok dowolnym narzędziem. Obszar roboczy sam dopasowuje się do okna, dopóki nie zmienisz zbliżenia ręcznie. *Settings → View options*: siatka główna i dodatkowa, kolor tła, grubość linii.
+Przesuwanie (H), powiększanie (Z), pomniejszanie (X), *Fit work area* (Ctrl+Shift+0), *Fit all objects* (Ctrl+Shift+9). Przytrzymaj **spację**, by przesuwać widok dowolnym narzędziem. Obszar roboczy sam dopasowuje się do okna, dopóki nie zmienisz zbliżenia ręcznie. *Settings → View options*: siatka główna i dodatkowa, kolor tła, grubość linii.
 ![Siatka](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/15-grid-layers.png)
 
 ## Import
