@@ -95,12 +95,13 @@
 * **Side panel layout:** Properties is laid out as a table with sections separated by lines (position and size,
   rotation, mirroring, alignment, layer) and buttons of one size. Image settings of a layer show only when the layer
   holds bitmap images. The Device tab has the connection and the position, a line, then Home, Unlock, Pause and Resume in a block of
-  2 × 2 with icons (Home blue, Unlock red, Pause orange, Resume green; the same in MillCreator and PenCreator) and STOP, and
-  below them jog step, jog feed, start from and frame power. The console output has its own background colour.
+  2 × 2 with icons (Home blue, Unlock red, Pause orange, Resume green; the same in MillCreator and PenCreator) and STOP
+  (live only while the machine works). The console output has its own background colour.
 * **Control tab** (the same tab as in MillCreator and PenCreator): the four buttons and STOP at the top, the position (work
   and machine) read from the controller, the step and the speed of a jog (the same as the device's), the big jog buttons with
   Z when the machine has a Z axis, hold to move and the arrow keys (GRBL), then the focus beam, homing of one axis, the macros
-  and the red-dot pointer. A job here counts from the machine's zero, so the work zero is not moved from this tab, and there
+  and the red-dot pointer, and the options that go with them: start from, frame power and the live position. STOP is live only
+  while the machine works. The section order is the same as in the other programs (position, Move, the jog buttons, Speed). A job here counts from the machine's zero, so the work zero is not moved from this tab, and there
   is no spindle and no probe. Jogs keep to the margins and the limits of the device and go through its controller.
 * **Live laser position:** a switch in the Device tab (off by default, saved with the device, greyed out without a
   connection) that shows the head as a red dot on the work area. Switched on at rest it homes the machine first;

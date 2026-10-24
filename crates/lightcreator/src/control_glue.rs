@@ -7,7 +7,7 @@ use crate::i18n::tr;
 use crate::laser::Cmd;
 use lc_core::control::{Axis, Control};
 use base_ui::control_ui::{self, ControlCtx, ControlTarget, Quick};
-use eframe::egui::{self, Color32, RichText};
+use eframe::egui::{self, RichText};
 use lc_core::controller::Action;
 use lc_core::Controller;
 
@@ -175,12 +175,13 @@ impl App {
         egui::ScrollArea::vertical().id_salt("tab_control").auto_shrink([false, false]).show(ui, |ui| {
             self.quick_row(ui);
             ui.add_space(4.0);
-            ui.separator();
-            ui.add_space(4.0);
-            if ui.add_sized([ui.available_width(), 40.0], egui::Button::new(RichText::new(tr("STOP")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0xc0, 0x30, 0x30))).clicked() {
+            // STOP is live only while the machine works (a job, a frame, a jog, homing).
+            if control_ui::stop_button(ui, self.machine_busy()) {
                 self.abort_job();
             }
-            ui.add_space(6.0);
+            ui.add_space(4.0);
+            ui.separator();
+            ui.add_space(4.0);
             self.sync_jog_settings();
             let dev = &self.doc.device;
             let mut control = Control::default();
@@ -204,8 +205,40 @@ impl App {
             if let Some(s) = say {
                 self.status = s;
             }
+            self.control_options(ui);
             self.control_extras(ui);
         });
+    }
+
+    /// What of the device belongs to framing and to where a job starts: they were in the Device tab. (The step and the speed
+    /// of a jog are the panel's own Move and Speed.)
+    fn control_options(&mut self, ui: &mut egui::Ui) {
+        let running = self.job_running();
+        ui.add_space(4.0);
+        ui.separator();
+        ui.add_space(4.0);
+        ui.add_enabled_ui(!running, |ui| {
+            egui::Grid::new("start_opts").num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
+                ui.label(tr("Start from"));
+                let start = &mut self.doc.device.start_from;
+                egui::ComboBox::from_id_salt("start_from").width(150.0).truncate().selected_text(tr(start.label())).show_ui(ui, |ui| {
+                    for m in lc_core::StartFrom::ALL {
+                        ui.selectable_value(start, m, tr(m.label()));
+                    }
+                })
+                .response
+                .on_hover_text(tr("Home: the design is burned where it lies on the work area, counted from the machine's zero. Current position: the top-left corner of the design is put where the laser head stands now (jobs, frames and the dry run), and the job ends there. Exported files always count from the machine's zero."));
+                ui.end_row();
+                ui.label(tr("Frame power"));
+                ui.add(egui::DragValue::new(&mut self.doc.device.heads[0].frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
+                ui.end_row();
+            });
+        });
+        let mut live = self.doc.device.live_position;
+        if ui.add_enabled(self.connected, egui::Checkbox::new(&mut live, tr("Live laser Position"))).on_hover_text(tr("Shows the position of the laser head as a dot on the work area. Switched on while the machine stands still, it homes first; during a job or a frame it only shows the position, refreshed every second. Needs a connected device.")).changed() {
+            self.set_live_position(live);
+        }
+        self.sync_profile();
     }
 
     /// What a laser has beyond the shared panel: the focus beam, the homing of one axis, the macros of the device and the
@@ -338,5 +371,37 @@ mod tests {
         assert_eq!(p.pins, "P");
         p.forget();
         assert!(p.mpos.is_none());
+    }
+
+    #[test]
+    fn stop_is_live_only_while_the_machine_works_and_the_options_of_the_device_are_here() {
+        use egui_kittest::kittest::NodeT;
+        let mut h = harness(true, true);
+        assert!(h.get_by_label("STOP").accesskit_node().is_disabled(), "nothing is running");
+        h.state_mut().as_mut().unwrap().machine = ("Run".into(), 10.0, 10.0);
+        h.run_steps(3);
+        assert!(!h.get_by_label("STOP").accesskit_node().is_disabled(), "the machine is at work");
+        // The options that were in the Device tab: where a job starts, the power of the frame, the live position.
+        for w in ["Start from", "Frame power", "Live laser Position"] {
+            assert!(h.query_by_label(w).is_some(), "{w} is in the Control tab");
+        }
+        // The step and the speed are the panel's own, in the order Move, jog buttons, Speed.
+        let y = |h: &Harness<'static, Option<App>>, l: &str| h.get_by_label(l).rect().top();
+        assert!(y(&h, "Position") < y(&h, "Move") && y(&h, "Move") < y(&h, "Speed"));
+    }
+
+    #[test]
+    fn the_device_tab_no_longer_holds_those_options() {
+        let mut h = Harness::builder().with_accessibility_check(false).with_size([420.0, 1400.0]).build_ui_state(
+            |ui, state: &mut Option<App>| {
+                let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+                egui::CentralPanel::default().show(ui, |ui| a.device_tab(ui));
+            },
+            None,
+        );
+        h.run_steps(3);
+        for w in ["Start from", "Frame power", "Jog step", "Jog feed", "Live laser Position"] {
+            assert!(h.query_by_label(w).is_none(), "{w} moved to the Control tab");
+        }
     }
 }

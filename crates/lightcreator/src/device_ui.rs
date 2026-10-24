@@ -1552,37 +1552,8 @@ impl App {
         ui.add_space(4.0);
         self.quick_row(ui);
         ui.add_space(6.0);
-        if ui.add_sized([ui.available_width(), 40.0], egui::Button::new(RichText::new(tr("STOP")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0xc0, 0x30, 0x30))).clicked() {
+        if base_ui::control_ui::stop_button(ui, self.machine_busy()) {
             self.abort_job();
-        }
-        ui.add_space(6.0);
-        ui.separator();
-        let running = self.job_running();
-        // Options of the device that belong to jogging and framing, always editable.
-        ui.add_enabled_ui(!running, |ui| egui::Grid::new("jog_opts").num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
-            ui.label(tr("Jog step"));
-            drag_len(ui, units, &mut self.doc.device.jog_step, 0.1, Some((0.1, 200.0)));
-            ui.end_row();
-            ui.label(tr("Jog feed"));
-            drag_speed(ui, units, self.doc.device.speed_unit, true, &mut self.doc.device.jog_feed, 10.0, Some((10.0, 20000.0)));
-            ui.end_row();
-            ui.label(tr("Start from"));
-            let start = &mut self.doc.device.start_from;
-            egui::ComboBox::from_id_salt("start_from").width(150.0).truncate().selected_text(tr(start.label())).show_ui(ui, |ui| {
-                for m in lc_core::StartFrom::ALL {
-                    ui.selectable_value(start, m, tr(m.label()));
-                }
-            })
-            .response
-            .on_hover_text(tr("Home: the design is burned where it lies on the work area, counted from the machine's zero. Current position: the top-left corner of the design is put where the laser head stands now (jobs, frames and the dry run), and the job ends there. Exported files always count from the machine's zero."));
-            ui.end_row();
-            ui.label(tr("Frame power"));
-            ui.add(egui::DragValue::new(&mut self.doc.device.heads[0].frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
-            ui.end_row();
-        }));
-        let mut live = self.doc.device.live_position;
-        if ui.add_enabled(self.connected, egui::Checkbox::new(&mut live, tr("Live laser Position"))).on_hover_text(tr("Shows the position of the laser head as a dot on the work area. Switched on while the machine stands still, it homes first; during a job or a frame it only shows the position, refreshed every second. Needs a connected device.")).changed() {
-            self.set_live_position(live);
         }
         self.sync_profile();
     }
