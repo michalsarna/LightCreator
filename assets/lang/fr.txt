@@ -1104,5 +1104,6 @@
 1103|Colorer par hauteur
 1104|Glisser : tourner · glisser avec le bouton droit ou Maj+glisser : déplacer · molette : zoom
 1105|Glisser : déplacer · molette : zoom
-1106|Cadre suivant le contour
-1107|Le cadre suit le contour qui enveloppe toutes les formes, comme un élastique, au lieu du rectangle qui les entoure.
+1106|Contour
+1107|Suit la ligne qui enveloppe toutes les formes, comme un élastique.
+1108|Cadre du contour

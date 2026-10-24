@@ -1104,5 +1104,6 @@
 1103|Colorează după înălțime
 1104|Trage: rotește · trage cu clic dreapta sau Shift+trage: mută · rotiță: zoom
 1105|Trage: mută · rotiță: zoom
-1106|Cadru pe contur
-1107|Cadrul urmează conturul care înconjoară toate formele, ca o bandă elastică, în loc de dreptunghiul din jurul lor.
+1106|Contur
+1107|Urmează linia care înconjoară toate formele, ca o bandă elastică.
+1108|Cadru de contur

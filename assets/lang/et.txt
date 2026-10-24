@@ -1104,5 +1104,6 @@
 1103|Värvi kõrguse järgi
 1104|Lohista: pööra · parem lohistamine või Shift+lohistamine: liiguta · ratas: suum
 1105|Lohista: liiguta · ratas: suum
-1106|Raam piki kontuuri
-1107|Raam järgib kõiki kujundeid ümbritsevat kontuuri nagu kummipaela, mitte nende ümber olevat ristkülikut.
+1106|Kontuur
+1107|Käib mööda joont, mis ümbritseb kõiki kujundeid nagu kummipael.
+1108|Kontuuriraam

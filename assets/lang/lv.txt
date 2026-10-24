@@ -1104,5 +1104,6 @@
 1103|Krāsot pēc augstuma
 1104|Velciet: griezt · velciet ar labo pogu vai Shift+velciet: pārvietot · ritenītis: tālummaiņa
 1105|Velciet: pārvietot · ritenītis: tālummaiņa
-1106|Rāmis pa kontūru
-1107|Rāmis seko kontūrai, kas aptver visas formas kā gumija, nevis taisnstūrim ap tām.
+1106|Kontūra
+1107|Iet pa līniju, kas aptver visas formas kā gumija.
+1108|Kontūras rāmis

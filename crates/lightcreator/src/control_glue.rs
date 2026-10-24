@@ -5,6 +5,7 @@
 use crate::app::App;
 use crate::i18n::tr;
 use crate::laser::Cmd;
+use crate::theme;
 use lc_core::control::{Axis, Control};
 use base_ui::control_ui::{self, ControlCtx, ControlTarget, Quick};
 use eframe::egui::{self, RichText};
@@ -175,6 +176,8 @@ impl App {
         egui::ScrollArea::vertical().id_salt("tab_control").auto_shrink([false, false]).show(ui, |ui| {
             self.quick_row(ui);
             ui.add_space(4.0);
+            self.start_button(ui);
+            ui.add_space(4.0);
             // STOP is live only while the machine works (a job, a frame, a jog, homing).
             if control_ui::stop_button(ui, self.machine_busy()) {
                 self.abort_job();
@@ -205,8 +208,70 @@ impl App {
             if let Some(s) = say {
                 self.status = s;
             }
+            // Under the speed: the two ways of tracing the work with the laser at the power of the frame.
+            ui.add_space(6.0);
+            self.outline_buttons(ui);
             self.control_options(ui);
+            self.view_buttons(ui);
             self.control_extras(ui);
+        });
+    }
+
+    /// START, wide: streams the job to the laser (it was in the bar over the work area).
+    fn start_button(&mut self, ui: &mut egui::Ui) {
+        let can = self.can_start();
+        let go = egui::Button::new(RichText::new(tr("Start").to_uppercase()).color(egui::Color32::WHITE).strong()).fill(theme::accent());
+        let tip = if can { tr("Stream the job to the connected laser") } else { tr("Connect to a laser first (Laser panel)") };
+        if ui.add_enabled_ui(can, |ui| ui.add_sized([ui.available_width(), 40.0], go)).inner.on_hover_text(tip).on_disabled_hover_text(tip).clicked() {
+            self.send_job();
+        }
+    }
+
+    /// Outline and Outline frame, in a row of two: the outline that wraps all the shapes like a rubber band, and the box round
+    /// them (the old Frame button).
+    fn outline_buttons(&mut self, ui: &mut egui::Ui) {
+        let on = self.connected && !self.job_running();
+        let half = ((ui.available_width() - ui.spacing().item_spacing.x) / 2.0).max(60.0);
+        let tip_box = if self.connected { tr("Trace the bounding box") } else { tr("Connect to a laser first (Laser panel)") };
+        let tip_outline = if self.connected { tr("Trace the outline that wraps all the shapes, like a rubber band.") } else { tr("Connect to a laser first (Laser panel)") };
+        egui::Grid::new("outline_buttons").num_columns(2).show(ui, |ui| {
+            let outline = ui.add_enabled(on, egui::Button::new(RichText::new(tr("Outline")).size(15.0)).min_size(egui::vec2(half, 32.0))).on_hover_text(tip_outline).on_disabled_hover_text(tip_outline);
+            if outline.clicked() {
+                self.frame_with(true);
+            }
+            let frame = ui.add_enabled(on, egui::Button::new(RichText::new(tr("Outline frame")).size(15.0)).min_size(egui::vec2(half, 32.0))).on_hover_text(tip_box).on_disabled_hover_text(tip_box);
+            if frame.clicked() {
+                self.frame_with(false);
+            }
+            ui.end_row();
+        });
+    }
+
+    /// What was in the bar over the work area and shows or hides something: the toolpaths, the preview window, the camera and its
+    /// overlay.
+    fn view_buttons(&mut self, ui: &mut egui::Ui) {
+        use base_ui::widgets::window_toggle;
+        ui.add_space(4.0);
+        ui.separator();
+        ui.add_space(4.0);
+        ui.horizontal_wrapped(|ui| {
+            // Green while the toolpaths are shown, grey otherwise.
+            let on = self.preview_on;
+            let (fill, ink) = if on { (egui::Color32::from_rgb(0x2e, 0xa0, 0x4f), egui::Color32::WHITE) } else { (theme::panel_dark(), theme::text_dim()) };
+            let btn = egui::Button::image_and_text(crate::icons::slot(Some("route"), ink), RichText::new(tr("Toolpaths")).color(ink)).fill(fill);
+            if ui.add(btn).on_hover_text(tr("Show the toolpaths on the work area")).clicked() {
+                self.preview_on = !self.preview_on;
+            }
+            if window_toggle(ui, &tr("Preview…"), &tr("Open the preview window"), self.show_preview, true) {
+                self.show_preview = !self.show_preview;
+            }
+            if self.doc.device.stream_url().is_some() && window_toggle(ui, &tr("Camera view"), &tr("Show the live camera picture of this machine"), self.show_stream, true) {
+                self.show_stream = !self.show_stream;
+            }
+            let (overlay_on, can_overlay) = self.overlay_state();
+            if window_toggle(ui, &tr("Overlay"), &tr("Show or hide the camera overlay on the work area"), overlay_on, can_overlay) {
+                self.toggle_overlay_button();
+            }
         });
     }
 
@@ -233,7 +298,6 @@ impl App {
                 ui.add(egui::DragValue::new(&mut self.doc.device.heads[0].frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
                 ui.end_row();
             });
-            ui.checkbox(&mut self.doc.device.frame_outline, tr("Frame along the outline")).on_hover_text(tr("The frame follows the outline that wraps all the shapes, like a rubber band, instead of the box around them."));
         });
         let mut live = self.doc.device.live_position;
         if ui.add_enabled(self.connected, egui::Checkbox::new(&mut live, tr("Live laser Position"))).on_hover_text(tr("Shows the position of the laser head as a dot on the work area. Switched on while the machine stands still, it homes first; during a job or a frame it only shows the position, refreshed every second. Needs a connected device.")).changed() {
@@ -392,6 +456,38 @@ mod tests {
     }
 
     #[test]
+    fn the_bar_over_the_work_area_keeps_only_save_g_code_and_the_buttons_are_in_the_control_tab() {
+        let mut h = Harness::builder().with_accessibility_check(false).with_size([1280.0, 1000.0]).build_ui_state(
+            |ui, state: &mut Option<App>| {
+                let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+                a.draw(ui);
+            },
+            None,
+        );
+        h.run_steps(2);
+        {
+            let a = h.state_mut().as_mut().unwrap();
+            a.profiles = vec![lc_core::Device::default()];
+            a.cfg = None;
+            assert!(a.enter_editor(0));
+            a.side_tab = SideTab::Properties;
+        }
+        h.run_steps(4);
+        assert!(h.query_by_label("Save G-code").is_some());
+        for gone in ["Toolpaths", "Preview…", "Overlay", "Frame", "START", "Start"] {
+            assert!(h.query_by_label(gone).is_none(), "{gone} left the bar");
+        }
+        h.state_mut().as_mut().unwrap().side_tab = SideTab::Control;
+        h.run_steps(4);
+        for here in ["Toolpaths", "Preview…", "Overlay", "Outline", "Outline frame"] {
+            assert!(h.query_by_label(here).is_some(), "{here} is in the Control tab");
+        }
+        let y = |h: &Harness<'static, Option<App>>, l: &str| h.get_by_label(l).rect().top();
+        assert_eq!(y(&h, "Outline"), y(&h, "Outline frame"), "a row of two");
+        assert!(y(&h, "Speed") < y(&h, "Outline"), "under the speed");
+    }
+
+    #[test]
     fn the_device_tab_no_longer_holds_those_options() {
         let mut h = Harness::builder().with_accessibility_check(false).with_size([420.0, 1400.0]).build_ui_state(
             |ui, state: &mut Option<App>| {
@@ -413,17 +509,15 @@ mod frame_tests {
     use lc_core::{Kind, Xf};
 
     #[test]
-    fn the_frame_follows_the_outline_of_all_shapes_when_the_device_says_so() {
+    fn the_frame_follows_the_outline_of_all_shapes_when_asked() {
         let mut a = App::build(&eframe::egui::Context::default(), None, false);
         a.connected = true;
         a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(20.0, 20.0));
         a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(80.0, 80.0));
         a.touch();
-        a.doc.device.frame_outline = false;
         a.frame();
         assert!(a.frame_bounds.is_some() && a.frame_path.is_none(), "the box, as before");
-        a.doc.device.frame_outline = true;
-        a.frame();
+        a.frame_with(true);
         let path = a.frame_path.clone().expect("an outline");
         assert_eq!(path.len(), 6, "{path:?}: two squares on a diagonal wrap into a hexagon");
         // It lies inside the box that the other frame traces.
