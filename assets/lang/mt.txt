@@ -1104,3 +1104,5 @@
 1103|Ilwien skont l-għoli
 1104|Kaxkar: dawwar · kaxkar bil-lemin jew Shift+kaxkar: ċaqlaq · rota: zoom
 1105|Kaxkar: ċaqlaq · rota: zoom
+1106|Qafas tul il-kontorn
+1107|Il-qafas isegwi l-kontorn li jgħaqqad il-forom kollha, bħal elastiku, minflok ir-rettangolu madwarhom.

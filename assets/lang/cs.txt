@@ -1104,3 +1104,5 @@
 1103|Barva podle výšky
 1104|Tažení: otáčení · pravé tlačítko nebo Shift+tažení: posun · kolečko: zoom
 1105|Tažení: posun · kolečko: zoom
+1106|Rámeček po obrysu
+1107|Rámeček sleduje obrys obepínající všechny tvary jako gumička, místo obdélníku kolem nich.

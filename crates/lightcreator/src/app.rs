@@ -142,6 +142,8 @@ pub struct App {
     pub gcode_view: Option<base_ui::gcode_view_ui::GcodeViewer>,
     /// The box the frame command traces.
     pub frame_bounds: Option<lc_core::Rect>,
+    /// The corners of the outline the frame follows, when the device frames along the outline of the shapes.
+    pub frame_path: Option<Vec<Pt>>,
     pub allow_close: bool,
     pub show_options: bool,
     /// Look for a newer release on GitHub when the program starts.
@@ -340,6 +342,7 @@ impl App {
             ai_choice: None,
             gcode_view: None,
             frame_bounds: None,
+            frame_path: None,
             allow_close: false,
             show_options: false,
             check_updates: saved("check_updates").map(|v| v != "0").unwrap_or(true),
@@ -827,15 +830,24 @@ impl App {
         if self.job_running() {
             return;
         }
-        let b = self.sel_bounds().or_else(|| self.doc.bounds_of(&self.doc.scene.shapes.iter().map(|s| s.id).collect::<Vec<_>>()));
+        // The selected shapes, or all of them.
+        let ids: Vec<u64> = if self.ed.sel.is_empty() { self.doc.scene.shapes.iter().map(|s| s.id).collect() } else { self.ed.sel.clone() };
+        let b = self.sel_bounds().or_else(|| self.doc.bounds_of(&ids));
         let Some(b) = b else { return };
         if !self.connected {
             self.status = tr("Connect to a laser first (Laser panel)").into();
             return;
         }
-        let b = self.aim(self.placed_rect(b));
+        let moved = self.aim(self.placed_rect(b));
+        // Along the outline: the rubber band round the shapes, moved the same way as the box would be.
+        let path = self.doc.device.frame_outline.then(|| {
+            let (dx, dy) = (moved.min.x - b.min.x, moved.min.y - b.min.y);
+            self.doc.outline_of(&ids).into_iter().map(|p| Pt::new(p.x + dx, p.y + dy)).collect::<Vec<_>>()
+        });
+        let b = moved;
         if self.guard(crate::check_ui::Pending::Frame, Some(b)) {
             self.frame_bounds = Some(b);
+            self.frame_path = path.filter(|p| p.len() >= 3);
             self.frame_now();
         }
     }
@@ -879,7 +891,10 @@ impl App {
     pub fn frame_now(&mut self) {
         let Some(b) = self.frame_bounds else { return };
         let h = self.doc.device.head(0);
-        let g = gcode::frame_gcode(b, &self.doc.device, h.frame_power, h.frame_speed);
+        let g = match (&self.frame_path, self.doc.device.frame_outline) {
+            (Some(path), true) => gcode::frame_path_gcode(path, &self.doc.device, h.frame_power, h.frame_speed),
+            _ => gcode::frame_gcode(b, &self.doc.device, h.frame_power, h.frame_speed),
+        };
         for l in laser::clean_gcode(&g) {
             self.link.send(Cmd::Line(l));
         }

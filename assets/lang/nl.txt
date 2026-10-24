@@ -1104,3 +1104,5 @@
 1103|Kleuren op hoogte
 1104|Slepen: draaien · rechts slepen of Shift+slepen: verschuiven · wiel: zoomen
 1105|Slepen: verschuiven · wiel: zoomen
+1106|Kader langs de omtrek
+1107|Het kader volgt de omtrek die alle vormen omsluit, als een elastiek, in plaats van de rechthoek eromheen.

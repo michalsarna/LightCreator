@@ -100,7 +100,7 @@
 * **Control tab** (the same tab as in MillCreator and PenCreator): the four buttons and STOP at the top, the position (work
   and machine) read from the controller, the step and the speed of a jog (the same as the device's), the big jog buttons with
   Z when the machine has a Z axis, hold to move and the arrow keys (GRBL), then the focus beam, homing of one axis, the macros
-  and the red-dot pointer, and the options that go with them: start from, frame power and the live position. STOP is live only
+  and the red-dot pointer, and the options that go with them: start from, frame power, **Frame along the outline** (the frame traces the outline that wraps all the shapes like a rubber band, the convex hull, instead of the box; a setting of the device) and the live position. STOP is live only
   while the machine works. The section order is the same as in the other programs (position, Move, the jog buttons, Speed). A job here counts from the machine's zero, so the work zero is not moved from this tab, and there
   is no spindle and no probe. Jogs keep to the margins and the limits of the device and go through its controller.
 * **Live laser position:** a switch in the Device tab (off by default, saved with the device, greyed out without a

@@ -1104,3 +1104,5 @@
 1103|Barva po višini
 1104|Povleci: vrti · desni gumb ali Shift+povleci: premakni · kolesce: povečava
 1105|Povleci: premakni · kolesce: povečava
+1106|Okvir po obrisu
+1107|Okvir sledi obrisu, ki obdaja vse oblike kot elastika, namesto pravokotnika okoli njih.

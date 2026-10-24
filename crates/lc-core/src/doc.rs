@@ -769,6 +769,8 @@ pub struct Device {
     pub notes: String,
     /// Show where the laser head is, as a dot on the work area, while the device is connected.
     pub live_position: bool,
+    /// The frame follows the outline that wraps all the shapes (a rubber band round them) instead of the box around them.
+    pub frame_outline: bool,
     /// Whether a job counts from the machine's zero or from where the head stands.
     pub start_from: StartFrom,
     /// Copies of the settings of the controller, kept with the profile.
@@ -914,6 +916,8 @@ struct DeviceWire {
     #[serde(default)]
     live_position: bool,
     #[serde(default)]
+    frame_outline: bool,
+    #[serde(default)]
     start_from: StartFrom,
     #[serde(default)]
     fw_copies: base_core::control::FwCopies,
@@ -984,6 +988,7 @@ impl From<DeviceWire> for Device {
             maintenance: w.maintenance,
             notes: w.notes,
             live_position: w.live_position,
+            frame_outline: w.frame_outline,
             start_from: w.start_from,
             fw_copies: w.fw_copies,
         };
@@ -1215,6 +1220,7 @@ impl Default for Device {
             maintenance: Maintenance::default(),
             notes: String::new(),
             live_position: false,
+            frame_outline: false,
             start_from: StartFrom::Home,
             fw_copies: Default::default(),
         }
@@ -1432,6 +1438,12 @@ impl Document {
     }
     pub fn bounds_of(&self, ids: &[u64]) -> Option<Rect> {
         self.scene.bounds_of(ids)
+    }
+    /// The outline that wraps the shapes `ids` like a rubber band: the convex hull of all their points (a picture counts as
+    /// its rectangle). Empty when there is nothing.
+    pub fn outline_of(&self, ids: &[u64]) -> Vec<Pt> {
+        let pts: Vec<Pt> = ids.iter().filter_map(|i| self.scene.shape(*i)).flat_map(|s| s.polys()).flat_map(|p| p.pts.clone()).collect();
+        crate::gcode::convex_hull(&pts)
     }
     /// The project file as the container of baseCreator: the drawing, the description, the laser section and the
     /// sections of other programs as they were read.

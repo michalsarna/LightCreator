@@ -1104,3 +1104,5 @@
 1103|Boja prema visini
 1104|Povuci: zakreni · desni gumb ili Shift+povuci: pomakni · kotačić: zoom
 1105|Povuci: pomakni · kotačić: zoom
+1106|Okvir po obrisu
+1107|Okvir prati obris koji obuhvaća sve oblike poput gumice, umjesto pravokutnika oko njih.
