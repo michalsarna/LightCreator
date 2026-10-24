@@ -49,12 +49,20 @@ A single key, no modifier. The same keys are in the tooltips of the tool bar.
 | P | Polyline / pen | T | Text |
 | H | Pan | Z / X | Zoom in / zoom out |
 
+## Tabs of open drawings
+
+| Shortcut | Action |
+|---|---|
+| Ctrl+1 … Ctrl+9, Ctrl+0 | Show the 1st … 9th, the 10th tab |
+| Ctrl+W | Close the shown tab (asks when it has unsaved work; closing the last tab closes the program) |
+| Ctrl+N | A new drawing in a new tab |
+
 ## View
 
 | Shortcut | Action |
 |---|---|
-| Ctrl+0 | Fit the work area to the window (and keep it fitted until you zoom by hand) |
-| Ctrl+9 | Fit all objects |
+| Ctrl+Shift+0 | Fit the work area to the window (and keep it fitted until you zoom by hand) |
+| Ctrl+Shift+9 | Fit all objects |
 | Ctrl++ / Ctrl+- | Zoom in / out around the centre of the view |
 | Space (hold) | Pan with any tool; release it to go back to the tool you had |
 | Escape | Clear the selection and the unfinished polyline |

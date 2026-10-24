@@ -34,7 +34,7 @@ The square handles around a selection resize it. **Click a handle** (without dra
 Drag left → right: only objects wholly inside. Right → left: everything touched. Shift+click adds. Escape twice returns to the select tool. The right-click menu holds the common commands.
 
 ## View and navigation
-Pan (H), zoom in (Z), zoom out (X), *Fit work area* (Ctrl+0), *Fit all objects* (Ctrl+9). Hold **Space** to pan with any tool. The work area auto-fits the window until you zoom by hand. *Settings → View options*: main and secondary grid, background colour, line thickness.
+Pan (H), zoom in (Z), zoom out (X), *Fit work area* (Ctrl+Shift+0), *Fit all objects* (Ctrl+Shift+9). Hold **Space** to pan with any tool. The work area auto-fits the window until you zoom by hand. *Settings → View options*: main and secondary grid, background colour, line thickness.
 ![Grid](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/15-grid-layers.png)
 
 ## Importing

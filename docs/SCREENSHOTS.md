@@ -51,3 +51,5 @@ Regenerate them with
 | Calibration (Laser menu): steps per millimetre and squareness of the axes | Start from line (Laser menu) |
 | ![Tabs of open drawings](screenshots/42-tabs.png) | |
 | Tabs: File → New and Open make a tab (up to 10); a dot marks a drawing with unsaved work, closing the program asks about each of them | |
+| ![Control tab](screenshots/43-control-tab.png) | ![Device tab](screenshots/44-device-tab-machine.png) |
+| Control tab: Home, Unlock, Pause and Resume at the top, the position, the step and the speed, the jog buttons | Device tab: the connection and the position, a line, then the same four buttons and STOP |

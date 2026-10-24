@@ -1302,6 +1302,47 @@ fn render_tabs() {
     save(&mut h, "42-tabs.png");
 }
 
+/// The Control tab (position, jog buttons, Home / Unlock / Pause / Resume) of a connected laser, and the Device tab.
+#[test]
+#[ignore = "writes docs/screenshots; run explicitly"]
+fn render_control_tab() {
+    let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    app(&mut h).lang = Lang::En;
+    i18n::set_lang(Lang::En);
+    let ctx = h.ctx.clone();
+    theme::apply(&ctx, Scheme::LightDark);
+    let examples = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../examples");
+    {
+        let a = app(&mut h);
+        a.profiles = vec![Device::default()];
+        a.cfg = None;
+        assert!(a.enter_editor(0));
+        assert!(a.open_path(examples.join("badge.cre").canonicalize().unwrap()));
+        a.select_all();
+        a.ports = vec!["/dev/ttyUSB0".into()];
+        a.doc.device.connection.port = "/dev/ttyUSB0".into();
+        a.connected = true;
+        a.machine = ("Idle".into(), 120.0, 85.0);
+        a.machine_z = 0.0;
+        a.pos.mpos = Some([120.0, 85.0, 0.0]);
+        a.pos.wpos = Some([120.0, 85.0, 0.0]);
+        a.status = "Connected".into();
+        a.side_tab = SideTab::Control;
+    }
+    h.run_steps(4);
+    save(&mut h, "43-control-tab.png");
+    app(&mut h).side_tab = SideTab::Device;
+    h.run_steps(3);
+    save(&mut h, "44-device-tab-machine.png");
+}
+
 /// Writes `examples/badge.cre` (the badge as a project) and `examples/badge.gcode` (its G-code).
 /// `cargo test -p lightcreator write_examples -- --ignored --nocapture`
 #[test]

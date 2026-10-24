@@ -1,7 +1,7 @@
 //! Open drawings as tabs (the bar and the closing are in `base_ui::doc_tabs`): each tab holds a `Workspace`, the part of
 //! the program that belongs to one drawing. The live fields of the program are the shown tab; the others are parked here
 //! and exchanged with the live ones when a tab is picked.
-use crate::app::{App, Screen};
+use crate::app::App;
 use base_ui::doc_tabs::{self, TabAction, TabHost, TabInfo, MAX_TABS};
 use base_ui::editor::DocView;
 use eframe::egui;
@@ -174,8 +174,10 @@ impl App {
         lc_core::autosave::clear_slot(&self.data_base, "lightcreator", self.slot);
         let n = self.tabs_state.parked.len();
         if n <= 1 {
+            // The last tab: what is in it is saved or given up by now. The drawing is cleared (so the exit saves nothing)
+            // and the program closes.
             self.new_doc();
-            self.screen = Screen::Start;
+            self.close_program = true;
             return;
         }
         let at = self.tabs_state.active;
@@ -216,13 +218,18 @@ impl App {
             }
             Some(TabAction::Close(i)) => {
                 self.switch_to(i);
-                if self.is_dirty() {
-                    self.tabs_state.closing = true;
-                } else {
-                    self.close_shown_tab();
-                }
+                self.close_tab_request();
             }
             None => {}
+        }
+    }
+
+    /// Close the shown tab, asking first when it has unsaved work (the cross of the tab, and Ctrl+W).
+    pub fn close_tab_request(&mut self) {
+        if self.is_dirty() {
+            self.tabs_state.closing = true;
+        } else {
+            self.close_shown_tab();
         }
     }
 
@@ -313,6 +320,7 @@ impl TabHost for App {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::app::Screen;
     use base_ui::doc_tabs::{quit_answer, quit_prepare, Answer, Quit};
     use lc_core::{Kind, Xf};
 
@@ -431,15 +439,51 @@ mod tests {
     }
 
     #[test]
-    fn closing_the_last_tab_returns_to_the_start_screen() {
+    fn closing_the_last_tab_closes_the_program_and_leaves_nothing_to_recover() {
         let mut a = app();
+        // Two tabs: closing the first leaves one, the program stays.
         a.new_tab();
         a.close_shown_tab();
-        assert_eq!(a.tab_count(), 1);
-        assert_eq!(a.screen, Screen::Editor);
+        assert_eq!((a.tab_count(), a.close_program), (1, false));
+        // The last tab holds work that was written to its recovery file; it is given up.
+        draw(&mut a, 1);
+        let slot = a.slot;
+        a.autosave_now();
+        assert_eq!(lc_core::autosave::find_all(&a.data_base, "lightcreator").len(), 1);
+        a.discard_active();
         a.close_shown_tab();
-        assert_eq!(a.tab_count(), 1);
-        assert_eq!(a.screen, Screen::Start);
+        assert!(a.close_program, "the last tab closed: the program closes");
+        let ctx = egui::Context::default();
+        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| a.session_tick(ui.ctx()));
+        out.textures_delta.clear();
+        let closing = out.viewport_output.values().any(|v| v.commands.iter().any(|c| matches!(c, egui::ViewportCommand::Close)));
+        assert!(closing && a.allow_close);
+        // What the program does on the way out writes nothing: the drawing is empty and clean.
+        assert!(!a.any_dirty());
+        assert!(!lc_core::autosave::slot_path(&a.data_base, "lightcreator", slot).exists(), "nothing the person gave up comes back");
+    }
+
+    #[test]
+    fn ctrl_digits_show_the_tabs_and_ctrl_w_closes_the_shown_one() {
+        let mut a = app();
+        a.new_tab();
+        a.new_tab();
+        assert_eq!((a.tab_count(), a.tabs_state.active), (3, 2));
+        let ctx = egui::Context::default();
+        let press = |a: &mut App, key: egui::Key| {
+            let ev = egui::Event::Key { key, physical_key: Some(key), pressed: true, repeat: false, modifiers: egui::Modifiers::COMMAND };
+            let mut out = ctx.run_ui(egui::RawInput { events: vec![ev], ..Default::default() }, |ui| a.shortcuts_for_test(ui.ctx()));
+            out.textures_delta.clear();
+        };
+        press(&mut a, egui::Key::Num1);
+        assert_eq!(a.tabs_state.active, 0);
+        press(&mut a, egui::Key::Num2);
+        assert_eq!(a.tabs_state.active, 1);
+        press(&mut a, egui::Key::W);
+        assert_eq!(a.tab_count(), 2, "Ctrl+W closes the shown tab (it has no unsaved work)");
+        draw(&mut a, 1);
+        press(&mut a, egui::Key::W);
+        assert!(a.tabs_state.closing && a.tab_count() == 2, "a tab with unsaved work is asked about first");
     }
 
     #[test]
@@ -492,6 +536,7 @@ mod tests {
 #[cfg(test)]
 mod start_screen_tests {
     use super::*;
+    use crate::app::Screen;
     use crate::menu::Act;
     use lc_core::{Kind, Xf};
 

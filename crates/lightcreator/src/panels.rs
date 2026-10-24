@@ -42,6 +42,7 @@ impl App {
             SideTab::Device => {
                 egui::ScrollArea::vertical().id_salt("tab_device").auto_shrink([false, false]).show(ui, |ui| self.device_tab(ui));
             }
+            SideTab::Control => self.control_panel(ui),
             SideTab::Console => self.console_panel(ui),
             SideTab::Clipart => self.clipart_panel(ui),
             SideTab::Description => self.description_panel(ui),

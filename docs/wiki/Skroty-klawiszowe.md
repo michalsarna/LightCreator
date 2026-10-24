@@ -49,12 +49,20 @@ Jeden klawisz, bez modyfikatora. Te same klawisze są w podpowiedziach paska nar
 | P | Łamana / pióro | T | Tekst |
 | H | Przesuwanie widoku | Z / X | Powiększanie / pomniejszanie |
 
+## Karty otwartych rysunków
+
+| Skrót | Działanie |
+|---|---|
+| Ctrl+1 … Ctrl+9, Ctrl+0 | Pokaż 1. … 9., 10. kartę |
+| Ctrl+W | Zamknij pokazaną kartę (pyta, gdy ma niezapisaną pracę; zamknięcie ostatniej karty zamyka program) |
+| Ctrl+N | Nowy rysunek w nowej karcie |
+
 ## Widok
 
 | Skrót | Działanie |
 |---|---|
-| Ctrl+0 | Dopasuj obszar roboczy do okna (i trzymaj go dopasowanym, dopóki nie zmienisz powiększenia ręcznie) |
-| Ctrl+9 | Dopasuj do wszystkich obiektów |
+| Ctrl+Shift+0 | Dopasuj obszar roboczy do okna (i trzymaj go dopasowanym, dopóki nie zmienisz powiększenia ręcznie) |
+| Ctrl+Shift+9 | Dopasuj do wszystkich obiektów |
 | Ctrl++ / Ctrl+- | Zbliżenie / oddalenie wokół środka widoku |
 | Spacja (przytrzymaj) | Przesuwanie widoku dowolnym narzędziem; po puszczeniu wraca poprzednie narzędzie |
 | Escape | Wyczyść zaznaczenie i niedokończoną łamaną |

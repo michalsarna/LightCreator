@@ -23,6 +23,8 @@ pub enum SideTab {
     Properties,
     Layers,
     Device,
+    /// Moving the machine: the position, the jog buttons, the focus beam, the macros (the same tab as in MillCreator and PenCreator).
+    Control,
     Console,
     Clipart,
     /// A free text about the project.
@@ -32,10 +34,11 @@ pub enum SideTab {
 }
 
 impl SideTab {
-    pub const ALL: [(SideTab, &'static str); 6] = [
+    pub const ALL: [(SideTab, &'static str); 7] = [
         (SideTab::Properties, "Properties"),
         (SideTab::Layers, "Layers"),
         (SideTab::Device, "Device"),
+        (SideTab::Control, "Control"),
         (SideTab::Console, "Console"),
         (SideTab::Clipart, "Clipart"),
         (SideTab::Description, "Description"),
@@ -46,6 +49,7 @@ impl SideTab {
             SideTab::Properties => "properties",
             SideTab::Layers => "layers",
             SideTab::Device => "device",
+            SideTab::Control => "control",
             SideTab::Console => "console",
             SideTab::Clipart => "clipart",
             SideTab::Description => "description",
@@ -54,7 +58,7 @@ impl SideTab {
     }
 
     /// The ids of the tabs that are always there, for the order the user arranges them in.
-    pub const IDS: [&'static str; 6] = ["properties", "layers", "device", "console", "clipart", "description"];
+    pub const IDS: [&'static str; 7] = ["properties", "layers", "device", "control", "console", "clipart", "description"];
 
     pub fn from_id(id: &str) -> Option<SideTab> {
         SideTab::ALL.iter().map(|(t, _)| *t).chain([SideTab::Camera]).find(|t| t.id() == id)
@@ -85,6 +89,14 @@ pub struct App {
     pub revision: u64,
     /// Revision at the last save by hand (or open / new), and at the last auto-save.
     pub saved_revision: u64,
+    /// What the Control tab remembers between frames, the arrow keys that jog, and where the last report said the head is.
+    pub ctl: base_ui::control_ui::ControlUi,
+    pub keyboard_jog: bool,
+    pub pos: crate::control_glue::Where,
+    /// The jog step the Control tab and the device agreed on at the last frame.
+    pub jog_seen_step: Option<f64>,
+    /// The last tab was closed: the program closes too.
+    pub close_program: bool,
     /// The tabs of open drawings (the shown one is the live fields above), and the number of the recovery file of the shown one.
     pub tabs_state: crate::workspaces::Tabs,
     pub slot: usize,
@@ -295,6 +307,11 @@ impl App {
             status: tr("Ready").into(),
             revision: 0,
             saved_revision: 0,
+            ctl: Default::default(),
+            keyboard_jog: false,
+            pos: Default::default(),
+            jog_seen_step: None,
+            close_program: false,
             tabs_state: Default::default(),
             slot: 0,
             autosaved_revision: 0,
@@ -977,6 +994,7 @@ impl App {
                     self.read_on_connected(c);
                     if !c {
                         self.live_shown = None;
+                        self.pos.forget();
                         self.machine.0 = tr("Disconnected").into();
                         self.fw_warn = None;
                         self.stall = None;
@@ -995,7 +1013,8 @@ impl App {
                 }
                 Evt::Stalled { secs, state } => self.stall = Some((secs, state)),
                 // Pauses are left to the controller here, and the full report is not used.
-                Evt::Report(_) | Evt::Barrier { .. } => {}
+                Evt::Report(r) => self.pos.take(&r),
+                Evt::Barrier { .. } => {}
             }
         }
     }
@@ -1009,6 +1028,11 @@ impl App {
         } else {
             self.esc_time = now;
         }
+    }
+
+    #[cfg(test)]
+    pub fn shortcuts_for_test(&mut self, ctx: &egui::Context) {
+        self.shortcuts(ctx)
     }
 
     fn shortcuts(&mut self, ctx: &egui::Context) {
@@ -1036,13 +1060,19 @@ impl App {
         } else if cmd(Key::G) {
             self.group_selection();
         }
-        if cmd(Key::Num0) {
+        // Ctrl+1 … Ctrl+0 show the tabs, so the two fit commands are Ctrl+Shift+0 and Ctrl+Shift+9.
+        if cmd_shift(Key::Num0) {
             self.ed.view.need_fit = true;
             self.ed.view.auto_fit = true;
         }
-        if cmd(Key::Num9) {
+        if cmd_shift(Key::Num9) {
             self.ed.view.auto_fit = false;
             self.ed.fit_all_req = true;
+        }
+        match base_ui::doc_tabs::shortcut(ctx) {
+            Some(base_ui::doc_tabs::TabKey::Select(i)) => self.switch_to(i),
+            Some(base_ui::doc_tabs::TabKey::Close) => self.close_tab_request(),
+            None => {}
         }
         if cmd(Key::Equals) || cmd(Key::Plus) {
             self.zoom_about_centre(1.5);

@@ -5,6 +5,7 @@ mod check_ui;
 mod cam_test_ui;
 mod clipart_ui;
 mod canvas;
+mod control_glue;
 mod device_ui;
 mod firmware_ui;
 mod focus_ui;
