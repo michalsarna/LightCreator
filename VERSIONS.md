@@ -2,6 +2,15 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.3.6
+
+* **Tabs of open drawings:** *New* opens a new tab (at most 10) instead of replacing the drawing; each tab has its own undo, view and file, a dot marks unsaved work, **Ctrl+1…9** (0 = the last) switch tabs and **Ctrl+W** closes one. Closing the program goes through the tabs one by one and asks about each unsaved one; every tab has its own recovery file; closing the last tab closes the program.
+* **Control tab** like in MillCreator and PenCreator: Home, Unlock, Pause and Resume in a block of 2 × 2 with coloured icons (also in the Device tab), a wide START and a **STOP** that is live only while the machine works, then **Outline** (the laser follows the line that wraps all the shapes, like a rubber band) and **Outline frame** (the box round them) with icons, then the position, the jog buttons, Speed, and the options that were in the Device tab (Start from, Frame power, Live laser position).
+* The bar over the work area keeps the editing controls, the views (Toolpaths, Preview…, Camera view, Overlay), the size of the selection and **Save G-code**.
+* The ring round the active layer colour is no longer cut off; the Generate shape… and Import windows of plugins keep their height instead of growing to the height of the program window.
+* `Fit work area` / `Fit all` moved to **Ctrl+Shift+0** / **Ctrl+Shift+9** (Ctrl+0…9 switch tabs).
+* baseCreator v1.20.1.
+
 ## v0.3.5
 
 * **G-code viewer from the start screen:** the **View G-code file…** button (or a dropped file) opens the viewer straight away, without starting a project; closing it returns to the start screen. The viewer itself is now shared with MillCreator and PenCreator.
