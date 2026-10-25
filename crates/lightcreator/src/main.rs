@@ -46,13 +46,27 @@ pub use base_ui::{camera, camera_stream, fonts, markdown_ui, theme, units_ui};
 const ICON_256: &[u8] = include_bytes!("../../../assets/icons/icon-256.png");
 const ICON_512: &[u8] = include_bytes!("../../../assets/icons/icon-512.png");
 
+// Easter egg: around a holiday the program wears a festive icon (see `base_ui::seasonal`).
+const FESTIVE: base_ui::seasonal::Variants = base_ui::seasonal::Variants {
+    christmas: (include_bytes!("../../../assets/icons/seasonal/christmas-256.png"), include_bytes!("../../../assets/icons/seasonal/christmas-512.png")),
+    new_years_eve: (include_bytes!("../../../assets/icons/seasonal/newyear-256.png"), include_bytes!("../../../assets/icons/seasonal/newyear-512.png")),
+    halloween: (include_bytes!("../../../assets/icons/seasonal/halloween-256.png"), include_bytes!("../../../assets/icons/seasonal/halloween-512.png")),
+    easter: (include_bytes!("../../../assets/icons/seasonal/easter-256.png"), include_bytes!("../../../assets/icons/seasonal/easter-512.png")),
+};
+
+/// The 256 px and 512 px logo of the day; the tests (and so the screenshots) always get the normal one.
+fn app_icon() -> base_ui::seasonal::Icon {
+    let normal = (ICON_256, ICON_512);
+    if cfg!(test) { normal } else { base_ui::seasonal::icon_today(&FESTIVE, normal) }
+}
+
 /// Decode the bundled PNG logo into a texture for the title bar, the start screen and the About window.
 pub fn load_logo(ctx: &eframe::egui::Context) -> Option<eframe::egui::TextureHandle> {
-    base_ui::start::load_logo(ctx, ICON_256, "lightcreator-logo")
+    base_ui::start::load_logo(ctx, app_icon().0, "lightcreator-logo")
 }
 
 fn window_icon() -> Option<eframe::egui::IconData> {
-    base_ui::start::window_icon(ICON_512)
+    base_ui::start::window_icon(app_icon().1)
 }
 
 /// Where this program keeps its data: the settings in its own folder, the gallery shared with the other programs
@@ -85,7 +99,7 @@ fn main() -> eframe::Result {
         opts,
         Box::new(|cc| {
             #[cfg(target_os = "macos")]
-            native_menu::set_dock_icon(ICON_512);
+            native_menu::set_dock_icon(app_icon().1);
             let mut app = app::App::new(cc);
             if let Some(p) = std::env::args().nth(1) {
                 app.open_path(p.into());
@@ -93,4 +107,21 @@ fn main() -> eframe::Result {
             Ok(Box::new(app))
         }),
     )
+}
+
+#[cfg(test)]
+mod festive_icon_tests {
+    use super::*;
+
+    #[test]
+    fn every_festive_icon_decodes_at_its_size() {
+        let v = &FESTIVE;
+        for (name, (small, big)) in [("christmas", v.christmas), ("new year", v.new_years_eve), ("halloween", v.halloween), ("easter", v.easter)] {
+            let small = base_ui::start::window_icon(small).unwrap_or_else(|| panic!("{name} 256 does not decode"));
+            let big = base_ui::start::window_icon(big).unwrap_or_else(|| panic!("{name} 512 does not decode"));
+            assert_eq!((small.width, small.height), (256, 256), "{name}");
+            assert_eq!((big.width, big.height), (512, 512), "{name}");
+        }
+        assert_eq!(app_icon(), (ICON_256, ICON_512), "tests always get the normal icon");
+    }
 }
