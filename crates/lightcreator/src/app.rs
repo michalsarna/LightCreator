@@ -1361,6 +1361,7 @@ impl App {
             ui.separator();
             base_ui::editor::grid_toggles(self, ui);
             ui.separator();
+            self.view_buttons(ui);
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                 if crate::window_ui::save_button(ui, &tr("Save G-code")).clicked() {
                     self.export_gcode();
