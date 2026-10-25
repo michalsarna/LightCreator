@@ -138,7 +138,7 @@
 **Devices and controllers**
 * Start window to choose the device (machine profile) you work with; profiles are remembered.
 * A profile holds the controller (GRBL, Marlin, Ruida, Trocen), laser type (diode or CO2), units, work area,
-  machine zero, S-value max, travel speed, baud rate, serial port, jog step and feed, frame power and the
+  machine zero, S-value max, travel speed, baud rate, the GRBL version (0.7 to 1.1 and newer), serial port, jog step and feed, frame power and the
   camera alignment. The device configuration window is a resizable window with pages: General, Hardware, Laser, G-code, Connection (serial port or TCP) and Camera.
   The Device tab selects a device and shows all its settings.
 * **Axes and limits:** machine zero in any of four corners, inverted axes and panel orientation (one design-to-machine

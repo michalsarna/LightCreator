@@ -1,6 +1,6 @@
 //! Document model: shapes, layers (LightBurn "cuts"), and machine settings.
 use base_core::camimg::{CameraKind, CameraSource};
-pub use base_core::machine::{parse_usb_id, Connection, Controller, LinkKind, Rotary, RotaryKind, RotaryMode, Streaming};
+pub use base_core::machine::{parse_usb_id, Connection, Controller, GrblVersion, LinkKind, Rotary, RotaryKind, RotaryMode, Streaming};
 use base_core::geom::*;
 use base_core::project::Project;
 pub use base_core::scene::{Kind, Scene, Shape};
@@ -952,6 +952,7 @@ impl From<DeviceWire> for Device {
             auto_reconnect: false,
             home_on_connect: false,
             unlock_on_connect: false,
+            grbl_version: Default::default(),
         });
         let mut heads = w.heads.unwrap_or_default();
         if heads.is_empty() {
@@ -993,6 +994,11 @@ impl From<DeviceWire> for Device {
 }
 
 impl Device {
+    /// The controller the link talks to: for GRBL the version chosen on the Connection page, otherwise the device's own.
+    pub fn link_controller(&self) -> Controller {
+        if self.controller == Controller::Grbl { self.connection.grbl_version.controller() } else { self.controller }
+    }
+
     /// Default speed of layer `i` in mm/s.
     pub fn layer_speed_mm_s(&self, i: usize) -> f64 {
         self.layer_speeds.get(i).copied().filter(|v| *v > 0.0).unwrap_or(DEFAULT_LAYER_SPEED_MM_MIN) / 60.0
