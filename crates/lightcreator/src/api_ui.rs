@@ -245,7 +245,7 @@ mod tests {
         assert_eq!(st["device"]["name"], "My laser");
         assert_eq!(st["app"], "LightCreator");
         assert_eq!(st["theme"], a.scheme.id(), "the page starts with the program's scheme");
-        assert_eq!(shared.themes.lock().unwrap().as_array().map(|l| l.len()), Some(crate::theme::Scheme::ALL.len()));
+        assert_eq!(shared.themes.lock().unwrap().as_array().map(|l| l.len()), Some(crate::theme::Scheme::available().len()));
         assert!(shared.svg.lock().unwrap().1.contains("<svg"));
         // Other computers: the server is started again on every interface.
         a.api_lan = true;

@@ -282,7 +282,7 @@ impl App {
         let ports: Vec<String> = port_info.iter().map(|p| p.name.clone()).collect();
         let saved = |k: &str| storage.and_then(|st| st.get_string(k));
         let lang = saved("lang").and_then(|c| Lang::from_code(&c)).unwrap_or(Lang::En);
-        let scheme = saved("scheme").and_then(|c| Scheme::from_id(&c)).unwrap_or(Scheme::LightDark);
+        let scheme = Scheme::from_saved(saved("scheme").as_deref());
         let profiles: Vec<lc_core::Device> = saved("profiles").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
         let active = saved("active_profile").and_then(|v| v.parse::<usize>().ok()).filter(|i| *i < profiles.len()).unwrap_or(0);
         let grid_prefs: crate::prefs::GridPrefs = saved("grid_prefs").and_then(|j| serde_json::from_str(&j).ok()).unwrap_or_default();
