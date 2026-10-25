@@ -2,6 +2,12 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.3.8
+
+* **GRBL versions:** the Connection page of the device has a *GRBL version* choice: 1.1 or newer (the default), 1.0, 0.9, 0.8 or 0.7 or older. The older boards report the position in their own format and have no `$J=` jog (the program jogs with ordinary moves); GRBL 0.7 has no real-time commands (no status, Pause, Home or Unlock) and cuts lines longer than 49 characters. A servo pen lift (`M3 S…`) works with every version.
+* The firmware settings table, the quick guide and the clipart window no longer grow to the height of the screen.
+* baseCreator v1.24.0.
+
 ## v0.3.7
 
 * Small refinements to the look of the program.
