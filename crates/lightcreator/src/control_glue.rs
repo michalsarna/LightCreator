@@ -237,11 +237,11 @@ impl App {
         let ink = if on { theme::text() } else { theme::text_dim() };
         egui::Grid::new("outline_buttons").num_columns(2).show(ui, |ui| {
             let outline = egui::Button::image_and_text(crate::icons::slot(Some("lasso-select"), ink), RichText::new(tr("Outline")).size(15.0)).min_size(egui::vec2(half, 32.0));
-            if ui.add_enabled(on, outline).on_hover_text(tip_outline.clone()).on_disabled_hover_text(tip_outline).clicked() {
+            if ui.add_enabled(on, outline).on_hover_text(tip_outline).on_disabled_hover_text(tip_outline).clicked() {
                 self.frame_with(true);
             }
             let frame = egui::Button::image_and_text(crate::icons::slot(Some("square-dashed"), ink), RichText::new(tr("Outline frame")).size(15.0)).min_size(egui::vec2(half, 32.0));
-            if ui.add_enabled(on, frame).on_hover_text(tip_box.clone()).on_disabled_hover_text(tip_box).clicked() {
+            if ui.add_enabled(on, frame).on_hover_text(tip_box).on_disabled_hover_text(tip_box).clicked() {
                 self.frame_with(false);
             }
             ui.end_row();
