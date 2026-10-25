@@ -183,6 +183,10 @@ impl App {
                 self.abort_job();
             }
             ui.add_space(4.0);
+            // Under START and STOP, like in the other programs: the two ways of tracing the work with the laser at the power of the
+            // frame.
+            self.outline_buttons(ui);
+            ui.add_space(4.0);
             ui.separator();
             ui.add_space(4.0);
             self.sync_jog_settings();
@@ -208,11 +212,7 @@ impl App {
             if let Some(s) = say {
                 self.status = s;
             }
-            // Under the speed: the two ways of tracing the work with the laser at the power of the frame.
-            ui.add_space(6.0);
-            self.outline_buttons(ui);
             self.control_options(ui);
-            self.view_buttons(ui);
             self.control_extras(ui);
         });
     }
@@ -227,52 +227,48 @@ impl App {
         }
     }
 
-    /// Outline and Outline frame, in a row of two: the outline that wraps all the shapes like a rubber band, and the box round
-    /// them (the old Frame button).
+    /// Outline and Outline frame, in a row of two with icons: the outline that wraps all the shapes like a rubber band (always the
+    /// left one), and the box round them (the old Frame button).
     fn outline_buttons(&mut self, ui: &mut egui::Ui) {
         let on = self.connected && !self.job_running();
         let half = ((ui.available_width() - ui.spacing().item_spacing.x) / 2.0).max(60.0);
         let tip_box = if self.connected { tr("Trace the bounding box") } else { tr("Connect to a laser first (Laser panel)") };
         let tip_outline = if self.connected { tr("Trace the outline that wraps all the shapes, like a rubber band.") } else { tr("Connect to a laser first (Laser panel)") };
+        let ink = if on { theme::text() } else { theme::text_dim() };
         egui::Grid::new("outline_buttons").num_columns(2).show(ui, |ui| {
-            let outline = ui.add_enabled(on, egui::Button::new(RichText::new(tr("Outline")).size(15.0)).min_size(egui::vec2(half, 32.0))).on_hover_text(tip_outline).on_disabled_hover_text(tip_outline);
-            if outline.clicked() {
+            let outline = egui::Button::image_and_text(crate::icons::slot(Some("lasso-select"), ink), RichText::new(tr("Outline")).size(15.0)).min_size(egui::vec2(half, 32.0));
+            if ui.add_enabled(on, outline).on_hover_text(tip_outline.clone()).on_disabled_hover_text(tip_outline).clicked() {
                 self.frame_with(true);
             }
-            let frame = ui.add_enabled(on, egui::Button::new(RichText::new(tr("Outline frame")).size(15.0)).min_size(egui::vec2(half, 32.0))).on_hover_text(tip_box).on_disabled_hover_text(tip_box);
-            if frame.clicked() {
+            let frame = egui::Button::image_and_text(crate::icons::slot(Some("square-dashed"), ink), RichText::new(tr("Outline frame")).size(15.0)).min_size(egui::vec2(half, 32.0));
+            if ui.add_enabled(on, frame).on_hover_text(tip_box.clone()).on_disabled_hover_text(tip_box).clicked() {
                 self.frame_with(false);
             }
             ui.end_row();
         });
     }
 
-    /// What was in the bar over the work area and shows or hides something: the toolpaths, the preview window, the camera and its
+    /// What shows or hides something and stands in the bar over the work area: the toolpaths, the preview window, the camera and its
     /// overlay.
-    fn view_buttons(&mut self, ui: &mut egui::Ui) {
+    pub fn view_buttons(&mut self, ui: &mut egui::Ui) {
         use base_ui::widgets::window_toggle;
-        ui.add_space(4.0);
-        ui.separator();
-        ui.add_space(4.0);
-        ui.horizontal_wrapped(|ui| {
-            // Green while the toolpaths are shown, grey otherwise.
-            let on = self.preview_on;
-            let (fill, ink) = if on { (egui::Color32::from_rgb(0x2e, 0xa0, 0x4f), egui::Color32::WHITE) } else { (theme::panel_dark(), theme::text_dim()) };
-            let btn = egui::Button::image_and_text(crate::icons::slot(Some("route"), ink), RichText::new(tr("Toolpaths")).color(ink)).fill(fill);
-            if ui.add(btn).on_hover_text(tr("Show the toolpaths on the work area")).clicked() {
-                self.preview_on = !self.preview_on;
-            }
-            if window_toggle(ui, &tr("Preview…"), &tr("Open the preview window"), self.show_preview, true) {
-                self.show_preview = !self.show_preview;
-            }
-            if self.doc.device.stream_url().is_some() && window_toggle(ui, &tr("Camera view"), &tr("Show the live camera picture of this machine"), self.show_stream, true) {
-                self.show_stream = !self.show_stream;
-            }
-            let (overlay_on, can_overlay) = self.overlay_state();
-            if window_toggle(ui, &tr("Overlay"), &tr("Show or hide the camera overlay on the work area"), overlay_on, can_overlay) {
-                self.toggle_overlay_button();
-            }
-        });
+        // Green while the toolpaths are shown, grey otherwise.
+        let on = self.preview_on;
+        let (fill, ink) = if on { (egui::Color32::from_rgb(0x2e, 0xa0, 0x4f), egui::Color32::WHITE) } else { (theme::panel_dark(), theme::text_dim()) };
+        let btn = egui::Button::image_and_text(crate::icons::slot(Some("route"), ink), RichText::new(tr("Toolpaths")).color(ink)).fill(fill);
+        if ui.add(btn).on_hover_text(tr("Show the toolpaths on the work area")).clicked() {
+            self.preview_on = !self.preview_on;
+        }
+        if window_toggle(ui, &tr("Preview…"), &tr("Open the preview window"), self.show_preview, true) {
+            self.show_preview = !self.show_preview;
+        }
+        if self.doc.device.stream_url().is_some() && window_toggle(ui, &tr("Camera view"), &tr("Show the live camera picture of this machine"), self.show_stream, true) {
+            self.show_stream = !self.show_stream;
+        }
+        let (overlay_on, can_overlay) = self.overlay_state();
+        if window_toggle(ui, &tr("Overlay"), &tr("Show or hide the camera overlay on the work area"), overlay_on, can_overlay) {
+            self.toggle_overlay_button();
+        }
     }
 
     /// What of the device belongs to framing and to where a job starts: they were in the Device tab. (The step and the speed
@@ -456,7 +452,7 @@ mod tests {
     }
 
     #[test]
-    fn the_bar_over_the_work_area_keeps_only_save_g_code_and_the_buttons_are_in_the_control_tab() {
+    fn the_bar_keeps_the_views_and_save_g_code_and_the_job_buttons_are_in_the_control_tab() {
         let mut h = Harness::builder().with_accessibility_check(false).with_size([1280.0, 1000.0]).build_ui_state(
             |ui, state: &mut Option<App>| {
                 let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
@@ -474,17 +470,22 @@ mod tests {
         }
         h.run_steps(4);
         assert!(h.query_by_label("Save G-code").is_some());
-        for gone in ["Toolpaths", "Preview…", "Overlay", "Frame", "START", "Start"] {
-            assert!(h.query_by_label(gone).is_none(), "{gone} left the bar");
+        // The views are in the bar, whatever tab is shown; the buttons of the job are only in the Control tab.
+        for view in ["Toolpaths", "Preview…", "Overlay"] {
+            assert!(h.query_by_label(view).is_some(), "{view} stays in the bar");
+        }
+        for gone in ["Outline", "Outline frame", "Frame", "START", "Start"] {
+            assert!(h.query_by_label(gone).is_none(), "{gone} is only in the Control tab");
         }
         h.state_mut().as_mut().unwrap().side_tab = SideTab::Control;
         h.run_steps(4);
-        for here in ["Toolpaths", "Preview…", "Overlay", "Outline", "Outline frame"] {
-            assert!(h.query_by_label(here).is_some(), "{here} is in the Control tab");
+        for view in ["Toolpaths", "Preview…", "Overlay"] {
+            assert_eq!(h.query_all_by_label(view).count(), 1, "{view} is in the bar only");
         }
         let y = |h: &Harness<'static, Option<App>>, l: &str| h.get_by_label(l).rect().top();
         assert_eq!(y(&h, "Outline"), y(&h, "Outline frame"), "a row of two");
-        assert!(y(&h, "Speed") < y(&h, "Outline"), "under the speed");
+        assert!(h.get_by_label("Outline").rect().left() < h.get_by_label("Outline frame").rect().left(), "Outline is on the left");
+        assert!(y(&h, "STOP") < y(&h, "Outline") && y(&h, "Outline frame") < y(&h, "Position"), "under START and STOP, like in the other programs");
     }
 
     #[test]

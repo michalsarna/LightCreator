@@ -49,11 +49,9 @@
 * **Layer description:** a short free text (up to 500 characters) saying what a layer is for; shown in the tip of the layer in the list and in the layer bar, saved with the project and with the layer settings of a material.
 * **Layer cut options:** kerf offset, perforation (cut / skip lengths) and automatic tabs / bridges for line layers, saved with the layer and the project; a layer of images is always in the Image mode (mode fixed, the rest editable) and images have a scan angle. Not implemented: sub-layers and hand-placed tabs.
 * **Control bar:** name of the current tool in a box of fixed width, New / Open / Save icons, switches for the grid,
-  the secondary grid, snapping to the grid and snapping to other objects (while moving, edges and centres join with a guide line) (icons, highlighted while on), then on the right the size of the selection and **Save G-code**. The buttons that were in
-  the bar (Toolpaths, Preview…, Camera view, Overlay, START, Frame, Focus, Home) are in the Control tab: START under the four
-  quick buttons, **Outline** and **Outline frame** in a row of two under the speed (Outline traces the line that wraps all the
-  shapes like a rubber band, Outline frame the box round them, both at the power of the frame), and the view buttons at the
-  bottom (Toolpaths is green while the toolpaths are shown and grey otherwise). Toolpaths are drawn in layer colours darkened or lightened until they stand out from
+  the secondary grid, snapping to the grid and snapping to other objects (while moving, edges and centres join with a guide line) (icons, highlighted while on), then on the right the size of the selection and **Save G-code**; the view buttons (Toolpaths, green while the toolpaths are shown and grey otherwise, Preview…, Camera view, Overlay) stand in the bar after the switches. START, Frame, Focus and Home are in the Control tab: START under the four
+  quick buttons, and under STOP **Outline** (always the left one) and **Outline frame** with icons, in a row of two (Outline traces the line that wraps all the
+  shapes like a rubber band, Outline frame the box round them, both at the power of the frame). Toolpaths are drawn in layer colours darkened or lightened until they stand out from
   the work area.
 * **Tool bar groups:** selecting and node editing, then the tools that insert new objects (shapes, line,
   polyline, text), then the shape operations (union, intersection, subtract, exclusive or) and finally view
