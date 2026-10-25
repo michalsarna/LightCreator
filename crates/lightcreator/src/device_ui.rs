@@ -731,6 +731,17 @@ impl App {
                                         }
                                     });
                                     ui.end_row();
+                                    if d.controller == Controller::Grbl {
+                                        ui.label(tr("GRBL version"));
+                                        egui::ComboBox::from_id_salt("grbl_dialect").selected_text(tr(d.connection.grbl_version.label())).show_ui(ui, |ui| {
+                                            for k in lc_core::GrblVersion::ALL {
+                                                ui.selectable_value(&mut d.connection.grbl_version, k, tr(k.label()));
+                                            }
+                                        })
+                                        .response
+                                        .on_hover_text(tr("Older GRBL (0.9) reports positions in another format and has no jog command: the program moves the head with ordinary moves instead."));
+                                        ui.end_row();
+                                    }
                                     ui.label(tr("Streaming"));
                                     egui::ComboBox::from_id_salt("streaming").selected_text(tr(d.connection.streaming.label())).show_ui(ui, |ui| {
                                         for m in lc_core::Streaming::ALL {
@@ -1290,7 +1301,7 @@ impl App {
     pub fn connect_now(&mut self) {
         let dev = self.doc.device.clone();
         if let Some(target) = crate::laser::target_of(&dev) {
-            self.link.send(Cmd::Connect { target, controller: dev.controller, streaming: dev.connection.streaming });
+            self.link.send(Cmd::Connect { target, controller: dev.link_controller(), streaming: dev.connection.streaming });
         }
     }
 
@@ -1539,7 +1550,7 @@ impl App {
                 if ui.add_enabled(dev.has_target(), green).clicked() {
                     if let Some(target) = crate::laser::target_of(&dev) {
                         self.want_link = true;
-                        self.link.send(Cmd::Connect { target, controller: ctrl, streaming: self.doc.device.connection.streaming });
+                        self.link.send(Cmd::Connect { target, controller: dev.link_controller(), streaming: self.doc.device.connection.streaming });
                     }
                 }
             }
@@ -1568,7 +1579,7 @@ impl App {
         } else {
             st.waiting_connect = true;
             match crate::laser::target_of(draft) {
-                Some(target) => self.link.send(Cmd::Connect { target, controller: c, streaming: draft.connection.streaming }),
+                Some(target) => self.link.send(Cmd::Connect { target, controller: draft.link_controller(), streaming: draft.connection.streaming }),
                 None => return,
             }
         }
