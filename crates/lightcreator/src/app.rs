@@ -382,7 +382,7 @@ impl App {
             ser2net: None,
             print: None,
             cam_test: None,
-            stream_mode: crate::stream_ui::StreamMode::Floating,
+            stream_mode: crate::stream_ui::StreamMode::Tab,
             tab_seen: false,
             stream_rot: 0,
             stream_zoom: 1.0,

@@ -65,11 +65,14 @@ impl App {
         let mut todo: Option<Do> = None;
         let mut open = true;
         crate::window_ui::popup(ctx, "materials_window", &tr("Materials"), [820.0, 560.0], &mut open, |ui| {
+            // Both columns fill the window: the lists take the height that is left, what stands under them stays at the foot.
+            let total = base_ui::window::fill_size(ui).y;
             ui.horizontal_top(|ui| {
                 // The list of materials and what can be done with them.
                 let left = ui.vertical(|ui| {
                     ui.set_width(230.0);
-                    egui::ScrollArea::vertical().id_salt("materials_list").max_height(300.0).auto_shrink([false, false]).show(ui, |ui| {
+                    let list_h = base_ui::window::height_above(ui, "materials_left", total);
+                    egui::ScrollArea::vertical().id_salt("materials_list").max_height(list_h).min_scrolled_height(list_h).auto_shrink([false, false]).show(ui, |ui| {
                         for (i, (name, colour)) in names.iter().enumerate() {
                             ui.horizontal(|ui| {
                                 let (r, _) = ui.allocate_exact_size(egui::vec2(12.0, 12.0), egui::Sense::hover());
@@ -83,41 +86,43 @@ impl App {
                             });
                         }
                     });
-                    ui.add_space(4.0);
-                    let icon = |name: &str| crate::icons::slot(Some(name), theme::text());
-                    ui.horizontal_wrapped(|ui| {
-                        if ui.add(egui::Button::image(icon("plus"))).on_hover_text(tr("New, empty material")).clicked() {
-                            todo = Some(Do::New);
-                        }
-                        if ui.add(egui::Button::image(icon("copy"))).on_hover_text(tr("Duplicate")).clicked() {
-                            todo = Some(Do::Duplicate);
-                        }
-                        if ui.add_enabled(dlg.sel > 0, egui::Button::image(icon("chevron-up"))).on_hover_text(tr("Up")).clicked() {
-                            todo = Some(Do::Move(true));
-                        }
-                        if ui.add_enabled(dlg.sel + 1 < n, egui::Button::image(icon("chevron-down"))).on_hover_text(tr("Down")).clicked() {
-                            todo = Some(Do::Move(false));
-                        }
-                        if ui.add_enabled_ui(n > 1, |ui| crate::window_ui::delete_icon(ui, &tr("Delete this material"))).inner.clicked() {
-                            todo = Some(Do::Delete);
+                    base_ui::window::bottom(ui, "materials_left", |ui| {
+                        ui.add_space(4.0);
+                        let icon = |name: &str| crate::icons::slot(Some(name), theme::text());
+                        ui.horizontal_wrapped(|ui| {
+                            if ui.add(egui::Button::image(icon("plus"))).on_hover_text(tr("New, empty material")).clicked() {
+                                todo = Some(Do::New);
+                            }
+                            if ui.add(egui::Button::image(icon("copy"))).on_hover_text(tr("Duplicate")).clicked() {
+                                todo = Some(Do::Duplicate);
+                            }
+                            if ui.add_enabled(dlg.sel > 0, egui::Button::image(icon("chevron-up"))).on_hover_text(tr("Up")).clicked() {
+                                todo = Some(Do::Move(true));
+                            }
+                            if ui.add_enabled(dlg.sel + 1 < n, egui::Button::image(icon("chevron-down"))).on_hover_text(tr("Down")).clicked() {
+                                todo = Some(Do::Move(false));
+                            }
+                            if ui.add_enabled_ui(n > 1, |ui| crate::window_ui::delete_icon(ui, &tr("Delete this material"))).inner.clicked() {
+                                todo = Some(Do::Delete);
+                            }
+                        });
+                        ui.separator();
+                        ui.horizontal_wrapped(|ui| {
+                            if ui.button(tr("Export…")).clicked() {
+                                todo = Some(Do::Export(false));
+                            }
+                            if ui.button(tr("Export all…")).clicked() {
+                                todo = Some(Do::Export(true));
+                            }
+                            if ui.button(tr("Import…")).clicked() {
+                                todo = Some(Do::Import);
+                            }
+                        });
+                        ui.checkbox(&mut dlg.replace, tr("Replace materials that have the same name"));
+                        if !dlg.message.is_empty() {
+                            ui.label(RichText::new(&dlg.message).color(theme::text_dim()));
                         }
                     });
-                    ui.separator();
-                    ui.horizontal_wrapped(|ui| {
-                        if ui.button(tr("Export…")).clicked() {
-                            todo = Some(Do::Export(false));
-                        }
-                        if ui.button(tr("Export all…")).clicked() {
-                            todo = Some(Do::Export(true));
-                        }
-                        if ui.button(tr("Import…")).clicked() {
-                            todo = Some(Do::Import);
-                        }
-                    });
-                    ui.checkbox(&mut dlg.replace, tr("Replace materials that have the same name"));
-                    if !dlg.message.is_empty() {
-                        ui.label(RichText::new(&dlg.message).color(theme::text_dim()));
-                    }
                 });
                 // A line as tall as the list: a separator would take all the height the window offers and the window would grow.
                 let (line, _) = ui.allocate_exact_size(egui::vec2(8.0, left.response.rect.height()), egui::Sense::hover());
@@ -145,7 +150,9 @@ impl App {
                     });
                     ui.add_space(6.0);
                     ui.label(RichText::new(tr("Layers")).strong());
-                    egui::ScrollArea::vertical().id_salt("materials_layers").max_height(340.0).auto_shrink([false, false]).show(ui, |ui| {
+                    let used = ui.min_rect().height() + ui.spacing().item_spacing.y;
+                    let layers_h = base_ui::window::height_above(ui, "materials_right", total - used);
+                    egui::ScrollArea::vertical().id_salt("materials_layers").max_height(layers_h).min_scrolled_height(layers_h).auto_shrink([false, false]).show(ui, |ui| {
                         if edited.layers.is_empty() {
                             ui.label(RichText::new(tr("This material has no layers yet. Add one below.")).color(theme::text_dim()));
                         }
@@ -160,21 +167,23 @@ impl App {
                             });
                         }
                     });
-                    ui.add_space(4.0);
-                    ui.horizontal(|ui| {
-                        let free: Vec<usize> = (0..lc_core::LAYER_COUNT).filter(|i| edited.layer(*i).is_none()).collect();
-                        if !free.contains(&dlg.add_index) {
-                            dlg.add_index = free.first().copied().unwrap_or(0);
-                        }
-                        let shown = free.iter().find(|i| **i == dlg.add_index).map(|i| format!("C{i:02}")).unwrap_or_default();
-                        egui::ComboBox::from_id_salt("mat_add_layer").width(90.0).selected_text(shown).show_ui(ui, |ui| {
-                            for i in &free {
-                                ui.selectable_value(&mut dlg.add_index, *i, format!("C{i:02}"));
+                    base_ui::window::bottom(ui, "materials_right", |ui| {
+                        ui.add_space(4.0);
+                        ui.horizontal(|ui| {
+                            let free: Vec<usize> = (0..lc_core::LAYER_COUNT).filter(|i| edited.layer(*i).is_none()).collect();
+                            if !free.contains(&dlg.add_index) {
+                                dlg.add_index = free.first().copied().unwrap_or(0);
+                            }
+                            let shown = free.iter().find(|i| **i == dlg.add_index).map(|i| format!("C{i:02}")).unwrap_or_default();
+                            egui::ComboBox::from_id_salt("mat_add_layer").width(90.0).selected_text(shown).show_ui(ui, |ui| {
+                                for i in &free {
+                                    ui.selectable_value(&mut dlg.add_index, *i, format!("C{i:02}"));
+                                }
+                            });
+                            if ui.add_enabled(!free.is_empty(), egui::Button::new(tr("Add layer"))).clicked() {
+                                todo = Some(Do::AddLayer(dlg.add_index));
                             }
                         });
-                        if ui.add_enabled(!free.is_empty(), egui::Button::new(tr("Add layer"))).clicked() {
-                            todo = Some(Do::AddLayer(dlg.add_index));
-                        }
                     });
                 });
             });

@@ -385,782 +385,779 @@ impl App {
         let mut cfg_head = cfg.head;
         let mut maint_reset: Option<usize> = None;
         let mut test_cam: Option<lc_core::CameraSource> = None;
-        crate::window_ui::popup(ctx, "device_cfg", &title, [720.0, 500.0], &mut cfg_open, |ui| {
+        crate::window_ui::popup(ctx, "device_cfg", &title, [760.0, 560.0], &mut cfg_open, |ui| {
             if must_create {
                 ui.label(RichText::new(tr("Create at least one device profile to continue.")).color(theme::text_dim()));
                 ui.add_space(4.0);
             }
-            let body_h = (ui.ctx().content_rect().height() - 230.0).clamp(200.0, 440.0);
             let pages = CfgPage::visible(cfg.draft.controller);
             let mut page = if pages.contains(&cfg.page) { cfg.page } else { CfgPage::General };
             let d = &mut cfg.draft;
-            ui.horizontal_top(|ui| {
-                ui.vertical(|ui| {
-                    ui.set_width(120.0);
-                    for p in &pages {
-                        if ui.selectable_label(page == *p, tr(p.label())).clicked() {
-                            page = *p;
+            ui.horizontal_wrapped(|ui| {
+                for p in &pages {
+                    if ui.add(egui::Button::selectable(page == *p, RichText::new(tr(p.label())).strong())).clicked() {
+                        page = *p;
+                    }
+                }
+            });
+            ui.separator();
+            // The page fills the window down to the buttons, which stay at its foot.
+            let body_h = base_ui::window::height_above(ui, "device_cfg", base_ui::window::fill_size(ui).y);
+            egui::ScrollArea::vertical().id_salt("device_page").max_height(body_h).min_scrolled_height(body_h).auto_shrink([false, false]).show(ui, |ui| {
+                let (u, su) = (d.units, d.speed_unit);
+                match page {
+                    CfgPage::General => {
+                        egui::Grid::new("dev_general").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                            ui.label(tr("Name"));
+                            ui.add(egui::TextEdit::singleline(&mut d.name).hint_text(tr("e.g. My diode laser")));
+                            ui.end_row();
+                            ui.label(tr("Controller"));
+                            egui::ComboBox::from_id_salt("controller").selected_text(d.controller.label()).show_ui(ui, |ui| {
+                                for c in Controller::ALL {
+                                    ui.selectable_value(&mut d.controller, c, c.label());
+                                }
+                            });
+                            ui.end_row();
+                            ui.label(tr("Units"));
+                            egui::ComboBox::from_id_salt("units").selected_text(tr(d.units.label())).show_ui(ui, |ui| {
+                                for u in Units::ALL {
+                                    ui.selectable_value(&mut d.units, u, tr(u.label()));
+                                }
+                            });
+                            ui.end_row();
+                            ui.label(tr("Speed units"));
+                            egui::ComboBox::from_id_salt("speed_units").selected_text(tr(d.speed_unit.label())).show_ui(ui, |ui| {
+                                for k in SpeedUnit::ALL {
+                                    ui.selectable_value(&mut d.speed_unit, k, tr(k.label()));
+                                }
+                            });
+                            ui.end_row();
+                            ui.label(tr("Travel speed"));
+                            drag_speed(ui, u, su, true, &mut d.speeds.travel_speed, 50.0, Some((100.0, 60000.0)));
+                            ui.end_row();
+                            ui.label(tr("Max cutting speed"));
+                            drag_speed(ui, u, su, true, &mut d.speeds.max_cut_speed, 50.0, Some((0.0, 60000.0))).on_hover_text(tr("0 = no limit. Layers faster than this get a warning before the job; the time estimate uses at most this speed."));
+                            ui.end_row();
+                            ui.label(tr("Acceleration"));
+                            ui.add(egui::DragValue::new(&mut d.speeds.acceleration).range(0.0..=100000.0).suffix(" mm/s²")).on_hover_text(tr("0 = not known. With a value the time estimate includes the start and stop ramps and the layer panel suggests an overscan."));
+                            ui.end_row();
+                            ui.label(tr("Jog step"));
+                            drag_len(ui, u, &mut d.jog_step, 0.1, Some((0.1, 200.0)));
+                            ui.end_row();
+                            ui.label(tr("Jog feed"));
+                            drag_speed(ui, u, su, true, &mut d.jog_feed, 10.0, Some((10.0, 20000.0)));
+                            ui.end_row();
+                        });
+                    }
+                    CfgPage::Hardware => {
+                        egui::Grid::new("dev_hardware").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                            ui.label(tr("Work area X"));
+                            drag_len(ui, u, &mut d.area.bed_w, 1.0, Some((10.0, 5000.0)));
+                            ui.end_row();
+                            ui.label(tr("Work area Y"));
+                            drag_len(ui, u, &mut d.area.bed_h, 1.0, Some((10.0, 5000.0)));
+                            ui.end_row();
+                            ui.label(tr("Margins"));
+                            ui.vertical(|ui| {
+                                for (name, v) in [("Left", &mut d.area.margins.left), ("Top", &mut d.area.margins.top), ("Right", &mut d.area.margins.right), ("Bottom", &mut d.area.margins.bottom)] {
+                                    ui.horizontal(|ui| {
+                                        ui.label(tr(name));
+                                        drag_len(ui, u, v, 0.5, Some((0.0, 500.0)));
+                                    });
+                                }
+                            })
+                            .response
+                            .on_hover_text(tr("Strips along the edges of the work area that the machine cannot use (clamps, frame); nothing may be placed or moved there"));
+                            ui.end_row();
+                            ui.label(tr("Software limits"));
+                            ui.vertical(|ui| {
+                                let mut on = d.area.soft_limits.is_some();
+                                if ui.checkbox(&mut on, tr("Own limits")).changed() {
+                                    d.area.soft_limits = if on { Some(lc_core::SoftLimits { x0: 0.0, y0: 0.0, x1: d.work_size().0, y1: d.work_size().1 }) } else { None };
+                                }
+                                if let Some(l) = &mut d.area.soft_limits {
+                                    for (name, v) in [("Left", &mut l.x0), ("Top", &mut l.y0), ("Right", &mut l.x1), ("Bottom", &mut l.y1)] {
+                                        ui.horizontal(|ui| {
+                                            ui.label(tr(name));
+                                            drag_len(ui, u, v, 0.5, Some((0.0, 5000.0)));
+                                        });
+                                    }
+                                }
+                            });
+                            ui.end_row();
+                            ui.label(tr("Z axis"));
+                            ui.vertical(|ui| {
+                                ui.checkbox(&mut d.axes.has_z, tr("The machine has a Z axis"));
+                                if d.axes.has_z {
+                                    ui.horizontal(|ui| {
+                                        ui.label(tr("Travel"));
+                                        ui.add(egui::DragValue::new(&mut d.axes.z_min).speed(0.5).suffix(" mm"));
+                                        ui.label("–");
+                                        ui.add(egui::DragValue::new(&mut d.axes.z_max).speed(0.5).suffix(" mm"));
+                                    });
+                                    ui.checkbox(&mut d.axes.flip_z, tr("Up is the negative Z direction"));
+                                }
+                            });
+                            ui.end_row();
+                            ui.label(tr("Machine zero (0,0)"));
+                            egui::ComboBox::from_id_salt("origin").selected_text(tr(d.axes.origin.label())).show_ui(ui, |ui| {
+                                for o in Origin::ALL {
+                                    ui.selectable_value(&mut d.axes.origin, o, tr(o.label()));
+                                }
+                            });
+                            ui.end_row();
+                            ui.label(tr("Invert axes"));
+                            ui.horizontal(|ui| {
+                                ui.checkbox(&mut d.axes.flip_x, "X");
+                                ui.checkbox(&mut d.axes.flip_y, "Y");
+                            });
+                            ui.end_row();
+                            ui.label(tr("Panel orientation"));
+                            egui::ComboBox::from_id_salt("orientation").selected_text(tr(d.axes.orientation.label())).show_ui(ui, |ui| {
+                                for o in Orientation::ALL {
+                                    ui.selectable_value(&mut d.axes.orientation, o, tr(o.label()));
+                                }
+                            });
+                            ui.end_row();
+                        });
+                    }
+                    CfgPage::Laser => {
+                        let mut head = cfg_head.min(d.heads.len() - 1);
+                        ui.horizontal_wrapped(|ui| {
+                            for (i, h) in d.heads.iter().enumerate() {
+                                let name = if h.name.trim().is_empty() { trf("Head {}", &[&(i + 1)]) } else { h.name.clone() };
+                                let (r, _) = ui.allocate_exact_size(egui::vec2(10.0, 10.0), egui::Sense::hover());
+                                ui.painter().rect_filled(r, 2.0, Color32::from_rgb(h.colour[0], h.colour[1], h.colour[2]));
+                                if ui.selectable_label(head == i, name).clicked() {
+                                    head = i;
+                                }
+                            }
+                            if ui.small_button("+").on_hover_text(tr("Add a laser head")).clicked() {
+                                let tool = d.heads.iter().map(|h| h.tool).max().unwrap_or(0) + 1;
+                                let mut h = d.heads[head].clone();
+                                h.name = String::new();
+                                h.tool = tool;
+                                d.heads.push(h);
+                                head = d.heads.len() - 1;
+                            }
+                            if ui.add_enabled_ui(d.heads.len() > 1, |ui| crate::window_ui::delete_icon(ui, &tr("Remove this laser head"))).inner.clicked() {
+                                d.heads.remove(head);
+                                head = head.saturating_sub(1).min(d.heads.len() - 1);
+                            }
+                        });
+                        ui.add_space(4.0);
+                        let multi = d.heads.len() > 1;
+                        let h = &mut d.heads[head];
+                        egui::Grid::new("dev_laser").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                            ui.label(tr("Name"));
+                            ui.add(egui::TextEdit::singleline(&mut h.name).hint_text(tr("e.g. Blue diode")));
+                            ui.end_row();
+                            if multi {
+                                ui.label(tr("Tool number (T)"));
+                                ui.add(egui::DragValue::new(&mut h.tool).range(0..=99)).on_hover_text(tr("The number the controller knows this head by; it is written as T<n> when a layer uses another head. It must match the mapping in the controller."));
+                                ui.end_row();
+                            }
+                            ui.label(tr("Colour"));
+                            ui.color_edit_button_srgb(&mut h.colour);
+                            ui.end_row();
+                            ui.label(tr("Laser type"));
+                            egui::ComboBox::from_id_salt("laser_kind").selected_text(h.laser.label()).show_ui(ui, |ui| {
+                                for k in LaserKind::ALL {
+                                    ui.selectable_value(&mut h.laser, k, k.label());
+                                }
+                            });
+                            ui.end_row();
+                            ui.label(tr("Wavelength"));
+                            ui.add(egui::DragValue::new(&mut h.wavelength_nm).range(0..=20000).suffix(" nm")).on_hover_text(trf("0 = the usual one ({} nm)", &[&h.laser.default_wavelength()]));
+                            ui.end_row();
+                            ui.label(tr("Optical power"));
+                            ui.add(egui::DragValue::new(&mut h.optical_power_w).range(0.0..=1000.0).suffix(" W")).on_hover_text(trf("0 = a typical one ({} W)", &[&h.laser.default_power()]));
+                            ui.end_row();
+                            ui.label(tr("S-value max ($30)"));
+                            ui.add(egui::DragValue::new(&mut h.s_max).range(1.0..=100000.0));
+                            ui.end_row();
+                            ui.label(tr("Frame power"));
+                            ui.add(egui::DragValue::new(&mut h.frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
+                            ui.end_row();
+                            ui.label(tr("Frame speed"));
+                            drag_speed(ui, u, su, false, &mut h.frame_speed, 0.5, Some((1.0, 1000.0)));
+                            ui.end_row();
+                            ui.label(tr("Focus power"));
+                            ui.add(egui::DragValue::new(&mut h.focus_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("A weak steady beam to set the height by (focus mode). 0 = no focus mode."));
+                            ui.end_row();
+                            ui.label(tr("Beam spot"));
+                            ui.horizontal(|ui| {
+                                drag_len(ui, u, &mut h.spot_x, 0.005, Some((0.0, 5.0)));
+                                ui.label("×");
+                                drag_len(ui, u, &mut h.spot_y, 0.005, Some((0.0, 5.0)));
+                            })
+                            .response
+                            .on_hover_text(tr("Size of the beam on the material (0 = not known). A fill interval below it makes neighbouring lines overlap."));
+                            ui.end_row();
+                            ui.label(tr("Pointer offset"));
+                            ui.horizontal(|ui| {
+                                drag_len(ui, u, &mut h.pointer_dx, 0.1, Some((-200.0, 200.0)));
+                                ui.label("×");
+                                drag_len(ui, u, &mut h.pointer_dy, 0.1, Some((-200.0, 200.0)));
+                            })
+                            .response
+                            .on_hover_text(tr("Where the red pointer dot is relative to the beam (x right, y down). Used by the pointer alignment in the Device tab."));
+                            ui.end_row();
+                            if h.laser.has_pwm() {
+                                ui.label(tr("PWM frequency"));
+                                ui.add(egui::DragValue::new(&mut h.pwm_freq_hz).range(0.0..=1_000_000.0).suffix(" Hz"));
+                                ui.end_row();
+                                ui.label(tr("PWM maximum frequency"));
+                                ui.add(egui::DragValue::new(&mut h.pwm_max_freq_hz).range(0.0..=1_000_000.0).suffix(" Hz"));
+                                ui.end_row();
+                                ui.label(tr("Pulse width"));
+                                ui.add(egui::DragValue::new(&mut h.pulse_width_us).range(0.0..=100_000.0).suffix(" µs"));
+                                ui.end_row();
+                                ui.label(tr("Pulse width range"));
+                                ui.horizontal(|ui| {
+                                    ui.add(egui::DragValue::new(&mut h.pulse_min_us).range(0.0..=100_000.0).suffix(" µs"));
+                                    ui.label("–");
+                                    ui.add(egui::DragValue::new(&mut h.pulse_max_us).range(0.0..=100_000.0).suffix(" µs"));
+                                });
+                                ui.end_row();
+                            }
+                        });
+                        if h.laser.has_pwm() {
+                            ui.label(RichText::new(tr("The PWM values are kept with the profile and offered as variables for macros; they are not sent to the controller.")).color(theme::text_dim()));
+                        }
+                        cfg_head = head;
+                    }
+                    CfgPage::Gcode => {
+                        egui::Grid::new("dev_gcode").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                            ui.label(tr("G-code dialect"));
+                            let shown = d.gcode.dialect.map(|x| x.label()).unwrap_or("");
+                            egui::ComboBox::from_id_salt("dialect").selected_text(if d.gcode.dialect.is_none() { tr("Automatic (from the controller)") } else { shown.into() }).show_ui(ui, |ui| {
+                                ui.selectable_value(&mut d.gcode.dialect, None, tr("Automatic (from the controller)"));
+                                for x in lc_core::Dialect::ALL {
+                                    ui.selectable_value(&mut d.gcode.dialect, Some(x), x.label());
+                                }
+                            });
+                            ui.end_row();
+                            ui.label(tr("Dynamic power (M4)"));
+                            ui.add_enabled(d.gcode.dialect.is_none(), egui::Checkbox::without_text(&mut d.gcode.dynamic_power)).on_hover_text(tr("Used when the dialect is automatic; a chosen GRBL dialect decides between M3 and M4 itself."));
+                            ui.end_row();
+                            ui.label(tr("Return to origin"));
+                            ui.checkbox(&mut d.gcode.return_home, "");
+                            ui.end_row();
+                            ui.label(tr("Arcs (G2 / G3)"));
+                            ui.checkbox(&mut d.gcode.arcs, tr("Write curves as arcs where they fit"));
+                            ui.end_row();
+                            ui.label(tr("Arc tolerance"));
+                            drag_len(ui, u, &mut d.gcode.arc_tolerance, 0.001, Some((0.001, 1.0)));
+                            ui.end_row();
+                            ui.label(tr("Curve tolerance"));
+                            drag_len(ui, u, &mut d.gcode.flatten_tolerance, 0.005, Some((0.005, 1.0))).on_hover_text(tr("How far a flattened curve (Bézier, text) may stray from the true curve."));
+                            ui.end_row();
+                        });
+                        if d.gcode.arcs {
+                            ui.add_space(6.0);
+                            ui.label(RichText::new(tr("Arcs: GRBL usually handles G2 / G3, Marlin only when built with ARC_SUPPORT, and Smoothieware has its own behaviour. Some controllers ignore arcs or run them wrongly: test with the laser off. Arcs are used for outlines and rings, not for scan lines or images.")).color(Color32::from_rgb(0xe8, 0x8a, 0x1f)));
+                        }
+                        if d.dialect() == lc_core::Dialect::Smoothieware {
+                            ui.add_space(6.0);
+                            ui.label(RichText::new(tr("Smoothieware: S is written as a fraction of the full power (set S-value max to 1). Streaming works like GRBL's; none of this has been tried on real hardware.")).color(theme::text_dim()));
                         }
                     }
-                });
-                ui.add_space(10.0);
-                ui.vertical(|ui| {
-                    egui::ScrollArea::vertical().max_height(body_h).auto_shrink([false, false]).show(ui, |ui| {
-                        let (u, su) = (d.units, d.speed_unit);
-                        match page {
-                            CfgPage::General => {
-                                egui::Grid::new("dev_general").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
-                                    ui.label(tr("Name"));
-                                    ui.add(egui::TextEdit::singleline(&mut d.name).hint_text(tr("e.g. My diode laser")));
-                                    ui.end_row();
-                                    ui.label(tr("Controller"));
-                                    egui::ComboBox::from_id_salt("controller").selected_text(d.controller.label()).show_ui(ui, |ui| {
-                                        for c in Controller::ALL {
-                                            ui.selectable_value(&mut d.controller, c, c.label());
-                                        }
-                                    });
-                                    ui.end_row();
-                                    ui.label(tr("Units"));
-                                    egui::ComboBox::from_id_salt("units").selected_text(tr(d.units.label())).show_ui(ui, |ui| {
-                                        for u in Units::ALL {
-                                            ui.selectable_value(&mut d.units, u, tr(u.label()));
-                                        }
-                                    });
-                                    ui.end_row();
-                                    ui.label(tr("Speed units"));
-                                    egui::ComboBox::from_id_salt("speed_units").selected_text(tr(d.speed_unit.label())).show_ui(ui, |ui| {
-                                        for k in SpeedUnit::ALL {
-                                            ui.selectable_value(&mut d.speed_unit, k, tr(k.label()));
-                                        }
-                                    });
-                                    ui.end_row();
-                                    ui.label(tr("Travel speed"));
-                                    drag_speed(ui, u, su, true, &mut d.speeds.travel_speed, 50.0, Some((100.0, 60000.0)));
-                                    ui.end_row();
-                                    ui.label(tr("Max cutting speed"));
-                                    drag_speed(ui, u, su, true, &mut d.speeds.max_cut_speed, 50.0, Some((0.0, 60000.0))).on_hover_text(tr("0 = no limit. Layers faster than this get a warning before the job; the time estimate uses at most this speed."));
-                                    ui.end_row();
-                                    ui.label(tr("Acceleration"));
-                                    ui.add(egui::DragValue::new(&mut d.speeds.acceleration).range(0.0..=100000.0).suffix(" mm/s²")).on_hover_text(tr("0 = not known. With a value the time estimate includes the start and stop ramps and the layer panel suggests an overscan."));
-                                    ui.end_row();
-                                    ui.label(tr("Jog step"));
-                                    drag_len(ui, u, &mut d.jog_step, 0.1, Some((0.1, 200.0)));
-                                    ui.end_row();
-                                    ui.label(tr("Jog feed"));
-                                    drag_speed(ui, u, su, true, &mut d.jog_feed, 10.0, Some((10.0, 20000.0)));
-                                    ui.end_row();
-                                });
-                            }
-                            CfgPage::Hardware => {
-                                egui::Grid::new("dev_hardware").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
-                                    ui.label(tr("Work area X"));
-                                    drag_len(ui, u, &mut d.area.bed_w, 1.0, Some((10.0, 5000.0)));
-                                    ui.end_row();
-                                    ui.label(tr("Work area Y"));
-                                    drag_len(ui, u, &mut d.area.bed_h, 1.0, Some((10.0, 5000.0)));
-                                    ui.end_row();
-                                    ui.label(tr("Margins"));
-                                    ui.vertical(|ui| {
-                                        for (name, v) in [("Left", &mut d.area.margins.left), ("Top", &mut d.area.margins.top), ("Right", &mut d.area.margins.right), ("Bottom", &mut d.area.margins.bottom)] {
-                                            ui.horizontal(|ui| {
-                                                ui.label(tr(name));
-                                                drag_len(ui, u, v, 0.5, Some((0.0, 500.0)));
-                                            });
-                                        }
-                                    })
-                                    .response
-                                    .on_hover_text(tr("Strips along the edges of the work area that the machine cannot use (clamps, frame); nothing may be placed or moved there"));
-                                    ui.end_row();
-                                    ui.label(tr("Software limits"));
-                                    ui.vertical(|ui| {
-                                        let mut on = d.area.soft_limits.is_some();
-                                        if ui.checkbox(&mut on, tr("Own limits")).changed() {
-                                            d.area.soft_limits = if on { Some(lc_core::SoftLimits { x0: 0.0, y0: 0.0, x1: d.work_size().0, y1: d.work_size().1 }) } else { None };
-                                        }
-                                        if let Some(l) = &mut d.area.soft_limits {
-                                            for (name, v) in [("Left", &mut l.x0), ("Top", &mut l.y0), ("Right", &mut l.x1), ("Bottom", &mut l.y1)] {
-                                                ui.horizontal(|ui| {
-                                                    ui.label(tr(name));
-                                                    drag_len(ui, u, v, 0.5, Some((0.0, 5000.0)));
-                                                });
-                                            }
-                                        }
-                                    });
-                                    ui.end_row();
-                                    ui.label(tr("Z axis"));
-                                    ui.vertical(|ui| {
-                                        ui.checkbox(&mut d.axes.has_z, tr("The machine has a Z axis"));
-                                        if d.axes.has_z {
-                                            ui.horizontal(|ui| {
-                                                ui.label(tr("Travel"));
-                                                ui.add(egui::DragValue::new(&mut d.axes.z_min).speed(0.5).suffix(" mm"));
-                                                ui.label("–");
-                                                ui.add(egui::DragValue::new(&mut d.axes.z_max).speed(0.5).suffix(" mm"));
-                                            });
-                                            ui.checkbox(&mut d.axes.flip_z, tr("Up is the negative Z direction"));
-                                        }
-                                    });
-                                    ui.end_row();
-                                    ui.label(tr("Machine zero (0,0)"));
-                                    egui::ComboBox::from_id_salt("origin").selected_text(tr(d.axes.origin.label())).show_ui(ui, |ui| {
-                                        for o in Origin::ALL {
-                                            ui.selectable_value(&mut d.axes.origin, o, tr(o.label()));
-                                        }
-                                    });
-                                    ui.end_row();
-                                    ui.label(tr("Invert axes"));
-                                    ui.horizontal(|ui| {
-                                        ui.checkbox(&mut d.axes.flip_x, "X");
-                                        ui.checkbox(&mut d.axes.flip_y, "Y");
-                                    });
-                                    ui.end_row();
-                                    ui.label(tr("Panel orientation"));
-                                    egui::ComboBox::from_id_salt("orientation").selected_text(tr(d.axes.orientation.label())).show_ui(ui, |ui| {
-                                        for o in Orientation::ALL {
-                                            ui.selectable_value(&mut d.axes.orientation, o, tr(o.label()));
-                                        }
-                                    });
-                                    ui.end_row();
-                                });
-                            }
-                            CfgPage::Laser => {
-                                let mut head = cfg_head.min(d.heads.len() - 1);
+                    CfgPage::Connection => {
+                        egui::Grid::new("dev_link").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                            ui.label(tr("Connection type"));
+                            egui::ComboBox::from_id_salt("link_kind").width(230.0).selected_text(tr(d.connection.link.label())).show_ui(ui, |ui| {
+                                for k in LinkKind::ALL {
+                                    ui.selectable_value(&mut d.connection.link, k, tr(k.label()));
+                                }
+                            });
+                            ui.end_row();
+                            if d.connection.link == LinkKind::Serial {
+                                ui.label(tr("Port"));
                                 ui.horizontal_wrapped(|ui| {
-                                    for (i, h) in d.heads.iter().enumerate() {
-                                        let name = if h.name.trim().is_empty() { trf("Head {}", &[&(i + 1)]) } else { h.name.clone() };
-                                        let (r, _) = ui.allocate_exact_size(egui::vec2(10.0, 10.0), egui::Sense::hover());
-                                        ui.painter().rect_filled(r, 2.0, Color32::from_rgb(h.colour[0], h.colour[1], h.colour[2]));
-                                        if ui.selectable_label(head == i, name).clicked() {
-                                            head = i;
-                                        }
-                                    }
-                                    if ui.small_button("+").on_hover_text(tr("Add a laser head")).clicked() {
-                                        let tool = d.heads.iter().map(|h| h.tool).max().unwrap_or(0) + 1;
-                                        let mut h = d.heads[head].clone();
-                                        h.name = String::new();
-                                        h.tool = tool;
-                                        d.heads.push(h);
-                                        head = d.heads.len() - 1;
-                                    }
-                                    if ui.add_enabled_ui(d.heads.len() > 1, |ui| crate::window_ui::delete_icon(ui, &tr("Remove this laser head"))).inner.clicked() {
-                                        d.heads.remove(head);
-                                        head = head.saturating_sub(1).min(d.heads.len() - 1);
-                                    }
-                                });
-                                ui.add_space(4.0);
-                                let multi = d.heads.len() > 1;
-                                let h = &mut d.heads[head];
-                                egui::Grid::new("dev_laser").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
-                                    ui.label(tr("Name"));
-                                    ui.add(egui::TextEdit::singleline(&mut h.name).hint_text(tr("e.g. Blue diode")));
-                                    ui.end_row();
-                                    if multi {
-                                        ui.label(tr("Tool number (T)"));
-                                        ui.add(egui::DragValue::new(&mut h.tool).range(0..=99)).on_hover_text(tr("The number the controller knows this head by; it is written as T<n> when a layer uses another head. It must match the mapping in the controller."));
-                                        ui.end_row();
-                                    }
-                                    ui.label(tr("Colour"));
-                                    ui.color_edit_button_srgb(&mut h.colour);
-                                    ui.end_row();
-                                    ui.label(tr("Laser type"));
-                                    egui::ComboBox::from_id_salt("laser_kind").selected_text(h.laser.label()).show_ui(ui, |ui| {
-                                        for k in LaserKind::ALL {
-                                            ui.selectable_value(&mut h.laser, k, k.label());
+                                    egui::ComboBox::from_id_salt("cfg_port").width(220.0).selected_text(if d.connection.port.is_empty() { tr("No port") } else { d.connection.port.as_str() }).show_ui(ui, |ui| {
+                                        for p in &self.port_info {
+                                            ui.selectable_value(&mut d.connection.port, p.name.clone(), p.label());
                                         }
                                     });
-                                    ui.end_row();
-                                    ui.label(tr("Wavelength"));
-                                    ui.add(egui::DragValue::new(&mut h.wavelength_nm).range(0..=20000).suffix(" nm")).on_hover_text(trf("0 = the usual one ({} nm)", &[&h.laser.default_wavelength()]));
-                                    ui.end_row();
-                                    ui.label(tr("Optical power"));
-                                    ui.add(egui::DragValue::new(&mut h.optical_power_w).range(0.0..=1000.0).suffix(" W")).on_hover_text(trf("0 = a typical one ({} W)", &[&h.laser.default_power()]));
-                                    ui.end_row();
-                                    ui.label(tr("S-value max ($30)"));
-                                    ui.add(egui::DragValue::new(&mut h.s_max).range(1.0..=100000.0));
-                                    ui.end_row();
-                                    ui.label(tr("Frame power"));
-                                    ui.add(egui::DragValue::new(&mut h.frame_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("0 % keeps the laser off while framing; 1–2 % shows a dim dot on diode lasers"));
-                                    ui.end_row();
-                                    ui.label(tr("Frame speed"));
-                                    drag_speed(ui, u, su, false, &mut h.frame_speed, 0.5, Some((1.0, 1000.0)));
-                                    ui.end_row();
-                                    ui.label(tr("Focus power"));
-                                    ui.add(egui::DragValue::new(&mut h.focus_power).range(0.0..=10.0).suffix(" %")).on_hover_text(tr("A weak steady beam to set the height by (focus mode). 0 = no focus mode."));
-                                    ui.end_row();
-                                    ui.label(tr("Beam spot"));
-                                    ui.horizontal(|ui| {
-                                        drag_len(ui, u, &mut h.spot_x, 0.005, Some((0.0, 5.0)));
-                                        ui.label("×");
-                                        drag_len(ui, u, &mut h.spot_y, 0.005, Some((0.0, 5.0)));
-                                    })
-                                    .response
-                                    .on_hover_text(tr("Size of the beam on the material (0 = not known). A fill interval below it makes neighbouring lines overlap."));
-                                    ui.end_row();
-                                    ui.label(tr("Pointer offset"));
-                                    ui.horizontal(|ui| {
-                                        drag_len(ui, u, &mut h.pointer_dx, 0.1, Some((-200.0, 200.0)));
-                                        ui.label("×");
-                                        drag_len(ui, u, &mut h.pointer_dy, 0.1, Some((-200.0, 200.0)));
-                                    })
-                                    .response
-                                    .on_hover_text(tr("Where the red pointer dot is relative to the beam (x right, y down). Used by the pointer alignment in the Device tab."));
-                                    ui.end_row();
-                                    if h.laser.has_pwm() {
-                                        ui.label(tr("PWM frequency"));
-                                        ui.add(egui::DragValue::new(&mut h.pwm_freq_hz).range(0.0..=1_000_000.0).suffix(" Hz"));
-                                        ui.end_row();
-                                        ui.label(tr("PWM maximum frequency"));
-                                        ui.add(egui::DragValue::new(&mut h.pwm_max_freq_hz).range(0.0..=1_000_000.0).suffix(" Hz"));
-                                        ui.end_row();
-                                        ui.label(tr("Pulse width"));
-                                        ui.add(egui::DragValue::new(&mut h.pulse_width_us).range(0.0..=100_000.0).suffix(" µs"));
-                                        ui.end_row();
-                                        ui.label(tr("Pulse width range"));
-                                        ui.horizontal(|ui| {
-                                            ui.add(egui::DragValue::new(&mut h.pulse_min_us).range(0.0..=100_000.0).suffix(" µs"));
-                                            ui.label("–");
-                                            ui.add(egui::DragValue::new(&mut h.pulse_max_us).range(0.0..=100_000.0).suffix(" µs"));
-                                        });
-                                        ui.end_row();
+                                    if ui.button(tr("Refresh")).clicked() {
+                                        self.refresh_ports();
                                     }
                                 });
-                                if h.laser.has_pwm() {
-                                    ui.label(RichText::new(tr("The PWM values are kept with the profile and offered as variables for macros; they are not sent to the controller.")).color(theme::text_dim()));
-                                }
-                                cfg_head = head;
-                            }
-                            CfgPage::Gcode => {
-                                egui::Grid::new("dev_gcode").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
-                                    ui.label(tr("G-code dialect"));
-                                    let shown = d.gcode.dialect.map(|x| x.label()).unwrap_or("");
-                                    egui::ComboBox::from_id_salt("dialect").selected_text(if d.gcode.dialect.is_none() { tr("Automatic (from the controller)") } else { shown.into() }).show_ui(ui, |ui| {
-                                        ui.selectable_value(&mut d.gcode.dialect, None, tr("Automatic (from the controller)"));
-                                        for x in lc_core::Dialect::ALL {
-                                            ui.selectable_value(&mut d.gcode.dialect, Some(x), x.label());
-                                        }
-                                    });
-                                    ui.end_row();
-                                    ui.label(tr("Dynamic power (M4)"));
-                                    ui.add_enabled(d.gcode.dialect.is_none(), egui::Checkbox::without_text(&mut d.gcode.dynamic_power)).on_hover_text(tr("Used when the dialect is automatic; a chosen GRBL dialect decides between M3 and M4 itself."));
-                                    ui.end_row();
-                                    ui.label(tr("Return to origin"));
-                                    ui.checkbox(&mut d.gcode.return_home, "");
-                                    ui.end_row();
-                                    ui.label(tr("Arcs (G2 / G3)"));
-                                    ui.checkbox(&mut d.gcode.arcs, tr("Write curves as arcs where they fit"));
-                                    ui.end_row();
-                                    ui.label(tr("Arc tolerance"));
-                                    drag_len(ui, u, &mut d.gcode.arc_tolerance, 0.001, Some((0.001, 1.0)));
-                                    ui.end_row();
-                                    ui.label(tr("Curve tolerance"));
-                                    drag_len(ui, u, &mut d.gcode.flatten_tolerance, 0.005, Some((0.005, 1.0))).on_hover_text(tr("How far a flattened curve (Bézier, text) may stray from the true curve."));
-                                    ui.end_row();
-                                });
-                                if d.gcode.arcs {
-                                    ui.add_space(6.0);
-                                    ui.label(RichText::new(tr("Arcs: GRBL usually handles G2 / G3, Marlin only when built with ARC_SUPPORT, and Smoothieware has its own behaviour. Some controllers ignore arcs or run them wrongly: test with the laser off. Arcs are used for outlines and rings, not for scan lines or images.")).color(Color32::from_rgb(0xe8, 0x8a, 0x1f)));
-                                }
-                                if d.dialect() == lc_core::Dialect::Smoothieware {
-                                    ui.add_space(6.0);
-                                    ui.label(RichText::new(tr("Smoothieware: S is written as a fraction of the full power (set S-value max to 1). Streaming works like GRBL's; none of this has been tried on real hardware.")).color(theme::text_dim()));
-                                }
-                            }
-                            CfgPage::Connection => {
-                                egui::Grid::new("dev_link").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
-                                    ui.label(tr("Connection type"));
-                                    egui::ComboBox::from_id_salt("link_kind").width(230.0).selected_text(tr(d.connection.link.label())).show_ui(ui, |ui| {
-                                        for k in LinkKind::ALL {
-                                            ui.selectable_value(&mut d.connection.link, k, tr(k.label()));
-                                        }
-                                    });
-                                    ui.end_row();
-                                    if d.connection.link == LinkKind::Serial {
-                                        ui.label(tr("Port"));
-                                        ui.horizontal_wrapped(|ui| {
-                                            egui::ComboBox::from_id_salt("cfg_port").width(220.0).selected_text(if d.connection.port.is_empty() { tr("No port") } else { d.connection.port.as_str() }).show_ui(ui, |ui| {
-                                                for p in &self.port_info {
-                                                    ui.selectable_value(&mut d.connection.port, p.name.clone(), p.label());
-                                                }
-                                            });
-                                            if ui.button(tr("Refresh")).clicked() {
-                                                self.refresh_ports();
-                                            }
-                                        });
-                                        ui.end_row();
-                                        ui.label(tr("Port or USB id"));
-                                        ui.add(egui::TextEdit::singleline(&mut d.connection.port).hint_text("/dev/ttyUSB0  or  0403:6001").desired_width(220.0)).on_hover_text(tr("A port name, or the USB vendor and product id (VID:PID, hexadecimal): the port that has these ids is used."));
-                                        ui.end_row();
-                                        ui.label(tr("Bound USB device"));
-                                        ui.horizontal(|ui| {
-                                            let ids = self.port_info.iter().find(|p| p.name == d.connection.port).and_then(|p| p.usb);
-                                            if d.connection.usb_id.is_empty() {
-                                                ui.label(RichText::new(tr("none")).color(theme::text_dim()));
-                                            } else {
-                                                ui.label(RichText::new(&d.connection.usb_id).monospace());
-                                            }
-                                            if ui.add_enabled(ids.is_some(), egui::Button::new(tr("Bind to this port"))).on_hover_text(tr("Remember the USB ids of the chosen port: the port is found again by them when its name changes.")).clicked() {
-                                                if let Some((v, p)) = ids {
-                                                    d.connection.usb_id = format!("{v:04x}:{p:04x}");
-                                                }
-                                            }
-                                            if ui.add_enabled(!d.connection.usb_id.is_empty(), egui::Button::new(tr("Unbind"))).clicked() {
-                                                d.connection.usb_id.clear();
-                                            }
-                                        });
-                                        ui.end_row();
-                                        ui.label(tr("Baud rate"));
-                                        ui.add(egui::DragValue::new(&mut d.connection.baud).range(1200..=1_000_000));
-                                        ui.end_row();
+                                ui.end_row();
+                                ui.label(tr("Port or USB id"));
+                                ui.add(egui::TextEdit::singleline(&mut d.connection.port).hint_text("/dev/ttyUSB0  or  0403:6001").desired_width(220.0)).on_hover_text(tr("A port name, or the USB vendor and product id (VID:PID, hexadecimal): the port that has these ids is used."));
+                                ui.end_row();
+                                ui.label(tr("Bound USB device"));
+                                ui.horizontal(|ui| {
+                                    let ids = self.port_info.iter().find(|p| p.name == d.connection.port).and_then(|p| p.usb);
+                                    if d.connection.usb_id.is_empty() {
+                                        ui.label(RichText::new(tr("none")).color(theme::text_dim()));
                                     } else {
-                                        ui.label(tr("Host"));
-                                        ui.add(egui::TextEdit::singleline(&mut d.connection.host).hint_text("raspberrypi.local").desired_width(200.0));
-                                        ui.end_row();
-                                        ui.label(tr("TCP port"));
-                                        ui.add(egui::DragValue::new(&mut d.connection.tcp_port).range(1..=65535));
-                                        ui.end_row();
+                                        ui.label(RichText::new(&d.connection.usb_id).monospace());
                                     }
-                                    ui.label(tr("Reconnect"));
-                                    ui.checkbox(&mut d.connection.auto_reconnect, tr("Connect again automatically")).on_hover_text(tr("When the link drops by itself, try again every few seconds until you press Disconnect."));
-                                    ui.end_row();
-                                    ui.label(tr("After connecting"));
-                                    ui.vertical(|ui| {
-                                        ui.checkbox(&mut d.connection.home_on_connect, tr("Home the machine"));
-                                        ui.checkbox(&mut d.connection.unlock_on_connect, tr("Clear an alarm"));
-                                        if d.connection.unlock_on_connect {
-                                            ui.label(RichText::new(tr("Clearing the alarm skips homing: use it only when the head is known to stand in a safe place.")).color(Color32::from_rgb(0xe8, 0x8a, 0x1f)));
+                                    if ui.add_enabled(ids.is_some(), egui::Button::new(tr("Bind to this port"))).on_hover_text(tr("Remember the USB ids of the chosen port: the port is found again by them when its name changes.")).clicked() {
+                                        if let Some((v, p)) = ids {
+                                            d.connection.usb_id = format!("{v:04x}:{p:04x}");
                                         }
-                                    });
-                                    ui.end_row();
-                                    if d.controller == Controller::Grbl {
-                                        ui.label(tr("GRBL version"));
-                                        egui::ComboBox::from_id_salt("grbl_dialect").selected_text(tr(d.connection.grbl_version.label())).show_ui(ui, |ui| {
-                                            for k in lc_core::GrblVersion::ALL {
-                                                ui.selectable_value(&mut d.connection.grbl_version, k, tr(k.label()));
-                                            }
-                                        })
-                                        .response
-                                        .on_hover_text(tr("Older GRBL (0.9) reports positions in another format and has no jog command: the program moves the head with ordinary moves instead."));
-                                        ui.end_row();
                                     }
-                                    ui.label(tr("Streaming"));
-                                    egui::ComboBox::from_id_salt("streaming").selected_text(tr(d.connection.streaming.label())).show_ui(ui, |ui| {
-                                        for m in lc_core::Streaming::ALL {
-                                            ui.selectable_value(&mut d.connection.streaming, m, tr(m.label()));
-                                        }
-                                    })
-                                    .response
-                                    .on_hover_text(tr("Counting fills the controller's buffer and is fast. Simple sends one line and waits for its ok: slow, but for firmware that answers wrongly."));
-                                    ui.end_row();
-                                    ui.label("");
-                                    let label = if reading { tr("Reading…") } else { tr("Read from device") };
-                                    if ui.add_enabled(!reading && d.has_target(), egui::Button::new(label)).on_hover_text(tr("Connect and read work area, S-value max and speed from the controller")).clicked() {
-                                        read_clicked = true;
+                                    if ui.add_enabled(!d.connection.usb_id.is_empty(), egui::Button::new(tr("Unbind"))).clicked() {
+                                        d.connection.usb_id.clear();
                                     }
-                                    ui.end_row();
                                 });
+                                ui.end_row();
+                                ui.label(tr("Baud rate"));
+                                ui.add(egui::DragValue::new(&mut d.connection.baud).range(1200..=1_000_000));
+                                ui.end_row();
+                            } else {
+                                ui.label(tr("Host"));
+                                ui.add(egui::TextEdit::singleline(&mut d.connection.host).hint_text("raspberrypi.local").desired_width(200.0));
+                                ui.end_row();
+                                ui.label(tr("TCP port"));
+                                ui.add(egui::DragValue::new(&mut d.connection.tcp_port).range(1..=65535));
+                                ui.end_row();
                             }
-                            CfgPage::Camera => {
-                                ui.label(RichText::new(tr("Cameras that watch the machine. The one that is ticked gives the live picture; ticking another switches the first off.")).color(theme::text_dim()));
-                                let mut remove = None;
-                                let mut toggle: Option<(usize, bool)> = None;
-                                let n = d.cameras.len();
-                                for i in 0..n {
-                                    let active = d.active_camera == i;
-                                    let c = &mut d.cameras[i];
-                                    egui::Frame::group(ui.style()).show(ui, |ui| {
-                                        ui.horizontal_wrapped(|ui| {
-                                            // The tick before the name switches this camera on (and the others off): it is the one in use.
-                                            let mut on = active && c.enabled;
-                                            if ui.checkbox(&mut on, "").on_hover_text(tr("Switch this camera on: it gives the live picture")).changed() {
-                                                toggle = Some((i, on));
-                                            }
-                                            ui.add(egui::TextEdit::singleline(&mut c.name).hint_text(tr("Camera name")).desired_width(150.0));
-                                            if crate::window_ui::delete_icon(ui, &tr("Delete this camera")).clicked() {
-                                                remove = Some(i);
-                                            }
-                                        });
-                                        ui.horizontal_wrapped(|ui| {
-                                            let local = matches!(c.kind, lc_core::CameraKind::Local(_));
-                                            let mut want_local = local;
-                                            ui.radio_value(&mut want_local, false, tr("Address"));
-                                            ui.radio_value(&mut want_local, true, tr("Camera of this computer"));
-                                            if want_local != local {
-                                                c.kind = if want_local { lc_core::CameraKind::Local(0) } else { lc_core::CameraKind::Url(String::new()) };
-                                                if !want_local {
-                                                    c.enabled = false;
-                                                }
-                                            }
-                                        });
-                                        match &mut c.kind {
-                                            lc_core::CameraKind::Url(u) => {
-                                                ui.add(egui::TextEdit::singleline(u).hint_text("http://raspberrypi.local:8080/stream.mjpg").desired_width(300.0)).on_hover_text(tr("Live picture of the machine: an MJPEG stream or a JPEG snapshot address (http or https). RTSP is not supported."));
-                                                if !lc_core::camimg::valid_url(u) && !u.trim().is_empty() {
-                                                    ui.label(RichText::new(tr("Not an http or https address.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
-                                                }
-                                            }
-                                            lc_core::CameraKind::Local(i) => {
-                                                if crate::camera::SUPPORTED {
-                                                    ui.horizontal(|ui| {
-                                                        ui.label(tr("Camera number"));
-                                                        ui.add(egui::DragValue::new(i).range(0..=15));
-                                                    });
-                                                } else {
-                                                    ui.label(RichText::new(tr("This build has no camera support. Build with: cargo run --release --features camera")).color(theme::text_dim()));
-                                                }
-                                            }
-                                        }
-                                        let testable = match &c.kind {
-                                            lc_core::CameraKind::Url(u) => lc_core::camimg::valid_url(u),
-                                            lc_core::CameraKind::Local(_) => crate::camera::SUPPORTED,
-                                        };
-                                        if ui.add_enabled(testable, egui::Button::new(tr("Test"))).on_hover_text(tr("Opens the picture of this camera as set here, without saving")).clicked() {
-                                            test_cam = Some(c.clone());
-                                        }
-                                        ui.horizontal(|ui| {
-                                            ui.label(tr("Camera rotation"));
-                                            for q in 0..4u8 {
-                                                ui.selectable_value(&mut c.rotation, q, format!("{}°", q as u32 * 90));
-                                            }
-                                        });
-                                        egui::CollapsingHeader::new(tr("Picture")).id_salt(("cam_img", i)).show(ui, |ui| {
-                                            egui::Grid::new(("cam_img_grid", i)).num_columns(2).spacing([12.0, 4.0]).show(ui, |ui| {
-                                                ui.label(tr("Brightness"));
-                                                ui.add(egui::Slider::new(&mut c.image.brightness, -100..=100));
-                                                ui.end_row();
-                                                ui.label(tr("Contrast"));
-                                                ui.add(egui::Slider::new(&mut c.image.contrast, 0..=100));
-                                                ui.end_row();
-                                                ui.label(tr("White balance"));
-                                                ui.horizontal(|ui| {
-                                                    let mut auto = c.image.white_balance.is_none();
-                                                    if ui.checkbox(&mut auto, tr("Auto")).changed() {
-                                                        c.image.white_balance = if auto { None } else { Some(6500) };
-                                                    }
-                                                    if let Some(k) = &mut c.image.white_balance {
-                                                        ui.add(egui::DragValue::new(k).range(2500..=10_000).speed(50.0).suffix(" K"));
-                                                    }
-                                                });
-                                                ui.end_row();
-                                                ui.label(tr("Noise reduction"));
-                                                ui.add(egui::Slider::new(&mut c.image.denoise, 0.0..=0.95));
-                                                ui.end_row();
-                                                ui.label(tr("Format"));
-                                                ui.checkbox(&mut c.image.prefer_yuyv, tr("Prefer YUYV")).on_hover_text(tr("For a camera of this computer: ask for the uncompressed YUYV format where the system allows it."));
-                                                ui.end_row();
-                                            });
-                                        });
-                                        egui::CollapsingHeader::new(tr("Lens correction")).id_salt(("cam_lens", i)).show(ui, |ui| {
-                                            ui.label(RichText::new(tr("Coefficients of the lens distortion (radial k1–k3, tangential p1, p2) for coordinates measured from the centre in units of the longer side of the picture. All 0 = no correction. Entered by hand: there is no automatic calibration.")).color(theme::text_dim()));
-                                            ui.horizontal_wrapped(|ui| {
-                                                for (name, v) in [("k1", &mut c.lens.k1), ("k2", &mut c.lens.k2), ("k3", &mut c.lens.k3), ("p1", &mut c.lens.p1), ("p2", &mut c.lens.p2)] {
-                                                    ui.label(name);
-                                                    ui.add(egui::DragValue::new(v).speed(0.001).range(-5.0..=5.0).max_decimals(4));
-                                                }
-                                                if ui.small_button(tr("Reset")).clicked() {
-                                                    c.lens = lc_core::Lens::default();
-                                                }
-                                            });
-                                        });
-                                    });
+                            ui.label(tr("Reconnect"));
+                            ui.checkbox(&mut d.connection.auto_reconnect, tr("Connect again automatically")).on_hover_text(tr("When the link drops by itself, try again every few seconds until you press Disconnect."));
+                            ui.end_row();
+                            ui.label(tr("After connecting"));
+                            ui.vertical(|ui| {
+                                ui.checkbox(&mut d.connection.home_on_connect, tr("Home the machine"));
+                                ui.checkbox(&mut d.connection.unlock_on_connect, tr("Clear an alarm"));
+                                if d.connection.unlock_on_connect {
+                                    ui.label(RichText::new(tr("Clearing the alarm skips homing: use it only when the head is known to stand in a safe place.")).color(Color32::from_rgb(0xe8, 0x8a, 0x1f)));
                                 }
-                                if let Some((i, on)) = toggle {
-                                    if on {
-                                        d.activate_camera(i);
-                                    } else if let Some(c) = d.cameras.get_mut(i) {
-                                        c.enabled = false;
+                            });
+                            ui.end_row();
+                            if d.controller == Controller::Grbl {
+                                ui.label(tr("GRBL version"));
+                                egui::ComboBox::from_id_salt("grbl_dialect").selected_text(tr(d.connection.grbl_version.label())).show_ui(ui, |ui| {
+                                    for k in lc_core::GrblVersion::ALL {
+                                        ui.selectable_value(&mut d.connection.grbl_version, k, tr(k.label()));
                                     }
-                                }
-                                if let Some(i) = remove {
-                                    d.cameras.remove(i);
-                                    d.active_camera = d.active_camera.min(d.cameras.len().saturating_sub(1));
-                                }
-                                if d.cameras.len() < 8 && ui.button(tr("Add a camera")).clicked() {
-                                    add_camera(d);
-                                }
+                                })
+                                .response
+                                .on_hover_text(tr("Older GRBL (0.9) reports positions in another format and has no jog command: the program moves the head with ordinary moves instead."));
+                                ui.end_row();
                             }
-                            CfgPage::Rotary => {
-                                let grbl = d.dialect().is_grbl();
-                                ui.checkbox(&mut d.rotary.enabled, tr("A rotary attachment is connected"));
-                                ui.add_enabled_ui(d.rotary.enabled, |ui| {
-                                    egui::Grid::new("dev_rotary").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
-                                        ui.label(tr("Rotation in the G-code"));
-                                        ui.vertical(|ui| {
-                                            ui.radio_value(&mut d.rotary.mode, lc_core::RotaryMode::ReplaceY, tr("Replaces Y (the Y motor turns the work)"));
-                                            ui.add_enabled_ui(!grbl, |ui| {
-                                                ui.radio_value(&mut d.rotary.mode, lc_core::RotaryMode::TrueA, tr("True A axis (degrees)"));
-                                            });
-                                            if grbl {
-                                                ui.label(RichText::new(tr("GRBL 1.1 has three axes: the A axis is not available, Y is used.")).color(Color32::from_rgb(0xe8, 0x8a, 0x1f)));
-                                            }
-                                        });
-                                        ui.end_row();
-                                        ui.label(tr("Kind"));
-                                        ui.horizontal(|ui| {
-                                            ui.radio_value(&mut d.rotary.kind, lc_core::RotaryKind::Chuck, tr("Chuck"));
-                                            ui.radio_value(&mut d.rotary.kind, lc_core::RotaryKind::Roller, tr("Rollers"));
-                                        });
-                                        ui.end_row();
-                                        ui.label(tr("Workpiece diameter"));
-                                        drag_len(ui, u, &mut d.rotary.diameter, 0.5, Some((1.0, 1000.0)));
-                                        ui.end_row();
-                                        if d.rotary.kind == lc_core::RotaryKind::Roller {
-                                            ui.label(tr("Roller diameter"));
-                                            drag_len(ui, u, &mut d.rotary.roller_diameter, 0.5, Some((1.0, 1000.0)));
-                                            ui.end_row();
-                                        }
-                                        ui.label(tr("Microsteps per turn"));
-                                        ui.add(egui::DragValue::new(&mut d.rotary.microsteps_per_rev).range(1.0..=1_000_000.0)).on_hover_text(tr("Microsteps of the motor for one full turn of what it drives (the chuck, or one roller)."));
-                                        ui.end_row();
-                                        ui.label(tr("Circumference"));
-                                        ui.label(fmt_len(u, d.rotary.circumference(), 2)).on_hover_text(tr("The way round the workpiece: the design may not be higher."));
-                                        ui.end_row();
-                                    });
-                                    if d.rotary.mode == lc_core::RotaryMode::TrueA && !grbl {
-                                        ui.label(trf("A turns {} degrees for each millimetre on the surface.", &[&format!("{:.4}", d.rotary.degrees_per_mm())]));
-                                    } else {
-                                        let steps = d.rotary.steps_per_mm();
-                                        ui.label(trf("The controller needs {} steps per mm on the Y axis ($101).", &[&format!("{:.3}", steps)]));
-                                        if d.controller == lc_core::Controller::Grbl && self.connected && steps > 0.0 && ui.button(tr("Write $101 to the controller…")).on_hover_text(tr("Asks for a confirmation first. Only the Y axis of the controller changes.")).clicked() {
-                                            fw_acts.push(crate::firmware_ui::FwAct::Write(101, format!("{:.3}", steps)));
+                            ui.label(tr("Streaming"));
+                            egui::ComboBox::from_id_salt("streaming").selected_text(tr(d.connection.streaming.label())).show_ui(ui, |ui| {
+                                for m in lc_core::Streaming::ALL {
+                                    ui.selectable_value(&mut d.connection.streaming, m, tr(m.label()));
+                                }
+                            })
+                            .response
+                            .on_hover_text(tr("Counting fills the controller's buffer and is fast. Simple sends one line and waits for its ok: slow, but for firmware that answers wrongly."));
+                            ui.end_row();
+                            ui.label("");
+                            let label = if reading { tr("Reading…") } else { tr("Read from device") };
+                            if ui.add_enabled(!reading && d.has_target(), egui::Button::new(label)).on_hover_text(tr("Connect and read work area, S-value max and speed from the controller")).clicked() {
+                                read_clicked = true;
+                            }
+                            ui.end_row();
+                        });
+                    }
+                    CfgPage::Camera => {
+                        ui.label(RichText::new(tr("Cameras that watch the machine. The one that is ticked gives the live picture; ticking another switches the first off.")).color(theme::text_dim()));
+                        let mut remove = None;
+                        let mut toggle: Option<(usize, bool)> = None;
+                        let n = d.cameras.len();
+                        for i in 0..n {
+                            let active = d.active_camera == i;
+                            let c = &mut d.cameras[i];
+                            egui::Frame::group(ui.style()).show(ui, |ui| {
+                                ui.horizontal_wrapped(|ui| {
+                                    // The tick before the name switches this camera on (and the others off): it is the one in use.
+                                    let mut on = active && c.enabled;
+                                    if ui.checkbox(&mut on, "").on_hover_text(tr("Switch this camera on: it gives the live picture")).changed() {
+                                        toggle = Some((i, on));
+                                    }
+                                    ui.add(egui::TextEdit::singleline(&mut c.name).hint_text(tr("Camera name")).desired_width(150.0));
+                                    if crate::window_ui::delete_icon(ui, &tr("Delete this camera")).clicked() {
+                                        remove = Some(i);
+                                    }
+                                });
+                                ui.horizontal_wrapped(|ui| {
+                                    let local = matches!(c.kind, lc_core::CameraKind::Local(_));
+                                    let mut want_local = local;
+                                    ui.radio_value(&mut want_local, false, tr("Address"));
+                                    ui.radio_value(&mut want_local, true, tr("Camera of this computer"));
+                                    if want_local != local {
+                                        c.kind = if want_local { lc_core::CameraKind::Local(0) } else { lc_core::CameraKind::Url(String::new()) };
+                                        if !want_local {
+                                            c.enabled = false;
                                         }
                                     }
                                 });
-                                ui.add_space(4.0);
-                                ui.label(RichText::new(tr("Layers marked as rotary are burnt on the attachment. The model is simple: a chuck turns by the workpiece diameter, rollers move the surface like their own; a real machine needs testing.")).color(theme::text_dim()));
-                            }
-                            CfgPage::Notes => {
-                                if !d.template_notes.trim().is_empty() {
-                                    ui.label(RichText::new(tr("From the template")).strong());
-                                    egui::Frame::group(ui.style()).show(ui, |ui| crate::markdown_ui::show(ui, &d.template_notes));
-                                    ui.add_space(6.0);
-                                }
-                                ui.label(RichText::new(tr("Your notes (Markdown)")).strong());
-                                ui.add(egui::TextEdit::multiline(&mut d.notes).font(egui::TextStyle::Monospace).desired_rows(8).desired_width(f32::INFINITY).hint_text(tr("e.g. Settings that worked: air assist 20 %, focus 12 mm")));
-                                if d.notes.chars().count() > lc_core::profiles::MAX_NOTES {
-                                    ui.label(RichText::new(trf("The notes are longer than {} characters and cannot be saved.", &[&lc_core::profiles::MAX_NOTES])).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
-                                }
-                                ui.add_space(4.0);
-                                ui.label(RichText::new(tr("Preview")).strong());
-                                egui::Frame::group(ui.style()).show(ui, |ui| crate::markdown_ui::show(ui, &d.notes));
-                            }
-                            CfgPage::Maintenance => {
-                                ui.label(RichText::new(trf("Total working time: {}", &[&crate::app::fmt_time(d.maintenance.total_secs)])).strong());
-                                ui.label(RichText::new(tr("Counted from the time jobs really run (from start to the end or Stop), not from estimates. The total cannot be reset.")).color(theme::text_dim()));
-                                ui.add_space(4.0);
-                                let mut remove = None;
-                                let mut reset = None;
-                                for (i, c) in d.maintenance.counters.iter_mut().enumerate() {
-                                    ui.horizontal_wrapped(|ui| {
-                                        ui.add(egui::TextEdit::singleline(&mut c.name).hint_text(tr("Counter name (a tube, a lens, a belt)")).desired_width(180.0));
-                                        let mut limited = c.threshold_hours.is_some();
-                                        if ui.checkbox(&mut limited, tr("Remind after")).changed() {
-                                            c.threshold_hours = if limited { Some(100.0) } else { None };
+                                match &mut c.kind {
+                                    lc_core::CameraKind::Url(u) => {
+                                        ui.add(egui::TextEdit::singleline(u).hint_text("http://raspberrypi.local:8080/stream.mjpg").desired_width(300.0)).on_hover_text(tr("Live picture of the machine: an MJPEG stream or a JPEG snapshot address (http or https). RTSP is not supported."));
+                                        if !lc_core::camimg::valid_url(u) && !u.trim().is_empty() {
+                                            ui.label(RichText::new(tr("Not an http or https address.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
                                         }
-                                        if let Some(h) = &mut c.threshold_hours {
-                                            ui.add(egui::DragValue::new(h).range(0.1..=100_000.0).speed(1.0).suffix(" h"));
-                                        }
-                                        let text = RichText::new(crate::app::fmt_time(c.secs));
-                                        ui.label(if c.is_due() { text.color(Color32::from_rgb(0xe8, 0x8a, 0x1f)).strong() } else { text });
-                                        if ui.button(tr("Reset")).clicked() {
-                                            reset = Some(i);
-                                        }
-                                        if crate::window_ui::delete_icon(ui, &tr("Delete this counter")).clicked() {
-                                            remove = Some(i);
-                                        }
-                                    });
-                                }
-                                if let Some(i) = remove {
-                                    d.maintenance.counters.remove(i);
-                                }
-                                if let Some(i) = reset {
-                                    maint_reset = Some(i);
-                                }
-                                if ui.button(tr("Add a counter")).clicked() {
-                                    d.maintenance.counters.push(lc_core::Counter { name: trf("Counter {}", &[&(d.maintenance.counters.len() + 1)]), secs: 0.0, threshold_hours: None });
-                                }
-                            }
-                            CfgPage::Zones => {
-                                ui.label(RichText::new(tr("Parts of the work area the machine must never enter (a clamp, a fixture). A move that touches an enabled zone, also one with the laser off, stops Start, Frame and export. The program does not route around zones.")).color(theme::text_dim()));
-                                ui.add_space(4.0);
-                                let mut remove = None;
-                                let has_z = d.axes.has_z;
-                                for (i, z) in d.zones.iter_mut().enumerate() {
-                                    ui.horizontal_wrapped(|ui| {
-                                        ui.checkbox(&mut z.enabled, "");
-                                        ui.add(egui::TextEdit::singleline(&mut z.name).hint_text(tr("Zone name")).desired_width(150.0));
-                                        let rect = matches!(z.shape, lc_core::ZoneShape::Rect { .. });
-                                        let mut want_rect = rect;
-                                        egui::ComboBox::from_id_salt(("zone_shape", i)).selected_text(tr(if rect { "Rectangle" } else { "Circle" })).show_ui(ui, |ui| {
-                                            ui.selectable_value(&mut want_rect, true, tr("Rectangle"));
-                                            ui.selectable_value(&mut want_rect, false, tr("Circle"));
-                                        });
-                                        if want_rect != rect {
-                                            let b = z.shape.bounds();
-                                            z.shape = if want_rect { lc_core::ZoneShape::Rect { x: b.min.x, y: b.min.y, w: b.width(), h: b.height() } } else { lc_core::ZoneShape::Circle { x: b.center().x, y: b.center().y, r: (b.width().max(b.height())) / 2.0 } };
-                                        }
-                                        if crate::window_ui::delete_icon(ui, &tr("Delete this zone")).clicked() {
-                                            remove = Some(i);
-                                        }
-                                    });
-                                    if has_z {
-                                        ui.horizontal_wrapped(|ui| {
-                                            ui.add_space(24.0);
-                                            let mut limited = z.z_range.is_some();
-                                            if ui.checkbox(&mut limited, tr("Only at these heights (Z)")).on_hover_text(tr("Like a box or a cylinder standing on the table: moves above or below the range are free.")).changed() {
-                                                z.z_range = if limited { Some((0.0, 10.0)) } else { None };
-                                            }
-                                            if let Some((lo, hi)) = &mut z.z_range {
-                                                ui.add(egui::DragValue::new(lo).speed(0.5).suffix(" mm"));
-                                                ui.label("–");
-                                                ui.add(egui::DragValue::new(hi).speed(0.5).suffix(" mm"));
-                                            }
-                                        });
                                     }
-                                    ui.horizontal_wrapped(|ui| {
-                                        ui.add_space(24.0);
-                                        match &mut z.shape {
-                                            lc_core::ZoneShape::Rect { x, y, w, h } => {
-                                                for (label, v) in [("X", x), ("Y", y), ("W", w), ("H", h)] {
-                                                    ui.label(label);
-                                                    drag_len(ui, u, v, 0.5, Some((-5000.0, 5000.0)));
-                                                }
-                                            }
-                                            lc_core::ZoneShape::Circle { x, y, r } => {
-                                                for (label, v) in [("X", x), ("Y", y), ("R", r)] {
-                                                    ui.label(label);
-                                                    drag_len(ui, u, v, 0.5, Some((-5000.0, 5000.0)));
-                                                }
-                                            }
+                                    lc_core::CameraKind::Local(i) => {
+                                        if crate::camera::SUPPORTED {
+                                            ui.horizontal(|ui| {
+                                                ui.label(tr("Camera number"));
+                                                ui.add(egui::DragValue::new(i).range(0..=15));
+                                            });
+                                        } else {
+                                            ui.label(RichText::new(tr("This build has no camera support. Build with: cargo run --release --features camera")).color(theme::text_dim()));
                                         }
-                                    });
+                                    }
                                 }
-                                if let Some(i) = remove {
-                                    d.zones.remove(i);
-                                }
-                                if ui.button(tr("Add a zone")).clicked() {
-                                    d.zones.push(lc_core::Zone { name: trf("Zone {}", &[&(d.zones.len() + 1)]), enabled: true, shape: lc_core::ZoneShape::Rect { x: 10.0, y: 10.0, w: 50.0, h: 30.0 }, z_range: None });
-                                }
-                            }
-                            CfgPage::Firmware => {
-                                if self.connected {
-                                    ui.label(RichText::new(trf("Connected to: {}", &[&self.doc.device.target_label()])).small().color(theme::text_dim()));
-                                }
-                                crate::firmware_ui::page(ui, &mut self.fw, &self.doc.device.fw_copies.clone(), self.connected, d.controller, &mut fw_acts);
-                            }
-                            CfgPage::Advanced => {
-                                egui::Frame::new().fill(Color32::from_rgba_unmultiplied(0xc0, 0x30, 0x30, 40)).stroke(egui::Stroke::new(1.0, Color32::from_rgb(0xc0, 0x30, 0x30))).inner_margin(8.0).corner_radius(4.0).show(ui, |ui| {
-                                    ui.label(RichText::new(tr("Wrong G-code can fire the laser, drive the head into the end stops or ruin the material. Test with the laser off or at the lowest power.")).strong());
-                                });
-                                ui.add_space(6.0);
-                                let mono = |ui: &mut egui::Ui, text: &mut String, hint: &str, rows: usize| {
-                                    ui.add(egui::TextEdit::multiline(text).font(egui::TextStyle::Monospace).hint_text(hint).desired_rows(rows).desired_width(f32::INFINITY));
+                                let testable = match &c.kind {
+                                    lc_core::CameraKind::Url(u) => lc_core::camimg::valid_url(u),
+                                    lc_core::CameraKind::Local(_) => crate::camera::SUPPORTED,
                                 };
-                                ui.label(RichText::new(tr("Start of the job")).strong());
-                                mono(ui, &mut d.gcode.preamble, "G21 / G90 / G17 / M4 S0", 4);
-                                ui.label(RichText::new(tr("Replaces the units, absolute mode, plane and laser mode lines. Empty = built in.")).color(theme::text_dim()));
-                                ui.add_space(4.0);
-                                ui.label(RichText::new(tr("End of the job")).strong());
-                                mono(ui, &mut d.gcode.postscript, "M2", 3);
-                                ui.label(RichText::new(tr("Replaces the closing M2. The laser is always switched off and the head sent home (when set) before it. Empty = built in.")).color(theme::text_dim()));
-                                ui.add_space(4.0);
-                                ui.label(RichText::new(tr("Air assist commands")).strong());
-                                egui::Grid::new("dev_air").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
-                                    ui.label(tr("On"));
-                                    ui.add(egui::TextEdit::singleline(&mut d.gcode.air_on).font(egui::TextStyle::Monospace).hint_text("M8"));
-                                    ui.end_row();
-                                    ui.label(tr("Off"));
-                                    ui.add(egui::TextEdit::singleline(&mut d.gcode.air_off).font(egui::TextStyle::Monospace).hint_text("M9"));
-                                    ui.end_row();
-                                });
-                                ui.add_space(8.0);
-                                ui.label(RichText::new(tr("Hooks")).strong());
-                                ui.label(RichText::new(tr("Own G-code written into the job: when a layer starts, before and after each object, when a layer ends. With object hooks a layer is burnt object by object (and once per pass).")).color(theme::text_dim()));
-                                for (i, title) in ["Layer start", "Layer end", "Object start", "Object end"].into_iter().enumerate() {
-                                    let h = d.gcode.hooks.get_mut(i);
-                                    ui.horizontal(|ui| {
-                                        ui.checkbox(&mut h.enabled, "");
-                                        ui.label(RichText::new(tr(title)).strong());
-                                    });
-                                    ui.add_enabled(h.enabled, egui::TextEdit::multiline(&mut h.code).font(egui::TextStyle::Monospace).desired_rows(2).desired_width(f32::INFINITY));
+                                if ui.add_enabled(testable, egui::Button::new(tr("Test"))).on_hover_text(tr("Opens the picture of this camera as set here, without saving")).clicked() {
+                                    test_cam = Some(c.clone());
                                 }
-                                ui.label(RichText::new(trf("Variables: {}", &[&lc_core::hooks::JOB_VARS.iter().map(|v| format!("{{{v}}}")).collect::<Vec<_>>().join(" ")])).small().color(theme::text_dim()));
-                                ui.add_space(8.0);
-                                ui.label(RichText::new(tr("Macros")).strong());
-                                ui.label(RichText::new(tr("Named scripts you run by hand from the Device tab. One command per line; comments after ; or in brackets; @include(name) inserts another macro. Variables of the machine can be used.")).color(theme::text_dim()));
-                                let mut remove = None;
-                                for (i, m) in d.macros.iter_mut().enumerate() {
-                                    ui.horizontal(|ui| {
-                                        ui.add(egui::TextEdit::singleline(&mut m.name).hint_text(tr("Macro name")).desired_width(200.0));
-                                        if crate::window_ui::delete_icon(ui, &tr("Delete this macro")).clicked() {
-                                            remove = Some(i);
+                                ui.horizontal(|ui| {
+                                    ui.label(tr("Camera rotation"));
+                                    for q in 0..4u8 {
+                                        ui.selectable_value(&mut c.rotation, q, format!("{}°", q as u32 * 90));
+                                    }
+                                });
+                                egui::CollapsingHeader::new(tr("Picture")).id_salt(("cam_img", i)).show(ui, |ui| {
+                                    egui::Grid::new(("cam_img_grid", i)).num_columns(2).spacing([12.0, 4.0]).show(ui, |ui| {
+                                        ui.label(tr("Brightness"));
+                                        ui.add(egui::Slider::new(&mut c.image.brightness, -100..=100));
+                                        ui.end_row();
+                                        ui.label(tr("Contrast"));
+                                        ui.add(egui::Slider::new(&mut c.image.contrast, 0..=100));
+                                        ui.end_row();
+                                        ui.label(tr("White balance"));
+                                        ui.horizontal(|ui| {
+                                            let mut auto = c.image.white_balance.is_none();
+                                            if ui.checkbox(&mut auto, tr("Auto")).changed() {
+                                                c.image.white_balance = if auto { None } else { Some(6500) };
+                                            }
+                                            if let Some(k) = &mut c.image.white_balance {
+                                                ui.add(egui::DragValue::new(k).range(2500..=10_000).speed(50.0).suffix(" K"));
+                                            }
+                                        });
+                                        ui.end_row();
+                                        ui.label(tr("Noise reduction"));
+                                        ui.add(egui::Slider::new(&mut c.image.denoise, 0.0..=0.95));
+                                        ui.end_row();
+                                        ui.label(tr("Format"));
+                                        ui.checkbox(&mut c.image.prefer_yuyv, tr("Prefer YUYV")).on_hover_text(tr("For a camera of this computer: ask for the uncompressed YUYV format where the system allows it."));
+                                        ui.end_row();
+                                    });
+                                });
+                                egui::CollapsingHeader::new(tr("Lens correction")).id_salt(("cam_lens", i)).show(ui, |ui| {
+                                    ui.label(RichText::new(tr("Coefficients of the lens distortion (radial k1–k3, tangential p1, p2) for coordinates measured from the centre in units of the longer side of the picture. All 0 = no correction. Entered by hand: there is no automatic calibration.")).color(theme::text_dim()));
+                                    ui.horizontal_wrapped(|ui| {
+                                        for (name, v) in [("k1", &mut c.lens.k1), ("k2", &mut c.lens.k2), ("k3", &mut c.lens.k3), ("p1", &mut c.lens.p1), ("p2", &mut c.lens.p2)] {
+                                            ui.label(name);
+                                            ui.add(egui::DragValue::new(v).speed(0.001).range(-5.0..=5.0).max_decimals(4));
+                                        }
+                                        if ui.small_button(tr("Reset")).clicked() {
+                                            c.lens = lc_core::Lens::default();
                                         }
                                     });
-                                    ui.add(egui::TextEdit::multiline(&mut m.code).font(egui::TextStyle::Monospace).desired_rows(3).desired_width(f32::INFINITY));
-                                }
-                                if let Some(i) = remove {
-                                    d.macros.remove(i);
-                                }
-                                if ui.button(tr("Add a macro")).clicked() {
-                                    d.macros.push(lc_core::Macro { name: trf("Macro {}", &[&(d.macros.len() + 1)]), code: String::new() });
-                                }
-                                ui.add_space(6.0);
-                                if ui.button(tr("Restore defaults")).clicked() {
-                                    d.gcode.reset_custom();
-                                }
+                                });
+                            });
+                        }
+                        if let Some((i, on)) = toggle {
+                            if on {
+                                d.activate_camera(i);
+                            } else if let Some(c) = d.cameras.get_mut(i) {
+                                c.enabled = false;
                             }
                         }
-                    });
-                });
+                        if let Some(i) = remove {
+                            d.cameras.remove(i);
+                            d.active_camera = d.active_camera.min(d.cameras.len().saturating_sub(1));
+                        }
+                        if d.cameras.len() < 8 && ui.button(tr("Add a camera")).clicked() {
+                            add_camera(d);
+                        }
+                    }
+                    CfgPage::Rotary => {
+                        let grbl = d.dialect().is_grbl();
+                        ui.checkbox(&mut d.rotary.enabled, tr("A rotary attachment is connected"));
+                        ui.add_enabled_ui(d.rotary.enabled, |ui| {
+                            egui::Grid::new("dev_rotary").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                                ui.label(tr("Rotation in the G-code"));
+                                ui.vertical(|ui| {
+                                    ui.radio_value(&mut d.rotary.mode, lc_core::RotaryMode::ReplaceY, tr("Replaces Y (the Y motor turns the work)"));
+                                    ui.add_enabled_ui(!grbl, |ui| {
+                                        ui.radio_value(&mut d.rotary.mode, lc_core::RotaryMode::TrueA, tr("True A axis (degrees)"));
+                                    });
+                                    if grbl {
+                                        ui.label(RichText::new(tr("GRBL 1.1 has three axes: the A axis is not available, Y is used.")).color(Color32::from_rgb(0xe8, 0x8a, 0x1f)));
+                                    }
+                                });
+                                ui.end_row();
+                                ui.label(tr("Kind"));
+                                ui.horizontal(|ui| {
+                                    ui.radio_value(&mut d.rotary.kind, lc_core::RotaryKind::Chuck, tr("Chuck"));
+                                    ui.radio_value(&mut d.rotary.kind, lc_core::RotaryKind::Roller, tr("Rollers"));
+                                });
+                                ui.end_row();
+                                ui.label(tr("Workpiece diameter"));
+                                drag_len(ui, u, &mut d.rotary.diameter, 0.5, Some((1.0, 1000.0)));
+                                ui.end_row();
+                                if d.rotary.kind == lc_core::RotaryKind::Roller {
+                                    ui.label(tr("Roller diameter"));
+                                    drag_len(ui, u, &mut d.rotary.roller_diameter, 0.5, Some((1.0, 1000.0)));
+                                    ui.end_row();
+                                }
+                                ui.label(tr("Microsteps per turn"));
+                                ui.add(egui::DragValue::new(&mut d.rotary.microsteps_per_rev).range(1.0..=1_000_000.0)).on_hover_text(tr("Microsteps of the motor for one full turn of what it drives (the chuck, or one roller)."));
+                                ui.end_row();
+                                ui.label(tr("Circumference"));
+                                ui.label(fmt_len(u, d.rotary.circumference(), 2)).on_hover_text(tr("The way round the workpiece: the design may not be higher."));
+                                ui.end_row();
+                            });
+                            if d.rotary.mode == lc_core::RotaryMode::TrueA && !grbl {
+                                ui.label(trf("A turns {} degrees for each millimetre on the surface.", &[&format!("{:.4}", d.rotary.degrees_per_mm())]));
+                            } else {
+                                let steps = d.rotary.steps_per_mm();
+                                ui.label(trf("The controller needs {} steps per mm on the Y axis ($101).", &[&format!("{:.3}", steps)]));
+                                if d.controller == lc_core::Controller::Grbl && self.connected && steps > 0.0 && ui.button(tr("Write $101 to the controller…")).on_hover_text(tr("Asks for a confirmation first. Only the Y axis of the controller changes.")).clicked() {
+                                    fw_acts.push(crate::firmware_ui::FwAct::Write(101, format!("{:.3}", steps)));
+                                }
+                            }
+                        });
+                        ui.add_space(4.0);
+                        ui.label(RichText::new(tr("Layers marked as rotary are burnt on the attachment. The model is simple: a chuck turns by the workpiece diameter, rollers move the surface like their own; a real machine needs testing.")).color(theme::text_dim()));
+                    }
+                    CfgPage::Notes => {
+                        if !d.template_notes.trim().is_empty() {
+                            ui.label(RichText::new(tr("From the template")).strong());
+                            egui::Frame::group(ui.style()).show(ui, |ui| crate::markdown_ui::show(ui, &d.template_notes));
+                            ui.add_space(6.0);
+                        }
+                        ui.label(RichText::new(tr("Your notes (Markdown)")).strong());
+                        ui.add(egui::TextEdit::multiline(&mut d.notes).font(egui::TextStyle::Monospace).desired_rows(8).desired_width(f32::INFINITY).hint_text(tr("e.g. Settings that worked: air assist 20 %, focus 12 mm")));
+                        if d.notes.chars().count() > lc_core::profiles::MAX_NOTES {
+                            ui.label(RichText::new(trf("The notes are longer than {} characters and cannot be saved.", &[&lc_core::profiles::MAX_NOTES])).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
+                        }
+                        ui.add_space(4.0);
+                        ui.label(RichText::new(tr("Preview")).strong());
+                        egui::Frame::group(ui.style()).show(ui, |ui| crate::markdown_ui::show(ui, &d.notes));
+                    }
+                    CfgPage::Maintenance => {
+                        ui.label(RichText::new(trf("Total working time: {}", &[&crate::app::fmt_time(d.maintenance.total_secs)])).strong());
+                        ui.label(RichText::new(tr("Counted from the time jobs really run (from start to the end or Stop), not from estimates. The total cannot be reset.")).color(theme::text_dim()));
+                        ui.add_space(4.0);
+                        let mut remove = None;
+                        let mut reset = None;
+                        for (i, c) in d.maintenance.counters.iter_mut().enumerate() {
+                            ui.horizontal_wrapped(|ui| {
+                                ui.add(egui::TextEdit::singleline(&mut c.name).hint_text(tr("Counter name (a tube, a lens, a belt)")).desired_width(180.0));
+                                let mut limited = c.threshold_hours.is_some();
+                                if ui.checkbox(&mut limited, tr("Remind after")).changed() {
+                                    c.threshold_hours = if limited { Some(100.0) } else { None };
+                                }
+                                if let Some(h) = &mut c.threshold_hours {
+                                    ui.add(egui::DragValue::new(h).range(0.1..=100_000.0).speed(1.0).suffix(" h"));
+                                }
+                                let text = RichText::new(crate::app::fmt_time(c.secs));
+                                ui.label(if c.is_due() { text.color(Color32::from_rgb(0xe8, 0x8a, 0x1f)).strong() } else { text });
+                                if ui.button(tr("Reset")).clicked() {
+                                    reset = Some(i);
+                                }
+                                if crate::window_ui::delete_icon(ui, &tr("Delete this counter")).clicked() {
+                                    remove = Some(i);
+                                }
+                            });
+                        }
+                        if let Some(i) = remove {
+                            d.maintenance.counters.remove(i);
+                        }
+                        if let Some(i) = reset {
+                            maint_reset = Some(i);
+                        }
+                        if ui.button(tr("Add a counter")).clicked() {
+                            d.maintenance.counters.push(lc_core::Counter { name: trf("Counter {}", &[&(d.maintenance.counters.len() + 1)]), secs: 0.0, threshold_hours: None });
+                        }
+                    }
+                    CfgPage::Zones => {
+                        ui.label(RichText::new(tr("Parts of the work area the machine must never enter (a clamp, a fixture). A move that touches an enabled zone, also one with the laser off, stops Start, Frame and export. The program does not route around zones.")).color(theme::text_dim()));
+                        ui.add_space(4.0);
+                        let mut remove = None;
+                        let has_z = d.axes.has_z;
+                        for (i, z) in d.zones.iter_mut().enumerate() {
+                            ui.horizontal_wrapped(|ui| {
+                                ui.checkbox(&mut z.enabled, "");
+                                ui.add(egui::TextEdit::singleline(&mut z.name).hint_text(tr("Zone name")).desired_width(150.0));
+                                let rect = matches!(z.shape, lc_core::ZoneShape::Rect { .. });
+                                let mut want_rect = rect;
+                                egui::ComboBox::from_id_salt(("zone_shape", i)).selected_text(tr(if rect { "Rectangle" } else { "Circle" })).show_ui(ui, |ui| {
+                                    ui.selectable_value(&mut want_rect, true, tr("Rectangle"));
+                                    ui.selectable_value(&mut want_rect, false, tr("Circle"));
+                                });
+                                if want_rect != rect {
+                                    let b = z.shape.bounds();
+                                    z.shape = if want_rect { lc_core::ZoneShape::Rect { x: b.min.x, y: b.min.y, w: b.width(), h: b.height() } } else { lc_core::ZoneShape::Circle { x: b.center().x, y: b.center().y, r: (b.width().max(b.height())) / 2.0 } };
+                                }
+                                if crate::window_ui::delete_icon(ui, &tr("Delete this zone")).clicked() {
+                                    remove = Some(i);
+                                }
+                            });
+                            if has_z {
+                                ui.horizontal_wrapped(|ui| {
+                                    ui.add_space(24.0);
+                                    let mut limited = z.z_range.is_some();
+                                    if ui.checkbox(&mut limited, tr("Only at these heights (Z)")).on_hover_text(tr("Like a box or a cylinder standing on the table: moves above or below the range are free.")).changed() {
+                                        z.z_range = if limited { Some((0.0, 10.0)) } else { None };
+                                    }
+                                    if let Some((lo, hi)) = &mut z.z_range {
+                                        ui.add(egui::DragValue::new(lo).speed(0.5).suffix(" mm"));
+                                        ui.label("–");
+                                        ui.add(egui::DragValue::new(hi).speed(0.5).suffix(" mm"));
+                                    }
+                                });
+                            }
+                            ui.horizontal_wrapped(|ui| {
+                                ui.add_space(24.0);
+                                match &mut z.shape {
+                                    lc_core::ZoneShape::Rect { x, y, w, h } => {
+                                        for (label, v) in [("X", x), ("Y", y), ("W", w), ("H", h)] {
+                                            ui.label(label);
+                                            drag_len(ui, u, v, 0.5, Some((-5000.0, 5000.0)));
+                                        }
+                                    }
+                                    lc_core::ZoneShape::Circle { x, y, r } => {
+                                        for (label, v) in [("X", x), ("Y", y), ("R", r)] {
+                                            ui.label(label);
+                                            drag_len(ui, u, v, 0.5, Some((-5000.0, 5000.0)));
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        if let Some(i) = remove {
+                            d.zones.remove(i);
+                        }
+                        if ui.button(tr("Add a zone")).clicked() {
+                            d.zones.push(lc_core::Zone { name: trf("Zone {}", &[&(d.zones.len() + 1)]), enabled: true, shape: lc_core::ZoneShape::Rect { x: 10.0, y: 10.0, w: 50.0, h: 30.0 }, z_range: None });
+                        }
+                    }
+                    CfgPage::Firmware => {
+                        if self.connected {
+                            ui.label(RichText::new(trf("Connected to: {}", &[&self.doc.device.target_label()])).small().color(theme::text_dim()));
+                        }
+                        crate::firmware_ui::page(ui, &mut self.fw, &self.doc.device.fw_copies.clone(), self.connected, d.controller, &mut fw_acts);
+                    }
+                    CfgPage::Advanced => {
+                        egui::Frame::new().fill(Color32::from_rgba_unmultiplied(0xc0, 0x30, 0x30, 40)).stroke(egui::Stroke::new(1.0, Color32::from_rgb(0xc0, 0x30, 0x30))).inner_margin(8.0).corner_radius(4.0).show(ui, |ui| {
+                            ui.label(RichText::new(tr("Wrong G-code can fire the laser, drive the head into the end stops or ruin the material. Test with the laser off or at the lowest power.")).strong());
+                        });
+                        ui.add_space(6.0);
+                        let mono = |ui: &mut egui::Ui, text: &mut String, hint: &str, rows: usize| {
+                            ui.add(egui::TextEdit::multiline(text).font(egui::TextStyle::Monospace).hint_text(hint).desired_rows(rows).desired_width(f32::INFINITY));
+                        };
+                        ui.label(RichText::new(tr("Start of the job")).strong());
+                        mono(ui, &mut d.gcode.preamble, "G21 / G90 / G17 / M4 S0", 4);
+                        ui.label(RichText::new(tr("Replaces the units, absolute mode, plane and laser mode lines. Empty = built in.")).color(theme::text_dim()));
+                        ui.add_space(4.0);
+                        ui.label(RichText::new(tr("End of the job")).strong());
+                        mono(ui, &mut d.gcode.postscript, "M2", 3);
+                        ui.label(RichText::new(tr("Replaces the closing M2. The laser is always switched off and the head sent home (when set) before it. Empty = built in.")).color(theme::text_dim()));
+                        ui.add_space(4.0);
+                        ui.label(RichText::new(tr("Air assist commands")).strong());
+                        egui::Grid::new("dev_air").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
+                            ui.label(tr("On"));
+                            ui.add(egui::TextEdit::singleline(&mut d.gcode.air_on).font(egui::TextStyle::Monospace).hint_text("M8"));
+                            ui.end_row();
+                            ui.label(tr("Off"));
+                            ui.add(egui::TextEdit::singleline(&mut d.gcode.air_off).font(egui::TextStyle::Monospace).hint_text("M9"));
+                            ui.end_row();
+                        });
+                        ui.add_space(8.0);
+                        ui.label(RichText::new(tr("Hooks")).strong());
+                        ui.label(RichText::new(tr("Own G-code written into the job: when a layer starts, before and after each object, when a layer ends. With object hooks a layer is burnt object by object (and once per pass).")).color(theme::text_dim()));
+                        for (i, title) in ["Layer start", "Layer end", "Object start", "Object end"].into_iter().enumerate() {
+                            let h = d.gcode.hooks.get_mut(i);
+                            ui.horizontal(|ui| {
+                                ui.checkbox(&mut h.enabled, "");
+                                ui.label(RichText::new(tr(title)).strong());
+                            });
+                            ui.add_enabled(h.enabled, egui::TextEdit::multiline(&mut h.code).font(egui::TextStyle::Monospace).desired_rows(2).desired_width(f32::INFINITY));
+                        }
+                        ui.label(RichText::new(trf("Variables: {}", &[&lc_core::hooks::JOB_VARS.iter().map(|v| format!("{{{v}}}")).collect::<Vec<_>>().join(" ")])).small().color(theme::text_dim()));
+                        ui.add_space(8.0);
+                        ui.label(RichText::new(tr("Macros")).strong());
+                        ui.label(RichText::new(tr("Named scripts you run by hand from the Device tab. One command per line; comments after ; or in brackets; @include(name) inserts another macro. Variables of the machine can be used.")).color(theme::text_dim()));
+                        let mut remove = None;
+                        for (i, m) in d.macros.iter_mut().enumerate() {
+                            ui.horizontal(|ui| {
+                                ui.add(egui::TextEdit::singleline(&mut m.name).hint_text(tr("Macro name")).desired_width(200.0));
+                                if crate::window_ui::delete_icon(ui, &tr("Delete this macro")).clicked() {
+                                    remove = Some(i);
+                                }
+                            });
+                            ui.add(egui::TextEdit::multiline(&mut m.code).font(egui::TextStyle::Monospace).desired_rows(3).desired_width(f32::INFINITY));
+                        }
+                        if let Some(i) = remove {
+                            d.macros.remove(i);
+                        }
+                        if ui.button(tr("Add a macro")).clicked() {
+                            d.macros.push(lc_core::Macro { name: trf("Macro {}", &[&(d.macros.len() + 1)]), code: String::new() });
+                        }
+                        ui.add_space(6.0);
+                        if ui.button(tr("Restore defaults")).clicked() {
+                            d.gcode.reset_custom();
+                        }
+                    }
+                }
             });
             cfg.page = page;
             cfg.head = cfg_head;
-            ui.add_space(8.0);
-            let bad_gcode = !cfg.draft.gcode.invalid_fields().is_empty();
-            let hook_problem = cfg.draft.gcode.hooks.problem();
-            if let Some((name, why)) = &hook_problem {
-                ui.label(RichText::new(trf("Hook {}: {}", &[name, why])).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
-            }
-            let macro_problem = lc_core::hooks::validate_macros(&cfg.draft);
-            if let Some((name, why)) = &macro_problem {
-                ui.label(RichText::new(trf("Macro {}: {}", &[name, why])).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
-            }
-            let dup_tools = cfg.draft.has_duplicate_tools();
-            let notes_long = cfg.draft.notes.chars().count() > lc_core::profiles::MAX_NOTES;
-            let valid = !cfg.draft.name.trim().is_empty() && !notes_long && !bad_gcode && !dup_tools && hook_problem.is_none() && macro_problem.is_none();
-            if dup_tools {
-                ui.label(RichText::new(tr("Two laser heads have the same tool number.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
-            }
-            if bad_gcode {
-                ui.label(RichText::new(tr("A G-code field on the Advanced page has a control character or is too long.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
-            }
-            if !cfg.draft.controller.is_serial() {
-                ui.label(RichText::new(tr("This controller has no live connection: jobs are exported as files.")).color(theme::text_dim()));
-            }
-            if !valid {
-                ui.label(RichText::new(tr("A profile name is required.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
-            }
-            ui.horizontal(|ui| {
-                if crate::window_ui::save_button_enabled(ui, valid, &tr("Save")).clicked() {
-                    save = true;
+            base_ui::window::footer(ui, "device_cfg", |ui| {
+                let bad_gcode = !cfg.draft.gcode.invalid_fields().is_empty();
+                let hook_problem = cfg.draft.gcode.hooks.problem();
+                if let Some((name, why)) = &hook_problem {
+                    ui.label(RichText::new(trf("Hook {}: {}", &[name, why])).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
                 }
-                if !must_create && ui.button(tr("Cancel")).clicked() {
-                    cancel = true;
+                let macro_problem = lc_core::hooks::validate_macros(&cfg.draft);
+                if let Some((name, why)) = &macro_problem {
+                    ui.label(RichText::new(trf("Macro {}: {}", &[name, why])).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
                 }
-                if cfg.idx.is_some() {
-                    ui.separator();
-                    if crate::window_ui::save_button_enabled(ui, true, &tr("Export…")).on_hover_text(tr("Save this profile to a file")).clicked() {
-                        export = true;
+                let dup_tools = cfg.draft.has_duplicate_tools();
+                let notes_long = cfg.draft.notes.chars().count() > lc_core::profiles::MAX_NOTES;
+                let valid = !cfg.draft.name.trim().is_empty() && !notes_long && !bad_gcode && !dup_tools && hook_problem.is_none() && macro_problem.is_none();
+                if dup_tools {
+                    ui.label(RichText::new(tr("Two laser heads have the same tool number.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
+                }
+                if bad_gcode {
+                    ui.label(RichText::new(tr("A G-code field on the Advanced page has a control character or is too long.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
+                }
+                if !cfg.draft.controller.is_serial() {
+                    ui.label(RichText::new(tr("This controller has no live connection: jobs are exported as files.")).color(theme::text_dim()));
+                }
+                if !valid {
+                    ui.label(RichText::new(tr("A profile name is required.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
+                }
+                ui.horizontal(|ui| {
+                    if crate::window_ui::save_button_enabled(ui, valid, &tr("Save")).clicked() {
+                        save = true;
                     }
-                    if on_start {
-                        if confirm {
-                            if crate::window_ui::delete_button(ui, &tr("Confirm delete")).clicked() {
-                                delete = true;
+                    if !must_create && ui.button(tr("Cancel")).clicked() {
+                        cancel = true;
+                    }
+                    if cfg.idx.is_some() {
+                        ui.separator();
+                        if crate::window_ui::save_button_enabled(ui, true, &tr("Export…")).on_hover_text(tr("Save this profile to a file")).clicked() {
+                            export = true;
+                        }
+                        if on_start {
+                            if confirm {
+                                if crate::window_ui::delete_button(ui, &tr("Confirm delete")).clicked() {
+                                    delete = true;
+                                }
+                            } else if crate::window_ui::delete_button(ui, &tr("Delete")).clicked() {
+                                ask_delete = true;
                             }
-                        } else if crate::window_ui::delete_button(ui, &tr("Delete")).clicked() {
-                            ask_delete = true;
                         }
                     }
-                }
+                });
             });
         });
         if let Some(cam) = test_cam {
