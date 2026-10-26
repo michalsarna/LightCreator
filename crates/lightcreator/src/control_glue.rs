@@ -102,11 +102,11 @@ impl ControlTarget for LaserTarget<'_> {
         }
     }
     fn cancel_jog(&mut self) {
-        let a = self.app.doc.device.controller.cancel_jog();
+        let a = self.app.doc.device.link_controller().cancel_jog();
         self.app.run_action(a);
     }
     fn unlock(&mut self) {
-        let a = self.app.doc.device.controller.unlock();
+        let a = self.app.doc.device.link_controller().unlock();
         self.app.run_action(a);
     }
     fn lines(&mut self, ls: Vec<String>) {
@@ -137,7 +137,7 @@ impl ControlTarget for LaserTarget<'_> {
 impl App {
     /// Home, Unlock, Pause and Resume, 2 × 2 with icons: in the Device tab under the connection and at the top of the Control tab.
     pub fn quick_row(&mut self, ui: &mut egui::Ui) {
-        let ctrl = self.doc.device.controller;
+        let ctrl = self.doc.device.link_controller();
         let moves = self.connected && !self.job_running();
         let action = match control_ui::quick_buttons(ui, moves, self.connected) {
             Some(Quick::Home) => ctrl.home(),
@@ -204,7 +204,7 @@ impl App {
                 spindle: None,
                 zeroing: false,
                 z_axis: dev.axes.has_z,
-                hold_to_move: dev.controller == Controller::Grbl,
+                hold_to_move: dev.link_controller() == Controller::Grbl,
             };
             let mut st = std::mem::take(&mut self.ctl);
             let say = control_ui::panel(ui, &mut LaserTarget { app: self }, &mut st, &ctx);
@@ -420,6 +420,27 @@ mod tests {
         assert!(line.contains("F1000"), "{line}");
         let x: f64 = line.split_whitespace().find_map(|w| w.strip_prefix('X')).and_then(|v| v.parse().ok()).expect("an X word");
         assert!(x.abs() <= a.doc.device.area.bed_w + 1e-6, "{line}");
+    }
+
+    #[test]
+    fn an_older_grbl_is_jogged_unlocked_and_homed_the_way_it_understands() {
+        use lc_core::controller::Action;
+        let mut a = App::build(&egui::Context::default(), None, false);
+        a.connected = true;
+        a.machine = ("Idle".into(), 50.0, 50.0);
+        let jog = |a: &mut App| match a.jog_action_at(5.0, 0.0, 1000.0) {
+            Some(Action::Lines(l)) => l.join(" | "),
+            _ => panic!("a move was expected"),
+        };
+        assert!(jog(&mut a).starts_with("$J=G91"), "1.1 and newer jog with $J=");
+        a.doc.device.connection.grbl_version = lc_core::GrblVersion::Grbl09;
+        let line = jog(&mut a);
+        assert!(!line.contains("$J") && line.contains("G91 G21") && line.contains("G1 X5") && line.ends_with("G90"), "{line}");
+        assert!(matches!(a.doc.device.link_controller().cancel_jog(), Action::None), "the move of a GRBL before 1.1 cannot be cancelled");
+        assert_eq!(a.doc.device.link_controller(), lc_core::Controller::GrblOld);
+        // Marlin has no GRBL version: it is not touched by the choice.
+        a.doc.device.controller = lc_core::Controller::Marlin;
+        assert_eq!(a.doc.device.link_controller(), lc_core::Controller::Marlin);
     }
 
     #[test]
