@@ -188,6 +188,8 @@ pub struct App {
     pub stream_pan: egui::Vec2,
     pub stream: Option<(String, crate::camera_stream::StreamWorker)>,
     pub stream_tex: Option<egui::TextureHandle>,
+    /// The camera window shrinks to the picture.
+    pub cam_fit: base_ui::window::FitWindow,
     pub stream_err: String,
     pub stream_overlay: bool,
     pub read_cfg: Option<crate::device_ui::ReadCfg>,
@@ -382,6 +384,7 @@ impl App {
             stream_pan: egui::Vec2::ZERO,
             stream: None,
             stream_tex: None,
+            cam_fit: Default::default(),
             stream_err: String::new(),
             stream_overlay: false,
             read_cfg: None,

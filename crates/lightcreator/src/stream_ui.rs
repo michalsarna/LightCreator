@@ -157,16 +157,15 @@ impl App {
             }
             ui.label(RichText::new(format!("{:.0} %", self.stream_zoom * 100.0)).color(theme::text_dim()));
         });
+        let mut picture = None;
         match self.stream_tex.clone() {
             Some(t) => {
                 let sz = t.size_vec2();
                 // 100 % is the picture fitted to the window, scaled up as well as down. What stands under it (the working time and
-                // a stream error) is left out of its height, or the window would grow by that on every frame.
-                let line = ui.text_style_height(&egui::TextStyle::Monospace).max(ui.text_style_height(&egui::TextStyle::Body)) + ui.spacing().item_spacing.y;
-                let under = ui.spacing().item_spacing.y + line + if self.stream_err.is_empty() { 0.0 } else { line };
-                let fit = egui::vec2(ui.available_width().max(60.0), (ui.available_height() - under).max(60.0));
-                let k = (fit.x / sz.x).min(fit.y / sz.y);
+                // a stream error) is left out of its height: the last frame measured it (`FitWindow`).
+                let (k, slack_x) = base_ui::window::fit_picture(ui, sz, self.cam_fit.under(40.0));
                 let (resp, painter) = ui.allocate_painter(sz * k, egui::Sense::drag());
+                picture = Some((resp.rect, slack_x));
                 if resp.hovered() {
                     let scroll = ui.input(|i| i.smooth_scroll_delta.y);
                     if scroll != 0.0 {
@@ -186,6 +185,7 @@ impl App {
                 painter.with_clip_rect(resp.rect).image(t.id(), img, egui::Rect::from_min_max(egui::pos2(0.0, 0.0), egui::pos2(1.0, 1.0)), egui::Color32::WHITE);
             }
             None => {
+                self.cam_fit.slack = egui::Vec2::ZERO;
                 ui.add_space(30.0);
                 ui.label(tr("Waiting for the picture…"));
                 ui.add_space(30.0);
@@ -202,6 +202,9 @@ impl App {
         }
         if !self.stream_err.is_empty() {
             ui.label(RichText::new(trf("Stream error: {}", &[&self.stream_err.replace(self.doc.device.stream_url().unwrap_or("-"), "…")])).color(egui::Color32::from_rgb(0xc0, 0x30, 0x30)));
+        }
+        if let Some((rect, slack_x)) = picture {
+            self.cam_fit.measure(ui, rect, slack_x);
         }
     }
 
@@ -220,8 +223,10 @@ impl App {
             StreamMode::Floating => {
                 let mut open = true;
                 let saved = self.doc.device.camera_view.clone();
-                let mut win = egui::Window::new(format!("camera_window_{}", self.active)).title_bar(false).default_size(saved.float_size.unwrap_or([680.0, 540.0])).resizable(true);
-                if let Some(p) = saved.float_pos {
+                // A window that is bigger than the picture needs is opened again smaller (see `FitWindow`).
+                let size = self.cam_fit.size_or(saved.float_size.unwrap_or([680.0, 540.0]));
+                let mut win = egui::Window::new(self.cam_fit.id(&format!("camera_window_{}", self.active))).title_bar(false).default_size(size).resizable(true);
+                if let Some(p) = self.cam_fit.pos().or(saved.float_pos.map(|p| egui::pos2(p[0], p[1]))) {
                     win = win.default_pos(p);
                 }
                 let shown = win.show(ctx, |ui| {
@@ -230,6 +235,7 @@ impl App {
                 });
                 // The place and size are kept with the device, once the mouse is released.
                 if let Some(r) = shown.map(|r| r.response.rect) {
+                    self.cam_fit.settle(ctx, r);
                     if !ctx.input(|i| i.pointer.any_down()) {
                         let (pos, size) = ([r.min.x.round(), r.min.y.round()], [r.width().round(), r.height().round()]);
                         let v = &mut self.doc.device.camera_view;
@@ -265,6 +271,12 @@ impl App {
                             seen = Some(([o.min.x.round(), o.min.y.round()], [inner.width().round(), inner.height().round()]));
                         }
                     });
+                    // The window gives back the empty strip beside or under the picture, once the mouse is let go.
+                    if let Some(inner) = ui.input(|i| i.viewport().inner_rect) {
+                        if let Some(w) = self.cam_fit.viewport_size(ui.ctx(), inner.size()) {
+                            ui.ctx().send_viewport_cmd(egui::ViewportCommand::InnerSize(w));
+                        }
+                    }
                     if ui.input(|i| i.viewport().close_requested()) {
                         close = true;
                     }
@@ -384,6 +396,36 @@ mod tests {
         let (first, last) = (sizes[2], sizes[5]);
         assert!((first.height() - last.height()).abs() < 1.0, "the window grew: {sizes:?}");
         assert!(last.width() > 900.0 && last.height() > 500.0, "{last:?}");
+    }
+
+    #[test]
+    fn the_floating_camera_window_shrinks_to_the_shape_of_the_picture() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.doc.device.cameras = vec![lc_core::CameraSource::url("Camera 1", "http://127.0.0.1:9/none.mjpg", 1)];
+        a.doc.device.active_camera = 0;
+        a.stream_mode = StreamMode::Floating;
+        a.show_stream = true;
+        for i in 0..14 {
+            let input = egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1600.0, 1200.0))), ..Default::default() };
+            let mut out = ctx.run_ui(input, |ui| a.stream_window(ui.ctx()));
+            out.textures_delta.clear();
+            if i == 0 {
+                a.stream_tex = Some(ctx.load_texture("t", egui::ColorImage::from_rgb([320, 180], &vec![0u8; 320 * 180 * 3]), egui::TextureOptions::LINEAR));
+            }
+        }
+        let [w, h] = a.cam_fit.size_or([0.0, 0.0]);
+        assert!(w > 0.0, "the window was never fitted");
+        // It opens 680 x 540; a 16:9 picture (and the toolbar and the working time round it) needs less than that in both.
+        assert!(h < 520.0 && w <= 680.0, "{w} x {h}");
+        // And once fitted it stays so.
+        for _ in 0..8 {
+            let input = egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1600.0, 1200.0))), ..Default::default() };
+            let mut out = ctx.run_ui(input, |ui| a.stream_window(ui.ctx()));
+            out.textures_delta.clear();
+        }
+        let [w2, h2] = a.cam_fit.size_or([0.0, 0.0]);
+        assert!((w - w2).abs() < 1.0 && (h - h2).abs() < 1.0, "{w} x {h} -> {w2} x {h2}");
     }
 
     #[test]
