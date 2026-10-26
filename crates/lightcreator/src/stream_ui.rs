@@ -44,22 +44,63 @@ impl StreamMode {
     }
 }
 
+/// The three ways of showing the camera view, with their icons.
+const MODE_ICONS: [(StreamMode, &str); 3] = [(StreamMode::Floating, "picture-in-picture-2"), (StreamMode::Detached, "square-arrow-out-up-right"), (StreamMode::Tab, "panel-right")];
+
 impl App {
     /// Take the way of showing the camera view from the device (when a device is entered).
     pub fn load_camera_view(&mut self) {
-        let v = &self.doc.device.camera_view;
-        self.stream_mode = StreamMode::from_index(v.mode);
-        self.stream_zoom = v.zoom.clamp(1.0, MAX_ZOOM);
+        let d = &self.doc.device;
+        let mode = d.cameras.get(d.active_camera).and_then(|c| c.view_mode).unwrap_or(d.camera_view.mode);
+        self.stream_mode = StreamMode::from_index(mode);
+        self.stream_zoom = d.camera_view.zoom.clamp(1.0, MAX_ZOOM);
+        self.cam_view_for = d.active_camera;
     }
 
-    /// Remember the mode and zoom with the device when they changed.
+    /// Remember the mode (with the active camera) and the zoom (with the device) when they changed.
     pub(crate) fn save_camera_view(&mut self) {
-        let v = &mut self.doc.device.camera_view;
+        let d = &mut self.doc.device;
         let (mode, zoom) = (self.stream_mode.index(), self.stream_zoom);
-        if v.mode != mode || (v.zoom - zoom).abs() > 0.005 {
+        let cam = d.cameras.get(d.active_camera).and_then(|c| c.view_mode);
+        let new_cam = d.active_camera < d.cameras.len() && cam != Some(mode);
+        let v = &mut d.camera_view;
+        if new_cam || v.mode != mode || (v.zoom - zoom).abs() > 0.005 {
             v.mode = mode;
             v.zoom = zoom;
+            if let Some(c) = d.cameras.get_mut(d.active_camera) {
+                c.view_mode = Some(mode);
+            }
             self.sync_profile();
+        }
+    }
+
+    /// Set how the camera view of camera `i` opens (from the view options). The one in use changes at once.
+    pub fn set_camera_mode(&mut self, i: usize, mode: StreamMode) {
+        let Some(c) = self.doc.device.cameras.get_mut(i) else { return };
+        c.view_mode = Some(mode.index());
+        if i == self.doc.device.active_camera {
+            self.stream_mode = mode;
+            self.show_mode(mode);
+        }
+        self.sync_profile();
+    }
+
+    /// A camera view in the side panel must be seen: the panel opens on its tab.
+    fn show_mode(&mut self, mode: StreamMode) {
+        if mode == StreamMode::Tab {
+            self.side_tab = SideTab::Camera;
+            self.tabs.collapsed = false;
+        }
+    }
+
+    /// When another camera was made the active one, its own way of opening is taken.
+    fn follow_active_camera(&mut self) {
+        if self.cam_view_for != self.doc.device.active_camera {
+            let before = self.stream_mode;
+            self.load_camera_view();
+            if before != self.stream_mode {
+                self.show_mode(self.stream_mode);
+            }
         }
     }
 
@@ -125,17 +166,44 @@ impl App {
         out
     }
 
+    /// In the view options: where the camera view of each camera opens.
+    pub fn camera_mode_options(&mut self, ui: &mut egui::Ui) {
+        if self.doc.device.cameras.is_empty() {
+            return;
+        }
+        ui.add_space(8.0);
+        ui.label(RichText::new(tr("Camera view")).strong());
+        let rows: Vec<(String, StreamMode)> = self.doc.device.cameras.iter().map(|c| (c.name.clone(), StreamMode::from_index(c.view_mode.unwrap_or(self.doc.device.camera_view.mode)))).collect();
+        let mut pick = None;
+        egui::Grid::new("camera_modes").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
+            for (i, (name, now)) in rows.iter().enumerate() {
+                ui.label(name);
+                ui.horizontal(|ui| {
+                    for (m, icon) in MODE_ICONS {
+                        if crate::app::toggle_icon(ui, icon, &tr(m.label()), *now == m) {
+                            pick = Some((i, m));
+                        }
+                    }
+                });
+                ui.end_row();
+            }
+        });
+        if let Some((i, m)) = pick {
+            self.set_camera_mode(i, m);
+        }
+    }
+
     /// Picture and controls, shared by the three ways of showing the stream.
     pub fn stream_view(&mut self, ui: &mut egui::Ui) {
         ui.horizontal(|ui| {
             let before = self.stream_mode;
-            for (m, icon) in [(StreamMode::Floating, "picture-in-picture-2"), (StreamMode::Detached, "square-arrow-out-up-right"), (StreamMode::Tab, "panel-right")] {
+            for (m, icon) in MODE_ICONS {
                 if crate::app::toggle_icon(ui, icon, &tr(m.label()), self.stream_mode == m) {
                     self.stream_mode = m;
                 }
             }
-            if before != self.stream_mode && self.stream_mode == StreamMode::Tab {
-                self.side_tab = SideTab::Camera;
+            if before != self.stream_mode {
+                self.show_mode(self.stream_mode);
             }
             if before == StreamMode::Tab && self.stream_mode != StreamMode::Tab && self.side_tab == SideTab::Camera {
                 self.side_tab = SideTab::Properties;
@@ -218,6 +286,7 @@ impl App {
             self.tab_seen = false;
             return;
         }
+        self.follow_active_camera();
         self.stream_poll(ctx, &url);
         match self.stream_mode {
             StreamMode::Floating => {
@@ -273,7 +342,7 @@ impl App {
                     });
                     // The window gives back the empty strip beside or under the picture, once the mouse is let go.
                     if let Some(inner) = ui.input(|i| i.viewport().inner_rect) {
-                        if let Some(w) = self.cam_fit.viewport_size(ui.ctx(), inner.size()) {
+                        if let Some(w) = self.cam_fit.viewport_size(ui.ctx(), inner.size(), [320.0, 240.0]) {
                             ui.ctx().send_viewport_cmd(egui::ViewportCommand::InnerSize(w));
                         }
                     }
@@ -426,6 +495,27 @@ mod tests {
         }
         let [w2, h2] = a.cam_fit.size_or([0.0, 0.0]);
         assert!((w - w2).abs() < 1.0 && (h - h2).abs() < 1.0, "{w} x {h} -> {w2} x {h2}");
+    }
+
+    #[test]
+    fn each_camera_opens_its_view_its_own_way_and_a_tab_opens_the_collapsed_panel() {
+        let (mut a, _ctx) = app_with_overlay();
+        a.doc.device.cameras = vec![lc_core::CameraSource::url("A", "http://a/x", 0), lc_core::CameraSource::url("B", "http://b/y", 0)];
+        a.doc.device.active_camera = 0;
+        a.load_camera_view();
+        a.set_camera_mode(1, StreamMode::Tab);
+        assert_eq!(a.doc.device.cameras[1].view_mode, Some(2));
+        assert_eq!(a.stream_mode, StreamMode::Floating, "camera 0 is the one in use: it keeps its way");
+        a.set_camera_mode(0, StreamMode::Detached);
+        assert_eq!(a.stream_mode, StreamMode::Detached);
+        // Another camera is made the active one: its own way is taken, and the hidden panel shows its tab.
+        a.tabs.collapsed = true;
+        a.doc.device.active_camera = 1;
+        a.follow_active_camera();
+        assert_eq!((a.stream_mode, a.side_tab, a.tabs.collapsed), (StreamMode::Tab, SideTab::Camera, false));
+        a.doc.device.active_camera = 0;
+        a.follow_active_camera();
+        assert_eq!(a.stream_mode, StreamMode::Detached);
     }
 
     #[test]

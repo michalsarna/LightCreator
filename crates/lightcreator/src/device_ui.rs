@@ -1734,7 +1734,7 @@ impl App {
 
 /// A new camera at the end of the list. It is the one being set up, so it is switched on and becomes the active one.
 pub fn add_camera(d: &mut lc_core::Device) {
-    d.cameras.push(lc_core::CameraSource { name: trf("Camera {}", &[&(d.cameras.len() + 1)]), enabled: true, kind: lc_core::CameraKind::Url(String::new()), rotation: 0, image: Default::default(), lens: Default::default(), reference: vec![] });
+    d.cameras.push(lc_core::CameraSource { name: trf("Camera {}", &[&(d.cameras.len() + 1)]), enabled: true, kind: lc_core::CameraKind::Url(String::new()), rotation: 0, image: Default::default(), lens: Default::default(), reference: vec![], view_mode: None });
     d.activate_camera(d.cameras.len() - 1);
 }
 
