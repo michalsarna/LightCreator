@@ -17,6 +17,8 @@ pub enum StreamMode {
     Detached,
     /// A tab of the side panel.
     Tab,
+    /// A tab of the work area, next to the drawings.
+    Workspace,
 }
 
 impl StreamMode {
@@ -24,6 +26,7 @@ impl StreamMode {
         match i {
             1 => StreamMode::Detached,
             2 => StreamMode::Tab,
+            3 => StreamMode::Workspace,
             _ => StreamMode::Floating,
         }
     }
@@ -32,6 +35,7 @@ impl StreamMode {
             StreamMode::Floating => 0,
             StreamMode::Detached => 1,
             StreamMode::Tab => 2,
+            StreamMode::Workspace => 3,
         }
     }
 
@@ -40,12 +44,23 @@ impl StreamMode {
             StreamMode::Floating => "Floating window",
             StreamMode::Detached => "Separate window",
             StreamMode::Tab => "Side tab",
+            StreamMode::Workspace => "Tab in the work area",
         }
     }
 }
 
 /// The three ways of showing the camera view, with their icons.
-const MODE_ICONS: [(StreamMode, &str); 3] = [(StreamMode::Floating, "picture-in-picture-2"), (StreamMode::Detached, "square-arrow-out-up-right"), (StreamMode::Tab, "panel-right")];
+const MODE_ICONS: [(StreamMode, &str); 4] = [(StreamMode::Floating, "picture-in-picture-2"), (StreamMode::Detached, "square-arrow-out-up-right"), (StreamMode::Tab, "panel-right"), (StreamMode::Workspace, "panel-top")];
+
+impl StreamMode {
+    /// The name of the mode, translated (the work-area tab is a text of the shared interface).
+    pub fn tip(self) -> String {
+        match self {
+            StreamMode::Workspace => base_ui::doc_tabs::work_tab_label().to_string(),
+            m => tr(m.label()).to_string(),
+        }
+    }
+}
 
 impl App {
     /// Take the way of showing the camera view from the device (when a device is entered).
@@ -87,9 +102,13 @@ impl App {
 
     /// A camera view in the side panel must be seen: the panel opens on its tab.
     fn show_mode(&mut self, mode: StreamMode) {
-        if mode == StreamMode::Tab {
-            self.side_tab = SideTab::Camera;
-            self.tabs.collapsed = false;
+        match mode {
+            StreamMode::Tab => {
+                self.side_tab = SideTab::Camera;
+                self.tabs.collapsed = false;
+            }
+            StreamMode::Workspace => self.cam_tab_shown = true,
+            _ => {}
         }
     }
 
@@ -109,6 +128,7 @@ impl App {
         self.show_stream = false;
         self.stream = None;
         self.tab_seen = false;
+        self.cam_tab_shown = false;
         if self.stream_overlay {
             self.stream_overlay = false;
             self.overlay_visible = false;
@@ -180,7 +200,7 @@ impl App {
                 ui.label(name);
                 ui.horizontal(|ui| {
                     for (m, icon) in MODE_ICONS {
-                        if crate::app::toggle_icon(ui, icon, &tr(m.label()), *now == m) {
+                        if crate::app::toggle_icon(ui, icon, &m.tip(), *now == m) {
                             pick = Some((i, m));
                         }
                     }
@@ -193,12 +213,24 @@ impl App {
         }
     }
 
+    /// Is the camera view a tab of the work area (so that the bar of the tabs has one for it)?
+    pub fn camera_work_tab(&self) -> bool {
+        self.show_stream && self.stream_mode == StreamMode::Workspace && self.doc.device.stream_url().is_some()
+    }
+
+    /// The camera view in the work area, in place of the drawing.
+    pub fn camera_work_panel(&mut self, ui: &mut egui::Ui) {
+        egui::ScrollArea::vertical().id_salt("camera_work_area").auto_shrink([false, false]).show(ui, |ui| {
+            egui::Frame::new().inner_margin(8).show(ui, |ui| self.stream_view(ui));
+        });
+    }
+
     /// Picture and controls, shared by the three ways of showing the stream.
     pub fn stream_view(&mut self, ui: &mut egui::Ui) {
         ui.horizontal(|ui| {
             let before = self.stream_mode;
             for (m, icon) in MODE_ICONS {
-                if crate::app::toggle_icon(ui, icon, &tr(m.label()), self.stream_mode == m) {
+                if crate::app::toggle_icon(ui, icon, &m.tip(), self.stream_mode == m) {
                     self.stream_mode = m;
                 }
             }
@@ -362,6 +394,13 @@ impl App {
                     self.stream_closed();
                 }
             }
+            StreamMode::Workspace => {
+                // Drawn in the work area, as a tab next to the drawings (`App::camera_work_tab`); keep frames flowing.
+                if !self.cam_tab_seen {
+                    self.cam_tab_shown = true;
+                }
+                ctx.request_repaint_after(std::time::Duration::from_millis(100));
+            }
             StreamMode::Tab => {
                 // Drawn by the side panel; make sure the tab is there and keep frames flowing.
                 if self.side_tab != SideTab::Camera && !self.tab_seen {
@@ -372,6 +411,10 @@ impl App {
         }
         if self.stream_mode != StreamMode::Tab {
             self.tab_seen = false;
+        }
+        self.cam_tab_seen = self.stream_mode == StreamMode::Workspace;
+        if !self.cam_tab_seen {
+            self.cam_tab_shown = false;
         }
     }
 }
@@ -516,6 +559,31 @@ mod tests {
         a.doc.device.active_camera = 0;
         a.follow_active_camera();
         assert_eq!(a.stream_mode, StreamMode::Detached);
+    }
+
+    #[test]
+    fn the_camera_can_be_a_tab_of_the_work_area_that_a_drawing_tab_replaces() {
+        let (mut a, ctx) = app_with_overlay();
+        let frame = |a: &mut App, ctx: &egui::Context| {
+            let mut out = ctx.run_ui(Default::default(), |ui| a.stream_window(ui.ctx()));
+            out.textures_delta.clear();
+        };
+        a.doc.device.cameras = vec![lc_core::CameraSource::url("A", "http://127.0.0.1:9/x", 0)];
+        a.show_stream = true;
+        assert!(!a.camera_work_tab());
+        a.set_camera_mode(0, StreamMode::Workspace);
+        assert!(a.camera_work_tab() && a.cam_tab_shown);
+        assert_eq!(a.doc.device.cameras[0].view_mode, Some(3));
+        frame(&mut a, &ctx);
+        assert!(a.cam_tab_shown, "it stays shown while the mode is the tab");
+        // A drawing tab is picked: the drawing is back, the camera tab stays in the bar.
+        a.new_tab();
+        a.switch_to(0);
+        assert!(!a.cam_tab_shown && a.camera_work_tab());
+        // Another mode takes the tab away.
+        a.set_camera_mode(0, StreamMode::Floating);
+        frame(&mut a, &ctx);
+        assert!(!a.camera_work_tab() && !a.cam_tab_shown);
     }
 
     #[test]

@@ -1903,7 +1903,7 @@ fn the_camera_view_is_stored_with_the_device_and_checked_on_import() {
     // Older profiles have the default view.
     let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
     assert_eq!(old.camera_view, CameraView::default());
-    for bad in [CameraView { mode: 3, ..Default::default() }, CameraView { zoom: 0.2, ..Default::default() }, CameraView { zoom: f32::NAN, ..Default::default() }, CameraView { float_size: Some([5.0, 5.0]), ..Default::default() }, CameraView { win_pos: Some([f32::INFINITY, 0.0]), ..Default::default() }] {
+    for bad in [CameraView { mode: 4, ..Default::default() }, CameraView { zoom: 0.2, ..Default::default() }, CameraView { zoom: f32::NAN, ..Default::default() }, CameraView { float_size: Some([5.0, 5.0]), ..Default::default() }, CameraView { win_pos: Some([f32::INFINITY, 0.0]), ..Default::default() }] {
         let mut x = Device::default();
         x.camera_view = bad;
         assert!(profiles::import_profile(&profiles::export_profile(&x, "v0.1.2")).is_err());
