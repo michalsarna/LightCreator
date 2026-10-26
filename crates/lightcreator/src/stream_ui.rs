@@ -157,12 +157,15 @@ impl App {
             }
             ui.label(RichText::new(format!("{:.0} %", self.stream_zoom * 100.0)).color(theme::text_dim()));
         });
-        let avail = ui.available_width().min(1400.0);
         match self.stream_tex.clone() {
             Some(t) => {
                 let sz = t.size_vec2();
-                let reserve = if self.stream_err.is_empty() { 4.0 } else { 26.0 };
-                let k = (avail / sz.x).min((ui.available_height() - reserve).max(120.0) / sz.y).min(2.0);
+                // 100 % is the picture fitted to the window, scaled up as well as down. What stands under it (the working time and
+                // a stream error) is left out of its height, or the window would grow by that on every frame.
+                let line = ui.text_style_height(&egui::TextStyle::Monospace).max(ui.text_style_height(&egui::TextStyle::Body)) + ui.spacing().item_spacing.y;
+                let under = ui.spacing().item_spacing.y + line + if self.stream_err.is_empty() { 0.0 } else { line };
+                let fit = egui::vec2(ui.available_width().max(60.0), (ui.available_height() - under).max(60.0));
+                let k = (fit.x / sz.x).min(fit.y / sz.y);
                 let (resp, painter) = ui.allocate_painter(sz * k, egui::Sense::drag());
                 if resp.hovered() {
                     let scroll = ui.input(|i| i.smooth_scroll_delta.y);
@@ -361,6 +364,26 @@ mod tests {
         assert!(a.stream_tex.is_none(), "texture is rebuilt with the new rotation");
         assert_eq!(a.stream_rot, 1);
         a.stream = None;
+    }
+
+    #[test]
+    fn the_picture_is_fitted_to_the_window_up_as_well_as_down_and_the_window_keeps_its_size() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.stream_tex = Some(ctx.load_texture("t", egui::ColorImage::from_rgb([320, 180], &vec![0u8; 320 * 180 * 3]), egui::TextureOptions::LINEAR));
+        let mut sizes = vec![];
+        for size in [[1000.0, 800.0], [1000.0, 800.0], [1000.0, 800.0], [1000.0, 800.0], [1000.0, 800.0], [1000.0, 800.0]] {
+            let input = egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1600.0, 1200.0))), ..Default::default() };
+            let mut shown = None;
+            let mut out = ctx.run_ui(input, |ui| {
+                shown = egui::Window::new("cam").default_size(size).resizable(true).show(ui.ctx(), |ui| a.stream_view(ui)).map(|r| r.response.rect);
+            });
+            out.textures_delta.clear();
+            sizes.push(shown.expect("the window"));
+        }
+        let (first, last) = (sizes[2], sizes[5]);
+        assert!((first.height() - last.height()).abs() < 1.0, "the window grew: {sizes:?}");
+        assert!(last.width() > 900.0 && last.height() > 500.0, "{last:?}");
     }
 
     #[test]
