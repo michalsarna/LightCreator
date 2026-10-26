@@ -384,7 +384,7 @@ fn render_screenshots() {
     {
         let a = app(&mut h);
         a.show_stream = false;
-        a.stream_mode = crate::stream_ui::StreamMode::Floating;
+        a.stream_mode = crate::stream_ui::StreamMode::Tab;
         a.side_tab = SideTab::Properties;
         a.open_ser2net();
         if let Some(d) = a.ser2net.as_mut() {
@@ -1412,5 +1412,38 @@ mod tab_click_tests {
         // The cross of a tab without unsaved work closes it at once.
         click(&mut h, egui::pos2(81.0, 125.0));
         assert_eq!(app(&mut h).tab_count(), 1, "the cross closes the tab");
+    }
+}
+
+#[cfg(test)]
+mod device_window_tests {
+    use super::*;
+
+    #[test]
+    fn the_device_window_has_its_pages_in_a_row_and_its_buttons_at_the_foot_and_keeps_its_size() {
+        let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
+            |ui, state: &mut Option<App>| {
+                let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+                a.draw(ui);
+            },
+            None,
+        );
+        h.run_steps(2);
+        {
+            let a = app(&mut h);
+            a.profiles = vec![Device::default()];
+            a.enter_editor(0);
+            a.open_cfg_edit(0);
+        }
+        h.run_steps(4);
+        let rect = |h: &mut Shot| h.ctx.memory(|m| m.area_rect(eframe::egui::Id::unique(Some("device_cfg")))).expect("the window");
+        let first = rect(&mut h);
+        h.run_steps(30);
+        let later = rect(&mut h);
+        assert!((first.height() - later.height()).abs() < 1.0, "the window keeps its height: {first:?} then {later:?}");
+        assert!(later.height() < 700.0, "and it does not fill the screen: {later:?}");
+        if let Ok(p) = std::env::var("SHOT") {
+            h.render().unwrap().save(p).unwrap();
+        }
     }
 }

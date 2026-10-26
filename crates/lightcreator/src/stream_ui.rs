@@ -1,5 +1,5 @@
-//! The live picture from the device's camera URL. It can float inside the app, open in its own window
-//! (which may leave the app window and the screen) or sit in the side panel as a tab.
+//! The live picture from the device's camera URL. It can open in its own window (which may leave the
+//! app window and the screen), sit in the side panel as a tab or be a tab of the work area.
 use crate::app::{App, SideTab};
 use crate::camera::rotate_rgb;
 use crate::camera_stream::{self, Msg};
@@ -11,8 +11,6 @@ const MAX_ZOOM: f32 = 8.0;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum StreamMode {
-    /// A window inside the application.
-    Floating,
     /// A separate operating-system window.
     Detached,
     /// A tab of the side panel.
@@ -27,12 +25,12 @@ impl StreamMode {
             1 => StreamMode::Detached,
             2 => StreamMode::Tab,
             3 => StreamMode::Workspace,
-            _ => StreamMode::Floating,
+            // 0 was a window inside the application: it is a tab of the side panel now.
+            _ => StreamMode::Tab,
         }
     }
     pub fn index(self) -> u8 {
         match self {
-            StreamMode::Floating => 0,
             StreamMode::Detached => 1,
             StreamMode::Tab => 2,
             StreamMode::Workspace => 3,
@@ -41,7 +39,6 @@ impl StreamMode {
 
     pub fn label(self) -> &'static str {
         match self {
-            StreamMode::Floating => "Floating window",
             StreamMode::Detached => "Separate window",
             StreamMode::Tab => "Side tab",
             StreamMode::Workspace => "Tab in the work area",
@@ -50,7 +47,7 @@ impl StreamMode {
 }
 
 /// The three ways of showing the camera view, with their icons.
-const MODE_ICONS: [(StreamMode, &str); 4] = [(StreamMode::Floating, "picture-in-picture-2"), (StreamMode::Detached, "square-arrow-out-up-right"), (StreamMode::Tab, "panel-right"), (StreamMode::Workspace, "panel-top")];
+const MODE_ICONS: [(StreamMode, &str); 3] = [(StreamMode::Detached, "square-arrow-out-up-right"), (StreamMode::Tab, "panel-right"), (StreamMode::Workspace, "panel-top")];
 
 impl StreamMode {
     /// The name of the mode, translated (the work-area tab is a text of the shared interface).
@@ -321,36 +318,6 @@ impl App {
         self.follow_active_camera();
         self.stream_poll(ctx, &url);
         match self.stream_mode {
-            StreamMode::Floating => {
-                let mut open = true;
-                let saved = self.doc.device.camera_view.clone();
-                // A window that is bigger than the picture needs is opened again smaller (see `FitWindow`).
-                let size = self.cam_fit.size_or(saved.float_size.unwrap_or([680.0, 540.0]));
-                let mut win = egui::Window::new(self.cam_fit.id(&format!("camera_window_{}", self.active))).title_bar(false).default_size(size).resizable(true);
-                if let Some(p) = self.cam_fit.pos().or(saved.float_pos.map(|p| egui::pos2(p[0], p[1]))) {
-                    win = win.default_pos(p);
-                }
-                let shown = win.show(ctx, |ui| {
-                    crate::window_ui::mini_title(ui, &tr("Camera view"), &mut open, |_| {});
-                    self.stream_view(ui);
-                });
-                // The place and size are kept with the device, once the mouse is released.
-                if let Some(r) = shown.map(|r| r.response.rect) {
-                    self.cam_fit.settle(ctx, r);
-                    if !ctx.input(|i| i.pointer.any_down()) {
-                        let (pos, size) = ([r.min.x.round(), r.min.y.round()], [r.width().round(), r.height().round()]);
-                        let v = &mut self.doc.device.camera_view;
-                        if v.float_pos != Some(pos) || v.float_size != Some(size) {
-                            v.float_pos = Some(pos);
-                            v.float_size = Some(size);
-                            self.sync_profile();
-                        }
-                    }
-                }
-                if !open {
-                    self.stream_closed();
-                }
-            }
             StreamMode::Detached => {
                 let saved = self.doc.device.camera_view.clone();
                 let mut builder = egui::ViewportBuilder::default().with_title(tr("Camera view")).with_inner_size(saved.win_size.unwrap_or([720.0, 580.0])).with_min_inner_size([320.0, 240.0]);
@@ -361,8 +328,8 @@ impl App {
                 let mut close = false;
                 ctx.show_viewport_immediate(egui::ViewportId::from_hash_of("lightcreator-camera"), builder, |ui, class| {
                     if class == egui::ViewportClass::EmbeddedWindow {
-                        // The backend cannot open real windows: fall back to a floating window.
-                        self.stream_mode = StreamMode::Floating;
+                        // The backend cannot open real windows: fall back to the side tab.
+                        self.stream_mode = StreamMode::Tab;
                         return;
                     }
                     egui::CentralPanel::default().show(ui, |ui| self.stream_view(ui));
@@ -511,36 +478,6 @@ mod tests {
     }
 
     #[test]
-    fn the_floating_camera_window_shrinks_to_the_shape_of_the_picture() {
-        let ctx = egui::Context::default();
-        let mut a = App::build(&ctx, None, false);
-        a.doc.device.cameras = vec![lc_core::CameraSource::url("Camera 1", "http://127.0.0.1:9/none.mjpg", 1)];
-        a.doc.device.active_camera = 0;
-        a.stream_mode = StreamMode::Floating;
-        a.show_stream = true;
-        for i in 0..14 {
-            let input = egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1600.0, 1200.0))), ..Default::default() };
-            let mut out = ctx.run_ui(input, |ui| a.stream_window(ui.ctx()));
-            out.textures_delta.clear();
-            if i == 0 {
-                a.stream_tex = Some(ctx.load_texture("t", egui::ColorImage::from_rgb([320, 180], &vec![0u8; 320 * 180 * 3]), egui::TextureOptions::LINEAR));
-            }
-        }
-        let [w, h] = a.cam_fit.size_or([0.0, 0.0]);
-        assert!(w > 0.0, "the window was never fitted");
-        // It opens 680 x 540; a 16:9 picture (and the toolbar and the working time round it) needs less than that in both.
-        assert!(h < 520.0 && w <= 680.0, "{w} x {h}");
-        // And once fitted it stays so.
-        for _ in 0..8 {
-            let input = egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1600.0, 1200.0))), ..Default::default() };
-            let mut out = ctx.run_ui(input, |ui| a.stream_window(ui.ctx()));
-            out.textures_delta.clear();
-        }
-        let [w2, h2] = a.cam_fit.size_or([0.0, 0.0]);
-        assert!((w - w2).abs() < 1.0 && (h - h2).abs() < 1.0, "{w} x {h} -> {w2} x {h2}");
-    }
-
-    #[test]
     fn each_camera_opens_its_view_its_own_way_and_a_tab_opens_the_collapsed_panel() {
         let (mut a, _ctx) = app_with_overlay();
         a.doc.device.cameras = vec![lc_core::CameraSource::url("A", "http://a/x", 0), lc_core::CameraSource::url("B", "http://b/y", 0)];
@@ -548,7 +485,7 @@ mod tests {
         a.load_camera_view();
         a.set_camera_mode(1, StreamMode::Tab);
         assert_eq!(a.doc.device.cameras[1].view_mode, Some(2));
-        assert_eq!(a.stream_mode, StreamMode::Floating, "camera 0 is the one in use: it keeps its way");
+        assert_eq!(a.stream_mode, StreamMode::Tab, "camera 0 is the one in use: it keeps its way");
         a.set_camera_mode(0, StreamMode::Detached);
         assert_eq!(a.stream_mode, StreamMode::Detached);
         // Another camera is made the active one: its own way is taken, and the hidden panel shows its tab.
@@ -581,7 +518,7 @@ mod tests {
         a.switch_to(0);
         assert!(!a.cam_tab_shown && a.camera_work_tab());
         // Another mode takes the tab away.
-        a.set_camera_mode(0, StreamMode::Floating);
+        a.set_camera_mode(0, StreamMode::Tab);
         frame(&mut a, &ctx);
         assert!(!a.camera_work_tab() && !a.cam_tab_shown);
     }
@@ -592,24 +529,24 @@ mod tests {
         let mut a = App::build(&ctx, None, false);
         let mut d1 = lc_core::Device::default();
         d1.name = "One".into();
-        d1.camera_view = lc_core::CameraView { mode: 2, zoom: 3.0, ..Default::default() };
+        d1.camera_view = lc_core::CameraView { mode: 1, zoom: 3.0, ..Default::default() };
         let mut d2 = lc_core::Device::default();
         d2.name = "Two".into();
         a.profiles = vec![d1, d2];
         a.enter_editor(0);
-        assert_eq!((a.stream_mode, a.stream_zoom), (StreamMode::Tab, 3.0));
+        assert_eq!((a.stream_mode, a.stream_zoom), (StreamMode::Detached, 3.0));
         a.enter_editor(1);
-        assert_eq!((a.stream_mode, a.stream_zoom), (StreamMode::Floating, 1.0), "the other device has its own");
+        assert_eq!((a.stream_mode, a.stream_zoom), (StreamMode::Tab, 1.0), "the other device has its own");
         // A change is kept with the device and in the profile list.
-        a.stream_mode = StreamMode::Detached;
+        a.stream_mode = StreamMode::Workspace;
         a.stream_zoom = 2.0;
         a.save_camera_view();
-        assert_eq!((a.doc.device.camera_view.mode, a.doc.device.camera_view.zoom), (1, 2.0));
-        assert_eq!(a.profiles[1].camera_view.mode, 1);
+        assert_eq!((a.doc.device.camera_view.mode, a.doc.device.camera_view.zoom), (3, 2.0));
+        assert_eq!(a.profiles[1].camera_view.mode, 3);
         a.enter_editor(0);
-        assert_eq!(a.stream_mode, StreamMode::Tab);
+        assert_eq!(a.stream_mode, StreamMode::Detached);
         a.enter_editor(1);
-        assert_eq!((a.stream_mode, a.stream_zoom), (StreamMode::Detached, 2.0));
+        assert_eq!((a.stream_mode, a.stream_zoom), (StreamMode::Workspace, 2.0));
     }
 
     #[test]
