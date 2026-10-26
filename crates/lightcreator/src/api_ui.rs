@@ -139,7 +139,7 @@ impl App {
 
     /// One command from the API, with the same rules as the buttons it stands for.
     pub fn api_command(&mut self, c: Command) {
-        let ctrl = self.doc.device.controller;
+        let ctrl = self.doc.device.link_controller();
         match c {
             Command::Stop => self.abort_job(),
             Command::Home => {

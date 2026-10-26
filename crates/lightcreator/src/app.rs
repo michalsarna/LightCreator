@@ -969,7 +969,7 @@ impl App {
                 }
             }
             Choice::Unlock => {
-                let a = self.doc.device.controller.unlock();
+                let a = self.doc.device.link_controller().unlock();
                 self.run_action(a);
                 self.problem = None;
             }

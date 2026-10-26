@@ -1340,7 +1340,7 @@ impl App {
             self.status = tr("The head is at the edge of the allowed area.").to_string();
             return None;
         }
-        Some(dev.controller.jog_z(dz, feed))
+        Some(dev.link_controller().jog_z(dz, feed))
     }
 
     /// The machine is moving (a job, a frame, a jog, homing): its position changes all the time.
@@ -1359,7 +1359,7 @@ impl App {
         self.doc.device.live_position = on;
         self.live_shown = None;
         if on && self.live_position_homes() {
-            let ctrl = self.doc.device.controller;
+            let ctrl = self.doc.device.link_controller();
             self.run_action(ctrl.home());
         }
     }
@@ -1397,7 +1397,7 @@ impl App {
             self.status = tr("The head is at the edge of the allowed area.").to_string();
             return None;
         }
-        Some(dev.controller.jog(mx, my, feed))
+        Some(dev.link_controller().jog(mx, my, feed))
     }
 
     /// Short description for the status bar / logs.
@@ -1640,7 +1640,7 @@ impl App {
         if !self.connected || self.job_running() {
             return;
         }
-        let (c, ctrl) = (self.doc.device.connection.clone(), self.doc.device.controller);
+        let (c, ctrl) = (self.doc.device.connection.clone(), self.doc.device.link_controller());
         if c.unlock_on_connect {
             self.run_action(ctrl.unlock());
         }
