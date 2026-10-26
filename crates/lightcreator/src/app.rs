@@ -192,6 +192,9 @@ pub struct App {
     pub cam_fit: base_ui::window::FitWindow,
     /// The camera whose way of opening the camera view has now.
     pub cam_view_for: usize,
+    /// The camera view is a tab of the work area and it is the one shown (in place of the drawing).
+    pub cam_tab_shown: bool,
+    pub cam_tab_seen: bool,
     pub stream_err: String,
     pub stream_overlay: bool,
     pub read_cfg: Option<crate::device_ui::ReadCfg>,
@@ -388,6 +391,8 @@ impl App {
             stream_tex: None,
             cam_fit: Default::default(),
             cam_view_for: 0,
+            cam_tab_shown: false,
+            cam_tab_seen: false,
             stream_err: String::new(),
             stream_overlay: false,
             read_cfg: None,
@@ -1850,7 +1855,9 @@ impl App {
         egui::Panel::right("arrange_bar").frame(chrome.inner_margin(egui::Margin::symmetric(2, 4))).exact_size(40.0).resizable(false).show(ui, |ui| self.arrange_bar(ui));
         egui::Panel::bottom("swatches").frame(chrome).exact_size(36.0).show(ui, |ui| base_ui::layer_bar::layer_bar(self, ui));
         egui::CentralPanel::no_frame().show(ui, |ui| {
-            if !self.gcode_view_panel(ui) {
+            if self.cam_tab_shown && self.camera_work_tab() {
+                self.camera_work_panel(ui);
+            } else if !self.gcode_view_panel(ui) {
                 self.canvas(ui)
             }
         });
