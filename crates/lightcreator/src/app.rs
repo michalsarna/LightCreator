@@ -190,6 +190,8 @@ pub struct App {
     pub stream_tex: Option<egui::TextureHandle>,
     /// The camera window shrinks to the picture.
     pub cam_fit: base_ui::window::FitWindow,
+    /// The camera whose way of opening the camera view has now.
+    pub cam_view_for: usize,
     pub stream_err: String,
     pub stream_overlay: bool,
     pub read_cfg: Option<crate::device_ui::ReadCfg>,
@@ -385,6 +387,7 @@ impl App {
             stream: None,
             stream_tex: None,
             cam_fit: Default::default(),
+            cam_view_for: 0,
             stream_err: String::new(),
             stream_overlay: false,
             read_cfg: None,
@@ -1592,6 +1595,9 @@ pub fn fmt_time(s: f64) -> String {
 }
 
 impl base_ui::editor::EditorHost for App {
+    fn view_options_extra(&mut self, ui: &mut egui::Ui) {
+        self.camera_mode_options(ui);
+    }
     fn ed(&self) -> &base_ui::editor::EditorState {
         &self.ed
     }
