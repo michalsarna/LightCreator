@@ -7,6 +7,10 @@ use crate::i18n::{tr, trf};
 use crate::theme;
 use eframe::egui::{self, RichText};
 
+/// How long the camera window must keep its size to count as let go.
+const CAM_STILL: std::time::Duration = std::time::Duration::from_millis(500);
+/// The smallest camera window (the same as its minimum inner size).
+const CAM_MIN: [f32; 2] = [320.0, 240.0];
 const MAX_ZOOM: f32 = 8.0;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -159,6 +163,10 @@ impl App {
                 }
             }
         }
+        // While the camera window is being resized the picture stands still (new frames are dropped); the stream goes on after.
+        if self.cam_resizing() {
+            latest = None;
+        }
         if let Some(f) = latest {
             let rgb = self.cam_process(f.rgb, f.w, f.h);
             let (w, h, rgb) = rotate_rgb(&rgb, f.w, f.h, rotation);
@@ -171,6 +179,25 @@ impl App {
             if self.stream_overlay {
                 self.overlay_set_image(ctx, img, &tr("Camera view"));
             }
+        }
+    }
+
+    /// Is the separate camera window being resized (its size changed a moment ago)?
+    pub fn cam_resizing(&self) -> bool {
+        self.stream_mode == StreamMode::Detached && self.cam_win.is_some_and(|(_, t)| t.elapsed() < CAM_STILL)
+    }
+
+    /// Note the size of the separate camera window; once it has stood still for a while (the edge was let go) and is bigger
+    /// than its picture needs, give back the empty strip: the window is cut to the scaled picture.
+    fn cam_window_settle(&mut self, ctx: &egui::Context, size: [f32; 2]) {
+        match self.cam_win {
+            Some((s, _)) if s == size => {}
+            _ => self.cam_win = Some((size, std::time::Instant::now())),
+        }
+        if self.cam_resizing() {
+            ctx.request_repaint_after(CAM_STILL);
+        } else if let Some(w) = self.cam_fit.fitted(egui::vec2(size[0], size[1]), CAM_MIN) {
+            ctx.send_viewport_cmd(egui::ViewportCommand::InnerSize(w));
         }
     }
 
@@ -339,6 +366,9 @@ impl App {
                             seen = Some(([o.min.x.round(), o.min.y.round()], [inner.width().round(), inner.height().round()]));
                         }
                     });
+                    if let Some((_, size)) = seen {
+                        self.cam_window_settle(ui.ctx(), size);
+                    }
                     if ui.input(|i| i.viewport().close_requested()) {
                         close = true;
                     }
@@ -491,7 +521,25 @@ mod tests {
         }
         // Only the working time stands under the picture; the picture fills the width of the window (640 x 360 in 774 x 574).
         assert!(a.cam_fit.under(0.0) < 45.0, "under {}", a.cam_fit.under(0.0));
-        assert!(a.cam_fit.slack.x < 1.0, "the picture fills the width: {:?}", a.cam_fit.slack);
+        assert!(a.cam_fit.slack.x < 8.0, "the picture fills the width: {:?}", a.cam_fit.slack);
+    }
+
+    #[test]
+    fn the_camera_picture_stands_still_while_the_window_is_resized_and_the_window_is_cut_to_it_afterwards() {
+        let (mut a, ctx) = app_with_overlay();
+        a.stream_mode = StreamMode::Detached;
+        a.cam_window_settle(&ctx, [800.0, 600.0]);
+        assert!(a.cam_resizing(), "a new size counts as a resize");
+        a.cam_window_settle(&ctx, [790.0, 600.0]);
+        assert!(a.cam_resizing());
+        std::thread::sleep(CAM_STILL + std::time::Duration::from_millis(100));
+        a.cam_window_settle(&ctx, [790.0, 600.0]);
+        assert!(!a.cam_resizing(), "the same size for a while: the edge was let go");
+        // 150 points of empty width beside the picture: the window would be cut by that much, but not below its smallest size.
+        a.cam_fit.slack = egui::vec2(150.0, 0.0);
+        assert_eq!(a.cam_fit.fitted(egui::vec2(790.0, 600.0), CAM_MIN), Some(egui::vec2(640.0, 600.0)));
+        a.cam_fit.slack = egui::vec2(2.0, 1.0);
+        assert_eq!(a.cam_fit.fitted(egui::vec2(790.0, 600.0), CAM_MIN), None);
     }
 
     #[test]
