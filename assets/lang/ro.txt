@@ -1107,3 +1107,6 @@
 1106|Contur
 1107|Urmează linia care înconjoară toate formele, ca o bandă elastică.
 1108|Cadru de contur
+1109|Ordinea trecerilor
+1110|Trecere cu trecere peste toate obiectele
+1111|Obiect cu obiect, toate trecerile sale

@@ -1107,3 +1107,6 @@
 1106|Kontur
 1107|Följer linjen som omsluter alla former, som ett gummiband.
 1108|Konturram
+1109|Ordning på genomgångarna
+1110|Genomgång för genomgång över alla objekt
+1111|Objekt för objekt, alla dess genomgångar

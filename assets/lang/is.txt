@@ -1107,3 +1107,6 @@
 1106|Útlína
 1107|Fer eftir línunni sem umlykur öll form, eins og teygja.
 1108|Útlínurammi
+1109|Röð yfirferða
+1110|Yfirferð fyrir yfirferð á alla hluti
+1111|Hlutur fyrir hlut, allar yfirferðir hans

@@ -1107,3 +1107,6 @@
 1106|Kontūra
 1107|Iet pa līniju, kas aptver visas formas kā gumija.
 1108|Kontūras rāmis
+1109|Gājienu secība
+1110|Gājiens pēc gājiena pār visiem objektiem
+1111|Objekts pēc objekta, visi tā gājieni

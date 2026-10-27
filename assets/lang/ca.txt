@@ -1107,3 +1107,6 @@
 1106|Contorn
 1107|Recorre la línia que envolta totes les formes, com una goma elàstica.
 1108|Marc del contorn
+1109|Ordre de les passades
+1110|Passada a passada sobre tots els objectes
+1111|Objecte a objecte, totes les seves passades

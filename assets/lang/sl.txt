@@ -1107,3 +1107,6 @@
 1106|Obris
 1107|Sledi črti, ki obdaja vse oblike kot elastika.
 1108|Okvir obrisa
+1109|Vrstni red prehodov
+1110|Prehod za prehodom čez vse objekte
+1111|Objekt za objektom, vsi njegovi prehodi

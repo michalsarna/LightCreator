@@ -1107,3 +1107,6 @@
 1106|Contorno
 1107|Percorre a linha que envolve todas as formas, como um elástico.
 1108|Moldura do contorno
+1109|Ordem das passagens
+1110|Passagem a passagem em todos os objetos
+1111|Objeto a objeto, todas as suas passagens

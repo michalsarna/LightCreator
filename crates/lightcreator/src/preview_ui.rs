@@ -134,7 +134,7 @@ impl App {
         let Some((_, job)) = self.pv.job.take() else { return };
         // A slim frame: the default window margin leaves a wide empty strip under the totals.
         let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 8, right: 8, top: 6, bottom: 3 });
-        egui::Window::new("preview_window").title_bar(false).frame(frame).default_size([980.0, 640.0]).resizable(true).movable(ctx.input(|i| i.pointer.primary_down())).show(ctx, |ui| {
+        let shown = egui::Window::new("preview_window").title_bar(false).frame(frame).default_size([980.0, 640.0]).resizable(true).movable(false).show(ctx, |ui| {
             let pv = &mut self.pv;
             crate::window_ui::mini_title(ui, &tr("Preview"), &mut open, |ui| {
                 // Icons are added right to left: the work area button is the one on the left.
@@ -322,6 +322,10 @@ impl App {
             });
             });
         });
+        // The window is moved by its title line only.
+        if let Some(r) = &shown {
+            base_ui::window::move_by_title(ctx, r.response.layer_id);
+        }
         self.pv.job = Some((self.revision, job));
         self.show_preview = open;
         if !open {

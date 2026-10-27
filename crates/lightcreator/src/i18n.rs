@@ -1251,6 +1251,9 @@ const TABLE: &[[&str; 7]] = &[
     ["Outline", "Obrys", "Kontur", "Contorno", "Ääriviiva", "轮廓", "रूपरेखा"],
     ["Trace the outline that wraps all the shapes, like a rubber band.", "Obrysuj linię otaczającą wszystkie kształty, jak gumka.", "Die Linie nachfahren, die alle Formen umschließt, wie ein Gummiband.", "Percorre la linea che avvolge tutte le forme, come un elastico.", "Kulje kaikki muodot kiertävää linjaa kuin kuminauha.", "沿着包住所有形状的线运行，像橡皮筋一样。", "सभी आकृतियों को घेरने वाली रेखा पर चलें, रबर बैंड की तरह।"],
     ["Outline frame", "Obrys ramka", "Konturrahmen", "Cornice del contorno", "Ääriviivakehys", "轮廓框", "रूपरेखा फ़्रेम"],
+    ["Order of passes", "Kolejność przejść", "Reihenfolge der Durchgänge", "Ordine dei passaggi", "Kierrosten järjestys", "道次顺序", "पास का क्रम"],
+    ["Pass by pass over all objects", "Przejście po przejściu na wszystkich obiektach", "Durchgang für Durchgang über alle Objekte", "Passaggio per passaggio su tutti gli oggetti", "Kierros kerrallaan kaikille kohteille", "对所有对象逐道次进行", "सभी वस्तुओं पर एक-एक पास"],
+    ["Object by object, all its passes", "Obiekt po obiekcie, wszystkie jego przejścia", "Objekt für Objekt, alle seine Durchgänge", "Oggetto per oggetto, tutti i suoi passaggi", "Kohde kerrallaan, kaikki sen kierrokset", "逐个对象进行，完成其所有道次", "एक-एक वस्तु, उसके सभी पास"],
 ];
 #[cfg(test)]
 mod tests {

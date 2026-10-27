@@ -466,6 +466,10 @@ pub struct GcodeCfg {
     /// Own G-code at the start and end of layers and objects.
     #[serde(default)]
     pub hooks: Hooks,
+    /// A layer with several passes: `false` makes the first pass over all its objects, then the second and so on; `true` makes
+    /// all the passes over one object, then goes on to the next object.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub passes_per_object: bool,
 }
 
 fn d_arc_tol() -> f64 {
@@ -489,6 +493,7 @@ impl Default for GcodeCfg {
             arc_tolerance: DEFAULT_ARC_TOL,
             flatten_tolerance: DEFAULT_FLATTEN_TOL,
             hooks: Hooks::default(),
+            passes_per_object: false,
         }
     }
 }

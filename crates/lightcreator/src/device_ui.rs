@@ -644,6 +644,12 @@ impl App {
                             ui.label(tr("Return to origin"));
                             ui.checkbox(&mut d.gcode.return_home, "");
                             ui.end_row();
+                            ui.label(tr("Order of passes"));
+                            egui::ComboBox::from_id_salt("passes_order").selected_text(tr(if d.gcode.passes_per_object { "Object by object, all its passes" } else { "Pass by pass over all objects" })).show_ui(ui, |ui| {
+                                ui.selectable_value(&mut d.gcode.passes_per_object, false, tr("Pass by pass over all objects"));
+                                ui.selectable_value(&mut d.gcode.passes_per_object, true, tr("Object by object, all its passes"));
+                            });
+                            ui.end_row();
                             ui.label(tr("Arcs (G2 / G3)"));
                             ui.checkbox(&mut d.gcode.arcs, tr("Write curves as arcs where they fit"));
                             ui.end_row();

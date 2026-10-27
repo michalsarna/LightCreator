@@ -1107,3 +1107,6 @@
 1106|Körvonal
 1107|Végigjárja a minden alakzatot körülvevő vonalat, mint egy gumiszalag.
 1108|Körvonalkeret
+1109|Az átmenetek sorrendje
+1110|Átmenet átmenet után az összes objektumon
+1111|Objektumonként, az összes átmenete egymás után
