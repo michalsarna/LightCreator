@@ -1107,3 +1107,6 @@
 1106	Outline
 1107	Trace the outline that wraps all the shapes, like a rubber band.
 1108	Outline frame
+1109	Order of passes
+1110	Pass by pass over all objects
+1111	Object by object, all its passes

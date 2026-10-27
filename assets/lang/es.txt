@@ -1107,3 +1107,6 @@
 1106|Contorno
 1107|Recorre la línea que envuelve todas las formas, como una goma elástica.
 1108|Marco del contorno
+1109|Orden de las pasadas
+1110|Pasada a pasada sobre todos los objetos
+1111|Objeto a objeto, todas sus pasadas

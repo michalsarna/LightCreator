@@ -1107,3 +1107,6 @@
 1106|Contour
 1107|Suit la ligne qui enveloppe toutes les formes, comme un élastique.
 1108|Cadre du contour
+1109|Ordre des passes
+1110|Passe par passe sur tous les objets
+1111|Objet par objet, toutes ses passes

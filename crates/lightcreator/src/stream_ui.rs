@@ -339,12 +339,6 @@ impl App {
                             seen = Some(([o.min.x.round(), o.min.y.round()], [inner.width().round(), inner.height().round()]));
                         }
                     });
-                    // The window gives back the empty strip beside or under the picture, once the mouse is let go.
-                    if let Some(inner) = ui.input(|i| i.viewport().inner_rect) {
-                        if let Some(w) = self.cam_fit.viewport_size(ui.ctx(), inner.size(), [320.0, 240.0]) {
-                            ui.ctx().send_viewport_cmd(egui::ViewportCommand::InnerSize(w));
-                        }
-                    }
                     if ui.input(|i| i.viewport().close_requested()) {
                         close = true;
                     }

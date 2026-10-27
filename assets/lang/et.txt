@@ -1107,3 +1107,6 @@
 1106|Kontuur
 1107|Käib mööda joont, mis ümbritseb kõiki kujundeid nagu kummipael.
 1108|Kontuuriraam
+1109|Läbimiste järjekord
+1110|Läbimine läbimise haaval kõigil objektidel
+1111|Objekt objekti haaval, kõik selle läbimised

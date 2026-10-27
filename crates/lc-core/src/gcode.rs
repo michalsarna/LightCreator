@@ -544,13 +544,19 @@ pub fn generate_from(doc: &Document, back: Option<Pt>) -> Job {
             air = layer.air_assist;
             let _ = writeln!(w.out, "{} ; air assist {}", if air { air_on } else { air_off }, if air { "on" } else { "off" });
         }
-        // Objects with hooks are burnt one by one; otherwise a layer is one set of paths (nearest neighbour over all).
+        // Objects with hooks, or with all the passes done on one object before the next, are burnt one by one; otherwise a
+        // layer is one set of paths (nearest neighbour over all).
         let per_object = dev.gcode.hooks.per_object();
-        let sets: Vec<(Vec<Polyline>, Vec<&Shape>, Option<&Shape>)> = if per_object {
+        let passes = layer.passes.max(1);
+        let each_object = dev.gcode.passes_per_object && passes > 1;
+        let sets: Vec<(Vec<Polyline>, Vec<&Shape>, Option<&Shape>)> = if per_object || each_object {
             doc.scene.shapes
                 .iter()
                 .filter(|s| s.layer == li)
-                .map(|s| if s.is_image() { (vec![], vec![s], Some(s)) } else { (s.polys_tol(tol), vec![], Some(s)) })
+                .map(|s| {
+                    let hooked = per_object.then_some(s);
+                    if s.is_image() { (vec![], vec![s], hooked) } else { (s.polys_tol(tol), vec![], hooked) }
+                })
                 .filter(|(p, i, _)| !p.is_empty() || !i.is_empty())
                 .collect()
         } else {
@@ -559,26 +565,35 @@ pub fn generate_from(doc: &Document, back: Option<Pt>) -> Job {
         layer_no += 1;
         let ctx = HookCtx { doc, layer_name: &layer.name, layer_no, layers_total, head: w.head, objects_total };
         w.hook(&dev.gcode.hooks.layer_start, "layer_start", &ctx, None);
-        for pass in 0..layer.passes.max(1) {
-            if layer.passes > 1 {
-                let _ = writeln!(w.out, "; pass {}/{}", pass + 1, layer.passes);
-            }
-            let (pn, pt) = (pass + 1, layer.passes.max(1));
-            // A machine with a Z axis goes to the height of this pass first.
-            if dev.axes.has_z {
-                if let Some(z) = layer.z_levels().get(pass as usize) {
-                    let _ = writeln!(w.out, "G0 Z{z:.3} ; Z for pass {pn}");
+        // The order of the runs: pass by pass over the objects, or object by object with all its passes.
+        let runs: Vec<(u32, usize)> = if each_object {
+            (0..sets.len()).flat_map(|i| (0..passes).map(move |p| (p, i))).collect()
+        } else {
+            (0..passes).flat_map(|p| (0..sets.len()).map(move |i| (p, i))).collect()
+        };
+        let mut last_pass = None;
+        for (pass, i) in runs {
+            let (polys, images, shape) = &sets[i];
+            let (pn, pt) = (pass + 1, passes);
+            // A new pass is announced, and a machine with a Z axis goes to its height first.
+            if each_object || last_pass != Some(pass) {
+                if layer.passes > 1 {
+                    let _ = writeln!(w.out, "; pass {}/{}", pass + 1, layer.passes);
+                }
+                if dev.axes.has_z {
+                    if let Some(z) = layer.z_levels().get(pass as usize) {
+                        let _ = writeln!(w.out, "G0 Z{z:.3} ; Z for pass {pn}");
+                    }
                 }
             }
-            for (polys, images, shape) in &sets {
-                if let Some(sh) = shape {
-                    let no = object_order.iter().position(|id| *id == sh.id).map_or(0, |i| i + 1);
-                    w.hook(&dev.gcode.hooks.object_start, "object_start", &ctx, Some((sh, no)));
-                    burn(&mut w, li, layer, polys, images, pn, pt);
-                    w.hook(&dev.gcode.hooks.object_end, "object_end", &ctx, Some((sh, no)));
-                } else {
-                    burn(&mut w, li, layer, polys, images, pn, pt);
-                }
+            last_pass = Some(pass);
+            if let Some(sh) = shape {
+                let no = object_order.iter().position(|id| *id == sh.id).map_or(0, |i| i + 1);
+                w.hook(&dev.gcode.hooks.object_start, "object_start", &ctx, Some((sh, no)));
+                burn(&mut w, li, layer, polys, images, pn, pt);
+                w.hook(&dev.gcode.hooks.object_end, "object_end", &ctx, Some((sh, no)));
+            } else {
+                burn(&mut w, li, layer, polys, images, pn, pt);
             }
         }
         w.hook(&dev.gcode.hooks.layer_end, "layer_end", &ctx, None);

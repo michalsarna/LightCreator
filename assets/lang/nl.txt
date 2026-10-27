@@ -1107,3 +1107,6 @@
 1106|Omtrek
 1107|Volgt de lijn die alle vormen omsluit, als een elastiek.
 1108|Omtrekkader
+1109|Volgorde van de doorgangen
+1110|Doorgang na doorgang over alle objecten
+1111|Object voor object, al zijn doorgangen

@@ -1107,3 +1107,6 @@
 1106|Omriss
 1107|Følger linjen som omslutter alle formene, som et strikk.
 1108|Omrissramme
+1109|Rekkefølge på gjennomgangene
+1110|Gjennomgang for gjennomgang over alle objekter
+1111|Objekt for objekt, alle gjennomgangene

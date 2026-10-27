@@ -2390,3 +2390,26 @@ fn a_frame_along_the_outline_of_two_far_shapes_is_not_their_box() {
     let boxed = gcode::frame_gcode(doc.bounds_of(&[a, b]).unwrap(), &doc.device, 1.0, 25.0);
     assert_eq!(boxed.matches("G1 ").count(), 4, "{boxed}");
 }
+
+#[test]
+fn the_passes_of_a_layer_go_over_all_objects_or_over_one_object_at_a_time() {
+    let mut d = check_doc(10.0, 10.0);
+    d.add(0, Kind::Rect { w: 20.0, h: 10.0 }, Xf::translate(100.0, 100.0));
+    d.layers[0].passes = 2;
+    // The "; pass n/2" lines tell the order the objects are burnt in.
+    let order = |d: &Document| -> Vec<&'static str> {
+        gcode::generate(d).gcode.lines().filter(|l| l.starts_with("; pass")).map(|l| if l.contains("1/2") { "pass 1" } else { "pass 2" }).collect()
+    };
+    // By pass (the default): "pass 1" once, then "pass 2" once.
+    assert_eq!(order(&d), vec!["pass 1", "pass 2"]);
+    // By object: each object announces both of its passes.
+    d.device.gcode.passes_per_object = true;
+    assert_eq!(order(&d), vec!["pass 1", "pass 2", "pass 1", "pass 2"]);
+    // A layer with one pass is the same either way, and the choice is kept in the profile.
+    d.layers[0].passes = 1;
+    assert!(!gcode::generate(&d).gcode.contains("; pass"));
+    let back: Device = serde_json::from_str(&serde_json::to_string(&d.device).unwrap()).unwrap();
+    assert!(back.gcode.passes_per_object);
+    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
+    assert!(!old.gcode.passes_per_object);
+}

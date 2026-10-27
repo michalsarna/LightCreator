@@ -1107,3 +1107,6 @@
 1106|Obrys
 1107|Prejde čiaru obopínajúcu všetky tvary ako gumička.
 1108|Obrysový rámik
+1109|Poradie prechodov
+1110|Prechod po prechode cez všetky objekty
+1111|Objekt po objekte, všetky jeho prechody

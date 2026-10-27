@@ -1107,3 +1107,6 @@
 1106|Obris
 1107|Prati liniju koja obuhvaća sve oblike poput gumice.
 1108|Okvir obrisa
+1109|Redoslijed prolaza
+1110|Prolaz po prolaz preko svih objekata
+1111|Objekt po objekt, svi njegovi prolazi

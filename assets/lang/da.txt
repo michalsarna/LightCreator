@@ -1107,3 +1107,6 @@
 1106|Kontur
 1107|Følg linjen, der omslutter alle former, som et elastik.
 1108|Konturramme
+1109|Rækkefølge af gennemløb
+1110|Gennemløb for gennemløb over alle objekter
+1111|Objekt for objekt, alle dets gennemløb

@@ -1107,3 +1107,6 @@
 1106|Kontūras
 1107|Eina linija, apimančia visas figūras kaip guma.
 1108|Kontūro rėmelis
+1109|Perėjimų tvarka
+1110|Perėjimas po perėjimo per visus objektus
+1111|Objektas po objekto, visi jo perėjimai
