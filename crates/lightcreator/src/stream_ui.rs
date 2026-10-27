@@ -472,6 +472,29 @@ mod tests {
     }
 
     #[test]
+    fn the_picture_of_a_panel_that_fills_the_window_is_not_made_smaller_by_the_empty_strip_under_it() {
+        let (mut a, ctx) = app_with_overlay();
+        a.doc.device.cameras = vec![lc_core::CameraSource::url("A", "http://127.0.0.1:9/x", 0)];
+        a.show_stream = true;
+        a.stream_tex = Some(ctx.load_texture("t", egui::ColorImage::from_rgb([640, 360], &vec![0u8; 640 * 360 * 3]), egui::TextureOptions::LINEAR));
+        for i in 0..6 {
+            let input = egui::RawInput { screen_rect: Some(egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(790.0, 590.0))), ..Default::default() };
+            let mut r = None;
+            let mut out = ctx.run_ui(input, |ui| {
+                egui::CentralPanel::default().show(ui, |ui| {
+                    a.stream_view(ui);
+                    r = Some((ui.min_rect(), ui.available_height()));
+                });
+            });
+            out.textures_delta.clear();
+            let _ = (i, r);
+        }
+        // Only the working time stands under the picture; the picture fills the width of the window (640 x 360 in 774 x 574).
+        assert!(a.cam_fit.under(0.0) < 45.0, "under {}", a.cam_fit.under(0.0));
+        assert!(a.cam_fit.slack.x < 1.0, "the picture fills the width: {:?}", a.cam_fit.slack);
+    }
+
+    #[test]
     fn each_camera_opens_its_view_its_own_way_and_a_tab_opens_the_collapsed_panel() {
         let (mut a, _ctx) = app_with_overlay();
         a.doc.device.cameras = vec![lc_core::CameraSource::url("A", "http://a/x", 0), lc_core::CameraSource::url("B", "http://b/y", 0)];
