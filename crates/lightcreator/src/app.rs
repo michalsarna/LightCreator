@@ -183,6 +183,8 @@ pub struct App {
     pub tab_seen: bool,
     /// Rotation the current stream texture was made with.
     pub stream_rot: u8,
+    /// The size of the separate camera window and when it last changed (the picture is frozen while it does).
+    pub cam_win: Option<([f32; 2], std::time::Instant)>,
     /// Magnification of the camera picture in its window (1 = fitted) and its shift in pixels.
     pub stream_zoom: f32,
     pub stream_pan: egui::Vec2,
@@ -385,6 +387,7 @@ impl App {
             stream_mode: crate::stream_ui::StreamMode::Tab,
             tab_seen: false,
             stream_rot: 0,
+            cam_win: None,
             stream_zoom: 1.0,
             stream_pan: egui::Vec2::ZERO,
             stream: None,
