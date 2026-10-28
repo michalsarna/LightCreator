@@ -119,3 +119,59 @@ jobs:
           generate_release_notes: true
           draft: ${{ github.ref_type != 'tag' }}
           tag_name: ${{ github.ref_type == 'tag' && github.ref_name || 'dry-run' }}
+
+  # Package managers: the Homebrew tap, winget and the AUR follow every tagged release. Each step runs only when its
+  # secret is set, so a missing one never fails the release. The Scoop bucket updates itself (its own workflow).
+  packages:
+    needs: release
+    if: ${{ !cancelled() && needs.release.result == 'success' && github.ref_type == 'tag' }}
+    runs-on: ubuntu-latest
+    env:
+      TAP_TOKEN: ${{ secrets.TAP_TOKEN }}
+      WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
+      AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Checksums of the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download "$GITHUB_REF_NAME" -p SHA256SUMS.txt
+
+      # Homebrew: Casks/lightcreator.rb in michalsarna/homebrew-tap gets the new version and both .dmg checksums.
+      - name: Homebrew tap
+        if: env.TAP_TOKEN != ''
+        run: |
+          v="${GITHUB_REF_NAME#v}"
+          arm=$(grep -- '-macos-arm64.dmg$' SHA256SUMS.txt | cut -d' ' -f1)
+          intel=$(grep -- '-macos-x86_64.dmg$' SHA256SUMS.txt | cut -d' ' -f1)
+          git clone "https://x-access-token:${TAP_TOKEN}@github.com/michalsarna/homebrew-tap.git" tap
+          sed -i -E "s/^  version \".*\"/  version \"$v\"/; s/arm:   \"[0-9a-f]{64}\"/arm:   \"$arm\"/; s/intel: \"[0-9a-f]{64}\"/intel: \"$intel\"/" tap/Casks/lightcreator.rb
+          cd tap
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "lightcreator $v" && git push
+
+      # winget: opens a pull request in microsoft/winget-pkgs from the fork in the token owner's account. Works once the
+      # first version of MichalSarna.LightCreator has been merged there.
+      - name: winget
+        if: env.WINGET_TOKEN != ''
+        uses: vedantmgoyal9/winget-releaser@b7370d4d152efdce803a26cc6ca9eee58cb2ad54 # v2
+        with:
+          identifier: MichalSarna.LightCreator
+          installers-regex: '-setup\.exe$'
+          token: ${{ secrets.WINGET_TOKEN }}
+
+      # AUR: lightcreator-bin, built from the .deb files of the release (packaging/aur/PKGBUILD; checksums are filled in).
+      - name: AUR package
+        if: env.AUR_SSH_PRIVATE_KEY != ''
+        run: sed -i "s/^pkgver=.*/pkgver=${GITHUB_REF_NAME#v}/; s/^pkgrel=.*/pkgrel=1/" packaging/aur/PKGBUILD
+      - if: env.AUR_SSH_PRIVATE_KEY != ''
+        uses: KSXGitHub/github-actions-deploy-aur@084b0d9b15415bf9cdb65d44dad1efe37a354050 # v4.2.0
+        with:
+          pkgname: lightcreator-bin
+          pkgbuild: packaging/aur/PKGBUILD
+          updpkgsums: true
+          commit_username: Michał Sarna
+          commit_email: 5010807+michalsarna@users.noreply.github.com
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: "Update to ${{ github.ref_name }}"

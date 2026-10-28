@@ -1,0 +1,23 @@
+# Maintainer: Michał Sarna <michalsarna at users dot noreply dot github dot com>
+pkgname=lightcreator-bin
+pkgver=0.3.8
+pkgrel=1
+pkgdesc="Laser engraver and cutter design and control software"
+arch=('x86_64' 'aarch64')
+url="https://github.com/michalsarna/LightCreator"
+license=('MIT OR Apache-2.0')
+depends=('glibc' 'gcc-libs' 'libgl' 'libxkbcommon-x11')
+optdepends=('wayland: native Wayland session support')
+provides=('lightcreator')
+conflicts=('lightcreator')
+options=('!strip' '!debug')
+source_x86_64=("$url/releases/download/v$pkgver/lightcreator-v$pkgver-linux-amd64.deb")
+source_aarch64=("$url/releases/download/v$pkgver/lightcreator-v$pkgver-linux-arm64.deb")
+sha256sums_x86_64=('e5b4fa78c6e41ee206e1b7c4a42491893bb2c34ec74d3b56e313d11fab8d2b11')
+sha256sums_aarch64=('d6f4cf9539c73a37e0355bff9acb91c4b5c3be8d93497f207b2f96abdbc6e2cf')
+
+package() {
+  bsdtar -xf data.tar.* -C "$pkgdir"
+  install -dm755 "$pkgdir/usr/share/licenses/$pkgname"
+  mv "$pkgdir/usr/share/doc/lightcreator/LICENSE" "$pkgdir/usr/share/doc/lightcreator/LICENSE-APACHE" "$pkgdir/usr/share/licenses/$pkgname/"
+}
