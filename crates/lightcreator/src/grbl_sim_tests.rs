@@ -57,6 +57,8 @@ impl Drop for Sim {
 struct Seen {
     connected: Option<bool>,
     rx: Vec<String>,
+    /// The lines the worker sent (not the status polls), in the order of its replies: reply n answers line n.
+    tx: Vec<String>,
     state: String,
     pos: (f64, f64),
     progress: (usize, usize),
@@ -65,6 +67,8 @@ struct Seen {
     started: Option<Instant>,
     /// Replies before this index are ignored by `errors()` (start-up output, see `wait_banner`).
     mark: usize,
+    /// The number of lines sent before the banner (see `mark`).
+    mark_tx: usize,
 }
 
 struct Session {
@@ -89,6 +93,7 @@ impl Session {
             match e {
                 Evt::Connected(c) => self.seen.connected = Some(c),
                 Evt::Traffic(l) if l.dir == Dir::Rx && !l.poll => self.seen.rx.push(l.text),
+                Evt::Traffic(l) if l.dir == Dir::Tx && !l.poll => self.seen.tx.push(l.text),
                 Evt::Status { state, x, y, .. } => {
                     let t = self.seen.started.get_or_insert_with(Instant::now).elapsed().as_secs_f32();
                     if self.seen.trail.last().map(|l| !l.ends_with(&format!("{state} {x:.3},{y:.3}"))).unwrap_or(true) {
@@ -109,16 +114,32 @@ impl Session {
         }
     }
 
+    /// Wait until `pred` holds. `secs` is the time the wait is expected to take; it is given up when nothing happens for that
+    /// long (at most 30 s: no reply, no new state, position or progress), or after four times as long in any case. A slow
+    /// runner makes a job take longer, which is not a failure as long as the machine keeps moving.
     fn wait(&mut self, what: &str, secs: f32, mut pred: impl FnMut(&Seen) -> bool) {
-        let t = Instant::now();
-        while t.elapsed().as_secs_f32() < secs {
+        let start = Instant::now();
+        let (mut news, mut since) = (self.news(), Instant::now());
+        loop {
             self.pump();
             if pred(&self.seen) {
                 return;
             }
+            let now = self.news();
+            if now != news {
+                (news, since) = (now, Instant::now());
+            }
+            if since.elapsed().as_secs_f32() >= secs.min(30.0) || start.elapsed().as_secs_f32() >= secs * 4.0 {
+                panic!("timed out waiting for {what}; {}", self.report());
+            }
             std::thread::sleep(Duration::from_millis(10));
         }
-        panic!("timed out waiting for {what}; {}", self.report());
+    }
+
+    /// Something that changes whenever the machine or the worker does anything worth waiting for.
+    fn news(&self) -> (usize, String, (i64, i64), (usize, usize)) {
+        let v = &self.seen;
+        (v.rx.len(), v.state.clone(), ((v.pos.0 * 100.0) as i64, (v.pos.1 * 100.0) as i64), v.progress)
     }
 
     /// Everything that helps to tell a lost line from a lost reply when a wait fails: the state, the progress, how many
@@ -136,6 +157,7 @@ impl Session {
     fn wait_banner(&mut self) {
         self.wait("GRBL banner", 5.0, |v| v.rx.iter().any(|l| l.starts_with("Grbl ")));
         self.seen.mark = self.seen.rx.len();
+        self.seen.mark_tx = self.seen.tx.len();
     }
 
     /// Fast machine settings so jobs run in a few seconds of (roughly real) simulated time, laser mode on.
@@ -170,6 +192,22 @@ impl Session {
 
     fn wait_idle_at(&mut self, x: f64, y: f64, secs: f32) {
         self.wait("machine idle at the end position", secs, |v| v.state == "Idle" && (v.pos.0 - x).abs() < 0.01 && (v.pos.1 - y).abs() < 0.01);
+    }
+
+    /// The errors with the line each one answers (the n-th `ok` or `error` answers the n-th line sent): a garbled line
+    /// shows up here as what was sent and what GRBL made of it.
+    fn errors_described(&self) -> Vec<String> {
+        let mut n = 0;
+        let mut out = vec![];
+        for l in &self.seen.rx {
+            if l == "ok" || l.starts_with("error") {
+                if l.starts_with("error") && n >= self.seen.mark_tx {
+                    out.push(format!("{l} for line {n} {:?}, around it {:?}", self.seen.tx.get(n), self.seen.tx.get(n.saturating_sub(2)..(n + 2).min(self.seen.tx.len()))));
+                }
+                n += 1;
+            }
+        }
+        out
     }
 
     fn errors(&self) -> Vec<&String> {
@@ -220,7 +258,7 @@ fn grbl_sim_streams_a_generated_job() {
     // simulator now and then stops a millimetre or so away from the target (seen: -1.0 in X) although every line was acknowledged
     // (its two threads share the step counters, see the long-job test). The short jobs below still check the end position.
     s.wait("machine idle after the job", 60.0, |v| v.state == "Idle" && v.progress == (n, n));
-    assert!(s.errors().is_empty(), "GRBL rejected lines: {:?}", s.errors());
+    assert!(s.errors().is_empty(), "GRBL rejected lines: {:?}", s.errors_described());
 }
 
 #[test]
@@ -241,7 +279,7 @@ fn grbl_sim_long_job_keeps_character_counting_in_sync() {
     // move arriving). Its two threads share the step counters. That says nothing about the stream, which is what this
     // test is about, and the shorter jobs above still check the end position.
     s.wait("machine idle after the job", 60.0, |v| v.state == "Idle" && v.progress == (n, n));
-    assert!(s.errors().is_empty(), "GRBL rejected lines: {:?}", s.errors());
+    assert!(s.errors().is_empty(), "GRBL rejected lines: {:?}", s.errors_described());
 }
 
 #[test]
@@ -275,7 +313,7 @@ fn grbl_sim_feed_hold_and_resume() {
     s.link.send(Cmd::Realtime(b'~'));
     s.wait("job finished", 60.0, |v| v.progress == (5, 5));
     s.wait_idle_at(0.0, 0.0, 60.0);
-    assert!(s.errors().is_empty(), "{:?}", s.errors());
+    assert!(s.errors().is_empty(), "{:?}", s.errors_described());
 }
 
 #[test]
@@ -296,7 +334,7 @@ fn grbl_sim_abort_then_new_job_runs() {
     let job: Vec<String> = ["G21", "G90", "G1 X3 Y4 F3000", "M5"].iter().map(|l| l.to_string()).collect();
     s.run_job(job, 20.0);
     s.wait("idle", 20.0, |v| v.state == "Idle");
-    assert!(s.errors().is_empty(), "{:?}", s.errors());
+    assert!(s.errors().is_empty(), "{:?}", s.errors_described());
 }
 
 #[test]
@@ -337,7 +375,7 @@ fn grbl_sim_starts_with_laser_mode_off_and_accepts_enabling_it() {
     s.link.send(Cmd::Line("$32=1".into()));
     let after = Controller::Grbl.parse_settings(&read_settings(&mut s));
     assert_eq!(after.laser_mode, Some(true));
-    assert!(s.errors().is_empty(), "{:?}", s.errors());
+    assert!(s.errors().is_empty(), "{:?}", s.errors_described());
 }
 
 #[test]
@@ -355,7 +393,7 @@ fn grbl_sim_runs_a_job_with_arcs_and_ends_where_expected() {
     s.run_job(job, 60.0);
     // The job ends with the way back to the machine's zero.
     s.wait_idle_at(0.0, 0.0, 30.0);
-    assert!(s.errors().is_empty(), "GRBL rejected lines: {:?}", s.errors());
+    assert!(s.errors().is_empty(), "GRBL rejected lines: {:?}", s.errors_described());
 }
 
 #[test]
@@ -382,7 +420,7 @@ fn grbl_sim_settings_can_be_read_changed_backed_up_and_restored() {
     }
     let restored = gs::parse_report(&read_settings(&mut s));
     assert!(gs::same_value(&restored[&110], &old), "{} vs {old}", restored[&110]);
-    assert!(s.errors().is_empty(), "{:?}", s.errors());
+    assert!(s.errors().is_empty(), "{:?}", s.errors_described());
 }
 
 #[test]

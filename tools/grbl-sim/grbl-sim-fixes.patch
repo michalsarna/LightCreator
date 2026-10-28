@@ -92,3 +92,22 @@ index b863d13..7364740 100644
  
    while (sim.exit != exit_OK  ) { //don't quit until idle
  
+diff --git a/serial.c b/serial.c
+index 5fd57db..bbba170 100644
+--- a/serial.c
++++ b/serial.c
+@@ -70,9 +70,11 @@ extern volatile uint8_t serial_rx_buffer_head;
+ extern volatile uint8_t serial_rx_buffer_tail;
+ void simulate_serial(){
+   simulate_write_interrupt();
+-  uint8_t head = serial_rx_buffer_head+1;
+-  if (head==RX_BUFFER_SIZE) { head = 0; }
+-  if (head!=serial_rx_buffer_tail) {
++  // Read a byte only when the ring has room for it. The ring of GRBL has RX_BUFFER_SIZE + 1 slots (RX_RING_BUFFER in serial.c), the test
++  // here used RX_BUFFER_SIZE: with the ring full at the end of the array it let a byte through that GRBL then dropped.
++  uint8_t head = __atomic_load_n(&serial_rx_buffer_head, __ATOMIC_ACQUIRE)+1;
++  if (head==(RX_BUFFER_SIZE+1)) { head = 0; }
++  if (head!=__atomic_load_n(&serial_rx_buffer_tail, __ATOMIC_ACQUIRE)) {
+ 	 simulate_read_interrupt();
+   }
+ }

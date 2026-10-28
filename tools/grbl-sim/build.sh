@@ -45,14 +45,17 @@ apply_patch() { # repo, patch
 }
 apply_patch "$sim" grbl-sim-fixes.patch
 apply_patch "$out/grbl" grbl-fixes.patch
+[ "$(uname -s)" = Darwin ] && apply_patch "$sim" grbl-sim-macos.patch
 
+extra=""
 case "$(uname -s)" in
-    Darwin) platform=OSX ;;
+    # platform_OSX.c uses the Mach clock calls without including their headers; recent clang refuses implicit declarations.
+    Darwin) platform=OSX; extra="-include mach/mach.h -include mach/clock.h" ;;
     *) platform=LINUX ;;
 esac
 
 # -fcommon: grbl-sim defines globals in headers, which GCC >= 10 / recent clang reject by default
 # ("multiple definition of `wdt'").
-make -C "$sim" --no-print-directory new PLATFORM="$platform" FLAGS="-g -O2 -fcommon -w" >/dev/null
+make -C "$sim" --no-print-directory new PLATFORM="$platform" FLAGS="-g -O2 -fcommon -w $extra" >/dev/null
 
 echo "$sim/grbl_sim.exe"
