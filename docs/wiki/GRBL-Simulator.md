@@ -7,11 +7,11 @@
 **Not covered:** the USB-serial link, laser power output, limit switches and homing, ATmega328P timing. A pass here is a good sign, not a replacement for a low-power test on the machine.
 
 ## Build
-Linux or macOS with `git`, `make` and a C compiler:
+The simulator lives in [baseCreator](https://github.com/michalsarna/baseCreator) (`tools/grbl-sim/`, shared by LightCreator, MillCreator and PenCreator). Linux or macOS with `git`, `make` and a C compiler:
 ```sh
 tools/grbl-sim/build.sh
 ```
-It fetches GRBL `v1.1h.20190825` and grbl-sim into `target/grbl-sim/` and applies two patches (`grbl-sim-fixes.patch`, `grbl-fixes.patch`) that fix PC-only problems: delayed `ok` replies, per-poll syscalls, stalled steppers from a shared interrupt flag, orphaned simulators, and lost reset requests. They do not change GRBL's behaviour on a real controller. `GRBL_REF` and `SIM_REF` select other versions.
+It fetches GRBL `v1.1h.20190825` and grbl-sim into `target/grbl-sim/` and applies patches (`grbl-sim-fixes.patch`, `grbl-fixes.patch`, and `grbl-sim-macos.patch` on macOS) that fix PC-only problems: delayed `ok` replies, per-poll syscalls, stalled steppers from a shared interrupt flag, orphaned simulators, lost reset requests, a receive ring that dropped bytes (garbled or joined lines), and a clock that made the simulator far too slow on macOS. They do not change GRBL's behaviour on a real controller. `GRBL_REF` and `SIM_REF` select other versions.
 
 ## Use from the app
 ```sh
@@ -25,20 +25,18 @@ socat PTY,raw,link=/tmp/ttyGRBL,echo=0 "EXEC:'target/grbl-sim/grbl/grbl/sim/grbl
 ```
 
 ## Automated tests
-`crates/lightcreator/src/grbl_sim_tests.rs` drives the real serial worker against the simulator:
+The serial link is tested in baseCreator (`base_ui::sim_test`: real-time check, long job with character counting, rejected line, feed hold, abort, connect race, `M0` pause, settings backup/restore, spindle and arcs). LightCreator's own tests (`crates/lightcreator/src/grbl_sim_tests.rs`) run what it generates:
 
 | Test | Checks |
 |---|---|
-| `grbl_sim_keeps_up_with_real_time` | simulator runs at real speed |
-| `grbl_sim_streams_a_generated_job` | generated job fully acknowledged, ends idle at zero |
-| `grbl_sim_long_job_keeps_character_counting_in_sync` | dense fill with the 120-byte window always full |
-| `grbl_sim_rejected_line_does_not_desync_the_stream` | `error:20` does not break the rest of the job |
-| `grbl_sim_feed_hold_and_resume` | `!` holds, `~` resumes |
-| `grbl_sim_abort_then_new_job_runs` | soft reset mid-job, then a new job runs |
-| `grbl_sim_job_sent_right_after_connect_is_not_lost` | job sent while GRBL restarts after connect completes |
+| `grbl_sim_streams_a_generated_job` | generated job fully acknowledged, ends idle |
+| `grbl_sim_runs_a_job_with_arcs_and_ends_where_expected` | arcs, ends at zero |
+| `grbl_sim_starts_with_laser_mode_off_and_accepts_enabling_it` | `$32` read and written |
+| `grbl_sim_focus_beam_switches_on_with_m3_and_off_with_m5` | focus beam |
+| `grbl_sim_pass_by_pass_and_object_by_object_both_run` | both orders of the passes |
 
 ```sh
-tools/grbl-sim/build.sh
+# in baseCreator: tools/grbl-sim/build.sh (into target/grbl-sim there), or point GRBL_SIM_EXE at a build
 cargo test -p lightcreator grbl_sim -- --ignored --test-threads=1
 ```
-`LC_GRBL_SIM_EXE` points at a simulator built elsewhere. The *Tests* workflow runs them on every pull request. For grblHAL, its [Simulator](https://github.com/grblHAL/Simulator) should work with `serve.py --sim` (untried). The simulator keeps about two CPU cores busy.
+`GRBL_SIM_EXE` points at a simulator built elsewhere. The *Tests* workflow runs them on every pull request. For grblHAL, its [Simulator](https://github.com/grblHAL/Simulator) should work with `serve.py --sim` (untried). The simulator keeps about two CPU cores busy.
