@@ -1107,6 +1107,8 @@
 1106|Kontur
 1107|Följer linjen som omsluter alla former, som ett gummiband.
 1108|Konturram
-1109|Ordning på genomgångarna
-1110|Genomgång för genomgång över alla objekt
-1111|Objekt för objekt, alla dess genomgångar
+1109|Ett element i taget
+1110|Varje element (en grupp eller en form utan grupp) bränns helt, med alla lager och passeringar, innan nästa; det närmaste först. Av: lager för lager, passering för passering.
+1111|Endast markering
+1112|Endast de former som är markerade i arbetsytan när G-koden sparas eller jobbet startas bränns.
+1113|Inget att bränna: inget är markerat

@@ -1107,6 +1107,8 @@
 1106|Obrys
 1107|Prejde čiaru obopínajúcu všetky tvary ako gumička.
 1108|Obrysový rámik
-1109|Poradie prechodov
-1110|Prechod po prechode cez všetky objekty
-1111|Objekt po objekte, všetky jeho prechody
+1109|Prvok po prvku
+1110|Každý prvok (skupina alebo tvar bez skupiny) sa vypáli celý, so všetkými vrstvami a prechodmi, než príde ďalší; najbližší ide prvý. Vypnuté: vrstva po vrstve, prechod po prechode.
+1111|Iba výber
+1112|Vypaľujú sa iba tvary vybrané na pracovnej ploche v okamihu uloženia G-kódu alebo spustenia úlohy.
+1113|Nie je čo vypáliť: nič nie je vybrané

@@ -1107,6 +1107,8 @@
 1106|Kontorn
 1107|Isegwi l-linja li tgħaqqad il-forom kollha, bħal elastiku.
 1108|Qafas tal-kontorn
-1109|Ordni tal-passaġġi
-1110|Passaġġ wara passaġġ fuq l-oġġetti kollha
-1111|Oġġett wara oġġett, il-passaġġi kollha tiegħu
+1109|Element wieħed kull darba
+1110|Kull element (grupp jew forma mingħajr grupp) jinħaraq kollu, bis-saffi u l-passi kollha tiegħu, qabel li jmiss; l-eqreb jmur l-ewwel. Mitfi: saff wara saff, pass wara pass.
+1111|Is-għażla biss
+1112|Jinħarqu biss il-forom magħżula fl-erja tax-xogħol meta jinħażen il-G-code jew jibda x-xogħol.
+1113|Xejn x'taħraq: xejn mhu magħżul

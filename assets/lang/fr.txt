@@ -1107,6 +1107,8 @@
 1106|Contour
 1107|Suit la ligne qui enveloppe toutes les formes, comme un élastique.
 1108|Cadre du contour
-1109|Ordre des passes
-1110|Passe par passe sur tous les objets
-1111|Objet par objet, toutes ses passes
+1109|Un élément à la fois
+1110|Chaque élément (un groupe, ou une forme sans groupe) est gravé en entier, avec tous ses calques et toutes leurs passes, avant le suivant ; le plus proche passe en premier. Désactivé : calque après calque, passe après passe.
+1111|Sélection seulement
+1112|Seules les formes sélectionnées dans la zone de travail au moment de l'enregistrement du G-code ou du démarrage du travail sont gravées.
+1113|Rien à graver : rien n'est sélectionné

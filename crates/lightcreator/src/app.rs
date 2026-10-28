@@ -265,6 +265,10 @@ pub struct App {
     pub live_shown: Option<(std::time::Instant, (f64, f64))>,
     /// For this session only: aim with the pointer dot (the frame and the dry run move back by its offset).
     pub pointer_align: bool,
+    /// Options of a job, in the Control tab (this session only): burn the elements one after the other, and burn only what is
+    /// selected when the G-code is saved or the job started.
+    pub one_by_one: bool,
+    pub selection_only: bool,
     pub connected: bool,
     pub machine: (String, f64, f64),
     /// The Z position the controller last reported (NaN when it does not report one).
@@ -437,6 +441,8 @@ impl App {
             focus_on: false,
             macros_ok: false,
             job_started: None,
+            one_by_one: false,
+            selection_only: false,
             job_est: 0.0,
             job_last_secs: 0.0,
             maintenance_notified: Default::default(),
@@ -725,9 +731,13 @@ impl App {
         }
     }
     pub fn export_gcode_now(&mut self) {
+        if self.selection_only && self.ed.sel.is_empty() {
+            self.status = tr("Nothing to burn: nothing is selected").into();
+            return;
+        }
         self.stamp_job();
         if let Some(p) = rfd::FileDialog::new().add_filter("G-code", &["gcode", "nc"]).set_file_name("job.gcode").save_file() {
-            let job = gcode::generate(&self.doc);
+            let job = gcode::generate_with(&self.job_source(), None, &self.job_options());
             let Some(text) = self.postprocessed(job.gcode) else { return };
             self.status = match std::fs::write(&p, text) {
                 Ok(_) => trf("Saved G-code {}", &[&p.display()]),
@@ -789,9 +799,9 @@ impl App {
         self.stamp_job();
         // The job is written for the design as it is: the pointer alignment never moves it.
         let (doc, back) = self.job_doc();
-        let job = gcode::generate_from(&doc, back);
+        let job = gcode::generate_with(&doc, back, &self.job_options());
         if job.moves.is_empty() {
-            self.status = tr("Nothing to burn: no shapes on output layers").into();
+            self.status = if self.selection_only && self.ed.sel.is_empty() { tr("Nothing to burn: nothing is selected") } else { tr("Nothing to burn: no shapes on output layers") }.into();
             return None;
         }
         self.job_est = job.est_seconds;
@@ -880,10 +890,36 @@ impl App {
     /// The document as the laser gets it: as it is, or (start from the current position) moved so that its top-left
     /// corner lies on the head. The second value is where such a job ends, instead of the machine's zero.
     pub fn job_doc(&self) -> (std::borrow::Cow<'_, lc_core::Document>, Option<Pt>) {
+        let source = self.job_source();
         match (self.doc.device.start_from, self.head_point()) {
-            (lc_core::StartFrom::CurrentPosition, Some(head)) => (std::borrow::Cow::Owned(gcode::placed_at(&self.doc, head)), Some(head)),
-            _ => (std::borrow::Cow::Borrowed(&self.doc), None),
+            (lc_core::StartFrom::CurrentPosition, Some(head)) => (std::borrow::Cow::Owned(gcode::placed_at(&source, head)), Some(head)),
+            _ => (source, None),
         }
+    }
+
+    /// What the job is made of: the whole drawing, or with "Selection only" the shapes that are selected now.
+    pub fn job_source(&self) -> std::borrow::Cow<'_, lc_core::Document> {
+        if self.selection_only {
+            std::borrow::Cow::Owned(self.doc.only_shapes(&self.ed.sel))
+        } else {
+            std::borrow::Cow::Borrowed(&self.doc)
+        }
+    }
+
+    /// How the job is made (the options of the Control tab).
+    pub fn job_options(&self) -> gcode::JobOptions {
+        gcode::JobOptions { one_by_one: self.one_by_one }
+    }
+
+    /// Changes whenever the drawing or what the job makes of it changes: the key of the previews of the job.
+    pub fn job_stamp(&self) -> u64 {
+        use std::hash::{Hash, Hasher};
+        let mut h = std::collections::hash_map::DefaultHasher::new();
+        (self.revision, self.one_by_one, self.selection_only).hash(&mut h);
+        if self.selection_only {
+            self.ed.sel.hash(&mut h);
+        }
+        h.finish()
     }
 
     /// A frame box moved the same way as the job: its top-left corner on the head when starting from the current position.
@@ -1799,8 +1835,8 @@ impl App {
     pub fn draw(&mut self, ui: &mut egui::Ui) {
         let ctx = ui.ctx().clone();
         self.poll_laser();
-        if self.preview_on && self.preview.as_ref().map(|p| p.0) != Some(self.revision) {
-            self.preview = Some((self.revision, gcode::generate(&self.doc)));
+        if self.preview_on && self.preview.as_ref().map(|p| p.0) != Some(self.job_stamp()) {
+            self.preview = Some((self.job_stamp(), gcode::generate_with(&self.job_source(), None, &self.job_options())));
         }
         #[cfg(target_os = "macos")]
         self.native_menu_frame(&ctx);
@@ -2304,6 +2340,43 @@ mod live_position_tests {
         a.machine.0 = "Idle".into();
         a.machine.1 = 60.0;
         assert_eq!(a.live_point(), Some(a.doc.device.from_machine(60.0, 20.0)));
+    }
+
+    #[test]
+    fn the_job_options_of_the_control_tab_change_the_gcode() {
+        let mut a = app();
+        // Two groups, each a rectangle on layer 0 and a circle on layer 1.
+        let mut ids = vec![];
+        for x in [100.0, 10.0] {
+            let r = a.doc.add(0, lc_core::Kind::Rect { w: 10.0, h: 10.0 }, lc_core::Xf::translate(x, 10.0));
+            let c = a.doc.add(1, lc_core::Kind::Ellipse { w: 4.0, h: 4.0 }, lc_core::Xf::translate(x + 3.0, 13.0));
+            let g = a.doc.scene.new_group_id();
+            for s in a.doc.scene.shapes.iter_mut().filter(|s| s.id == r || s.id == c) {
+                s.group = Some(g);
+            }
+            ids.push((r, c));
+        }
+        let layer_lines = |a: &mut App| -> usize { gcode::generate_with(&a.job_doc().0, None, &a.job_options()).gcode.lines().filter(|l| l.starts_with("; layer")).count() };
+        // As before: a layer after a layer, two of them; one by one: both layers of each of the two groups.
+        assert_eq!(layer_lines(&mut a), 2);
+        a.one_by_one = true;
+        assert_eq!(layer_lines(&mut a), 4);
+        // Selection only: the second group (the one at x = 10), burnt completely; nothing selected burns nothing.
+        a.one_by_one = false;
+        a.selection_only = true;
+        a.ed.sel = vec![ids[1].0, ids[1].1];
+        assert_eq!(layer_lines(&mut a), 2);
+        let all = { a.selection_only = false; a.program_lines().unwrap().len() };
+        a.selection_only = true;
+        assert!(a.program_lines().unwrap().len() < all, "only half of the drawing is burnt");
+        // The previews of the job are rebuilt when an option or the selection changes.
+        let with = a.job_stamp();
+        a.selection_only = false;
+        assert_ne!(with, a.job_stamp());
+        a.selection_only = true;
+        a.ed.sel.clear();
+        assert!(a.program_lines().is_none());
+        assert_eq!(a.status, "Nothing to burn: nothing is selected");
     }
 
     #[test]

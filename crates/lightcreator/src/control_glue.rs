@@ -246,6 +246,12 @@ impl App {
             }
             ui.end_row();
         });
+        // The options of the job, under the buttons that start things: this session only, they change the G-code.
+        let running = self.job_running();
+        ui.add_enabled_ui(!running, |ui| {
+            ui.checkbox(&mut self.one_by_one, tr("One element at a time")).on_hover_text(tr("Each element (a group, or a shape that is in none) is burned completely, all its layers and all their passes, before the next one; the nearest element goes first. Off: layer after layer, pass after pass."));
+            ui.checkbox(&mut self.selection_only, tr("Selection only")).on_hover_text(tr("Only the shapes that are selected on the work area when the G-code is saved or the job is started are burned."));
+        });
     }
 
     /// What shows or hides something and stands in the bar over the work area: the toolpaths, the preview window, the camera and its
@@ -464,7 +470,7 @@ mod tests {
         h.run_steps(3);
         assert!(!h.get_by_label("STOP").accesskit_node().is_disabled(), "the machine is at work");
         // The options that were in the Device tab: where a job starts, the power of the frame, the live position.
-        for w in ["Start from", "Frame power", "Live laser Position"] {
+        for w in ["Start from", "Frame power", "Live laser Position", "One element at a time", "Selection only"] {
             assert!(h.query_by_label(w).is_some(), "{w} is in the Control tab");
         }
         // The step and the speed are the panel's own, in the order Move, jog buttons, Speed.

@@ -2391,25 +2391,77 @@ fn a_frame_along_the_outline_of_two_far_shapes_is_not_their_box() {
     assert_eq!(boxed.matches("G1 ").count(), 4, "{boxed}");
 }
 
+/// The laser moves of a job, as the list of the rectangles they were burnt on (by the x of the move, each rectangle 10 wide and
+/// 100 apart: 0, 100, 200 ...), one entry for each stretch of moves on the same rectangle.
+fn burnt_order(job: &gcode::Job) -> Vec<usize> {
+    let mut out: Vec<usize> = vec![];
+    for m in job.moves.iter().filter(|m| m.laser) {
+        let r = ((m.a.x + m.b.x) / 2.0 / 100.0).round() as usize;
+        if out.last() != Some(&r) {
+            out.push(r);
+        }
+    }
+    out
+}
+
+/// Rectangles on layer 0 at x = 0, 100 and 200 added in the order 200, 0, 100.
+fn three_rects() -> (Document, [u64; 3]) {
+    let mut d = Document::default();
+    d.layers[0].mode = LayerMode::Line;
+    let far = d.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(200.0, 0.0));
+    let near = d.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(0.0, 0.0));
+    let mid = d.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(100.0, 0.0));
+    (d, [far, near, mid])
+}
+
 #[test]
-fn the_passes_of_a_layer_go_over_all_objects_or_over_one_object_at_a_time() {
-    let mut d = check_doc(10.0, 10.0);
-    d.add(0, Kind::Rect { w: 20.0, h: 10.0 }, Xf::translate(100.0, 100.0));
+fn one_by_one_burns_all_layers_and_passes_of_an_element_before_the_next_and_the_nearest_element_comes_first() {
+    // Two groups, each a rectangle on layer 0 and a circle on layer 1: the pieces of a workpiece.
+    let mut d = Document::default();
+    d.layers[0].mode = LayerMode::Line;
+    d.layers[1].mode = LayerMode::Line;
     d.layers[0].passes = 2;
-    // The "; pass n/2" lines tell the order the objects are burnt in.
-    let order = |d: &Document| -> Vec<&'static str> {
-        gcode::generate(d).gcode.lines().filter(|l| l.starts_with("; pass")).map(|l| if l.contains("1/2") { "pass 1" } else { "pass 2" }).collect()
-    };
-    // By pass (the default): "pass 1" once, then "pass 2" once.
-    assert_eq!(order(&d), vec!["pass 1", "pass 2"]);
-    // By object: each object announces both of its passes.
-    d.device.gcode.passes_per_object = true;
-    assert_eq!(order(&d), vec!["pass 1", "pass 2", "pass 1", "pass 2"]);
-    // A layer with one pass is the same either way, and the choice is kept in the profile.
-    d.layers[0].passes = 1;
-    assert!(!gcode::generate(&d).gcode.contains("; pass"));
-    let back: Device = serde_json::from_str(&serde_json::to_string(&d.device).unwrap()).unwrap();
-    assert!(back.gcode.passes_per_object);
-    let old: Device = serde_json::from_str(OLD_PROFILE).unwrap();
-    assert!(!old.gcode.passes_per_object);
+    for x in [200.0, 0.0] {
+        let r = d.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(x, 0.0));
+        let c = d.add(1, Kind::Ellipse { w: 4.0, h: 4.0 }, Xf::translate(x + 3.0, 3.0));
+        let g = d.scene.new_group_id();
+        for s in d.scene.shapes.iter_mut().filter(|s| s.id == r || s.id == c) {
+            s.group = Some(g);
+        }
+    }
+    let layers = |g: &str| -> Vec<String> { g.lines().filter(|l| l.starts_with("; layer") || l.starts_with("; pass")).map(|l| l.split(" (").next().unwrap().to_string()).collect() };
+    let (l0, l1) = (format!("; layer {}", d.layers[0].name), format!("; layer {}", d.layers[1].name));
+    // As before: layer 0 with its two passes, then layer 1.
+    let by_layer = gcode::generate(&d);
+    assert_eq!(layers(&by_layer.gcode), vec![l0.clone(), "; pass 1/2".into(), "; pass 2/2".into(), l1.clone()]);
+    // One by one: the group at x = 0 is nearer to the head than the one at 200, and is done completely first.
+    let one = gcode::generate_with(&d, None, &gcode::JobOptions { one_by_one: true });
+    let want: Vec<String> = [l0.clone(), "; pass 1/2".into(), "; pass 2/2".into(), l1.clone(), l0, "; pass 1/2".into(), "; pass 2/2".into(), l1].to_vec();
+    assert_eq!(layers(&one.gcode), want);
+    assert_eq!(burnt_order(&one).first(), Some(&0), "the near group is first: {:?}", burnt_order(&one));
+    assert_eq!(burnt_order(&one).last(), Some(&2), "the far group is last");
+    // The same work, in another order.
+    assert_eq!(one.moves.iter().filter(|m| m.laser).count(), by_layer.moves.iter().filter(|m| m.laser).count());
+}
+
+#[test]
+fn single_shapes_that_are_in_no_group_are_elements_of_their_own_in_the_order_of_distance() {
+    let (d, _) = three_rects();
+    let one = gcode::generate_with(&d, None, &gcode::JobOptions { one_by_one: true });
+    assert_eq!(burnt_order(&one), vec![0, 1, 2], "nearest first, not the order they were drawn in");
+}
+
+#[test]
+fn a_job_of_the_selection_burns_only_those_shapes_in_either_order() {
+    let (d, [far, near, mid]) = three_rects();
+    let burnt = |d: &Document, one_by_one: bool| burnt_order(&gcode::generate_with(d, None, &gcode::JobOptions { one_by_one }));
+    assert_eq!(burnt(&d.only_shapes(&[mid]), false), vec![1]);
+    assert_eq!(burnt(&d.only_shapes(&[far, near]), true), vec![0, 2]);
+    // Nothing selected: nothing burnt (and the job has no laser move).
+    assert!(gcode::generate(&d.only_shapes(&[])).moves.iter().all(|m| !m.laser));
+    // The layers and the device are kept.
+    assert_eq!(d.only_shapes(&[mid]).layers.len(), d.layers.len());
+    // The start from the current position counts the corner of what is burnt, not of the whole drawing.
+    let placed = gcode::placed_at(&d.only_shapes(&[mid]), Pt::new(0.0, 0.0));
+    assert_eq!(burnt(&placed, false), vec![0]);
 }

@@ -1107,6 +1107,8 @@
 1106|Omriss
 1107|Følger linjen som omslutter alle formene, som et strikk.
 1108|Omrissramme
-1109|Rekkefølge på gjennomgangene
-1110|Gjennomgang for gjennomgang over alle objekter
-1111|Objekt for objekt, alle gjennomgangene
+1109|Ett element om gangen
+1110|Hvert element (en gruppe eller en form uten gruppe) brennes helt, med alle lag og gjennomganger, før det neste; det nærmeste først. Av: lag for lag, gjennomgang for gjennomgang.
+1111|Bare utvalget
+1112|Bare formene som er valgt i arbeidsområdet når G-koden lagres eller jobben startes, brennes.
+1113|Ingenting å brenne: ingenting er valgt

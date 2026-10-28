@@ -1107,6 +1107,8 @@
 1106|Cruth
 1107|Leanann an líne a chuimsíonn na cruthanna go léir, cosúil le banda rubair.
 1108|Fráma cruth
-1109|Ord na bpas
-1110|Pas ar phas ar gach réad
-1111|Réad ar réad, a bpasanna go léir
+1109|Eilimint amháin ag an am
+1110|Dóitear gach eilimint (grúpa, nó cruth gan ghrúpa) ina hiomláine, lena sraitheanna agus a gcuid pasanna uile, sula dtagann an chéad cheann eile; téann an ceann is gaire ar dtús. As: sraith i ndiaidh sraithe, pas i ndiaidh pas.
+1111|Roghnúchán amháin
+1112|Ní dhóitear ach na cruthanna atá roghnaithe sa limistéar oibre nuair a shábháiltear an G-code nó nuair a thosaítear an jab.
+1113|Faic le dóchán: níl aon rud roghnaithe

@@ -1107,6 +1107,8 @@
 1106|Contur
 1107|Urmează linia care înconjoară toate formele, ca o bandă elastică.
 1108|Cadru de contur
-1109|Ordinea trecerilor
-1110|Trecere cu trecere peste toate obiectele
-1111|Obiect cu obiect, toate trecerile sale
+1109|Câte un element
+1110|Fiecare element (un grup sau o formă fără grup) este gravat complet, cu toate straturile și trecerile, înainte de următorul; cel mai apropiat merge primul. Oprit: strat după strat, trecere după trecere.
+1111|Doar selecția
+1112|Se gravează doar formele selectate în zona de lucru în momentul salvării G-code sau al pornirii lucrării.
+1113|Nimic de gravat: nimic nu este selectat

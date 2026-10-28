@@ -1107,6 +1107,8 @@
 1106	Outline
 1107	Trace the outline that wraps all the shapes, like a rubber band.
 1108	Outline frame
-1109	Order of passes
-1110	Pass by pass over all objects
-1111	Object by object, all its passes
+1109	One element at a time
+1110	Each element (a group, or a shape that is in none) is burned completely, all its layers and all their passes, before the next one; the nearest element goes first. Off: layer after layer, pass after pass.
+1111	Selection only
+1112	Only the shapes that are selected on the work area when the G-code is saved or the job is started are burned.
+1113	Nothing to burn: nothing is selected

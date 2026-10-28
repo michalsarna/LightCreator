@@ -644,12 +644,6 @@ impl App {
                             ui.label(tr("Return to origin"));
                             ui.checkbox(&mut d.gcode.return_home, "");
                             ui.end_row();
-                            ui.label(tr("Order of passes"));
-                            egui::ComboBox::from_id_salt("passes_order").selected_text(tr(if d.gcode.passes_per_object { "Object by object, all its passes" } else { "Pass by pass over all objects" })).show_ui(ui, |ui| {
-                                ui.selectable_value(&mut d.gcode.passes_per_object, false, tr("Pass by pass over all objects"));
-                                ui.selectable_value(&mut d.gcode.passes_per_object, true, tr("Object by object, all its passes"));
-                            });
-                            ui.end_row();
                             ui.label(tr("Arcs (G2 / G3)"));
                             ui.checkbox(&mut d.gcode.arcs, tr("Write curves as arcs where they fit"));
                             ui.end_row();
@@ -1242,7 +1236,7 @@ impl App {
         if !errors.is_empty() {
             return Err(errors);
         }
-        let job = lc_core::gcode::generate_from(&moved, back.map(|p| lc_core::Pt::new(p.x - h.pointer_dx, p.y - h.pointer_dy)));
+        let job = lc_core::gcode::generate_with(&moved, back.map(|p| lc_core::Pt::new(p.x - h.pointer_dx, p.y - h.pointer_dy)), &self.job_options());
         Ok(laser::clean_gcode(&lc_core::gcode::without_power(&job.gcode)))
     }
 
