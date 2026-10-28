@@ -13,6 +13,18 @@ Każde wydanie na [stronie Releases](https://github.com/michalsarna/LightCreator
 | Debian / Ubuntu i pochodne, ARM64 (np. Raspberry Pi 4/5, system 64-bitowy) | `lightcreator-vX.Y.Z-linux-arm64.deb` | `lightcreator-vX.Y.Z-linux-arm64.tar.gz` |
 | Inny Linux (Fedora, Arch, openSUSE…) | – | powyższe `.tar.gz` |
 
+## Menedżery pakietów
+
+Wydanie jest też dostępne przez menedżery pakietów, które instalują najnowszą wersję i ją aktualizują:
+
+| System | Polecenie |
+|---|---|
+| macOS (Homebrew) | `brew install --cask michalsarna/tap/lightcreator` (potem `brew upgrade`) |
+| Windows (Scoop) | `scoop bucket add creator https://github.com/michalsarna/scoop-bucket`, potem `scoop install lightcreator` (potem `scoop update lightcreator`) |
+| Windows (winget) | `winget install MichalSarna.LightCreator`, gdy Microsoft przyjmie pakiet do swojego katalogu (zgłoszony, czeka na przegląd) |
+
+Cask Homebrew i manifest Scoop same podążają za każdym wydaniem. Aplikacja na macOS nie jest notaryzowana, więc przy pierwszym uruchomieniu zobacz uwagę w części *macOS* poniżej. Pakiet dla Arch Linuxa (AUR) jest przygotowany, ale jeszcze nieopublikowany.
+
 ## Windows
 
 **Instalator (zalecany).** Uruchom `lightcreator-vX.Y.Z-windows-x86_64-setup.exe`. Dodaje wpis w menu Start i deinstalator (*Ustawienia → Aplikacje*). Instalator nie jest podpisany, więc SmartScreen może napisać „System Windows ochronił ten komputer”: wybierz *Więcej informacji → Uruchom mimo to*.
