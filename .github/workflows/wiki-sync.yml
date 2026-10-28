@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   sync:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       # Needs the wiki enabled in Settings and its first page created once in the GitHub UI,
