@@ -21,7 +21,7 @@ This fetches GRBL `v1.1h.20190825` and grbl-sim into `target/grbl-sim/` and prin
 (`target/grbl-sim/grbl/grbl/sim/grbl_sim.exe`; the `.exe` is grbl-sim's own naming). `GRBL_REF` and `SIM_REF`
 select other versions.
 
-The script applies two patches with fixes found while testing LightCreator, all of them about running the AVR code
+The script applies patches with fixes found while testing LightCreator, all of them about running the AVR code
 on a PC; none changes what GRBL does on a real controller:
 
 `grbl-sim-fixes.patch`:
@@ -38,12 +38,28 @@ on a PC; none changes what GRBL does on a real controller:
   polls running, i.e. during any real job. The interrupt thread now has its own SREG.
 * **Orphaned simulators.** It ignored a hung-up terminal, so a simulator whose bridge was killed kept running and
   kept two CPU cores busy. It now exits when its input hangs up.
-`grbl-fixes.patch`, the only change to GRBL's own sources:
+* **A byte let in that GRBL then dropped.** The simulator reads a byte from its input only when GRBL's receive ring has
+  room, but it tested the ring as one slot too small (`RX_BUFFER_SIZE` instead of `RX_BUFFER_SIZE + 1`): with the ring
+  full at the end of the array a byte got through and was thrown away, and two lines of a job ran together
+  (`error:24`) or one was garbled (`error:1`, `error:3`).
+
+`grbl-sim-macos.patch` (applied on macOS only):
+
+* **A hundred times too slow.** The Mach clock service costs a message to the kernel for every call and the simulator
+  asks for the time once per simulated clock tick. The clock of `clock_gettime_nsec_np` is as accurate and cheap.
+  `build.sh` also adds the Mach headers that `platform_OSX.c` forgets to include, which recent clang refuses.
+
+`grbl-fixes.patch`, the only changes to GRBL's own sources:
 
 * **Reset requests lost.** GRBL sets and clears its
   realtime flags with a read-modify-write inside `cli()`, atomic on an AVR. In the simulator the serial interrupt
   runs on another thread, so a reset (0x18) could be overwritten by the main loop clearing the status-report flag
   at the same moment; GRBL then stayed in `Alarm` and never restarted. These four updates are made atomic.
+* **Serial buffers shared by two threads.** GRBL's receive and transmit rings are written by the interrupt thread and read
+  by the main thread (or the other way round) with nothing but `volatile`, which on a PC allows the data to be seen
+  after the new head, and `UCSR0B |= …` / `&= ~…` of the data-register-empty interrupt is a read-modify-write that two
+  threads can overwrite (the reply then waits for the next write). The heads and tails are stored with release and read
+  with acquire, the register is changed atomically and the interrupt handler looks again after clearing the flag.
 
 ## Use it from the app
 
