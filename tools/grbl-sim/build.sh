@@ -18,6 +18,8 @@ mkdir -p "$out"
 out="$(cd "$out" && pwd)"
 
 if [ ! -d "$out/grbl/.git" ]; then
+    # Leftovers of an earlier build or a partly restored cache (no clone, so git would refuse to clone into it).
+    rm -rf "$out/grbl"
     git -c advice.detachedHead=false clone --quiet --depth 1 --branch "$GRBL_REF" https://github.com/gnea/grbl.git "$out/grbl"
 fi
 sim="$out/grbl/grbl/sim"
