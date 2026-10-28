@@ -1107,6 +1107,8 @@
 1106|Contorno
 1107|Percorre a linha que envolve todas as formas, como um elástico.
 1108|Moldura do contorno
-1109|Ordem das passagens
-1110|Passagem a passagem em todos os objetos
-1111|Objeto a objeto, todas as suas passagens
+1109|Um elemento de cada vez
+1110|Cada elemento (um grupo ou uma forma sem grupo) é gravado por inteiro, com todas as camadas e passagens, antes do seguinte; o mais próximo vai primeiro. Desligado: camada após camada, passagem após passagem.
+1111|Apenas a seleção
+1112|Só são gravadas as formas selecionadas na área de trabalho no momento em que o G-code é guardado ou o trabalho é iniciado.
+1113|Nada para gravar: nada está selecionado

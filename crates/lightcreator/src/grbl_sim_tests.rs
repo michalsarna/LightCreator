@@ -100,19 +100,33 @@ fn grbl_sim_focus_beam_switches_on_with_m3_and_off_with_m5() {
 
 #[test]
 #[ignore = "needs grbl-sim: tools/grbl-sim/build.sh of baseCreator"]
-fn grbl_sim_pass_by_pass_and_object_by_object_both_run() {
-    // The two orders of the passes (`passes_per_object`) give the same number of cuts in another order; both are accepted.
+fn grbl_sim_one_element_at_a_time_and_a_job_of_the_selection_both_run() {
+    // Two groups of a rectangle (layer 0, two passes) and a circle (layer 1): burnt layer by layer and element by element.
+    let mut d = Document::default();
+    d.layers[0].mode = LayerMode::Line;
+    d.layers[1].mode = LayerMode::Line;
+    d.layers[0].passes = 2;
+    let mut first = vec![];
+    for x in [5.0, 35.0] {
+        let r = d.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(x, 5.0));
+        let c = d.add(1, Kind::Ellipse { w: 4.0, h: 4.0 }, Xf::translate(x + 3.0, 8.0));
+        let g = d.scene.new_group_id();
+        for s in d.scene.shapes.iter_mut().filter(|s| s.id == r || s.id == c) {
+            s.group = Some(g);
+        }
+        if first.is_empty() {
+            first = vec![r, c];
+        }
+    }
     let mut s = Session::connect();
     s.wait_banner();
     s.fast_machine(LASER);
-    for per_object in [false, true] {
-        let mut d = Document::default();
-        d.layers[0].mode = LayerMode::Line;
-        d.layers[0].passes = 2;
-        d.device.gcode.passes_per_object = per_object;
-        d.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(5.0, 5.0));
-        d.add(0, Kind::Rect { w: 8.0, h: 8.0 }, Xf::translate(25.0, 5.0));
-        let job = crate::laser::clean_gcode(&gcode::generate(&d).gcode);
+    let jobs = [
+        gcode::generate_with(&d, None, &gcode::JobOptions { one_by_one: true }),
+        gcode::generate_with(&d.only_shapes(&first), None, &gcode::JobOptions::default()),
+    ];
+    for job in jobs {
+        let job = crate::laser::clean_gcode(&job.gcode);
         let n = job.len();
         s.link.send(Cmd::Job(job));
         s.wait("job finished", 60.0, |v| v.progress == (n, n));

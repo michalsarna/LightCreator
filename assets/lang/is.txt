@@ -1107,6 +1107,8 @@
 1106|Útlína
 1107|Fer eftir línunni sem umlykur öll form, eins og teygja.
 1108|Útlínurammi
-1109|Röð yfirferða
-1110|Yfirferð fyrir yfirferð á alla hluti
-1111|Hlutur fyrir hlut, allar yfirferðir hans
+1109|Einn hlutur í einu
+1110|Hver hlutur (hópur eða form án hóps) er brenndur í heild, með öllum lögum og ferðum, áður en sá næsti kemur; sá næsti í nágrenninu fyrst. Slökkt: lag fyrir lag, ferð fyrir ferð.
+1111|Aðeins valið
+1112|Aðeins formin sem eru valin á vinnusvæðinu þegar G-kóðinn er vistaður eða verkið ræst eru brennd.
+1113|Ekkert að brenna: ekkert er valið

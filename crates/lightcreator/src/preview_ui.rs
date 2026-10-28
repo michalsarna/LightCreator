@@ -107,11 +107,11 @@ impl App {
             return;
         }
         // Rebuild the job when the design changed.
-        if self.pv.job.as_ref().map(|j| j.0) != Some(self.revision) {
-            let job = gcode::generate(&self.doc);
+        if self.pv.job.as_ref().map(|j| j.0) != Some(self.job_stamp()) {
+            let job = gcode::generate_with(&self.job_source(), None, &self.job_options());
             let mut t = 0.0;
             self.pv.cum = job.moves.iter().map(|m| { t += m.dur; t }).collect();
-            self.pv.job = Some((self.revision, job));
+            self.pv.job = Some((self.job_stamp(), job));
         }
         let total = self.pv.cum.last().copied().unwrap_or(0.0);
         if self.pv.playing {
@@ -326,7 +326,7 @@ impl App {
         if let Some(r) = &shown {
             base_ui::window::move_by_title(ctx, r.response.layer_id);
         }
-        self.pv.job = Some((self.revision, job));
+        self.pv.job = Some((self.job_stamp(), job));
         self.show_preview = open;
         if !open {
             self.pv.playing = false;

@@ -1107,6 +1107,8 @@
 1106|Kontur
 1107|Følg linjen, der omslutter alle former, som et elastik.
 1108|Konturramme
-1109|Rækkefølge af gennemløb
-1110|Gennemløb for gennemløb over alle objekter
-1111|Objekt for objekt, alle dets gennemløb
+1109|Ét element ad gangen
+1110|Hvert element (en gruppe eller en form uden gruppe) brændes helt, med alle lag og gennemløb, før det næste; det nærmeste kommer først. Fra: lag for lag, gennemløb for gennemløb.
+1111|Kun markering
+1112|Kun de former, der er markeret på arbejdsområdet, når G-koden gemmes eller jobbet startes, brændes.
+1113|Intet at brænde: intet er markeret

@@ -1107,6 +1107,8 @@
 1106|Kontūra
 1107|Iet pa līniju, kas aptver visas formas kā gumija.
 1108|Kontūras rāmis
-1109|Gājienu secība
-1110|Gājiens pēc gājiena pār visiem objektiem
-1111|Objekts pēc objekta, visi tā gājieni
+1109|Pa vienam elementam
+1110|Katrs elements (grupa vai forma bez grupas) tiek izdedzināts pilnībā, ar visiem slāņiem un gājieniem, pirms nākamā; tuvākais pirmais. Izslēgts: slānis pa slānim, gājiens pa gājienam.
+1111|Tikai atlase
+1112|Tiek dedzinātas tikai tās formas, kas darba laukā ir atlasītas brīdī, kad tiek saglabāts G-kods vai sākts darbs.
+1113|Nav ko dedzināt: nekas nav atlasīts

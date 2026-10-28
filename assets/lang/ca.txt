@@ -1107,6 +1107,8 @@
 1106|Contorn
 1107|Recorre la línia que envolta totes les formes, com una goma elàstica.
 1108|Marc del contorn
-1109|Ordre de les passades
-1110|Passada a passada sobre tots els objectes
-1111|Objecte a objecte, totes les seves passades
+1109|Un element cada vegada
+1110|Cada element (un grup o una forma sense grup) es grava sencer, amb totes les capes i passades, abans del següent; el més proper va primer. Desactivat: capa rere capa, passada rere passada.
+1111|Només la selecció
+1112|Només es graven les formes seleccionades a l'àrea de treball en desar el G-code o en iniciar la tasca.
+1113|Res a gravar: no hi ha res seleccionat

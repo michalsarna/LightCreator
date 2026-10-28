@@ -1107,6 +1107,8 @@
 1106|Obris
 1107|Sledi črti, ki obdaja vse oblike kot elastika.
 1108|Okvir obrisa
-1109|Vrstni red prehodov
-1110|Prehod za prehodom čez vse objekte
-1111|Objekt za objektom, vsi njegovi prehodi
+1109|En element naenkrat
+1110|Vsak element (skupina ali oblika brez skupine) se izžge v celoti, z vsemi plastmi in prehodi, preden pride naslednji; najbližji je prvi. Izklopljeno: plast za plastjo, prehod za prehodom.
+1111|Samo izbira
+1112|Izžgejo se samo oblike, ki so izbrane na delovnem območju ob shranjevanju G-kode ali zagonu opravila.
+1113|Ni kaj žgati: nič ni izbrano

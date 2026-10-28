@@ -1107,6 +1107,8 @@
 1106|Körvonal
 1107|Végigjárja a minden alakzatot körülvevő vonalat, mint egy gumiszalag.
 1108|Körvonalkeret
-1109|Az átmenetek sorrendje
-1110|Átmenet átmenet után az összes objektumon
-1111|Objektumonként, az összes átmenete egymás után
+1109|Egy elem egyszerre
+1110|Minden elemet (csoportot vagy csoport nélküli alakzatot) teljesen kiég, az összes rétegével és áthaladásával, mielőtt a következő jönne; a legközelebbi az első. Kikapcsolva: réteg rétegre, áthaladás áthaladásra.
+1111|Csak a kijelölés
+1112|Csak azok az alakzatok égnek ki, amelyek a G-kód mentésekor vagy a munka indításakor ki vannak jelölve a munkaterületen.
+1113|Nincs mit kiégetni: semmi sincs kijelölve

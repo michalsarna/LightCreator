@@ -438,6 +438,14 @@ pub fn generate(doc: &Document) -> Job {
     generate_from(doc, None)
 }
 
+/// What the program asks of a job beyond the document and the device (an option of the Control tab, never saved).
+#[derive(Clone, Debug, Default)]
+pub struct JobOptions {
+    /// Burn the elements one after the other: all the layers and passes of an element (a group, or a single object that is in
+    /// none) before the next one, the elements in the order that keeps the head's travel short. Off: a layer after a layer.
+    pub one_by_one: bool,
+}
+
 /// The corner of the burned work that is put on the head when a job starts from the current position: the top-left
 /// of all the laser moves (design coordinates, y down). `None` when nothing is burned.
 pub fn burn_corner(doc: &Document) -> Option<Pt> {
@@ -458,7 +466,49 @@ pub fn placed_at(doc: &Document, head: Pt) -> Document {
 /// The job; `back` is where it ends instead of the machine's zero when the device returns to its origin (a job that
 /// started from the head's position goes back there).
 pub fn generate_from(doc: &Document, back: Option<Pt>) -> Job {
+    generate_with(doc, back, &JobOptions::default())
+}
+
+/// The elements of the job in the order they are burnt one by one: groups (even over several layers) and single shapes, each
+/// next one the nearest to where the head was left (it starts at `from`). Each element is its shapes in the order of the drawing.
+fn elements_by_distance<'a>(shapes: &[&'a Shape], tol: f64, from: Pt) -> Vec<Vec<&'a Shape>> {
+    let mut elements: Vec<(Option<u64>, Vec<&Shape>)> = vec![];
+    for &s in shapes {
+        match s.group.and_then(|g| elements.iter().position(|(k, _)| *k == Some(g))) {
+            Some(i) => elements[i].1.push(s),
+            None => elements.push((s.group, vec![s])),
+        }
+    }
+    let center = |e: &[&Shape]| -> Pt {
+        let pts: Vec<Pt> = e.iter().flat_map(|s| s.polys_tol(tol)).flat_map(|p| p.pts).collect();
+        if pts.is_empty() {
+            return Pt::new(0.0, 0.0);
+        }
+        let (mut lo, mut hi) = (pts[0], pts[0]);
+        for p in &pts {
+            lo = Pt::new(lo.x.min(p.x), lo.y.min(p.y));
+            hi = Pt::new(hi.x.max(p.x), hi.y.max(p.y));
+        }
+        Pt::new((lo.x + hi.x) / 2.0, (lo.y + hi.y) / 2.0)
+    };
+    let mut left: Vec<(Pt, Vec<&Shape>)> = elements.into_iter().map(|(_, e)| (center(&e), e)).collect();
+    let (mut at, mut out) = (from, vec![]);
+    while !left.is_empty() {
+        let next = (0..left.len()).min_by(|&a, &b| {
+            let d = |i: usize| (left[i].0.x - at.x).powi(2) + (left[i].0.y - at.y).powi(2);
+            d(a).total_cmp(&d(b))
+        });
+        let (c, e) = left.remove(next.unwrap_or(0));
+        at = c;
+        out.push(e);
+    }
+    out
+}
+
+/// The job as `generate_from` makes it, with what the program asks of it (`JobOptions`).
+pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job {
     let dev = &doc.device;
+    let shapes: Vec<&Shape> = doc.scene.shapes.iter().collect();
     let mut w = Writer::new(dev);
     let _ = writeln!(w.out, "; LightCreator job — {}", dev.name);
     let dialect = dev.dialect();
@@ -500,20 +550,34 @@ pub fn generate_from(doc: &Document, back: Option<Pt>) -> Job {
     // The head that is active when the job starts is the first one.
     let mut tool = 0usize;
     // Where we are in the job, for the variables of hooks.
-    let burning: Vec<usize> = doc.layer_order().into_iter().filter(|&li| doc.layers[li].output && doc.scene.shapes.iter().any(|s| s.layer == li)).collect();
-    let layers_total = burning.len();
-    let objects_total = doc.scene.shapes.iter().filter(|s| burning.contains(&s.layer)).count();
-    // The objects in the order they are burnt, for `{workpiece_index}`.
-    let object_order: Vec<u64> = burning.iter().flat_map(|&li| doc.scene.shapes.iter().filter(move |s| s.layer == li).map(|s| s.id)).collect();
-    let mut layer_no = 0usize;
-    for li in doc.layer_order() {
-        let layer = &doc.layers[li];
-        if !layer.output {
-            continue;
+    let burning: Vec<usize> = doc.layer_order().into_iter().filter(|&li| doc.layers[li].output && shapes.iter().any(|s| s.layer == li)).collect();
+    let tol = dev.gcode.flatten_tolerance.clamp(0.001, 5.0);
+    // What is burnt in one go: the shapes of a layer, or (one by one) the shapes of an element on a layer.
+    let mut items: Vec<(usize, Vec<&Shape>)> = vec![];
+    if opts.one_by_one {
+        let on_output: Vec<&Shape> = shapes.iter().copied().filter(|s| burning.contains(&s.layer)).collect();
+        for element in elements_by_distance(&on_output, tol, dev.home_point()) {
+            for &li in &burning {
+                let on_layer: Vec<&Shape> = element.iter().copied().filter(|s| s.layer == li).collect();
+                if !on_layer.is_empty() {
+                    items.push((li, on_layer));
+                }
+            }
         }
-        let tol = dev.gcode.flatten_tolerance.clamp(0.001, 5.0);
-        let polys: Vec<Polyline> = doc.scene.shapes.iter().filter(|s| s.layer == li && !s.is_image()).flat_map(|s| s.polys_tol(tol)).collect();
-        let images: Vec<&Shape> = doc.scene.shapes.iter().filter(|s| s.layer == li && s.is_image()).collect();
+    } else {
+        for &li in &burning {
+            items.push((li, shapes.iter().copied().filter(|s| s.layer == li).collect()));
+        }
+    }
+    let layers_total = if opts.one_by_one { items.len() } else { burning.len() };
+    let objects_total = shapes.iter().filter(|s| burning.contains(&s.layer)).count();
+    // The objects in the order they are burnt, for `{workpiece_index}`.
+    let object_order: Vec<u64> = items.iter().flat_map(|(_, m)| m.iter().map(|s| s.id)).collect();
+    let mut layer_no = 0usize;
+    for (li, members) in items {
+        let layer = &doc.layers[li];
+        let polys: Vec<Polyline> = members.iter().filter(|s| !s.is_image()).flat_map(|s| s.polys_tol(tol)).collect();
+        let images: Vec<&Shape> = members.iter().copied().filter(|s| s.is_image()).collect();
         if polys.is_empty() && images.is_empty() {
             continue;
         }
@@ -544,15 +608,14 @@ pub fn generate_from(doc: &Document, back: Option<Pt>) -> Job {
             air = layer.air_assist;
             let _ = writeln!(w.out, "{} ; air assist {}", if air { air_on } else { air_off }, if air { "on" } else { "off" });
         }
-        // Objects with hooks, or with all the passes done on one object before the next, are burnt one by one; otherwise a
-        // layer is one set of paths (nearest neighbour over all).
+        // Objects with hooks are burnt one by one; otherwise what is burnt in one go is one set of paths (nearest neighbour
+        // over all).
         let per_object = dev.gcode.hooks.per_object();
         let passes = layer.passes.max(1);
-        let each_object = dev.gcode.passes_per_object && passes > 1;
-        let sets: Vec<(Vec<Polyline>, Vec<&Shape>, Option<&Shape>)> = if per_object || each_object {
-            doc.scene.shapes
+        let sets: Vec<(Vec<Polyline>, Vec<&Shape>, Option<&Shape>)> = if per_object {
+            members
                 .iter()
-                .filter(|s| s.layer == li)
+                .copied()
                 .map(|s| {
                     let hooked = per_object.then_some(s);
                     if s.is_image() { (vec![], vec![s], hooked) } else { (s.polys_tol(tol), vec![], hooked) }
@@ -565,18 +628,14 @@ pub fn generate_from(doc: &Document, back: Option<Pt>) -> Job {
         layer_no += 1;
         let ctx = HookCtx { doc, layer_name: &layer.name, layer_no, layers_total, head: w.head, objects_total };
         w.hook(&dev.gcode.hooks.layer_start, "layer_start", &ctx, None);
-        // The order of the runs: pass by pass over the objects, or object by object with all its passes.
-        let runs: Vec<(u32, usize)> = if each_object {
-            (0..sets.len()).flat_map(|i| (0..passes).map(move |p| (p, i))).collect()
-        } else {
-            (0..passes).flat_map(|p| (0..sets.len()).map(move |i| (p, i))).collect()
-        };
+        // Pass by pass over the objects.
+        let runs: Vec<(u32, usize)> = (0..passes).flat_map(|p| (0..sets.len()).map(move |i| (p, i))).collect();
         let mut last_pass = None;
         for (pass, i) in runs {
             let (polys, images, shape) = &sets[i];
             let (pn, pt) = (pass + 1, passes);
             // A new pass is announced, and a machine with a Z axis goes to its height first.
-            if each_object || last_pass != Some(pass) {
+            if last_pass != Some(pass) {
                 if layer.passes > 1 {
                     let _ = writeln!(w.out, "; pass {}/{}", pass + 1, layer.passes);
                 }

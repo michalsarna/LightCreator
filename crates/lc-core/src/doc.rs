@@ -466,10 +466,6 @@ pub struct GcodeCfg {
     /// Own G-code at the start and end of layers and objects.
     #[serde(default)]
     pub hooks: Hooks,
-    /// A layer with several passes: `false` makes the first pass over all its objects, then the second and so on; `true` makes
-    /// all the passes over one object, then goes on to the next object.
-    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
-    pub passes_per_object: bool,
 }
 
 fn d_arc_tol() -> f64 {
@@ -493,7 +489,6 @@ impl Default for GcodeCfg {
             arc_tolerance: DEFAULT_ARC_TOL,
             flatten_tolerance: DEFAULT_FLATTEN_TOL,
             hooks: Hooks::default(),
-            passes_per_object: false,
         }
     }
 }
@@ -1353,6 +1348,13 @@ impl Default for Document {
 }
 
 impl Document {
+    /// The document with only the shapes with these ids (the layers and the device stay): what a job of the selection burns.
+    pub fn only_shapes(&self, ids: &[u64]) -> Document {
+        let mut d = self.clone();
+        d.scene.shapes.retain(|s| ids.contains(&s.id));
+        d
+    }
+
     /// A layer that holds images and nothing else is in the Image mode; a layer left in that mode without images goes
     /// back to Line. Returns whether anything changed. Mixed layers (images and outlines) keep their mode.
     pub fn normalize_image_layers(&mut self) -> bool {

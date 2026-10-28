@@ -1107,6 +1107,8 @@
 1106|Kontūras
 1107|Eina linija, apimančia visas figūras kaip guma.
 1108|Kontūro rėmelis
-1109|Perėjimų tvarka
-1110|Perėjimas po perėjimo per visus objektus
-1111|Objektas po objekto, visi jo perėjimai
+1109|Po vieną elementą
+1110|Kiekvienas elementas (grupė arba forma be grupės) išdeginamas visas, su visais sluoksniais ir praėjimais, prieš kitą; artimiausias pirmas. Išjungta: sluoksnis po sluoksnio, praėjimas po praėjimo.
+1111|Tik pažymėta
+1112|Deginamos tik tos formos, kurios darbo srityje pažymėtos G kodo išsaugojimo ar užduoties pradžios metu.
+1113|Nėra ką deginti: nieko nepažymėta

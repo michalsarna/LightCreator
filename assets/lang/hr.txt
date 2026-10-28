@@ -1107,6 +1107,8 @@
 1106|Obris
 1107|Prati liniju koja obuhvaća sve oblike poput gumice.
 1108|Okvir obrisa
-1109|Redoslijed prolaza
-1110|Prolaz po prolaz preko svih objekata
-1111|Objekt po objekt, svi njegovi prolazi
+1109|Element po element
+1110|Svaki element (grupa ili oblik bez grupe) izgara se u cijelosti, sa svim slojevima i prolazima, prije sljedećeg; najbliži ide prvi. Isključeno: sloj po sloj, prolaz po prolaz.
+1111|Samo odabir
+1112|Gore se samo oblici koji su odabrani na radnoj površini pri spremanju G-koda ili pokretanju posla.
+1113|Nema što gravirati: ništa nije odabrano

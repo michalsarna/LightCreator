@@ -1107,6 +1107,8 @@
 1106|Kontuur
 1107|Käib mööda joont, mis ümbritseb kõiki kujundeid nagu kummipael.
 1108|Kontuuriraam
-1109|Läbimiste järjekord
-1110|Läbimine läbimise haaval kõigil objektidel
-1111|Objekt objekti haaval, kõik selle läbimised
+1109|Üks element korraga
+1110|Iga element (rühm või rühmata kuju) põletatakse tervikuna, kõigi kihtide ja läbimistega, enne järgmist; lähim on esimene. Väljas: kiht kihi haaval, läbimine läbimise haaval.
+1111|Ainult valik
+1112|Põletatakse ainult need kujud, mis on tööalal valitud G-koodi salvestamise või töö alustamise hetkel.
+1113|Pole midagi põletada: midagi pole valitud
