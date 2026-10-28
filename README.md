@@ -4,6 +4,8 @@
 
 See [FEATURES.md](FEATURES.md) for what the app can do, [SUPPORT.md](SUPPORT.md) for how to support the project, [INSTALL.md](INSTALL.md) for how to run it from source and [VERSIONS.md](VERSIONS.md) for the change log.
 
+**Install:** from the [Releases page](https://github.com/michalsarna/LightCreator/releases), or with a package manager: `brew install --cask michalsarna/tap/lightcreator` (macOS), `scoop bucket add creator https://github.com/michalsarna/scoop-bucket` and `scoop install lightcreator` (Windows). See [the wiki](https://github.com/michalsarna/LightCreator/wiki/Installation).
+
 An open-source alternative to [LightBurn](https://lightburnsoftware.com/) for CNC laser engravers and cutters,
 written in Rust. The interface follows the look of [VectorCraft](https://github.com/storytold/vectorcraft)
 (light flat chrome, vertical tool bar, collapsible side panels, colour swatch strip, red-orange accent).

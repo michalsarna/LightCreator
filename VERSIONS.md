@@ -2,6 +2,16 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.3.9
+
+* **Burn one element at a time, or only the selection:** two options in the Control tab, under Outline / Outline frame (this session only, not saved; they can be used together). **One element at a time** burns each element, a group (even over several layers) or a shape that is in no group, completely, with all its layers and all their passes, before the next one, the nearest element first. **Selection only** burns just the shapes that are selected on the work area when the G-code is saved or the job is started. Both change the G-code, the preview and the time estimate.
+* **Camera view:** there is no floating window any more; the view is a separate window, a tab of the side panel or a tab of the work area, next to the drawings, and each camera opens its view the way it was left. The picture is fitted to the window up as well as down, in steps of 0.01 so that it does not tremble; while a separate window is resized the picture stands still and the window is cut to the picture afterwards (no empty strip under it). A stream that is not drawn is stopped.
+* **Windows:** the pop-up windows (settings, plugins, materials, preview...) are moved only by their title line (the pointer is a hand there, a normal one over the icons) and no longer stick to the pointer after a click. The buttons of the device window and of the other dialogs stand at the foot of the window under a line, the lists of the library, materials and plugin windows fill their window, and the device settings have their pages as tabs on top, like in MillCreator.
+* **Jogging:** jog, jog cancel, Home, Unlock, Pause and Resume follow the GRBL version of the Connection page; hold to move is only for GRBL 1.1 and newer.
+* The logo on the start screen is 50 % bigger.
+* The tests run the generated jobs against the real GRBL firmware (a simulator) in CI.
+* baseCreator v1.30.0.
+
 ## v0.3.8
 
 * **GRBL versions:** the Connection page of the device has a *GRBL version* choice: 1.1 or newer (the default), 1.0, 0.9, 0.8 or 0.7 or older. The older boards report the position in their own format and have no `$J=` jog (the program jogs with ordinary moves); GRBL 0.7 has no real-time commands (no status, Pause, Home or Unlock) and cuts lines longer than 49 characters. A servo pen lift (`M3 S…`) works with every version.

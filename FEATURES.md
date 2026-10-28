@@ -104,6 +104,7 @@
   and the red-dot pointer, and the options that go with them: start from, frame power, **Frame along the outline** (the frame traces the outline that wraps all the shapes like a rubber band, the convex hull, instead of the box; a setting of the device) and the live position. STOP is live only
   while the machine works. The section order is the same as in the other programs (position, Move, the jog buttons, Speed). A job here counts from the machine's zero, so the work zero is not moved from this tab, and there
   is no spindle and no probe. Jogs keep to the margins and the limits of the device and go through its controller.
+* **Job options** (in the Control tab, under Outline / Outline frame; this session only, together or alone): **One element at a time** burns each element (a group, even over several layers, or a shape that is in no group) completely, with all its layers and passes, before the next one, the nearest element first; **Selection only** burns just the shapes that are selected when the G-code is saved or the job is started. Both change the G-code, the preview and the estimate.
 * **Live laser position:** a switch in the Device tab (off by default, saved with the device, greyed out without a
   connection) that shows the head as a red dot on the work area. Switched on at rest it homes the machine first;
   during a job, a frame or a jog it only shows the dot, refreshed once a second.
