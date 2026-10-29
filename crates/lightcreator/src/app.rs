@@ -1334,7 +1334,7 @@ impl App {
                 self.open_online_clipart(ctx);
             }
             // The standard commands (also pictures and the operations on shapes) were run above, by baseCreator.
-            Act::ToCurves | Act::BoolUnion | Act::BoolIntersect | Act::BoolSubtract | Act::BoolXor | Act::OffsetShape | Act::RoundCorners | Act::ImportImage | Act::AdjustImage | Act::TraceImage => {}
+            Act::ToCurves | Act::AutoJoin | Act::ClosePath | Act::ExportSelectionSvg | Act::ExportSelectionDxf | Act::BoolUnion | Act::BoolIntersect | Act::BoolSubtract | Act::BoolXor | Act::OffsetShape | Act::RoundCorners | Act::ImportImage | Act::AdjustImage | Act::TraceImage => {}
             Act::QuickGuide => self.show_guide = true,
             Act::OpenGithub => ctx.open_url(egui::OpenUrl::new_tab(crate::help_ui::GITHUB_URL)),
             Act::CameraOverlay => self.show_overlay = true,
