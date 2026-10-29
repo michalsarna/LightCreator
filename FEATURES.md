@@ -88,7 +88,7 @@
 * **Import of LightBurn projects** (`.lbrn2`, `.lbrn`): shapes, text outlines, bitmaps and layer settings (shared reader in baseCreator, also used by MillCreator).
 * **Import of UGS Designer designs** (`.ugsd`): shapes, rectangles with rounded corners, ellipses, text and pictures; every way of cutting becomes a layer (outlines or fill). Milling feeds and depths are not used by the laser (shared reader in baseCreator).
 * **Layer bar** under the editor, the same in all programs: one row of the 64 layer colours (arrows or the wheel scroll it; a dot marks layers that have shapes). Click a colour to put the selected shapes on that layer (or, with nothing selected, to draw on it); double-click for its options.
-* **Plugins** (Settings → Plugins…, shared with the other programs on baseCreator): clipart, machine presets, translations, importers of other file formats, shape generators with a form, and G-code postprocessors, as folders or zips; scripts run in a sandbox (Rhai) and the postprocessor output is checked. An **official list** of plugins (all programs' plugins, Install / Update with a checksum, updates checked only when you ask or switch it on) is in Plugins… → Official plugins.
+* **Plugins** (Settings → Plugins…, shared with the other programs on baseCreator): clipart, machine presets, translations, importers of other file formats, shape generators with a form, and G-code postprocessors, as folders or zips; scripts run in a sandbox (Rhai) and the postprocessor output is checked. An **official list** of plugins (all programs' plugins, Install / Update with a checksum, updates checked only when you ask or switch it on) is in Plugins… → Official plugins. Every plugin that has something to set (a postprocessor) has a **tab of its own** in the right-hand panel. Every plugin that has something to set (a postprocessor) has a **tab of its own** in the right-hand panel; the official plugins are translated into Polish, German, Italian, Finnish, Chinese and Hindi.
 * **Export** submenu: SVG, G-code, and HPGL (`.plt`) / DXF. Native `.cre` projects (shared with MillCreator) embed images.
 * **Layer list:** the three switches at the end of each row (output, visible, air pump) have icon headings above
   the list; the layer colour is shown next to the title of the cut settings.
@@ -113,7 +113,7 @@
   top-left corner of the design is put where the head stands, for the job, the frame and the dry run, and the job ends
   there. Exported files always count from the machine zero.
 * **Image import dialog:** preview with rotate (90° steps and free angle), flip, brightness, contrast, gamma,
-  auto levels, negative and size. The same dialog adjusts an image already on the page.
+  auto levels, negative and size. The same dialog adjusts an image already on the page. The import and adjust dialog follows the size of the window and has a **Levels** column: a histogram of the greys with two sliders for the range (black and white point). The trace dialog zooms (scroll wheel) and moves (drag) its preview. The tool palette shrinks its buttons when the window is too low for it.
 * **Trace image:** turn the dark (or light) areas of a bitmap into Bézier outlines with threshold, speckle
   filter, simplification and curve smoothing.
 
