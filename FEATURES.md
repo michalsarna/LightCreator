@@ -229,12 +229,12 @@
 
 **Help**
 * **Download backup…** (Help menu): asks where to save a zip file with everything the program keeps on this computer,
-* **Export diagnostics (zip)…** (Help menu): a zip for bug reports with the version and system, the device (passwords in addresses hidden), the settings (without the web server key and recent files), the console of the machine and the open project.
   the settings (`app.ron`: device profiles, language, colour scheme, recent files) and the whole
   shared `clipart` gallery, plus a README. **Restore from backup…** (Help menu) reads such a file back: the settings
   are replaced after a confirmation and the pictures are added to the gallery (nothing is removed, so pictures that
   MillCreator or PenCreator saved in the meantime stay; the same menu entries exist in both). When no profile files are found at start, the start window offers the same
   restore with a green button.
+* **Export diagnostics (zip)…** (Help menu): a zip for bug reports with the version and system, the device (passwords in addresses hidden), the settings (without the web server key and recent files), the console of the machine and the open project.
 * **Updates:** the program looks for a newer release on GitHub when it starts (switch it off in Settings → Program
   options…) and Help → Check for updates… does it on demand. A newer version opens a window with a button to the page
   with the release packages.
