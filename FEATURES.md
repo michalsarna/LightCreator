@@ -132,6 +132,8 @@
   shows the colour of the selected object's layer.
 * **Preview window:** playback starts at ×10; the bottom line shows the real job time at the slider position out of
   the total; the play / pause button has a fixed width.
+* **Preview as a tab:** the icon with a tab in the title line of the preview window pins it as a tab of the work area, next to
+  the drawings and the camera view (also in MillCreator and PenCreator); in the tab an icon makes it a window again and the cross closes it.
 * **Preview window (details):** the whole job with each burn operation (layer, fill, line, offset, image, pass) in its own
   colour or in the layer colour, per-operation switches, optional travel moves with the laser off, the machine
   zero marked at its real corner, and smooth time-based playback (the totals are shown under the picture) (15 s fit, real time, ×10 to ×200) with a scrub slider. The view opens zoomed to the objects to burn; the "Fit all objects" and "Fit work area" buttons switch between that and the whole work area.
