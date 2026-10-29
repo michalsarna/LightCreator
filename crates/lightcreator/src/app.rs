@@ -196,6 +196,10 @@ pub struct App {
     pub cam_view_for: usize,
     /// The camera view is a tab of the work area and it is the one shown (in place of the drawing).
     pub cam_tab_shown: bool,
+    /// The preview is a tab of the work area (and not a window) while it is open, and that tab is the shown one.
+    pub preview_tab: bool,
+    pub pv_tab_shown: bool,
+    pub pv_tab_seen: bool,
     pub cam_tab_seen: bool,
     pub stream_err: String,
     pub stream_overlay: bool,
@@ -399,6 +403,9 @@ impl App {
             cam_fit: Default::default(),
             cam_view_for: 0,
             cam_tab_shown: false,
+            preview_tab: false,
+            pv_tab_shown: false,
+            pv_tab_seen: false,
             cam_tab_seen: false,
             stream_err: String::new(),
             stream_overlay: false,
@@ -1333,7 +1340,13 @@ impl App {
                 let confirm = !self.profiles.is_empty();
                 self.restore_backup_dialog(ctx, confirm);
             }
-            Act::PreviewWindow => self.show_preview = true,
+            Act::PreviewWindow => {
+                self.show_preview = true;
+                if self.preview_tab {
+                    self.pv_tab_shown = true;
+                    self.cam_tab_shown = false;
+                }
+            }
             Act::ShareSer2net => self.open_ser2net(),
             Act::ToggleOverlay => {
                 if self.overlay.is_some() {
@@ -1896,6 +1909,8 @@ impl App {
         egui::CentralPanel::no_frame().show(ui, |ui| {
             if self.cam_tab_shown && self.camera_work_tab() {
                 self.camera_work_panel(ui);
+            } else if self.pv_tab_shown && self.preview_work_tab() {
+                self.preview_work_panel(ui);
             } else if !self.gcode_view_panel(ui) {
                 self.canvas(ui)
             }

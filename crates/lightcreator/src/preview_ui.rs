@@ -102,11 +102,8 @@ fn op_label(job: &gcode::Job, i: usize, layers: &[lc_core::Layer]) -> String {
 }
 
 impl App {
-    pub fn preview_window(&mut self, ctx: &egui::Context) {
-        if !self.show_preview {
-            return;
-        }
-        // Rebuild the job when the design changed.
+    /// Rebuild the job when the design changed and advance the playback. None while there is no job.
+    fn preview_prepare(&mut self, ctx: &egui::Context) -> Option<gcode::Job> {
         if self.pv.job.as_ref().map(|j| j.0) != Some(self.job_stamp()) {
             let job = gcode::generate_with(&self.job_source(), None, &self.job_options());
             let mut t = 0.0;
@@ -126,201 +123,87 @@ impl App {
             }
             ctx.request_repaint();
         }
+        self.pv.job.take().map(|(_, j)| j)
+    }
+
+    /// The two buttons that fit the picture. Icons are added right to left: the work area button is the one on the left.
+    fn preview_fit_buttons(pv: &mut PreviewState, ui: &mut egui::Ui) {
+        for (objects, icon, tip) in [(true, "expand", "Fit all objects"), (false, "scan", "Fit work area")] {
+            if crate::app::icon_button(ui, icon, &tr(tip), true, 22.0) {
+                pv.fit_objects = objects;
+                pv.view.need_fit = true;
+                pv.view.auto_fit = true;
+            }
+        }
+    }
+
+    /// The preview as a tab of the work area, in place of the drawing.
+    pub fn preview_work_panel(&mut self, ui: &mut egui::Ui) {
+        let Some(job) = self.preview_prepare(ui.ctx()) else { return };
+        ui.horizontal(|ui| {
+            ui.spacing_mut().item_spacing.x = 4.0;
+            ui.label(RichText::new(tr("Preview")).strong());
+            ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                if base_ui::doc_tabs::back_to_window_button(ui) {
+                    self.preview_pin(false);
+                }
+                Self::preview_fit_buttons(&mut self.pv, ui);
+            });
+        });
+        egui::Frame::new().inner_margin(egui::Margin { left: 8, right: 8, top: 0, bottom: 3 }).show(ui, |ui| self.preview_body(ui, &job));
+        self.pv.job = Some((self.job_stamp(), job));
+    }
+
+    /// Is the preview a tab of the work area (so that the bar of the tabs has one for it)?
+    pub fn preview_work_tab(&self) -> bool {
+        self.show_preview && self.preview_tab
+    }
+
+    /// Pin the preview as a tab of the work area (or make it a window again).
+    pub fn preview_pin(&mut self, tab: bool) {
+        self.preview_tab = tab;
+        self.pv_tab_shown = tab;
+        if tab {
+            self.cam_tab_shown = false;
+        }
+    }
+
+    /// The tab was closed with its cross.
+    pub fn preview_close(&mut self) {
+        self.show_preview = false;
+        self.pv_tab_shown = false;
+        self.pv.playing = false;
+    }
+
+    pub fn preview_window(&mut self, ctx: &egui::Context) {
+        if !self.show_preview {
+            self.pv_tab_seen = false;
+            self.pv_tab_shown = false;
+            return;
+        }
+        if self.preview_tab {
+            // Drawn in the work area (`App::preview_work_panel`); it is shown the first time it opens.
+            if !self.pv_tab_seen {
+                self.pv_tab_shown = true;
+                self.cam_tab_shown = false;
+            }
+            self.pv_tab_seen = true;
+            return;
+        }
+        self.pv_tab_seen = false;
+        self.pv_tab_shown = false;
+        let Some(job) = self.preview_prepare(ctx) else { return };
         let mut open = true;
-        let units = self.doc.device.units;
-        let bed_fill = self.bed_fill();
-        let line_w = self.ed.grid_prefs.line_width;
-        let (bw, bh) = self.doc.device.work_size();
-        let Some((_, job)) = self.pv.job.take() else { return };
+        let mut pin = false;
         // A slim frame: the default window margin leaves a wide empty strip under the totals.
         let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 8, right: 8, top: 6, bottom: 3 });
         let shown = egui::Window::new("preview_window").title_bar(false).frame(frame).default_size([980.0, 640.0]).resizable(true).movable(false).show(ctx, |ui| {
             let pv = &mut self.pv;
             crate::window_ui::mini_title(ui, &tr("Preview"), &mut open, |ui| {
-                // Icons are added right to left: the work area button is the one on the left.
-                for (objects, icon, tip) in [(true, "expand", "Fit all objects"), (false, "scan", "Fit work area")] {
-                    if crate::app::icon_button(ui, icon, &tr(tip), true, 22.0) {
-                        pv.fit_objects = objects;
-                        pv.view.need_fit = true;
-                        pv.view.auto_fit = true;
-                    }
-                }
+                pin = base_ui::doc_tabs::pin_as_tab_button(ui);
+                Self::preview_fit_buttons(pv, ui);
             });
-            ui.horizontal_wrapped(|ui| {
-                ui.label(tr("Colour by"));
-                ui.selectable_value(&mut self.pv.color_by, ColorBy::Operation, tr("Operation"));
-                ui.selectable_value(&mut self.pv.color_by, ColorBy::Layer, tr("Layer"));
-                ui.separator();
-                ui.checkbox(&mut self.pv.show_travel, tr("Show travel moves")).on_hover_text(tr("Moves of the machine with the laser off"));
-                ui.separator();
-                // Fixed width, so the slider next to it does not move when the label changes.
-                let (icon, label) = if self.pv.playing { ("pause", tr("Pause")) } else { ("play", tr("Play")) };
-                let play = egui::Button::image_and_text(crate::icons::slot(Some(icon), theme::text()), label);
-                if ui.add_sized([86.0, 22.0], play).clicked() {
-                    if self.pv.progress >= 1.0 {
-                        self.pv.progress = 0.0;
-                    }
-                    self.pv.playing = !self.pv.playing;
-                }
-                ui.spacing_mut().slider_width = 220.0;
-                ui.add(egui::Slider::new(&mut self.pv.progress, 0.0..=1.0).show_value(false));
-                egui::ComboBox::from_id_salt("pv_speed").width(90.0).selected_text(tr(self.pv.speed.label())).show_ui(ui, |ui| {
-                    for s in PlaySpeed::ALL {
-                        ui.selectable_value(&mut self.pv.speed, s, tr(s.label()));
-                    }
-                });
-            });
-            ui.separator();
-            let n_ops = job.ops.len();
-            // Totals under the picture: time, length, number of passes (operations) and moves.
-            egui::Panel::bottom("pv_totals").frame(egui::Frame::NONE).show(ui, |ui| {
-                ui.separator();
-                ui.horizontal_wrapped(|ui| {
-                    // Real time of the job at the point shown: where the slider stands, out of the whole.
-                    let now = self.pv.progress as f64 * job.est_seconds;
-                    ui.label(RichText::new(format!("{} {} / {}", tr("Time"), crate::app::fmt_time(now), crate::app::fmt_time(job.est_seconds))).strong());
-                    ui.separator();
-                    ui.label(format!("{} {}", tr("cut length"), crate::units_ui::fmt_len(units, job.cut_length, 0)));
-                    ui.separator();
-                    ui.label(trf("{} passes", &[&n_ops]));
-                    ui.separator();
-                    ui.label(trf("{} moves", &[&job.moves.len()]));
-                });
-            });
-            egui::CentralPanel::default().frame(egui::Frame::NONE).show(ui, |ui| {
-            ui.horizontal_top(|ui| {
-                // Legend with a switch per operation.
-                ui.vertical(|ui| {
-                    ui.set_width(210.0);
-                    ui.label(RichText::new(tr("Operations")).strong());
-                    egui::ScrollArea::vertical().id_salt("pv_ops").max_height(ui.available_height().max(120.0)).show(ui, |ui| {
-                        if n_ops == 0 {
-                            ui.label(RichText::new(tr("Nothing to burn: no shapes on output layers")).color(theme::text_dim()));
-                        }
-                        for i in 0..n_ops {
-                            ui.horizontal(|ui| {
-                                let mut shown = !self.pv.hidden.contains(&i);
-                                if ui.checkbox(&mut shown, "").changed() {
-                                    if shown {
-                                        self.pv.hidden.retain(|h| *h != i);
-                                    } else {
-                                        self.pv.hidden.push(i);
-                                    }
-                                }
-                                let c = match self.pv.color_by {
-                                    ColorBy::Operation => op_color(i, n_ops),
-                                    ColorBy::Layer => {
-                                        let p = PALETTE[self.doc.layers[job.ops[i].layer].color.min(lc_core::LAYER_COUNT - 1)];
-                                        Color32::from_rgb(p[0], p[1], p[2])
-                                    }
-                                };
-                                let (r, _) = ui.allocate_exact_size(egui::vec2(14.0, 14.0), Sense::hover());
-                                ui.painter().rect_filled(r, 3.0, c);
-                                ui.label(format!("{}. {}", i + 1, op_label(&job, i, &self.doc.layers)));
-                            });
-                        }
-                    });
-                });
-                ui.separator();
-                // Leave room under the picture for the totals row.
-                let avail = ui.available_size();
-                let (resp, painter) = ui.allocate_painter(avail, Sense::click_and_drag());
-                let rect = resp.rect;
-                painter.rect_filled(rect, 0.0, self.workspace_fill());
-                if (self.pv.view.need_fit || self.pv.view.auto_fit) && rect.width() > 50.0 {
-                    let mut bounds: Option<(f64, f64, f64, f64)> = None;
-                    if self.pv.fit_objects {
-                        for m in job.moves.iter().filter(|m| m.laser) {
-                            for p in [m.a, m.b] {
-                                let b = bounds.get_or_insert((p.x, p.y, p.x, p.y));
-                                *b = (b.0.min(p.x), b.1.min(p.y), b.2.max(p.x), b.3.max(p.y));
-                            }
-                        }
-                    }
-                    let (z, pan) = match bounds {
-                        Some((x0, y0, x1, y1)) => {
-                            crate::canvas::fit_region((rect.width(), rect.height()), (x0, y0), ((x1 - x0).max(1.0), (y1 - y0).max(1.0)), 20.0)
-                        }
-                        None => crate::canvas::fit_view((rect.width(), rect.height()), (bw, bh), 20.0),
-                    };
-                    self.pv.view.zoom = z;
-                    self.pv.view.pan = pan;
-                    self.pv.view.need_fit = false;
-                }
-                let o = rect.min;
-                if resp.hovered() {
-                    let scroll = ui.input(|i| i.smooth_scroll_delta.y);
-                    if let (Some(m), true) = (resp.hover_pos(), scroll.abs() > 0.0) {
-                        let f = (scroll * 0.0015).exp();
-                        let before = (m - o - self.pv.view.pan) / self.pv.view.zoom;
-                        self.pv.view.zoom = (self.pv.view.zoom * f).clamp(0.05, 200.0);
-                        self.pv.view.pan = m - o - before * self.pv.view.zoom;
-                        self.pv.view.auto_fit = false;
-                    }
-                }
-                if resp.dragged() {
-                    self.pv.view.pan += resp.drag_delta();
-                    self.pv.view.auto_fit = false;
-                }
-                let (zoom, pan) = (self.pv.view.zoom, self.pv.view.pan);
-                let w2s = |p: lc_core::Pt| -> Pos2 { o + pan + egui::vec2(p.x as f32 * zoom, p.y as f32 * zoom) };
-                let bed = egui::Rect::from_min_max(w2s(lc_core::Pt::new(0.0, 0.0)), w2s(lc_core::Pt::new(bw, bh)));
-                let painter = painter.with_clip_rect(rect);
-                painter.rect_filled(bed, 0.0, bed_fill);
-                painter.rect_stroke(bed, 0.0, Stroke::new(1.0, Color32::from_gray(0x99)), egui::StrokeKind::Outside);
-                // Machine zero.
-                let home = w2s(self.doc.device.home_point());
-                painter.circle_filled(home, 5.0, theme::accent());
-                painter.circle_stroke(home, 8.0, Stroke::new(1.2, theme::accent()));
-                // Everything before the current time is drawn whole; the current move only up to the head.
-                let t_now = self.pv.progress as f64 * total;
-                let cur = self.pv.cum.partition_point(|c| *c <= t_now).min(job.moves.len());
-                let mut shapes = Vec::with_capacity(cur);
-                let skip_travel = job.moves.len() > 200_000;
-                let style_of = |m: &gcode::Move| -> Option<Stroke> {
-                    if self.pv.hidden.contains(&m.op) {
-                        return None;
-                    }
-                    if m.laser {
-                        let c = match self.pv.color_by {
-                            ColorBy::Operation => op_color(m.op, n_ops),
-                            ColorBy::Layer => {
-                                let p = PALETTE[self.doc.layers[m.layer].color.min(lc_core::LAYER_COUNT - 1)];
-                                Color32::from_rgb(p[0], p[1], p[2])
-                            }
-                        };
-                        Some(Stroke::new(line_w * 0.8, c))
-                    } else if self.pv.show_travel && !skip_travel {
-                        Some(Stroke::new(0.5, Color32::from_rgb(0x90, 0x90, 0xa0).gamma_multiply(0.8)))
-                    } else {
-                        None
-                    }
-                };
-                for m in job.moves.iter().take(cur) {
-                    if let Some(st) = style_of(m) {
-                        shapes.push(egui::Shape::line_segment([w2s(m.a), w2s(m.b)], st));
-                    }
-                }
-                let mut head = home;
-                if let Some(m) = job.moves.get(cur) {
-                    let before = if cur == 0 { 0.0 } else { self.pv.cum[cur - 1] };
-                    let f = if m.dur > 1e-12 { ((t_now - before) / m.dur).clamp(0.0, 1.0) } else { 1.0 };
-                    let p = lc_core::Pt::new(m.a.x + (m.b.x - m.a.x) * f, m.a.y + (m.b.y - m.a.y) * f);
-                    if let Some(st) = style_of(m) {
-                        shapes.push(egui::Shape::line_segment([w2s(m.a), w2s(p)], st));
-                    }
-                    head = w2s(p);
-                } else if let Some(m) = job.moves.last() {
-                    head = w2s(m.b);
-                }
-                painter.extend(shapes);
-                painter.circle_filled(head, 4.5, Color32::from_rgb(0xe0, 0x20, 0x20));
-                painter.circle_stroke(head, 4.5, Stroke::new(1.0, Color32::WHITE));
-                if skip_travel && self.pv.show_travel {
-                    painter.text(rect.left_bottom() + egui::vec2(8.0, -8.0), egui::Align2::LEFT_BOTTOM, tr("Too many moves: travel lines are hidden."), egui::FontId::proportional(12.0), theme::text_dim());
-                }
-            });
-            });
+            self.preview_body(ui, &job);
         });
         // The window is moved by its title line only.
         if let Some(r) = &shown {
@@ -328,8 +211,245 @@ impl App {
         }
         self.pv.job = Some((self.job_stamp(), job));
         self.show_preview = open;
+        if pin {
+            self.preview_pin(true);
+        }
         if !open {
             self.pv.playing = false;
         }
+    }
+
+    /// Options, totals and the picture of the toolpath (the same in the window and in the tab).
+    fn preview_body(&mut self, ui: &mut egui::Ui, job: &gcode::Job) {
+        let units = self.doc.device.units;
+        let bed_fill = self.bed_fill();
+        let line_w = self.ed.grid_prefs.line_width;
+        let (bw, bh) = self.doc.device.work_size();
+        let total = self.pv.cum.last().copied().unwrap_or(0.0);
+        ui.horizontal_wrapped(|ui| {
+            ui.label(tr("Colour by"));
+            ui.selectable_value(&mut self.pv.color_by, ColorBy::Operation, tr("Operation"));
+            ui.selectable_value(&mut self.pv.color_by, ColorBy::Layer, tr("Layer"));
+            ui.separator();
+            ui.checkbox(&mut self.pv.show_travel, tr("Show travel moves")).on_hover_text(tr("Moves of the machine with the laser off"));
+            ui.separator();
+            // Fixed width, so the slider next to it does not move when the label changes.
+            let (icon, label) = if self.pv.playing { ("pause", tr("Pause")) } else { ("play", tr("Play")) };
+            let play = egui::Button::image_and_text(crate::icons::slot(Some(icon), theme::text()), label);
+            if ui.add_sized([86.0, 22.0], play).clicked() {
+                if self.pv.progress >= 1.0 {
+                    self.pv.progress = 0.0;
+                }
+                self.pv.playing = !self.pv.playing;
+            }
+            ui.spacing_mut().slider_width = 220.0;
+            ui.add(egui::Slider::new(&mut self.pv.progress, 0.0..=1.0).show_value(false));
+            egui::ComboBox::from_id_salt("pv_speed").width(90.0).selected_text(tr(self.pv.speed.label())).show_ui(ui, |ui| {
+                for s in PlaySpeed::ALL {
+                    ui.selectable_value(&mut self.pv.speed, s, tr(s.label()));
+                }
+            });
+        });
+        ui.separator();
+        let n_ops = job.ops.len();
+        // Totals under the picture: time, length, number of passes (operations) and moves.
+        egui::Panel::bottom("pv_totals").frame(egui::Frame::NONE).show(ui, |ui| {
+            ui.separator();
+            ui.horizontal_wrapped(|ui| {
+                // Real time of the job at the point shown: where the slider stands, out of the whole.
+                let now = self.pv.progress as f64 * job.est_seconds;
+                ui.label(RichText::new(format!("{} {} / {}", tr("Time"), crate::app::fmt_time(now), crate::app::fmt_time(job.est_seconds))).strong());
+                ui.separator();
+                ui.label(format!("{} {}", tr("cut length"), crate::units_ui::fmt_len(units, job.cut_length, 0)));
+                ui.separator();
+                ui.label(trf("{} passes", &[&n_ops]));
+                ui.separator();
+                ui.label(trf("{} moves", &[&job.moves.len()]));
+            });
+        });
+        egui::CentralPanel::default().frame(egui::Frame::NONE).show(ui, |ui| {
+        ui.horizontal_top(|ui| {
+            // Legend with a switch per operation.
+            ui.vertical(|ui| {
+                ui.set_width(210.0);
+                ui.label(RichText::new(tr("Operations")).strong());
+                egui::ScrollArea::vertical().id_salt("pv_ops").max_height(ui.available_height().max(120.0)).show(ui, |ui| {
+                    if n_ops == 0 {
+                        ui.label(RichText::new(tr("Nothing to burn: no shapes on output layers")).color(theme::text_dim()));
+                    }
+                    for i in 0..n_ops {
+                        ui.horizontal(|ui| {
+                            let mut shown = !self.pv.hidden.contains(&i);
+                            if ui.checkbox(&mut shown, "").changed() {
+                                if shown {
+                                    self.pv.hidden.retain(|h| *h != i);
+                                } else {
+                                    self.pv.hidden.push(i);
+                                }
+                            }
+                            let c = match self.pv.color_by {
+                                ColorBy::Operation => op_color(i, n_ops),
+                                ColorBy::Layer => {
+                                    let p = PALETTE[self.doc.layers[job.ops[i].layer].color.min(lc_core::LAYER_COUNT - 1)];
+                                    Color32::from_rgb(p[0], p[1], p[2])
+                                }
+                            };
+                            let (r, _) = ui.allocate_exact_size(egui::vec2(14.0, 14.0), Sense::hover());
+                            ui.painter().rect_filled(r, 3.0, c);
+                            ui.label(format!("{}. {}", i + 1, op_label(&job, i, &self.doc.layers)));
+                        });
+                    }
+                });
+            });
+            ui.separator();
+            // Leave room under the picture for the totals row.
+            let avail = ui.available_size();
+            let (resp, painter) = ui.allocate_painter(avail, Sense::click_and_drag());
+            let rect = resp.rect;
+            painter.rect_filled(rect, 0.0, self.workspace_fill());
+            if (self.pv.view.need_fit || self.pv.view.auto_fit) && rect.width() > 50.0 {
+                let mut bounds: Option<(f64, f64, f64, f64)> = None;
+                if self.pv.fit_objects {
+                    for m in job.moves.iter().filter(|m| m.laser) {
+                        for p in [m.a, m.b] {
+                            let b = bounds.get_or_insert((p.x, p.y, p.x, p.y));
+                            *b = (b.0.min(p.x), b.1.min(p.y), b.2.max(p.x), b.3.max(p.y));
+                        }
+                    }
+                }
+                let (z, pan) = match bounds {
+                    Some((x0, y0, x1, y1)) => {
+                        crate::canvas::fit_region((rect.width(), rect.height()), (x0, y0), ((x1 - x0).max(1.0), (y1 - y0).max(1.0)), 20.0)
+                    }
+                    None => crate::canvas::fit_view((rect.width(), rect.height()), (bw, bh), 20.0),
+                };
+                self.pv.view.zoom = z;
+                self.pv.view.pan = pan;
+                self.pv.view.need_fit = false;
+            }
+            let o = rect.min;
+            if resp.hovered() {
+                let scroll = ui.input(|i| i.smooth_scroll_delta.y);
+                if let (Some(m), true) = (resp.hover_pos(), scroll.abs() > 0.0) {
+                    let f = (scroll * 0.0015).exp();
+                    let before = (m - o - self.pv.view.pan) / self.pv.view.zoom;
+                    self.pv.view.zoom = (self.pv.view.zoom * f).clamp(0.05, 200.0);
+                    self.pv.view.pan = m - o - before * self.pv.view.zoom;
+                    self.pv.view.auto_fit = false;
+                }
+            }
+            if resp.dragged() {
+                self.pv.view.pan += resp.drag_delta();
+                self.pv.view.auto_fit = false;
+            }
+            let (zoom, pan) = (self.pv.view.zoom, self.pv.view.pan);
+            let w2s = |p: lc_core::Pt| -> Pos2 { o + pan + egui::vec2(p.x as f32 * zoom, p.y as f32 * zoom) };
+            let bed = egui::Rect::from_min_max(w2s(lc_core::Pt::new(0.0, 0.0)), w2s(lc_core::Pt::new(bw, bh)));
+            let painter = painter.with_clip_rect(rect);
+            painter.rect_filled(bed, 0.0, bed_fill);
+            painter.rect_stroke(bed, 0.0, Stroke::new(1.0, Color32::from_gray(0x99)), egui::StrokeKind::Outside);
+            // Machine zero.
+            let home = w2s(self.doc.device.home_point());
+            painter.circle_filled(home, 5.0, theme::accent());
+            painter.circle_stroke(home, 8.0, Stroke::new(1.2, theme::accent()));
+            // Everything before the current time is drawn whole; the current move only up to the head.
+            let t_now = self.pv.progress as f64 * total;
+            let cur = self.pv.cum.partition_point(|c| *c <= t_now).min(job.moves.len());
+            let mut shapes = Vec::with_capacity(cur);
+            let skip_travel = job.moves.len() > 200_000;
+            let style_of = |m: &gcode::Move| -> Option<Stroke> {
+                if self.pv.hidden.contains(&m.op) {
+                    return None;
+                }
+                if m.laser {
+                    let c = match self.pv.color_by {
+                        ColorBy::Operation => op_color(m.op, n_ops),
+                        ColorBy::Layer => {
+                            let p = PALETTE[self.doc.layers[m.layer].color.min(lc_core::LAYER_COUNT - 1)];
+                            Color32::from_rgb(p[0], p[1], p[2])
+                        }
+                    };
+                    Some(Stroke::new(line_w * 0.8, c))
+                } else if self.pv.show_travel && !skip_travel {
+                    Some(Stroke::new(0.5, Color32::from_rgb(0x90, 0x90, 0xa0).gamma_multiply(0.8)))
+                } else {
+                    None
+                }
+            };
+            for m in job.moves.iter().take(cur) {
+                if let Some(st) = style_of(m) {
+                    shapes.push(egui::Shape::line_segment([w2s(m.a), w2s(m.b)], st));
+                }
+            }
+            let mut head = home;
+            if let Some(m) = job.moves.get(cur) {
+                let before = if cur == 0 { 0.0 } else { self.pv.cum[cur - 1] };
+                let f = if m.dur > 1e-12 { ((t_now - before) / m.dur).clamp(0.0, 1.0) } else { 1.0 };
+                let p = lc_core::Pt::new(m.a.x + (m.b.x - m.a.x) * f, m.a.y + (m.b.y - m.a.y) * f);
+                if let Some(st) = style_of(m) {
+                    shapes.push(egui::Shape::line_segment([w2s(m.a), w2s(p)], st));
+                }
+                head = w2s(p);
+            } else if let Some(m) = job.moves.last() {
+                head = w2s(m.b);
+            }
+            painter.extend(shapes);
+            painter.circle_filled(head, 4.5, Color32::from_rgb(0xe0, 0x20, 0x20));
+            painter.circle_stroke(head, 4.5, Stroke::new(1.0, Color32::WHITE));
+            if skip_travel && self.pv.show_travel {
+                painter.text(rect.left_bottom() + egui::vec2(8.0, -8.0), egui::Align2::LEFT_BOTTOM, tr("Too many moves: travel lines are hidden."), egui::FontId::proportional(12.0), theme::text_dim());
+            }
+        });
+        });
+
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::app::{App, Screen};
+    use eframe::egui;
+
+    fn editor() -> (App, egui::Context) {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.screen = Screen::Editor;
+        (a, ctx)
+    }
+
+    #[test]
+    fn the_preview_is_pinned_as_a_tab_of_the_work_area_and_unpinned_again() {
+        let (mut a, ctx) = editor();
+        a.show_preview = true;
+        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| a.preview_window(ui.ctx()));
+        out.textures_delta.clear();
+        assert!(!a.preview_work_tab(), "a window to begin with");
+        a.preview_pin(true);
+        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| {
+            a.preview_window(ui.ctx());
+            egui::CentralPanel::no_frame().show(ui, |ui| a.preview_work_panel(ui));
+        });
+        out.textures_delta.clear();
+        assert!(a.preview_work_tab() && a.pv_tab_shown);
+        assert!(a.pv.job.is_some(), "the tab builds the job");
+        a.preview_pin(false);
+        assert!(!a.preview_work_tab() && !a.pv_tab_shown && a.show_preview);
+    }
+
+    #[test]
+    fn the_tab_opens_shown_again_after_it_was_closed_and_the_camera_tab_gives_way() {
+        let (mut a, ctx) = editor();
+        a.show_preview = true;
+        a.preview_pin(true);
+        a.cam_tab_shown = true;
+        a.preview_close();
+        assert!(!a.show_preview && !a.pv_tab_shown);
+        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| a.preview_window(ui.ctx()));
+        out.textures_delta.clear();
+        // Opened again: it is still a tab, and the shown one.
+        a.show_preview = true;
+        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| a.preview_window(ui.ctx()));
+        out.textures_delta.clear();
+        assert!(a.preview_work_tab() && a.pv_tab_shown && !a.cam_tab_shown);
     }
 }
