@@ -2,12 +2,14 @@
 
 Wtyczki dodają LightCreatorowi rzeczy bez zmieniania programu: **clipart, presety maszyn, tłumaczenia, importery innych formatów plików, generatory kształtów i postprocesory G-code.** Są wspólne dla LightCreatora, MillCreatora i PenCreatora: wtyczka leży w folderze `plugins` we wspólnym folderze danych (`baseCreator`), a każdy program używa tych części, które do niego pasują.
 
-**Settings → Plugins…** otwiera okno: instalacja wtyczki z pliku `.zip`, włączanie i wyłączanie, usuwanie, otwarcie folderu oraz wybór **postprocesora** dla następnego eksportu G-code.
+**Settings → Plugins…** otwiera okno: instalacja wtyczki z pliku `.zip`, włączanie i wyłączanie, usuwanie, otwarcie folderu oraz ustawianie wtyczek z opcjami: każda wtyczka, w której jest coś do wyboru (**postprocesor**), ma własną kartę w prawym panelu, gdzie wybiera się ją dla następnego eksportu G-code.
 
 * **Importery:** **File → Import → Import with a plugin…**, przeciągnięcie pliku albo Otwórz na pliku, którego rozszerzenie czyta jakaś wtyczka. Kształty są dodawane do rysunku (zaznaczone, jedno cofnięcie).
 * **Generatory:** **File → Import → Generate shape…** pokazuje formularz generatora (liczby, przełączniki, teksty, listy) i dodaje kształty, które tworzy.
-* **Postprocesory:** gdy jeden jest wybrany w oknie Wtyczki, **Export G-code…** przepuszcza program przez niego. Może zmieniać tylko linie G-code; linie będące komendami kontrolera (`$…`, `~`, `!`, `?`) albo ze znakami sterującymi są odrzucane i nic się nie zapisuje. Wysyłanie zadania prosto do maszyny nie przechodzi przez postprocesor.
+* **Postprocesory:** gdy jeden jest wybrany w karcie jego wtyczki, **Export G-code…** przepuszcza program przez niego. Może zmieniać tylko linie G-code; linie będące komendami kontrolera (`$…`, `~`, `!`, `?`) albo ze znakami sterującymi są odrzucane i nic się nie zapisuje. Wysyłanie zadania prosto do maszyny nie przechodzi przez postprocesor.
 * Presety i pliki danych (`mill-tools`) wtyczek nie są używane przez LightCreatora; bierze z nich clipart, importery, generatory i postprocesory.
+
+**Jak używać G-code tools (i każdego postprocesora), krok po kroku.** 1. *Settings → Plugins…* → *Official plugins* → zainstaluj **G-code tools** (albo *Install plugin from zip…*). 2. W prawym panelu, po pozostałych kartach, pojawia się karta **G-code tools** (gdy panel jest zwinięty: na wąskim pasku). 3. Otwórz ją i wybierz **Number the lines (N10, N20, …)** albo **Remove comments**; *None* wyłącza postprocesor. 4. **Export G-code…** (menu Laser / Milling / Plot albo przycisk *Save G-code*) zapisuje teraz przetworzony plik; pasek stanu mówi, którego postprocesora użyto. Zadanie uruchomione przyciskiem **Start** jest wysyłane bez zmian, a podgląd G-code pokazuje plik tak, jak go zapisano.
 
 **Bezpieczeństwo.** Skrypty wtyczek (Rhai) działają w piaskownicy bez dostępu do plików, sieci, systemu i maszyny, z limitem czasu i pamięci. Mimo to wtyczka to czyjś kod, który decyduje, co usłyszy Twoja maszyna: instaluj tylko wtyczki, którym ufasz, i obejrzyj G-code nowego postprocesora, zanim go uruchomisz na maszynie.
 

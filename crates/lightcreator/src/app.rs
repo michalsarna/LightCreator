@@ -31,6 +31,8 @@ pub enum SideTab {
     Description,
     /// The camera picture; only listed while the stream is shown as a tab.
     Camera,
+    /// The tab of a plugin with settings (which one: `App::plugin_tab`).
+    Plugin,
 }
 
 impl SideTab {
@@ -54,6 +56,7 @@ impl SideTab {
             SideTab::Clipart => "clipart",
             SideTab::Description => "description",
             SideTab::Camera => "camera",
+            SideTab::Plugin => "plugin",
         }
     }
 
@@ -281,6 +284,8 @@ pub struct App {
     pub console: base_ui::console_ui::ConsoleState,
     pub side_tab: SideTab,
     pub plugins: base_ui::plugins_ui::PluginsUi,
+    /// The id of the plugin tab that is shown while `side_tab` is `SideTab::Plugin`.
+    pub plugin_tab: &'static str,
 }
 
 impl App {
@@ -461,6 +466,7 @@ impl App {
             progress: (0, 0),
             console: Default::default(),
             side_tab: SideTab::Properties,
+            plugin_tab: "",
             plugins: base_ui::plugins_ui::PluginsUi::new("lightcreator", &crate::data_paths().base),
         }
     }
@@ -1479,7 +1485,7 @@ impl App {
                 (Act::BoolSubtract, "squares-subtract", "Subtract"),
                 (Act::BoolXor, "squares-exclude", "Exclusive or"),
             ] {
-                if icon_button(ui, icon, &tr(tip), multi, 36.0) {
+                if icon_button(ui, icon, &tr(tip), multi, base_ui::editor::palette_button_size(ui)) {
                     op = Some(a);
                 }
             }
