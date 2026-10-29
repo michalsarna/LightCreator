@@ -2,10 +2,6 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
-## v0.4.1 (not released yet)
-
-* **DXF import:** File → Import → Import DXF… (also Open and drag and drop): lines, polylines with bulges, arcs, circles, ellipses, splines and blocks, in millimetres by the unit of the file, with the layers of the DXF on the layers of the program in order; lines that meet become paths. **Auto-join paths…**, **Close path with tolerance…** and **Export selection as SVG / DXF…**.
-
 ## v0.4.0
 
 * **Preview as a tab:** the preview window has a button in its title line that pins it as a tab of the work area, next to the drawings and the camera view; the tab has a button that makes it a window again, and its cross closes the preview.
