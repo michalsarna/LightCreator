@@ -39,6 +39,10 @@ pub enum Act {
     ToBack,
     ToPath,
     ToCurves,
+    AutoJoin,
+    ClosePath,
+    ExportSelectionSvg,
+    ExportSelectionDxf,
     EditNodes,
     Group,
     Ungroup,
@@ -143,6 +147,10 @@ impl From<StdAct> for Act {
             StdAct::OffsetShape => Act::OffsetShape,
             StdAct::RoundCorners => Act::RoundCorners,
             StdAct::ToCurves => Act::ToCurves,
+            StdAct::AutoJoin => Act::AutoJoin,
+            StdAct::ClosePath => Act::ClosePath,
+            StdAct::ExportSelectionSvg => Act::ExportSelectionSvg,
+            StdAct::ExportSelectionDxf => Act::ExportSelectionDxf,
         }
     }
 }
@@ -191,6 +199,10 @@ impl Act {
             Act::OffsetShape => StdAct::OffsetShape,
             Act::RoundCorners => StdAct::RoundCorners,
             Act::ToCurves => StdAct::ToCurves,
+            Act::AutoJoin => StdAct::AutoJoin,
+            Act::ClosePath => StdAct::ClosePath,
+            Act::ExportSelectionSvg => StdAct::ExportSelectionSvg,
+            Act::ExportSelectionDxf => StdAct::ExportSelectionDxf,
             _ => return None,
         })
     }
@@ -231,6 +243,8 @@ pub fn menus() -> base_ui::menu::Menus<Act> {
                 Item(Act::ExportSvg, "Export SVG…", None),
                 Item(Act::ExportGcode, "Export G-code…", None),
                 Item(Act::ExportCam, "Export PLT / DXF…", None),
+                Item(Act::ExportSelectionSvg, "Export selection as SVG…", None),
+                Item(Act::ExportSelectionDxf, "Export selection as DXF…", None),
             ],
         ),
     ];
@@ -282,6 +296,9 @@ pub fn menus() -> base_ui::menu::Menus<Act> {
                     Item(Act::BoolSubtract, "Subtract", None),
                     Item(Act::BoolXor, "Exclusive or", None),
                     Item(Act::OffsetShape, "Offset shape…", None),
+                    Sep,
+                    Item(Act::AutoJoin, "Auto-join paths…", None),
+                    Item(Act::ClosePath, "Close path with tolerance…", None),
                     Sep,
                     // Pictures.
                     Item(Act::AdjustImage, "Adjust image…", None),
