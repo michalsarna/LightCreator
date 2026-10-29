@@ -29,7 +29,7 @@ jobs:
           }
 
       # End-to-end streaming tests against the real GRBL 1.1h firmware compiled for the PC (grbl-sim).
-      - uses: michalsarna/baseCreator/.github/actions/grbl-sim@v1.34.0
+      - uses: michalsarna/baseCreator/.github/actions/grbl-sim@v1.34.1
       - name: GRBL simulator tests
         run: |
           set -o pipefail

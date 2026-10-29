@@ -2,6 +2,16 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.4.0
+
+* **Preview as a tab:** the preview window has a button in its title line that pins it as a tab of the work area, next to the drawings and the camera view; the tab has a button that makes it a window again, and its cross closes the preview.
+* **Plugins:** every plugin that has something to set (a G-code postprocessor, for example *G-code tools*) has a tab of its own in the right-hand panel; the postprocessor is no longer chosen in the Plugins window. The official plugins are translated into Polish, German, Italian, Finnish, Chinese and Hindi.
+* **Import / Adjust image:** the dialog follows the size of the window, with Import / Apply and Cancel at the bottom, and a new **Levels** column: a histogram of the greys with two sliders for the range (everything darker than the left one turns black, everything lighter than the right one white).
+* **Trace image:** the dialog follows the size of the window; the preview zooms with the scroll wheel (about the pointer), moves by dragging and shows the whole picture again on a double click, so that the outlines can be looked at on the bitmap.
+* **Tool palette:** when the window is too low for it (Full HD with the taskbar showing), the buttons of the palette grow smaller instead of the palette scrolling.
+* **Help → Export diagnostics (zip)…:** one zip to attach to a bug report: version and system, the device (passwords in addresses hidden), the settings (without the web server key and the recent files), the console of the machine and the open project.
+* Updated dependencies. baseCreator v1.34.1.
+
 ## v0.3.9
 
 * **Burn one element at a time, or only the selection:** two options in the Control tab, under Outline / Outline frame (this session only, not saved; they can be used together). **One element at a time** burns each element, a group (even over several layers) or a shape that is in no group, completely, with all its layers and all their passes, before the next one, the nearest element first. **Selection only** burns just the shapes that are selected on the work area when the G-code is saved or the job is started. Both change the G-code, the preview and the time estimate.
