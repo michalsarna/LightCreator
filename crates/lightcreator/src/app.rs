@@ -1336,6 +1336,7 @@ impl App {
             Act::ProgramOptions => self.show_options = true,
             Act::CheckUpdates => self.start_update_check(ctx, true),
             Act::DownloadBackup => self.download_backup(),
+            Act::ExportDiagnostics => self.export_diagnostics(),
             Act::RestoreBackup => {
                 let confirm = !self.profiles.is_empty();
                 self.restore_backup_dialog(ctx, confirm);

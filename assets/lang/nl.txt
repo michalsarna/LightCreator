@@ -1112,3 +1112,6 @@
 1111|Alleen selectie
 1112|Alleen de vormen die op het werkvlak zijn geselecteerd op het moment dat de G-code wordt opgeslagen of de taak start, worden gebrand.
 1113|Niets te branden: niets is geselecteerd
+1114|Diagnose exporteren (zip)…
+1115|Diagnose opgeslagen: {}
+1116|Diagnose kon niet worden opgeslagen: {}

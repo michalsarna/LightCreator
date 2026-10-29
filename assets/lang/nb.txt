@@ -1112,3 +1112,6 @@
 1111|Bare utvalget
 1112|Bare formene som er valgt i arbeidsområdet når G-koden lagres eller jobben startes, brennes.
 1113|Ingenting å brenne: ingenting er valgt
+1114|Eksporter diagnostikk (zip)…
+1115|Diagnostikk lagret: {}
+1116|Kunne ikke lagre diagnostikken: {}

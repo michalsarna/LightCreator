@@ -1112,3 +1112,6 @@
 1111|Ainult valik
 1112|Põletatakse ainult need kujud, mis on tööalal valitud G-koodi salvestamise või töö alustamise hetkel.
 1113|Pole midagi põletada: midagi pole valitud
+1114|Ekspordi diagnostika (zip)…
+1115|Diagnostika salvestatud: {}
+1116|Diagnostikat ei saanud salvestada: {}

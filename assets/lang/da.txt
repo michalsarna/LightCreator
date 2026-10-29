@@ -1112,3 +1112,6 @@
 1111|Kun markering
 1112|Kun de former, der er markeret på arbejdsområdet, når G-koden gemmes eller jobbet startes, brændes.
 1113|Intet at brænde: intet er markeret
+1114|Eksportér diagnostik (zip)…
+1115|Diagnostik gemt: {}
+1116|Diagnostikken kunne ikke gemmes: {}

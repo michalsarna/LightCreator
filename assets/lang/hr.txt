@@ -1112,3 +1112,6 @@
 1111|Samo odabir
 1112|Gore se samo oblici koji su odabrani na radnoj površini pri spremanju G-koda ili pokretanju posla.
 1113|Nema što gravirati: ništa nije odabrano
+1114|Izvezi dijagnostiku (zip)…
+1115|Dijagnostika spremljena: {}
+1116|Dijagnostiku nije moguće spremiti: {}

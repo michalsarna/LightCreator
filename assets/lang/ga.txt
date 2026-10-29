@@ -1112,3 +1112,6 @@
 1111|Roghnúchán amháin
 1112|Ní dhóitear ach na cruthanna atá roghnaithe sa limistéar oibre nuair a shábháiltear an G-code nó nuair a thosaítear an jab.
 1113|Faic le dóchán: níl aon rud roghnaithe
+1114|Easpórtáil diagnóisic (zip)…
+1115|Sábháladh an diagnóisic: {}
+1116|Níorbh fhéidir an diagnóisic a shábháil: {}

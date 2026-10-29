@@ -38,6 +38,7 @@ mod session_ui;
 mod workspaces;
 mod update_ui;
 mod backup_ui;
+mod diagnostics_ui;
 mod window_ui;
 mod add_device_ui;
 

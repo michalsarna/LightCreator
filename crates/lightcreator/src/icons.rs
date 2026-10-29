@@ -51,6 +51,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::ProgramOptions => "settings",
         Act::CheckUpdates => "refresh-cw",
         Act::DownloadBackup => "package",
+        Act::ExportDiagnostics => "file-output",
         Act::RestoreBackup => "package-open",
         Act::About => "info",
         Act::TraceImage => "portrait",

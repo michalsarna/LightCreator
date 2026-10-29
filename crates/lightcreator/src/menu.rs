@@ -80,6 +80,7 @@ pub enum Act {
     ProgramOptions,
     CheckUpdates,
     DownloadBackup,
+    ExportDiagnostics,
     RestoreBackup,
     PreviewWindow,
     CameraView,
@@ -237,7 +238,7 @@ pub fn menus() -> base_ui::menu::Menus<Act> {
         file.push(Sep);
         file.push(Item(Act::Quit, "Quit", key("CmdOrCtrl+Q", "Ctrl+Q")));
     }
-    let mut help = vec![Item(Act::QuickGuide, "Quick guide", key("F1", "F1")), Item(Act::OpenGithub, "Project page on GitHub", None), Sep, Item(Act::DownloadBackup, "Download backup…", None), Item(Act::RestoreBackup, "Restore from backup…", None), Item(Act::CheckUpdates, "Check for updates…", None)];
+    let mut help = vec![Item(Act::QuickGuide, "Quick guide", key("F1", "F1")), Item(Act::OpenGithub, "Project page on GitHub", None), Sep, Item(Act::DownloadBackup, "Download backup…", None), Item(Act::RestoreBackup, "Restore from backup…", None), Item(Act::ExportDiagnostics, "Export diagnostics (zip)…", None), Item(Act::CheckUpdates, "Check for updates…", None)];
     if !cfg!(target_os = "macos") {
         help.push(Sep);
         help.push(Item(Act::About, "About", None));

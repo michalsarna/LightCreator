@@ -1112,3 +1112,6 @@
 1111|Sélection seulement
 1112|Seules les formes sélectionnées dans la zone de travail au moment de l'enregistrement du G-code ou du démarrage du travail sont gravées.
 1113|Rien à graver : rien n'est sélectionné
+1114|Exporter le diagnostic (zip)…
+1115|Diagnostic enregistré : {}
+1116|Impossible d'enregistrer le diagnostic : {}
