@@ -19,6 +19,34 @@ impl App {
         }
     }
 
+    /// File > Import > Import DXF…
+    pub fn import_dxf(&mut self) {
+        if let Some(p) = rfd::FileDialog::new().add_filter("DXF", &["dxf"]).pick_file() {
+            self.import_dxf_path(p);
+        }
+    }
+
+    /// Read a DXF drawing into the drawing: its layers go to the layers of the program one after the other (the first on layer 1,
+    /// and so on; the rest on the last layer), the unit of the file is read, lines that meet are joined. DXF counts Y up from the
+    /// bottom, so the drawing is turned over with the height of the work area. What is left out is named in the status bar.
+    pub fn import_dxf_path(&mut self, p: PathBuf) -> bool {
+        let area_h = self.doc.device.work_size().1;
+        match std::fs::read(&p).map_err(|e| e.to_string()).and_then(|d| lc_core::dxf::parse(&d, area_h)) {
+            Ok(dxf) => {
+                let n = dxf.outlines.len();
+                self.finish_ai_import(p.clone(), dxf.outlines, true);
+                if !dxf.warnings.is_empty() {
+                    self.status.push_str(&format!(" ({})", dxf.warnings.join("; ")));
+                }
+                n > 0
+            }
+            Err(e) => {
+                self.status_is(trf("Import failed: {}", &[&e]));
+                false
+            }
+        }
+    }
+
     pub fn import_ai_path(&mut self, p: PathBuf) {
         let res = std::fs::read(&p).map_err(|e| e.to_string()).and_then(|d| lc_core::pdf::read(&d));
         match res {
@@ -86,7 +114,7 @@ impl App {
         for p in files {
             let ext = p.extension().map(|e| e.to_string_lossy().to_lowercase()).unwrap_or_default();
             let gcode = crate::gcode_view_ui::is_gcode(&p) && !self.plugin_reads(&p);
-            let project = matches!(ext.as_str(), "svg" | "cre" | "lbrn2" | "lbrn" | "ugsd") || self.plugin_reads(&p) || gcode;
+            let project = matches!(ext.as_str(), "svg" | "cre" | "lbrn2" | "lbrn" | "ugsd" | "dxf") || self.plugin_reads(&p) || gcode;
             if self.screen == crate::app::Screen::Start && !project {
                 continue;
             }
@@ -95,6 +123,10 @@ impl App {
                     self.open_gcode(p);
                 }
                 "png" | "jpg" | "jpeg" | "bmp" | "gif" | "webp" => self.import_image_path(p),
+                "dxf" if self.screen == crate::app::Screen::Start => self.start_project(|app| app.import_dxf_path(p)),
+                "dxf" => {
+                    self.import_dxf_path(p);
+                }
                 "svg" | "cre" | "lbrn2" | "lbrn" | "ugsd" if self.screen == crate::app::Screen::Start => self.start_project(|app| app.open_path(p)),
                 "svg" | "cre" | "lbrn2" | "lbrn" | "ugsd" => {
                     self.open_path(p);

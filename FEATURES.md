@@ -79,7 +79,7 @@
 * **Open recent** (File menu, under Open): the last 10 projects and SVG files you opened or saved, newest first, kept
   between sessions; "Clear list" empties it and a file that no longer exists is dropped when picked.
 * **Import** submenu: SVG (curves are kept as Béziers; colours map to layers), bitmaps (PNG, JPEG, BMP, GIF,
-  WebP) and Adobe Illustrator / PDF (first page, vector paths; Illustrator files saved with PDF compatibility).
+  WebP) Adobe Illustrator / PDF (first page, vector paths; Illustrator files saved with PDF compatibility) and **DXF** (ASCII R12 and newer: lines, polylines with bulges, arcs, circles, ellipses, splines, blocks, layers, the unit of the file; lines that meet are joined). Auto-join paths, Close path with tolerance and Export selection as SVG / DXF are in the shape operations and the Export menu.
 * **Print** (File > Print…, Ctrl+P): the design on a paper printer, as a one-page PDF made by the program: the whole work
   area to scale or only the objects as large as the page allows, only visible layers or all, A4 or Letter, a margin, and a
   warning when objects reach outside the work area. *Print* sends the page to the system printer (`lp` on macOS and Linux
