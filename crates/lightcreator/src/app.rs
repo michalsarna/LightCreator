@@ -547,7 +547,7 @@ impl App {
         self.ed.view.need_fit = true;
     }
     pub fn pick_project() -> Option<PathBuf> {
-        rfd::FileDialog::new().add_filter("Project", &[lc_core::project::EXTENSION]).add_filter("SVG", &["svg"]).pick_file()
+        rfd::FileDialog::new().add_filter("Project", &[lc_core::project::EXTENSION]).add_filter("SVG", &["svg"]).add_filter("DXF", &["dxf"]).pick_file()
     }
     pub fn open(&mut self) {
         if let Some(p) = Self::pick_project() {
@@ -568,6 +568,9 @@ impl App {
         }
         if p.extension().is_some_and(|e| e.eq_ignore_ascii_case("ugsd")) {
             return self.import_ugsd(p);
+        }
+        if p.extension().is_some_and(|e| e.eq_ignore_ascii_case("dxf")) {
+            return self.import_dxf_path(p);
         }
         let is_svg = p.extension().is_some_and(|e| e.eq_ignore_ascii_case("svg"));
         if is_svg {
@@ -1322,6 +1325,7 @@ impl App {
             Act::ExportCam => self.export_cam(),
             Act::Quit => self.request_close(ctx),
             Act::ImportAi => self.import_ai(),
+            Act::ImportDxf => self.import_dxf(),
             Act::ImportLightburn => self.import_lightburn_dialog(),
             Act::ImportUgsd => self.import_ugsd_dialog(),
             Act::ViewGcode => self.view_gcode_dialog(),
@@ -2494,6 +2498,25 @@ mod lightburn_open_tests {
         // The unknown shape is named in the message.
         let (text, _) = a.toast.clone().expect("a message");
         assert!(text.contains("Mystery"), "{text}");
+        std::fs::remove_dir_all(dir).ok();
+    }
+
+    #[test]
+    fn a_dxf_drawing_is_imported_into_the_document_with_its_layers_in_order_and_the_lines_joined() {
+        let mut a = App::build(&egui::Context::default(), None, false);
+        a.profiles = vec![lc_core::Device::default()];
+        a.active = 0;
+        let dir = std::env::temp_dir().join(format!("lc-dxf-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let file = dir.join("part.dxf");
+        let dxf = "0\nSECTION\n2\nHEADER\n9\n$INSUNITS\n70\n4\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n0\nLINE\n8\nOUTLINE\n10\n0\n20\n0\n11\n40\n21\n0\n0\nLINE\n8\nOUTLINE\n10\n40\n20\n0\n11\n40\n21\n20\n0\nLINE\n8\nOUTLINE\n10\n40\n20\n20\n11\n0\n21\n20\n0\nLINE\n8\nOUTLINE\n10\n0\n20\n20\n11\n0\n21\n0\n0\nCIRCLE\n8\nHOLES\n10\n20\n20\n10\n40\n3\n0\nENDSEC\n0\nEOF\n";
+        std::fs::write(&file, dxf).unwrap();
+        let recent = a.recent.clone();
+        assert!(a.import_dxf_path(file));
+        assert_eq!(a.recent, recent, "an import is not a project to reopen");
+        let on = |l: usize| a.doc.scene.shapes.iter().filter(|s| s.layer == l).count();
+        assert_eq!((on(0), on(1)), (1, 1), "the four lines are one path on layer 1, the circle is on layer 2: {}", a.status);
+        assert!(a.status.contains("Imported 2 paths"), "{}", a.status);
         std::fs::remove_dir_all(dir).ok();
     }
 
