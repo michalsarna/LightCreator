@@ -1112,3 +1112,6 @@
 1111	Selection only
 1112	Only the shapes that are selected on the work area when the G-code is saved or the job is started are burned.
 1113	Nothing to burn: nothing is selected
+1114	Export diagnostics (zip)…
+1115	Diagnostics saved: {}
+1116	Could not save the diagnostics: {}

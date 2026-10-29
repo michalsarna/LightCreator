@@ -1112,3 +1112,6 @@
 1111|Només la selecció
 1112|Només es graven les formes seleccionades a l'àrea de treball en desar el G-code o en iniciar la tasca.
 1113|Res a gravar: no hi ha res seleccionat
+1114|Exporta el diagnòstic (zip)…
+1115|Diagnòstic desat: {}
+1116|No s'ha pogut desar el diagnòstic: {}

@@ -1112,3 +1112,6 @@
 1111|Doar selecția
 1112|Se gravează doar formele selectate în zona de lucru în momentul salvării G-code sau al pornirii lucrării.
 1113|Nimic de gravat: nimic nu este selectat
+1114|Exportă diagnosticul (zip)…
+1115|Diagnosticul a fost salvat: {}
+1116|Diagnosticul nu a putut fi salvat: {}

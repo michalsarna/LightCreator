@@ -229,6 +229,7 @@
 
 **Help**
 * **Download backup…** (Help menu): asks where to save a zip file with everything the program keeps on this computer,
+* **Export diagnostics (zip)…** (Help menu): a zip for bug reports with the version and system, the device (passwords in addresses hidden), the settings (without the web server key and recent files), the console of the machine and the open project.
   the settings (`app.ron`: device profiles, language, colour scheme, recent files) and the whole
   shared `clipart` gallery, plus a README. **Restore from backup…** (Help menu) reads such a file back: the settings
   are replaced after a confirmation and the pictures are added to the gallery (nothing is removed, so pictures that

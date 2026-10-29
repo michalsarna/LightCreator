@@ -1112,3 +1112,6 @@
 1111|Iba výber
 1112|Vypaľujú sa iba tvary vybrané na pracovnej ploche v okamihu uloženia G-kódu alebo spustenia úlohy.
 1113|Nie je čo vypáliť: nič nie je vybrané
+1114|Exportovať diagnostiku (zip)…
+1115|Diagnostika uložená: {}
+1116|Diagnostiku sa nepodarilo uložiť: {}

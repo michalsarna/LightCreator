@@ -1112,3 +1112,6 @@
 1111|Tikai atlase
 1112|Tiek dedzinātas tikai tās formas, kas darba laukā ir atlasītas brīdī, kad tiek saglabāts G-kods vai sākts darbs.
 1113|Nav ko dedzināt: nekas nav atlasīts
+1114|Eksportēt diagnostiku (zip)…
+1115|Diagnostika saglabāta: {}
+1116|Neizdevās saglabāt diagnostiku: {}

@@ -1256,6 +1256,9 @@ const TABLE: &[[&str; 7]] = &[
     ["Selection only", "Tylko zaznaczenie", "Nur Auswahl", "Solo selezione", "Vain valinta", "仅选中项", "केवल चयन"],
     ["Only the shapes that are selected on the work area when the G-code is saved or the job is started are burned.", "Wypalane są tylko kształty zaznaczone na obszarze roboczym w chwili zapisu G-code lub startu zadania.", "Nur die Formen, die beim Speichern des G-Codes oder beim Start des Auftrags im Arbeitsbereich ausgewählt sind, werden gebrannt.", "Vengono incise solo le forme selezionate nell'area di lavoro quando si salva il G-code o si avvia il lavoro.", "Poltetaan vain työalueella valitut muodot, kun G-koodi tallennetaan tai työ aloitetaan.", "仅雕刻在保存 G 代码或开始任务时于工作区中被选中的图形。", "केवल वे आकार जलाए जाते हैं जो G-कोड सहेजते या कार्य शुरू करते समय कार्य क्षेत्र में चुने हों।"],
     ["Nothing to burn: nothing is selected", "Brak danych do wypalenia: nic nie jest zaznaczone", "Nichts zu brennen: nichts ist ausgewählt", "Niente da incidere: nulla è selezionato", "Ei poltettavaa: mitään ei ole valittu", "无可雕刻内容：未选中任何内容", "जलाने के लिए कुछ नहीं: कुछ भी चयनित नहीं है"],
+    ["Export diagnostics (zip)…", "Eksportuj diagnostykę (zip)…", "Diagnose exportieren (ZIP)…", "Esporta diagnostica (zip)…", "Vie diagnostiikka (zip)…", "导出诊断信息（zip）…", "डायग्नोस्टिक्स निर्यात करें (zip)…"],
+    ["Diagnostics saved: {}", "Zapisano diagnostykę: {}", "Diagnose gespeichert: {}", "Diagnostica salvata: {}", "Diagnostiikka tallennettu: {}", "诊断信息已保存：{}", "डायग्नोस्टिक्स सहेजे गए: {}"],
+    ["Could not save the diagnostics: {}", "Nie udało się zapisać diagnostyki: {}", "Diagnose konnte nicht gespeichert werden: {}", "Impossibile salvare la diagnostica: {}", "Diagnostiikkaa ei voitu tallentaa: {}", "无法保存诊断信息：{}", "डायग्नोस्टिक्स सहेजे नहीं जा सके: {}"],
 ];
 #[cfg(test)]
 mod tests {

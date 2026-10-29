@@ -1112,3 +1112,6 @@
 1111|Is-għażla biss
 1112|Jinħarqu biss il-forom magħżula fl-erja tax-xogħol meta jinħażen il-G-code jew jibda x-xogħol.
 1113|Xejn x'taħraq: xejn mhu magħżul
+1114|Esporta d-dijanjostika (zip)…
+1115|Id-dijanjostika nżammet: {}
+1116|Ma setgħetx tinżamm id-dijanjostika: {}

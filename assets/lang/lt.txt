@@ -1112,3 +1112,6 @@
 1111|Tik pažymėta
 1112|Deginamos tik tos formos, kurios darbo srityje pažymėtos G kodo išsaugojimo ar užduoties pradžios metu.
 1113|Nėra ką deginti: nieko nepažymėta
+1114|Eksportuoti diagnostiką (zip)…
+1115|Diagnostika išsaugota: {}
+1116|Nepavyko išsaugoti diagnostikos: {}

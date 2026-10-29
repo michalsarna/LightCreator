@@ -1112,3 +1112,6 @@
 1111|Solo la selección
 1112|Solo se graban las formas seleccionadas en el área de trabajo en el momento de guardar el G-code o iniciar el trabajo.
 1113|Nada que grabar: no hay nada seleccionado
+1114|Exportar diagnóstico (zip)…
+1115|Diagnóstico guardado: {}
+1116|No se pudo guardar el diagnóstico: {}

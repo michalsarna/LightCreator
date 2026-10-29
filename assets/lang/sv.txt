@@ -1112,3 +1112,6 @@
 1111|Endast markering
 1112|Endast de former som är markerade i arbetsytan när G-koden sparas eller jobbet startas bränns.
 1113|Inget att bränna: inget är markerat
+1114|Exportera diagnostik (zip)…
+1115|Diagnostiken sparades: {}
+1116|Det gick inte att spara diagnostiken: {}

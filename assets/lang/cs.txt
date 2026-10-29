@@ -1112,3 +1112,6 @@
 1111|Jen výběr
 1112|Vypalují se jen tvary vybrané na pracovní ploše v okamžiku uložení G-kódu nebo spuštění úlohy.
 1113|Není co vypálit: nic není vybráno
+1114|Exportovat diagnostiku (zip)…
+1115|Diagnostika uložena: {}
+1116|Diagnostiku se nepodařilo uložit: {}
