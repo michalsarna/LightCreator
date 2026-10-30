@@ -27,6 +27,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::Quit => "x",
         Act::ToCurves => "spline",
         Act::AutoJoin | Act::ClosePath => "route",
+        Act::DogboneCorners => "square-round-corner",
         Act::ExportSelectionSvg | Act::ExportSelectionDxf => "file-output",
         Act::BoolUnion => "squares-unite",
         Act::BoolIntersect => "squares-intersect",

@@ -41,6 +41,7 @@ pub enum Act {
     ToCurves,
     AutoJoin,
     ClosePath,
+    DogboneCorners,
     ExportSelectionSvg,
     ExportSelectionDxf,
     EditNodes,
@@ -150,6 +151,7 @@ impl From<StdAct> for Act {
             StdAct::ToCurves => Act::ToCurves,
             StdAct::AutoJoin => Act::AutoJoin,
             StdAct::ClosePath => Act::ClosePath,
+            StdAct::DogboneCorners => Act::DogboneCorners,
             StdAct::ExportSelectionSvg => Act::ExportSelectionSvg,
             StdAct::ExportSelectionDxf => Act::ExportSelectionDxf,
         }
@@ -202,6 +204,7 @@ impl Act {
             Act::ToCurves => StdAct::ToCurves,
             Act::AutoJoin => StdAct::AutoJoin,
             Act::ClosePath => StdAct::ClosePath,
+            Act::DogboneCorners => StdAct::DogboneCorners,
             Act::ExportSelectionSvg => StdAct::ExportSelectionSvg,
             Act::ExportSelectionDxf => StdAct::ExportSelectionDxf,
             _ => return None,
@@ -301,6 +304,7 @@ pub fn menus() -> base_ui::menu::Menus<Act> {
                     Sep,
                     Item(Act::AutoJoin, "Auto-join paths…", None),
                     Item(Act::ClosePath, "Close path with tolerance…", None),
+                    Item(Act::DogboneCorners, "Dogbone / T-bone corners…", None),
                     Sep,
                     // Pictures.
                     Item(Act::AdjustImage, "Adjust image…", None),
