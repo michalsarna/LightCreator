@@ -182,11 +182,12 @@ checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
 [[package]]
 name = "base-core"
 version = "1.35.0"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v1.35.0#390c1ef226e97623fd53b1d39bab92ff0121daf9"
 dependencies = [
  "base64 0.23.1",
  "i_overlay",
  "image",
- "lopdf 0.46.0",
+ "lopdf",
  "rhai",
  "ron",
  "roxmltree 0.21.1",
@@ -201,6 +202,7 @@ dependencies = [
 [[package]]
 name = "base-ui"
 version = "1.35.0"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v1.35.0#390c1ef226e97623fd53b1d39bab92ff0121daf9"
 dependencies = [
  "base-core",
  "egui",
@@ -2012,7 +2014,7 @@ version = "0.4.0"
 dependencies = [
  "base-core",
  "image",
- "lopdf 0.45.0",
+ "lopdf",
  "serde",
  "serde_json",
  "ttf-parser",
@@ -2115,33 +2117,6 @@ name = "log"
 version = "0.4.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f9f8bd3e56ce4dfc153cf470fffbfa98c7620958b312ca5c3a4b8d5181fd13c6"
-
-[[package]]
-name = "lopdf"
-version = "0.45.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bfffda0fe1ab0157e1a13c14bebd3f28671f2fccb7922f0722ec53926e6922d3"
-dependencies = [
- "aes",
- "bitflags 2.13.2",
- "brotli-decompressor",
- "cbc",
- "ecb",
- "encoding_rs",
- "flate2",
- "getrandom 0.4.3",
- "indexmap",
- "itoa",
- "log",
- "md-5",
- "nom 8.0.0",
- "rand",
- "rangemap",
- "sha2",
- "stringprep",
- "thiserror 2.0.21",
- "weezl 0.2.1",
-]
 
 [[package]]
 name = "lopdf"
