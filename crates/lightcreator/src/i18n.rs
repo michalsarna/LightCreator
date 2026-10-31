@@ -1260,6 +1260,7 @@ const TABLE: &[[&str; 7]] = &[
     ["Diagnostics saved: {}", "Zapisano diagnostykę: {}", "Diagnose gespeichert: {}", "Diagnostica salvata: {}", "Diagnostiikka tallennettu: {}", "诊断信息已保存：{}", "डायग्नोस्टिक्स सहेजे गए: {}"],
     ["Could not save the diagnostics: {}", "Nie udało się zapisać diagnostyki: {}", "Diagnose konnte nicht gespeichert werden: {}", "Impossibile salvare la diagnostica: {}", "Diagnostiikkaa ei voitu tallentaa: {}", "无法保存诊断信息：{}", "डायग्नोस्टिक्स सहेजे नहीं जा सके: {}"],
     ["Import DXF…", "Importuj DXF…", "DXF importieren…", "Importa DXF…", "Tuo DXF…", "导入 DXF…", "DXF आयात करें…"],
+    ["Insert", "Wstawianie", "Einfügen", "Inserisci", "Lisää", "插入", "सम्मिलित करें"],
 ];
 #[cfg(test)]
 mod tests {

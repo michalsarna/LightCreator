@@ -1116,3 +1116,4 @@
 1115|Diagnostikk lagret: {}
 1116|Kunne ikke lagre diagnostikken: {}
 1117|Importer DXF…
+1118|Sett inn

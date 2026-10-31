@@ -1116,3 +1116,4 @@
 1115|Diagnose opgeslagen: {}
 1116|Diagnose kon niet worden opgeslagen: {}
 1117|DXF importeren…
+1118|Invoegen

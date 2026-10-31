@@ -1116,3 +1116,4 @@
 1115|A diagnosztika elmentve: {}
 1116|A diagnosztikát nem sikerült elmenteni: {}
 1117|DXF importálása…
+1118|Beszúrás

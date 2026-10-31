@@ -1116,3 +1116,4 @@
 1115|Diagnostik gemt: {}
 1116|Diagnostikken kunne ikke gemmes: {}
 1117|Importér DXF…
+1118|Indsæt

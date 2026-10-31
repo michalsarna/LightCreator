@@ -21,6 +21,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::GenerateShape => "shapes",
         Act::ImportImage => "image",
         Act::OnlineClipart => "globe",
+        Act::Tool(t) => base_ui::icons::tool_icon(t),
         Act::ExportSvg | Act::ExportCam => "file-output",
         Act::Print => "printer",
         Act::ExportGcode => "file-code",
@@ -105,7 +106,7 @@ mod tests {
             }
             walk(&entries, &have);
         }
-        for t in ["File", "Edit", "Arrange", "View", "Laser", "Settings", "Help"] {
+        for t in ["File", "Edit", "Insert", "Arrange", "View", "Laser", "Settings", "Help"] {
             assert!(have.contains(menu_title_icon(t).unwrap()), "{t}");
         }
         for n in ["check", "lock", "lock-open", "chevron-up", "chevron-down", "star", "rotate-cw", "rotate-ccw", "scan", "expand", "zoom-in", "zoom-out", "shapes", "squares-unite", "flip-horizontal", "flip-vertical"] {

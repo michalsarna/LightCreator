@@ -1116,3 +1116,4 @@
 1115|Greining vistuð: {}
 1116|Ekki tókst að vista greininguna: {}
 1117|Flytja inn DXF…
+1118|Setja inn

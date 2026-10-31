@@ -1116,3 +1116,4 @@
 1115|Id-dijanjostika nżammet: {}
 1116|Ma setgħetx tinżamm id-dijanjostika: {}
 1117|Importa DXF…
+1118|Daħħal

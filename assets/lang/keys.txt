@@ -1116,3 +1116,4 @@
 1115	Diagnostics saved: {}
 1116	Could not save the diagnostics: {}
 1117	Import DXF…
+1118	Insert

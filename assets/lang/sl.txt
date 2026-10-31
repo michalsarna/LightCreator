@@ -1116,3 +1116,4 @@
 1115|Diagnostika shranjena: {}
 1116|Diagnostike ni bilo mogoče shraniti: {}
 1117|Uvozi DXF…
+1118|Vstavi

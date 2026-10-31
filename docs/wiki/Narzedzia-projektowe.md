@@ -53,6 +53,8 @@ Własne projekty `.cre` (z osadzonymi obrazami), SVG, G-code, HPGL (`.plt`) i DX
 
 ## Układanie, kopiowanie i generowanie
 
+Menu **Insert** (Wstawianie) zawiera narzędzia lewej palety, które wstawiają obiekty (prostokąt, elipsa, trójkąt, gwiazda, wielokąt, serce, spirala, linia, linia łamana / pióro i tekst; używane narzędzie jest zaznaczone), a potem generatory wtyczek i clipart z internetu.
+
 Polecenia menu *Arrange* po *Dogbone / T-bone corners…* (takie same w LightCreatorze, MillCreatorze i PenCreatorze):
 
 * **Auto-join paths…** łączy otwarte ścieżki, których końce są bliżej niż tolerancja; **Close path with tolerance…** zamyka te, których oba końce są tak blisko. **Dogbone / T-bone corners…** dodaje wcięcie w każdym ostrym narożniku, żeby okrągły frez w niego sięgnął (frezowanie). **Export selection as SVG / DXF…** zapisuje zaznaczone kształty (wszystkie, gdy nic nie jest zaznaczone).
