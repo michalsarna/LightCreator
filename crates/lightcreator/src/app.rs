@@ -305,6 +305,9 @@ impl App {
 
     /// Build the app without a window: used by `new` and by the screenshot tests.
     pub fn build(ctx: &egui::Context, storage: Option<&dyn eframe::Storage>, native_menu: bool) -> Self {
+        // Only the macOS menu bar needs it.
+        #[cfg(not(target_os = "macos"))]
+        let _ = native_menu;
         let port_info = laser::list_port_info();
         let ports: Vec<String> = port_info.iter().map(|p| p.name.clone()).collect();
         let saved = |k: &str| storage.and_then(|st| st.get_string(k));
