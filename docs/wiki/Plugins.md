@@ -20,3 +20,5 @@ Plugins add things to LightCreator without changing the program: **clipart, mach
 Writing your own plugin and sending it to the list: the [guide for authors](https://github.com/michalsarna/baseCreator-plugins/blob/main/docs/GUIDE.md) in the plugins repository, with templates; problems and ideas go to the issues of that repository.
 
 How to write a plugin (manifest, form, script functions, examples): [PLUGINS.md in baseCreator](https://github.com/michalsarna/baseCreator/blob/main/docs/PLUGINS.md).
+
+Several postprocessors can be on at once: tick them in the tabs of the plugins; they run **in the order they were ticked** (the lines of one go to the next), and the status bar names them joined by `+`. **None** switches them all off.

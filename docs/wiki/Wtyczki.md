@@ -20,3 +20,5 @@ Wtyczki dodają LightCreatorowi rzeczy bez zmieniania programu: **clipart, prese
 Własną wtyczkę napiszesz i wyślesz na listę według [przewodnika dla autorów](https://github.com/michalsarna/baseCreator-plugins/blob/main/docs/GUIDE.md) (po angielsku) z szablonami w repozytorium wtyczek; błędy i pomysły zgłaszaj w issues tamtego repozytorium.
 
 Jak napisać wtyczkę (manifest, formularz, funkcje skryptu, przykłady): [PLUGINS.md w baseCreator](https://github.com/michalsarna/baseCreator/blob/main/docs/PLUGINS.md) (po angielsku).
+
+Kilka postprocesorów może być włączonych naraz: zaznacz je na kartach wtyczek; działają **w kolejności zaznaczania** (linie jednego trafiają do następnego), a pasek stanu wymienia je połączone znakiem `+`. **None** wyłącza wszystkie.
