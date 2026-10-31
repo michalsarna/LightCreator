@@ -13,7 +13,7 @@ permissions:
 jobs:
   # ffmpeg for Windows is cross-compiled on Linux (mingw-w64); the other systems build it on their own runner.
   ffmpeg-windows:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - id: ff
         uses: michalsarna/baseCreator/.github/actions/ffmpeg@v1.44.0
@@ -25,7 +25,7 @@ jobs:
           path: ${{ steps.ff.outputs.dir }}
   check-main:
     if: github.ref_type == 'tag'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
         with:
@@ -44,8 +44,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { os: ubuntu-24.04, name: linux-x86_64, deb: amd64 }
-          - { os: ubuntu-24.04-arm, name: linux-arm64, deb: arm64 }
+          - { os: ubuntu-26.04, name: linux-x86_64, deb: amd64 }
+          - { os: ubuntu-26.04-arm, name: linux-arm64, deb: arm64 }
           - { os: windows-latest, name: windows-x86_64 }
           - { os: macos-latest, name: macos-arm64 }
           - { os: macos-15-intel, name: macos-x86_64 }
@@ -136,7 +136,7 @@ jobs:
     needs: build
     # Also after a skipped check-main (a dry run); never after a failed build.
     if: ${{ !cancelled() && needs.build.result == 'success' }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/download-artifact@v8
         with:
@@ -157,7 +157,7 @@ jobs:
   packages:
     needs: release
     if: ${{ !cancelled() && needs.release.result == 'success' && github.ref_type == 'tag' }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     env:
       TAP_TOKEN: ${{ secrets.TAP_TOKEN }}
       WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
