@@ -2,6 +2,12 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.5.2
+
+* **Insert menu:** the tools of the left palette that insert objects, the generators of plugins and the online clipart as menu commands.
+* **Plugins:** the check for newer plugins at the start is on by default, and a window lists the plugins that are out of date (**Update all**, **Plugins**, **Later**).
+* **Camera:** **RTSP** streams (decoded by ffmpeg, which the packages bring), **Take a photo**, **Record video** (Motion-JPEG AVI) and a **time-lapse** every N seconds or after each layer of the job, all into a folder you choose; a recording goes on while the camera view is closed. baseCreator v1.44.0.
+
 ## v0.5.1
 
 * **Postprocessors:** any number can be on at once; they run in the order they were ticked, and the status bar names them joined by `+`.
