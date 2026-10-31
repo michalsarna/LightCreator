@@ -1,6 +1,6 @@
 # Maintainer: Michał Sarna <michalsarna at users dot noreply dot github dot com>
 pkgname=lightcreator-bin
-pkgver=0.5.0
+pkgver=0.5.1
 pkgrel=1
 pkgdesc="Laser engraver and cutter design and control software"
 arch=('x86_64' 'aarch64')
