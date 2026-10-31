@@ -2,6 +2,12 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.5.1
+
+* **Postprocessors:** any number can be on at once; they run in the order they were ticked, and the status bar names them joined by `+`.
+* **Trace image:** zoom in, zoom out and reset-view buttons; the *Trace* button is green.
+* The wiki is up to date with the design tools, DXF import and the Arrange commands. baseCreator v1.40.0.
+
 ## v0.5.0
 
 * **DXF import:** File → Import → Import DXF… (also Open and drag and drop): lines, polylines with bulges, arcs, circles, ellipses, splines and blocks, in millimetres by the unit of the file, with the layers of the drawing on the layers that have no shapes yet and the pieces of line joined into closed paths.
