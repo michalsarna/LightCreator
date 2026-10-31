@@ -50,3 +50,14 @@ Przesuwanie (H), powiększanie (Z), pomniejszanie (X), *Fit work area* (Ctrl+Shi
 
 ## Zapis i eksport
 Własne projekty `.cre` (z osadzonymi obrazami), SVG, G-code, HPGL (`.plt`) i DXF.
+
+## Układanie, kopiowanie i generowanie
+
+Polecenia menu *Arrange* po *Dogbone / T-bone corners…* (takie same w LightCreatorze, MillCreatorze i PenCreatorze):
+
+* **Auto-join paths…** łączy otwarte ścieżki, których końce są bliżej niż tolerancja; **Close path with tolerance…** zamyka te, których oba końce są tak blisko. **Dogbone / T-bone corners…** dodaje wcięcie w każdym ostrym narożniku, żeby okrągły frez w niego sięgnął (frezowanie). **Export selection as SVG / DXF…** zapisuje zaznaczone kształty (wszystkie, gdy nic nie jest zaznaczone).
+* **Circular array…** układa kopie wokół środka zaznaczenia na *Total angle* (360° to pełny okrąg), obrócone razem z miejscem albo tylko przesunięte; tablica siatkowa to ta z menu Arrange. Powstaje najwyżej 2000 kopii.
+* **Copy along path…**: zaznacz kształty, a **na końcu** ścieżkę; kopie stoją co *Distance* wzdłuż niej i mogą się z nią obracać. **Text on path…**: zaznacz tekst, a na końcu ścieżkę; kontury tekstu są wyginane wzdłuż ścieżki od *Start* (potem to kontury, nie tekst).
+* **Trim by shape…**: zaznacz linie, a **na końcu** kształt zamknięty; zostają części wewnątrz (albo na zewnątrz), przecięte tam, gdzie linie przecinają jego kontur. **Remove duplicates** usuwa kształty o tym samym konturze na tej samej warstwie (zaznaczone albo cały rysunek). **Break apart** robi z każdego konturu osobny kształt. **Simplify…** usuwa punkty leżące w granicach *Tolerance* od linii.
+* **Serial text…**: zaznacz tekst; zostaje skopiowany w siatce z odliczanym `{n}` albo, z **Read a CSV file…**, raz na każdy wiersz, a `{1}`, `{2}`… to kolumny. **Barcode / QR code…** kładzie na aktywnej warstwie kod QR albo kod kreskowy Code 39 jako kontury (zrób je dość duże do zadania).
+* **Nest shapes…** układa zaznaczone kształty w rzędach od rogu strony na podanym obszarze, z odstępem (według prostokątów kształtów, nie ich konturów; można pozwolić na obrót o ćwierć obrotu). **Measure…** pokazuje rozmiar, położenie, pole i długość zaznaczenia, a dla dwóch kształtów odległości między nimi.

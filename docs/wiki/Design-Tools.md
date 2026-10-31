@@ -50,3 +50,14 @@ Pan (H), zoom in (Z), zoom out (X), *Fit work area* (Ctrl+Shift+0), *Fit all obj
 
 ## Saving and export
 Native `.cre` projects (images embedded), SVG, G-code, HPGL (`.plt`) and DXF.
+
+## Arranging, copying and generating
+
+Commands of the *Arrange* menu, after *Dogbone / T-bone corners…* (the same in LightCreator, MillCreator and PenCreator):
+
+* **Auto-join paths…** joins open paths whose ends are nearer than a tolerance; **Close path with tolerance…** closes the ones whose two ends are that near. **Dogbone / T-bone corners…** adds a notch to every sharp corner so that a round bit reaches it (milling). **Export selection as SVG / DXF…** writes the selected shapes (all when nothing is selected).
+* **Circular array…** puts copies round the middle of the selection over a *Total angle* (360° goes all the way round), turned with their place or only moved; the grid array is the one of the Arrange menu. At most 2000 copies are made.
+* **Copy along path…**: select the shapes, then the path **last**; copies are put every *Distance* along it and may be turned with it. **Text on path…**: select the text, then the path last; the outlines of the text are bent along the path from *Start* (afterwards they are outlines, not text).
+* **Trim by shape…**: select the lines, then a closed shape **last**; the parts inside (or outside) are kept, cut where the lines cross its outline. **Remove duplicates** deletes shapes with the same outline on the same layer (the selection, or the whole drawing). **Break apart** makes one shape of every outline. **Simplify…** takes away the points within a *Tolerance* of the line.
+* **Serial text…**: select a text; it is copied in a grid with its `{n}` counted up, or, with **Read a CSV file…**, once for every row, `{1}`, `{2}`… being the columns. **Barcode / QR code…** puts a QR code or a Code 39 barcode on the active layer as outlines (make them large enough for the job).
+* **Nest shapes…** packs the selected shapes in rows from the corner of the page on an area you give, with a distance between them (by their boxes, not their outlines; quarter turns can be allowed). **Measure…** shows the size, position, area and length of the selection and, for two shapes, the distances between them.
