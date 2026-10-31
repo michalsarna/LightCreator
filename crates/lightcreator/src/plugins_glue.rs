@@ -143,7 +143,7 @@ mod tests {
         assert_eq!(a.recent, recent);
         a.do_undo();
         assert_eq!(a.doc.scene.shapes.len(), 1);
-        a.plugins.post = Some("my-tools/n".into());
+        a.plugins.posts = vec!["my-tools/n".into()];
         assert_eq!(a.postprocessed("G21\nM5\n".into()).unwrap(), "N1 G21\nN2 M5\n");
         std::fs::remove_dir_all(base).ok();
     }
@@ -153,7 +153,7 @@ mod tests {
         let base = scratch("bad", r#"fn post(lines, ctx) { ["$H"] }"#);
         let mut a = App::build(&egui::Context::default(), None, false);
         a.plugins = base_ui::plugins_ui::PluginsUi::new("lightcreator", &base);
-        a.plugins.post = Some("my-tools/n".into());
+        a.plugins.posts = vec!["my-tools/n".into()];
         assert!(a.postprocessed("G21\n".into()).is_none());
         assert!(a.status.contains("nothing was saved"), "{}", a.status);
         std::fs::remove_dir_all(base).ok();

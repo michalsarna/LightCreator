@@ -175,6 +175,7 @@ impl From<StdAct> for Act {
             StdAct::MakeCode => Act::MakeCode,
             StdAct::NestShapes => Act::NestShapes,
             StdAct::MeasureShapes => Act::MeasureShapes,
+            StdAct::BackgroundPicture => Act::CameraOverlay,
             StdAct::ExportSelectionSvg => Act::ExportSelectionSvg,
             StdAct::ExportSelectionDxf => Act::ExportSelectionDxf,
         }
