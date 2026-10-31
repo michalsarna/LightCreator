@@ -103,7 +103,7 @@ Give the device a camera URL (MJPEG stream, JPEG snapshot or an RTSP stream; htt
 
 **Alignment by reference points.** In the overlay window, *Reference points* holds pairs of a point in the picture (pixels) and its place in the work area (mm). With 3 points the fit is affine, with 4 or more it is a full perspective fit (least squares); *Align by the points* moves the four overlay corners to match, and *Points from the current corners* turns the older four-corner alignment into points. The points are stored with the camera.
 
-Not supported: RTSP streams, and automatic lens calibration (ChArUco boards, markers or dot grids); it would need a heavy computer-vision dependency, so the coefficients are entered by hand.
+Not supported: automatic lens calibration (ChArUco boards, markers or dot grids); it would need a heavy computer-vision dependency, so the coefficients are entered by hand.
 
 ### Camera: RTSP, photos, video and time-lapse
 

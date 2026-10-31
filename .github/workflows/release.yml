@@ -11,6 +11,18 @@ permissions:
   contents: write
 
 jobs:
+  # ffmpeg for Windows is cross-compiled on Linux (mingw-w64); the other systems build it on their own runner.
+  ffmpeg-windows:
+    runs-on: ubuntu-24.04
+    steps:
+      - id: ff
+        uses: michalsarna/baseCreator/.github/actions/ffmpeg@v1.42.0
+        with:
+          target: windows
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ffmpeg-windows
+          path: ${{ steps.ff.outputs.dir }}
   check-main:
     if: github.ref_type == 'tag'
     runs-on: ubuntu-24.04
@@ -26,8 +38,8 @@ jobs:
           [ "${GITHUB_REF_NAME#v}" = "$v" ] || { echo "tag $GITHUB_REF_NAME != Cargo.toml version $v"; exit 1; }
 
   build:
-    needs: check-main
-    if: ${{ !cancelled() && (needs.check-main.result == 'success' || needs.check-main.result == 'skipped') }}
+    needs: [check-main, ffmpeg-windows]
+    if: ${{ !cancelled() && needs.ffmpeg-windows.result == 'success' && (needs.check-main.result == 'success' || needs.check-main.result == 'skipped') }}
     strategy:
       fail-fast: false
       matrix:
@@ -51,6 +63,23 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libxkbcommon-x11-dev libgl1-mesa-dev
       - run: cargo build --release -p lightcreator
 
+      # The small ffmpeg that reads the RTSP stream of a camera comes with every package (LGPL: licence and build recipe go along).
+      - name: ffmpeg (Linux, macOS)
+        if: runner.os != 'Windows'
+        id: ff
+        uses: michalsarna/baseCreator/.github/actions/ffmpeg@v1.42.0
+      - name: ffmpeg (Windows, built on Linux)
+        if: runner.os == 'Windows'
+        uses: actions/download-artifact@v8
+        with:
+          name: ffmpeg-windows
+          path: ffmpeg-win
+      - name: Put ffmpeg where the packages take it from
+        shell: bash
+        run: |
+          mkdir -p target/ffmpeg
+          if [ "$RUNNER_OS" = Windows ]; then cp ffmpeg-win/* target/ffmpeg/; else cp "${{ steps.ff.outputs.dir }}"/* target/ffmpeg/; fi
+
       # Plain archive (Linux .tar.gz, Windows .zip): binary + README + LICENSE. macOS gets only the .dmg.
       - name: Archive
         if: runner.os != 'macOS'
@@ -58,6 +87,7 @@ jobs:
         run: |
           mkdir dist
           cp README.md LICENSE LICENSE-APACHE dist/
+          cp target/ffmpeg/* dist/
           cp target/release/lightcreator dist/ 2>/dev/null || cp target/release/lightcreator.exe dist/
           name="lightcreator-${TAG}-${{ matrix.name }}"
           if [ "$RUNNER_OS" = Windows ]; then 7z a "$name.zip" ./dist/*; else tar czf "$name.tar.gz" -C dist .; fi
@@ -85,6 +115,8 @@ jobs:
           cargo install cargo-bundle --locked
           (cd crates/lightcreator && cargo bundle --release)
           # Apple silicon refuses to run code without a valid signature; sign ad hoc (no developer account needed)
+          cp target/ffmpeg/* target/release/bundle/osx/LightCreator.app/Contents/Resources/
+          codesign --force --sign - target/release/bundle/osx/LightCreator.app/Contents/Resources/ffmpeg
           codesign --force --deep --sign - target/release/bundle/osx/LightCreator.app
           codesign --verify --deep --strict --verbose=2 target/release/bundle/osx/LightCreator.app
           mkdir dmg && cp -R target/release/bundle/osx/LightCreator.app dmg/ && ln -s /Applications dmg/Applications
