@@ -2,6 +2,13 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.5.0
+
+* **DXF import:** File → Import → Import DXF… (also Open and drag and drop): lines, polylines with bulges, arcs, circles, ellipses, splines and blocks, in millimetres by the unit of the file, with the layers of the drawing on the layers that have no shapes yet and the pieces of line joined into closed paths.
+* **Shape commands:** **Auto-join paths…**, **Close path with tolerance…**, **Dogbone / T-bone corners…** and **Export selection as SVG / DXF…**.
+* **Design tools:** a **circular array**, **copy along a path**, **text on a path**, **trim by shape**, **remove duplicates**, **break apart**, **simplify**, **serial text** (counting or from a CSV file), **barcode / QR code**, **nesting** by boxes and a **Measure…** window, in the Arrange menu.
+* Updated dependencies. baseCreator v1.39.2.
+
 ## v0.4.0
 
 * **Preview as a tab:** the preview window has a button in its title line that pins it as a tab of the work area, next to the drawings and the camera view; the tab has a button that makes it a window again, and its cross closes the preview.
