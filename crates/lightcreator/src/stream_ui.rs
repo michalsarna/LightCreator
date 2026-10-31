@@ -171,6 +171,7 @@ impl App {
             let rgb = self.cam_process(f.rgb, f.w, f.h);
             let (w, h, rgb) = rotate_rgb(&rgb, f.w, f.h, rotation);
             self.api_publish_frame(w, h, &rgb);
+            self.cam_rec.feed(std::time::Instant::now(), w, h, rgb.clone());
             let img = egui::ColorImage::from_rgb([w as usize, h as usize], &rgb);
             match &mut self.stream_tex {
                 Some(t) if t.size() == [w as usize, h as usize] => t.set(img.clone(), egui::TextureOptions::LINEAR),
@@ -180,6 +181,7 @@ impl App {
                 self.overlay_set_image(ctx, img, &tr("Camera view"));
             }
         }
+        self.cam_rec.tick(std::time::Instant::now());
     }
 
     /// Is the separate camera window being resized (its size changed a moment ago)?
@@ -315,6 +317,10 @@ impl App {
                 ui.add_space(30.0);
             }
         }
+        // Photos, video and time-lapse, with their folder.
+        ui.add_space(4.0);
+        ui.separator();
+        self.cam_rec.controls(ui);
         // The working time of the job, over the estimate: 00:04:12 / 00:13:00.
         let elapsed = self.job_started.map_or(self.job_last_secs, |t| t.elapsed().as_secs_f64());
         ui.label(RichText::new(format!("{} {} / {}", tr("Working time"), crate::app::fmt_clock(elapsed), crate::app::fmt_clock(self.job_est))).monospace().strong());
@@ -337,6 +343,13 @@ impl App {
         if !self.show_stream || url.is_empty() {
             if self.show_stream {
                 self.stream_closed();
+            }
+            // A recording goes on when the camera view is closed: the stream is kept while something is recorded.
+            if self.cam_rec.active() && !url.is_empty() {
+                self.stream_poll(ctx, &url);
+                ctx.request_repaint_after(std::time::Duration::from_millis(100));
+                self.tab_seen = false;
+                return;
             }
             self.stream = None;
             self.tab_seen = false;
@@ -519,9 +532,11 @@ mod tests {
             out.textures_delta.clear();
             let _ = (i, r);
         }
-        // Only the working time stands under the picture; the picture fills the width of the window (640 x 360 in 774 x 574).
-        assert!(a.cam_fit.under(0.0) < 45.0, "under {}", a.cam_fit.under(0.0));
-        assert!(a.cam_fit.slack.x < 8.0, "the picture fills the width: {:?}", a.cam_fit.slack);
+        // Only the working time and the buttons of the recording stand under the picture (no empty strip); the picture fills the width of
+        // the window (640 x 360 in 774 x 574).
+        assert!(a.cam_fit.under(0.0) < 170.0, "under {}", a.cam_fit.under(0.0));
+        // The recording buttons under the picture take some of the height, so the picture may be a little narrower than the window.
+        assert!(a.cam_fit.slack.x < 60.0, "the picture fills the width: {:?}", a.cam_fit.slack);
     }
 
     #[test]
@@ -630,4 +645,45 @@ mod tests {
         let e = a.job_started.map_or(a.job_last_secs, |t| t.elapsed().as_secs_f64());
         assert_eq!(fmt_clock(e), "00:04:12");
     }
+
+    #[test]
+    fn a_recording_keeps_the_stream_when_the_view_is_closed_and_a_picture_comes_after_each_layer() {
+        use base_ui::camera_rec::{LapseMode, RecSettings};
+        let (mut a, ctx) = app_with_overlay();
+        let dir = std::env::temp_dir().join(format!("lc-lapse-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        a.cam_rec = base_ui::camera_rec::Recorder::new(RecSettings { dir: Some(dir.clone()), interval: 5.0, mode: LapseMode::PerLayer });
+        let now = std::time::Instant::now();
+        a.cam_rec.feed(now, 4, 2, vec![80; 24]);
+        a.cam_rec.start_lapse(now);
+        // The view is closed, a time-lapse runs: the stream stays.
+        a.doc.device.cameras = vec![lc_core::CameraSource::url("c", "http://127.0.0.1:9/none.mjpg", 0)];
+        a.doc.device.active_camera = 0;
+        a.show_stream = false;
+        a.stream = None;
+        let mut out = ctx.run_ui(Default::default(), |ui| a.stream_window(ui.ctx()));
+        out.textures_delta.clear();
+        assert!(a.stream.is_some(), "recorded: the stream is kept");
+        a.cam_rec.stop_lapse();
+        a.stream = None;
+        let mut out = ctx.run_ui(Default::default(), |ui| a.stream_window(ui.ctx()));
+        out.textures_delta.clear();
+        assert!(a.stream.is_none(), "nothing recorded: no stream");
+        // Two layers: one picture when the second begins, one when the job is over; a stopped job (progress 0, 0) does nothing more.
+        a.cam_rec.start_lapse(now);
+        a.layer_watch.start(vec![6]);
+        a.layer_progress(3, 10);
+        assert_eq!(a.cam_rec.lapse_shots(), Some(0));
+        a.layer_progress(6, 10);
+        assert_eq!(a.cam_rec.lapse_shots(), Some(1));
+        a.layer_progress(10, 10);
+        assert_eq!(a.cam_rec.lapse_shots(), Some(2));
+        a.layer_watch.start(vec![2]);
+        a.layer_progress(0, 0);
+        a.layer_progress(5, 10);
+        assert_eq!(a.cam_rec.lapse_shots(), Some(2));
+        let _ = std::fs::remove_dir_all(&dir);
+    }
 }
+

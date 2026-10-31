@@ -1752,16 +1752,16 @@ fn cameras_of_a_device_migrate_validate_and_travel_with_the_profile() {
     assert_eq!(d.stream_url(), None);
     d.cameras[1].enabled = true;
     d.cameras[1].kind = CameraKind::Url("rtsp://b/y".into());
-    assert_eq!(d.stream_url(), None, "RTSP is not supported");
+    assert_eq!(d.stream_url(), Some("rtsp://b/y"), "an RTSP stream is an address too (ffmpeg reads it)");
     d.cameras[1].kind = CameraKind::Local(0);
     assert!(d.camera_source().is_some() && d.stream_url().is_none(), "a local camera has no address");
     d.active_camera = 9;
     assert!(d.camera_source().is_none());
     // Addresses.
-    for ok in ["http://pi.local:8080/stream.mjpg", "https://h/p?q=1", " http://h "] {
+    for ok in ["http://pi.local:8080/stream.mjpg", "https://h/p?q=1", " http://h ", "rtsp://user:pw@192.168.1.5:554/stream1", "rtsps://cam.local/x"] {
         assert!(camimg::valid_url(ok), "{ok}");
     }
-    for bad in ["", "rtsp://h/x", "http://", "http://:80", "ftp://h", "http://a b", "http://h/\u{7}", "javascript:alert(1)", "pi.local"] {
+    for bad in ["", "rtsp://", "rtsp://a b/c", "http://", "http://:80", "ftp://h", "http://a b", "http://h/\u{7}", "javascript:alert(1)", "pi.local"] {
         assert!(!camimg::valid_url(bad), "{bad}");
     }
     // A profile with cameras round-trips and an import refuses a camera that is on with a bad address.
@@ -1773,7 +1773,7 @@ fn cameras_of_a_device_migrate_validate_and_travel_with_the_profile() {
     let back = profiles::import_profile(&profiles::export_profile(&d, "v0.0.11")).unwrap();
     assert_eq!(back.cameras, d.cameras);
     let mut bad = serde_json::to_value(&d).unwrap();
-    bad["cameras"][0]["kind"] = serde_json::json!({"Url": "rtsp://x"});
+    bad["cameras"][0]["kind"] = serde_json::json!({"Url": "ftp://x"});
     assert!(profiles::import_profile(&serde_json::json!({"format": 1, "profile": bad}).to_string()).unwrap_err().contains("camera"));
     let mut wild = serde_json::to_value(&d).unwrap();
     wild["cameras"][0]["image"]["brightness"] = 5000.into();
@@ -2078,7 +2078,7 @@ fn one_camera_is_on_at_a_time_and_a_new_one_without_an_address_is_allowed() {
     assert_eq!(d.stream_url(), None);
     assert!(profiles::import_profile(&profiles::export_profile(&d, "v0.1.2")).is_ok());
     // A bad address that is on is still refused.
-    d.cameras[2].kind = CameraKind::Url("rtsp://x".into());
+    d.cameras[2].kind = CameraKind::Url("ftp://x".into());
     assert!(profiles::import_profile(&profiles::export_profile(&d, "v0.1.2")).is_err());
 }
 
