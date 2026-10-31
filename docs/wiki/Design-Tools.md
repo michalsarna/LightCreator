@@ -53,6 +53,8 @@ Native `.cre` projects (images embedded), SVG, G-code, HPGL (`.plt`) and DXF.
 
 ## Arranging, copying and generating
 
+The **Insert** menu has the tools of the left palette that insert objects (rectangle, ellipse, triangle, star, polygon, heart, spiral, line, polyline / pen and text; the tool in use is ticked), then the generators of plugins and the online clipart.
+
 Commands of the *Arrange* menu, after *Dogbone / T-bone corners…* (the same in LightCreator, MillCreator and PenCreator):
 
 * **Auto-join paths…** joins open paths whose ends are nearer than a tolerance; **Close path with tolerance…** closes the ones whose two ends are that near. **Dogbone / T-bone corners…** adds a notch to every sharp corner so that a round bit reaches it (milling). **Export selection as SVG / DXF…** writes the selected shapes (all when nothing is selected).

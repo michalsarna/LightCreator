@@ -1116,3 +1116,4 @@
 1115|Diagnostika išsaugota: {}
 1116|Nepavyko išsaugoti diagnostikos: {}
 1117|Importuoti DXF…
+1118|Įterpti

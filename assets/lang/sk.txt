@@ -1116,3 +1116,4 @@
 1115|Diagnostika uložená: {}
 1116|Diagnostiku sa nepodarilo uložiť: {}
 1117|Importovať DXF…
+1118|Vložiť

@@ -1116,3 +1116,4 @@
 1115|Sábháladh an diagnóisic: {}
 1116|Níorbh fhéidir an diagnóisic a shábháil: {}
 1117|Iompórtáil DXF…
+1118|Ionsáigh

@@ -1116,3 +1116,4 @@
 1115|Dijagnostika spremljena: {}
 1116|Dijagnostiku nije moguće spremiti: {}
 1117|Uvezi DXF…
+1118|Umetni

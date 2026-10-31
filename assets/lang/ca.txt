@@ -1116,3 +1116,4 @@
 1115|Diagnòstic desat: {}
 1116|No s'ha pogut desar el diagnòstic: {}
 1117|Importa DXF…
+1118|Insereix

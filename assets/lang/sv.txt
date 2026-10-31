@@ -1116,3 +1116,4 @@
 1115|Diagnostiken sparades: {}
 1116|Det gick inte att spara diagnostiken: {}
 1117|Importera DXF…
+1118|Infoga

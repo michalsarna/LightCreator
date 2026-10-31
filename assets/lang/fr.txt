@@ -1116,3 +1116,4 @@
 1115|Diagnostic enregistré : {}
 1116|Impossible d'enregistrer le diagnostic : {}
 1117|Importer un DXF…
+1118|Insérer

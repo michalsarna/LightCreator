@@ -1116,3 +1116,4 @@
 1115|Diagnostika saglabāta: {}
 1116|Neizdevās saglabāt diagnostiku: {}
 1117|Importēt DXF…
+1118|Ievietot

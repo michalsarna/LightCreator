@@ -1116,3 +1116,4 @@
 1115|Diagnostika salvestatud: {}
 1116|Diagnostikat ei saanud salvestada: {}
 1117|Impordi DXF…
+1118|Lisa

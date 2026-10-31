@@ -70,6 +70,8 @@ pub enum Act {
     Materials,
     GenerateShape,
     OnlineClipart,
+    /// Choose a tool of the palette (the Insert menu).
+    Tool(base_ui::editor::Tool),
     TraceImage,
     AdjustImage,
     BoolUnion,
@@ -175,6 +177,7 @@ impl From<StdAct> for Act {
             StdAct::MakeCode => Act::MakeCode,
             StdAct::NestShapes => Act::NestShapes,
             StdAct::MeasureShapes => Act::MeasureShapes,
+            StdAct::Tool(t) => Act::Tool(t),
             StdAct::BackgroundPicture => Act::CameraOverlay,
             StdAct::ExportSelectionSvg => Act::ExportSelectionSvg,
             StdAct::ExportSelectionDxf => Act::ExportSelectionDxf,
@@ -240,6 +243,7 @@ impl Act {
             Act::MakeCode => StdAct::MakeCode,
             Act::NestShapes => StdAct::NestShapes,
             Act::MeasureShapes => StdAct::MeasureShapes,
+            Act::Tool(t) => StdAct::Tool(t),
             Act::ExportSelectionSvg => StdAct::ExportSelectionSvg,
             Act::ExportSelectionDxf => StdAct::ExportSelectionDxf,
             _ => return None,
@@ -314,6 +318,8 @@ pub fn menus() -> base_ui::menu::Menus<Act> {
     vec![
         ("File", file),
         ("Edit", std(std_entries::edit())),
+        // The tools of the left palette that insert objects, and the other places shapes come from.
+        ("Insert", [std(std_entries::insert_tools()), vec![Sep, Item(Act::GenerateShape, base_ui::plugins_ui::MENU_GENERATE, None), Item(Act::OnlineClipart, "Online clipart…", None)]].concat()),
         (
             "Arrange",
             [

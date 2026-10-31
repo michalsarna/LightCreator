@@ -1116,3 +1116,4 @@
 1115|Diagnóstico guardado: {}
 1116|Não foi possível guardar o diagnóstico: {}
 1117|Importar DXF…
+1118|Inserir
