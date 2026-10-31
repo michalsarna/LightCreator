@@ -89,7 +89,7 @@ On Linux, **Laser → Share over network (ser2net)…** does this for you: it pi
 ![ser2net](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/18-ser2net.png)
 
 ## Camera
-Give the device a camera URL (MJPEG stream or JPEG snapshot, http / https; RTSP is not supported) to get a **Camera view** button. The view can float, open as a separate OS window, or dock as a side tab, and can be rotated 90° / 180° / 270° (a device setting). The picture can be zoomed (+ / − buttons or the mouse wheel, up to 8×), dragged, and returned to the whole picture with *Default zoom*; three icons choose floating, separate window or side tab, and the address is not shown. The **Overlay** button (on the control bar, after *Camera view*, and in the camera window) puts the picture under the design; it is always visible and greyed out until there is a picture.
+Give the device a camera URL (MJPEG stream, JPEG snapshot or an RTSP stream; http / https / rtsp / rtsps) to get a **Camera view** button. The view can float, open as a separate OS window, or dock as a side tab, and can be rotated 90° / 180° / 270° (a device setting). The picture can be zoomed (+ / − buttons or the mouse wheel, up to 8×), dragged, and returned to the whole picture with *Default zoom*; three icons choose floating, separate window or side tab, and the address is not shown. The **Overlay** button (on the control bar, after *Camera view*, and in the camera window) puts the picture under the design; it is always visible and greyed out until there is a picture.
 ![Camera tab](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/17-camera-tab.png)
 
 **Camera overlay alignment:** a photo or live camera sits under the design, aligned with four draggable corners (perspective corrected), with opacity, flip and rotate, saved per device.
@@ -103,5 +103,10 @@ Give the device a camera URL (MJPEG stream or JPEG snapshot, http / https; RTSP 
 
 **Alignment by reference points.** In the overlay window, *Reference points* holds pairs of a point in the picture (pixels) and its place in the work area (mm). With 3 points the fit is affine, with 4 or more it is a full perspective fit (least squares); *Align by the points* moves the four overlay corners to match, and *Points from the current corners* turns the older four-corner alignment into points. The points are stored with the camera.
 
-Not supported: RTSP streams, and automatic lens calibration (ChArUco boards, markers or dot grids); it would need a heavy computer-vision dependency, so the coefficients are entered by hand.
+Not supported: automatic lens calibration (ChArUco boards, markers or dot grids); it would need a heavy computer-vision dependency, so the coefficients are entered by hand.
 
+### Camera: RTSP, photos, video and time-lapse
+
+* **RTSP streams** (`rtsp://` or `rtsps://`, with the user and password in the address when the camera asks for them) work as an address of a camera. The stream is decoded by **ffmpeg**, run as a separate program: it is looked for next to the program (the packages bring one), in the resources of a macOS app and then in the PATH. Without it the camera view says so; a stream that breaks is opened again every few seconds. An address with a password can be seen in the list of processes of the computer: use a camera account that can only look.
+* Under the picture of the camera view: **Take a photo** (a JPEG), **Record video** (a Motion-JPEG `.avi`, with the frame rate it really had) and the **time-lapse**: **Every** N seconds, or **After each layer** (a picture when the next layer of the job begins and when the job ends; it needs a job sent to the laser from the program with Start). Photos and videos are numbered (`photo-0001.jpg`, `video-0001.avi`); a time-lapse gets a folder of its own (`timelapse-0001`) with `frame-00001.jpg` or `layer-00001.jpg`.
+* **Choose the folder…** sets where it all goes (kept for all the programs; without a choice the folder `camera` of the shared data folder). A recording goes on while the camera view is closed.

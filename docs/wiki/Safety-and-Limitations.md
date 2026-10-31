@@ -14,7 +14,7 @@ All geometry, boolean, offset, raster, G-code, export and translation logic is c
 When switched on (Program options) the web server and API need an access phrase (default `LightCreator`, change it) but have **no encryption**. By default they listen only on this computer; with *Reachable from other computers on the network* anyone on the network who knows the phrase can see the machine and stop or move it. Use it only on a network you trust.
 
 ## Not yet implemented
-Direct Ruida / Trocen binary protocols, scan angles for images, kerning and complex-script shaping (Devanagari, Arabic) in text, automatic lens calibration for the camera (the correction is entered by hand). RTSP cameras are not supported (use MJPEG).
+Direct Ruida / Trocen binary protocols, scan angles for images, kerning and complex-script shaping (Devanagari, Arabic) in text, automatic lens calibration for the camera (the correction is entered by hand).
 
 ## Security
 Report vulnerabilities privately via [GitHub security advisories](https://github.com/michalsarna/LightCreator/security/advisories/new). Only the newest release is supported.

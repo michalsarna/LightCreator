@@ -205,6 +205,11 @@ pub struct App {
     pub pv_tab_seen: bool,
     pub cam_tab_seen: bool,
     pub stream_err: String,
+    /// Photos, video and time-lapse of the camera view (the folder and the interval are remembered).
+    pub cam_rec: base_ui::camera_rec::Recorder,
+    /// Where the layers of the job being sent end, for a picture after each layer, and the numbers of the program that is being made.
+    pub layer_watch: base_ui::camera_rec::LayerWatch,
+    pub job_marks: Vec<usize>,
     pub stream_overlay: bool,
     pub read_cfg: Option<crate::device_ui::ReadCfg>,
     pub show_preview: bool,
@@ -413,6 +418,9 @@ impl App {
             pv_tab_seen: false,
             cam_tab_seen: false,
             stream_err: String::new(),
+            cam_rec: base_ui::camera_rec::Recorder::default(),
+            layer_watch: base_ui::camera_rec::LayerWatch::default(),
+            job_marks: vec![],
             stream_overlay: false,
             read_cfg: None,
             show_preview: false,
@@ -805,6 +813,22 @@ impl App {
         };
     }
 
+    /// How far the job has got: a picture of the time-lapse for every layer that is done (in the "after each layer" mode).
+    pub fn layer_progress(&mut self, done: usize, total: usize) {
+        let now = std::time::Instant::now();
+        if total == 0 {
+            self.layer_watch.stop();
+            return;
+        }
+        let mut n = self.layer_watch.progress(done);
+        if done >= total {
+            n += self.layer_watch.finished();
+        }
+        for _ in 0..n {
+            self.cam_rec.layer_done(now);
+        }
+    }
+
     pub fn send_job_now(&mut self) {
         self.send_job_from(0);
     }
@@ -821,6 +845,7 @@ impl App {
             return None;
         }
         self.job_est = job.est_seconds;
+        self.job_marks = base_ui::link::layer_marks_in_text(&job.gcode);
         Some(laser::clean_gcode(&job.gcode))
     }
 
@@ -836,6 +861,12 @@ impl App {
         };
         self.push_console(ConsoleLine::info(trf("Starting job: {} lines, ~{}", &[&lines.len(), &fmt_time(self.job_est)])));
         self.job_last_secs = 0.0;
+        // A picture after each layer of the time-lapse of the camera (the numbers fit a job that starts at the first line).
+        if from == 0 {
+            self.layer_watch.start(self.job_marks.clone());
+        } else {
+            self.layer_watch.stop();
+        }
         self.link.send(Cmd::Job(lines));
     }
     /// Start can be pressed: a streaming controller needs a connected laser, the file-based ones (Ruida, Trocen)
@@ -1094,6 +1125,7 @@ impl App {
                 }
                 Evt::Progress { done, total } => {
                     self.progress = (done, total);
+                    self.layer_progress(done, total);
                     if done >= total {
                         self.stall = None;
                     }

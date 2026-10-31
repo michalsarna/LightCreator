@@ -188,7 +188,7 @@
   by 3 or more reference points (least-squares perspective fit).
 * **Camera view:** give the device a camera URL (an MJPEG stream or a JPEG snapshot address, http or https) and a
   "Camera view" button appears next to the preview button. The picture can also be shown as the overlay on the
-  work area. RTSP streams are not supported; use an MJPEG address (most camera software offers one). The view
+  work area. RTSP streams work too (decoded by the ffmpeg that comes with the program); photos, video and time-lapse can be recorded. The view
   can float inside the application, open as a separate operating-system window that can leave the application
   (and sit on another screen) or be docked as a tab of the side panel, and the picture can be rotated by 90°,
   180° or 270°. The rotation is a device setting (Camera rotation in the device configuration) and is saved

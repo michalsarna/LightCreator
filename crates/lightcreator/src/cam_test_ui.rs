@@ -112,7 +112,8 @@ mod tests {
     #[test]
     fn only_a_camera_that_can_be_opened_starts_a_test() {
         let ctx = egui::Context::default();
-        assert!(CamTest::start(CameraSource::url("x", "rtsp://h/x", 0), &ctx).is_none());
+        assert!(CamTest::start(CameraSource::url("x", "ftp://h/x", 0), &ctx).is_none(), "not an address of a camera");
+        assert!(CamTest::start(CameraSource::url("x", "rtsp://127.0.0.1:9/x", 0), &ctx).is_some(), "an RTSP stream is tried (through ffmpeg)");
         assert!(CamTest::start(CameraSource::url("x", "", 0), &ctx).is_none());
         assert!(CamTest::start(CameraSource::url("x", "http://127.0.0.1:9/none", 0), &ctx).is_some());
         let mut local = CameraSource::url("x", "", 0);
