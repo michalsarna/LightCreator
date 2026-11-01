@@ -1117,3 +1117,6 @@
 1116|Nepavyko išsaugoti diagnostikos: {}
 1117|Importuoti DXF…
 1118|Įterpti
+1119|Rodinys turi ne daugiau kaip tris skydelius
+1120|Rodyti peržiūrą čia
+1121|Neatidarytas joks G kodo failas: File, View G-code file…

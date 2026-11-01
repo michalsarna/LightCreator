@@ -72,6 +72,9 @@ pub enum Act {
     OnlineClipart,
     /// Choose a tool of the palette (the Insert menu).
     Tool(base_ui::editor::Tool),
+    /// Divide the central area into panes (beside or stacked), or back to one.
+    SplitView(base_ui::work_panes::Dir),
+    SingleView,
     TraceImage,
     AdjustImage,
     BoolUnion,
@@ -177,6 +180,8 @@ impl From<StdAct> for Act {
             StdAct::MakeCode => Act::MakeCode,
             StdAct::NestShapes => Act::NestShapes,
             StdAct::MeasureShapes => Act::MeasureShapes,
+            StdAct::SplitView(d) => Act::SplitView(d),
+            StdAct::SingleView => Act::SingleView,
             StdAct::Tool(t) => Act::Tool(t),
             StdAct::BackgroundPicture => Act::CameraOverlay,
             StdAct::ExportSelectionSvg => Act::ExportSelectionSvg,
@@ -243,6 +248,8 @@ impl Act {
             Act::MakeCode => StdAct::MakeCode,
             Act::NestShapes => StdAct::NestShapes,
             Act::MeasureShapes => StdAct::MeasureShapes,
+            Act::SplitView(d) => StdAct::SplitView(d),
+            Act::SingleView => StdAct::SingleView,
             Act::Tool(t) => StdAct::Tool(t),
             Act::ExportSelectionSvg => StdAct::ExportSelectionSvg,
             Act::ExportSelectionDxf => StdAct::ExportSelectionDxf,
@@ -376,6 +383,7 @@ pub fn menus() -> base_ui::menu::Menus<Act> {
                 std(std_entries::grid()),
                 vec![Item(Act::TogglePreview, "Toolpath preview", None), Item(Act::PreviewWindow, "Preview window…", None)],
                 std(std_entries::zoom()),
+                std(std_entries::split_view()),
                 vec![
                     Item(Act::CameraView, "Camera view", None),
                     Item(Act::ToggleOverlay, "Show camera overlay", None),

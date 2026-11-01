@@ -1117,3 +1117,6 @@
 1116|Diagnostike ni bilo mogoče shraniti: {}
 1117|Uvozi DXF…
 1118|Vstavi
+1119|Pogled ima največ tri podokna
+1120|Pokaži predogled tukaj
+1121|Nobena datoteka G-kode ni odprta: File, View G-code file…

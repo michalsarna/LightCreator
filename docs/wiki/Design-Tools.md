@@ -34,6 +34,7 @@ The square handles around a selection resize it. **Click a handle** (without dra
 Drag left → right: only objects wholly inside. Right → left: everything touched. Shift+click adds. Escape twice returns to the select tool. The right-click menu holds the common commands.
 
 ## View and navigation
+* **Split view:** *View → Split view* divides the work area into up to three panes, side by side or one above the other (*Single view* puts it back). A pane shows the **active drawing** (the one you edit), **another open drawing** (to see how something was done; it has a zoom of its own, wheel and middle button, and a click makes it the active drawing while the active one takes its place), the **preview**, the **G-code analysis** or the **camera**. Choose it in the bar of the pane; drag a divider to resize, double-click it to make the panes equal. *Show beside* in the menu of a tab (right click) opens that drawing in a pane. The **⧉** button of a pane takes it out into a window of its own, for another monitor; the window remembers its place and **Back to the main window** puts the pane back. The layout is remembered. With one pane nothing changes.
 Pan (H), zoom in (Z), zoom out (X), *Fit work area* (Ctrl+Shift+0), *Fit all objects* (Ctrl+Shift+9). Hold **Space** to pan with any tool. The work area auto-fits the window until you zoom by hand. *Settings → View options*: main and secondary grid, background colour, line thickness.
 ![Grid](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/15-grid-layers.png)
 

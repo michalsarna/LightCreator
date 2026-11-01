@@ -1117,3 +1117,6 @@
 1116|Diagnostiku se nepodařilo uložit: {}
 1117|Importovat DXF…
 1118|Vložit
+1119|Pohled má nejvýše tři panely
+1120|Zobrazit náhled zde
+1121|Není otevřen žádný soubor G-kódu: File, View G-code file…

@@ -1117,3 +1117,6 @@
 1116|Níorbh fhéidir an diagnóisic a shábháil: {}
 1117|Iompórtáil DXF…
 1118|Ionsáigh
+1119|Tá trí phána ar a mhéad sa radharc
+1120|Taispeáin an réamhamharc anseo
+1121|Níl comhad G-code ar oscailt: File, View G-code file…

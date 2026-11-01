@@ -1117,3 +1117,6 @@
 1116|Ekki tókst að vista greininguna: {}
 1117|Flytja inn DXF…
 1118|Setja inn
+1119|Sýnin hefur í mesta lagi þrjá glugga
+1120|Sýna forskoðun hér
+1121|Engin G-kóðaskrá er opin: File, View G-code file…

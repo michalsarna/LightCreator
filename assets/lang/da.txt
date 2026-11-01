@@ -1117,3 +1117,6 @@
 1116|Diagnostikken kunne ikke gemmes: {}
 1117|Importér DXF…
 1118|Indsæt
+1119|Visningen har højst tre paneler
+1120|Vis forhåndsvisningen her
+1121|Ingen G-kodefil er åben: File, View G-code file…

@@ -1117,3 +1117,6 @@
 1116|Neizdevās saglabāt diagnostiku: {}
 1117|Importēt DXF…
 1118|Ievietot
+1119|Skatam ir ne vairāk kā trīs rūtis
+1120|Rādīt priekšskatījumu šeit
+1121|Nav atvērts neviens G-koda fails: File, View G-code file…

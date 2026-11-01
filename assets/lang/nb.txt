@@ -1117,3 +1117,6 @@
 1116|Kunne ikke lagre diagnostikken: {}
 1117|Importer DXF…
 1118|Sett inn
+1119|Visningen har høyst tre paneler
+1120|Vis forhåndsvisningen her
+1121|Ingen G-kodefil er åpen: File, View G-code file…

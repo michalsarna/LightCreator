@@ -1117,3 +1117,6 @@
 1116|Ma setgħetx tinżamm id-dijanjostika: {}
 1117|Importa DXF…
 1118|Daħħal
+1119|Il-veduta għandha mhux aktar minn tliet pannelli
+1120|Uri l-previżjoni hawn
+1121|Ebda fajl G-code miftuħ: File, View G-code file…
