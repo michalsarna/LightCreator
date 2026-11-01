@@ -181,8 +181,8 @@ checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
 
 [[package]]
 name = "base-core"
-version = "1.53.0"
-source = "git+https://github.com/michalsarna/baseCreator?tag=v1.53.0#f78196b1fe60e3a7cd443d30e3962a2093d9cc53"
+version = "1.53.1"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v1.53.1#03cbbb34c7e39be08cb3eb9a46bd00b643ed52c6"
 dependencies = [
  "base64 0.23.1",
  "i_overlay",
@@ -202,8 +202,8 @@ dependencies = [
 
 [[package]]
 name = "base-ui"
-version = "1.53.0"
-source = "git+https://github.com/michalsarna/baseCreator?tag=v1.53.0#f78196b1fe60e3a7cd443d30e3962a2093d9cc53"
+version = "1.53.1"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v1.53.1#03cbbb34c7e39be08cb3eb9a46bd00b643ed52c6"
 dependencies = [
  "base-core",
  "egui",
