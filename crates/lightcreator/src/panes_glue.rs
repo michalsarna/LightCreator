@@ -127,6 +127,42 @@ impl App {
         }
     }
 
+    /// What the G-code of the active project depends on: its saves and its path (the name), the notes, the device (the
+    /// G-code settings), the postprocessors that are on. The G-code text tab is made again when this changes.
+    pub(crate) fn gcode_stamp(&self) -> u64 {
+        use std::hash::{Hash, Hasher};
+        let mut h = std::collections::hash_map::DefaultHasher::new();
+        (self.saved_revision, &self.path, &self.doc.description, &self.plugins.posts).hash(&mut h);
+        serde_json::to_string(&self.doc.device).unwrap_or_default().hash(&mut h);
+        h.finish()
+    }
+
+    /// The G-code text of the active project follows the project: saving the file, a new note, a change of a G-code setting or of a
+    /// postprocessor makes it again, a moment after the last change and as long as the person has not edited it (the edits are never
+    /// thrown away on their own). Not every edit of the drawing: the program is not made at every drag.
+    pub(crate) fn refresh_gcode_text(&mut self, ctx: &egui::Context) {
+        if self.refresh_gcode_text_after(std::time::Duration::from_millis(500)) {
+            ctx.request_repaint_after(std::time::Duration::from_millis(600));
+        }
+    }
+
+    /// [`refresh_gcode_text`] with the wait given; returns whether a change is still waiting for its moment.
+    pub(crate) fn refresh_gcode_text_after(&mut self, wait: std::time::Duration) -> bool {
+        let slot = self.slot;
+        if !self.gcode_texts.iter().any(|g| g.slot == slot) {
+            return false;
+        }
+        let stamp = self.gcode_stamp();
+        let Some(g) = self.gcode_texts.iter_mut().find(|g| g.slot == slot) else { return false };
+        if !g.due(stamp, wait) {
+            return g.stamp != stamp && !g.dirty();
+        }
+        // One try for every change, whatever comes of it (a postprocessor that fails says so in the status line).
+        g.stamp = stamp;
+        self.remake_gcode_text(slot);
+        false
+    }
+
     /// Make the G-code text of the project of `slot` again (the project becomes the active one first: the program is made from it).
     fn remake_gcode_text(&mut self, slot: usize) {
         self.activate_slot(slot);
@@ -134,6 +170,10 @@ impl App {
             if let Some(g) = self.gcode_texts.iter_mut().find(|g| g.slot == slot) {
                 g.replace(text);
             }
+        }
+        let stamp = self.gcode_stamp();
+        if let Some(g) = self.gcode_texts.iter_mut().find(|g| g.slot == slot && !g.dirty()) {
+            g.stamp = stamp;
         }
     }
 }

@@ -828,6 +828,10 @@ impl App {
             }
             None => self.gcode_texts.push(base_ui::gcode_text_ui::GcodeText::new(slot, &name, text)),
         }
+        let stamp = self.gcode_stamp();
+        if let Some(g) = self.gcode_texts.iter_mut().find(|g| g.slot == slot && !g.dirty()) {
+            g.stamp = stamp;
+        }
         self.status = tr("The G-code is shown, nothing is saved").to_string();
     }
 
@@ -1733,6 +1737,7 @@ impl App {
             credits: include_str!("../../../CREDITS.md"),
         };
         base_ui::dialogs::about_window(ctx, &mut self.show_about, &about, self.logo.as_ref());
+        self.refresh_gcode_text(ctx);
         self.closing_text_dialog(ctx);
         self.config_window(ctx);
         self.layer_dialog(ctx);
@@ -2059,6 +2064,27 @@ mod tests {
         let g = &a.gcode_texts[0];
         assert!(g.text.contains("G21") && !std::path::Path::new(&g.name).exists(), "the text of the job, and no such file on the disk");
         assert!(!a.ed.grid_prefs.gcode_preview_after_save, "off by default");
+    }
+
+    #[test]
+    fn the_g_code_text_follows_the_project_until_it_is_edited() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(10.0, 10.0));
+        a.touch();
+        a.preview_gcode();
+        a.refresh_gcode_text_after(std::time::Duration::ZERO);
+        assert!(!a.gcode_texts[0].text.contains("fresh note"));
+        a.doc.description = "fresh note".into();
+        a.refresh_gcode_text_after(std::time::Duration::ZERO);
+        assert!(a.gcode_texts[0].text.contains("; Note: fresh note"), "{}", a.gcode_texts[0].text);
+        a.doc.device.gcode.flavour.remove_comments = true;
+        a.refresh_gcode_text_after(std::time::Duration::ZERO);
+        assert!(!a.gcode_texts[0].text.contains("fresh note"), "the comments are gone");
+        a.gcode_texts[0].text.push_str("; by hand\n");
+        a.doc.description = "another".into();
+        a.refresh_gcode_text_after(std::time::Duration::ZERO);
+        assert!(a.gcode_texts[0].text.contains("; by hand"));
     }
 
     #[test]
