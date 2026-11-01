@@ -13,6 +13,8 @@ pub struct Overlay {
     pub corners: [Pt; 4],
     pub opacity: f32,
     pub name: String,
+    /// The picture as it is shown (shared with the texture's upload), for the project file.
+    pub image: std::sync::Arc<egui::ColorImage>,
 }
 
 /// Map the unit square onto the quad with a perspective transform (Heckbert's square-to-quad).
@@ -37,9 +39,11 @@ impl App {
     /// Show `img` as the overlay. A saved calibration for the device is reused.
     pub fn overlay_set_image(&mut self, ctx: &egui::Context, img: egui::ColorImage, name: &str) {
         let size = (img.width() as u32, img.height() as u32);
+        let image = std::sync::Arc::new(img);
         if let Some(ov) = &mut self.overlay {
             if ov.size == size {
-                ov.tex.set(img, egui::TextureOptions::LINEAR);
+                ov.tex.set(image.clone(), egui::TextureOptions::LINEAR);
+                ov.image = image;
                 ov.name = name.to_string();
                 return;
             }
@@ -47,9 +51,46 @@ impl App {
         let saved = self.doc.device.camera.clone();
         let corners = saved.as_ref().map(|c| c.corners).unwrap_or_else(|| self.bed_corners());
         let opacity = saved.as_ref().map(|c| c.opacity as f32).unwrap_or(0.6);
-        let tex = ctx.load_texture("camera-overlay", img, egui::TextureOptions::LINEAR);
-        self.overlay = Some(Overlay { tex, size, corners, opacity, name: name.to_string() });
+        let tex = ctx.load_texture("camera-overlay", image.clone(), egui::TextureOptions::LINEAR);
+        self.overlay = Some(Overlay { tex, size, corners, opacity, name: name.to_string(), image });
         self.overlay_visible = true;
+    }
+
+    /// The overlay as the project file keeps it (`None`: there is none, or its picture cannot be written).
+    fn overlay_data(&self) -> Option<lc_core::OverlayData> {
+        let ov = self.overlay.as_ref()?;
+        let rgb: Vec<u8> = ov.image.pixels.iter().flat_map(|p| [p.r(), p.g(), p.b()]).collect();
+        lc_core::OverlayData::new(&ov.name, ov.corners, ov.opacity as f64, self.overlay_visible, &rgb, ov.size.0, ov.size.1).ok()
+    }
+
+    /// Put the overlay into the project (call it before the project is written, or put away in its tab). An overlay that was just read
+    /// from the file and is not on the screen yet is left as it is.
+    pub fn overlay_sync_to_doc(&mut self) {
+        if self.overlay_reload {
+            return;
+        }
+        let data = self.overlay_data();
+        self.doc.set_overlay(data);
+    }
+
+    /// Show the overlay of the project that is shown now (none: the overlay goes, unless the camera feeds it). Called when the project
+    /// changed: a new one, an opened file, another tab.
+    pub fn overlay_from_doc(&mut self, ctx: &egui::Context) {
+        self.overlay_reload = false;
+        match self.doc.overlay().and_then(|d| d.decode().ok().map(|px| (d, px))) {
+            Some((d, (w, h, rgba))) => {
+                let img = egui::ColorImage::from_rgba_unmultiplied([w as usize, h as usize], &rgba);
+                let image = std::sync::Arc::new(img);
+                let tex = ctx.load_texture("camera-overlay", image.clone(), egui::TextureOptions::LINEAR);
+                self.overlay = Some(Overlay { tex, size: (w, h), corners: d.corners, opacity: d.opacity as f32, name: d.name, image });
+                self.overlay_visible = d.visible;
+                self.stream_overlay = false;
+            }
+            None if !self.stream_overlay => {
+                self.overlay = None;
+            }
+            None => {}
+        }
     }
 
     pub fn overlay_load_file(&mut self, ctx: &egui::Context) {
@@ -60,6 +101,7 @@ impl App {
                 let ci = egui::ColorImage::from_rgba_unmultiplied([rgba.width() as usize, rgba.height() as usize], rgba.as_raw());
                 let name = p.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default();
                 self.overlay_set_image(ctx, ci, &name);
+                self.touch();
                 self.status = trf("Overlay: {}", &[&name]);
             }
             Err(e) => self.status = trf("Import failed: {}", &[&e]),
@@ -71,11 +113,16 @@ impl App {
         if let Some(ov) = &self.overlay {
             self.doc.device.camera = Some(CameraCfg { corners: ov.corners, opacity: ov.opacity as f64, index: self.cam_index });
             self.sync_profile();
+            // The corners, the opacity and the picture are kept in the project too.
+            self.touch();
         }
     }
 
     /// Take frames from the camera thread into the overlay texture.
     pub fn overlay_poll_camera(&mut self, ctx: &egui::Context) {
+        if self.overlay_reload {
+            self.overlay_from_doc(ctx);
+        }
         let mut latest = None;
         let mut error = None;
         if let Some(w) = &self.cam_worker {
@@ -113,6 +160,7 @@ impl App {
                 if self.overlay.is_some() && crate::window_ui::delete_button(ui, &tr("Remove")).clicked() {
                     self.overlay = None;
                     self.cam_worker = None;
+                    self.touch();
                 }
             });
             ui.separator();
@@ -151,7 +199,7 @@ impl App {
             if let Some(ov) = &mut self.overlay {
                 ui.separator();
                 ui.label(RichText::new(trf("Overlay: {}", &[&ov.name])).strong());
-                ui.checkbox(&mut self.overlay_visible, tr("Show overlay"));
+                changed |= ui.checkbox(&mut self.overlay_visible, tr("Show overlay")).changed();
                 changed |= ui.add(egui::Slider::new(&mut ov.opacity, 0.05..=1.0).text(tr("Opacity"))).changed();
                 ui.checkbox(&mut self.overlay_edit, tr("Align: drag the four corners on the work area")).on_hover_text(tr("Drag each corner to the matching corner of the material or work area; perspective is corrected."));
                 ui.horizontal_wrapped(|ui| {

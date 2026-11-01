@@ -38,6 +38,7 @@ impl App {
 
     /// Write the document now: to its own file when it has one, otherwise to the temporary file. Returns where.
     pub fn autosave_now(&mut self) -> Option<PathBuf> {
+        self.overlay_sync_to_doc();
         let target = match &self.path {
             Some(p) => p.clone(),
             None => temp_autosave_path(&self.data_base, self.slot),

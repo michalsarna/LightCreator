@@ -1127,3 +1127,4 @@
 1126|Eigen G-code van het apparaat: {}
 1127|Geen cameraadres (http, https, rtsp, udp, rtp of rtmp).
 1128|Live beeld van de machine: een MJPEG-stream, het adres van een JPEG-momentopname (http of https) of een stream die ffmpeg leest (rtsp, udp, rtp, rtmp).
+1129|Overlay van…

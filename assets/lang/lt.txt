@@ -1127,3 +1127,4 @@
 1126|Įrenginio nuosavas G kodas: {}
 1127|Tai ne kameros adresas (http, https, rtsp, udp, rtp arba rtmp).
 1128|Staklių vaizdas tiesiogiai: MJPEG srautas, JPEG momentinės nuotraukos adresas (http arba https) arba srautas, kurį skaito ffmpeg (rtsp, udp, rtp, rtmp).
+1129|Uždanga iš…

@@ -9,6 +9,7 @@ base-core = { git = "https://github.com/michalsarna/baseCreator", tag = "v1.55.0
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "bmp", "gif", "webp"] }
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.151"
+base64 = "0.23"
 
 [dev-dependencies]
 lopdf = { version = "0.46", default-features = false }

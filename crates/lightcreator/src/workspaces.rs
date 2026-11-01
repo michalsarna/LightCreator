@@ -47,6 +47,9 @@ impl App {
     /// The shown tab with the parked ones: a swap of every field that belongs to a drawing. The pattern has no `..`, so a
     /// field added to `Workspace` has to be handled here.
     fn swap_ws(&mut self, w: &mut Workspace) {
+        // The overlay of the drawing that is put away goes into it; the one of the drawing that comes is shown by the next frame.
+        self.overlay_sync_to_doc();
+        self.overlay_reload = true;
         let Workspace { doc, undo, redo, path, clean, autosaved_clean, view, slot } = w;
         std::mem::swap(&mut self.doc, doc);
         std::mem::swap(&mut self.undo, undo);
@@ -311,6 +314,23 @@ mod tests {
             a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::IDENTITY);
         }
         a.touch();
+    }
+
+    #[test]
+    fn every_drawing_keeps_its_own_overlay_when_the_tabs_are_switched() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.overlay_set_image(&ctx, egui::ColorImage::from_rgb([6, 3], &[90u8; 6 * 3 * 3]), "first");
+        a.new_tab();
+        a.overlay_poll_camera(&ctx);
+        assert!(a.overlay.is_none(), "the new drawing has no overlay");
+        a.overlay_set_image(&ctx, egui::ColorImage::from_rgb([10, 5], &[30u8; 10 * 5 * 3]), "second");
+        a.switch_to(0);
+        a.overlay_poll_camera(&ctx);
+        assert_eq!(a.overlay.as_ref().map(|o| (o.name.clone(), o.size)), Some(("first".to_string(), (6, 3))));
+        a.switch_to(1);
+        a.overlay_poll_camera(&ctx);
+        assert_eq!(a.overlay.as_ref().map(|o| (o.name.clone(), o.size)), Some(("second".to_string(), (10, 5))));
     }
 
     #[test]

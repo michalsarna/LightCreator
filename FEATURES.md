@@ -228,7 +228,7 @@
 
 **Helpers**
 * **Camera overlay:** a photo or the live camera (build with `--features camera`) under the design, aligned
-  with four draggable corners (perspective corrected), opacity, flip and rotate; saved per device.
+  with four draggable corners (perspective corrected), opacity, flip and rotate; the picture and its corners are saved in the project file (and the calibration with the device). The *Overlay* button of the bar opens the *Overlay from…* window, or switches a shown overlay off.
 
 **Help**
 * **Download backup…** (Help menu): asks where to save a zip file with everything the program keeps on this computer,

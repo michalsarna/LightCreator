@@ -388,7 +388,7 @@ pub fn menus() -> base_ui::menu::Menus<Act> {
                     Item(Act::CameraView, "Camera view", None),
                     Item(Act::ToggleOverlay, "Show camera overlay", None),
                     Item(Act::ToggleZones, "Show no-go zones", None),
-                    Item(Act::CameraOverlay, "Camera overlay…", None),
+                    Item(Act::CameraOverlay, "Overlay from…", None),
                 ],
             ]
             .concat(),

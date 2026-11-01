@@ -269,7 +269,7 @@ impl App {
             ui.separator();
             let (on, can) = self.overlay_state();
             if crate::app::window_toggle(ui, &tr("Overlay"), &tr("Show or hide the camera overlay on the work area"), on, can) {
-                self.toggle_overlay_button();
+                self.toggle_stream_overlay();
             }
             ui.separator();
             if ui.button("+").on_hover_text(tr("Zoom in")).clicked() {
