@@ -1120,4 +1120,8 @@
 1119|Vaates on kuni kolm paani
 1120|Näita eelvaadet siin
 1121|G-koodi faili pole avatud: File, View G-code file…
-1122|Seadme oma G-kood: {}
+1122|G-koodi eelvaade
+1123|Näita G-koodi salvestamata
+1124|eelvaade
+1125|G-koodi on näidatud, midagi ei salvestata
+1126|Seadme oma G-kood: {}

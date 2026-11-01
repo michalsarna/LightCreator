@@ -1120,4 +1120,8 @@
 1119|Visningen har højst tre paneler
 1120|Vis forhåndsvisningen her
 1121|Ingen G-kodefil er åben: File, View G-code file…
-1122|Enhedens egen G-kode: {}
+1122|Vis G-kode
+1123|Vis G-koden uden at gemme den
+1124|forhåndsvisning
+1125|G-koden vises, intet gemmes
+1126|Enhedens egen G-kode: {}

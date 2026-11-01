@@ -1120,4 +1120,8 @@
 1119|Zobrazenie má najviac tri panely
 1120|Zobraziť náhľad tu
 1121|Nie je otvorený žiadny súbor G-kódu: File, View G-code file…
-1122|Vlastný G-kód zariadenia: {}
+1122|Náhľad G-kódu
+1123|Zobraziť G-kód bez uloženia
+1124|náhľad
+1125|G-kód je zobrazený, nič sa neukladá
+1126|Vlastný G-kód zariadenia: {}

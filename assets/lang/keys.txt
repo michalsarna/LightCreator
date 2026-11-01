@@ -1120,4 +1120,8 @@
 1119	The view has three panes at most
 1120	Show the preview here
 1121	No G-code file is open: File, View G-code file…
-1122	The own G-code of the device: {}
+1122	Preview G-code
+1123	Show the G-code without saving it
+1124	preview
+1125	The G-code is shown, nothing is saved
+1126	The own G-code of the device: {}
