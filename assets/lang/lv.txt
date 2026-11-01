@@ -1125,3 +1125,5 @@
 1124|priekšskatījums
 1125|G-kods ir parādīts, nekas netiek saglabāts
 1126|Ierīces paša G-kods: {}
+1127|Nav kameras adrese (http, https, rtsp, udp, rtp vai rtmp).
+1128|Iekārtas tiešraides attēls: MJPEG straume, JPEG momentuzņēmuma adrese (http vai https) vai straume, ko lasa ffmpeg (rtsp, udp, rtp, rtmp).

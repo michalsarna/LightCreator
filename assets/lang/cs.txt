@@ -1125,3 +1125,5 @@
 1124|náhled
 1125|G-kód je zobrazen, nic se neukládá
 1126|Vlastní G-kód zařízení: {}
+1127|Není to adresa kamery (http, https, rtsp, udp, rtp nebo rtmp).
+1128|Živý obraz ze stroje: proud MJPEG, adresa snímku JPEG (http nebo https) nebo proud, který čte ffmpeg (rtsp, udp, rtp, rtmp).

@@ -1125,3 +1125,5 @@
 1124|forhåndsvisning
 1125|G-koden vises, intet gemmes
 1126|Enhedens egen G-kode: {}
+1127|Ikke en kameraadresse (http, https, rtsp, udp, rtp eller rtmp).
+1128|Livebillede af maskinen: en MJPEG-strøm, en adresse til et JPEG-billede (http eller https) eller en strøm, som ffmpeg læser (rtsp, udp, rtp, rtmp).

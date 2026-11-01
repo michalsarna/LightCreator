@@ -791,9 +791,9 @@ impl App {
                                 });
                                 match &mut c.kind {
                                     lc_core::CameraKind::Url(u) => {
-                                        ui.add(egui::TextEdit::singleline(u).hint_text("http://raspberrypi.local:8080/stream.mjpg").desired_width(300.0)).on_hover_text(tr("Live picture of the machine: an MJPEG stream or a JPEG snapshot address (http or https). RTSP is not supported."));
+                                        ui.add(egui::TextEdit::singleline(u).hint_text("http://raspberrypi.local:8080/stream.mjpg").desired_width(300.0)).on_hover_text(tr("Live picture of the machine: an MJPEG stream, a JPEG snapshot address (http or https), or a stream that ffmpeg reads (rtsp, udp, rtp, rtmp)."));
                                         if !lc_core::camimg::valid_url(u) && !u.trim().is_empty() {
-                                            ui.label(RichText::new(tr("Not an http or https address.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
+                                            ui.label(RichText::new(tr("Not a camera address (http, https, rtsp, udp, rtp or rtmp).")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
                                         }
                                     }
                                     lc_core::CameraKind::Local(i) => {
@@ -807,6 +807,7 @@ impl App {
                                         }
                                     }
                                 }
+                                base_ui::camera_feed::stream_options_ui(ui, c);
                                 let testable = match &c.kind {
                                     lc_core::CameraKind::Url(u) => lc_core::camimg::valid_url(u),
                                     lc_core::CameraKind::Local(_) => crate::camera::SUPPORTED,
@@ -1735,7 +1736,7 @@ impl App {
 
 /// A new camera at the end of the list. It is the one being set up, so it is switched on and becomes the active one.
 pub fn add_camera(d: &mut lc_core::Device) {
-    d.cameras.push(lc_core::CameraSource { name: trf("Camera {}", &[&(d.cameras.len() + 1)]), enabled: true, kind: lc_core::CameraKind::Url(String::new()), rotation: 0, image: Default::default(), lens: Default::default(), reference: vec![], view_mode: None });
+    d.cameras.push(lc_core::CameraSource { name: trf("Camera {}", &[&(d.cameras.len() + 1)]), enabled: true, kind: lc_core::CameraKind::Url(String::new()), rotation: 0, image: Default::default(), lens: Default::default(), reference: vec![], view_mode: None, rtsp_udp: false, low_latency: false });
     d.activate_camera(d.cameras.len() - 1);
 }
 

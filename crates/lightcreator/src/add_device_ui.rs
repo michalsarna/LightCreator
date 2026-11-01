@@ -41,7 +41,7 @@ fn camera_section(ui: &mut egui::Ui, d: &mut Device) -> Option<lc_core::CameraSo
                 lc_core::CameraKind::Url(u) => {
                     ui.add(egui::TextEdit::singleline(u).hint_text("http://raspberrypi.local:8080/stream.mjpg").desired_width(300.0));
                     if !lc_core::camimg::valid_url(u) && !u.trim().is_empty() {
-                        ui.label(RichText::new(tr("Not an http or https address.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
+                        ui.label(RichText::new(tr("Not a camera address (http, https, rtsp, udp, rtp or rtmp).")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
                     }
                 }
                 lc_core::CameraKind::Local(i) => {
@@ -51,6 +51,7 @@ fn camera_section(ui: &mut egui::Ui, d: &mut Device) -> Option<lc_core::CameraSo
                     });
                 }
             }
+            base_ui::camera_feed::stream_options_ui(ui, c);
             let testable = match &c.kind {
                 lc_core::CameraKind::Url(u) => lc_core::camimg::valid_url(u),
                 lc_core::CameraKind::Local(_) => crate::camera::SUPPORTED,

@@ -1125,3 +1125,5 @@
 1124|predogled
 1125|G-koda je prikazana, nič ni shranjeno
 1126|Lastna G-koda naprave: {}
+1127|To ni naslov kamere (http, https, rtsp, udp, rtp ali rtmp).
+1128|Slika stroja v živo: tok MJPEG, naslov posnetka JPEG (http ali https) ali tok, ki ga bere ffmpeg (rtsp, udp, rtp, rtmp).

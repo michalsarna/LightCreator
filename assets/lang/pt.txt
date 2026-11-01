@@ -1125,3 +1125,5 @@
 1124|pré-visualização
 1125|O G-code é mostrado, nada é guardado
 1126|G-code próprio do dispositivo: {}
+1127|Não é um endereço de câmara (http, https, rtsp, udp, rtp ou rtmp).
+1128|Imagem em direto da máquina: um fluxo MJPEG, o endereço de um instantâneo JPEG (http ou https) ou um fluxo lido pelo ffmpeg (rtsp, udp, rtp, rtmp).
