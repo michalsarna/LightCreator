@@ -1120,3 +1120,7 @@
 1119|Skatam ir ne vairāk kā trīs rūtis
 1120|Rādīt priekšskatījumu šeit
 1121|Nav atvērts neviens G-koda fails: File, View G-code file…
+1122|G-koda priekšskatījums
+1123|Rādīt G-kodu bez saglabāšanas
+1124|priekšskatījums
+1125|G-kods ir parādīts, nekas netiek saglabāts

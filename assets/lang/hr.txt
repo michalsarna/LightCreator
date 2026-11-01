@@ -1120,3 +1120,7 @@
 1119|Prikaz ima najviše tri okna
 1120|Prikaži pregled ovdje
 1121|Nijedna G-kod datoteka nije otvorena: File, View G-code file…
+1122|Pregled G-koda
+1123|Prikaži G-kod bez spremanja
+1124|pregled
+1125|G-kod je prikazan, ništa nije spremljeno

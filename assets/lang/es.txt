@@ -1120,3 +1120,7 @@
 1119|La vista tiene como máximo tres paneles
 1120|Mostrar aquí la vista previa
 1121|Ningún archivo G-code abierto: File, View G-code file…
+1122|Vista previa del G-code
+1123|Mostrar el G-code sin guardarlo
+1124|vista previa
+1125|El G-code se muestra, no se guarda nada
