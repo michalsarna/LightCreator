@@ -292,7 +292,7 @@ impl App {
                 ui.add(egui::DragValue::new(&mut l.power).range(0.0..=100.0).suffix(" %"));
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                     // Right to left: air pump, visible, output.
-                    for (flag, tip) in [(&mut l.air_assist, "Air pump on"), (&mut l.visible, "Visible"), (&mut l.output, "Output (burn this layer)")] {
+                    for (flag, tip) in [(&mut l.air_assist, "Air assist"), (&mut l.visible, "Visible"), (&mut l.output, "Output (burn this layer)")] {
                         ui.allocate_ui_with_layout(egui::vec2(SWITCH_W, 20.0), egui::Layout::top_down(egui::Align::Center), |ui| {
                             ui.checkbox(flag, "").on_hover_text(tr(tip));
                         });

@@ -1127,3 +1127,4 @@
 1126|Seadme oma G-kood: {}
 1127|See pole kaamera aadress (http, https, rtsp, udp, rtp või rtmp).
 1128|Masina otsepilt: MJPEG-voog, JPEG-hetktõmmise aadress (http või https) või voog, mida ffmpeg loeb (rtsp, udp, rtp, rtmp).
+1129|Ülekate allikast…

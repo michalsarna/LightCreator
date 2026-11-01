@@ -2014,6 +2014,7 @@ name = "lc-core"
 version = "0.5.3"
 dependencies = [
  "base-core",
+ "base64 0.23.1",
  "image",
  "lopdf",
  "serde",

@@ -263,7 +263,7 @@ const TABLE: &[[&str; 7]] = &[
     ["Restore", "Przywróć", "Wiederherstellen", "Ripristina", "Palauta", "还原", "पूर्ववत करें"],
     ["Show or hide the grid", "Pokaż lub ukryj siatkę", "Raster ein- oder ausblenden", "Mostra o nascondi la griglia", "Näytä tai piilota ruudukko", "显示或隐藏网格", "ग्रिड दिखाएँ या छिपाएँ"],
     ["Show or hide the secondary grid", "Pokaż lub ukryj siatkę pomocniczą", "Feines Raster ein- oder ausblenden", "Mostra o nascondi la griglia secondaria", "Näytä tai piilota apuruudukko", "显示或隐藏辅助网格", "सहायक ग्रिड दिखाएँ या छिपाएँ"],
-    ["Air assist", "Pompa powietrza", "Luftunterstützung", "Aria assistita", "Ilma-apu", "气泵", "एयर असिस्ट"],
+    ["Air assist", "Asysta powietrzna", "Luftunterstützung", "Aria assistita", "Ilma-apu", "气泵", "एयर असिस्ट"],
     ["Air pump on", "Włączona", "Eingeschaltet", "Attiva", "Päällä", "开启", "चालू"],
     ["Switch the air pump on while this layer burns (M8 / M9)", "Włącz pompę powietrza podczas wypalania tej warstwy (M8 / M9)", "Luftpumpe einschalten, solange diese Ebene brennt (M8 / M9)", "Accendi la pompa dell'aria mentre questo livello brucia (M8 / M9)", "Käynnistä ilmapumppu tämän tason poltossa (M8 / M9)", "烧刻此图层时开启气泵 (M8 / M9)", "इस परत को जलाते समय एयर पंप चालू करें (M8 / M9)"],
     ["Position and size", "Położenie i rozmiar", "Position und Größe", "Posizione e dimensioni", "Sijainti ja koko", "位置和大小", "स्थिति और आकार"],
@@ -1271,6 +1271,7 @@ const TABLE: &[[&str; 7]] = &[
     ["The own G-code of the device: {}", "Własny G-code urządzenia: {}", "Eigener G-Code des Geräts: {}", "G-code personalizzato del dispositivo: {}", "Laitteen oma G-koodi: {}", "设备的自定义 G-code：{}", "डिवाइस का अपना G-code: {}"],
     ["Not a camera address (http, https, rtsp, udp, rtp or rtmp).", "To nie jest adres kamery (http, https, rtsp, udp, rtp lub rtmp).", "Keine Kameraadresse (http, https, rtsp, udp, rtp oder rtmp).", "Non è un indirizzo di telecamera (http, https, rtsp, udp, rtp o rtmp).", "Ei ole kameran osoite (http, https, rtsp, udp, rtp tai rtmp).", "不是摄像头地址（http、https、rtsp、udp、rtp 或 rtmp）。", "यह कैमरे का पता नहीं है (http, https, rtsp, udp, rtp या rtmp)।"],
     ["Live picture of the machine: an MJPEG stream, a JPEG snapshot address (http or https), or a stream that ffmpeg reads (rtsp, udp, rtp, rtmp).", "Obraz na żywo z maszyny: strumień MJPEG, adres zdjęcia JPEG (http lub https) albo strumień czytany przez ffmpeg (rtsp, udp, rtp, rtmp).", "Live-Bild der Maschine: ein MJPEG-Stream, eine JPEG-Momentaufnahme-Adresse (http oder https) oder ein Stream, den ffmpeg liest (rtsp, udp, rtp, rtmp).", "Immagine dal vivo della macchina: un flusso MJPEG, l'indirizzo di un'istantanea JPEG (http o https) oppure un flusso letto da ffmpeg (rtsp, udp, rtp, rtmp).", "Koneen livekuva: MJPEG-lähetys, JPEG-kuvan osoite (http tai https) tai lähetys, jonka ffmpeg lukee (rtsp, udp, rtp, rtmp).", "机器的实时画面：MJPEG 流、JPEG 快照地址（http 或 https），或由 ffmpeg 读取的流（rtsp、udp、rtp、rtmp）。", "मशीन की लाइव तस्वीर: MJPEG स्ट्रीम, JPEG स्नैपशॉट का पता (http या https), या ffmpeg द्वारा पढ़ी जाने वाली स्ट्रीम (rtsp, udp, rtp, rtmp)।"],
+    ["Overlay from…", "Nakładka z…", "Überlagerung aus…", "Sovrapposizione da…", "Peitto kohteesta…", "叠加来自…", "ओवरले स्रोत से…"],
 ];
 #[cfg(test)]
 mod tests {

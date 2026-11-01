@@ -1127,3 +1127,4 @@
 1126|G-code personnalisé de l'appareil : {}
 1127|Ce n'est pas une adresse de caméra (http, https, rtsp, udp, rtp ou rtmp).
 1128|Image en direct de la machine : un flux MJPEG, l'adresse d'un instantané JPEG (http ou https) ou un flux lu par ffmpeg (rtsp, udp, rtp, rtmp).
+1129|Superposition depuis…

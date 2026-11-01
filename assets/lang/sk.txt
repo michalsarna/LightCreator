@@ -1127,3 +1127,4 @@
 1126|Vlastný G-kód zariadenia: {}
 1127|Nie je to adresa kamery (http, https, rtsp, udp, rtp alebo rtmp).
 1128|Živý obraz zo stroja: prúd MJPEG, adresa snímky JPEG (http alebo https) alebo prúd, ktorý číta ffmpeg (rtsp, udp, rtp, rtmp).
+1129|Prekrytie z…

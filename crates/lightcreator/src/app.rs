@@ -221,6 +221,8 @@ pub struct App {
     pub pv: crate::preview_ui::PreviewState,
     pub overlay: Option<crate::overlay::Overlay>,
     pub overlay_visible: bool,
+    /// The project changed (a new one, an opened file, another tab): the overlay on the screen is the one of the project, to be put there.
+    pub overlay_reload: bool,
     pub overlay_edit: bool,
     pub overlay_drag: Option<usize>,
     pub show_overlay: bool,
@@ -437,6 +439,7 @@ impl App {
             pv: Default::default(),
             overlay: None,
             overlay_visible: true,
+            overlay_reload: false,
             overlay_edit: false,
             overlay_drag: None,
             show_overlay: false,
@@ -560,6 +563,7 @@ impl App {
         self.redo.clear();
         self.ed.sel.clear();
         self.path = None;
+        self.overlay_reload = true;
         self.touch();
         self.mark_saved();
         self.ed.view.need_fit = true;
@@ -625,6 +629,7 @@ impl App {
                 }
                 self.add_recent(&p);
                 self.path = Some(p);
+                self.overlay_reload = true;
                 self.touch();
                 self.mark_saved();
                 self.ed.view.need_fit = true;
@@ -711,6 +716,7 @@ impl App {
         true
     }
     pub fn save(&mut self, as_new: bool) {
+        self.overlay_sync_to_doc();
         let path = if as_new || self.path.is_none() {
             rfd::FileDialog::new().add_filter("Project", &[lc_core::project::EXTENSION]).set_file_name("untitled.cre").save_file()
         } else {
@@ -955,13 +961,13 @@ impl App {
     pub fn can_start(&self) -> bool {
         !self.doc.device.controller.is_serial() || self.connected
     }
-    /// (shown, available) for the Overlay buttons.
+    /// (shown, available) for the Overlay buttons. The button is always available: with no overlay it opens the window that makes one.
     pub fn overlay_state(&self) -> (bool, bool) {
-        (self.overlay.is_some() && self.overlay_visible, self.overlay.is_some() || self.show_stream)
+        (self.overlay.is_some() && self.overlay_visible, true)
     }
-    /// The overlay is fed from the live camera while its window is open, otherwise it is the saved photo.
-    pub fn toggle_overlay_button(&mut self) {
-        let (on, _) = self.overlay_state();
+    /// The Overlay button of the camera view: the overlay is fed from the live camera while the view is open, otherwise it is the saved photo.
+    pub fn toggle_stream_overlay(&mut self) {
+        let on = self.overlay.is_some() && self.overlay_visible;
         if self.show_stream {
             if on && self.stream_overlay {
                 self.stream_overlay = false;
@@ -972,6 +978,17 @@ impl App {
             }
         } else {
             self.overlay_visible = !self.overlay_visible;
+        }
+    }
+    /// The Overlay button: an overlay that is shown is switched off (and no longer fed from the live camera); with none, the same window as
+    /// *Overlay from…* of the View menu opens, where a picture or the camera is chosen.
+    pub fn toggle_overlay_button(&mut self) {
+        let (on, _) = self.overlay_state();
+        if on {
+            self.stream_overlay = false;
+            self.overlay_visible = false;
+        } else {
+            self.show_overlay = true;
         }
     }
     /// A job is being streamed to the laser.
@@ -1547,13 +1564,14 @@ impl App {
             base_ui::editor::grid_toggles(self, ui);
             ui.separator();
             self.view_buttons(ui);
+            // Beside the buttons that show things: the G-code, shown without saving it, and written to a file.
+            if ui.button(tr("Preview G-code")).on_hover_text(tr("Show the G-code without saving it")).clicked() {
+                self.preview_gcode();
+            }
+            if crate::window_ui::save_button(ui, &tr("Save G-code")).clicked() {
+                self.export_gcode();
+            }
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                if ui.button(tr("Preview G-code")).on_hover_text(tr("Show the G-code without saving it")).clicked() {
-                    self.preview_gcode();
-                }
-                if crate::window_ui::save_button(ui, &tr("Save G-code")).clicked() {
-                    self.export_gcode();
-                }
                 base_ui::editor::selection_size(self, ui);
             });
         });
@@ -2085,6 +2103,58 @@ mod tests {
         a.doc.description = "another".into();
         a.refresh_gcode_text_after(std::time::Duration::ZERO);
         assert!(a.gcode_texts[0].text.contains("; by hand"));
+    }
+
+    #[test]
+    fn the_overlay_picture_is_kept_in_the_project_file_and_comes_back_with_it() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        assert!(a.overlay.is_none());
+        a.overlay_set_image(&ctx, egui::ColorImage::from_rgb([8, 4], &[120u8; 8 * 4 * 3]), "photo.jpg");
+        let corners = [lc_core::Pt::new(1.0, 2.0), lc_core::Pt::new(50.0, 2.0), lc_core::Pt::new(50.0, 40.0), lc_core::Pt::new(1.0, 40.0)];
+        if let Some(ov) = &mut a.overlay {
+            ov.corners = corners;
+            ov.opacity = 0.35;
+        }
+        a.overlay_visible = false;
+        // Saving puts the overlay into the file.
+        a.overlay_sync_to_doc();
+        let json = a.doc.to_json();
+        assert!(json.contains("\"overlay\""), "the overlay is a section of the project");
+        // Another drawing has none.
+        a.new_doc();
+        a.overlay_poll_camera(&ctx);
+        assert!(a.overlay.is_none(), "a new project has no overlay");
+        // The file brings it back: the picture, where it lies, how see-through it is and that it was hidden.
+        a.doc = lc_core::Document::from_json(&json).unwrap();
+        a.overlay_reload = true;
+        a.overlay_poll_camera(&ctx);
+        let ov = a.overlay.as_ref().expect("the overlay of the file");
+        assert_eq!((ov.size, ov.name.as_str(), ov.corners, (ov.opacity * 100.0).round() as i32), ((8, 4), "photo.jpg", corners, 35));
+        assert!(!a.overlay_visible);
+        // An overlay that is waiting to be read from the file is not thrown away by a save in between.
+        a.overlay = None;
+        a.overlay_reload = true;
+        a.overlay_sync_to_doc();
+        assert!(a.doc.overlay().is_some());
+    }
+
+    #[test]
+    fn the_overlay_button_opens_the_overlay_window_when_there_is_none_and_switches_it_off_when_it_is_on() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        assert_eq!(a.overlay_state(), (false, true), "always available");
+        a.toggle_overlay_button();
+        assert!(a.show_overlay, "the same window as Overlay from… of the View menu");
+        a.show_overlay = false;
+        a.overlay_set_image(&ctx, egui::ColorImage::from_rgb([4, 2], &[200u8; 24]), "t");
+        a.stream_overlay = true;
+        assert!(a.overlay_state().0);
+        a.toggle_overlay_button();
+        assert!(!a.overlay_state().0 && !a.stream_overlay && !a.show_overlay, "switched off, not the window");
+        // Off with a picture: the button asks for the window again.
+        a.toggle_overlay_button();
+        assert!(a.show_overlay);
     }
 
     #[test]

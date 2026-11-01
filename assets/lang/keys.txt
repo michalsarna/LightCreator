@@ -1127,3 +1127,4 @@
 1126	The own G-code of the device: {}
 1127	Not a camera address (http, https, rtsp, udp, rtp or rtmp).
 1128	Live picture of the machine: an MJPEG stream, a JPEG snapshot address (http or https), or a stream that ffmpeg reads (rtsp, udp, rtp, rtmp).
+1129	Overlay from…

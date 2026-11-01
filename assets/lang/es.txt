@@ -1127,3 +1127,4 @@
 1126|G-code propio del dispositivo: {}
 1127|No es una dirección de cámara (http, https, rtsp, udp, rtp o rtmp).
 1128|Imagen en directo de la máquina: un flujo MJPEG, la dirección de una instantánea JPEG (http o https) o un flujo que lee ffmpeg (rtsp, udp, rtp, rtmp).
+1129|Superposición desde…
