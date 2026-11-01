@@ -537,8 +537,9 @@ mod tests {
         // Only the working time and the buttons of the recording stand under the picture (no empty strip); the picture fills the width of
         // the window (640 x 360 in 774 x 574).
         assert!(a.cam_fit.under(0.0) < 170.0, "under {}", a.cam_fit.under(0.0));
-        // The recording buttons under the picture take some of the height, so the picture may be a little narrower than the window.
-        assert!(a.cam_fit.slack.x < 60.0, "the picture fills the width: {:?}", a.cam_fit.slack);
+        // The recording buttons (the video format, the photo and video, the time-lapse, the folder) under the picture take some of the height,
+        // so the picture may be narrower than the window: 25 points of height are 45 of width in a 16:9 picture.
+        assert!(a.cam_fit.slack.x < 100.0, "the picture fills the width: {:?}", a.cam_fit.slack);
     }
 
     #[test]
