@@ -109,7 +109,7 @@ impl PaneHost for App {
             Content::Gcode => {
                 if !self.gcode_view_panel(ui) {
                     ui.add_space(8.0);
-                    ui.label(base_ui::i18n::tr("No G-code file is open: File → View G-code file…"));
+                    ui.label(base_ui::i18n::tr("No G-code file is open: File, View G-code file…"));
                 }
             }
             Content::Camera => {
