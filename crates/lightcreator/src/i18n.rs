@@ -1264,6 +1264,10 @@ const TABLE: &[[&str; 7]] = &[
     ["The view has three panes at most", "Widok ma najwyżej trzy panele", "Die Ansicht hat höchstens drei Bereiche", "La vista ha al massimo tre riquadri", "Näkymässä on enintään kolme paneelia", "视图最多有三个窗格", "दृश्य में अधिकतम तीन पेन हो सकते हैं"],
     ["Show the preview here", "Pokaż tu podgląd", "Vorschau hier anzeigen", "Mostra qui l'anteprima", "Näytä esikatselu tässä", "在此显示预览", "यहाँ पूर्वावलोकन दिखाएं"],
     ["No G-code file is open: File, View G-code file…", "Żaden plik G-code nie jest otwarty: File, View G-code file…", "Keine G-Code-Datei geöffnet: File, View G-code file…", "Nessun file G-code aperto: File, View G-code file…", "G-koodi-tiedostoa ei ole avattu: File, View G-code file…", "没有打开 G 代码文件：File, View G-code file…", "कोई G-कोड फ़ाइल खुली नहीं है: File, View G-code file…"],
+    ["Preview G-code", "Podgląd G-code", "G-Code-Vorschau", "Anteprima G-code", "G-koodin esikatselu", "预览 G-code", "G-code पूर्वावलोकन"],
+    ["Show the G-code without saving it", "Pokaż G-code bez zapisywania", "G-Code anzeigen, ohne zu speichern", "Mostra il G-code senza salvarlo", "Näytä G-koodi tallentamatta", "显示 G-code 但不保存", "G-code को सहेजे बिना दिखाएं"],
+    ["preview", "podgląd", "Vorschau", "anteprima", "esikatselu", "预览", "पूर्वावलोकन"],
+    ["The G-code is shown, nothing is saved", "G-code jest pokazany, nic nie zostało zapisane", "Der G-Code wird angezeigt, nichts wird gespeichert", "Il G-code è mostrato, nulla viene salvato", "G-koodi näytetään, mitään ei tallenneta", "已显示 G-code，未保存任何内容", "G-code दिखाया गया है, कुछ भी सहेजा नहीं गया"],
 ];
 #[cfg(test)]
 mod tests {

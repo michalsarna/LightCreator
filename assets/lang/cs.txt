@@ -1120,3 +1120,7 @@
 1119|Pohled má nejvýše tři panely
 1120|Zobrazit náhled zde
 1121|Není otevřen žádný soubor G-kódu: File, View G-code file…
+1122|Náhled G-kódu
+1123|Zobrazit G-kód bez uložení
+1124|náhled
+1125|G-kód je zobrazen, nic se neukládá

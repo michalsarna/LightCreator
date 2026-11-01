@@ -1120,3 +1120,7 @@
 1119|Il-veduta għandha mhux aktar minn tliet pannelli
 1120|Uri l-previżjoni hawn
 1121|Ebda fajl G-code miftuħ: File, View G-code file…
+1122|Previżjoni tal-G-code
+1123|Uri l-G-code mingħajr ma tinħażen
+1124|previżjoni
+1125|Il-G-code qed jintwera, xejn ma nħażen

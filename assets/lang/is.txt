@@ -1120,3 +1120,7 @@
 1119|Sýnin hefur í mesta lagi þrjá glugga
 1120|Sýna forskoðun hér
 1121|Engin G-kóðaskrá er opin: File, View G-code file…
+1122|Forskoða G-kóða
+1123|Sýna G-kóðann án þess að vista hann
+1124|forskoðun
+1125|G-kóðinn er sýndur, ekkert er vistað

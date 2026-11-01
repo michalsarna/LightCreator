@@ -1120,3 +1120,7 @@
 1119|La vue compte trois panneaux au maximum
 1120|Afficher l'aperçu ici
 1121|Aucun fichier G-code ouvert : File, View G-code file…
+1122|Aperçu du G-code
+1123|Afficher le G-code sans l'enregistrer
+1124|aperçu
+1125|Le G-code est affiché, rien n'est enregistré

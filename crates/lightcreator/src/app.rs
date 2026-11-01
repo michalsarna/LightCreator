@@ -774,7 +774,27 @@ impl App {
                 Ok(_) => trf("Saved G-code {}", &[&p.display()]),
                 Err(e) => trf("Export failed: {}", &[&e]),
             };
+            if self.ed.grid_prefs.gcode_preview_after_save && p.exists() {
+                if let Err(e) = base_ui::gcode_view_ui::open(&mut self.gcode_view, p) {
+                    self.status = e;
+                }
+            }
         }
+    }
+
+    /// The G-code as it would be written, shown in the analysis of G-code; nothing is written to the disk.
+    pub fn preview_gcode(&mut self) {
+        if self.selection_only && self.ed.sel.is_empty() {
+            self.status = tr("Nothing to burn: nothing is selected").into();
+            return;
+        }
+        self.stamp_job();
+        let job = gcode::generate_with(&self.job_source(), None, &self.job_options());
+        let Some(text) = self.postprocessed(job.gcode) else { return };
+        self.status = match base_ui::gcode_view_ui::open_text(&mut self.gcode_view, &format!("job.gcode ({})", tr("preview")), &text) {
+            Ok(()) => tr("The G-code is shown, nothing is saved").to_string(),
+            Err(e) => e,
+        };
     }
 
     // ---------- laser ----------
@@ -1476,6 +1496,9 @@ impl App {
             ui.separator();
             self.view_buttons(ui);
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                if ui.button(tr("Preview G-code")).on_hover_text(tr("Show the G-code without saving it")).clicked() {
+                    self.preview_gcode();
+                }
                 if crate::window_ui::save_button(ui, &tr("Save G-code")).clicked() {
                     self.export_gcode();
                 }
@@ -1984,6 +2007,20 @@ impl App {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn the_g_code_can_be_previewed_without_writing_a_file() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        a.preview_gcode();
+        assert!(a.gcode_view.is_none(), "nothing to burn: no viewer");
+        a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(10.0, 10.0));
+        a.touch();
+        a.preview_gcode();
+        let v = a.gcode_view.as_ref().expect("the program is shown in the analysis");
+        assert!(!v.tp.segs.is_empty() && !v.path.exists(), "moves, and no such file on the disk");
+        assert!(!a.ed.grid_prefs.gcode_preview_after_save, "off by default");
+    }
 
     #[test]
     fn two_quick_escapes_select_the_select_tool() {
