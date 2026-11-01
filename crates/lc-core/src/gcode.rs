@@ -514,7 +514,7 @@ fn frame_and_flavour(text: &str, doc: &Document, dev: &Device, moves: &[Move]) -
         return text.to_string();
     }
     let info = &doc.job_info;
-    let mut common = base_core::gcode_out::Info { project_name: info.name.clone(), project_path: info.path.clone(), machine_name: dev.name.clone(), date: info.date.clone(), time: info.time.clone(), bounds: None };
+    let mut common = base_core::gcode_out::Info { project_name: info.name.clone(), project_path: info.path.clone(), machine_name: dev.name.clone(), date: info.date.clone(), time: info.time.clone(), bounds: None, notes: String::new() };
     let (mut lo, mut hi) = ([f64::INFINITY; 2], [f64::NEG_INFINITY; 2]);
     for m in moves.iter().filter(|m| m.laser) {
         for p in [m.a, m.b] {
@@ -540,6 +540,9 @@ pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job
     let shapes: Vec<&Shape> = doc.scene.shapes.iter().collect();
     let mut w = Writer::new(dev);
     let _ = writeln!(w.out, "; LightCreator job — {}", dev.name);
+    for l in base_core::gcode_out::note_lines(&doc.description) {
+        let _ = writeln!(w.out, "; Note: {l}");
+    }
     let dialect = dev.dialect();
     match GcodeCfg::custom(&dev.gcode.preamble) {
         Some(lines) => {

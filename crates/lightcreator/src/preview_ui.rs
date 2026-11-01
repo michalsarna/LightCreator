@@ -157,15 +157,6 @@ impl App {
         self.show_preview
     }
 
-    /// Pin the preview as a tab of the work area (or make it a window again).
-    pub fn preview_pin(&mut self, tab: bool) {
-        self.preview_tab = tab;
-        self.pv_tab_shown = tab;
-        if tab {
-            self.cam_tab_shown = false;
-        }
-    }
-
     /// The tab was closed with its cross.
     pub fn preview_close(&mut self) {
         self.show_preview = false;
@@ -173,48 +164,19 @@ impl App {
         self.pv.playing = false;
     }
 
-    pub fn preview_window(&mut self, ctx: &egui::Context) {
+    pub fn preview_window(&mut self, _ctx: &egui::Context) {
         if !self.show_preview {
             self.pv_tab_seen = false;
             self.pv_tab_shown = false;
             return;
         }
-        if self.preview_tab {
-            // Drawn in the work area (`App::preview_work_panel`); it is shown the first time it opens.
-            if !self.pv_tab_seen {
-                self.pv_tab_shown = true;
-                self.cam_tab_shown = false;
-            }
-            self.pv_tab_seen = true;
-            return;
+        // The preview is a tab of the work area (drawn by `preview_work_panel`); it is shown the first time it opens. A window of its
+        // own is the tab that the person took out (`work_panes`), never a second copy.
+        if !self.pv_tab_seen {
+            self.pv_tab_shown = true;
+            self.cam_tab_shown = false;
         }
-        self.pv_tab_seen = false;
-        self.pv_tab_shown = false;
-        let Some(job) = self.preview_prepare(ctx) else { return };
-        let mut open = true;
-        let mut pin = false;
-        // A slim frame: the default window margin leaves a wide empty strip under the totals.
-        let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 8, right: 8, top: 6, bottom: 3 });
-        let shown = egui::Window::new("preview_window").title_bar(false).frame(frame).default_size([980.0, 640.0]).resizable(true).movable(false).show(ctx, |ui| {
-            let pv = &mut self.pv;
-            crate::window_ui::mini_title(ui, &tr("Preview"), &mut open, |ui| {
-                pin = base_ui::doc_tabs::pin_as_tab_button(ui);
-                Self::preview_fit_buttons(pv, ui);
-            });
-            self.preview_body(ui, &job);
-        });
-        // The window is moved by its title line only.
-        if let Some(r) = &shown {
-            base_ui::window::move_by_title(ctx, r.response.layer_id);
-        }
-        self.pv.job = Some((self.job_stamp(), job));
-        self.show_preview = open;
-        if pin {
-            self.preview_pin(true);
-        }
-        if !open {
-            self.pv.playing = false;
-        }
+        self.pv_tab_seen = true;
     }
 
     /// Options, totals and the picture of the toolpath (the same in the window and in the tab).
@@ -442,15 +404,20 @@ mod tests {
     fn the_tab_opens_shown_again_after_it_was_closed_and_the_camera_tab_gives_way() {
         let (mut a, ctx) = editor();
         a.show_preview = true;
-        a.preview_pin(true);
         a.cam_tab_shown = true;
         a.preview_close();
         assert!(!a.show_preview && !a.pv_tab_shown);
-        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| a.preview_window(ui.ctx()));
+        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| {
+            a.preview_window(ui.ctx());
+            egui::CentralPanel::no_frame().show(ui, |ui| a.preview_work_panel(ui));
+        });
         out.textures_delta.clear();
         // Opened again: it is still a tab, and the shown one.
         a.show_preview = true;
-        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| a.preview_window(ui.ctx()));
+        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| {
+            a.preview_window(ui.ctx());
+            egui::CentralPanel::no_frame().show(ui, |ui| a.preview_work_panel(ui));
+        });
         out.textures_delta.clear();
         assert!(a.preview_work_tab() && a.pv_tab_shown && !a.cam_tab_shown);
     }
