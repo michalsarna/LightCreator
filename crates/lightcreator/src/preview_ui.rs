@@ -144,9 +144,6 @@ impl App {
             ui.spacing_mut().item_spacing.x = 4.0;
             ui.label(RichText::new(tr("Preview")).strong());
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                if base_ui::doc_tabs::back_to_window_button(ui) {
-                    self.preview_pin(false);
-                }
                 Self::preview_fit_buttons(&mut self.pv, ui);
             });
         });
@@ -156,7 +153,8 @@ impl App {
 
     /// Is the preview a tab of the work area (so that the bar of the tabs has one for it)?
     pub fn preview_work_tab(&self) -> bool {
-        self.show_preview && self.preview_tab
+        // The preview is a tab (or a window of its own that the person took the tab out into); it is not a floating window of the program.
+        self.show_preview
     }
 
     /// Pin the preview as a tab of the work area (or make it a window again).
@@ -399,6 +397,13 @@ impl App {
             if skip_travel && self.pv.show_travel {
                 painter.text(rect.left_bottom() + egui::vec2(8.0, -8.0), egui::Align2::LEFT_BOTTOM, tr("Too many moves: travel lines are hidden."), egui::FontId::proportional(12.0), theme::text_dim());
             }
+            // The slider of the zoom at the right edge: the same as the wheel, for a mouse without one.
+            let track = egui::Rect::from_min_max(Pos2::new(rect.right() - 28.0, rect.top() + 24.0), Pos2::new(rect.right() - 8.0, (rect.bottom() - 24.0).max(rect.top() + 80.0)));
+            let mut z = self.pv.view.zoom.max(0.05).ln();
+            if ui.put(track, egui::Slider::new(&mut z, 0.05f32.ln()..=200.0f32.ln()).vertical().show_value(false)).on_hover_text(tr("Zoom")).changed() {
+                self.pv.view.zoom = z.exp().clamp(0.05, 200.0);
+                self.pv.view.auto_fit = false;
+            }
         });
         });
 
@@ -418,22 +423,19 @@ mod tests {
     }
 
     #[test]
-    fn the_preview_is_pinned_as_a_tab_of_the_work_area_and_unpinned_again() {
-        let (mut a, ctx) = editor();
+    fn the_preview_is_always_a_tab_of_the_work_area_and_draws_there() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        assert!(!a.preview_work_tab(), "closed to begin with");
         a.show_preview = true;
-        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| a.preview_window(ui.ctx()));
-        out.textures_delta.clear();
-        assert!(!a.preview_work_tab(), "a window to begin with");
-        a.preview_pin(true);
+        assert!(a.preview_work_tab(), "a tab, not a floating window");
         let mut out = ctx.run_ui(egui::RawInput::default(), |ui| {
             a.preview_window(ui.ctx());
             egui::CentralPanel::no_frame().show(ui, |ui| a.preview_work_panel(ui));
         });
         out.textures_delta.clear();
-        assert!(a.preview_work_tab() && a.pv_tab_shown);
-        assert!(a.pv.job.is_some(), "the tab builds the job");
-        a.preview_pin(false);
-        assert!(!a.preview_work_tab() && !a.pv_tab_shown && a.show_preview);
+        a.preview_close();
+        assert!(!a.preview_work_tab() && !a.show_preview);
     }
 
     #[test]

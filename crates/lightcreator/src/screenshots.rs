@@ -627,7 +627,7 @@ fn node_bar_hides_when_another_window_is_clicked() {
         a.doc.add(0, Kind::Rect { w: 40.0, h: 30.0 }, Xf::translate(60.0, 60.0));
         a.ed.tool = Tool::Node;
         a.ed.sel = vec![a.doc.scene.shapes[0].id];
-        a.show_preview = true;
+        a.show_about = true;
     }
     h.run_steps(4);
     let ctx = h.ctx.clone();
@@ -638,8 +638,8 @@ fn node_bar_hides_when_another_window_is_clicked() {
         h.event(Event::PointerButton { pos, button: PointerButton::Primary, pressed: false, modifiers: Modifiers::NONE });
     };
     assert!(app(&mut h).ed.node_bar_active, "shown while editing nodes");
-    // A click inside the preview window hides the bar.
-    press(&h, 800.0, 400.0);
+    // A click inside a window (the About window here) hides the bar.
+    press(&h, 640.0, 400.0);
     h.run_steps(3);
     assert!(!app(&mut h).ed.node_bar_active, "the bar goes away");
     assert_ne!(ctx.layer_id_at(eframe::egui::pos2(150.0, 122.0)).map(|l| l.id), Some(eframe::egui::Id::unique("node_bar")));
@@ -1402,15 +1402,20 @@ mod tab_click_tests {
             assert!(a.enter_editor(0));
         }
         h.run_steps(3);
-        // One tab, "Untitled" (about 86 px wide from x = 8), then the plus.
-        click(&mut h, egui::pos2(107.0, 125.0));
+        // The bar of tabs is drawn by the panes now: what a click on the plus, on a tab and on a cross does is tested through the events
+        // the panes give (the layout of the bar itself is in baseCreator).
+        use base_ui::work_panes::{Content, PaneEvent};
+        let first = app(&mut h).slot;
+        app(&mut h).pane_event(PaneEvent::NewTab(0));
         assert_eq!(app(&mut h).tab_count(), 2, "the plus makes a tab");
         assert_eq!(app(&mut h).tabs_state.active, 1);
-        // The first tab is shown by a click on its name.
-        click(&mut h, egui::pos2(40.0, 125.0));
+        app(&mut h).pane_event(PaneEvent::Activate(first));
         assert_eq!(app(&mut h).tabs_state.active, 0);
-        // The cross of a tab without unsaved work closes it at once.
-        click(&mut h, egui::pos2(81.0, 125.0));
+        h.run_steps(2);
+        assert!(app(&mut h).panes.has(Content::Doc(first)));
+        let other = app(&mut h).tabs_state.parked.iter().flatten().next().map(|w| w.slot).expect("the other tab");
+        app(&mut h).pane_event(PaneEvent::Close(Content::Doc(other)));
+        h.run_steps(2);
         assert_eq!(app(&mut h).tab_count(), 1, "the cross closes the tab");
     }
 }
