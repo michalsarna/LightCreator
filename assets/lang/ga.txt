@@ -1125,3 +1125,5 @@
 1124|réamhamharc
 1125|Tá an G-code ar taispeáint, níl aon rud sábháilte
 1126|G-code féin an ghairis: {}
+1127|Ní seoladh ceamara é (http, https, rtsp, udp, rtp nó rtmp).
+1128|Pictiúr beo den inneall: sruth MJPEG, seoladh seat JPEG (http nó https), nó sruth a léann ffmpeg (rtsp, udp, rtp, rtmp).

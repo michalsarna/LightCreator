@@ -1125,3 +1125,5 @@
 1124|előnézet
 1125|A G-kód látható, semmi sem lett mentve
 1126|Az eszköz saját G-kódja: {}
+1127|Nem kameracím (http, https, rtsp, udp, rtp vagy rtmp).
+1128|A gép élő képe: MJPEG-adatfolyam, JPEG-pillanatkép címe (http vagy https), vagy az ffmpeg által olvasott adatfolyam (rtsp, udp, rtp, rtmp).

@@ -1125,3 +1125,5 @@
 1124|previżjoni
 1125|Il-G-code qed jintwera, xejn ma nħażen
 1126|G-code proprju tal-apparat: {}
+1127|Mhuwiex indirizz ta' kamera (http, https, rtsp, udp, rtp jew rtmp).
+1128|Xbieha ħajja tal-magna: fluss MJPEG, indirizz ta' snapshot JPEG (http jew https), jew fluss li jaqra ffmpeg (rtsp, udp, rtp, rtmp).

@@ -321,6 +321,7 @@ impl App {
         ui.add_space(4.0);
         ui.separator();
         self.cam_rec.set_project(self.path.as_deref());
+        self.cam_rec.set_source(self.doc.device.cameras.get(self.doc.device.active_camera));
         self.cam_rec.controls(ui);
         // The working time of the job, over the estimate: 00:04:12 / 00:13:00.
         let elapsed = self.job_started.map_or(self.job_last_secs, |t| t.elapsed().as_secs_f64());
@@ -654,7 +655,7 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("lc-lapse-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        a.cam_rec = base_ui::camera_rec::Recorder::new(RecSettings { dir: Some(dir.clone()), interval: 5.0, mode: LapseMode::PerLayer });
+        a.cam_rec = base_ui::camera_rec::Recorder::new(RecSettings { dir: Some(dir.clone()), interval: 5.0, mode: LapseMode::PerLayer, format: Default::default() });
         let now = std::time::Instant::now();
         a.cam_rec.feed(now, 4, 2, vec![80; 24]);
         a.cam_rec.start_lapse(now);

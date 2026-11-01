@@ -1125,3 +1125,5 @@
 1124|pregled
 1125|G-kod je prikazan, ništa nije spremljeno
 1126|Vlastiti G-kod uređaja: {}
+1127|Nije adresa kamere (http, https, rtsp, udp, rtp ili rtmp).
+1128|Slika uživo sa stroja: MJPEG tok, adresa JPEG snimke (http ili https) ili tok koji čita ffmpeg (rtsp, udp, rtp, rtmp).
