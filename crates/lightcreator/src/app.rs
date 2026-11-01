@@ -1737,7 +1737,7 @@ impl App {
             credits: include_str!("../../../CREDITS.md"),
         };
         base_ui::dialogs::about_window(ctx, &mut self.show_about, &about, self.logo.as_ref());
-        self.refresh_gcode_text();
+        self.refresh_gcode_text(ctx);
         self.closing_text_dialog(ctx);
         self.config_window(ctx);
         self.layer_dialog(ctx);
@@ -2073,17 +2073,17 @@ mod tests {
         a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(10.0, 10.0));
         a.touch();
         a.preview_gcode();
-        a.refresh_gcode_text();
+        a.refresh_gcode_text_after(std::time::Duration::ZERO);
         assert!(!a.gcode_texts[0].text.contains("fresh note"));
         a.doc.description = "fresh note".into();
-        a.refresh_gcode_text();
+        a.refresh_gcode_text_after(std::time::Duration::ZERO);
         assert!(a.gcode_texts[0].text.contains("; Note: fresh note"), "{}", a.gcode_texts[0].text);
         a.doc.device.gcode.flavour.remove_comments = true;
-        a.refresh_gcode_text();
+        a.refresh_gcode_text_after(std::time::Duration::ZERO);
         assert!(!a.gcode_texts[0].text.contains("fresh note"), "the comments are gone");
         a.gcode_texts[0].text.push_str("; by hand\n");
         a.doc.description = "another".into();
-        a.refresh_gcode_text();
+        a.refresh_gcode_text_after(std::time::Duration::ZERO);
         assert!(a.gcode_texts[0].text.contains("; by hand"));
     }
 
