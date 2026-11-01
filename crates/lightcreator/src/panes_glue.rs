@@ -1,88 +1,178 @@
-//! The central area in panes (the machinery is in `base_ui::work_panes`): the active drawing, another open drawing to look
-//! at, the preview, the analysis of a G-code file and the camera. With one pane (the default) the area is drawn as before.
+//! The central area in panes (the machinery is in `base_ui::work_panes`): every pane has a bar of tabs; a tab is a drawing, the
+//! preview, the G-code of the project as text, the analysis of a G-code file or the camera. Nothing is opened twice.
 use crate::app::App;
 use base_ui::editor::{show_other_doc, EditorCanvas, Look};
-use base_ui::work_panes::{content_name, Content, PaneEvent, PaneHost};
+use base_ui::gcode_text_ui::{GcodeText, TextAction};
+use base_ui::work_panes::{Content, PaneEvent, PaneHost};
 use eframe::egui;
 
 impl App {
-    /// The slots of all open drawings (the shown one included).
-    fn pane_docs(&self) -> Vec<usize> {
-        let mut v: Vec<usize> = self.tabs_state.parked.iter().flatten().map(|w| w.slot).collect();
-        v.push(self.slot);
+    /// The slots of all open drawings, in the order of their tabs.
+    fn doc_slots(&self) -> Vec<usize> {
+        (0..self.tab_count()).map(|i| if i == self.tabs_state.active || self.tabs_state.parked.len() <= 1 { self.slot } else { self.tabs_state.parked[i].as_ref().map_or(self.slot, |w| w.slot) }).collect()
+    }
+
+    /// Every tab there is: the drawings, the preview, the camera, the analysis of a G-code file, the G-code texts of the projects.
+    fn pane_tabs(&mut self) -> Vec<Content> {
+        let slots = self.doc_slots();
+        // The G-code of a project that is closed goes with it.
+        self.gcode_texts.retain(|g| slots.contains(&g.slot));
+        let mut v: Vec<Content> = slots.iter().map(|s| Content::Doc(*s)).collect();
+        if self.preview_work_tab() {
+            v.push(Content::Preview);
+        }
+        for g in &self.gcode_texts {
+            v.push(Content::GcodeText(g.slot));
+        }
+        if self.gcode_view.is_some() {
+            v.push(Content::Gcode);
+        }
+        if self.camera_work_tab() {
+            v.push(Content::Camera);
+        }
         v
     }
 
     /// The central area: the panes.
     pub fn central_panes(&mut self, ui: &mut egui::Ui) {
         let mut panes = std::mem::take(&mut self.panes);
-        panes.normalize(&self.pane_docs(), self.slot, self.camera_work_tab());
+        panes.normalize(&self.pane_tabs(), self.slot);
         let event = panes.show(self, ui);
         self.panes = panes;
         self.pane_event(event);
     }
 
-    /// The windows of the panes that were taken out (drawn outside the panels).
+    /// The windows of the tabs that were taken out (drawn outside the panels).
     pub fn pane_windows(&mut self, ctx: &egui::Context) {
         if self.panes.windows.is_empty() {
             return;
         }
         let mut panes = std::mem::take(&mut self.panes);
-        panes.normalize(&self.pane_docs(), self.slot, self.camera_work_tab());
+        panes.normalize(&self.pane_tabs(), self.slot);
         let event = panes.show_windows(self, ctx);
         self.panes = panes;
         self.pane_event(event);
     }
 
-    /// A click in a pane with another drawing: that drawing becomes the active one, and the one that was active takes its place.
+    /// What was done in the panes: a drawing clicked becomes the active one, a cross closes, the "+" makes a new drawing.
     pub fn pane_event(&mut self, event: PaneEvent) {
-        if let PaneEvent::Activate(slot) = event {
-            if let Some(i) = self.tabs_state.parked.iter().position(|w| w.as_ref().is_some_and(|w| w.slot == slot)) {
+        match event {
+            PaneEvent::Activate(slot) => self.activate_slot(slot),
+            PaneEvent::Close(c) => self.close_content(c),
+            PaneEvent::NewTab(_) => {
+                self.new_tab();
+            }
+            PaneEvent::Nothing => {}
+        }
+    }
+
+    fn slot_index(&self, slot: usize) -> Option<usize> {
+        self.doc_slots().iter().position(|s| *s == slot)
+    }
+
+    /// Make the drawing with this recovery slot the active one.
+    pub fn activate_slot(&mut self, slot: usize) {
+        if slot != self.slot {
+            if let Some(i) = self.slot_index(slot) {
                 self.switch_to(i);
             }
         }
     }
 
-    /// "Show beside" in the menu of the tab `i`.
-    pub fn show_tab_beside(&mut self, i: usize) {
-        if let Some(slot) = self.tabs_state.parked.get(i).and_then(|w| w.as_ref()).map(|w| w.slot) {
-            if self.panes.is_single() {
-                self.panes.dir = base_ui::work_panes::Dir::Beside;
+    /// Close a tab: a drawing (it asks about unsaved work), the preview, the camera, the analysis, the G-code text (it asks when it
+    /// has edits).
+    pub fn close_content(&mut self, c: Content) {
+        match c {
+            Content::Doc(slot) => {
+                self.activate_slot(slot);
+                self.close_tab_request();
             }
-            if !self.panes.split(Content::Doc(slot)) {
-                self.status = base_ui::i18n::tr("The view has three panes at most").to_string();
+            Content::Preview => self.preview_close(),
+            Content::Camera => self.stream_closed(),
+            Content::Gcode => self.gcode_view = None,
+            Content::GcodeText(slot) => {
+                if self.gcode_texts.iter().any(|g| g.slot == slot && g.dirty()) {
+                    self.closing_text = Some(slot);
+                } else {
+                    self.gcode_texts.retain(|g| g.slot != slot);
+                }
+            }
+        }
+    }
+
+    /// The question about the G-code text with edits whose tab is being closed.
+    pub fn closing_text_dialog(&mut self, ctx: &egui::Context) {
+        let Some(slot) = self.closing_text else { return };
+        let Some(i) = self.gcode_texts.iter().position(|g| g.slot == slot) else {
+            self.closing_text = None;
+            return;
+        };
+        let title = self.gcode_texts[i].name.clone();
+        match base_ui::doc_tabs::ask_save(ctx, &title, crate::window_ui::SAVE_GREEN) {
+            Some(base_ui::doc_tabs::Answer::Save) => match self.gcode_texts[i].save_dialog() {
+                Some(Ok(p)) => {
+                    self.status = base_ui::i18n::trf("Saved {}", &[&p.display()]);
+                    self.gcode_texts.remove(i);
+                    self.closing_text = None;
+                }
+                Some(Err(e)) => self.status = base_ui::i18n::trf("Could not save: {}", &[&e]),
+                None => {}
+            },
+            Some(base_ui::doc_tabs::Answer::Discard) => {
+                self.gcode_texts.remove(i);
+                self.closing_text = None;
+            }
+            Some(base_ui::doc_tabs::Answer::Cancel) => self.closing_text = None,
+            None => {}
+        }
+    }
+
+    /// Make the G-code text of the project of `slot` again (the project becomes the active one first: the program is made from it).
+    fn remake_gcode_text(&mut self, slot: usize) {
+        self.activate_slot(slot);
+        if let Some(text) = self.gcode_text_now() {
+            if let Some(g) = self.gcode_texts.iter_mut().find(|g| g.slot == slot) {
+                g.replace(text);
             }
         }
     }
 }
 
 impl PaneHost for App {
-    fn pane_choices(&self) -> Vec<(Content, String)> {
-        let mut v = vec![(Content::Active, content_name(Content::Active))];
-        for w in self.tabs_state.parked.iter().flatten() {
-            v.push((Content::Doc(w.slot), base_ui::doc_tabs::title_of(w.path.as_deref())));
+    fn tab_title(&self, c: Content) -> String {
+        use base_ui::i18n::tr;
+        match c {
+            Content::Doc(slot) => {
+                if slot == self.slot {
+                    base_ui::doc_tabs::title_of(self.path.as_deref())
+                } else {
+                    base_ui::doc_tabs::title_of(self.tabs_state.parked.iter().flatten().find(|w| w.slot == slot).and_then(|w| w.path.as_deref()))
+                }
+            }
+            Content::Preview => format!("{}: {}", tr("Preview"), base_ui::doc_tabs::title_of(self.path.as_deref())),
+            Content::GcodeText(slot) => format!("{}: {}", tr("Preview G-code"), self.gcode_texts.iter().find(|g| g.slot == slot).map(|g| g.name.clone()).unwrap_or_default()),
+            Content::Gcode => self.gcode_view.as_ref().and_then(|v| v.path.file_name()).map(|n| n.to_string_lossy().into_owned()).unwrap_or_else(|| tr("G-code analysis").to_string()),
+            Content::Camera => tr("Camera view").to_string(),
         }
-        v.push((Content::Preview, content_name(Content::Preview)));
-        v.push((Content::Gcode, content_name(Content::Gcode)));
-        if self.camera_work_tab() {
-            v.push((Content::Camera, content_name(Content::Camera)));
+    }
+
+    fn tab_dirty(&self, c: Content) -> bool {
+        match c {
+            Content::Doc(slot) => {
+                if slot == self.slot {
+                    self.is_dirty()
+                } else {
+                    self.tabs_state.parked.iter().flatten().find(|w| w.slot == slot).is_some_and(|w| w.dirty())
+                }
+            }
+            Content::GcodeText(slot) => self.gcode_texts.iter().any(|g| g.slot == slot && g.dirty()),
+            _ => false,
         }
-        v
     }
 
     fn draw_pane(&mut self, ui: &mut egui::Ui, content: Content, view: &mut Option<base_ui::editor::View>) -> PaneEvent {
         match content {
-            Content::Active => {
-                let panes = &self.panes;
-                let (cam, pv, gv) = (panes.shows(Content::Camera), panes.shows(Content::Preview), panes.shows(Content::Gcode));
-                if !cam && self.cam_tab_shown && self.camera_work_tab() {
-                    self.camera_work_panel(ui);
-                } else if !pv && self.pv_tab_shown && self.preview_work_tab() {
-                    self.preview_work_panel(ui);
-                } else if gv || !self.gcode_view_panel(ui) {
-                    self.canvas(ui)
-                }
-            }
+            Content::Doc(slot) if slot == self.slot => self.canvas(ui),
             Content::Doc(slot) => {
                 let Some(w) = self.tabs_state.parked.iter().flatten().find(|w| w.slot == slot) else { return PaneEvent::Nothing };
                 let colour = |l: usize| w.doc.layers.get(l).and_then(|l| l.visible.then(|| crate::canvas::col(l.color)));
@@ -92,25 +182,25 @@ impl PaneHost for App {
                 }
             }
             Content::Preview => {
-                if self.preview_work_tab() {
-                    if let Some(job) = self.preview_prepare(ui.ctx()) {
-                        egui::Frame::new().inner_margin(egui::Margin::same(6)).show(ui, |ui| self.preview_body(ui, &job));
-                        self.pv.job = Some((self.job_stamp(), job));
+                if self.show_preview {
+                    self.preview_work_panel(ui);
+                }
+            }
+            Content::GcodeText(slot) => {
+                let Some(i) = self.gcode_texts.iter().position(|g| g.slot == slot) else { return PaneEvent::Nothing };
+                match base_ui::gcode_text_ui::show(ui, &mut self.gcode_texts[i]) {
+                    TextAction::MakeAgain => self.remake_gcode_text(slot),
+                    TextAction::Analyse => {
+                        let g: &GcodeText = &self.gcode_texts[i];
+                        if let Err(e) = base_ui::gcode_view_ui::open_text(&mut self.gcode_view, &g.name, &g.text) {
+                            self.status = e;
+                        }
                     }
-                } else {
-                    ui.add_space(8.0);
-                    if ui.button(base_ui::i18n::tr("Show the preview here")).clicked() {
-                        self.show_preview = true;
-                        self.preview_pin(true);
-                        self.pv_tab_shown = false;
-                    }
+                    TextAction::None => {}
                 }
             }
             Content::Gcode => {
-                if !self.gcode_view_panel(ui) {
-                    ui.add_space(8.0);
-                    ui.label(base_ui::i18n::tr("No G-code file is open: File, View G-code file…"));
-                }
+                self.gcode_view_panel(ui);
             }
             Content::Camera => {
                 if self.camera_work_tab() {
@@ -122,6 +212,21 @@ impl PaneHost for App {
     }
 
     fn can_pop_out(&self, content: Content) -> bool {
-        matches!(content, Content::Doc(_) | Content::Preview | Content::Gcode | Content::Camera)
+        matches!(content, Content::Preview | Content::GcodeText(_) | Content::Camera)
+    }
+}
+
+#[cfg(test)]
+impl App {
+    pub fn tab_title_of(&self, c: Content) -> String {
+        PaneHost::tab_title(self, c)
+    }
+    pub fn tab_dirty_of(&self, c: Content) -> bool {
+        PaneHost::tab_dirty(self, c)
+    }
+    /// What the question about a closed drawing leads to, without the window: the drawing is closed.
+    pub fn close_shown_tab_for_test(&mut self, slot: usize) {
+        self.activate_slot(slot);
+        self.close_shown_tab();
     }
 }

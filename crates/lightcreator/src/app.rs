@@ -105,6 +105,9 @@ pub struct App {
     pub tabs_state: crate::workspaces::Tabs,
     /// The central area in panes (one pane unless the person split the view).
     pub panes: base_ui::work_panes::Panes,
+    /// The G-code of the projects as text that can be edited (one for a project), and the one whose tab is being closed.
+    pub gcode_texts: Vec<base_ui::gcode_text_ui::GcodeText>,
+    pub closing_text: Option<usize>,
     pub slot: usize,
     pub autosaved_revision: u64,
     pub autosave_on: bool,
@@ -348,6 +351,8 @@ impl App {
             jog_seen_step: None,
             close_program: false,
             tabs_state: Default::default(),
+            gcode_texts: vec![],
+            closing_text: None,
             panes: base_ui::work_panes::Panes::from_json(&saved("panes").unwrap_or_default()),
             slot: 0,
             autosaved_revision: 0,
@@ -799,17 +804,45 @@ impl App {
 
     /// The G-code as it would be written, shown in the analysis of G-code; nothing is written to the disk.
     pub fn preview_gcode(&mut self) {
+        if !self.frame_ok() {
+            return;
+        }
         if self.selection_only && self.ed.sel.is_empty() {
             self.status = tr("Nothing to burn: nothing is selected").into();
             return;
         }
+        let slot = self.slot;
         self.stamp_job();
         let job = gcode::generate_with(&self.job_source(), None, &self.job_options());
+        if job.moves.is_empty() {
+            self.status = tr("Nothing to burn: no shapes on output layers").into();
+            return;
+        }
         let Some(text) = self.postprocessed(job.gcode) else { return };
-        self.status = match base_ui::gcode_view_ui::open_text(&mut self.gcode_view, &format!("job.gcode ({})", tr("preview")), &text) {
-            Ok(()) => tr("The G-code is shown, nothing is saved").to_string(),
-            Err(e) => e,
-        };
+        let name = format!("{}.gcode", self.gcode_name());
+        match self.gcode_texts.iter_mut().find(|g| g.slot == slot) {
+            Some(g) => {
+                if !g.dirty() {
+                    g.replace(text);
+                }
+                g.name = name;
+                self.panes.select(base_ui::work_panes::Content::GcodeText(slot));
+            }
+            None => self.gcode_texts.push(base_ui::gcode_text_ui::GcodeText::new(slot, &name, text)),
+        }
+        self.status = tr("The G-code is shown, nothing is saved").to_string();
+    }
+
+    /// The name the G-code of the project is saved under: the name of the project file, or "job".
+    pub fn gcode_name(&self) -> String {
+        self.path.as_ref().and_then(|p| p.file_stem()).map(|s| s.to_string_lossy().into_owned()).unwrap_or_else(|| "job".into())
+    }
+
+    /// The G-code of the project as text, with its postprocessors; `None` (the reason is in the status line) when a postprocessor fails.
+    pub fn gcode_text_now(&mut self) -> Option<String> {
+        self.stamp_job();
+        let job = gcode::generate_with(&self.job_source(), None, &self.job_options());
+        self.postprocessed(job.gcode)
     }
 
     // ---------- laser ----------
@@ -1699,9 +1732,12 @@ impl App {
                 tr("Author: Michał Sarna").to_string(),
             ],
             url: crate::help_ui::GITHUB_URL,
+            site: "https://michalsarna.github.io/creatorapps/",
             licence: "MIT OR Apache-2.0",
+            credits: include_str!("../../../CREDITS.md"),
         };
         base_ui::dialogs::about_window(ctx, &mut self.show_about, &about, self.logo.as_ref());
+        self.closing_text_dialog(ctx);
         self.config_window(ctx);
         self.layer_dialog(ctx);
         self.guide_window(ctx);
@@ -1746,18 +1782,6 @@ pub fn fmt_time(s: f64) -> String {
 impl base_ui::editor::EditorHost for App {
     fn panes_mut(&mut self) -> Option<&mut base_ui::work_panes::Panes> {
         Some(&mut self.panes)
-    }
-    fn pane_candidates(&self) -> Vec<base_ui::work_panes::Content> {
-        use base_ui::work_panes::Content;
-        let mut v: Vec<Content> = self.tabs_state.parked.iter().flatten().map(|w| Content::Doc(w.slot)).collect();
-        if self.preview_work_tab() {
-            v.insert(0, Content::Preview);
-        }
-        if self.gcode_view.is_some() {
-            v.insert(0, Content::Gcode);
-        }
-        v.push(Content::Preview);
-        v
     }
     fn view_options_extra(&mut self, ui: &mut egui::Ui) {
         self.camera_mode_options(ui);
@@ -2003,7 +2027,6 @@ impl App {
             egui::Panel::top("menu").frame(chrome).show(ui, |ui| base_ui::menu::menu_bar(self, ui));
         }
         egui::Panel::top("controls").frame(chrome).exact_size(36.0).show(ui, |ui| self.control_bar(ui));
-        egui::Panel::top("doc_tabs").frame(chrome.inner_margin(egui::Margin::symmetric(8, 2))).exact_size(30.0).show(ui, |ui| self.doc_tab_bar(ui));
         egui::Panel::bottom("status").frame(chrome).exact_size(26.0).show(ui, |ui| self.status_bar(ui));
         egui::Panel::left("tools").frame(chrome).exact_size(52.0).resizable(false).show(ui, |ui| self.tool_bar(ui));
         let side = if self.tabs.collapsed {
@@ -2032,12 +2055,13 @@ mod tests {
         let ctx = egui::Context::default();
         let mut a = App::build(&ctx, None, false);
         a.preview_gcode();
-        assert!(a.gcode_view.is_none(), "nothing to burn: no viewer");
+        assert!(a.gcode_texts.is_empty(), "nothing to burn: no tab");
         a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(10.0, 10.0));
         a.touch();
         a.preview_gcode();
-        let v = a.gcode_view.as_ref().expect("the program is shown in the analysis");
-        assert!(!v.tp.segs.is_empty() && !v.path.exists(), "moves, and no such file on the disk");
+        assert_eq!(a.gcode_texts.len(), 1);
+        let g = &a.gcode_texts[0];
+        assert!(g.text.contains("G21") && !std::path::Path::new(&g.name).exists(), "the text of the job, and no such file on the disk");
         assert!(!a.ed.grid_prefs.gcode_preview_after_save, "off by default");
     }
 

@@ -2,7 +2,7 @@
 //! the program that belongs to one drawing. The live fields of the program are the shown tab; the others are parked here
 //! and exchanged with the live ones when a tab is picked.
 use crate::app::App;
-use base_ui::doc_tabs::{self, TabAction, TabHost, TabInfo, MAX_TABS};
+use base_ui::doc_tabs::{self, TabHost, MAX_TABS};
 use base_ui::editor::DocView;
 use eframe::egui;
 use lc_core::Document;
@@ -164,9 +164,7 @@ impl App {
             return;
         }
         let Some(mut w) = self.tabs_state.parked[i].take() else { return };
-        let was = self.slot;
         self.swap_ws(&mut w);
-        self.panes.activated(was, self.slot);
         let at = self.tabs_state.active;
         self.tabs_state.parked[at] = Some(w);
         self.tabs_state.active = i;
@@ -196,57 +194,6 @@ impl App {
 
     pub fn any_dirty(&self) -> bool {
         self.is_dirty() || self.tabs_state.parked.iter().flatten().any(|w| w.dirty())
-    }
-
-    fn tab_infos(&self) -> Vec<TabInfo> {
-        let n = self.tab_count();
-        (0..n)
-            .map(|i| {
-                if i == self.tabs_state.active || self.tabs_state.parked.len() <= 1 {
-                    TabInfo { title: doc_tabs::title_of(self.path.as_deref()), dirty: self.is_dirty() }
-                } else {
-                    let w = self.tabs_state.parked[i].as_ref();
-                    TabInfo { title: doc_tabs::title_of(w.and_then(|w| w.path.as_deref())), dirty: w.is_some_and(|w| w.dirty()) }
-                }
-            })
-            .collect()
-    }
-
-    /// The bar of the tabs above the work area.
-    pub fn doc_tab_bar(&mut self, ui: &mut egui::Ui) {
-        self.ensure_tabs();
-        let infos = self.tab_infos();
-        let mut extras = vec![];
-        if self.camera_work_tab() {
-            extras.push(doc_tabs::ExtraTab { id: "camera", title: crate::i18n::tr("Camera view").to_string(), shown: self.cam_tab_shown });
-        }
-        if self.preview_work_tab() {
-            extras.push(doc_tabs::ExtraTab { id: "preview", title: crate::i18n::tr("Preview").to_string(), shown: self.pv_tab_shown });
-        }
-        match doc_tabs::tab_bar_with(ui, &infos, self.tabs_state.active, &extras) {
-            Some(TabAction::Select(i)) => self.switch_to(i),
-            Some(TabAction::ShowBeside(i)) => self.show_tab_beside(i),
-            Some(TabAction::New) => {
-                self.cam_tab_shown = false;
-                self.pv_tab_shown = false;
-                self.new_tab();
-            }
-            Some(TabAction::Close(i)) => {
-                self.switch_to(i);
-                self.close_tab_request();
-            }
-            Some(TabAction::Extra("preview")) => {
-                self.pv_tab_shown = true;
-                self.cam_tab_shown = false;
-            }
-            Some(TabAction::Extra(_)) => {
-                self.cam_tab_shown = true;
-                self.pv_tab_shown = false;
-            }
-            Some(TabAction::CloseExtra("preview")) => self.preview_close(),
-            Some(TabAction::CloseExtra(_)) => self.stream_closed(),
-            None => {}
-        }
     }
 
     /// Close the shown tab, asking first when it has unsaved work (the cross of the tab, and Ctrl+W).
@@ -367,8 +314,8 @@ mod tests {
     }
 
     #[test]
-    fn the_view_can_be_split_and_a_click_in_a_pane_with_another_drawing_makes_it_the_active_one() {
-        use base_ui::work_panes::{Content, Dir, PaneEvent, Panes};
+    fn every_pane_has_tabs_a_tab_goes_to_another_pane_and_nothing_is_opened_twice() {
+        use base_ui::work_panes::{Content, PaneEvent};
         let mut a = app();
         draw(&mut a, 1);
         let first = a.slot;
@@ -384,21 +331,60 @@ mod tests {
             out.textures_delta.clear();
         };
         frame(&mut a);
-        assert!(a.panes.is_single(), "one pane unless the view was split");
-        a.show_tab_beside(0);
-        assert_eq!(a.panes.contents(), [Content::Active, Content::Doc(first)]);
+        assert_eq!(a.panes.layout(), vec![vec![Content::Doc(first), Content::Doc(second)]], "one pane with a tab for every drawing");
+        assert_eq!(a.panes.panes[0].shown(), Some(Content::Doc(second)), "the active drawing's tab is shown");
+        assert!(a.panes.move_to(Content::Doc(first), 1, None));
         frame(&mut a);
         let saved = a.settings_pairs().into_iter().find(|(k, _)| *k == "panes").unwrap().1;
-        let back = Panes::from_json(&saved);
-        assert_eq!((back.dir, back.contents()), (Dir::Beside, vec![Content::Active, Content::Doc(first)]));
+        assert_eq!(base_ui::work_panes::Panes::from_json(&saved).layout(), vec![vec![Content::Doc(second)], vec![Content::Doc(first)]]);
         a.pane_event(PaneEvent::Activate(first));
         assert_eq!(a.slot, first);
-        assert_eq!(a.panes.contents(), [Content::Active, Content::Doc(second)]);
-        a.switch_to(1);
-        assert_eq!(a.panes.contents(), [Content::Active, Content::Doc(first)]);
-        a.close_shown_tab();
         frame(&mut a);
-        assert_eq!(a.panes.contents(), [Content::Active], "a closed drawing leaves no pane");
+        assert_eq!(a.panes.panes[1].shown(), Some(Content::Doc(first)));
+        // The preview is a tab, once.
+        a.show_preview = true;
+        frame(&mut a);
+        a.show_preview = true;
+        frame(&mut a);
+        assert_eq!(a.panes.tabs().iter().filter(|c| **c == Content::Preview).count(), 1);
+        assert!(a.tab_title_of(Content::Preview).starts_with("Preview: "), "{}", a.tab_title_of(Content::Preview));
+        a.pane_event(PaneEvent::Close(Content::Preview));
+        frame(&mut a);
+        assert!(!a.panes.has(Content::Preview));
+        // The last tab of a pane closed closes the pane.
+        a.close_shown_tab_for_test(second);
+        frame(&mut a);
+        assert_eq!(a.panes.layout().len(), 1, "the pane without tabs is gone");
+    }
+
+    #[test]
+    fn the_g_code_text_of_a_project_is_one_tab_that_asks_before_it_is_closed_with_edits() {
+        use base_ui::work_panes::{Content, PaneEvent};
+        let mut a = app();
+        draw(&mut a, 1);
+        let slot = a.slot;
+        a.preview_gcode();
+        assert_eq!(a.gcode_texts.len(), 1);
+        assert!(a.gcode_texts[0].name.ends_with(".gcode") && a.gcode_texts[0].text.contains("G21"), "{}", a.gcode_texts[0].name);
+        a.preview_gcode();
+        assert_eq!(a.gcode_texts.len(), 1, "a second press does not make a second tab");
+        let ctx = egui::Context::default();
+        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| {
+            egui::CentralPanel::no_frame().show(ui, |ui| a.central_panes(ui));
+        });
+        out.textures_delta.clear();
+        assert!(a.panes.has(Content::GcodeText(slot)));
+        assert!(a.tab_title_of(Content::GcodeText(slot)).starts_with("Preview G-code: "));
+        a.gcode_texts[0].text.push_str("; by hand\n");
+        assert!(a.tab_dirty_of(Content::GcodeText(slot)));
+        a.preview_gcode();
+        assert!(a.gcode_texts[0].text.contains("; by hand"), "the edits are kept");
+        a.pane_event(PaneEvent::Close(Content::GcodeText(slot)));
+        assert_eq!(a.closing_text, Some(slot), "closing a text with edits asks first");
+        a.closing_text = None;
+        a.gcode_texts[0].replace("G21\n".to_string());
+        a.pane_event(PaneEvent::Close(Content::GcodeText(slot)));
+        assert!(a.gcode_texts.is_empty() && a.closing_text.is_none());
     }
 
     #[test]

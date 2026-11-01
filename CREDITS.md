@@ -58,3 +58,4 @@ the projects they maintain. Licences are named for orientation; the exact terms 
 * **VectorCraft**: the interface that inspired the look and feel.
 * Everyone who tested the program, reported problems and corrected the translations. Thank you!
 * **Jakub ([CNC KpK](https://www.youtube.com/@CNC-KpK))**: ideas and suggestions for improvements, from the point of view of industrial CNC machines.
+* **[FFmpeg](https://ffmpeg.org)** (LGPL-2.1 or later): the separate program that decodes the video stream (RTSP) of a camera; a small build of it comes with the packages (the licence and the way it was built are next to it in the packages).
