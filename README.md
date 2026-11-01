@@ -116,6 +116,8 @@ machines whose zero is at the front-left (configurable under *Laser → Device s
 
 ## Credits and licence
 
+**Thanks:** big thanks to Jakub ([CNC KpK](https://www.youtube.com/@CNC-KpK)) for the ideas and suggestions for improvements.
+
 LightCreator is licensed under either of [Apache License 2.0](LICENSE-APACHE) or the [MIT license](LICENSE), at your option. Copyright (c) 2026 LightCreator contributors.
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in LightCreator by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.

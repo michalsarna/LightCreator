@@ -57,3 +57,4 @@ the projects they maintain. Licences are named for orientation; the exact terms 
 * **[Universal G-code Sender](https://github.com/winder/Universal-G-Code-Sender)**: the format of its Designer files (`.ugsd`) is read for import; the program contains none of its code.
 * **VectorCraft**: the interface that inspired the look and feel.
 * Everyone who tested the program, reported problems and corrected the translations. Thank you!
+* **Jakub ([CNC KpK](https://www.youtube.com/@CNC-KpK))**: ideas and suggestions for improvements, from the point of view of industrial CNC machines.
