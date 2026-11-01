@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-26.04
     steps:
       - id: ff
-        uses: michalsarna/baseCreator/.github/actions/ffmpeg@v1.45.0
+        uses: michalsarna/baseCreator/.github/actions/ffmpeg@v1.46.0
         with:
           target: windows
       - uses: actions/upload-artifact@v7
@@ -67,7 +67,7 @@ jobs:
       - name: ffmpeg (Linux, macOS)
         if: runner.os != 'Windows'
         id: ff
-        uses: michalsarna/baseCreator/.github/actions/ffmpeg@v1.45.0
+        uses: michalsarna/baseCreator/.github/actions/ffmpeg@v1.46.0
       - name: ffmpeg (Windows, built on Linux)
         if: runner.os == 'Windows'
         uses: actions/download-artifact@v8

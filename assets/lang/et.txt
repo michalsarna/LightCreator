@@ -1117,3 +1117,6 @@
 1116|Diagnostikat ei saanud salvestada: {}
 1117|Impordi DXF…
 1118|Lisa
+1119|Vaates on kuni kolm paani
+1120|Näita eelvaadet siin
+1121|G-koodi faili pole avatud: File → View G-code file…

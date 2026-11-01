@@ -1,6 +1,7 @@
 use base_ui::clipart_ui::ClipGallery;
 use base_ui::editor::EditorImages;
 use base_ui::editor::EditorCommands;
+#[cfg(test)]
 use base_ui::editor::EditorCanvas;
 use base_ui::editor::EditorHost;
 use crate::laser::{self, Cmd, ConsoleLine, Evt, LaserLink};
@@ -102,6 +103,8 @@ pub struct App {
     pub close_program: bool,
     /// The tabs of open drawings (the shown one is the live fields above), and the number of the recovery file of the shown one.
     pub tabs_state: crate::workspaces::Tabs,
+    /// The central area in panes (one pane unless the person split the view).
+    pub panes: base_ui::work_panes::Panes,
     pub slot: usize,
     pub autosaved_revision: u64,
     pub autosave_on: bool,
@@ -345,6 +348,7 @@ impl App {
             jog_seen_step: None,
             close_program: false,
             tabs_state: Default::default(),
+            panes: base_ui::work_panes::Panes::from_json(&saved("panes").unwrap_or_default()),
             slot: 0,
             autosaved_revision: 0,
             data_base: crate::data_paths().base.clone(),
@@ -1373,7 +1377,7 @@ impl App {
                 self.open_online_clipart(ctx);
             }
             // The standard commands (also pictures and the operations on shapes) were run above, by baseCreator.
-            Act::ToCurves | Act::AutoJoin | Act::ClosePath | Act::DogboneCorners | Act::CircleArray | Act::CopyAlongPath | Act::TextOnPath | Act::TrimByShape | Act::RemoveDuplicates | Act::BreakApart | Act::SimplifyShapes | Act::SerialText | Act::MakeCode | Act::NestShapes | Act::MeasureShapes | Act::ExportSelectionSvg | Act::ExportSelectionDxf | Act::BoolUnion | Act::BoolIntersect | Act::BoolSubtract | Act::BoolXor | Act::OffsetShape | Act::RoundCorners | Act::ImportImage | Act::AdjustImage | Act::TraceImage | Act::Tool(_) => {}
+            Act::ToCurves | Act::AutoJoin | Act::ClosePath | Act::DogboneCorners | Act::CircleArray | Act::CopyAlongPath | Act::TextOnPath | Act::TrimByShape | Act::RemoveDuplicates | Act::BreakApart | Act::SimplifyShapes | Act::SerialText | Act::MakeCode | Act::NestShapes | Act::MeasureShapes | Act::ExportSelectionSvg | Act::ExportSelectionDxf | Act::BoolUnion | Act::BoolIntersect | Act::BoolSubtract | Act::BoolXor | Act::OffsetShape | Act::RoundCorners | Act::ImportImage | Act::AdjustImage | Act::TraceImage | Act::Tool(_) | Act::SplitView(_) | Act::SingleView => {}
             Act::QuickGuide => self.show_guide = true,
             Act::OpenGithub => ctx.open_url(egui::OpenUrl::new_tab(crate::help_ui::GITHUB_URL)),
             Act::CameraOverlay => self.show_overlay = true,
@@ -1698,6 +1702,21 @@ pub fn fmt_time(s: f64) -> String {
 }
 
 impl base_ui::editor::EditorHost for App {
+    fn panes_mut(&mut self) -> Option<&mut base_ui::work_panes::Panes> {
+        Some(&mut self.panes)
+    }
+    fn pane_candidates(&self) -> Vec<base_ui::work_panes::Content> {
+        use base_ui::work_panes::Content;
+        let mut v: Vec<Content> = self.tabs_state.parked.iter().flatten().map(|w| Content::Doc(w.slot)).collect();
+        if self.preview_work_tab() {
+            v.insert(0, Content::Preview);
+        }
+        if self.gcode_view.is_some() {
+            v.insert(0, Content::Gcode);
+        }
+        v.push(Content::Preview);
+        v
+    }
     fn view_options_extra(&mut self, ui: &mut egui::Ui) {
         self.camera_mode_options(ui);
     }
@@ -1886,6 +1905,7 @@ impl App {
         v.push(("zones_visible", if self.zones_visible { "1" } else { "0" }.into()));
         v.push(("grid_main_mm", self.ed.grid.to_string()));
         v.push(("tab_order", self.tabs.order_string()));
+        v.push(("panes", self.panes.to_json()));
         v.push(("side_collapsed", if self.tabs.collapsed { "1" } else { "0" }.into()));
         v
     }
@@ -1952,16 +1972,9 @@ impl App {
         base_ui::widgets::panel_edge_highlight(ui.ctx(), side.response.rect, base_ui::widgets::Edge::Left);
         egui::Panel::right("arrange_bar").frame(chrome.inner_margin(egui::Margin::symmetric(2, 4))).exact_size(40.0).resizable(false).show(ui, |ui| self.arrange_bar(ui));
         egui::Panel::bottom("swatches").frame(chrome).exact_size(36.0).show(ui, |ui| base_ui::layer_bar::layer_bar(self, ui));
-        egui::CentralPanel::no_frame().show(ui, |ui| {
-            if self.cam_tab_shown && self.camera_work_tab() {
-                self.camera_work_panel(ui);
-            } else if self.pv_tab_shown && self.preview_work_tab() {
-                self.preview_work_panel(ui);
-            } else if !self.gcode_view_panel(ui) {
-                self.canvas(ui)
-            }
-        });
+        egui::CentralPanel::no_frame().show(ui, |ui| self.central_panes(ui));
         self.dialogs(&ctx);
+        self.pane_windows(&ctx);
         if self.connected || self.progress.0 < self.progress.1 {
             ctx.request_repaint_after(std::time::Duration::from_millis(250));
         }

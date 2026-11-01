@@ -1117,3 +1117,6 @@
 1116|Impossible d'enregistrer le diagnostic : {}
 1117|Importer un DXF…
 1118|Insérer
+1119|La vue compte trois panneaux au maximum
+1120|Afficher l'aperçu ici
+1121|Aucun fichier G-code ouvert : File → View G-code file…

@@ -1117,3 +1117,6 @@
 1116|Det gick inte att spara diagnostiken: {}
 1117|Importera DXF…
 1118|Infoga
+1119|Vyn har högst tre rutor
+1120|Visa förhandsgranskningen här
+1121|Ingen G-kodfil är öppen: File → View G-code file…

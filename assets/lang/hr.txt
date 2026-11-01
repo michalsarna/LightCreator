@@ -1117,3 +1117,6 @@
 1116|Dijagnostiku nije moguće spremiti: {}
 1117|Uvezi DXF…
 1118|Umetni
+1119|Prikaz ima najviše tri okna
+1120|Prikaži pregled ovdje
+1121|Nijedna G-kod datoteka nije otvorena: File → View G-code file…

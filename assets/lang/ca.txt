@@ -1117,3 +1117,6 @@
 1116|No s'ha pogut desar el diagnòstic: {}
 1117|Importa DXF…
 1118|Insereix
+1119|La vista té com a màxim tres panells
+1120|Mostra aquí la previsualització
+1121|Cap fitxer G-code obert: File → View G-code file…

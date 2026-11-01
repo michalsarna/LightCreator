@@ -164,7 +164,9 @@ impl App {
             return;
         }
         let Some(mut w) = self.tabs_state.parked[i].take() else { return };
+        let was = self.slot;
         self.swap_ws(&mut w);
+        self.panes.activated(was, self.slot);
         let at = self.tabs_state.active;
         self.tabs_state.parked[at] = Some(w);
         self.tabs_state.active = i;
@@ -223,6 +225,7 @@ impl App {
         }
         match doc_tabs::tab_bar_with(ui, &infos, self.tabs_state.active, &extras) {
             Some(TabAction::Select(i)) => self.switch_to(i),
+            Some(TabAction::ShowBeside(i)) => self.show_tab_beside(i),
             Some(TabAction::New) => {
                 self.cam_tab_shown = false;
                 self.pv_tab_shown = false;
@@ -361,6 +364,41 @@ mod tests {
             a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::IDENTITY);
         }
         a.touch();
+    }
+
+    #[test]
+    fn the_view_can_be_split_and_a_click_in_a_pane_with_another_drawing_makes_it_the_active_one() {
+        use base_ui::work_panes::{Content, Dir, PaneEvent, Panes};
+        let mut a = app();
+        draw(&mut a, 1);
+        let first = a.slot;
+        assert!(a.new_tab());
+        draw(&mut a, 2);
+        let second = a.slot;
+        assert_ne!(first, second);
+        let ctx = egui::Context::default();
+        let frame = |a: &mut App| {
+            let mut out = ctx.run_ui(egui::RawInput::default(), |ui| {
+                egui::CentralPanel::no_frame().show(ui, |ui| a.central_panes(ui));
+            });
+            out.textures_delta.clear();
+        };
+        frame(&mut a);
+        assert!(a.panes.is_single(), "one pane unless the view was split");
+        a.show_tab_beside(0);
+        assert_eq!(a.panes.contents(), [Content::Active, Content::Doc(first)]);
+        frame(&mut a);
+        let saved = a.settings_pairs().into_iter().find(|(k, _)| *k == "panes").unwrap().1;
+        let back = Panes::from_json(&saved);
+        assert_eq!((back.dir, back.contents()), (Dir::Beside, vec![Content::Active, Content::Doc(first)]));
+        a.pane_event(PaneEvent::Activate(first));
+        assert_eq!(a.slot, first);
+        assert_eq!(a.panes.contents(), [Content::Active, Content::Doc(second)]);
+        a.switch_to(1);
+        assert_eq!(a.panes.contents(), [Content::Active, Content::Doc(first)]);
+        a.close_shown_tab();
+        frame(&mut a);
+        assert_eq!(a.panes.contents(), [Content::Active], "a closed drawing leaves no pane");
     }
 
     #[test]

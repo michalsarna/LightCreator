@@ -1117,3 +1117,6 @@
 1116	Could not save the diagnostics: {}
 1117	Import DXF…
 1118	Insert
+1119	The view has three panes at most
+1120	Show the preview here
+1121	No G-code file is open: File → View G-code file…

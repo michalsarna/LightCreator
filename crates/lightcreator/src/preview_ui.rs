@@ -103,7 +103,7 @@ fn op_label(job: &gcode::Job, i: usize, layers: &[lc_core::Layer]) -> String {
 
 impl App {
     /// Rebuild the job when the design changed and advance the playback. None while there is no job.
-    fn preview_prepare(&mut self, ctx: &egui::Context) -> Option<gcode::Job> {
+    pub(crate) fn preview_prepare(&mut self, ctx: &egui::Context) -> Option<gcode::Job> {
         if self.pv.job.as_ref().map(|j| j.0) != Some(self.job_stamp()) {
             let job = gcode::generate_with(&self.job_source(), None, &self.job_options());
             let mut t = 0.0;
@@ -220,7 +220,7 @@ impl App {
     }
 
     /// Options, totals and the picture of the toolpath (the same in the window and in the tab).
-    fn preview_body(&mut self, ui: &mut egui::Ui, job: &gcode::Job) {
+    pub(crate) fn preview_body(&mut self, ui: &mut egui::Ui, job: &gcode::Job) {
         let units = self.doc.device.units;
         let bed_fill = self.bed_fill();
         let line_w = self.ed.grid_prefs.line_width;
