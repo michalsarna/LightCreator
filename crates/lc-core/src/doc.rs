@@ -466,6 +466,30 @@ pub struct GcodeCfg {
     /// Own G-code at the start and end of layers and objects.
     #[serde(default)]
     pub hooks: Hooks,
+    /// The very start and the very end of the file (a `%`, a program number, the header of a controller).
+    #[serde(default, skip_serializing_if = "is_unset")]
+    pub frame: base_core::gcode_out::Frame,
+    /// The last pass over the finished program, for controllers that read G-code in their own way (all off by default).
+    #[serde(default, skip_serializing_if = "is_unset")]
+    pub flavour: base_core::gcode_out::Flavour,
+}
+
+/// A setting that was never changed is not written: files made before the setting existed stay the same.
+fn is_unset<T: Default + PartialEq>(v: &T) -> bool {
+    *v == T::default()
+}
+
+/// The variables of the very start and end of the file: the common ones, the job and the device.
+pub const FRAME_VARS: &[&str] = &[
+    "project_name", "project_path", "date", "time", "machine_name", "min_x", "max_x", "min_y", "max_y", "min_z", "max_z", "width", "height", "depth", "job_name", "max_speed", "work_width", "work_height", "tool_number", "wavelength",
+    "optical_power", "pwm_freq", "pwm_max_freq", "pulse_width", "pulse_min", "pulse_max",
+];
+
+impl GcodeCfg {
+    /// The first unknown variable (or a brace that does not close) in the very start and end of the file.
+    pub fn check_frame(&self) -> Result<(), String> {
+        base_core::gcode_out::check_texts(&[("Very start of the file", &self.frame.very_start), ("Very end of the file", &self.frame.very_end)], FRAME_VARS)
+    }
 }
 
 fn d_arc_tol() -> f64 {
@@ -483,6 +507,8 @@ impl Default for GcodeCfg {
             dialect: None,
             preamble: String::new(),
             postscript: String::new(),
+            frame: Default::default(),
+            flavour: Default::default(),
             air_on: String::new(),
             air_off: String::new(),
             arcs: false,
@@ -1311,6 +1337,8 @@ pub struct JobInfo {
     pub name: String,
     pub date: String,
     pub time: String,
+    /// The whole path of the project file (empty while it has not been saved).
+    pub path: String,
 }
 
 /// The name of the section of a laser program in the project file.

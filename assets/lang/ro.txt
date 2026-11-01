@@ -1120,3 +1120,4 @@
 1119|Vizualizarea are cel mult trei panouri
 1120|Afișează aici previzualizarea
 1121|Niciun fișier G-code deschis: File, View G-code file…
+1122|G-code propriu al dispozitivului: {}

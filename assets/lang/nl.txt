@@ -1120,3 +1120,4 @@
 1119|De weergave heeft maximaal drie deelvensters
 1120|Voorbeeld hier tonen
 1121|Geen G-code-bestand geopend: File, View G-code file…
+1122|Eigen G-code van het apparaat: {}

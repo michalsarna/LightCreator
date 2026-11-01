@@ -1120,3 +1120,4 @@
 1119|Pogled ima največ tri podokna
 1120|Pokaži predogled tukaj
 1121|Nobena datoteka G-kode ni odprta: File, View G-code file…
+1122|Lastna G-koda naprave: {}

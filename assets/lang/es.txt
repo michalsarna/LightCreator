@@ -1120,3 +1120,4 @@
 1119|La vista tiene como máximo tres paneles
 1120|Mostrar aquí la vista previa
 1121|Ningún archivo G-code abierto: File, View G-code file…
+1122|G-code propio del dispositivo: {}

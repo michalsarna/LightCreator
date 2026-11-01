@@ -164,6 +164,7 @@
 * **Hooks, macros and no-go zones:** own G-code at the start and end of layers and objects with `{variables}`, named macros
   with `@include` run from the Device tab, and rectangular / round no-go zones that block Start, Frame and export when
   any move (also travel) touches them; all validated before they are kept.
+* **File format of the G-code:** the very start and the very end of the file with `{variables}` (the project, the path, the date, the box of the paths, the device) and an **own file format** for controllers: decimal point after whole numbers, `%` lines, the dwell word, line numbers, no comments. All off by default; the file is the same as before.
 * **Z axis and rotary:** an optional Z axis (range, layer heights and a step per pass, Z jog, checked heights) and a rotary
   attachment (chuck or rollers, Y or true A axis, steps per mm for `$101`, rotary layers, circumference check and marks).
 * **While a job runs** the Device and Control tabs lock jog, cancel jog, home, unlock and the jog options; pause, resume and STOP

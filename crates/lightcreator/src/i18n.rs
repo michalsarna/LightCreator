@@ -1264,6 +1264,7 @@ const TABLE: &[[&str; 7]] = &[
     ["The view has three panes at most", "Widok ma najwyżej trzy panele", "Die Ansicht hat höchstens drei Bereiche", "La vista ha al massimo tre riquadri", "Näkymässä on enintään kolme paneelia", "视图最多有三个窗格", "दृश्य में अधिकतम तीन पेन हो सकते हैं"],
     ["Show the preview here", "Pokaż tu podgląd", "Vorschau hier anzeigen", "Mostra qui l'anteprima", "Näytä esikatselu tässä", "在此显示预览", "यहाँ पूर्वावलोकन दिखाएं"],
     ["No G-code file is open: File, View G-code file…", "Żaden plik G-code nie jest otwarty: File, View G-code file…", "Keine G-Code-Datei geöffnet: File, View G-code file…", "Nessun file G-code aperto: File, View G-code file…", "G-koodi-tiedostoa ei ole avattu: File, View G-code file…", "没有打开 G 代码文件：File, View G-code file…", "कोई G-कोड फ़ाइल खुली नहीं है: File, View G-code file…"],
+    ["The own G-code of the device: {}", "Własny G-code urządzenia: {}", "Eigener G-Code des Geräts: {}", "G-code personalizzato del dispositivo: {}", "Laitteen oma G-koodi: {}", "设备的自定义 G-code：{}", "डिवाइस का अपना G-code: {}"],
 ];
 #[cfg(test)]
 mod tests {

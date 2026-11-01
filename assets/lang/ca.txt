@@ -1120,3 +1120,4 @@
 1119|La vista té com a màxim tres panells
 1120|Mostra aquí la previsualització
 1121|Cap fitxer G-code obert: File, View G-code file…
+1122|El G-code propi del dispositiu: {}

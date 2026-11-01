@@ -1061,6 +1061,10 @@ impl App {
                         mono(ui, &mut d.gcode.postscript, "M2", 3);
                         ui.label(RichText::new(tr("Replaces the closing M2. The laser is always switched off and the head sent home (when set) before it. Empty = built in.")).color(theme::text_dim()));
                         ui.add_space(4.0);
+                        base_ui::gcode_out_ui::frame_ui(ui, &mut d.gcode.frame, lc_core::doc::FRAME_VARS);
+                        ui.add_space(4.0);
+                        base_ui::gcode_out_ui::flavour_ui(ui, &mut d.gcode.flavour);
+                        ui.add_space(4.0);
                         ui.label(RichText::new(tr("Air assist commands")).strong());
                         egui::Grid::new("dev_air").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
                             ui.label(tr("On"));
