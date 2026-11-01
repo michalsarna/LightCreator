@@ -101,7 +101,7 @@ in `crates/*/Cargo.toml`); Cargo fetches it by itself. `lc-core` re-exports thos
 the like still work.
 
 Coordinates are millimetres with the origin at the top-left of the work area; on output Y is flipped for
-machines whose zero is at the front-left (configurable under *Laser → Device settings*).
+machines whose zero is at the front-left (configurable under *Machine → Device settings*).
 
 > **Safety:** lasers are dangerous. Always test G-code at low power, wear eye protection, never leave a
 > running machine unattended and verify your machine's `$30` (S-max) and `$32` (laser mode) settings.

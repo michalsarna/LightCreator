@@ -25,7 +25,7 @@ Kod, który nie potrzebuje lasera, jest w [baseCreator](https://github.com/micha
 `build.rs` osadza cliparty. Ikony interfejsu osadza baseCreator (`assets/ui-icons`); test sprawdza, czy każda ikona żądana przez akcję istnieje.
 
 ## Konwencje
-* Współrzędne w **milimetrach**, początek w **lewym górnym rogu** pola roboczego. Na wyjściu oś Y jest odwracana dla maszyn z zerem z przodu po lewej (*Laser → Device settings*).
+* Współrzędne w **milimetrach**, początek w **lewym górnym rogu** pola roboczego. Na wyjściu oś Y jest odwracana dla maszyn z zerem z przodu po lewej (*Machine → Device settings*).
 * Geometria jest zawsze przechowywana w mm; jednostki wyświetlania są ustawieniem urządzenia.
 
 ## Testy i CI

@@ -86,7 +86,7 @@ connection: &laser
   accepter: tcp,3333
   connector: serialdev,/dev/ttyUSB0,115200n81,local
 ```
-W Linuksie **Laser → Share over network (ser2net)…** zrobi to za ciebie: wybiera port, prędkość i port TCP, zapisuje konfigurację ser2net 4.x (YAML) lub 3.x, pokazuje adres i może ją skopiować, zapisać albo zainstalować i zrestartować usługę (prosi o uprawnienia administratora przez `pkexec`, robi kopię starego pliku). Opcja tylko lokalna nadaje się do tunelu SSH; inaczej port jest otwarty dla sieci.
+W Linuksie **Machine → Share over network (ser2net)…** zrobi to za ciebie: wybiera port, prędkość i port TCP, zapisuje konfigurację ser2net 4.x (YAML) lub 3.x, pokazuje adres i może ją skopiować, zapisać albo zainstalować i zrestartować usługę (prosi o uprawnienia administratora przez `pkexec`, robi kopię starego pliku). Opcja tylko lokalna nadaje się do tunelu SSH; inaczej port jest otwarty dla sieci.
 ![ser2net](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/18-ser2net.png)
 
 ## Kamera

@@ -89,21 +89,21 @@ mod tests {
     fn all_requested_icons_exist() {
         let have: std::collections::HashSet<&str> = all_names().into_iter().collect();
         for (_, entries) in crate::menu::menus() {
-            fn walk(es: &[crate::menu::Entry<Act>], have: &std::collections::HashSet<&str>) {
+            fn walk(es: &[base_ui::menu::Entry<Act>], have: &std::collections::HashSet<&str>) {
                 for e in es {
                     match e {
-                        crate::menu::Entry::Item(a, _, _) => {
+                        base_ui::menu::Entry::Item(a, _, _) => {
                             if let Some(n) = act_icon(*a) {
                                 assert!(have.contains(n), "act icon {n}");
                             }
                         }
-                        crate::menu::Entry::Sub(t, c) => {
+                        base_ui::menu::Entry::Sub(t, c) => {
                             if let Some(n) = submenu_icon(t) {
                                 assert!(have.contains(n), "submenu icon {n}");
                             }
                             walk(c, have);
                         }
-                        crate::menu::Entry::Sep | crate::menu::Entry::Recent => {}
+                        base_ui::menu::Entry::Sep | base_ui::menu::Entry::Recent => {}
                     }
                 }
             }

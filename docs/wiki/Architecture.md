@@ -25,7 +25,7 @@ The code that needs no laser lives in [baseCreator](https://github.com/michalsar
 `build.rs` embeds the clipart. The interface icons are embedded by baseCreator (`assets/ui-icons`); a test checks that every icon an action asks for exists.
 
 ## Conventions
-* Coordinates are **millimetres**, origin at the **top-left** of the work area. On output Y is flipped for machines whose zero is front-left (*Laser → Device settings*).
+* Coordinates are **millimetres**, origin at the **top-left** of the work area. On output Y is flipped for machines whose zero is front-left (*Machine → Device settings*).
 * Stored geometry is always mm; display units are per device.
 
 ## Testing and CI

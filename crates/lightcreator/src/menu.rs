@@ -119,8 +119,7 @@ pub enum Act {
     SetScheme(Scheme),
 }
 
-pub use base_ui::menu::Entry;
-use base_ui::menu::{key, std_entries, Entry::{Item, Recent, Sep, Sub}, StdAct};
+use base_ui::menu::{key, standard_menus, Entry::{Item, Sep}, MenuParts, StdAct};
 
 impl From<StdAct> for Act {
     fn from(a: StdAct) -> Act {
@@ -258,185 +257,72 @@ impl Act {
     }
 }
 
-/// Entries of the standard commands as entries of this application.
-fn std(entries: Vec<Entry<StdAct>>) -> Vec<Entry<Act>> {
-    entries.into_iter().map(|e| e.map(&Act::from)).collect()
-}
-
-/// Top-level menus: (English title, entries). The macOS app menu is added by `native_menu`.
+/// The menus: the layout of baseCreator (`standard_menus`) with the entries of LightCreator in their places. The macOS app menu is added
+/// by `native_menu`.
 pub fn menus() -> base_ui::menu::Menus<Act> {
-    let mut file = vec![
-        Item(Act::New, "New", key("CmdOrCtrl+N", "Ctrl+N")),
-        Item(Act::Open, "Open…", key("CmdOrCtrl+O", "Ctrl+O")),
-        Item(Act::ViewGcode, "View G-code file…", None),
-        Recent,
-        Item(Act::Save, "Save", key("CmdOrCtrl+S", "Ctrl+S")),
-        Item(Act::SaveAs, "Save as…", key("CmdOrCtrl+Shift+S", "Ctrl+Shift+S")),
-        Sep,
-        Sub(
-            "Import",
-            vec![
-                Item(Act::ImportSvg, "Import SVG…", key("CmdOrCtrl+I", "Ctrl+I")),
-                Item(Act::ImportImage, "Import image…", None),
-                Item(Act::ImportAi, "Import Adobe Illustrator / PDF…", None),
-                Item(Act::ImportDxf, "Import DXF…", None),
-                Item(Act::ImportLightburn, "Import LightBurn project…", None),
-                Item(Act::ImportUgsd, "Import UGS design…", None),
-                Item(Act::ImportPlugin, base_ui::plugins_ui::MENU_IMPORT, None),
-                Item(Act::GenerateShape, base_ui::plugins_ui::MENU_GENERATE, None),
-                Item(Act::OnlineClipart, "Online clipart…", None),
-            ],
-        ),
-        Item(Act::Print, "Print…", key("CmdOrCtrl+P", "Ctrl+P")),
-        Sub(
-            "Export",
-            vec![
-                Item(Act::ExportSvg, "Export SVG…", None),
-                Item(Act::ExportGcode, "Export G-code…", None),
-                Item(Act::ExportCam, "Export PLT / DXF…", None),
-                Item(Act::ExportSelectionSvg, "Export selection as SVG…", None),
-                Item(Act::ExportSelectionDxf, "Export selection as DXF…", None),
-            ],
-        ),
-    ];
-    if !cfg!(target_os = "macos") {
-        file.push(Sep);
-        file.push(Item(Act::Quit, "Quit", key("CmdOrCtrl+Q", "Ctrl+Q")));
-    }
-    let mut help = vec![Item(Act::QuickGuide, "Quick guide", key("F1", "F1")), Item(Act::OpenGithub, "Project page on GitHub", None), Sep, Item(Act::DownloadBackup, "Download backup…", None), Item(Act::RestoreBackup, "Restore from backup…", None), Item(Act::ExportDiagnostics, "Export diagnostics (zip)…", None), Item(Act::CheckUpdates, "Check for updates…", None)];
-    if !cfg!(target_os = "macos") {
-        help.push(Sep);
-        help.push(Item(Act::About, "About", None));
-    }
-    let mut laser = vec![
-        Item(Act::SwitchDevice, "Switch device…", None),
-        Item(Act::DeviceSettings, "Device settings…", None),
-        Item(Act::Frame, "Frame", None),
-        Item(Act::StartJob, "Start job", None),
-        Item(Act::StartFrom, "Start from line…", None),
-        Sep,
-        Item(Act::Calibration, "Calibration…", None),
-    ];
+    let mut machine = vec![Item(Act::SwitchDevice, "Switch device…", None), Item(Act::DeviceSettings, "Device settings…", None), Item(Act::Calibration, "Calibration…", None)];
     // Sharing a local serial port with ser2net is a Linux feature.
     if cfg!(target_os = "linux") {
-        laser.push(Sep);
-        laser.push(Item(Act::ShareSer2net, "Share over network (ser2net)…", None));
+        machine.push(Item(Act::ShareSer2net, "Share over network (ser2net)…", None));
     }
-    vec![
-        ("File", file),
-        ("Edit", std(std_entries::edit())),
-        // The tools of the left palette that insert objects, and the other places shapes come from.
-        ("Insert", [std(std_entries::insert_tools()), vec![Sep, Item(Act::GenerateShape, base_ui::plugins_ui::MENU_GENERATE, None), Item(Act::OnlineClipart, "Online clipart…", None)]].concat()),
-        (
-            "Arrange",
-            [
-                std(std_entries::align()),
-                vec![Sep],
-                std(std_entries::place()),
-                vec![Sep],
-                std(std_entries::group()),
-                vec![Sep],
-                std(std_entries::order()),
-                vec![Sep],
-                // Editing of curves.
-                std(std_entries::nodes()),
-                vec![
-                    Item(Act::ToCurves, "Convert to curves", None),
-                    Item(Act::RoundCorners, "Round corners…", None),
-                    Sep,
-                    Item(Act::BoolUnion, "Union", None),
-                    Item(Act::BoolIntersect, "Intersection", None),
-                    Item(Act::BoolSubtract, "Subtract", None),
-                    Item(Act::BoolXor, "Exclusive or", None),
-                    Item(Act::OffsetShape, "Offset shape…", None),
-                    Sep,
-                    Item(Act::AutoJoin, "Auto-join paths…", None),
-                    Item(Act::ClosePath, "Close path with tolerance…", None),
-                    Item(Act::DogboneCorners, "Dogbone / T-bone corners…", None),
-                    Sep,
-                    Item(Act::CircleArray, "Circular array…", None),
-                    Item(Act::CopyAlongPath, "Copy along path…", None),
-                    Item(Act::TextOnPath, "Text on path…", None),
-                    Sep,
-                    Item(Act::TrimByShape, "Trim by shape…", None),
-                    Item(Act::RemoveDuplicates, "Remove duplicates", None),
-                    Item(Act::BreakApart, "Break apart", None),
-                    Item(Act::SimplifyShapes, "Simplify…", None),
-                    Sep,
-                    Item(Act::SerialText, "Serial text…", None),
-                    Item(Act::MakeCode, "Barcode / QR code…", None),
-                    Item(Act::NestShapes, "Nest shapes…", None),
-                    Item(Act::MeasureShapes, "Measure…", None),
-                    Sep,
-                    // Pictures.
-                    Item(Act::AdjustImage, "Adjust image…", None),
-                    Item(Act::TraceImage, "Trace image…", None),
-                    Sep,
-                    Item(Act::GridArray, "Grid array…", None),
-                ],
-            ]
-            .concat(),
-        ),
-        (
-            "View",
-            [
-                std(std_entries::grid()),
-                vec![Item(Act::TogglePreview, "Toolpath preview", None), Item(Act::PreviewWindow, "Preview window…", None)],
-                std(std_entries::zoom()),
-                std(std_entries::split_view()),
-                vec![
-                    Item(Act::CameraView, "Camera view", None),
-                    Item(Act::ToggleOverlay, "Show camera overlay", None),
-                    Item(Act::ToggleZones, "Show no-go zones", None),
-                    Item(Act::CameraOverlay, "Overlay from…", None),
-                ],
-            ]
-            .concat(),
-        ),
-        ("Laser", laser),
-        (
-            "Settings",
-            vec![
-                Item(Act::GridOptions, "View options…", None),
-                Item(Act::ProgramOptions, "Program options…", None),
-                Sep,
-                Item(Act::Materials, "Materials…", None),
-                Item(Act::Plugins, base_ui::plugins_ui::MENU_PLUGINS, None),
-                Sep,
-                Sub("Language", Lang::ALL.iter().map(|l| Item(Act::SetLang(*l), l.name(), None)).collect()),
-                Sub("Colour scheme", Scheme::available().iter().map(|s| Item(Act::SetScheme(*s), s.label(), None)).collect()),
-            ],
-        ),
-        ("Help", help),
-    ]
+    machine.extend([Sep, Item(Act::Frame, "Frame", None), Item(Act::StartJob, "Start job", None), Item(Act::StartFrom, "Start from line…", None)]);
+    standard_menus(MenuParts {
+        new: Act::New,
+        open: Act::Open,
+        save: Act::Save,
+        save_as: Act::SaveAs,
+        quit: Act::Quit,
+        about: Act::About,
+        view_gcode: Act::ViewGcode,
+        generate: Act::GenerateShape,
+        import_plugin: Act::ImportPlugin,
+        online_clipart: Act::OnlineClipart,
+        plugins: Act::Plugins,
+        view_options: Act::GridOptions,
+        program_options: Act::ProgramOptions,
+        set_lang: Act::SetLang,
+        set_scheme: Act::SetScheme,
+        github: Act::OpenGithub,
+        download_backup: Act::DownloadBackup,
+        restore_backup: Act::RestoreBackup,
+        check_updates: Act::CheckUpdates,
+        file_extra: vec![],
+        import: vec![
+            Item(Act::ImportSvg, "Import SVG…", key("CmdOrCtrl+I", "Ctrl+I")),
+            Item(Act::ImportAi, "Import Adobe Illustrator / PDF…", None),
+            Item(Act::ImportDxf, "Import DXF…", None),
+            Item(Act::ImportLightburn, "Import LightBurn project…", None),
+            Item(Act::ImportUgsd, "Import UGS design…", None),
+        ],
+        export: vec![Item(Act::ExportGcode, "Export G-code…", None), Item(Act::ExportSvg, "Export SVG…", None), Item(Act::ExportCam, "Export PLT / DXF…", None)],
+        output_extra: vec![Item(Act::Print, "Print…", key("CmdOrCtrl+P", "Ctrl+P"))],
+        // What is shown besides the drawing: the toolpaths, the camera, its overlay (in place of a background picture) and the zones.
+        view_extra: vec![
+            Item(Act::TogglePreview, "Toolpath preview", None),
+            Item(Act::CameraView, "Camera view", None),
+            Item(Act::ToggleOverlay, "Show camera overlay", None),
+            Item(Act::CameraOverlay, "Overlay from…", None),
+            Item(Act::ToggleZones, "Show no-go zones", None),
+        ],
+        background: false,
+        machine,
+        process: ("Laser", vec![Item(Act::Materials, "Materials…", None), Sep, Item(Act::PreviewWindow, "Preview window…", key("CmdOrCtrl+Shift+P", "Ctrl+Shift+P")), Item(Act::ExportGcode, "Export G-code…", key("CmdOrCtrl+E", "Ctrl+E"))]),
+        settings_extra: vec![],
+        help_first: vec![Item(Act::QuickGuide, "Quick guide", key("F1", "F1"))],
+        help_extra: vec![Item(Act::ExportDiagnostics, "Export diagnostics (zip)…", None)],
+    })
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    /// Every key of the menus belongs to one entry only (Ctrl+Shift+G was Ungroup and Export G-code at once).
+    /// Every key of the menus belongs to one entry only, and the menus have the layout of all the programs.
     #[test]
-    fn no_two_entries_of_the_menus_share_a_key() {
-        fn keys(entries: &[Entry<Act>], out: &mut Vec<(&'static str, &'static str)>) {
-            for e in entries {
-                match e {
-                    Entry::Item(_, label, Some((accel, _))) => out.push((accel, label)),
-                    Entry::Sub(_, children) => keys(children, out),
-                    _ => {}
-                }
-            }
-        }
-        let mut all = vec![];
-        for (_, entries) in menus() {
-            keys(&entries, &mut all);
-        }
-        for (i, (k, label)) in all.iter().enumerate() {
-            // The same entry twice (Generate shape is in File and in Insert) is the same command, not a clash.
-            if let Some((_, other)) = all[i + 1..].iter().find(|(k2, l2)| k2 == k && l2 != label) {
-                panic!("{k} is the key of {label} and of {other}");
-            }
-        }
-        assert!(all.iter().any(|(k, l)| *k == "CmdOrCtrl+Shift+G" && *l == "Ungroup"));
+    fn no_two_entries_of_the_menus_share_a_key_and_the_layout_is_the_common_one() {
+        let m = menus();
+        assert!(base_ui::menu::key_clashes(&m).is_empty(), "{:?}", base_ui::menu::key_clashes(&m));
+        let titles: Vec<&str> = m.iter().map(|(t, _)| *t).collect();
+        assert_eq!(titles, ["File", "Edit", "Insert", "Arrange", "View", "Machine", "Laser", "Settings", "Help"]);
     }
 }

@@ -1256,6 +1256,17 @@ impl App {
         if ctx.egui_wants_keyboard_input() {
             return;
         }
+        // The Ctrl/Cmd keys of the menus, in the window menu bar (the native bar of macOS has them itself).
+        #[cfg(target_os = "macos")]
+        let native = self.native_menu.is_some();
+        #[cfg(not(target_os = "macos"))]
+        let native = false;
+        if !native {
+            if let Some(a) = base_ui::menu::shortcut_act(ctx, &crate::menu::menus(), |a| self.act_enabled(a)) {
+                self.do_act(ctx, a);
+                return;
+            }
+        }
         let cmd = |k: Key| ctx.input_mut(|i| i.consume_key(Modifiers::COMMAND, k));
         let cmd_shift = |k: Key| ctx.input_mut(|i| i.consume_key(Modifiers::COMMAND | Modifiers::SHIFT, k));
         if cmd_shift(Key::Z) || cmd(Key::Y) {
