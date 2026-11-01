@@ -206,7 +206,6 @@ pub struct App {
     /// The camera view is a tab of the work area and it is the one shown (in place of the drawing).
     pub cam_tab_shown: bool,
     /// The preview is a tab of the work area (and not a window) while it is open, and that tab is the shown one.
-    pub preview_tab: bool,
     pub pv_tab_shown: bool,
     pub pv_tab_seen: bool,
     pub cam_tab_seen: bool,
@@ -425,7 +424,6 @@ impl App {
             cam_fit: Default::default(),
             cam_view_for: 0,
             cam_tab_shown: false,
-            preview_tab: false,
             pv_tab_shown: false,
             pv_tab_seen: false,
             cam_tab_seen: false,
@@ -1464,10 +1462,8 @@ impl App {
             }
             Act::PreviewWindow => {
                 self.show_preview = true;
-                if self.preview_tab {
-                    self.pv_tab_shown = true;
-                    self.cam_tab_shown = false;
-                }
+                self.pv_tab_shown = true;
+                self.cam_tab_shown = false;
             }
             Act::ShareSer2net => self.open_ser2net(),
             Act::ToggleOverlay => {

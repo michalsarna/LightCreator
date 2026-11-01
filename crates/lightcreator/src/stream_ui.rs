@@ -320,6 +320,7 @@ impl App {
         // Photos, video and time-lapse, with their folder.
         ui.add_space(4.0);
         ui.separator();
+        self.cam_rec.set_project(self.path.as_deref());
         self.cam_rec.controls(ui);
         // The working time of the job, over the estimate: 00:04:12 / 00:13:00.
         let elapsed = self.job_started.map_or(self.job_last_secs, |t| t.elapsed().as_secs_f64());

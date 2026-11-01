@@ -362,6 +362,18 @@ fn the_rotary_in_a_fourth_axis_writes_degrees_and_in_the_y_mode_changes_nothing(
 }
 
 #[test]
+fn the_notes_of_the_project_are_comments_at_the_start_of_the_job() {
+    let (mut doc, dev) = hooked_doc();
+    let plain = gcode_for(doc.clone(), dev.clone());
+    assert!(!plain.contains("; Note"), "no notes, no note lines");
+    doc.description = "Birch (3 mm); first\n\nglue".into();
+    let t = gcode_for(doc, dev);
+    let lines: Vec<&str> = t.lines().collect();
+    assert!(lines[0].starts_with("; LightCreator job"), "{t}");
+    assert_eq!(&lines[1..3], &["; Note: Birch <3 mm>, first", "; Note: glue"], "{t}");
+}
+
+#[test]
 fn the_file_has_a_very_start_and_end_variables_and_a_flavour_and_the_default_changes_nothing() {
     use base_core::gcode_out::{DwellWord, Flavour};
     let (doc, dev) = hooked_doc();
