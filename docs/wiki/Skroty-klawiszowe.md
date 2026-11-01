@@ -14,6 +14,8 @@ Na macOS **Ctrl** czytaj jako **Cmd**. Skróty edytujące tekst (kopiuj, wklej, 
 | Ctrl+Shift+S | Zapisz jako |
 | Ctrl+I | Import SVG |
 | Ctrl+P | Drukuj |
+| Ctrl+E | Eksportuj G-code (menu Laser) |
+| Ctrl+Shift+P | Okno podglądu (menu Laser) |
 | Ctrl+Q | Zakończ (Windows i Linux; na macOS skrót należy do menu systemowego) |
 
 ## Edycja

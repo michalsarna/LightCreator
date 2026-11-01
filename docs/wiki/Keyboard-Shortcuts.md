@@ -14,6 +14,8 @@ On macOS read **Ctrl** as **Cmd**. Shortcuts that edit text (copy, paste, delete
 | Ctrl+Shift+S | Save as |
 | Ctrl+I | Import SVG |
 | Ctrl+P | Print |
+| Ctrl+E | Export G-code (Laser menu) |
+| Ctrl+Shift+P | Preview window (Laser menu) |
 | Ctrl+Q | Quit (Windows and Linux; on macOS the system menu owns it) |
 
 ## Edit
