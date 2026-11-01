@@ -213,7 +213,7 @@ fn hooked_doc() -> (Document, Device) {
     doc.add(0, Kind::Rect { w: 20.0, h: 10.0 }, Xf::translate(30.0, 40.0));
     doc.add(0, Kind::Ellipse { w: 12.0, h: 12.0 }, Xf::translate(80.0, 40.0));
     doc.add(1, Kind::Rect { w: 5.0, h: 5.0 }, Xf::translate(120.0, 40.0));
-    doc.job_info = JobInfo { name: "badge".into(), date: "2026-10-11".into(), time: "14:05".into() };
+    doc.job_info = JobInfo { name: "badge".into(), date: "2026-10-11".into(), time: "14:05".into(), ..Default::default() };
     let mut dev = device(&[]);
     dev.name = "Golden".into();
     dev.gcode.hooks.layer_start = Hook { enabled: true, code: "M117 {layer_name} {layer_index}/{total_layers}\n; {job_name} {date} {time}".into() };
@@ -359,4 +359,37 @@ fn the_rotary_in_a_fourth_axis_writes_degrees_and_in_the_y_mode_changes_nothing(
     mixed.add(1, Kind::Rect { w: 5.0, h: 5.0 }, Xf::translate(100.0, 100.0));
     let t = gcode_for(mixed, rotary_device("Marlin", RotaryMode::TrueA));
     assert!(t.lines().rev().find(|l| l.starts_with("G0 X")).is_some_and(|l| l.contains(" Y")));
+}
+
+#[test]
+fn the_file_has_a_very_start_and_end_variables_and_a_flavour_and_the_default_changes_nothing() {
+    use base_core::gcode_out::{DwellWord, Flavour};
+    let (doc, dev) = hooked_doc();
+    let plain = gcode_for(doc.clone(), dev.clone());
+    assert!(plain.lines().next() != Some("%") && plain.contains("badge"), "the default is the text as it was: {plain}");
+    let mut d = dev.clone();
+    d.gcode.frame.very_start = "%\nO{job_name}".into();
+    d.gcode.frame.very_end = "(done {machine_name} {project_name} {date} {width})".into();
+    let t = gcode_for(doc.clone(), d.clone());
+    let lines: Vec<&str> = t.lines().collect();
+    assert_eq!(&lines[..2], &["%", "Obadge"]);
+    let last = lines.last().unwrap();
+    assert!(last.starts_with("(done Golden badge 2026-10-11 ") && !last.contains('{'), "{last}");
+    assert!(d.gcode.check_frame().is_ok());
+    d.gcode.frame.very_end = "{nope}".into();
+    assert!(d.gcode.check_frame().unwrap_err().contains("Very end of the file"));
+    // The flavour: a point after whole numbers, line numbers, % lines, no comments.
+    d.gcode.frame = Default::default();
+    d.gcode.flavour = Flavour { decimal_point: true, percent: true, dwell: DwellWord::PMilliseconds, line_numbers: true, number_step: 10, remove_comments: true };
+    let g = gcode_for(doc, d);
+    let l: Vec<&str> = g.lines().collect();
+    assert_eq!((l[0], l[l.len() - 1]), ("%", "%"));
+    assert!(l[1].starts_with("N10 "), "{}", l[1]);
+    assert!(!g.contains(';'), "no comments");
+    assert!(g.lines().any(|x| x.contains(" X") && x.contains('.')), "{g}");
+    // Old device files read as they were, and a device that did not change them is written as it was.
+    let text = serde_json::to_string(&dev).unwrap();
+    assert!(!text.contains("\"frame\"") && !text.contains("\"flavour\""), "unset settings are not written");
+    let old: lc_core::Device = serde_json::from_str(&text).unwrap();
+    assert!(old.gcode.frame == Default::default() && old.gcode.flavour.is_default());
 }

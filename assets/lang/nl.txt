@@ -1124,3 +1124,4 @@
 1123|G-code tonen zonder op te slaan
 1124|voorbeeld
 1125|De G-code wordt getoond, er wordt niets opgeslagen
+1126|Eigen G-code van het apparaat: {}

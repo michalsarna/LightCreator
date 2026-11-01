@@ -1124,3 +1124,4 @@
 1123|G-kód megjelenítése mentés nélkül
 1124|előnézet
 1125|A G-kód látható, semmi sem lett mentve
+1126|Az eszköz saját G-kódja: {}

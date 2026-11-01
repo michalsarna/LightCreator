@@ -1124,3 +1124,4 @@
 1123|Mostra el G-code sense desar-lo
 1124|previsualització
 1125|El G-code es mostra, no es desa res
+1126|El G-code propi del dispositiu: {}

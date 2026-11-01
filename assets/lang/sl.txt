@@ -1124,3 +1124,4 @@
 1123|Pokaži G-kodo brez shranjevanja
 1124|predogled
 1125|G-koda je prikazana, nič ni shranjeno
+1126|Lastna G-koda naprave: {}

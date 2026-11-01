@@ -1124,3 +1124,4 @@
 1123|Mostrar o G-code sem o guardar
 1124|pré-visualização
 1125|O G-code é mostrado, nada é guardado
+1126|G-code próprio do dispositivo: {}

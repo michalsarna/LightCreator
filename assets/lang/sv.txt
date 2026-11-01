@@ -1124,3 +1124,4 @@
 1123|Visa G-koden utan att spara den
 1124|förhandsgranskning
 1125|G-koden visas, inget sparas
+1126|Enhetens egen G-kod: {}

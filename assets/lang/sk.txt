@@ -1124,3 +1124,4 @@
 1123|Zobraziť G-kód bez uloženia
 1124|náhľad
 1125|G-kód je zobrazený, nič sa neukladá
+1126|Vlastný G-kód zariadenia: {}

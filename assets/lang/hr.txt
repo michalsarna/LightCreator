@@ -1124,3 +1124,4 @@
 1123|Prikaži G-kod bez spremanja
 1124|pregled
 1125|G-kod je prikazan, ništa nije spremljeno
+1126|Vlastiti G-kod uređaja: {}

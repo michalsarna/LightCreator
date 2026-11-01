@@ -1124,3 +1124,4 @@
 1123|Näita G-koodi salvestamata
 1124|eelvaade
 1125|G-koodi on näidatud, midagi ei salvestata
+1126|Seadme oma G-kood: {}

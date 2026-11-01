@@ -1124,3 +1124,4 @@
 1123|Afișează G-code fără a-l salva
 1124|previzualizare
 1125|G-code este afișat, nu se salvează nimic
+1126|G-code propriu al dispozitivului: {}

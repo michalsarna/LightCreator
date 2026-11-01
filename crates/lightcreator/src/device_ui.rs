@@ -408,7 +408,7 @@ impl App {
                 match page {
                     CfgPage::General => {
                         egui::Grid::new("dev_general").num_columns(2).min_col_width(150.0).spacing([12.0, 6.0]).show(ui, |ui| {
-                            ui.label(tr("Name"));
+                            base_ui::widgets::var_label(ui, tr("Name"), "machine_name");
                             ui.add(egui::TextEdit::singleline(&mut d.name).hint_text(tr("e.g. My diode laser")));
                             ui.end_row();
                             ui.label(tr("Controller"));
@@ -435,7 +435,7 @@ impl App {
                             ui.label(tr("Travel speed"));
                             drag_speed(ui, u, su, true, &mut d.speeds.travel_speed, 50.0, Some((100.0, 60000.0)));
                             ui.end_row();
-                            ui.label(tr("Max cutting speed"));
+                            base_ui::widgets::var_label(ui, tr("Max cutting speed"), "max_speed");
                             drag_speed(ui, u, su, true, &mut d.speeds.max_cut_speed, 50.0, Some((0.0, 60000.0))).on_hover_text(tr("0 = no limit. Layers faster than this get a warning before the job; the time estimate uses at most this speed."));
                             ui.end_row();
                             ui.label(tr("Acceleration"));
@@ -553,7 +553,7 @@ impl App {
                             ui.add(egui::TextEdit::singleline(&mut h.name).hint_text(tr("e.g. Blue diode")));
                             ui.end_row();
                             if multi {
-                                ui.label(tr("Tool number (T)"));
+                                base_ui::widgets::var_label(ui, tr("Tool number (T)"), "tool_number");
                                 ui.add(egui::DragValue::new(&mut h.tool).range(0..=99)).on_hover_text(tr("The number the controller knows this head by; it is written as T<n> when a layer uses another head. It must match the mapping in the controller."));
                                 ui.end_row();
                             }
@@ -567,7 +567,7 @@ impl App {
                                 }
                             });
                             ui.end_row();
-                            ui.label(tr("Wavelength"));
+                            base_ui::widgets::var_label(ui, tr("Wavelength"), "wavelength");
                             ui.add(egui::DragValue::new(&mut h.wavelength_nm).range(0..=20000).suffix(" nm")).on_hover_text(trf("0 = the usual one ({} nm)", &[&h.laser.default_wavelength()]));
                             ui.end_row();
                             ui.label(tr("Optical power"));
@@ -604,7 +604,7 @@ impl App {
                             .on_hover_text(tr("Where the red pointer dot is relative to the beam (x right, y down). Used by the pointer alignment in the Device tab."));
                             ui.end_row();
                             if h.laser.has_pwm() {
-                                ui.label(tr("PWM frequency"));
+                                base_ui::widgets::var_label(ui, tr("PWM frequency"), "pwm_freq");
                                 ui.add(egui::DragValue::new(&mut h.pwm_freq_hz).range(0.0..=1_000_000.0).suffix(" Hz"));
                                 ui.end_row();
                                 ui.label(tr("PWM maximum frequency"));
@@ -1060,6 +1060,10 @@ impl App {
                         ui.label(RichText::new(tr("End of the job")).strong());
                         mono(ui, &mut d.gcode.postscript, "M2", 3);
                         ui.label(RichText::new(tr("Replaces the closing M2. The laser is always switched off and the head sent home (when set) before it. Empty = built in.")).color(theme::text_dim()));
+                        ui.add_space(4.0);
+                        base_ui::gcode_out_ui::frame_ui(ui, &mut d.gcode.frame, lc_core::doc::FRAME_VARS);
+                        ui.add_space(4.0);
+                        base_ui::gcode_out_ui::flavour_ui(ui, &mut d.gcode.flavour);
                         ui.add_space(4.0);
                         ui.label(RichText::new(tr("Air assist commands")).strong());
                         egui::Grid::new("dev_air").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {

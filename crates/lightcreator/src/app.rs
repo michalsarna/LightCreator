@@ -761,7 +761,22 @@ impl App {
             self.export_gcode_now();
         }
     }
+    /// Are the variables in the very start and end of the file all known? When not, the reason goes to the status line and no
+    /// file is made.
+    pub fn frame_ok(&mut self) -> bool {
+        match self.doc.device.gcode.check_frame() {
+            Ok(()) => true,
+            Err(e) => {
+                self.status = trf("The own G-code of the device: {}", &[&e]);
+                false
+            }
+        }
+    }
+
     pub fn export_gcode_now(&mut self) {
+        if !self.frame_ok() {
+            return;
+        }
         if self.selection_only && self.ed.sel.is_empty() {
             self.status = tr("Nothing to burn: nothing is selected").into();
             return;
@@ -837,6 +852,7 @@ impl App {
             name: self.path.as_ref().and_then(|p| p.file_stem()).map(|s| s.to_string_lossy().into_owned()).unwrap_or_default(),
             date: format!("{}-{}-{}", &ymd[..4], &ymd[4..6], &ymd[6..]),
             time: format!("{:02}:{:02}", secs / 3600 % 24, secs / 60 % 60),
+            path: self.path.as_ref().map(|p| p.display().to_string()).unwrap_or_default(),
         };
     }
 
@@ -862,6 +878,9 @@ impl App {
 
     /// The lines of the whole program, or `None` (with the reason in the status bar) when there is nothing to burn.
     pub fn program_lines(&mut self) -> Option<Vec<String>> {
+        if !self.frame_ok() {
+            return None;
+        }
         self.focus_off();
         self.stamp_job();
         // The job is written for the design as it is: the pointer alignment never moves it.

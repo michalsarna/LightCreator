@@ -1124,3 +1124,4 @@
 1123|Taispeáin an G-code gan é a shábháil
 1124|réamhamharc
 1125|Tá an G-code ar taispeáint, níl aon rud sábháilte
+1126|G-code féin an ghairis: {}

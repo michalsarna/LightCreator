@@ -1124,3 +1124,4 @@
 1123|Rādīt G-kodu bez saglabāšanas
 1124|priekšskatījums
 1125|G-kods ir parādīts, nekas netiek saglabāts
+1126|Ierīces paša G-kods: {}

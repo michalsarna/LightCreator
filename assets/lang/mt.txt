@@ -1124,3 +1124,4 @@
 1123|Uri l-G-code mingħajr ma tinħażen
 1124|previżjoni
 1125|Il-G-code qed jintwera, xejn ma nħażen
+1126|G-code proprju tal-apparat: {}

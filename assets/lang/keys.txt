@@ -1124,3 +1124,4 @@
 1123	Show the G-code without saving it
 1124	preview
 1125	The G-code is shown, nothing is saved
+1126	The own G-code of the device: {}

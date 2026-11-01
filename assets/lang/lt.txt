@@ -1124,3 +1124,4 @@
 1123|Rodyti G kodą jo neįrašant
 1124|peržiūra
 1125|G kodas parodytas, nieko neįrašyta
+1126|Įrenginio nuosavas G kodas: {}

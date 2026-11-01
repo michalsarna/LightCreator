@@ -351,7 +351,7 @@ impl App {
         crate::window_ui::popup(ctx, "layer_dialog", &title, [340.0, 220.0], &mut open, |ui| {
             let l = &mut self.doc.layers[i];
             egui::Grid::new("layer_head").num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
-                ui.label(tr("Name"));
+                base_ui::widgets::var_label(ui, tr("Name"), "layer_name");
                 ui.add(egui::TextEdit::singleline(&mut l.name).desired_width(140.0));
                 ui.end_row();
                 ui.label(tr("Colour"));

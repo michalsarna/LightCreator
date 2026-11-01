@@ -1268,6 +1268,7 @@ const TABLE: &[[&str; 7]] = &[
     ["Show the G-code without saving it", "Pokaż G-code bez zapisywania", "G-Code anzeigen, ohne zu speichern", "Mostra il G-code senza salvarlo", "Näytä G-koodi tallentamatta", "显示 G-code 但不保存", "G-code को सहेजे बिना दिखाएं"],
     ["preview", "podgląd", "Vorschau", "anteprima", "esikatselu", "预览", "पूर्वावलोकन"],
     ["The G-code is shown, nothing is saved", "G-code jest pokazany, nic nie zostało zapisane", "Der G-Code wird angezeigt, nichts wird gespeichert", "Il G-code è mostrato, nulla viene salvato", "G-koodi näytetään, mitään ei tallenneta", "已显示 G-code，未保存任何内容", "G-code दिखाया गया है, कुछ भी सहेजा नहीं गया"],
+    ["The own G-code of the device: {}", "Własny G-code urządzenia: {}", "Eigener G-Code des Geräts: {}", "G-code personalizzato del dispositivo: {}", "Laitteen oma G-koodi: {}", "设备的自定义 G-code：{}", "डिवाइस का अपना G-code: {}"],
 ];
 #[cfg(test)]
 mod tests {

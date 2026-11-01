@@ -506,6 +506,35 @@ fn elements_by_distance<'a>(shapes: &[&'a Shape], tol: f64, from: Pt) -> Vec<Vec
 }
 
 /// The job as `generate_from` makes it, with what the program asks of it (`JobOptions`).
+/// The program with the very start and the very end of the file (their variables put in) and the flavour of the device applied.
+/// With the default settings it is the text as it was.
+fn frame_and_flavour(text: &str, doc: &Document, dev: &Device, moves: &[Move]) -> String {
+    let g = &dev.gcode;
+    if g.frame == Default::default() && g.flavour.is_default() {
+        return text.to_string();
+    }
+    let info = &doc.job_info;
+    let mut common = base_core::gcode_out::Info { project_name: info.name.clone(), project_path: info.path.clone(), machine_name: dev.name.clone(), date: info.date.clone(), time: info.time.clone(), bounds: None };
+    let (mut lo, mut hi) = ([f64::INFINITY; 2], [f64::NEG_INFINITY; 2]);
+    for m in moves.iter().filter(|m| m.laser) {
+        for p in [m.a, m.b] {
+            lo = [lo[0].min(p.x), lo[1].min(p.y)];
+            hi = [hi[0].max(p.x), hi[1].max(p.y)];
+        }
+    }
+    if lo[0].is_finite() {
+        common.bounds = Some(([lo[0], lo[1], 0.0], [hi[0], hi[1], 0.0]));
+    }
+    let value = |v: &str| -> Option<String> {
+        match v {
+            "job_name" => Some(info.name.clone()),
+            other => common.value(other).or_else(|| crate::hooks::device_value(dev, other, 0)),
+        }
+    };
+    let lines = |t: &str| -> Vec<String> { t.lines().map(str::trim).filter(|l| !l.is_empty()).map(|l| base_core::gcode_out::substitute(l, &value)).collect() };
+    base_core::gcode_out::finish(text, &lines(&g.frame.very_start), &lines(&g.frame.very_end), &g.flavour)
+}
+
 pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job {
     let dev = &doc.device;
     let shapes: Vec<&Shape> = doc.scene.shapes.iter().collect();
@@ -678,7 +707,8 @@ pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job
         None => {}
     }
     let est = timing(&mut w.moves, dev, w.seconds);
-    Job { ops: w.ops, gcode: w.out, moves: w.moves, est_seconds: est, cut_length: w.cut_len }
+    let text = frame_and_flavour(&w.out, doc, dev, &w.moves);
+    Job { ops: w.ops, gcode: text, moves: w.moves, est_seconds: est, cut_length: w.cut_len }
 }
 
 /// Time of `len` mm at `v` mm/s from and to rest with acceleration `a` mm/s² (trapezoid, or triangle when short).

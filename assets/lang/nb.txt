@@ -1124,3 +1124,4 @@
 1123|Vis G-koden uten å lagre den
 1124|forhåndsvisning
 1125|G-koden vises, ingenting lagres
+1126|Enhetens egen G-kode: {}

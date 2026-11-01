@@ -1124,3 +1124,4 @@
 1123|Sýna G-kóðann án þess að vista hann
 1124|forskoðun
 1125|G-kóðinn er sýndur, ekkert er vistað
+1126|Eigin G-kóði tækisins: {}

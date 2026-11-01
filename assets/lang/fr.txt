@@ -1124,3 +1124,4 @@
 1123|Afficher le G-code sans l'enregistrer
 1124|aperçu
 1125|Le G-code est affiché, rien n'est enregistré
+1126|G-code personnalisé de l'appareil : {}
