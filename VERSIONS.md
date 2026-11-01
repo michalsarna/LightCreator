@@ -2,6 +2,18 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.5.3
+
+* **Panes made of tabs:** every pane has a bar of tabs (no list to choose from); tabs are dragged between panes or moved from the right-click menu; the last tab closed closes the pane; nothing is opened twice (a project that is open is shown by its tab). **Preview G-code** is a tab with the G-code as coloured text that can be edited (it asks to save the edits when closed). The preview has a zoom slider; the preview, the G-code text and the camera can go to a window of their own. The About window has the home page and a list of the credits. baseCreator v1.51.0.
+* **Preview opens in a pane** (never also in a window of its own); a window of a tab (preview, G-code text, camera) stays where it was put instead of sliding down.
+* **Camera files:** pictures and videos go to the folder `camera` next to the project file (`camera00`, `camera01`… when it is there already), and their names start with the project file name.
+* **Notes of the project** (the Description tab) are written at the start of the G-code as comments.
+* **Show variable names** (*View options*, off by default): the name of the variable beside the label of a field that has one; a click copies `{name}`. baseCreator v1.49.0.
+* **G-code of the file:** *Very start of the file*, *Very end of the file* and **Own file format** for controllers (decimal point after whole numbers, `%` lines, the dwell word, line numbers, no comments), and `{variables}` in the own G-code boxes; all off by default, the file is the same as before. baseCreator v1.48.0.
+* **Layer names** beside the colours (*View options*, off by default), **Preview G-code** next to *Save G-code* (shows the program without saving it) and *Preview G-code after saving* (off by default). baseCreator v1.47.0.
+* **Split view:** the work area in up to three panes (the active drawing, another open drawing to look at, the preview, the G-code analysis, the camera), side by side or stacked, and a pane can go to a window of its own on another monitor. The layout is remembered. baseCreator v1.46.0.
+* **About window:** thanks to Jakub (CNC KpK) for the ideas and suggestions for improvements, with a link to the channel. baseCreator v1.45.0.
+
 ## v0.5.2
 
 * **Insert menu:** the tools of the left palette that insert objects, the generators of plugins and the online clipart as menu commands.
