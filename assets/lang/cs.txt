@@ -809,7 +809,7 @@
 808|Číslo nástroje (T)
 809|Dvě laserové hlavy mají stejné číslo nástroje.
 810|Vlnová délka
-811|Kde je červená tečka ukazatele vůči paprsku (x doprava, y dolů). Používá ji zarovnání podle ukazatele na kartě Zařízení.
+811|Kde je červená tečka ukazatele vůči paprsku (x doprava, y dolů). Používá ji zarovnání podle ukazatele na kartě Ovládání.
 812|např. Modrá dioda
 813|Laserová hlava
 814|Rozteč je menší než stopa paprsku ({}): sousední čáry se překrývají.
@@ -840,7 +840,7 @@
 839|Makro {}: {}
 840|Makro {}: {} řádků
 841|Makra
-842|Pojmenované skripty spouštěné ručně z karty Zařízení. Jeden příkaz na řádek; komentáře za ; nebo v závorkách; @include(název) vloží jiné makro. Lze použít proměnné stroje.
+842|Pojmenované skripty spouštěné ručně z karty Ovládání. Jeden příkaz na řádek; komentáře za ; nebo v závorkách; @include(název) vloží jiné makro. Lze použít proměnné stroje.
 843|Spustit makro {}
 844|Spustí toto makro na stroji
 845|Přidat zónu
@@ -924,7 +924,7 @@
 923|Přeskočit
 924|Přeskočit tyto kroky a otevřít nastavení zařízení
 925|Souhrn
-926|Zařízení bylo přidáno. Stiskněte Pokračovat.
+926|Zařízení bylo přidáno. Začněte tlačítkem Nový.
 927|Nastavení byla přečtena z řídicí jednotky.
 928|Jaký máte stroj?
 929|Stojí za kontrolu
@@ -1128,3 +1128,4 @@
 1127|Není to adresa kamery (http, https, rtsp, udp, rtp nebo rtmp).
 1128|Živý obraz ze stroje: proud MJPEG, adresa snímku JPEG (http nebo https) nebo proud, který čte ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Překrytí z…
+1130|Přiblížení

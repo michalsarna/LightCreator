@@ -221,7 +221,7 @@ impl App {
     fn start_button(&mut self, ui: &mut egui::Ui) {
         let can = self.can_start();
         let go = egui::Button::new(RichText::new(tr("Start").to_uppercase()).color(egui::Color32::WHITE).strong()).fill(theme::accent());
-        let tip = if can { tr("Stream the job to the connected laser") } else { tr("Connect to a laser first (Laser panel)") };
+        let tip = if can { tr("Stream the job to the connected laser") } else { tr("Connect to the machine first (Device tab)") };
         if ui.add_enabled_ui(can, |ui| ui.add_sized([ui.available_width(), 40.0], go)).inner.on_hover_text(tip).on_disabled_hover_text(tip).clicked() {
             self.send_job();
         }
@@ -232,8 +232,8 @@ impl App {
     fn outline_buttons(&mut self, ui: &mut egui::Ui) {
         let on = self.connected && !self.job_running();
         let half = ((ui.available_width() - ui.spacing().item_spacing.x) / 2.0).max(60.0);
-        let tip_box = if self.connected { tr("Trace the bounding box") } else { tr("Connect to a laser first (Laser panel)") };
-        let tip_outline = if self.connected { tr("Trace the outline that wraps all the shapes, like a rubber band.") } else { tr("Connect to a laser first (Laser panel)") };
+        let tip_box = if self.connected { tr("Trace the bounding box") } else { tr("Connect to the machine first (Device tab)") };
+        let tip_outline = if self.connected { tr("Trace the outline that wraps all the shapes, like a rubber band.") } else { tr("Connect to the machine first (Device tab)") };
         let ink = if on { theme::text() } else { theme::text_dim() };
         egui::Grid::new("outline_buttons").num_columns(2).show(ui, |ui| {
             let outline = egui::Button::image_and_text(crate::icons::slot(Some("lasso-select"), ink), RichText::new(tr("Outline")).size(15.0)).min_size(egui::vec2(half, 32.0));

@@ -809,7 +809,7 @@
 808|Værktøjsnummer (T)
 809|To laserhoveder har samme værktøjsnummer.
 810|Bølgelængde
-811|Hvor den røde pegepunkt er i forhold til strålen (x til højre, y nedad). Bruges af pegeindstillingen i fanen Enhed.
+811|Hvor den røde pegepunkt er i forhold til strålen (x til højre, y nedad). Bruges af pegeindstillingen i fanen Styring.
 812|f.eks. Blå diode
 813|Laserhoved
 814|Intervallet er mindre end strålepunktet ({}): nabolinjer overlapper.
@@ -840,7 +840,7 @@
 839|Makro {}: {}
 840|Makro {}: {} linjer
 841|Makroer
-842|Navngivne scripts, du kører i hånden fra fanen Enhed. Én kommando pr. linje; kommentarer efter ; eller i parentes; @include(navn) indsætter en anden makro. Maskinens variabler kan bruges.
+842|Navngivne scripts, du kører i hånden fra fanen Styring. Én kommando pr. linje; kommentarer efter ; eller i parentes; @include(navn) indsætter en anden makro. Maskinens variabler kan bruges.
 843|Kør makroen {}
 844|Kører denne makro på maskinen
 845|Tilføj en zone
@@ -924,7 +924,7 @@
 923|Spring over
 924|Spring disse trin over og åbn enhedsindstillingerne
 925|Oversigt
-926|Enheden blev tilføjet. Tryk på Fortsæt for at starte.
+926|Enheden blev tilføjet. Tryk på Ny for at starte.
 927|Indstillingerne blev læst fra styringen.
 928|Hvilken maskine har du?
 929|Værd at tjekke
@@ -1128,3 +1128,4 @@
 1127|Ikke en kameraadresse (http, https, rtsp, udp, rtp eller rtmp).
 1128|Livebillede af maskinen: en MJPEG-strøm, en adresse til et JPEG-billede (http eller https) eller en strøm, som ffmpeg læser (rtsp, udp, rtp, rtmp).
 1129|Overlay fra…
+1130|Zoom

@@ -809,7 +809,7 @@
 808|Verktøynummer (T)
 809|To laserhoder har samme verktøynummer.
 810|Bølgelengde
-811|Hvor den røde pekeren er i forhold til strålen (x mot høyre, y nedover). Brukes av pekerjusteringen i fanen Enhet.
+811|Hvor den røde pekeren er i forhold til strålen (x mot høyre, y nedover). Brukes av pekerjusteringen i fanen Styring.
 812|f.eks. Blå diode
 813|Laserhode
 814|Intervallet er mindre enn strålepunktet ({}): nabolinjer overlapper.
@@ -840,7 +840,7 @@
 839|Makro {}: {}
 840|Makro {}: {} linjer
 841|Makroer
-842|Navngitte skript du kjører for hånd fra fanen Enhet. Én kommando per linje; kommentarer etter ; eller i parentes; @include(navn) setter inn en annen makro. Maskinens variabler kan brukes.
+842|Navngitte skript du kjører for hånd fra fanen Styring. Én kommando per linje; kommentarer etter ; eller i parentes; @include(navn) setter inn en annen makro. Maskinens variabler kan brukes.
 843|Kjør makroen {}
 844|Kjører denne makroen på maskinen
 845|Legg til en sone
@@ -924,7 +924,7 @@
 923|Hopp over
 924|Hopp over disse trinnene og åpne enhetsinnstillingene
 925|Oppsummering
-926|Enheten ble lagt til. Trykk Fortsett for å starte.
+926|Enheten ble lagt til. Trykk Ny for å starte.
 927|Innstillingene ble lest fra kontrolleren.
 928|Hvilken maskin har du?
 929|Verdt å sjekke
@@ -1128,3 +1128,4 @@
 1127|Ikke en kameraadresse (http, https, rtsp, udp, rtp eller rtmp).
 1128|Direktebilde av maskinen: en MJPEG-strøm, en adresse til et JPEG-bilde (http eller https) eller en strøm som ffmpeg leser (rtsp, udp, rtp, rtmp).
 1129|Overlegg fra…
+1130|Zoom

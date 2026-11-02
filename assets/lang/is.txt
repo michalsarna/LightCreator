@@ -809,7 +809,7 @@
 808|Verkfæranúmer (T)
 809|Tveir leysihausar hafa sama verkfæranúmer.
 810|Bylgjulengd
-811|Hvar rauði bendilspunkturinn er miðað við geislann (x til hægri, y niður). Notað af bendilsstillingu í flipanum Tæki.
+811|Hvar rauði bendilspunkturinn er miðað við geislann (x til hægri, y niður). Notað af bendilsstillingu í flipanum Stjórnun.
 812|t.d. Blá díóða
 813|Leysihaus
 814|Bilið er minna en geislabletturinn ({}): nálægar línur skarast.
@@ -840,7 +840,7 @@
 839|Fjölvi {}: {}
 840|Fjölvi {}: {} línur
 841|Fjölvar
-842|Nefnd skriftur sem þú keyrir í höndunum úr flipanum Tæki. Ein skipun í línu; athugasemdir á eftir ; eða í svigum; @include(nafn) setur inn annan fjölva. Breytur vélarinnar má nota.
+842|Nefnd skriftur sem þú keyrir í höndunum úr flipanum Stjórnun. Ein skipun í línu; athugasemdir á eftir ; eða í svigum; @include(nafn) setur inn annan fjölva. Breytur vélarinnar má nota.
 843|Keyra fjölvann {}
 844|Keyrir þennan fjölva á vélinni
 845|Bæta við svæði
@@ -924,7 +924,7 @@
 923|Sleppa
 924|Sleppa þessum skrefum og opna tækisstillingar
 925|Samantekt
-926|Tækinu var bætt við. Ýttu á Halda áfram til að byrja.
+926|Tækinu var bætt við. Ýttu á Ný til að byrja.
 927|Stillingarnar voru lesnar úr stýringunni.
 928|Hvaða vél áttu?
 929|Vert að athuga
@@ -1128,3 +1128,4 @@
 1127|Ekki vistfang myndavélar (http, https, rtsp, udp, rtp eða rtmp).
 1128|Bein mynd af vélinni: MJPEG-straumur, vistfang JPEG-skyndimyndar (http eða https) eða straumur sem ffmpeg les (rtsp, udp, rtp, rtmp).
 1129|Yfirlag frá…
+1130|Aðdráttur

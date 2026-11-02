@@ -809,7 +809,7 @@
 808	Tool number (T)
 809	Two laser heads have the same tool number.
 810	Wavelength
-811	Where the red pointer dot is relative to the beam (x right, y down). Used by the pointer alignment in the Device tab.
+811	Where the red pointer dot is relative to the beam (x right, y down). Used by the pointer alignment in the Control tab.
 812	e.g. Blue diode
 813	Laser head
 814	The interval is smaller than the beam spot ({}): neighbouring lines overlap.
@@ -840,7 +840,7 @@
 839	Macro {}: {}
 840	Macro {}: {} lines
 841	Macros
-842	Named scripts you run by hand from the Device tab. One command per line; comments after ; or in brackets; @include(name) inserts another macro. Variables of the machine can be used.
+842	Named scripts you run by hand from the Control tab. One command per line; comments after ; or in brackets; @include(name) inserts another macro. Variables of the machine can be used.
 843	Run the macro {}
 844	Runs this macro on the machine
 845	Add a zone
@@ -924,7 +924,7 @@
 923	Skip
 924	Skip these steps and open the device settings
 925	Summary
-926	The device was added. Press Continue to start.
+926	The device was added. Press New to start.
 927	The settings were read from the controller.
 928	What machine do you have?
 929	Worth checking
@@ -1128,3 +1128,4 @@
 1127	Not a camera address (http, https, rtsp, udp, rtp or rtmp).
 1128	Live picture of the machine: an MJPEG stream, a JPEG snapshot address (http or https), or a stream that ffmpeg reads (rtsp, udp, rtp, rtmp).
 1129	Overlay from…
+1130	Zoom

@@ -809,7 +809,7 @@
 808|Numéro d'outil (T)
 809|Deux têtes laser ont le même numéro d'outil.
 810|Longueur d'onde
-811|Où se trouve le point rouge du pointeur par rapport au faisceau (x vers la droite, y vers le bas). Utilisé par l'alignement sur le pointeur de l'onglet Appareil.
+811|Où se trouve le point rouge du pointeur par rapport au faisceau (x vers la droite, y vers le bas). Utilisé par l'alignement sur le pointeur de l'onglet Contrôle.
 812|p. ex. Diode bleue
 813|Tête laser
 814|L'intervalle est plus petit que le point du faisceau ({}) : les lignes voisines se chevauchent.
@@ -840,7 +840,7 @@
 839|Macro {} : {}
 840|Macro {} : {} lignes
 841|Macros
-842|Scripts nommés que vous lancez à la main depuis l'onglet Appareil. Une commande par ligne ; commentaires après ; ou entre parenthèses ; @include(nom) insère une autre macro. Les variables de la machine sont utilisables.
+842|Scripts nommés que vous lancez à la main depuis l'onglet Contrôle. Une commande par ligne ; commentaires après ; ou entre parenthèses ; @include(nom) insère une autre macro. Les variables de la machine sont utilisables.
 843|Exécuter la macro {}
 844|Exécute cette macro sur la machine
 845|Ajouter une zone
@@ -924,7 +924,7 @@
 923|Passer
 924|Passer ces étapes et ouvrir les réglages de l'appareil
 925|Résumé
-926|L'appareil a été ajouté. Appuyez sur Continuer pour commencer.
+926|L'appareil a été ajouté. Appuyez sur Nouveau pour commencer.
 927|Les réglages ont été lus depuis le contrôleur.
 928|Quelle machine avez-vous ?
 929|À vérifier
@@ -1128,3 +1128,4 @@
 1127|Ce n'est pas une adresse de caméra (http, https, rtsp, udp, rtp ou rtmp).
 1128|Image en direct de la machine : un flux MJPEG, l'adresse d'un instantané JPEG (http ou https) ou un flux lu par ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Superposition depuis…
+1130|Zoom

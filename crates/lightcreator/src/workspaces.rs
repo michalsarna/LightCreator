@@ -529,6 +529,28 @@ mod tests {
         assert!(!lc_core::autosave::slot_path(&a.data_base, "lightcreator", slot).exists(), "nothing the person gave up comes back");
     }
 
+    /// The arrows move the selected shapes, but not while they move the machine (the Keyboard switch of the Control tab): the editor took
+    /// the keys first, and jogging with the keyboard never moved anything.
+    #[test]
+    fn the_arrows_move_the_shapes_unless_they_jog_the_machine() {
+        let mut a = app();
+        draw(&mut a, 1);
+        a.ed.sel = a.doc.scene.shapes.iter().map(|s| s.id).collect();
+        let ctx = egui::Context::default();
+        let press = |a: &mut App, key: egui::Key| {
+            let ev = egui::Event::Key { key, physical_key: Some(key), pressed: true, repeat: false, modifiers: egui::Modifiers::NONE };
+            let mut out = ctx.run_ui(egui::RawInput { events: vec![ev], ..Default::default() }, |ui| a.shortcuts_for_test(ui.ctx()));
+            out.textures_delta.clear();
+        };
+        let left = |a: &App| a.doc.scene.bounds_of(&a.ed.sel).map(|r| r.min.x).unwrap();
+        let x0 = left(&a);
+        press(&mut a, egui::Key::ArrowRight);
+        assert!((left(&a) - x0 - 1.0).abs() < 1e-9, "one millimetre to the right");
+        a.keyboard_jog = true;
+        press(&mut a, egui::Key::ArrowRight);
+        assert!((left(&a) - x0 - 1.0).abs() < 1e-9, "the shapes stay: the arrow is the machine's");
+    }
+
     #[test]
     fn ctrl_digits_show_the_tabs_and_ctrl_w_closes_the_shown_one() {
         let mut a = app();
