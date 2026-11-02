@@ -3,23 +3,31 @@ G21 ; mm
 G90 ; absolute
 G17
 M4 S0
+; job: 2 layer(s) to burn, 3 object(s)
 ; layer C00 (Line) speed 20 mm/s power 60%
+; settings: number 1 of 2 to burn, 2 object(s), 1 pass(es), air assist off
 ; hook layer_start
 M117 C00 1/2
 ; badge 2026-10-11 14:05
+; object 1 of 3 start: rectangle
 ; hook object_start
 ; start Rectangle 1/3 on Golden
 ; 300x200 T0
+; path 1 of 1 start: closed, 60.0 mm
 G0 X30.000 Y150.000
 G1 X30.000 Y160.000 S600 F1200
 G1 X50.000 Y160.000
 G1 X50.000 Y150.000
 G1 X30.000 Y150.000
+; path 1 end
 ; hook object_end
 ; end 1
+; object 1 end
+; object 2 of 3 start: ellipse
 ; hook object_start
 ; start Ellipse 2/3 on Golden
 ; 300x200 T0
+; path 1 of 1 start: closed, 37.7 mm
 G0 X80.007 Y153.706
 G1 X80.000 Y154.000
 G1 X80.007 Y154.294
@@ -149,26 +157,36 @@ G1 X80.115 Y152.829
 G1 X80.065 Y153.120
 G1 X80.029 Y153.412
 G1 X80.007 Y153.706
+; path 1 end
 ; hook object_end
 ; end 2
+; object 2 end
 ; hook layer_end
 M117 done C00
-; layer C01 (Line) speed 16.666666666666668 mm/s power 100%
+; end of layer C00
+; layer C01 (Line) speed 16.667 mm/s power 100%
+; settings: number 2 of 2 to burn, 1 object(s), 1 pass(es), air assist off
 ; hook layer_start
 M117 C01 2/2
 ; badge 2026-10-11 14:05
+; object 3 of 3 start: rectangle
 ; hook object_start
 ; start Rectangle 3/3 on Golden
 ; 300x200 T0
+; path 1 of 1 start: closed, 20.0 mm
 G0 X120.000 Y155.000
 G1 X120.000 Y160.000 S1000 F1000
 G1 X125.000 Y160.000
 G1 X125.000 Y155.000
 G1 X120.000 Y155.000
+; path 1 end
 ; hook object_end
 ; end 3
+; object 3 end
 ; hook layer_end
 M117 done C01
+; end of layer C01
+; end of the job
 M5 ; laser off
 G0 X0.000 Y0.000
 M2

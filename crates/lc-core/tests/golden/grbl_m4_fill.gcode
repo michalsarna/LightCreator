@@ -3,7 +3,10 @@ G21 ; mm
 G90 ; absolute
 G17
 M4 S0
+; job: 1 layer(s) to burn, 1 object(s)
 ; layer C00 (Fill) speed 20 mm/s power 60%
+; settings: number 1 of 1 to burn, 1 object(s), 1 pass(es), air assist off
+; fill start: 10 lines, 1 mm apart, at 0°, overscan 1 mm
 G0 X29.000 Y159.500
 G1 X30.000 Y159.500 S0 F1200
 G1 X50.000 Y159.500 S600
@@ -44,6 +47,9 @@ G0 X51.000 Y150.500
 G1 X50.000 Y150.500
 G1 X30.000 Y150.500 S600
 G1 X29.000 Y150.500 S0
+; fill end
+; end of layer C00
+; end of the job
 M5 ; laser off
 G0 X0.000 Y0.000
 M2
