@@ -73,7 +73,7 @@ The program needs the X11 keyboard and OpenGL libraries: `libxkbcommon-x11` and 
 
 ## Updating
 
-LightCreator looks for a newer release when it starts (*Settings → Program options…* turns that off); *Help → Check for updates…* does it by hand and opens the download page. Install the new package over the old one: settings, device profiles and your clipart are kept. *Help → Download backup…* saves them to a zip first if you want to be safe.
+LightCreator looks for a newer release when it starts (**Settings → Program options…** turns that off); **Help → Check for updates…** does it by hand and opens the download page. Install the new package over the old one: settings, device profiles and your clipart are kept. **Help → Download backup…** saves them to a zip first if you want to be safe.
 
 ## For developers: build from source
 
