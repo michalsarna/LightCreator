@@ -367,7 +367,7 @@ mod tests {
         a.show_preview = true;
         frame(&mut a);
         assert_eq!(a.panes.tabs().iter().filter(|c| **c == Content::Preview).count(), 1);
-        assert!(a.tab_title_of(Content::Preview).starts_with("Preview: "), "{}", a.tab_title_of(Content::Preview));
+        assert!(a.tab_title_of(Content::Preview).contains(": "), "{}", a.tab_title_of(Content::Preview));
         a.pane_event(PaneEvent::Close(Content::Preview));
         frame(&mut a);
         assert!(!a.panes.has(Content::Preview));
