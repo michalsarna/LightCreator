@@ -4,7 +4,7 @@
 
 On macOS read **Ctrl** as **Cmd**. While you type in a text field the keys belong to the field (copy, paste, delete, select all and the single-letter tool keys do not act on the drawing). The **Quick guide** (**F1**) lists the main keys inside the program. Every menu entry with its key is on [Menus](Menus).
 
-**macOS:** **Ctrl+P**, **Ctrl+E** and **Ctrl+Shift+P** work only with the menu bar inside the window (Windows and Linux); on macOS use **File → Print…**, **Laser → Export G-code…** and **Laser → Preview window…**. **Cmd+Q** is **Quit** in the LightCreator menu.
+**macOS:** every key below works with Cmd, although the system menu bar shows a key only beside New, Open…, Save, Save as… and Import SVG…. **Cmd+Q** is **Quit** in the LightCreator menu.
 
 ## File
 
@@ -15,15 +15,15 @@ On macOS read **Ctrl** as **Cmd**. While you type in a text field the keys belon
 | Ctrl+S | Save |
 | Ctrl+Shift+S | Save as |
 | Ctrl+I | Import SVG |
-| Ctrl+P | Print (Windows and Linux) |
+| Ctrl+P | Print |
 | Ctrl+Q | Quit |
 
 ## Laser
 
 | Shortcut | Action |
 |---|---|
-| Ctrl+E | **Export G-code…** (Windows and Linux) |
-| Ctrl+Shift+P | **Preview window…** (Windows and Linux) |
+| Ctrl+E | **Export G-code…** |
+| Ctrl+Shift+P | **Preview window…** |
 
 ## Edit
 
@@ -35,7 +35,7 @@ On macOS read **Ctrl** as **Cmd**. While you type in a text field the keys belon
 | Ctrl+D | Duplicate |
 | Delete or Backspace | Delete the selection (in node editing: the selected nodes) |
 | Ctrl+A | Select all |
-| Arrow keys | Nudge the selection by 1 mm; **Shift** + arrow = 10 mm |
+| Arrow keys | Nudge the selection by 1 mm; **Shift** + arrow = 10 mm (not while **Keyboard** is on in the Control tab, see below) |
 
 ## Arrange
 
@@ -58,6 +58,15 @@ A single key, no modifier. The same keys are in the tooltips of the tool bar and
 | Y | Triangle | L | Line |
 | P | Polyline / pen | T | Text |
 | H | Pan | Z / X | Zoom in / zoom out |
+
+## Jogging the machine with the keyboard
+
+With **Keyboard** switched on in the **Control** tab (off by default) the keys move the machine instead of the selected shapes, by the step chosen in the tab. It needs a connection.
+
+| Key | Action |
+|---|---|
+| Arrow keys | Jog X and Y by one step |
+| Page Up / Page Down | Jog Z by one step (only on a machine with a Z axis) |
 
 ## Tabs of open drawings
 

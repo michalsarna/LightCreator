@@ -11,7 +11,7 @@ Read **Ctrl** as **Cmd** on macOS. The keys are listed in one place on [Keyboard
 **Platform differences**
 
 * **Windows and Linux:** the menu bar is drawn inside the window. **Quit** is the last entry of **File** and **About** the last entry of **Help**.
-* **macOS:** the menus are in the system menu bar. Left of **File** is the **LightCreator** menu with **About LightCreator**, Services, Hide, Hide Others, Show All and **Quit** (Cmd+Q); **File** has no Quit and **Help** has no About. After **Help** comes a **Window** menu with Minimize and Maximize. The system menu shows a key only beside **New**, **Open…**, **Save**, **Save as…** and **Import SVG…**; the other editing keys (Cmd+Z, Cmd+C, Cmd+G…) still work in the window. **Ctrl+P**, **Ctrl+E** and **Ctrl+Shift+P** have no key on macOS: use the menu entries.
+* **macOS:** the menus are in the system menu bar. Left of **File** is the **LightCreator** menu with **About LightCreator**, Services, Hide, Hide Others, Show All and **Quit** (Cmd+Q); **File** has no Quit and **Help** has no About. After **Help** comes a **Window** menu with Minimize and Maximize. The system menu shows a key only beside **New**, **Open…**, **Save**, **Save as…** and **Import SVG…**, but every key in the tables below works on macOS too (with Cmd).
 * **Linux only:** **Machine → Share over network (ser2net)…**.
 * **On the start window** only these entries do anything: **New**, **Open…**, **Open recent**, **View G-code file…**, **Quit**, **About**, **Language**, **Colour scheme**, **Restore from backup…** and **Check for updates…**. The rest wait for a project to be open.
 

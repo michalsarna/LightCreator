@@ -4,7 +4,7 @@
 
 Na macOS **Ctrl** czytaj jako **Cmd**. Gdy piszesz w polu tekstowym, klawisze należą do tego pola (kopiuj, wklej, usuń, zaznacz wszystko i jednoliterowe klawisze narzędzi nie działają wtedy na rysunek). **Krótki przewodnik** (**F1**) pokazuje najważniejsze klawisze w programie. Każda pozycja menu z jej klawiszem jest na stronie [Menu](Menu).
 
-**macOS:** **Ctrl+P**, **Ctrl+E** i **Ctrl+Shift+P** działają tylko z paskiem menu w oknie (Windows i Linux); na macOS użyj **Plik → Drukuj…**, **Laser → Eksportuj G-code…** i **Laser → Okno podglądu…**. **Cmd+Q** to **Zakończ** w menu LightCreator.
+**macOS:** każdy klawisz poniżej działa z Cmd, choć systemowy pasek menu pokazuje klawisz tylko przy Nowy, Otwórz…, Zapisz, Zapisz jako… i Importuj SVG…. **Cmd+Q** to **Zakończ** w menu LightCreator.
 
 ## Plik
 
@@ -15,15 +15,15 @@ Na macOS **Ctrl** czytaj jako **Cmd**. Gdy piszesz w polu tekstowym, klawisze na
 | Ctrl+S | Zapisz |
 | Ctrl+Shift+S | Zapisz jako |
 | Ctrl+I | Importuj SVG |
-| Ctrl+P | Drukuj (Windows i Linux) |
+| Ctrl+P | Drukuj |
 | Ctrl+Q | Zakończ |
 
 ## Laser
 
 | Skrót | Działanie |
 |---|---|
-| Ctrl+E | **Eksportuj G-code…** (Windows i Linux) |
-| Ctrl+Shift+P | **Okno podglądu…** (Windows i Linux) |
+| Ctrl+E | **Eksportuj G-code…** |
+| Ctrl+Shift+P | **Okno podglądu…** |
 
 ## Edycja
 
@@ -35,7 +35,7 @@ Na macOS **Ctrl** czytaj jako **Cmd**. Gdy piszesz w polu tekstowym, klawisze na
 | Ctrl+D | Powiel |
 | Delete lub Backspace | Usuń zaznaczenie (w edycji węzłów: zaznaczone węzły) |
 | Ctrl+A | Zaznacz wszystko |
-| Strzałki | Przesuń zaznaczenie o 1 mm; **Shift** + strzałka = 10 mm |
+| Strzałki | Przesuń zaznaczenie o 1 mm; **Shift** + strzałka = 10 mm (nie wtedy, gdy w zakładce Sterowanie jest włączona **Klawiatura**, zobacz niżej) |
 
 ## Rozmieszczenie
 
@@ -58,6 +58,15 @@ Jeden klawisz, bez modyfikatora. Te same klawisze są w podpowiedziach paska nar
 | Y | Trójkąt | L | Linia |
 | P | Linia łamana / pióro | T | Tekst |
 | H | Przesuwanie widoku | Z / X | Powiększ / pomniejsz |
+
+## Ruch maszyny z klawiatury
+
+Gdy w zakładce **Sterowanie** (Control) jest włączona **Klawiatura** (Keyboard; domyślnie wyłączona), klawisze przesuwają maszynę zamiast zaznaczonych kształtów, o krok wybrany w tej zakładce. Wymaga połączenia.
+
+| Klawisz | Działanie |
+|---|---|
+| Strzałki | Ruch X i Y o jeden krok |
+| Page Up / Page Down | Ruch Z o jeden krok (tylko na maszynie z osią Z) |
 
 ## Karty otwartych rysunków
 

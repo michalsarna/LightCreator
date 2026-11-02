@@ -11,7 +11,7 @@ Na macOS **Ctrl** czytaj jako **Cmd**. Wszystkie klawisze są zebrane w jednym m
 **Różnice między systemami**
 
 * **Windows i Linux:** pasek menu jest rysowany w oknie programu. **Zakończ** (Quit) jest ostatnią pozycją menu **Plik**, a **O programie** (About) ostatnią pozycją menu **Pomoc**.
-* **macOS:** menu są w systemowym pasku menu. Na lewo od **Plik** jest menu **LightCreator** z pozycjami **O programie LightCreator**, Services, Hide, Hide Others, Show All i **Zakończ** (Cmd+Q); **Plik** nie ma pozycji Zakończ, a **Pomoc** nie ma O programie. Po **Pomoc** jest jeszcze menu **Window** z pozycjami Minimize i Maximize. Systemowe menu pokazuje klawisz tylko przy **Nowy**, **Otwórz…**, **Zapisz**, **Zapisz jako…** i **Importuj SVG…**; pozostałe klawisze edycji (Cmd+Z, Cmd+C, Cmd+G…) działają w oknie mimo to. **Ctrl+P**, **Ctrl+E** i **Ctrl+Shift+P** nie mają klawisza na macOS: użyj pozycji menu.
+* **macOS:** menu są w systemowym pasku menu. Na lewo od **Plik** jest menu **LightCreator** z pozycjami **O programie LightCreator**, Services, Hide, Hide Others, Show All i **Zakończ** (Cmd+Q); **Plik** nie ma pozycji Zakończ, a **Pomoc** nie ma O programie. Po **Pomoc** jest jeszcze menu **Window** z pozycjami Minimize i Maximize. Systemowe menu pokazuje klawisz tylko przy **Nowy**, **Otwórz…**, **Zapisz**, **Zapisz jako…** i **Importuj SVG…**, ale każdy klawisz z tabel poniżej działa także na macOS (z Cmd).
 * **Tylko Linux:** **Maszyna → Udostępnij w sieci (ser2net)…**.
 * **W oknie startowym** działają tylko te pozycje: **Nowy**, **Otwórz…**, **Otwórz ostatnie**, **Pokaż plik G-code…**, **Zakończ**, **O programie**, **Język**, **Schemat kolorów**, **Przywróć z kopii zapasowej…** i **Sprawdź aktualizacje…**. Reszta czeka, aż otworzysz projekt.
 
