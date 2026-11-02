@@ -73,7 +73,7 @@ Program potrzebuje bibliotek klawiatury X11 i OpenGL: `libxkbcommon-x11` oraz `m
 
 ## Aktualizacja
 
-LightCreator przy starcie sprawdza, czy jest nowsze wydanie (*Ustawienia → Opcje programu…* wyłącza to); *Pomoc → Sprawdź aktualizacje…* robi to ręcznie i otwiera stronę pobierania. Zainstaluj nowy pakiet na starym: ustawienia, profile urządzeń i clipart zostają. *Pomoc → Pobierz kopię zapasową…* zapisze je wcześniej do pliku zip.
+LightCreator przy starcie sprawdza, czy jest nowsze wydanie (**Ustawienia → Opcje programu…** wyłącza to); **Pomoc → Sprawdź aktualizacje…** robi to ręcznie i otwiera stronę pobierania. Zainstaluj nowy pakiet na starym: ustawienia, profile urządzeń i clipart zostają. **Pomoc → Pobierz kopię zapasową…** zapisze je wcześniej do pliku zip.
 
 ## Dla developera: budowanie ze źródeł
 

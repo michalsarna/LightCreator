@@ -14,6 +14,7 @@ An open-source alternative to [LightBurn](https://lightburnsoftware.com/) for CN
 |---|---|
 | Install the program | [Installation](Installation) |
 | Make my first burn | [Quick Start](Quick-Start) |
+| Find a menu entry and what it does | [Menus](Menus) |
 | Draw, edit and import | [Design Tools](Design-Tools) |
 | Set speed, power, fill, images | [Cuts and Layers](Cuts-and-Layers) |
 | Connect a laser or camera | [Devices and Controllers](Devices-and-Controllers) |
@@ -30,7 +31,8 @@ An open-source alternative to [LightBurn](https://lightburnsoftware.com/) for CN
 * **Design:** shapes, Bézier node editing, text, boolean operations, offset, round corners, grouping, locking; SVG / Illustrator / PDF / DXF and bitmap import, image tracing, arrays, text on a path, trimming, serial text, QR codes and nesting.
 * **Engraving:** line, fill, offset fill and raster images with six dithering methods and grayscale power; 64 LightBurn-style cut layers; preview with time estimate.
 * **Devices:** per-machine profiles; GRBL and Marlin over serial or TCP (ser2net); Ruida and Trocen via PLT / DXF export.
-* **Helpers:** camera overlay with four-corner alignment, 310-picture clipart gallery with online search.
+* **Helpers:** camera view with photos, video and time-lapse (MJPEG, RTSP, UDP, RTP, RTMP), camera overlay with four-corner alignment saved in the project, the G-code as editable text, 310-picture clipart gallery with online search.
+* **Work area:** tabs of drawings, preview, G-code and camera in up to three panes; a tab can open in a window of its own.
 * **Interface:** 30 languages (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी and 23 other European ones) and 14 colour schemes.
 
 > ⚠️ **Safety:** lasers are dangerous. Test G-code at low power, wear eye protection, never leave a running machine unattended. See [Safety and Limitations](Safety-and-Limitations).
