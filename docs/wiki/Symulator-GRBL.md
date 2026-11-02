@@ -17,7 +17,7 @@ Symulator jest w [baseCreator](https://github.com/michalsarna/baseCreator) (`too
 ```sh
 python3 tools/grbl-sim/serve.py        # nasłuchuje na 127.0.0.1:3333
 ```
-W *Machine → Device settings* wybierz sterownik **GRBL**, połączenie **TCP**, host `127.0.0.1`, port `3333` i połącz. Każde połączenie uruchamia świeży symulator z ustawieniami domyślnymi. Dla szybszych przebiegów wyślij w konsoli: `$110=30000`, `$111=30000`, `$120=5000`, `$121=5000`, `$32=1`. `-v` zachowuje ślady kroków i bloków.
+W **Maszyna → Ustawienia urządzenia…** (Machine → Device settings…) wybierz sterownik **GRBL**, a na stronie **Połączenie** typ połączenia **Sieć (TCP, np. ser2net)** z hostem `127.0.0.1` i portem TCP `3333`, potem naciśnij **Połącz** w zakładce **Urządzenie**. Każde połączenie uruchamia świeży symulator z ustawieniami domyślnymi. Dla szybszych przebiegów wyślij w konsoli: `$110=30000`, `$111=30000`, `$120=5000`, `$121=5000`, `$32=1`. `-v` zachowuje ślady kroków i bloków.
 
 Wirtualny port szeregowy w Linuksie:
 ```sh

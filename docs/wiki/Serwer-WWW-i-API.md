@@ -4,7 +4,7 @@
 
 ![Opcje](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/36-options-web-server.png)
 
-*Opcje programu → Serwer WWW i API* włącza mały serwer WWW wbudowany w LightCreator. Jest **domyślnie wyłączony**. Pokazuje w przeglądarce (także na telefonie) stan maszyny, projekt i kamerę oraz udostępnia API dla innych programów.
+**Ustawienia → Opcje programu… → Serwer WWW i API** włącza mały serwer WWW wbudowany w LightCreator. Jest **domyślnie wyłączony**. Pokazuje w przeglądarce (także na telefonie) stan maszyny, projekt i kamerę oraz udostępnia API dla innych programów.
 
 **Każde żądanie wymaga hasła dostępu** (ustawianego w tych samych opcjach przyciskiem *Zapisz* obok pola; na początku to `LightCreator`, zmień je, zanim wpuścisz inne komputery). Przeglądarka o nie zapyta (dowolna nazwa użytkownika, hasło w polu hasła); programy wysyłają je jako uwierzytelnianie HTTP Basic, np. `curl -u dowolny:LightCreator http://localhost:8765/api/status`. Złe hasło kończy się odpowiedzią 401 po krótkim oczekiwaniu. **Nie ma szyfrowania**, więc hasło i dane może przeczytać każdy, kto podsłuchuje sieć, a hasło leży w `app.ron` zapisane jako base64 (nie widać go na pierwszy rzut oka, ale base64 to kodowanie, a nie szyfrowanie). Domyślnie serwer nasłuchuje tylko na tym komputerze (`http://localhost:8765`). *Dostępny z innych komputerów w sieci* włącza nasłuch na wszystkich interfejsach: wtedy każdy w sieci może zobaczyć maszynę oraz ją zatrzymać lub poruszyć. Używaj tego tylko w sieci, której ufasz, i nigdy nie otwieraj portu do internetu.
 
