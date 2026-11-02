@@ -51,3 +51,16 @@ Niezaimplementowane z ustawień cięcia innych programów: podwarstwy (kilka ust
 **Okno materiałów.** **Laser → Materiały…** (Materials…) otwiera okno do zarządzania materiałami urządzenia: po lewej lista (kropka oznacza materiał używany przez projekt, kwadrat pokazuje jego kolor), z przyciskami dodawania materiału (**+**), kopiowania, przesuwania w górę i w dół oraz usuwania, a po prawej nazwa i kolor wybranego materiału (**Save** je zatwierdza) oraz jego warstwy ze wszystkimi ustawieniami, które można tam zmieniać, dodawać (**Add layer**) lub usuwać. **Export…** zapisuje wybrany materiał do pliku (`.json`), **Export all…** wszystkie, a **Import…** wczytuje taki plik; materiał o nazwie, która już jest na liście, zostaje pod inną nazwą (*Nazwa (2)*) albo, przy **Replace materials that have the same name**, ją zastępuje. Plik jest przy imporcie ściśle sprawdzany (rozmiar, liczba materiałów, każda liczba), a plik z nowszej wersji jest odrzucany.
 
 ![Okno materiałów](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/41-materials-window.png)
+
+## Komentarze w G-code
+
+G-code mówi w komentarzach (`; …`), gdzie co się zaczyna i kończy, żeby plik dało się czytać i znaleźć w nim przerwane zadanie:
+
+* `; job: …` z liczbą warstw i obiektów (i elementów, przy **Element po elemencie**);
+* dla każdej warstwy `; layer nazwa (tryb) speed … power …` i `; settings: …` (jej numer w zadaniu, obiekty, przejścia, asysta powietrza, krok Z), a na jej końcu `; end of layer nazwa`;
+* `; pass 2/3` dla każdego przejścia;
+* `; object 2 of 5 start: rectangle` / `; object 2 end` wokół linii obiektu (gdy najkrótsza droga prowadzi laser do innego obiektu i z powrotem, obiekt zaczyna się znowu z `(again)`), `; element 1 of 4 start` / `; element 1 end` przy **Element po elemencie**;
+* `; path 3 of 12 start: closed, 60.0 mm` / `; path 3 end` dla każdej linii, `; fill start: 40 lines, 0.1 mm apart, at 0°, overscan 2 mm` / `; fill end`, `; offset fill start` z jego pierścieniami, `; picture 1 of 2 start: 300 rows` / `; picture 1 end`;
+* `; end of the job`.
+
+Wypełnienie to jeden zestaw linii przez wszystkie obiekty warstwy, więc nie ma komentarzy dla poszczególnych obiektów. Komentarze nie są wysyłane do maszyny. **Usuń komentarze** w ustawieniach urządzenia pomija je w pliku.

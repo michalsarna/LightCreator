@@ -2465,3 +2465,21 @@ fn a_job_of_the_selection_burns_only_those_shapes_in_either_order() {
     let placed = gcode::placed_at(&d.only_shapes(&[mid]), Pt::new(0.0, 0.0));
     assert_eq!(burnt(&placed, false), vec![0]);
 }
+
+#[test]
+fn the_gcode_says_where_every_object_layer_and_path_starts_and_ends() {
+    let mut d = Document::default();
+    d.layers[0].mode = LayerMode::Line;
+    d.add(0, Kind::Rect { w: 20.0, h: 10.0 }, Xf::translate(10.0, 10.0));
+    d.add(0, Kind::Ellipse { w: 8.0, h: 8.0 }, Xf::translate(60.0, 10.0));
+    let g = gcode::generate(&d).gcode;
+    for want in ["; job: 1 layer(s) to burn, 2 object(s)", "; object 1 of 2 start: rectangle", "; object 1 end", "; object 2 of 2 start: ellipse", "; object 2 end", "; path 1 of 2 start: closed", "; path 2 end", "; end of layer", "; end of the job"] {
+        assert!(g.contains(want), "{want} missing in:\n{g}");
+    }
+    // The sender takes a comment that starts with "layer" for the start of a layer: only the layer line itself does.
+    let marks = g.lines().filter(|l| l.strip_prefix(';').is_some_and(|c| c.trim_start().to_ascii_lowercase().starts_with("layer"))).count();
+    assert_eq!(marks, 1, "{g}");
+    // Without the comments the G-code is what it was.
+    let commands: Vec<&str> = g.lines().filter(|l| !l.starts_with(';')).collect();
+    assert!(commands.iter().all(|l| !l.contains("object") && !l.contains("path")));
+}

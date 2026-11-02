@@ -253,7 +253,12 @@ impl<'a> Writer<'a> {
 
 /// Reorder paths: inner closed shapes first, then nearest-neighbour.
 pub fn order_paths(paths: Vec<Polyline>, start: Pt) -> Vec<Polyline> {
-    let paths: Vec<Polyline> = paths.into_iter().filter(|p| p.pts.len() >= 2).collect();
+    order_tagged(paths.into_iter().map(|p| (p, ())).collect(), start).into_iter().map(|(p, _)| p).collect()
+}
+
+/// `order_paths` for paths that carry a tag (such as the object they belong to): each keeps its tag.
+pub fn order_tagged<T: Clone>(paths: Vec<(Polyline, T)>, start: Pt) -> Vec<(Polyline, T)> {
+    let (paths, tags): (Vec<Polyline>, Vec<T>) = paths.into_iter().filter(|(p, _)| p.pts.len() >= 2).unzip();
     let n = paths.len();
     let depth: Vec<usize> = (0..n)
         .map(|i| {
@@ -270,11 +275,11 @@ pub fn order_paths(paths: Vec<Polyline>, start: Pt) -> Vec<Polyline> {
     let mut result = Vec::with_capacity(n);
     let mut cur = start;
     for d in (0..=max_depth).rev() {
-        let mut group: Vec<Polyline> =
-            paths.iter().enumerate().filter(|(i, _)| depth[*i] == d).map(|(_, p)| p.clone()).collect();
+        let mut group: Vec<(Polyline, &T)> =
+            paths.iter().enumerate().filter(|(i, _)| depth[*i] == d).map(|(i, p)| (p.clone(), &tags[i])).collect();
         while !group.is_empty() {
             let mut best = (0usize, f64::INFINITY, false, 0usize);
-            for (i, p) in group.iter().enumerate() {
+            for (i, (p, _)) in group.iter().enumerate() {
                 if p.closed {
                     for (k, q) in p.pts.iter().enumerate() {
                         let dd = q.dist(cur);
@@ -292,14 +297,14 @@ pub fn order_paths(paths: Vec<Polyline>, start: Pt) -> Vec<Polyline> {
                     }
                 }
             }
-            let mut p = group.swap_remove(best.0);
+            let (mut p, tag) = group.swap_remove(best.0);
             if p.closed {
                 p.pts.rotate_left(best.3);
             } else if best.2 {
                 p.pts.reverse();
             }
             cur = if p.closed { p.pts[0] } else { p.pts[p.pts.len() - 1] };
-            result.push(p);
+            result.push((p, tag.clone()));
         }
     }
     result
@@ -365,30 +370,85 @@ fn shape_label(sh: &Shape) -> String {
 }
 
 /// Burn one set of paths and images with the settings of `layer`: images, offset rings, fill, outline.
-fn burn(w: &mut Writer, li: usize, layer: &Layer, polys: &[Polyline], images: &[&Shape], pn: u32, pt: u32) {
-    for sh in images {
+/// The length of a line, in mm (closed: with the way back to the start).
+fn path_length(p: &Polyline) -> f64 {
+    let mut pts = p.pts.clone();
+    if p.closed && !pts.is_empty() {
+        pts.push(pts[0]);
+    }
+    pts.windows(2).map(|w| ((w[1].x - w[0].x).powi(2) + (w[1].y - w[0].y).powi(2)).sqrt()).sum()
+}
+
+/// The comment before a line that is cut or engraved in one go.
+fn path_start(w: &mut Writer, i: usize, n: usize, p: &Polyline) {
+    let _ = writeln!(w.out, "; path {} of {} start: {}, {:.1} mm", i + 1, n, if p.closed { "closed" } else { "open" }, path_length(p));
+}
+
+/// What an object is, in a few words for a comment of the G-code (nothing that could end or open a comment).
+fn describe(sh: &Shape) -> String {
+    let s = match &sh.kind {
+        Kind::Rect { .. } => "rectangle".to_string(),
+        Kind::Ellipse { .. } => "ellipse".to_string(),
+        Kind::Path(p) => format!("lines ({})", p.len()),
+        Kind::Bezier(c) => format!("curve ({} parts)", c.len()),
+        Kind::Image(_) => "picture".to_string(),
+        Kind::Text(t) => format!("text \"{}\"", t.text.chars().take(30).collect::<String>()),
+    };
+    s.chars().map(|c| if matches!(c, ';' | '(' | ')' | '\n' | '\r') { ' ' } else { c }).collect()
+}
+
+/// The object a path belongs to, for the comments: its number in the job and what it is.
+type Tag = Option<(usize, String)>;
+
+/// Comments where the paths go from one object to another (`seen`: the objects begun before, which get "again").
+fn object_switch(w: &mut Writer, from: &Tag, to: &Tag, total: usize, seen: &mut Vec<usize>) {
+    if from.as_ref().map(|t| t.0) == to.as_ref().map(|t| t.0) {
+        return;
+    }
+    if let Some((no, _)) = from {
+        let _ = writeln!(w.out, "; object {no} end");
+    }
+    if let Some((no, what)) = to {
+        let again = if seen.contains(no) { " (again)" } else { "" };
+        seen.push(*no);
+        let _ = writeln!(w.out, "; object {no} of {total} start{again}: {what}");
+    }
+}
+
+/// `tags`: for each of `polys` the object it comes from (empty when the paths are of one object that has its own comments).
+#[allow(clippy::too_many_arguments)]
+fn burn(w: &mut Writer, li: usize, layer: &Layer, polys: &[Polyline], tags: &[Tag], total: usize, images: &[&Shape], pn: u32, pt: u32) {
+    for (i, sh) in images.iter().enumerate() {
         if let Kind::Image(im) = &sh.kind {
             w.begin_op(li, OpKind::Image, pn, pt);
             let rows = crate::raster::rows_for(sh, im, layer);
+            let _ = writeln!(w.out, "; picture {} of {} start: {} rows", i + 1, images.len(), rows.len());
             w.raster(&rows, layer);
+            let _ = writeln!(w.out, "; picture {} end", i + 1);
         }
     }
     if layer.mode == LayerMode::Offset {
         w.begin_op(li, OpKind::Offset, pn, pt);
-        let rings = crate::ops::inset_rings(polys, layer.interval, 10_000);
-        for p in order_paths(rings, w.pos) {
+        let rings = order_paths(crate::ops::inset_rings(polys, layer.interval, 10_000), w.pos);
+        let _ = writeln!(w.out, "; offset fill start: {} rings, {} mm apart", rings.len(), layer.interval);
+        for (i, p) in rings.iter().enumerate() {
+            let _ = writeln!(w.out, "; ring {} of {} start: {:.1} mm", i + 1, rings.len(), path_length(p));
             w.travel(p.pts[0]);
             let mut pts = p.pts.clone();
             if p.closed {
                 pts.push(p.pts[0]);
             }
             w.stroke(&pts, layer.power, layer.speed);
+            let _ = writeln!(w.out, "; ring {} end", i + 1);
         }
+        let _ = writeln!(w.out, "; offset fill end");
     }
     if matches!(layer.mode, LayerMode::Fill | LayerMode::FillAndLine) {
         w.begin_op(li, OpKind::Fill, pn, pt);
         let os = layer.overscan.max(0.0);
-        for (a, b) in fill_lines(polys, layer.interval, layer.angle, layer.bidirectional) {
+        let lines = fill_lines(polys, layer.interval, layer.angle, layer.bidirectional);
+        let _ = writeln!(w.out, "; fill start: {} lines, {} mm apart, at {}°, overscan {} mm", lines.len(), layer.interval, layer.angle, os);
+        for (a, b) in lines {
             let d = Pt::new(b.x - a.x, b.y - a.y);
             let len = (d.x * d.x + d.y * d.y).sqrt();
             let u = Pt::new(d.x / len, d.y / len);
@@ -402,12 +462,16 @@ fn burn(w: &mut Writer, li: usize, layer: &Layer, polys: &[Polyline], images: &[
                 w.line(post, 0.0, layer.speed);
             }
         }
+        let _ = writeln!(w.out, "; fill end");
     }
     if matches!(layer.mode, LayerMode::Line | LayerMode::FillAndLine) && !polys.is_empty() && layer.has_cut_options() {
         w.begin_op(li, OpKind::Line, pn, pt);
         let paths = if layer.kerf != 0.0 { crate::cutopts::kerf_paths(polys, layer.kerf) } else { polys.to_vec() };
         let all = paths.clone();
-        for p in order_paths(paths, w.pos) {
+        let ordered = order_paths(paths, w.pos);
+        let n = ordered.len();
+        for (i, p) in ordered.into_iter().enumerate() {
+            path_start(w, i, n, &p);
             let is_inner = layer.tabs.enabled && layer.tabs.skip_inner && crate::cutopts::is_inner(&p, &all);
             for piece in crate::cutopts::pieces(&p, &layer.perforation, &layer.tabs, is_inner) {
                 if piece.pts.len() < 2 {
@@ -420,17 +484,27 @@ fn burn(w: &mut Writer, li: usize, layer: &Layer, polys: &[Polyline], images: &[
                     w.stroke(&piece.pts, layer.power * piece.factor, layer.speed);
                 }
             }
+            let _ = writeln!(w.out, "; path {} end", i + 1);
         }
     } else if matches!(layer.mode, LayerMode::Line | LayerMode::FillAndLine) && !polys.is_empty() {
         w.begin_op(li, OpKind::Line, pn, pt);
-        for p in order_paths(polys.to_vec(), w.pos) {
+        let tagged: Vec<(Polyline, Tag)> = polys.iter().enumerate().map(|(i, p)| (p.clone(), tags.get(i).cloned().flatten())).collect();
+        let ordered = order_tagged(tagged, w.pos);
+        let n = ordered.len();
+        let (mut current, mut seen): (Tag, Vec<usize>) = (None, vec![]);
+        for (i, (p, tag)) in ordered.into_iter().enumerate() {
+            object_switch(w, &current, &tag, total, &mut seen);
+            current = tag;
+            path_start(w, i, n, &p);
             w.travel(p.pts[0]);
             let mut pts = p.pts.clone();
             if p.closed {
                 pts.push(p.pts[0]);
             }
             w.stroke(&pts, layer.power, layer.speed);
+            let _ = writeln!(w.out, "; path {} end", i + 1);
         }
+        object_switch(w, &current, &None, total, &mut seen);
     }
 }
 
@@ -585,28 +659,43 @@ pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job
     let burning: Vec<usize> = doc.layer_order().into_iter().filter(|&li| doc.layers[li].output && shapes.iter().any(|s| s.layer == li)).collect();
     let tol = dev.gcode.flatten_tolerance.clamp(0.001, 5.0);
     // What is burnt in one go: the shapes of a layer, or (one by one) the shapes of an element on a layer.
-    let mut items: Vec<(usize, Vec<&Shape>)> = vec![];
+    let mut items: Vec<(usize, Vec<&Shape>, Option<usize>)> = vec![];
+    let mut elements_total = 0;
     if opts.one_by_one {
         let on_output: Vec<&Shape> = shapes.iter().copied().filter(|s| burning.contains(&s.layer)).collect();
-        for element in elements_by_distance(&on_output, tol, dev.home_point()) {
+        let elements = elements_by_distance(&on_output, tol, dev.home_point());
+        elements_total = elements.len();
+        for (ei, element) in elements.into_iter().enumerate() {
             for &li in &burning {
                 let on_layer: Vec<&Shape> = element.iter().copied().filter(|s| s.layer == li).collect();
                 if !on_layer.is_empty() {
-                    items.push((li, on_layer));
+                    items.push((li, on_layer, Some(ei)));
                 }
             }
         }
     } else {
         for &li in &burning {
-            items.push((li, shapes.iter().copied().filter(|s| s.layer == li).collect()));
+            items.push((li, shapes.iter().copied().filter(|s| s.layer == li).collect(), None));
         }
     }
     let layers_total = if opts.one_by_one { items.len() } else { burning.len() };
     let objects_total = shapes.iter().filter(|s| burning.contains(&s.layer)).count();
     // The objects in the order they are burnt, for `{workpiece_index}`.
-    let object_order: Vec<u64> = items.iter().flat_map(|(_, m)| m.iter().map(|s| s.id)).collect();
+    let object_order: Vec<u64> = items.iter().flat_map(|(_, m, _)| m.iter().map(|s| s.id)).collect();
+    // (Not "; layers…": a comment that starts with "layer" marks the start of a layer for the sender.)
+    let _ = writeln!(w.out, "; job: {} layer(s) to burn, {} object(s){}", burning.len(), objects_total, if opts.one_by_one { format!(", one element after the other ({elements_total})") } else { String::new() });
     let mut layer_no = 0usize;
-    for (li, members) in items {
+    let mut element: Option<usize> = None;
+    for (li, members, elem) in items {
+        if elem != element {
+            if let Some(e) = element {
+                let _ = writeln!(w.out, "; element {} end", e + 1);
+            }
+            if let Some(e) = elem {
+                let _ = writeln!(w.out, "; element {} of {} start: {} object(s)", e + 1, elements_total, members.len());
+            }
+            element = elem;
+        }
         let layer = &doc.layers[li];
         let polys: Vec<Polyline> = members.iter().filter(|s| !s.is_image()).flat_map(|s| s.polys_tol(tol)).collect();
         let images: Vec<&Shape> = members.iter().copied().filter(|s| s.is_image()).collect();
@@ -616,7 +705,18 @@ pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job
         w.layer = li;
         w.head = layer.head.min(dev.heads.len() - 1);
         w.rot = (dev.rotary.enabled && layer.rotary && dev.rotary_mode() == RotaryMode::TrueA).then(|| dev.rotary.degrees_per_mm());
-        let _ = writeln!(w.out, "; layer {} ({}) speed {} mm/s power {}%", layer.name, layer.mode.label(), layer.speed, layer.power);
+        let round = |v: f64| (v * 1000.0).round() / 1000.0;
+        let _ = writeln!(w.out, "; layer {} ({}) speed {} mm/s power {}%", layer.name, layer.mode.label(), round(layer.speed), round(layer.power));
+        let _ = writeln!(
+            w.out,
+            "; settings: number {} of {} to burn, {} object(s), {} pass(es), air assist {}{}",
+            layer_no + 1,
+            layers_total,
+            members.len(),
+            layer.passes.max(1),
+            if layer.air_assist { "on" } else { "off" },
+            if dev.axes.has_z && layer.passes > 1 { format!(", Z step {} mm", layer.z_step) } else { String::new() }
+        );
         // With several heads the controller is told which one burns this layer.
         if dev.heads.len() > 1 && w.head != tool {
             tool = w.head;
@@ -644,6 +744,8 @@ pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job
         // over all).
         let per_object = dev.gcode.hooks.per_object();
         let passes = layer.passes.max(1);
+        let number = |s: &Shape| object_order.iter().position(|id| *id == s.id).map_or(0, |i| i + 1);
+        let tags: Vec<Tag> = if per_object { vec![] } else { members.iter().filter(|s| !s.is_image()).flat_map(|s| s.polys_tol(tol).into_iter().map(move |_| Some((number(s), describe(s))))).collect() };
         let sets: Vec<(Vec<Polyline>, Vec<&Shape>, Option<&Shape>)> = if per_object {
             members
                 .iter()
@@ -680,15 +782,22 @@ pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job
             last_pass = Some(pass);
             if let Some(sh) = shape {
                 let no = object_order.iter().position(|id| *id == sh.id).map_or(0, |i| i + 1);
+                let _ = writeln!(w.out, "; object {} of {} start: {}", no, objects_total, describe(sh));
                 w.hook(&dev.gcode.hooks.object_start, "object_start", &ctx, Some((sh, no)));
-                burn(&mut w, li, layer, polys, images, pn, pt);
+                burn(&mut w, li, layer, polys, &[], objects_total, images, pn, pt);
                 w.hook(&dev.gcode.hooks.object_end, "object_end", &ctx, Some((sh, no)));
+                let _ = writeln!(w.out, "; object {} end", no);
             } else {
-                burn(&mut w, li, layer, polys, images, pn, pt);
+                burn(&mut w, li, layer, polys, &tags, objects_total, images, pn, pt);
             }
         }
         w.hook(&dev.gcode.hooks.layer_end, "layer_end", &ctx, None);
+        let _ = writeln!(w.out, "; end of layer {}", layer.name);
     }
+    if let Some(e) = element {
+        let _ = writeln!(w.out, "; element {} end", e + 1);
+    }
+    let _ = writeln!(w.out, "; end of the job");
     w.rot = None;
     let _ = writeln!(w.out, "{}", if dialect == Dialect::Marlin { "M5 I ; laser off" } else { "M5 ; laser off" });
     if dev.gcode.return_home {

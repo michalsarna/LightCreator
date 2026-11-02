@@ -3,7 +3,10 @@ G21 ; mm
 G90 ; absolute
 G17
 M4 S0
-; layer C00 (Line) speed 16.666666666666668 mm/s power 100%
+; job: 1 layer(s) to burn, 1 object(s)
+; layer C00 (Line) speed 16.667 mm/s power 100%
+; settings: number 1 of 1 to burn, 1 object(s), 1 pass(es), air assist off
+; picture 1 of 1 start: 16 rows
 G0 X49.000 Y149.750
 G1 X50.000 Y149.750 S0 F1000
 G1 X58.000 Y149.750 S1000
@@ -68,6 +71,9 @@ G0 X59.000 Y142.250
 G1 X58.000 Y142.250
 G1 X50.000 Y142.250 S1000
 G1 X49.000 Y142.250 S0
+; picture 1 end
+; end of layer C00
+; end of the job
 M5 ; laser off
 G0 X0.000 Y0.000
 M2

@@ -3,9 +3,12 @@ G21 ; mm
 G90 ; absolute
 G17
 M4 S0
+; job: 3 layer(s) to burn, 3 object(s)
 ; layer C00 (Fill + Line) speed 20 mm/s power 60%
+; settings: number 1 of 3 to burn, 1 object(s), 2 pass(es), air assist on
 M8 ; air assist on
 ; pass 1/2
+; fill start: 10 lines, 1 mm apart, at 0°, overscan 1 mm
 G0 X29.000 Y159.500
 G1 X30.000 Y159.500 S0 F1200
 G1 X50.000 Y159.500 S600
@@ -46,12 +49,18 @@ G0 X51.000 Y150.500
 G1 X50.000 Y150.500
 G1 X30.000 Y150.500 S600
 G1 X29.000 Y150.500 S0
+; fill end
+; object 1 of 3 start: rectangle
+; path 1 of 1 start: closed, 60.0 mm
 G0 X30.000 Y150.000
 G1 X30.000 Y160.000 S600
 G1 X50.000 Y160.000
 G1 X50.000 Y150.000
 G1 X30.000 Y150.000
+; path 1 end
+; object 1 end
 ; pass 2/2
+; fill start: 10 lines, 1 mm apart, at 0°, overscan 1 mm
 G0 X29.000 Y159.500
 G1 X30.000 Y159.500 S0
 G1 X50.000 Y159.500 S600
@@ -92,13 +101,22 @@ G0 X51.000 Y150.500
 G1 X50.000 Y150.500
 G1 X30.000 Y150.500 S600
 G1 X29.000 Y150.500 S0
+; fill end
+; object 1 of 3 start: rectangle
+; path 1 of 1 start: closed, 60.0 mm
 G0 X30.000 Y150.000
 G1 X30.000 Y160.000 S600
 G1 X50.000 Y160.000
 G1 X50.000 Y150.000
 G1 X30.000 Y150.000
+; path 1 end
+; object 1 end
+; end of layer C00
 ; layer C01 (Line) speed 5 mm/s power 100%
+; settings: number 2 of 3 to burn, 1 object(s), 1 pass(es), air assist off
 M9 ; air assist off
+; object 2 of 3 start: ellipse
+; path 1 of 1 start: closed, 41.4 mm
 G0 X100.087 Y135.734
 G1 X100.154 Y135.975 S1000 F300
 G1 X100.240 Y136.215
@@ -228,32 +246,50 @@ G1 X100.000 Y135.000
 G1 X100.010 Y135.245
 G1 X100.039 Y135.490
 G1 X100.087 Y135.734
-; layer C02 (Offset fill) speed 16.666666666666668 mm/s power 35%
+; path 1 end
+; object 2 end
+; end of layer C01
+; layer C02 (Offset fill) speed 16.667 mm/s power 35%
+; settings: number 3 of 3 to burn, 1 object(s), 1 pass(es), air assist off
+; offset fill start: 5 rings, 1.5 mm apart
+; ring 1 of 5 start: 12.0 mm
 G0 X156.000 Y94.000
 G1 X159.000 Y94.000 S350 F1000
 G1 X159.000 Y91.000
 G1 X156.000 Y91.000
 G1 X156.000 Y94.000
+; ring 1 end
+; ring 2 of 5 start: 24.0 mm
 G0 X154.500 Y95.500
 G1 X160.500 Y95.500
 G1 X160.500 Y89.500
 G1 X154.500 Y89.500
 G1 X154.500 Y95.500
+; ring 2 end
+; ring 3 of 5 start: 36.0 mm
 G0 X153.000 Y97.000
 G1 X162.000 Y97.000
 G1 X162.000 Y88.000
 G1 X153.000 Y88.000
 G1 X153.000 Y97.000
+; ring 3 end
+; ring 4 of 5 start: 48.0 mm
 G0 X151.500 Y98.500
 G1 X163.500 Y98.500
 G1 X163.500 Y86.500
 G1 X151.500 Y86.500
 G1 X151.500 Y98.500
+; ring 4 end
+; ring 5 of 5 start: 60.0 mm
 G0 X150.000 Y100.000
 G1 X165.000 Y100.000
 G1 X165.000 Y85.000
 G1 X150.000 Y85.000
 G1 X150.000 Y100.000
+; ring 5 end
+; offset fill end
+; end of layer C02
+; end of the job
 M5 ; laser off
 G0 X0.000 Y0.000
 M2
