@@ -2,6 +2,15 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.5.5
+
+* **Safety: only ASCII goes to the machine** (baseCreator v1.58.0). GRBL takes every byte above 127 for a command of its own, even inside a comment: a Polish letter in the notes (ń ends in 0x84, the safety door) could stop the job or change the speed. The letters lose their marks (ń → n) in what is sent; a line longer than the buffer of GRBL no longer hangs a job.
+* **More comments in the G-code:** where every object, layer, path and fill starts and ends, the settings of every layer, the job and its end.
+* **About:** the list *Made with* fills the window, however tall it is made (baseCreator v1.58.1).
+* **Festive icons and colour schemes** end on the last day of the holiday: Halloween on 31 October, Christmas on 26 December, the New Year on 1 January, Easter on its Monday.
+* The menu title **Machine** has an icon like the other titles (baseCreator v1.57.0).
+* **Wiki:** a new page **Panes and Tabs**: how to work with panes, tabs and windows of their own, and with the right panel.
+
 ## v0.5.4
 
 * **The same menus as MillCreator and PenCreator** (baseCreator v1.56.0): File · Edit · Insert · Arrange · View · **Machine** · **Laser** · Settings · Help, the standard entries in the same order. The old *Laser* menu is split: **Machine** has the device, calibration, ser2net, frame and start; **Laser** has **Materials…** (moved from Settings), **Preview window…** (Ctrl+Shift+P) and **Export G-code…** (Ctrl+E). The keys of the menus work in the window menu bar and on macOS too.
