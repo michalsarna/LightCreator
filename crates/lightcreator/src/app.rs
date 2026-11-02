@@ -1262,7 +1262,12 @@ impl App {
         let native = self.native_menu.is_some();
         #[cfg(not(target_os = "macos"))]
         let native = false;
-        if let Some(a) = base_ui::menu::shortcut_act(ctx, &crate::menu::menus(), |a| self.act_enabled(a) && !(native && crate::native_menu::owns_shortcut(a))) {
+        // The native menu module exists only on macOS.
+        #[cfg(target_os = "macos")]
+        let owned = |a: Act| native && crate::native_menu::owns_shortcut(a);
+        #[cfg(not(target_os = "macos"))]
+        let owned = |_: Act| native;
+        if let Some(a) = base_ui::menu::shortcut_act(ctx, &crate::menu::menus(), |a| self.act_enabled(a) && !owned(a)) {
             self.do_act(ctx, a);
             return;
         }
