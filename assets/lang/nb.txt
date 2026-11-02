@@ -1128,3 +1128,4 @@
 1127|Ikke en kameraadresse (http, https, rtsp, udp, rtp eller rtmp).
 1128|Direktebilde av maskinen: en MJPEG-strøm, en adresse til et JPEG-bilde (http eller https) eller en strøm som ffmpeg leser (rtsp, udp, rtp, rtmp).
 1129|Overlegg fra…
+1130|Zoom

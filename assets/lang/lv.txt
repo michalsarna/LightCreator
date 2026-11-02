@@ -1128,3 +1128,4 @@
 1127|Nav kameras adrese (http, https, rtsp, udp, rtp vai rtmp).
 1128|Iekārtas tiešraides attēls: MJPEG straume, JPEG momentuzņēmuma adrese (http vai https) vai straume, ko lasa ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Pārklājums no…
+1130|Tālummaiņa

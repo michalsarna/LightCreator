@@ -1128,3 +1128,4 @@
 1127|Inte en kameraadress (http, https, rtsp, udp, rtp eller rtmp).
 1128|Livebild av maskinen: en MJPEG-ström, en adress till en JPEG-bild (http eller https) eller en ström som ffmpeg läser (rtsp, udp, rtp, rtmp).
 1129|Överlägg från…
+1130|Zoom

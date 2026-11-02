@@ -1128,3 +1128,4 @@
 1127|Nu este o adresă de cameră (http, https, rtsp, udp, rtp sau rtmp).
 1128|Imagine live a mașinii: un flux MJPEG, adresa unui instantaneu JPEG (http sau https) sau un flux citit de ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Suprapunere din…
+1130|Zoom

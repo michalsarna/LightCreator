@@ -1128,3 +1128,4 @@
 1127|Nem kameracím (http, https, rtsp, udp, rtp vagy rtmp).
 1128|A gép élő képe: MJPEG-adatfolyam, JPEG-pillanatkép címe (http vagy https), vagy az ffmpeg által olvasott adatfolyam (rtsp, udp, rtp, rtmp).
 1129|Fedőkép innen…
+1130|Nagyítás

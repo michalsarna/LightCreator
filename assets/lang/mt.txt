@@ -1128,3 +1128,4 @@
 1127|Mhuwiex indirizz ta' kamera (http, https, rtsp, udp, rtp jew rtmp).
 1128|Xbieha ħajja tal-magna: fluss MJPEG, indirizz ta' snapshot JPEG (http jew https), jew fluss li jaqra ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Overlay minn…
+1130|Żum

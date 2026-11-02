@@ -1128,3 +1128,4 @@
 1127|Não é um endereço de câmara (http, https, rtsp, udp, rtp ou rtmp).
 1128|Imagem em direto da máquina: um fluxo MJPEG, o endereço de um instantâneo JPEG (http ou https) ou um fluxo lido pelo ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Sobreposição de…
+1130|Zoom

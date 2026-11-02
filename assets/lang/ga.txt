@@ -1128,3 +1128,4 @@
 1127|Ní seoladh ceamara é (http, https, rtsp, udp, rtp nó rtmp).
 1128|Pictiúr beo den inneall: sruth MJPEG, seoladh seat JPEG (http nó https), nó sruth a léann ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Forleagan ó…
+1130|Zúmáil

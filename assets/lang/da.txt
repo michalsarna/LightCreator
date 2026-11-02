@@ -1128,3 +1128,4 @@
 1127|Ikke en kameraadresse (http, https, rtsp, udp, rtp eller rtmp).
 1128|Livebillede af maskinen: en MJPEG-strøm, en adresse til et JPEG-billede (http eller https) eller en strøm, som ffmpeg læser (rtsp, udp, rtp, rtmp).
 1129|Overlay fra…
+1130|Zoom

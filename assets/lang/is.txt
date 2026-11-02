@@ -1128,3 +1128,4 @@
 1127|Ekki vistfang myndavélar (http, https, rtsp, udp, rtp eða rtmp).
 1128|Bein mynd af vélinni: MJPEG-straumur, vistfang JPEG-skyndimyndar (http eða https) eða straumur sem ffmpeg les (rtsp, udp, rtp, rtmp).
 1129|Yfirlag frá…
+1130|Aðdráttur
