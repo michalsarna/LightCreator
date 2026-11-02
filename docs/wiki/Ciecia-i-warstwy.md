@@ -39,8 +39,8 @@ Każde urządzenie ma listę **materiałów** (co najmniej jeden: nowe urządzen
 
 ## Szczelina, perforacja i mostki (warstwy liniowe)
 * **Kerf offset:** przesuwa zamknięte kontury na zewnątrz o podaną odległość (do wewnątrz, gdy ujemna), by uwzględnić szerokość cięcia; otwory przesuwają się w drugą stronę. 0 = wyłączone. Używa tego tylko G-code; eksport HPGL / DXF i podgląd ścieżek pokazują kontury tak, jak je narysowano.
-* **Perforacja:** kontur jest cięty przez *Cut length*, pomijany przez *Skip length* i tak dalej. Pominięte odcinki to przejazdy z wyłączonym laserem.
-* **Mostki:** krótkie odcinki konturu zostają nieprzecięte albo cięte z procentem mocy warstwy (*Tab cut power*), żeby element trzymał się na miejscu. *Tab size* to długość wzdłuż konturu. *Even spacing* daje mostek co *Spacing* milimetrów (co najmniej *Min tabs*), *Tabs per shape* stałą liczbę; *Limit max tabs* ogranicza liczbę, a *Skip inner shapes* zostawia bez mostków kształty leżące wewnątrz innych. Mostki są rozmieszczane automatycznie, równomiernie wzdłuż konturu; ręczne ustawianie nie jest jeszcze możliwe.
+* **Perforacja:** kontur jest cięty przez **Długość cięcia** (Cut length), pomijany przez **Długość pominięcia** (Skip length) i tak dalej. Pominięte odcinki to przejazdy z wyłączonym laserem.
+* **Mostki:** krótkie odcinki konturu zostają nieprzecięte albo cięte z procentem mocy warstwy (**Moc cięcia mostka** (Tab cut power)), żeby element trzymał się na miejscu. **Rozmiar mostka** (Tab size) to długość wzdłuż konturu. **Równe odstępy** (Even spacing) daje mostek co **Odstęp** (Spacing) milimetrów (co najmniej **Min. mostków** (Min tabs)), **Mostków na kształt** (Tabs per shape) stałą liczbę; **Ogranicz maks. liczbę mostków** (Limit max tabs) ogranicza liczbę, a **Pomiń kształty wewnętrzne** (Skip inner shapes) zostawia bez mostków kształty leżące wewnątrz innych. Mostki są rozmieszczane automatycznie, równomiernie wzdłuż konturu; ręczne ustawianie nie jest jeszcze możliwe.
 Opcje są domyślnie wyłączone i wtedy nic nie zmieniają w G-code. Zapisują się z warstwą i w projekcie.
 
 ## Obrazy i tryb Obraz

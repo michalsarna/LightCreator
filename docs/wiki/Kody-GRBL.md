@@ -160,7 +160,7 @@ Dla lasera: `$32=1` (tryb lasera) i `$30` równe S-value max profilu (1000 w wi�
 | 8 | Bazowanie nieudane: krańcówka nie zwolniła się przy odjeździe | Zwiększ `$27` lub sprawdź okablowanie |
 | 9 | Bazowanie nieudane: nie znaleziono krańcówki | Sprawdź krańcówkę, kierunek (`$23`) i okablowanie |
 
-Przycisk *Unlock* wysyła `$X`. Nie porusza maszyną: jeśli głowica ruszyła się w czasie blokady, pozycja w programie nie zgadza się z rzeczywistością, dopóki nie zbazujesz.
+Przycisk **Odblokuj** (Unlock) wysyła `$X`. Nie porusza maszyną: jeśli głowica ruszyła się w czasie blokady, pozycja w programie nie zgadza się z rzeczywistością, dopóki nie zbazujesz.
 
 ## Gdzie czytać dalej
 
