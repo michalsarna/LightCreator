@@ -16,6 +16,7 @@ An open-source alternative to [LightBurn](https://lightburnsoftware.com/) for CN
 | Make my first burn | [Quick Start](Quick-Start) |
 | Find a menu entry and what it does | [Menus](Menus) |
 | Draw, edit and import | [Design Tools](Design-Tools) |
+| Arrange the work area: panes, tabs, windows | [Panes and Tabs](Panes-and-Tabs) |
 | Set speed, power, fill, images | [Cuts and Layers](Cuts-and-Layers) |
 | Connect a laser or camera | [Devices and Controllers](Devices-and-Controllers) |
 | Use ready-made pictures | [Clipart Gallery](Clipart-Gallery) |

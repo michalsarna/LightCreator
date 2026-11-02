@@ -57,7 +57,7 @@ All the settings are on [Cuts and Layers](Cuts-and-Layers).
 
 * **Preview G-code** (next to **Save G-code** on the bar) makes the program and shows it as text in a tab, **Preview G-code: name.gcode**, without saving anything. The words are coloured and the text can be edited. **Save G-code** in the tab writes it to a file, **Make again** makes it from the project again (with edits it asks first: **Lose the edits?**), **Analyse** shows its toolpaths. While you have not edited it, the text is made again by itself when you save the project, change its notes (the **Description** tab, which go into the file as `; Note:` comments), change the device or switch postprocessors.
 
-Tabs can be dragged into up to three panes (**View → Split view: side by side**) so that the drawing and the preview stand next to each other. See [Design Tools](Design-Tools#view-and-navigation).
+Tabs can be dragged into up to three panes (**View → Split view: side by side**) so that the drawing and the preview stand next to each other. See [Panes and Tabs](Panes-and-Tabs).
 
 ## 5. Save the G-code, or send the job to the machine
 
