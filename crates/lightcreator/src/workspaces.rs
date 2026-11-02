@@ -394,7 +394,9 @@ mod tests {
         });
         out.textures_delta.clear();
         assert!(a.panes.has(Content::GcodeText(slot)));
-        assert!(a.tab_title_of(Content::GcodeText(slot)).starts_with("Preview G-code: "));
+        // "Preview G-code: <file>" in whatever language another test has set meanwhile (the language is one for the whole program).
+        let title = a.tab_title_of(Content::GcodeText(slot));
+        assert!(title.ends_with(&format!(": {}", a.gcode_texts[0].name)), "{title}");
         a.gcode_texts[0].text.push_str("; by hand\n");
         assert!(a.tab_dirty_of(Content::GcodeText(slot)));
         a.preview_gcode();
