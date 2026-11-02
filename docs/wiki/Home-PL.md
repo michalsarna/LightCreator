@@ -14,6 +14,7 @@ Otwartoźródłowy odpowiednik [LightBurn](https://lightburnsoftware.com/) dla g
 |---|---|
 | Zainstalować program | [Instalacja](Instalacja) |
 | Wykonać pierwsze wypalanie | [Szybki start](Szybki-start) |
+| Znaleźć pozycję menu i to, co robi | [Menu](Menu) |
 | Rysować, edytować i importować | [Narzędzia projektowe](Narzedzia-projektowe) |
 | Ustawić prędkość, moc, wypełnienie, obrazy | [Cięcia i warstwy](Ciecia-i-warstwy) |
 | Podłączyć laser lub kamerę | [Urządzenia i sterowniki](Urzadzenia-i-sterowniki) |
@@ -27,10 +28,11 @@ Otwartoźródłowy odpowiednik [LightBurn](https://lightburnsoftware.com/) dla g
 
 ## W skrócie
 
-* **Projektowanie:** kształty, edycja węzłów Béziera, tekst, operacje logiczne, offset, zaokrąglanie rogów, grupowanie, blokowanie; import SVG / Illustrator / PDF i bitmap, trasowanie obrazów.
+* **Projektowanie:** kształty, edycja węzłów Béziera, tekst, operacje logiczne, offset, zaokrąglanie rogów, grupowanie, blokowanie; import SVG / Illustrator / PDF / DXF i bitmap, wektoryzacja obrazów, tablice, tekst na ścieżce, przycinanie, tekst seryjny, kody QR i nesting.
 * **Grawerowanie:** linia, wypełnienie, wypełnienie offsetem i obrazy rastrowe z sześcioma metodami ditheringu i mocą w skali szarości; 64 warstwy cięcia w stylu LightBurn; podgląd z szacowanym czasem.
 * **Urządzenia:** profil dla każdej maszyny; GRBL i Marlin przez port szeregowy lub TCP (ser2net); Ruida i Trocen przez eksport PLT / DXF.
-* **Pomocnicze:** nakładka z kamery z wyrównaniem czterech rogów, galeria 310 clipartów z wyszukiwaniem online.
+* **Pomocnicze:** widok z kamery ze zdjęciami, wideo i nagrywaniem poklatkowym (MJPEG, RTSP, UDP, RTP, RTMP), nakładka z kamery z wyrównaniem czterech rogów zapisywana w projekcie, G-code jako edytowalny tekst, galeria 310 clipartów z wyszukiwaniem online.
+* **Obszar roboczy:** karty rysunków, podglądu, G-code i kamery w maksymalnie trzech panelach; kartę można otworzyć we własnym oknie.
 * **Interfejs:** 30 języków (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी i 23 inne europejskie) i 14 schematów kolorów.
 
 > ⚠️ **Bezpieczeństwo:** lasery są niebezpieczne. Testuj G-code przy niskiej mocy, noś okulary ochronne, nie zostawiaj pracującej maszyny bez nadzoru. Zobacz [Bezpieczeństwo i ograniczenia](Bezpieczenstwo-i-ograniczenia).

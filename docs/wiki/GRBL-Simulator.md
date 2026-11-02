@@ -17,7 +17,7 @@ It fetches GRBL `v1.1h.20190825` and grbl-sim into `target/grbl-sim/` and applie
 ```sh
 python3 tools/grbl-sim/serve.py        # listens on 127.0.0.1:3333
 ```
-In *Machine → Device settings* pick controller **GRBL**, connection **TCP**, host `127.0.0.1`, port `3333`, and connect. Each connection starts a fresh simulator with default settings. For faster runs send in the console: `$110=30000`, `$111=30000`, `$120=5000`, `$121=5000`, `$32=1`. `-v` keeps step / block traces.
+In **Machine → Device settings…** pick controller **GRBL** and, on the page **Connection**, the connection type **Network (TCP, e.g. ser2net)** with host `127.0.0.1` and TCP port `3333`, then **Connect** in the **Device** tab. Each connection starts a fresh simulator with default settings. For faster runs send in the console: `$110=30000`, `$111=30000`, `$120=5000`, `$121=5000`, `$32=1`. `-v` keeps step / block traces.
 
 A virtual serial port on Linux:
 ```sh

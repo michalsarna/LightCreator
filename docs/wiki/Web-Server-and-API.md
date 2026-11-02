@@ -4,7 +4,7 @@
 
 ![Options](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/36-options-web-server.png)
 
-*Program options → Web server and API* switches on a small web server built into LightCreator. It is **off by default**. It shows the state of the machine, the project and a camera in a browser (also on a phone), and offers an API for other programs.
+**Settings → Program options… → Web server and API** switches on a small web server built into LightCreator. It is **off by default**. It shows the state of the machine, the project and a camera in a browser (also on a phone), and offers an API for other programs.
 
 **Every request needs the access phrase** (set in the same options with the *Save* button next to it; it starts as `LightCreator`, change it before you let other computers in). The browser asks for it (any user name, the phrase is the password field); programs send it as HTTP Basic authentication, e.g. `curl -u any:LightCreator http://localhost:8765/api/status`. A wrong phrase is answered with 401 after a short wait. **There is no encryption**, so the phrase and the data can be read by anyone who can listen on the network, and the phrase is kept in `app.ron` as base64 (not readable at a glance, but base64 is an encoding, not encryption). By default the server listens only on this computer (`http://localhost:8765`). *Reachable from other computers on the network* makes it listen on every interface: then anyone on the network can see the machine and stop or move it. Use that only on a network you trust, and never open the port to the internet.
 

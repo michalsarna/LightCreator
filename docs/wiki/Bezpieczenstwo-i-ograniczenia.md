@@ -14,7 +14,7 @@ Cała logika geometrii, operacji logicznych, offsetów, rastra, G-code, eksportu
 Po włączeniu (Opcje programu) serwer WWW i API wymagają hasła dostępu (domyślnie `LightCreator`, zmień je), ale **nie mają szyfrowania**. Domyślnie nasłuchują tylko na tym komputerze; z opcją *Dostępny z innych komputerów w sieci* każdy w sieci, kto zna hasło, może zobaczyć maszynę oraz ją zatrzymać lub poruszyć. Używaj tylko w sieci, której ufasz.
 
 ## Jeszcze niezaimplementowane
-Bezpośrednie protokoły binarne Ruida / Trocen, kąty skanowania obrazów, kerning i kształtowanie pism złożonych (Devanagari, arabski) w tekście, automatyczna kalibracja obiektywu kamery (korekcję wpisuje się ręcznie).
+Bezpośrednie protokoły binarne Ruida / Trocen, kerning i kształtowanie pism złożonych (Devanagari, arabski) w tekście, automatyczna kalibracja obiektywu kamery (korekcję wpisuje się ręcznie).
 
 ## Bezpieczeństwo oprogramowania
 Luki zgłaszaj prywatnie przez [GitHub security advisories](https://github.com/michalsarna/LightCreator/security/advisories/new). Wspierane jest tylko najnowsze wydanie.
