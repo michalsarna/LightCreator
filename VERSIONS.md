@@ -2,6 +2,17 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.5.4
+
+* **The same menus as MillCreator and PenCreator** (baseCreator v1.56.0): File · Edit · Insert · Arrange · View · **Machine** · **Laser** · Settings · Help, the standard entries in the same order. The old *Laser* menu is split: **Machine** has the device, calibration, ser2net, frame and start; **Laser** has **Materials…** (moved from Settings), **Preview window…** (Ctrl+Shift+P) and **Export G-code…** (Ctrl+E). The keys of the menus work in the window menu bar and on macOS too.
+* **Overlay:** the picture, its corners and its opacity are saved in the project file; **View → Overlay from…** (was *Camera overlay…*); the **Overlay** button opens that window when no overlay is shown and switches a shown one off.
+* **The bar over the work area:** *Preview G-code* and *Save G-code* stand right after the buttons that show things.
+* **Camera:** `udp://`, `rtp://` and `rtmp://` addresses; **Use UDP for RTSP** and **Low latency** (off by default); **Video format** *Automatic* (copies the stream of an IP camera into an MP4 file, no decoding, no encoding), *MP4* or *AVI*; a stream that gives nothing for 20 s is opened again.
+* **The G-code text tab follows the project** (save, notes, device G-code settings, postprocessors) as long as it has no edits by hand; *Make again* is green; a window of a tab no longer shakes.
+* **Keyboard jog:** with *Keyboard* on in the Control tab the arrow keys move the machine (the editor took them before).
+* Fixed and translated texts; the Layers tab calls the air column *Air assist*.
+* **Wiki:** a Menus page, a detailed Quick Start, and every page checked against the program.
+
 ## v0.5.3
 
 * **Panes made of tabs:** every pane has a bar of tabs (no list to choose from); tabs are dragged between panes or moved from the right-click menu; the last tab closed closes the pane; nothing is opened twice (a project that is open is shown by its tab). **Preview G-code** is a tab with the G-code as coloured text that can be edited (it asks to save the edits when closed). The preview has a zoom slider; the preview, the G-code text and the camera can go to a window of their own. The About window has the home page and a list of the credits. baseCreator v1.51.0.
