@@ -601,7 +601,7 @@ impl App {
                                 drag_len(ui, u, &mut h.pointer_dy, 0.1, Some((-200.0, 200.0)));
                             })
                             .response
-                            .on_hover_text(tr("Where the red pointer dot is relative to the beam (x right, y down). Used by the pointer alignment in the Device tab."));
+                            .on_hover_text(tr("Where the red pointer dot is relative to the beam (x right, y down). Used by the pointer alignment in the Control tab."));
                             ui.end_row();
                             if h.laser.has_pwm() {
                                 base_ui::widgets::var_label(ui, tr("PWM frequency"), "pwm_freq");
@@ -1089,7 +1089,7 @@ impl App {
                         ui.label(RichText::new(trf("Variables: {}", &[&lc_core::hooks::JOB_VARS.iter().map(|v| format!("{{{v}}}")).collect::<Vec<_>>().join(" ")])).small().color(theme::text_dim()));
                         ui.add_space(8.0);
                         ui.label(RichText::new(tr("Macros")).strong());
-                        ui.label(RichText::new(tr("Named scripts you run by hand from the Device tab. One command per line; comments after ; or in brackets; @include(name) inserts another macro. Variables of the machine can be used.")).color(theme::text_dim()));
+                        ui.label(RichText::new(tr("Named scripts you run by hand from the Control tab. One command per line; comments after ; or in brackets; @include(name) inserts another macro. Variables of the machine can be used.")).color(theme::text_dim()));
                         let mut remove = None;
                         for (i, m) in d.macros.iter_mut().enumerate() {
                             ui.horizontal(|ui| {

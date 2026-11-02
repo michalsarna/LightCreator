@@ -109,7 +109,7 @@ impl App {
         self.add_dev = None;
         self.add_dev_read = false;
         self.add_dev_read_err = false;
-        self.status = tr("The device was added. Press Continue to start.").to_string();
+        self.status = tr("The device was added. Press New to start.").to_string();
     }
 
     /// The one window for adding a device: a starting point, the basic settings collected from the device window, the

@@ -809,7 +809,7 @@
 808|Številka orodja (T)
 809|Dve laserski glavi imata isto številko orodja.
 810|Valovna dolžina
-811|Kje je rdeča pika kazalca glede na žarek (x desno, y navzdol). Uporablja jo poravnava s kazalcem v zavihku Naprava.
+811|Kje je rdeča pika kazalca glede na žarek (x desno, y navzdol). Uporablja jo poravnava s kazalcem v zavihku Upravljanje.
 812|npr. Modra dioda
 813|Laserska glava
 814|Razmik je manjši od pege žarka ({}): sosednje črte se prekrivajo.
@@ -840,7 +840,7 @@
 839|Makro {}: {}
 840|Makro {}: {} vrstic
 841|Makri
-842|Imenovane skripte, ki jih ročno zaženete iz zavihka Naprava. En ukaz na vrstico; komentarji za ; ali v oklepajih; @include(ime) vstavi drug makro. Uporabite lahko spremenljivke stroja.
+842|Imenovane skripte, ki jih ročno zaženete iz zavihka Upravljanje. En ukaz na vrstico; komentarji za ; ali v oklepajih; @include(ime) vstavi drug makro. Uporabite lahko spremenljivke stroja.
 843|Zaženi makro {}
 844|Zažene ta makro na stroju
 845|Dodaj območje
@@ -924,7 +924,7 @@
 923|Preskoči
 924|Preskoči te korake in odpri nastavitve naprave
 925|Povzetek
-926|Naprava je dodana. Pritisnite Nadaljuj za začetek.
+926|Naprava je dodana. Pritisnite Novo za začetek.
 927|Nastavitve so bile prebrane iz krmilnika.
 928|Kakšen stroj imate?
 929|Vredno preveriti
@@ -1128,3 +1128,4 @@
 1127|To ni naslov kamere (http, https, rtsp, udp, rtp ali rtmp).
 1128|Slika stroja v živo: tok MJPEG, naslov posnetka JPEG (http ali https) ali tok, ki ga bere ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Prekrivanje iz…
+1130|Povečava

@@ -809,7 +809,7 @@
 808|Instrumenta numurs (T)
 809|Divām lāzera galviņām ir viens un tas pats instrumenta numurs.
 810|Viļņa garums
-811|Kur ir sarkanais rādītāja punkts attiecībā pret staru (x pa labi, y uz leju). Izmanto izlīdzināšana pēc rādītāja cilnē Ierīce.
+811|Kur ir sarkanais rādītāja punkts attiecībā pret staru (x pa labi, y uz leju). Izmanto izlīdzināšana pēc rādītāja cilnē Vadība.
 812|piem. Zila diode
 813|Lāzera galviņa
 814|Intervāls ir mazāks par stara plankumu ({}): blakus līnijas pārklājas.
@@ -840,7 +840,7 @@
 839|Makro {}: {}
 840|Makro {}: {} rindas
 841|Makro
-842|Nosauktas skripti, ko palaižat ar roku no cilnes Ierīce. Viena komanda rindā; komentāri pēc ; vai iekavās; @include(nosaukums) ievieto citu makro. Var izmantot iekārtas mainīgos.
+842|Nosauktas skripti, ko palaižat ar roku no cilnes Vadība. Viena komanda rindā; komentāri pēc ; vai iekavās; @include(nosaukums) ievieto citu makro. Var izmantot iekārtas mainīgos.
 843|Palaist makro {}
 844|Palaiž šo makro uz iekārtas
 845|Pievienot zonu
@@ -924,7 +924,7 @@
 923|Izlaist
 924|Izlaist šos soļus un atvērt ierīces iestatījumus
 925|Kopsavilkums
-926|Ierīce pievienota. Nospiediet Turpināt, lai sāktu.
+926|Ierīce pievienota. Nospiediet Jauns, lai sāktu.
 927|Iestatījumi nolasīti no kontroliera.
 928|Kāda iekārta jums ir?
 929|Vērts pārbaudīt
@@ -1128,3 +1128,4 @@
 1127|Nav kameras adrese (http, https, rtsp, udp, rtp vai rtmp).
 1128|Iekārtas tiešraides attēls: MJPEG straume, JPEG momentuzņēmuma adrese (http vai https) vai straume, ko lasa ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Pārklājums no…
+1130|Tālummaiņa

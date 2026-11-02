@@ -809,7 +809,7 @@
 808|Įrankio numeris (T)
 809|Dvi lazerio galvutės turi tą patį įrankio numerį.
 810|Bangos ilgis
-811|Kur raudonas rodyklės taškas spindulio atžvilgiu (x į dešinę, y žemyn). Naudoja lygiavimas pagal rodyklę skirtuke Įrenginys.
+811|Kur raudonas rodyklės taškas spindulio atžvilgiu (x į dešinę, y žemyn). Naudoja lygiavimas pagal rodyklę skirtuke Valdymas.
 812|pvz. Mėlynas diodas
 813|Lazerio galvutė
 814|Intervalas mažesnis už spindulio dėmę ({}): gretimos linijos persidengia.
@@ -840,7 +840,7 @@
 839|Makrokomanda {}: {}
 840|Makrokomanda {}: {} eilučių
 841|Makrokomandos
-842|Pavadinti scenarijai, kuriuos vykdote rankiniu būdu skirtuke Įrenginys. Viena komanda eilutėje; komentarai po ; arba skliaustuose; @include(pavadinimas) įterpia kitą makrokomandą. Galima naudoti staklių kintamuosius.
+842|Pavadinti scenarijai, kuriuos vykdote rankiniu būdu skirtuke Valdymas. Viena komanda eilutėje; komentarai po ; arba skliaustuose; @include(pavadinimas) įterpia kitą makrokomandą. Galima naudoti staklių kintamuosius.
 843|Vykdyti makrokomandą {}
 844|Vykdo šią makrokomandą staklėse
 845|Pridėti zoną
@@ -924,7 +924,7 @@
 923|Praleisti
 924|Praleisti šiuos žingsnius ir atidaryti įrenginio nustatymus
 925|Santrauka
-926|Įrenginys pridėtas. Paspauskite Tęsti, kad pradėtumėte.
+926|Įrenginys pridėtas. Paspauskite Naujas, kad pradėtumėte.
 927|Nustatymai nuskaityti iš valdiklio.
 928|Kokias stakles turite?
 929|Verta patikrinti
@@ -1128,3 +1128,4 @@
 1127|Tai ne kameros adresas (http, https, rtsp, udp, rtp arba rtmp).
 1128|Staklių vaizdas tiesiogiai: MJPEG srautas, JPEG momentinės nuotraukos adresas (http arba https) arba srautas, kurį skaito ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Uždanga iš…
+1130|Mastelis
