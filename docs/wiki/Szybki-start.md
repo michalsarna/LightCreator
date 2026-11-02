@@ -57,7 +57,7 @@ Wszystkie ustawienia są na stronie [Cięcia i warstwy](Ciecia-i-warstwy).
 
 * **Podgląd G-code** (Preview G-code; obok **Zapisz G-code** na pasku) tworzy program i pokazuje go jako tekst w karcie **Podgląd G-code: nazwa.gcode**, niczego nie zapisując. Słowa są pokolorowane, a tekst można edytować. **Zapisz G-code** w karcie zapisuje go do pliku, **Wygeneruj ponownie** (Make again) tworzy go od nowa z projektu (gdy są zmiany, najpierw pyta: **Stracić zmiany?**), **Analizuj** (Analyse) pokazuje jego ścieżki. Dopóki go nie edytowałeś, tekst tworzy się od nowa sam, gdy zapiszesz projekt, zmienisz jego notatki (zakładka **Opis**, która trafia do pliku jako komentarze `; Note:`), zmienisz urządzenie albo przełączysz postprocesory.
 
-Karty można przeciągać do maksymalnie trzech paneli (**Widok → Podziel widok: obok siebie**), tak aby rysunek i podgląd stały obok siebie. Zobacz [Narzędzia projektowe](Narzedzia-projektowe#widok-i-nawigacja).
+Karty można przeciągać do maksymalnie trzech paneli (**Widok → Podziel widok: obok siebie**), tak aby rysunek i podgląd stały obok siebie. Zobacz [Panele i karty](Panele-i-karty).
 
 ## 5. Zapisz G-code albo wyślij zadanie do maszyny
 

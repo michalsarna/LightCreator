@@ -16,6 +16,7 @@ Otwartoźródłowy odpowiednik [LightBurn](https://lightburnsoftware.com/) dla g
 | Wykonać pierwsze wypalanie | [Szybki start](Szybki-start) |
 | Znaleźć pozycję menu i to, co robi | [Menu](Menu) |
 | Rysować, edytować i importować | [Narzędzia projektowe](Narzedzia-projektowe) |
+| Ułożyć obszar roboczy: panele, karty, okna | [Panele i karty](Panele-i-karty) |
 | Ustawić prędkość, moc, wypełnienie, obrazy | [Cięcia i warstwy](Ciecia-i-warstwy) |
 | Podłączyć laser lub kamerę | [Urządzenia i sterowniki](Urzadzenia-i-sterowniki) |
 | Użyć gotowych obrazków | [Galeria clipartów](Galeria-clipartow) |
