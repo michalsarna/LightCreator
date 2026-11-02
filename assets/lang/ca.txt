@@ -809,7 +809,7 @@
 808|Número d'eina (T)
 809|Dos capçals làser tenen el mateix número d'eina.
 810|Longitud d'ona
-811|On és el punt vermell del punter respecte al feix (x a la dreta, y cap avall). L'usa l'alineació amb el punter de la pestanya Dispositiu.
+811|On és el punt vermell del punter respecte al feix (x a la dreta, y cap avall). L'usa l'alineació amb el punter de la pestanya Control.
 812|p. ex. Díode blau
 813|Capçal làser
 814|L'interval és menor que el punt del feix ({}): les línies veïnes se solapen.
@@ -840,7 +840,7 @@
 839|Macro {}: {}
 840|Macro {}: {} línies
 841|Macros
-842|Scripts amb nom que executes a mà des de la pestanya Dispositiu. Una ordre per línia; comentaris després de ; o entre parèntesis; @include(nom) insereix una altra macro. Es poden usar les variables de la màquina.
+842|Scripts amb nom que executes a mà des de la pestanya Control. Una ordre per línia; comentaris després de ; o entre parèntesis; @include(nom) insereix una altra macro. Es poden usar les variables de la màquina.
 843|Executa la macro {}
 844|Executa aquesta macro a la màquina
 845|Afegeix una zona
@@ -924,7 +924,7 @@
 923|Omet
 924|Omet aquests passos i obre la configuració del dispositiu
 925|Resum
-926|S'ha afegit el dispositiu. Premeu Continua per començar.
+926|S'ha afegit el dispositiu. Premeu Nou per començar.
 927|La configuració s'ha llegit del controlador.
 928|Quina màquina teniu?
 929|Val la pena comprovar

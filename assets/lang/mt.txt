@@ -809,7 +809,7 @@
 808|Numru tal-għodda (T)
 809|Żewġ irjus tal-laser għandhom l-istess numru tal-għodda.
 810|Tul tal-mewġa
-811|Fejn hi t-tikka ħamra tal-indikatur relattiv għar-raġġ (x lejn il-lemin, y 'l isfel). Jintuża mill-allinjament mal-indikatur fit-tab Apparat.
+811|Fejn hi t-tikka ħamra tal-indikatur relattiv għar-raġġ (x lejn il-lemin, y 'l isfel). Jintuża mill-allinjament mal-indikatur fit-tab Kontroll.
 812|eż. Dijodu blu
 813|Ras tal-laser
 814|L-intervall huwa iżgħar mit-tikka tar-raġġ ({}): il-linji ġirien jikkoinċidu.
@@ -840,7 +840,7 @@
 839|Makro {}: {}
 840|Makro {}: {} linji
 841|Makro
-842|Skripts bl-isem li tmexxi bl-id mit-tab Apparat. Kmand wieħed f'linja; kummenti wara ; jew bejn parentesi; @include(isem) iddaħħal makro oħra. Il-varjabbli tal-magna jistgħu jintużaw.
+842|Skripts bl-isem li tmexxi bl-id mit-tab Kontroll. Kmand wieħed f'linja; kummenti wara ; jew bejn parentesi; @include(isem) iddaħħal makro oħra. Il-varjabbli tal-magna jistgħu jintużaw.
 843|Mexxi l-makro {}
 844|Imexxi din il-makro fuq il-magna
 845|Żid żona
@@ -924,7 +924,7 @@
 923|Aqbeż
 924|Aqbeż dawn il-passi u fetaħ l-issettjar tal-apparat
 925|Sommarju
-926|L-apparat ġie miżjud. Agħfas Kompli biex tibda.
+926|L-apparat ġie miżjud. Agħfas Ġdid biex tibda.
 927|L-issettjar inqara mill-kontrollur.
 928|X'magna għandek?
 929|Ta' min jiċċekkja

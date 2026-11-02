@@ -809,7 +809,7 @@
 808|Uimhir uirlise (T)
 809|Tá an uimhir uirlise chéanna ag dhá cheann léasair.
 810|Tonnfhad
-811|Cá bhfuil an ponc dearg pointeora i gcoibhneas leis an mbíoma (x ar dheis, y síos). Úsáidtear é le haghaidh ailíniú pointeora sa chluaisín Gléas.
+811|Cá bhfuil an ponc dearg pointeora i gcoibhneas leis an mbíoma (x ar dheis, y síos). Úsáidtear é le haghaidh ailíniú pointeora sa chluaisín Rialú.
 812|m.sh. Dé-óid ghorm
 813|Ceann léasair
 814|Tá an t-eatramh níos lú ná spota an bhíoma ({}): tá línte comharsanacha ag forluí.
@@ -840,7 +840,7 @@
 839|Macra {}: {}
 840|Macra {}: {} líne
 841|Macraí
-842|Scripteanna ainmnithe a rithfidh tú de láimh ón gcluaisín Gléas. Ordú amháin in aghaidh na líne; tuairimí tar éis ; nó idir lúibíní; cuireann @include(ainm) macra eile isteach. Is féidir athróga an mheaisín a úsáid.
+842|Scripteanna ainmnithe a rithfidh tú de láimh ón gcluaisín Rialú. Ordú amháin in aghaidh na líne; tuairimí tar éis ; nó idir lúibíní; cuireann @include(ainm) macra eile isteach. Is féidir athróga an mheaisín a úsáid.
 843|Rith an macra {}
 844|Ritheann sé an macra seo ar an meaisín
 845|Cuir crios leis
@@ -924,7 +924,7 @@
 923|Scipeáil
 924|Scipeáil na céimeanna seo agus oscail socruithe an ghléis
 925|Achoimre
-926|Cuireadh an gléas leis. Brúigh Lean ar aghaidh chun tosú.
+926|Cuireadh an gléas leis. Brúigh Nua chun tosú.
 927|Léadh na socruithe ón rialaitheoir.
 928|Cén meaisín atá agat?
 929|Fiú a sheiceáil

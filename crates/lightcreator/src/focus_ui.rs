@@ -67,7 +67,7 @@ impl App {
                 self.focus_set(false);
             }
         } else {
-            let tip = if self.focus_available() { tr("Switch on a weak steady beam to set the focus height by") } else { tr("Connect to a laser first (Laser panel)") };
+            let tip = if self.focus_available() { tr("Switch on a weak steady beam to set the focus height by") } else { tr("Connect to the machine first (Device tab)") };
             let b = egui::Button::new(tr("Focus"));
             let r = ui.add_enabled(self.focus_available(), b).on_hover_text(tip);
             if r.clicked() {

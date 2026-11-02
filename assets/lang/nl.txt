@@ -809,7 +809,7 @@
 808|Gereedschapsnummer (T)
 809|Twee laserkoppen hebben hetzelfde gereedschapsnummer.
 810|Golflengte
-811|Waar de rode aanwijzerstip zich ten opzichte van de straal bevindt (x naar rechts, y omlaag). Gebruikt door het uitlijnen op de aanwijzer in het tabblad Apparaat.
+811|Waar de rode aanwijzerstip zich ten opzichte van de straal bevindt (x naar rechts, y omlaag). Gebruikt door het uitlijnen op de aanwijzer in het tabblad Besturing.
 812|bijv. Blauwe diode
 813|Laserkop
 814|Het interval is kleiner dan het straalpunt ({}): naburige lijnen overlappen.
@@ -840,7 +840,7 @@
 839|Macro {}: {}
 840|Macro {}: {} regels
 841|Macro's
-842|Benoemde scripts die je met de hand uitvoert vanuit het tabblad Apparaat. Eén opdracht per regel; commentaar na ; of tussen haakjes; @include(naam) voegt een andere macro in. Variabelen van de machine zijn bruikbaar.
+842|Benoemde scripts die je met de hand uitvoert vanuit het tabblad Besturing. Eén opdracht per regel; commentaar na ; of tussen haakjes; @include(naam) voegt een andere macro in. Variabelen van de machine zijn bruikbaar.
 843|Macro {} uitvoeren
 844|Voert deze macro uit op de machine
 845|Zone toevoegen
@@ -924,7 +924,7 @@
 923|Overslaan
 924|Deze stappen overslaan en de apparaatinstellingen openen
 925|Samenvatting
-926|Het apparaat is toegevoegd. Druk op Doorgaan om te beginnen.
+926|Het apparaat is toegevoegd. Druk op Nieuw om te beginnen.
 927|De instellingen zijn uit de besturing gelezen.
 928|Welke machine heb je?
 929|Het controleren waard

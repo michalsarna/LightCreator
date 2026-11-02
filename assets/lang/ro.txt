@@ -809,7 +809,7 @@
 808|Număr de unealtă (T)
 809|Două capete laser au același număr de unealtă.
 810|Lungime de undă
-811|Unde este punctul roșu al indicatorului față de fascicul (x spre dreapta, y în jos). Folosit de alinierea la indicator din fila Dispozitiv.
+811|Unde este punctul roșu al indicatorului față de fascicul (x spre dreapta, y în jos). Folosit de alinierea la indicator din fila Control.
 812|ex. Diodă albastră
 813|Cap laser
 814|Intervalul este mai mic decât punctul fasciculului ({}): liniile vecine se suprapun.
@@ -840,7 +840,7 @@
 839|Macro {}: {}
 840|Macro {}: {} linii
 841|Macro-uri
-842|Scripturi cu nume pe care le rulezi manual din fila Dispozitiv. O comandă pe linie; comentarii după ; sau între paranteze; @include(nume) inserează alt macro. Se pot folosi variabilele mașinii.
+842|Scripturi cu nume pe care le rulezi manual din fila Control. O comandă pe linie; comentarii după ; sau între paranteze; @include(nume) inserează alt macro. Se pot folosi variabilele mașinii.
 843|Rulează macro-ul {}
 844|Rulează acest macro pe mașină
 845|Adaugă o zonă
@@ -924,7 +924,7 @@
 923|Omite
 924|Omite acești pași și deschide setările dispozitivului
 925|Rezumat
-926|Dispozitivul a fost adăugat. Apăsați Continuă pentru a începe.
+926|Dispozitivul a fost adăugat. Apăsați Nou pentru a începe.
 927|Setările au fost citite din controler.
 928|Ce mașină aveți?
 929|Merită verificat

@@ -809,7 +809,7 @@
 808|Broj alata (T)
 809|Dvije laserske glave imaju isti broj alata.
 810|Valna duljina
-811|Gdje je crvena točka pokazivača u odnosu na snop (x desno, y dolje). Koristi je poravnanje po pokazivaču na kartici Uređaj.
+811|Gdje je crvena točka pokazivača u odnosu na snop (x desno, y dolje). Koristi je poravnanje po pokazivaču na kartici Upravljanje.
 812|npr. Plava dioda
 813|Laserska glava
 814|Razmak je manji od točke snopa ({}): susjedne linije se preklapaju.
@@ -840,7 +840,7 @@
 839|Makro {}: {}
 840|Makro {}: {} redaka
 841|Makroi
-842|Imenovane skripte koje ručno pokrećete s kartice Uređaj. Jedna naredba po retku; komentari nakon ; ili u zagradama; @include(naziv) umeće drugi makro. Mogu se koristiti varijable stroja.
+842|Imenovane skripte koje ručno pokrećete s kartice Upravljanje. Jedna naredba po retku; komentari nakon ; ili u zagradama; @include(naziv) umeće drugi makro. Mogu se koristiti varijable stroja.
 843|Pokreni makro {}
 844|Pokreće ovaj makro na stroju
 845|Dodaj zonu
@@ -924,7 +924,7 @@
 923|Preskoči
 924|Preskoči ove korake i otvori postavke uređaja
 925|Sažetak
-926|Uređaj je dodan. Pritisnite Nastavi za početak.
+926|Uređaj je dodan. Pritisnite Novo za početak.
 927|Postavke su pročitane iz upravljača.
 928|Koji stroj imate?
 929|Vrijedi provjeriti

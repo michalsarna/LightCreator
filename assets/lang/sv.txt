@@ -809,7 +809,7 @@
 808|Verktygsnummer (T)
 809|Två laserhuvuden har samma verktygsnummer.
 810|Våglängd
-811|Var den röda pekarpunkten är i förhållande till strålen (x åt höger, y nedåt). Används av pekarjusteringen i fliken Enhet.
+811|Var den röda pekarpunkten är i förhållande till strålen (x åt höger, y nedåt). Används av pekarjusteringen i fliken Styrning.
 812|t.ex. Blå diod
 813|Laserhuvud
 814|Intervallet är mindre än strålpunkten ({}): grannlinjer överlappar.
@@ -840,7 +840,7 @@
 839|Makro {}: {}
 840|Makro {}: {} rader
 841|Makron
-842|Namngivna skript som du kör för hand från fliken Enhet. Ett kommando per rad; kommentarer efter ; eller inom parentes; @include(namn) lägger in ett annat makro. Maskinens variabler kan användas.
+842|Namngivna skript som du kör för hand från fliken Styrning. Ett kommando per rad; kommentarer efter ; eller inom parentes; @include(namn) lägger in ett annat makro. Maskinens variabler kan användas.
 843|Kör makrot {}
 844|Kör det här makrot på maskinen
 845|Lägg till en zon
@@ -924,7 +924,7 @@
 923|Hoppa över
 924|Hoppa över de här stegen och öppna enhetsinställningarna
 925|Sammanfattning
-926|Enheten lades till. Tryck på Fortsätt för att börja.
+926|Enheten lades till. Tryck på Ny för att börja.
 927|Inställningarna lästes från styrenheten.
 928|Vilken maskin har du?
 929|Värt att kontrollera

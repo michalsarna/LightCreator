@@ -809,7 +809,7 @@
 808|Número de herramienta (T)
 809|Dos cabezales láser tienen el mismo número de herramienta.
 810|Longitud de onda
-811|Dónde está el punto rojo del puntero respecto al haz (x a la derecha, y hacia abajo). Lo usa la alineación con el puntero de la pestaña Dispositivo.
+811|Dónde está el punto rojo del puntero respecto al haz (x a la derecha, y hacia abajo). Lo usa la alineación con el puntero de la pestaña Control.
 812|p. ej. Diodo azul
 813|Cabezal láser
 814|El intervalo es menor que el punto del haz ({}): las líneas vecinas se solapan.
@@ -840,7 +840,7 @@
 839|Macro {}: {}
 840|Macro {}: {} líneas
 841|Macros
-842|Scripts con nombre que ejecuta a mano desde la pestaña Dispositivo. Un comando por línea; comentarios tras ; o entre paréntesis; @include(nombre) inserta otra macro. Se pueden usar las variables de la máquina.
+842|Scripts con nombre que ejecuta a mano desde la pestaña Control. Un comando por línea; comentarios tras ; o entre paréntesis; @include(nombre) inserta otra macro. Se pueden usar las variables de la máquina.
 843|Ejecutar la macro {}
 844|Ejecuta esta macro en la máquina
 845|Añadir una zona
@@ -924,7 +924,7 @@
 923|Omitir
 924|Omitir estos pasos y abrir los ajustes del dispositivo
 925|Resumen
-926|Se añadió el dispositivo. Pulse Continuar para empezar.
+926|Se añadió el dispositivo. Pulse Nuevo para empezar.
 927|Los ajustes se leyeron del controlador.
 928|¿Qué máquina tiene?
 929|Conviene comprobar

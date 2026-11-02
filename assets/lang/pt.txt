@@ -809,7 +809,7 @@
 808|Número da ferramenta (T)
 809|Dois cabeçotes laser têm o mesmo número de ferramenta.
 810|Comprimento de onda
-811|Onde está o ponto vermelho do ponteiro em relação ao feixe (x para a direita, y para baixo). Usado pelo alinhamento com o ponteiro do separador Dispositivo.
+811|Onde está o ponto vermelho do ponteiro em relação ao feixe (x para a direita, y para baixo). Usado pelo alinhamento com o ponteiro do separador Controlo.
 812|p. ex. Díodo azul
 813|Cabeçote laser
 814|O intervalo é menor que o ponto do feixe ({}): as linhas vizinhas sobrepõem-se.
@@ -840,7 +840,7 @@
 839|Macro {}: {}
 840|Macro {}: {} linhas
 841|Macros
-842|Scripts com nome que executa à mão no separador Dispositivo. Um comando por linha; comentários depois de ; ou entre parênteses; @include(nome) insere outra macro. Podem usar-se as variáveis da máquina.
+842|Scripts com nome que executa à mão no separador Controlo. Um comando por linha; comentários depois de ; ou entre parênteses; @include(nome) insere outra macro. Podem usar-se as variáveis da máquina.
 843|Executar a macro {}
 844|Executa esta macro na máquina
 845|Adicionar uma zona
@@ -924,7 +924,7 @@
 923|Ignorar
 924|Ignorar estes passos e abrir as definições do dispositivo
 925|Resumo
-926|O dispositivo foi adicionado. Prima Continuar para começar.
+926|O dispositivo foi adicionado. Prima Novo para começar.
 927|As definições foram lidas do controlador.
 928|Que máquina tem?
 929|Vale a pena verificar

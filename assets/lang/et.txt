@@ -809,7 +809,7 @@
 808|Tööriista number (T)
 809|Kahel laserpeal on sama tööriista number.
 810|Lainepikkus
-811|Kus on punane osutipunkt kiire suhtes (x paremale, y alla). Kasutab vahelehe Seade osutiga joondamine.
+811|Kus on punane osutipunkt kiire suhtes (x paremale, y alla). Kasutab vahelehe Juhtimine osutiga joondamine.
 812|nt Sinine diood
 813|Laserpea
 814|Vahe on väiksem kui kiire täpp ({}): naaberjooned kattuvad.
@@ -840,7 +840,7 @@
 839|Makro {}: {}
 840|Makro {}: {} rida
 841|Makrod
-842|Nimega skriptid, mida käivitad käsitsi vahelehelt Seade. Üks käsk real; kommentaarid pärast ; või sulgudes; @include(nimi) lisab teise makro. Masina muutujaid saab kasutada.
+842|Nimega skriptid, mida käivitad käsitsi vahelehelt Juhtimine. Üks käsk real; kommentaarid pärast ; või sulgudes; @include(nimi) lisab teise makro. Masina muutujaid saab kasutada.
 843|Käivita makro {}
 844|Käivitab selle makro masinal
 845|Lisa tsoon
@@ -924,7 +924,7 @@
 923|Jäta vahele
 924|Jäta need sammud vahele ja ava seadme seaded
 925|Kokkuvõte
-926|Seade lisati. Alustamiseks vajuta Jätka.
+926|Seade lisati. Alustamiseks vajuta Uus.
 927|Seaded loeti kontrollerist.
 928|Mis masin sul on?
 929|Tasub kontrollida

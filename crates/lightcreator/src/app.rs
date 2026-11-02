@@ -878,7 +878,7 @@ impl App {
             return;
         }
         if !self.connected {
-            self.status = tr("Connect to a laser first (Laser panel)").into();
+            self.status = tr("Connect to the machine first (Device tab)").into();
             return;
         }
         if self.guard(crate::check_ui::Pending::Start, None) {
@@ -1010,7 +1010,7 @@ impl App {
         let b = self.sel_bounds().or_else(|| self.doc.bounds_of(&ids));
         let Some(b) = b else { return };
         if !self.connected {
-            self.status = tr("Connect to a laser first (Laser panel)").into();
+            self.status = tr("Connect to the machine first (Device tab)").into();
             return;
         }
         let moved = self.aim(self.placed_rect(b));
@@ -1256,16 +1256,15 @@ impl App {
         if ctx.egui_wants_keyboard_input() {
             return;
         }
-        // The Ctrl/Cmd keys of the menus, in the window menu bar (the native bar of macOS has them itself).
+        // The Ctrl/Cmd keys of the menus. The native bar of macOS has only the keys of the entries it owns (New, Open, Save…); the others
+        // are taken here, on every system.
         #[cfg(target_os = "macos")]
         let native = self.native_menu.is_some();
         #[cfg(not(target_os = "macos"))]
         let native = false;
-        if !native {
-            if let Some(a) = base_ui::menu::shortcut_act(ctx, &crate::menu::menus(), |a| self.act_enabled(a)) {
-                self.do_act(ctx, a);
-                return;
-            }
+        if let Some(a) = base_ui::menu::shortcut_act(ctx, &crate::menu::menus(), |a| self.act_enabled(a) && !(native && crate::native_menu::owns_shortcut(a))) {
+            self.do_act(ctx, a);
+            return;
         }
         let cmd = |k: Key| ctx.input_mut(|i| i.consume_key(Modifiers::COMMAND, k));
         let cmd_shift = |k: Key| ctx.input_mut(|i| i.consume_key(Modifiers::COMMAND | Modifiers::SHIFT, k));
@@ -1365,8 +1364,9 @@ impl App {
                 self.ed.sel.clear();
             }
         }
+        // The arrows move the selected shapes, unless they move the machine (the Keyboard switch of the Control tab).
         let step = if ctx.input(|i| i.modifiers.shift) { 10.0 } else { 1.0 };
-        for (k, dx, dy) in [(Key::ArrowLeft, -step, 0.0), (Key::ArrowRight, step, 0.0), (Key::ArrowUp, 0.0, -step), (Key::ArrowDown, 0.0, step)] {
+        for (k, dx, dy) in if self.keyboard_jog { vec![] } else { vec![(Key::ArrowLeft, -step, 0.0), (Key::ArrowRight, step, 0.0), (Key::ArrowUp, 0.0, -step), (Key::ArrowDown, 0.0, step)] } {
             if ctx.input_mut(|i| i.consume_key(Modifiers::NONE, k)) || ctx.input_mut(|i| i.consume_key(Modifiers::SHIFT, k)) {
                 if !self.ed.sel.is_empty() {
                     self.checkpoint();

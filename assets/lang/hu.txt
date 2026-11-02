@@ -809,7 +809,7 @@
 808|Szerszámszám (T)
 809|Két lézerfejnek ugyanaz a szerszámszáma.
 810|Hullámhossz
-811|Hol van a piros mutatópont a sugárhoz képest (x jobbra, y lefelé). A Eszköz fül mutatóhoz igazítása használja.
+811|Hol van a piros mutatópont a sugárhoz képest (x jobbra, y lefelé). A Vezérlés fül mutatóhoz igazítása használja.
 812|pl. Kék dióda
 813|Lézerfej
 814|A köz kisebb, mint a sugárfolt ({}): a szomszédos vonalak átfedik egymást.
@@ -840,7 +840,7 @@
 839|{}. makró: {}
 840|{}. makró: {} sor
 841|Makrók
-842|Elnevezett szkriptek, amelyeket kézzel futtatsz az Eszköz fülről. Soronként egy parancs; megjegyzés ; után vagy zárójelben; az @include(név) másik makrót szúr be. A gép változói használhatók.
+842|Elnevezett szkriptek, amelyeket kézzel futtatsz a Vezérlés fülről. Soronként egy parancs; megjegyzés ; után vagy zárójelben; az @include(név) másik makrót szúr be. A gép változói használhatók.
 843|{} makró futtatása
 844|Lefuttatja ezt a makrót a gépen
 845|Zóna hozzáadása
@@ -924,7 +924,7 @@
 923|Kihagyás
 924|Lépések kihagyása és az eszközbeállítások megnyitása
 925|Összegzés
-926|Az eszköz hozzáadva. A kezdéshez nyomja meg a Folytatás gombot.
+926|Az eszköz hozzáadva. A kezdéshez nyomja meg az Új gombot.
 927|A beállításokat kiolvastuk a vezérlőből.
 928|Milyen gépe van?
 929|Érdemes ellenőrizni
