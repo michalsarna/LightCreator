@@ -43,7 +43,7 @@ fn console_sample(a: &mut App) {
     a.console.push(ConsoleLine::info("Connected to /dev/ttyUSB0 @ 115200"));
     a.console.push(rx("Grbl 1.1h ['$' for help]"));
     for (t, r) in [("$H", "ok"), ("$J=G91 G21 X5 Y0 F3000", "ok"), ("G21 G90", "ok"), ("M4 S0", "ok"), ("G0 X20.000 Y20.000", "ok"), ("G1 X60.000 Y20.000 S600 F1200", "ok"), ("G1 X60.000 Y45.000", "ok"), ("G1 X20.000 Y45.000", "ok"), ("M5", "ok")] {
-        a.console.push(tx(t));
+        a.console.push(if t == "$H" { ConsoleLine { dir: Dir::User, text: t.into(), poll: false } } else { tx(t) });
         a.console.push(rx(r));
     }
     a.console.push(rx("error:20"));

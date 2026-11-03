@@ -69,7 +69,7 @@ impl App {
             .filter(|l| !l.poll)
             .map(|l| {
                 let mark = match l.dir {
-                    base_ui::link::Dir::Tx => ">",
+                    base_ui::link::Dir::Tx | base_ui::link::Dir::User => ">",
                     base_ui::link::Dir::Rx => "<",
                     base_ui::link::Dir::Info => "#",
                 };

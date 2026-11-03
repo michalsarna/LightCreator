@@ -1,8 +1,6 @@
 use base_ui::clipart_ui::ClipGallery;
 use base_ui::editor::EditorImages;
 use base_ui::editor::EditorCommands;
-#[cfg(test)]
-use base_ui::editor::EditorCanvas;
 use base_ui::editor::EditorHost;
 use crate::laser::{self, Cmd, ConsoleLine, Evt, LaserLink};
 use crate::units_ui::drag_len;
@@ -175,9 +173,6 @@ pub struct App {
     pub show_array: bool,
     pub array: (u32, u32, f64, f64),
     pub show_about: bool,
-    pub text_default: lc_core::TextData,
-    pub font_filter: String,
-    pub focus_text: bool,
     pub show_prefs: bool,
     pub clip: crate::clipart_ui::ClipState,
     pub show_guide: bool,
@@ -402,9 +397,6 @@ impl App {
             show_array: false,
             array: (3, 3, 5.0, 5.0),
             show_about: false,
-            text_default: lc_core::TextData::default(),
-            font_filter: String::new(),
-            focus_text: false,
             show_prefs: false,
             clip: crate::clipart_ui::new_state(lc_core::clipart::Library::open(crate::data_paths().gallery.clone())),
             show_guide: false,
@@ -1912,8 +1904,8 @@ impl base_ui::editor::EditorHost for App {
         }
         base_ui::editor::context_menu(self, ui, resp);
     }
-    fn place_text(&mut self, at: lc_core::Pt) {
-        self.add_text_at(at)
+    fn show_properties_tab(&mut self) {
+        self.side_tab = SideTab::Properties;
     }
     fn open_shape_generators(&mut self) {
         self.plugins.gen_open = true;

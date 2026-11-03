@@ -89,7 +89,7 @@ The start screen (the same as in MillCreator and PenCreator) has the list of dev
 ![Device tab](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/27-device-tab.png)
 
 ## Console
-The Console tab shows everything sent to and received from the controller; status polling is hidden by default.
+The Console tab shows everything sent to and received from the controller; status polling is hidden by default. **Your own commands**, typed in its field, have a colour of their own. In the field, the **Up** and **Down** keys go through the commands you sent from it, and only those; what you were typing comes back at the end. **Settings → View options… → G-code console** sets the font size and the colours.
 ![Console](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/04-console.png)
 
 ## TCP and ser2net

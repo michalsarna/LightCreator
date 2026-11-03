@@ -1,4 +1,3 @@
-use base_ui::editor::EditorShapeOps;
 use base_ui::widgets::section_title;
 use base_ui::clipart_ui::ClipGallery;
 use crate::app::{App, SideTab};
@@ -7,7 +6,7 @@ use crate::i18n::{tr, trf};
 use crate::laser::Cmd;
 use crate::theme;
 use eframe::egui::{self, Color32, RichText};
-use lc_core::{Dither, Kind, LayerMode, TextData, PALETTE};
+use lc_core::{Dither, Kind, LayerMode, PALETTE};
 
 impl App {
     /// The ids of the tabs that exist only sometimes: the camera view, and the tab of every plugin that has settings.
@@ -140,80 +139,7 @@ impl App {
             self.assign_layer(layer);
         }
         if self.ed.sel.len() == 1 {
-            self.text_props(ui);
             self.image_props(ui);
-        }
-    }
-
-    fn text_props(&mut self, ui: &mut egui::Ui) {
-        let id = self.ed.sel[0];
-        let Some(Kind::Text(orig)) = self.doc.shape(id).map(|s| s.kind.clone()) else { return };
-        let units = self.doc.device.units;
-        let mut t: TextData = orig.clone();
-        ui.separator();
-        ui.label(RichText::new(tr("Text")).strong());
-        let r = ui.add(egui::TextEdit::multiline(&mut t.text).desired_rows(3).desired_width(f32::INFINITY));
-        if self.focus_text {
-            r.request_focus();
-            self.focus_text = false;
-        }
-        let mut undo_point = r.gained_focus();
-        egui::Grid::new("text_props").num_columns(2).spacing([8.0, 6.0]).show(ui, |ui| {
-            ui.label(tr("Font"));
-            egui::ComboBox::from_id_salt("font_family").width(190.0).selected_text(t.family.clone()).show_ui(ui, |ui| {
-                ui.add(egui::TextEdit::singleline(&mut self.font_filter).hint_text(tr("Search")));
-                let q = self.font_filter.to_lowercase();
-                egui::ScrollArea::vertical().max_height(260.0).show(ui, |ui| {
-                    for fam in lc_core::text::families() {
-                        if (q.is_empty() || fam.to_lowercase().contains(&q)) && ui.selectable_label(t.family == fam, &fam).clicked() {
-                            t.family = fam;
-                            undo_point = true;
-                        }
-                    }
-                });
-            });
-            ui.end_row();
-            ui.label(tr("Size"));
-            drag_len(ui, units, &mut t.size, 0.2, Some((0.5, 1000.0)));
-            ui.end_row();
-            ui.label(tr("Style"));
-            ui.horizontal(|ui| {
-                ui.checkbox(&mut t.bold, tr("Bold"));
-                ui.checkbox(&mut t.italic, tr("Italic"));
-            });
-            ui.end_row();
-            ui.label(tr("Letter spacing"));
-            ui.add(egui::DragValue::new(&mut t.spacing).speed(0.005).range(-0.5..=3.0));
-            ui.end_row();
-            ui.label(tr("Line spacing"));
-            ui.add(egui::DragValue::new(&mut t.line_spacing).speed(0.01).range(0.5..=5.0));
-            ui.end_row();
-            ui.label(tr("Align"));
-            ui.horizontal(|ui| {
-                for (i, n) in [tr("Left"), tr("Centre"), tr("Right")].into_iter().enumerate() {
-                    ui.selectable_value(&mut t.align, i as u8, n);
-                }
-            });
-            ui.end_row();
-        });
-        if ui.button(tr("Convert to curves")).on_hover_text(tr("Turn the text into editable Bézier shapes")).clicked() {
-            self.to_curves();
-            return;
-        }
-        if t != orig {
-            if undo_point || t.text != orig.text {
-                // One undo step per editing burst: the first change after focus gets a checkpoint.
-                let now = ui.input(|i| i.time);
-                if undo_point || now - self.last_layer_undo > 0.8 {
-                    self.checkpoint();
-                }
-                self.last_layer_undo = now;
-            }
-            self.text_default = TextData { text: self.text_default.text.clone(), ..t.clone() };
-            if let Some(s) = self.doc.unlocked_mut(id) {
-                s.kind = Kind::Text(t);
-            }
-            self.touch();
         }
     }
 
@@ -378,7 +304,7 @@ impl App {
 
     /// Live view of everything crossing the serial port.
     fn console_panel(&mut self, ui: &mut egui::Ui) {
-        if let Some(line) = self.console.show(ui, self.connected) {
+        if let Some(line) = self.console.show(ui, self.connected, &self.ed.grid_prefs.console) {
             self.link.send(Cmd::Line(line));
         }
     }
