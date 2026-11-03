@@ -5,7 +5,8 @@ use base_ui::editor::{EditorCommands, EditorHost, EditorShapeOps};
 use crate::app::App;
 use crate::i18n::{tr, trf};
 use eframe::egui;
-use lc_core::{Kind, Pt, TextData, Xf};
+#[cfg(test)]
+use lc_core::{Pt, Xf};
 use std::path::PathBuf;
 
 impl App {
@@ -96,16 +97,6 @@ impl App {
 
     pub fn import_image_path(&mut self, p: PathBuf) {
         self.open_image_dialog(p);
-    }
-
-    /// Create a text object with its top-left corner at `at`.
-    pub fn add_text_at(&mut self, at: Pt) {
-        self.checkpoint();
-        let t: TextData = self.text_default.clone();
-        let id = self.doc.add(self.ed.active_layer, Kind::Text(t), Xf::translate(at.x, at.y));
-        self.ed.sel = vec![id];
-        self.side_tab = crate::app::SideTab::Properties;
-        self.focus_text = true;
     }
 
     /// Handle files dropped onto the window.

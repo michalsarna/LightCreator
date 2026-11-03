@@ -157,7 +157,7 @@ The commands work on the selection. Most of them are also in the right-click men
 
 | Entry | Key | What it does |
 |---|---|---|
-| **View options…** | | Grids, colours of the work area and around it, line thickness, layer names, variable names, preview of the G-code after saving. See [Design Tools](Design-Tools#view-and-navigation). |
+| **View options…** | | Grids, colours of the work area and around it, line thickness, layer names, variable names, preview of the G-code after saving. See [Design Tools](Design-Tools#view-and-navigation). The font size and colours of the **G-code console**. |
 | **Program options…** | | Auto-save, the update check at start, the web server and API. See [Settings and Files](Settings-and-Files) and [Web Server and API](Web-Server-and-API). |
 | **Plugins…** | | Installs, switches and removes plugins; the official list. See [Plugins](Plugins). |
 | **Language** ▸ | | One of the 30 languages of the interface. |

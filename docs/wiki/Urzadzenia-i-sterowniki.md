@@ -89,7 +89,7 @@ Ekran startowy (taki sam jak w MillCreatorze i PenCreatorze) ma u góry listę u
 ![Zakładka Device](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/27-device-tab.png)
 
 ## Konsola
-Zakładka Console pokazuje wszystko, co wysłano do sterownika i co odebrano; odpytywanie stanu jest domyślnie ukryte.
+Zakładka Console pokazuje wszystko, co wysłano do sterownika i co odebrano; odpytywanie stanu jest domyślnie ukryte. **Twoje polecenia** wpisane w jej polu mają własny kolor. W polu klawisze **góra** i **dół** przewijają polecenia wysłane z tego pola i tylko te; na końcu wraca to, co pisałeś. **Ustawienia → Opcje widoku… → Konsola G-code** ustawia rozmiar czcionki i kolory.
 ![Konsola](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/04-console.png)
 
 ## TCP i ser2net

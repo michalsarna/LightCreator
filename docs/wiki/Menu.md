@@ -157,7 +157,7 @@ Polecenia działają na zaznaczeniu. Większość z nich jest też w menu praweg
 
 | Pozycja | Klawisz | Co robi |
 |---|---|---|
-| **Opcje widoku…** (View options…) | | Siatki, kolory obszaru roboczego i wokół niego, grubość linii, nazwy warstw, nazwy zmiennych, podgląd G-code po zapisaniu. Zobacz [Narzędzia projektowe](Narzedzia-projektowe#widok-i-nawigacja). |
+| **Opcje widoku…** (View options…) | | Siatki, kolory obszaru roboczego i wokół niego, grubość linii, nazwy warstw, nazwy zmiennych, podgląd G-code po zapisaniu. Zobacz [Narzędzia projektowe](Narzedzia-projektowe#widok-i-nawigacja). Rozmiar czcionki i kolory **konsoli G-code**. |
 | **Opcje programu…** (Program options…) | | Automatyczny zapis, szukanie aktualizacji przy starcie, serwer WWW i API. Zobacz [Ustawienia i pliki](Ustawienia-i-pliki) oraz [Serwer WWW i API](Serwer-WWW-i-API). |
 | **Wtyczki…** (Plugins…) | | Instalowanie, włączanie i usuwanie wtyczek; oficjalna lista. Zobacz [Wtyczki](Wtyczki). |
 | **Język** (Language) ▸ | | Jeden z 30 języków interfejsu. |
