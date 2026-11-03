@@ -7,6 +7,7 @@ use crate::doc::*;
 /// and limits.
 pub fn without_history(d: &mut Device) {
     d.maintenance.total_secs = 0.0;
+    d.stats = Default::default();
     for c in &mut d.maintenance.counters {
         c.secs = 0.0;
     }

@@ -200,6 +200,12 @@ impl App {
                     if c.idx == Some(active) && self.screen == crate::app::Screen::Editor {
                         self.doc.device.maintenance.reset(i);
                     }
+                } else {
+                    // From the window of diagnostics: the device in use.
+                    self.doc.device.maintenance.reset(i);
+                    if let Some(p) = self.profiles.get_mut(active) {
+                        p.maintenance = self.doc.device.maintenance.clone();
+                    }
                 }
                 self.maintenance_notified.remove(&i);
             }

@@ -799,6 +799,10 @@ pub struct Device {
     pub start_from: StartFrom,
     /// Copies of the settings of the controller, kept with the profile.
     pub fw_copies: base_core::control::FwCopies,
+    /// What the machine has done: jobs, the time of running, alarms and errors.
+    pub stats: base_core::control::Stats,
+    /// Run the program in the check mode of GRBL (`$C`) before the real run.
+    pub check_first: bool,
 }
 
 /// A counter of working time that can be reset, with an optional limit after which it asks for attention.
@@ -943,6 +947,10 @@ struct DeviceWire {
     start_from: StartFrom,
     #[serde(default)]
     fw_copies: base_core::control::FwCopies,
+    #[serde(default)]
+    stats: base_core::control::Stats,
+    #[serde(default)]
+    check_first: bool,
     // Flat fields of profiles saved before the groups existed.
     origin: Option<Origin>,
     bed_w: Option<f64>,
@@ -1013,6 +1021,8 @@ impl From<DeviceWire> for Device {
             live_position: w.live_position,
             start_from: w.start_from,
             fw_copies: w.fw_copies,
+            stats: w.stats,
+            check_first: w.check_first,
         };
         dev.ensure_materials();
         dev
@@ -1249,6 +1259,8 @@ impl Default for Device {
             live_position: false,
             start_from: StartFrom::Home,
             fw_copies: Default::default(),
+            stats: Default::default(),
+            check_first: false,
         }
     }
 }

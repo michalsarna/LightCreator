@@ -1047,6 +1047,10 @@ impl App {
                         crate::firmware_ui::page(ui, &mut self.fw, &self.doc.device.fw_copies.clone(), self.connected, d.controller, &mut fw_acts);
                     }
                     CfgPage::Advanced => {
+                        if d.controller == Controller::Grbl {
+                            ui.checkbox(&mut d.check_first, tr("Check the program before every run")).on_hover_text(tr("The controller goes through the program in check mode ($C): nothing moves, and the lines it does not understand are reported before the real run"));
+                            ui.add_space(6.0);
+                        }
                         egui::Frame::new().fill(Color32::from_rgba_unmultiplied(0xc0, 0x30, 0x30, 40)).stroke(egui::Stroke::new(1.0, Color32::from_rgb(0xc0, 0x30, 0x30))).inner_margin(8.0).corner_radius(4.0).show(ui, |ui| {
                             ui.label(RichText::new(tr("Wrong G-code can fire the laser, drive the head into the end stops or ruin the material. Test with the laser off or at the lowest power.")).strong());
                         });

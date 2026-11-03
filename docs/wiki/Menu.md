@@ -139,11 +139,14 @@ Polecenia działają na zaznaczeniu. Większość z nich jest też w menu praweg
 |---|---|---|
 | **Zmień urządzenie…** (Switch device…) | | Wraca do okna startowego, aby wybrać inne urządzenie. |
 | **Ustawienia urządzenia…** (Device settings…) | | Okno urządzenia ze wszystkimi stronami. Zobacz [Urządzenia i sterowniki](Urzadzenia-i-sterowniki). |
+| **Ustawienia firmware ($$)…** (Firmware settings ($$)…) | | Strona Firmware okna urządzenia (GRBL i Marlin). |
 | **Kalibracja…** (Calibration…) | | Wylicza liczbę kroków na milimetr osi ze zmierzonego ruchu oraz prostopadłość osi z dwóch zmierzonych przekątnych; może zapisać nową wartość w sterowniku. Wymaga połączenia. Zobacz [Urządzenia i sterowniki](Urzadzenia-i-sterowniki#kalibracja). |
+| **Diagnostyka i statystyki…** (Diagnostics and statistics…) | | Wejścia sterownika, statystyki maszyny, liczniki przeglądów i zip do zapisania. |
 | **Udostępnij w sieci (ser2net)…** (Share over network (ser2net)…) | | Tylko Linux: udostępnia lokalny port szeregowy przez TCP za pomocą ser2net. Zobacz [Urządzenia i sterowniki](Urzadzenia-i-sterowniki#tcp-i-ser2net). |
 | **Obrys** (Frame) | | Laser objeżdża prostokąt wokół zaznaczonych kształtów (wszystkich, gdy nic nie jest zaznaczone) z mocą obrysu; to samo co **Obrys ramka** (Outline frame) w zakładce **Sterowanie**, a nie przycisk **Obrys** (Outline) obok niego, który objeżdża kształty jak gumka. Wymaga połączenia i braku trwającego zadania. |
 | **Rozpocznij zadanie** (Start job) | | To samo co **START**: sprawdza zadanie i wysyła je do lasera (dla Ruida i Trocen zamiast tego eksportuje plik PLT / DXF). |
 | **Start od wiersza…** (Start from line…) | | Zaczyna zadanie od wybranego wiersza programu; maszyna najpierw dostaje stan, jaki program ma w tym wierszu. Wymaga połączenia. |
+| **Sprawdź program** (Check the program) | | GRBL przechodzi przez program w trybie sprawdzania (`$C`): nic się nie rusza, a wiersze, których nie przyjmuje, są zgłaszane. Wymaga podłączonej maszyny. |
 
 ## Laser
 

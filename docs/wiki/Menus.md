@@ -139,11 +139,14 @@ The commands work on the selection. Most of them are also in the right-click men
 |---|---|---|
 | **Switch device…** | | Goes back to the start window to choose another device. |
 | **Device settings…** | | The device window with all its pages. See [Devices and Controllers](Devices-and-Controllers). |
+| **Firmware settings ($$)…** | | The Firmware page of the device window (GRBL and Marlin). |
 | **Calibration…** | | Works out the steps per millimetre of an axis from a measured move, and the squareness of the axes from two measured diagonals; can write the new value to the controller. Needs a connection. See [Devices and Controllers](Devices-and-Controllers#calibration). |
+| **Diagnostics and statistics…** | | The inputs of the controller, the statistics of the machine, the maintenance counters and a zip to save. |
 | **Share over network (ser2net)…** | | Linux only: shares a local serial port over TCP with ser2net. See [Devices and Controllers](Devices-and-Controllers#tcp-and-ser2net). |
 | **Frame** | | The laser traces the box round the selected shapes (all when nothing is selected) at the frame power; the same as **Outline frame** in the **Control** tab. Needs a connection and no running job. |
 | **Start job** | | The same as **START**: checks the job and sends it to the laser (for Ruida and Trocen it exports a PLT / DXF file instead). |
 | **Start from line…** | | Starts the job at a line of the program you choose; the machine is first brought to the state the program has at that line. Needs a connection. |
+| **Check the program** | | GRBL goes through the program in check mode (`$C`): nothing moves, the lines it does not take are reported. Needs a connected machine. |
 
 ## Laser
 
