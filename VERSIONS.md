@@ -2,6 +2,11 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.5.7
+
+* **Console:** the **Up** and **Down** keys in its field go through the commands you sent from it, and only those. Your commands have a colour of their own. **Settings → View options…** has the font size and the colours of the console (baseCreator v1.62.0).
+* The text tool now comes from the shared code of all the programs; it works as before, but its section stands above the choice of the layer in the Properties tab (baseCreator v1.63.0).
+
 ## v0.5.6
 
 * **The same file formats in every program** (baseCreator v1.60.0): *File → Import* and *File → Export* are now one list in LightCreator, MillCreator, PenCreator and BaseCreator. LightCreator had them all, so nothing changes here: *Export PLT / DXF…* stays the job of the laser, with its hatching.
