@@ -134,3 +134,24 @@ fn grbl_sim_one_element_at_a_time_and_a_job_of_the_selection_both_run() {
     }
     assert!(s.errors().is_empty(), "{:?}", s.errors_described());
 }
+
+#[test]
+#[ignore = "needs grbl-sim: tools/grbl-sim/build.sh of baseCreator"]
+fn grbl_sim_check_mode_of_a_generated_job_finds_nothing_moves_nothing_and_ends() {
+    let mut s = Session::connect();
+    s.wait_banner();
+    s.fast_machine(LASER);
+    s.link.send(Cmd::Line("$C".into()));
+    s.wait("check mode", 10.0, |v| v.state == "Check");
+    s.run_job(sample_job(1.0), 60.0);
+    assert!(s.errors().is_empty(), "GRBL rejected lines: {:?}", s.errors_described());
+    assert_eq!(s.seen.pos, (0.0, 0.0), "nothing moved");
+    s.link.send(Cmd::Line("$C".into()));
+    s.wait("out of check mode", 10.0, |v| v.state == "Idle");
+    // The real job right after it, as a device with the check before every run does it.
+    let job = sample_job(1.0);
+    let n = job.len();
+    s.run_job(job, 240.0);
+    s.wait("machine idle after the job", 60.0, |v| v.state == "Idle" && v.progress == (n, n));
+    assert!(s.errors().is_empty(), "{:?}", s.errors_described());
+}

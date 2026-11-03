@@ -1,53 +1,7 @@
-//! The picture of the overlay (a photo or a frame of the camera, shown under the design) as the project file keeps it: the picture as a
-//! JPEG, where its corners are on the work area, how see-through it is, and whether it is shown. It is a section of the project
-//! (`overlay`), so the file brings the picture back to the machine and the person that opens it.
-use crate::geom::Pt;
+//! The overlay as a section of the project of LightCreator. The data itself is in baseCreator (`base_core::overlay_data`), the same in all
+//! the programs, so a project brings its picture along to any of them.
 use crate::Document;
-use base64::Engine;
-use serde::{Deserialize, Serialize};
-
-/// The name of the section of the project file.
-pub const OVERLAY_SECTION: &str = "overlay";
-const FORMAT: u32 = 1;
-/// The quality of the JPEG that is kept: a photo to look at while placing work, not an archive.
-const JPEG_QUALITY: u8 = 88;
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct OverlayData {
-    pub format: u32,
-    pub name: String,
-    /// Work-area positions (mm) of the picture's top-left, top-right, bottom-right and bottom-left corners.
-    pub corners: [Pt; 4],
-    pub opacity: f64,
-    /// Is it shown on the work area?
-    pub visible: bool,
-    /// The picture: a JPEG in base64.
-    pub jpeg: String,
-}
-
-impl OverlayData {
-    /// The data of a picture given as RGB bytes (`w * h * 3`).
-    pub fn new(name: &str, corners: [Pt; 4], opacity: f64, visible: bool, rgb: &[u8], w: u32, h: u32) -> Result<OverlayData, String> {
-        if w == 0 || h == 0 || rgb.len() != (w as usize) * (h as usize) * 3 {
-            return Err("the picture of the overlay has no size".into());
-        }
-        let mut out = Vec::new();
-        image::codecs::jpeg::JpegEncoder::new_with_quality(&mut out, JPEG_QUALITY).encode(rgb, w, h, image::ExtendedColorType::Rgb8).map_err(|e| e.to_string())?;
-        Ok(OverlayData { format: FORMAT, name: name.to_string(), corners, opacity, visible, jpeg: base64::engine::general_purpose::STANDARD.encode(out) })
-    }
-
-    /// The picture as RGBA bytes with its size.
-    pub fn decode(&self) -> Result<(u32, u32, Vec<u8>), String> {
-        let bytes = base64::engine::general_purpose::STANDARD.decode(self.jpeg.as_bytes()).map_err(|e| e.to_string())?;
-        let img = image::load_from_memory_with_format(&bytes, image::ImageFormat::Jpeg).map_err(|e| e.to_string())?.to_rgba8();
-        Ok((img.width(), img.height(), img.into_raw()))
-    }
-
-    /// Does this program read it (a newer file may have another format)?
-    pub fn is_readable(&self) -> bool {
-        self.format <= FORMAT && self.corners.iter().all(|c| c.x.is_finite() && c.y.is_finite()) && self.opacity.is_finite()
-    }
-}
+pub use base_core::overlay_data::{OverlayData, OVERLAY_SECTION};
 
 impl Document {
     /// The overlay kept in this project, when there is one this program can read.
@@ -72,6 +26,7 @@ impl Document {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::geom::Pt;
 
     fn rgb(w: u32, h: u32) -> Vec<u8> {
         (0..w * h * 3).map(|i| (i % 251) as u8).collect()

@@ -45,6 +45,8 @@ impl App {
 
     /// Abort the running job (and the focus beam with it).
     pub fn abort_job(&mut self) {
+        // The stop ends the check mode of GRBL by itself; one more `$C` would turn it on again.
+        self.check_run = None;
         self.link.send(Cmd::Abort);
         if self.focus_on {
             self.focus_on = false;

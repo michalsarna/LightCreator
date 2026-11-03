@@ -1492,11 +1492,74 @@ fn every_tool_works_in_the_window() {
         a.enter_editor(0);
     }
     h.run_steps(4);
-    base_ui::tool_check::check_tools(&mut ToolWindow(h));
+    let mut w = ToolWindow(h);
+    base_ui::tool_check::check_tools(&mut w);
+    {
+        use crate::menu::Act;
+        base_ui::tool_check::check_windows(&mut w, &[(Act::Print, "Print"), (Act::QuickGuide, "Quick guide"), (Act::Diagnostics, "Diagnostics and statistics"), (Act::Firmware, "Firmware ($$)"), (Act::Calibration, "Calibration"), (Act::ShareSer2net, "Share over network (ser2net)")]);
+    }
 }
 
 #[test]
 fn every_text_of_the_menus_has_a_translation() {
     let _ = crate::app::App::build(&eframe::egui::Context::default(), None, false);
     base_ui::tool_check::check_menu_texts(&crate::menu::menus());
+}
+
+/// The guide sends nobody to a place in the menus that is not there.
+#[test]
+fn the_quick_guide_names_only_what_the_menus_have() {
+    base_ui::tool_check::check_guide_paths(crate::guide::EN, &crate::menu::menus());
+}
+
+/// A check run counts as no work of the machine, an error in it does not raise the big window, and it ends the check mode.
+#[test]
+fn a_check_run_is_no_job_and_what_it_finds_is_said_at_its_end() {
+    use eframe::egui;
+    let ctx = egui::Context::default();
+    let mut a = crate::app::App::build(&ctx, None, false);
+    a.screen = crate::app::Screen::Editor;
+    a.profiles = vec![lc_core::Device::default()];
+    a.enter_editor(0);
+    a.connected = true;
+    a.start_check(vec!["G1 X1".into(), "G5".into()], None);
+    a.progress = (1, 2);
+    a.job_clock_tick();
+    assert!(a.job_started.is_none(), "the clock does not run");
+    a.count_problem(false, 20);
+    assert_eq!(a.doc.device.stats.errors, 0, "the error is the program's, not the machine's");
+    a.progress = (2, 2);
+    a.finish_check();
+    assert!(a.check_run.is_none());
+    assert!(a.status.contains('1') && a.status.contains('2'), "{}", a.status);
+    assert_eq!(a.doc.device.stats.jobs, 0);
+    // Out of a check run the same error counts, and goes to the profile.
+    a.count_problem(false, 20);
+    assert_eq!((a.doc.device.stats.errors, a.profiles[0].stats.errors), (1, 1));
+    // A stop leaves the check mode by itself.
+    a.start_check(vec!["G1 X1".into()], None);
+    a.abort_job();
+    assert!(a.check_run.is_none());
+}
+
+/// Firmware settings opens on its page, and only for the controllers that have it; the check is for GRBL.
+#[test]
+fn the_machine_menu_of_the_laser_follows_the_controller() {
+    use crate::menu::Act;
+    use base_ui::menu::MenuHost;
+    use eframe::egui;
+    let ctx = egui::Context::default();
+    let mut a = crate::app::App::build(&ctx, None, false);
+    a.screen = crate::app::Screen::Editor;
+    a.profiles = vec![lc_core::Device::default()];
+    a.enter_editor(0);
+    a.run_act(&ctx, Act::Firmware);
+    assert_eq!(a.cfg.as_ref().unwrap().page, crate::device_ui::CfgPage::Firmware);
+    assert!(!a.act_enabled(Act::CheckProgram), "needs a connection");
+    a.connected = true;
+    assert!(a.act_enabled(Act::CheckProgram));
+    a.doc.device.controller = lc_core::Controller::Marlin;
+    assert!(!a.act_enabled(Act::CheckProgram) && a.act_enabled(Act::Firmware));
+    a.doc.device.controller = lc_core::Controller::Ruida;
+    assert!(!a.act_enabled(Act::Firmware));
 }

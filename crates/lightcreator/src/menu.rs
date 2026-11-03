@@ -20,6 +20,9 @@ pub enum Act {
     ExportSvg,
     ExportGcode,
     ExportCam,
+    Firmware,
+    Diagnostics,
+    CheckProgram,
     Quit,
     Undo,
     Redo,
@@ -119,7 +122,7 @@ pub enum Act {
     SetScheme(Scheme),
 }
 
-use base_ui::menu::{key, standard_menus, Entry::{Item, Sep}, MenuParts, StdAct};
+use base_ui::menu::{key, machine_menu, overlay_entries, standard_menus, Entry::{Item, Sep}, MachineMenu, MenuParts, StdAct};
 
 impl From<StdAct> for Act {
     fn from(a: StdAct) -> Act {
@@ -261,12 +264,22 @@ impl Act {
 /// The menus: the layout of baseCreator (`standard_menus`) with the entries of LightCreator in their places. The macOS app menu is added
 /// by `native_menu`.
 pub fn menus() -> base_ui::menu::Menus<Act> {
-    let mut machine = vec![Item(Act::SwitchDevice, "Switch device…", None), Item(Act::DeviceSettings, "Device settings…", None), Item(Act::Calibration, "Calibration…", None)];
-    // Sharing a local serial port with ser2net is a Linux feature.
-    if cfg!(target_os = "linux") {
-        machine.push(Item(Act::ShareSer2net, "Share over network (ser2net)…", None));
-    }
-    machine.extend([Sep, Item(Act::Frame, "Frame", None), Item(Act::StartJob, "Start job", None), Item(Act::StartFrom, "Start from line…", None)]);
+    let machine = machine_menu(MachineMenu {
+        switch_device: Act::SwitchDevice,
+        device_settings: Act::DeviceSettings,
+        firmware: Act::Firmware,
+        calibration: Act::Calibration,
+        own: vec![],
+        diagnostics: Act::Diagnostics,
+        share: Act::ShareSer2net,
+        frame: Act::Frame,
+        start_job: Act::StartJob,
+        start_from: Act::StartFrom,
+        check_program: Act::CheckProgram,
+    });
+    let mut view = vec![Item(Act::TogglePreview, "Toolpath preview", None), Item(Act::CameraView, "Camera view", None)];
+    view.extend(overlay_entries(Act::ToggleOverlay, Act::CameraOverlay));
+    view.push(Item(Act::ToggleZones, "Show no-go zones", None));
     standard_menus(MenuParts {
         new: Act::New,
         open: Act::Open,
@@ -300,13 +313,7 @@ pub fn menus() -> base_ui::menu::Menus<Act> {
         export_extra: vec![],
         output_extra: vec![Item(Act::Print, "Print…", key("CmdOrCtrl+P", "Ctrl+P"))],
         // What is shown besides the drawing: the toolpaths, the camera, its overlay (in place of a background picture) and the zones.
-        view_extra: vec![
-            Item(Act::TogglePreview, "Toolpath preview", None),
-            Item(Act::CameraView, "Camera view", None),
-            Item(Act::ToggleOverlay, "Show camera overlay", None),
-            Item(Act::CameraOverlay, "Overlay from…", None),
-            Item(Act::ToggleZones, "Show no-go zones", None),
-        ],
+        view_extra: view,
         background: false,
         machine,
         process: ("Laser", vec![Item(Act::Materials, "Materials…", None), Sep, Item(Act::PreviewWindow, "Preview window…", key("CmdOrCtrl+Shift+P", "Ctrl+Shift+P")), Item(Act::ExportGcode, "Export G-code…", key("CmdOrCtrl+E", "Ctrl+E"))]),

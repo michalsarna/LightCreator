@@ -244,6 +244,10 @@ pub struct App {
     pub single_axis_homing: bool,
     /// The Firmware ($$) page.
     pub fw: crate::firmware_ui::FwUi,
+    /// The window of diagnostics and statistics.
+    pub diag: base_ui::tools_ui::DiagUi,
+    /// A run through the check mode of GRBL is going on.
+    pub check_run: Option<crate::diagnostics_ui::CheckRun>,
     /// "Start from line…": the window, the program it works on, and the window of the calibration.
     pub start_from: base_ui::job_ui::StartFrom,
     pub start_lines: Vec<String>,
@@ -446,6 +450,8 @@ impl App {
             reconnect_at: None,
             connect_actions_at: None,
             single_axis_homing: false,
+            diag: Default::default(),
+            check_run: None,
             fw: Default::default(),
             start_from: Default::default(),
             start_lines: vec![],
@@ -902,6 +908,12 @@ impl App {
     /// Send the job, starting at line `from` of the program (0-based; 0 is all of it).
     pub fn send_job_from(&mut self, from: usize) {
         let Some(all) = self.program_lines() else { return };
+        // The real job waits for a clean check run, when the device asks for that.
+        if from == 0 && self.doc.device.check_first && self.doc.device.controller == lc_core::Controller::Grbl {
+            self.start_check(all.clone(), Some(all));
+            self.status = tr("Checking the program first…").to_string();
+            return;
+        }
         let lines = match lc_core::resume::plan(&all, from, 5.0, 0.0) {
             Ok(l) => l,
             Err(e) => {
@@ -1070,6 +1082,11 @@ impl App {
     /// Count the time a job really runs: from its start until the machine is idle again after the last line, or until
     /// it is stopped or the link is lost.
     pub fn job_clock_tick(&mut self) {
+        // A check run moves nothing: it is no work of the machine.
+        if self.check_run.is_some() {
+            self.job_started = None;
+            return;
+        }
         let running = self.progress.1 > 0 && self.progress.0 < self.progress.1;
         if running && self.job_started.is_none() {
             self.job_started = Some(std::time::Instant::now());
@@ -1081,6 +1098,10 @@ impl App {
             self.job_started = None;
             self.job_last_secs = t0.elapsed().as_secs_f64();
             self.maintenance_add(t0.elapsed().as_secs_f64());
+            if finished {
+                self.doc.device.stats.job_done(t0.elapsed().as_secs());
+                self.sync_stats();
+            }
         }
     }
 
@@ -1157,7 +1178,11 @@ impl App {
                             self.push_console(ConsoleLine::info(format!("   ↳ {}", tr(t))));
                             self.status = trf("{} {}: {}", &[&tr(word), &x.code, &tr(t)]);
                         }
-                        self.raise_problem(x.kind == lc_core::grbl_codes::Kind::Alarm, x.code, x.text.map(|t| tr(t).to_string()).unwrap_or_default());
+                        self.count_problem(x.kind == lc_core::grbl_codes::Kind::Alarm, x.code);
+                        // An error in a check run is about the program, and the end of the run tells it; an alarm always asks for attention.
+                        if self.check_run.is_none() || x.kind == lc_core::grbl_codes::Kind::Alarm {
+                            self.raise_problem(x.kind == lc_core::grbl_codes::Kind::Alarm, x.code, x.text.map(|t| tr(t).to_string()).unwrap_or_default());
+                        }
                     }
                 }
                 Evt::Connected(c) => {
@@ -1172,6 +1197,7 @@ impl App {
                     }
                     self.read_on_connected(c);
                     if !c {
+                        self.check_run = None;
                         self.live_shown = None;
                         self.pos.forget();
                         self.machine.0 = tr("Disconnected").into();
@@ -1189,6 +1215,9 @@ impl App {
                     self.layer_progress(done, total);
                     if done >= total {
                         self.stall = None;
+                        if self.check_run.is_some() {
+                            self.finish_check();
+                        }
                     }
                 }
                 Evt::Stalled { secs, state } => self.stall = Some((secs, state)),
@@ -1322,6 +1351,8 @@ impl App {
         match a {
             Act::ClearRecent => !self.recent.is_empty(),
             Act::Frame => self.connected && !self.job_running(),
+            Act::Firmware => matches!(self.doc.device.controller, lc_core::Controller::Grbl | lc_core::Controller::Marlin),
+            Act::CheckProgram => self.doc.device.controller == lc_core::Controller::Grbl && self.connected && !self.job_running(),
             Act::StartJob => self.can_start() && !self.job_running(),
             Act::StartFrom => self.connected && !self.job_running(),
             Act::ToggleOverlay => self.overlay.is_some(),
@@ -1412,6 +1443,9 @@ impl App {
             Act::CheckUpdates => self.start_update_check(ctx, true),
             Act::DownloadBackup => self.download_backup(),
             Act::ExportDiagnostics => self.export_diagnostics(),
+            Act::Firmware => self.open_firmware_page(),
+            Act::Diagnostics => self.diag.open = true,
+            Act::CheckProgram => self.check_program(),
             Act::RestoreBackup => {
                 let confirm = !self.profiles.is_empty();
                 self.restore_backup_dialog(ctx, confirm);
@@ -1602,6 +1636,7 @@ impl App {
         self.stream_window(ctx);
         self.ser2net_window(ctx);
         self.print_window(ctx);
+        self.diagnostics_window(ctx);
         self.cam_test_window(ctx);
     }
 }

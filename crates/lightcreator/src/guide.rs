@@ -4,12 +4,12 @@ use crate::i18n::{lang, Lang};
 
 pub use base_ui::dialogs::Section;
 
-const EN: &[Section] = &[
+pub const EN: &[Section] = &[
     Section {
         title: "Getting started",
         lines: &[
             "The start window asks which device you work with. Create a device profile first (Add device…): name, controller (GRBL, Marlin, Ruida, Trocen), laser type, work area, units and how to connect. Pick the profile and press New or Open…. Without a machine press I have no device (or just press New): the stand-in Dummy is used.",
-            "Laser > Switch device… returns to the start window; Laser > Device settings… edits the active profile. Everything is stored in your profile list and remembered.",
+            "Machine > Switch device… returns to the start window; Machine > Device settings… edits the active profile. Everything is stored in your profile list and remembered.",
             "Settings > Language and Colour scheme change the interface; Settings > View options sets the grids, the work-area background colour and the line thickness.",
         ],
     },
@@ -63,7 +63,8 @@ const EN: &[Section] = &[
             "Toolpaths shows the paths on the work area; Preview… opens the preview window, zoomed to the objects to burn, with every operation in its own colour, travel moves, a time estimate and a play slider. The icons in its title line fit the view to the work area or to all objects. The red ring is the machine zero.",
             "Start sends the job to the connected GRBL or Marlin laser; Frame traces the outline. For Ruida and Trocen, Start exports a PLT or DXF file for the controller's own software. File > Export saves SVG, G-code or PLT / DXF.",
             "Device tab: connect, then (under a line) Home, Unlock, Pause and Resume in a block of 2 x 2 and the wide STOP button (live only while the machine works). Control tab: the same four buttons and STOP at the top, the position, the step and speed of a jog and the jog arrows (the orange one cancels a jog), the focus beam, the macros, start from, frame power and the live position; the work zero is not moved from there. Ctrl+1 .. Ctrl+9 and Ctrl+0 show the tabs of open drawings, Ctrl+W closes one. Console tab: everything sent to and received from the controller.",
-            "Network: a device can connect over TCP, for example to ser2net on a Raspberry Pi. On Linux, Laser > Share over network (ser2net)… prepares ser2net for the laser plugged into this computer.",
+            "Network: a device can connect over TCP, for example to ser2net on a Raspberry Pi. On Linux, the entry Share over network (ser2net)… of the Machine menu prepares ser2net for the laser plugged into this computer.",
+            "Machine > Firmware settings ($$)… opens the settings of the controller. Machine > Check the program runs the job through the check mode of GRBL: nothing moves and the lines GRBL does not take are reported. Machine > Diagnostics and statistics… shows the inputs, the jobs, the alarms and the maintenance counters; Help > Export diagnostics (zip)… makes one file to attach to a bug report.",
         ],
     },
     Section {
@@ -89,7 +90,7 @@ const PL: &[Section] = &[
         title: "Pierwsze kroki",
         lines: &[
             "Okno startowe pyta, z którym urządzeniem pracujesz. Najpierw utwórz profil urządzenia (Add device…): nazwa, sterownik (GRBL, Marlin, Ruida, Trocen), typ lasera, obszar roboczy, jednostki i sposób połączenia. Wybierz profil i naciśnij New lub Open…. Bez maszyny naciśnij I have no device (albo po prostu New): użyte będzie zastępcze urządzenie Dummy.",
-            "Laser > Switch device… wraca do okna startowego, a Laser > Device settings… edytuje aktywny profil. Profile są zapamiętywane.",
+            "Machine > Switch device… wraca do okna startowego, a Machine > Device settings… edytuje aktywny profil. Profile są zapamiętywane.",
             "Settings > Language i Colour scheme zmieniają interfejs; Settings > View options ustawia siatki, kolor tła obszaru roboczego i grubość linii.",
         ],
     },
@@ -143,7 +144,8 @@ const PL: &[Section] = &[
             "Toolpaths pokazuje ścieżki na obszarze roboczym; Preview… otwiera okno podglądu, przybliżone do obiektów do wypalenia, z każdą operacją w osobnym kolorze, ruchami jałowymi, szacowanym czasem i suwakiem odtwarzania. Ikony w linii tytułu dopasowują widok do obszaru roboczego lub do wszystkich obiektów. Czerwony pierścień to zero maszyny.",
             "Start wysyła zadanie do podłączonego lasera GRBL lub Marlin, a Frame obrysowuje zadanie. Dla Ruida i Trocen Start eksportuje plik PLT lub DXF dla oprogramowania sterownika. File > Export zapisuje SVG, G-code lub PLT / DXF.",
             "Zakładka Device: połączenie, a pod linią Home, Unlock, Pause i Resume w układzie 2 x 2 oraz szeroki przycisk STOP (aktywny tylko, gdy maszyna pracuje). Zakładka Control: te same cztery przyciski i STOP u góry, pozycja, krok i posuw ruchu oraz strzałki (pomarańczowa anuluje ruch), wiązka ostrości, makra, start od, moc obrysu i pozycja na żywo; zera pracy nie przesuwa się stamtąd. Ctrl+1 … Ctrl+9 i Ctrl+0 pokazują karty otwartych rysunków, Ctrl+W zamyka kartę. Zakładka Console: wszystko, co wysłano do sterownika i od niego odebrano.",
-            "Sieć: urządzenie może łączyć się przez TCP, np. z ser2net na Raspberry Pi. Na Linuksie Laser > Share over network (ser2net)… przygotowuje ser2net dla lasera podłączonego do tego komputera.",
+            "Sieć: urządzenie może łączyć się przez TCP, np. z ser2net na Raspberry Pi. Na Linuksie pozycja Share over network (ser2net)… menu Machine przygotowuje ser2net dla lasera podłączonego do tego komputera.",
+            "Machine > Firmware settings ($$)… otwiera ustawienia sterownika. Machine > Check the program przepuszcza zadanie przez tryb sprawdzania GRBL: nic się nie rusza, a wiersze, których GRBL nie przyjmuje, są zgłaszane. Machine > Diagnostics and statistics… pokazuje wejścia, zadania, alarmy i liczniki przeglądów; Help > Export diagnostics (zip)… tworzy jeden plik do dołączenia do zgłoszenia błędu.",
         ],
     },
     Section {
