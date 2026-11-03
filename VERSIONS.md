@@ -2,6 +2,11 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.5.6
+
+* **The same file formats in every program** (baseCreator v1.60.0): *File → Import* and *File → Export* are now one list in LightCreator, MillCreator, PenCreator and BaseCreator. LightCreator had them all, so nothing changes here: *Export PLT / DXF…* stays the job of the laser, with its hatching.
+* **Plugins:** a plugin that names a program this version does not know yet is no longer taken for a broken one (baseCreator v1.59.0).
+
 ## v0.5.5
 
 * **Safety: only ASCII goes to the machine** (baseCreator v1.58.0). GRBL takes every byte above 127 for a command of its own, even inside a comment: a Polish letter in the notes (ń ends in 0x84, the safety door) could stop the job or change the speed. The letters lose their marks (ń → n) in what is sent; a line longer than the buffer of GRBL no longer hangs a job.
