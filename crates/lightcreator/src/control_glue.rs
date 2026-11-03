@@ -516,6 +516,75 @@ mod tests {
     }
 
     #[test]
+    fn a_layer_preset_is_put_on_the_active_layer_through_the_window_and_can_be_undone() {
+        let mut h = Harness::builder().with_accessibility_check(false).with_size([1280.0, 1000.0]).build_ui_state(
+            |ui, state: &mut Option<App>| {
+                let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+                a.draw(ui);
+            },
+            None,
+        );
+        h.run_steps(2);
+        {
+            let a = h.state_mut().as_mut().unwrap();
+            a.profiles = vec![lc_core::Device::default()];
+            a.cfg = None;
+            assert!(a.enter_editor(0));
+            a.side_tab = SideTab::Layers;
+            a.ed.active_layer = 1;
+            // The list has no file, so the test does not touch the presets of whoever runs it.
+            let mut lib = base_ui::layer_presets_ui::Library::from_path(None, &crate::layer_presets::valid);
+            let mut cut = lc_core::Layer::new(5);
+            (cut.speed, cut.power, cut.passes) = (123.0, 45.0, 3);
+            assert!(lib.put("Plywood cut", cut));
+            a.presets = Some(lib);
+        }
+        h.run_steps(4);
+        h.get_by_label("Load preset").click();
+        h.run_steps(4);
+        let name = h.state().as_ref().unwrap().doc.layers[1].name.clone();
+        let undo = h.state().as_ref().unwrap().undo.len();
+        h.get_by_label("Plywood cut").click();
+        h.run_steps(4);
+        let a = h.state_mut().as_mut().unwrap();
+        let l = &a.doc.layers[1];
+        assert_eq!((l.speed, l.power, l.passes), (123.0, 45.0, 3), "the settings of the preset");
+        assert_eq!(l.name, name, "the layer keeps its name");
+        assert_eq!(a.undo.len(), undo + 1, "one step of undo");
+        a.do_undo();
+        assert_ne!(a.doc.layers[1].speed, 123.0, "undo brings the settings back");
+    }
+
+    #[test]
+    fn the_negative_of_a_picture_is_set_in_properties_through_the_window() {
+        let mut h = Harness::builder().with_accessibility_check(false).with_size([1280.0, 1000.0]).build_ui_state(
+            |ui, state: &mut Option<App>| {
+                let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+                a.draw(ui);
+            },
+            None,
+        );
+        h.run_steps(2);
+        let id = {
+            let a = h.state_mut().as_mut().unwrap();
+            a.profiles = vec![lc_core::Device::default()];
+            a.cfg = None;
+            assert!(a.enter_editor(0));
+            a.side_tab = SideTab::Properties;
+            let im = lc_core::ImageData { name: "p".into(), px_w: 2, px_h: 2, gray: vec![0; 4], w: 10.0, h: 10.0, invert: false };
+            let id = a.doc.add(0, lc_core::Kind::Image(im), lc_core::Xf::IDENTITY);
+            a.ed.sel = vec![id];
+            id
+        };
+        h.run_steps(4);
+        assert_eq!(h.query_all_by_label("Negative image").count(), 1, "one option, the shared one");
+        h.get_by_label("Negative image").click();
+        h.run_steps(4);
+        let a = h.state().as_ref().unwrap();
+        assert!(matches!(a.doc.scene.shape(id).map(|s| &s.kind), Some(lc_core::Kind::Image(m)) if m.invert));
+    }
+
+    #[test]
     fn the_device_tab_no_longer_holds_those_options() {
         let mut h = Harness::builder().with_accessibility_check(false).with_size([420.0, 1400.0]).build_ui_state(
             |ui, state: &mut Option<App>| {

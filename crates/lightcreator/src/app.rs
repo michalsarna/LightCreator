@@ -115,6 +115,9 @@ pub struct App {
     /// The web server and API (off by default): switched on, port, and reachable from the network.
     /// The material header of the Layers tab: adding or renaming.
     pub mat_edit: Option<crate::materials_ui::MatEdit>,
+    /// The layer presets (read from the file when the window is first opened) and the state of their window.
+    pub presets: Option<base_ui::layer_presets_ui::Library<lc_core::Layer>>,
+    pub presets_ui: base_ui::layer_presets_ui::PresetsUi,
     /// The window that manages materials and their layers.
     pub materials_dlg: Option<crate::materials_win::MaterialsDlg>,
     /// The revision the selected material was last compared with the layers at.
@@ -356,6 +359,8 @@ impl App {
             recovery: lc_core::autosave::find_all(&crate::data_paths().base, "lightcreator"),
             autosave_on: saved("autosave_on").map(|v| v != "0").unwrap_or(true),
             mat_edit: None,
+            presets: None,
+            presets_ui: Default::default(),
             materials_dlg: None,
             mat_rev: u64::MAX,
             api_on: saved("api_on").map(|v| v == "1").unwrap_or(false),
@@ -1175,7 +1180,7 @@ impl App {
                             lc_core::grbl_codes::Kind::Error => "Error",
                         };
                         if let Some(t) = x.text {
-                            self.push_console(ConsoleLine::info(format!("   ↳ {}", tr(t))));
+                            self.push_console(ConsoleLine::info(format!("   → {}", tr(t))));
                             self.status = trf("{} {}: {}", &[&tr(word), &x.code, &tr(t)]);
                         }
                         self.count_problem(x.kind == lc_core::grbl_codes::Kind::Alarm, x.code);
@@ -1633,6 +1638,7 @@ impl App {
         self.prefs_window(ctx);
         self.preview_window(ctx);
         self.image_dialogs(ctx);
+        self.layer_presets_window(ctx);
         self.stream_window(ctx);
         self.ser2net_window(ctx);
         self.print_window(ctx);

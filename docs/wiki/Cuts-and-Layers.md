@@ -37,6 +37,10 @@ Every device has a list of **materials** (at least one: a new device starts with
 
 The **Layers tab** edits the layers of the selected material, and its heading says which one it is. In the heading you can choose another material (the layers take its settings; layers it does not define go back to the defaults, and the names, colours and switches of the layers stay), add a new, empty one (under the name you type; the layers go back to the defaults and the ones the design uses join it), rename or delete it (the last one cannot be deleted). A layer that the design uses but the selected material lacks is added to it at once, with the default settings; a layer you change is changed in the material. A project that is opened brings its material into the device's list (or finds it there).
 
+## Layer presets
+
+Above the settings of a layer: **Save preset…** and **Load preset** open the window **Layer presets**. A field with a name and **Save preset…** keep the way of burning of the layer (mode, speed, power, passes, fill, picture, kerf, tabs…) under that name (one of the same name is replaced); a search field narrows the list; a click on a preset puts it on the active layer, with a step of undo; the pencil renames it and × forgets it; **Export…** writes all the presets to a file and **Import…** adds those of a file (entries with numbers out of range are left out). The name, colour, output and visibility of the layer stay. Presets are not tied to a device or a material: the same power gives a different result on another laser, so check a preset on a piece of scrap. The list is in `lc_layer_presets.json` in the shared data folder.
+
 ## Kerf, perforation and tabs (line layers)
 * **Kerf offset:** moves closed outlines out by the given distance (in, when negative) to make up for the width of the cut; holes move the other way. 0 = off. Only the G-code uses it; the HPGL / DXF export and the toolpath preview show the outlines as drawn.
 * **Perforation:** the outline is cut for *Cut length*, skipped for *Skip length*, and so on. The skipped stretches are travel moves with the laser off.
