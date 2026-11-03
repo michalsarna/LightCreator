@@ -2,6 +2,13 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.5.9
+
+* **Layer presets:** **Save preset…** and **Load preset** above the settings of a layer keep its way of burning under a name and put it on the active layer later, in the same window as in MillCreator and PenCreator. Check a preset on a piece of scrap, as the same power gives a different result on another laser.
+* **Fix:** a job started right after **Check the program** (the option on the Advanced page) could stay at 0 lines: leaving check mode restarts GRBL, and the first lines were lost. Nothing moved.
+* **Fix:** five messages of the check of the program were always in English.
+* **Fix:** some marks showed as empty boxes: the error mark in the check before the job and the mark in front of the explanation of an alarm or error in the console.
+
 ## v0.5.8
 
 * **Machine menu** the same as in the other programs: **Firmware settings ($$)…**, **Diagnostics and statistics…** and **Check the program** are new in it.
