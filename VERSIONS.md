@@ -2,6 +2,15 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.5.8
+
+* **Machine menu** the same as in the other programs: **Firmware settings ($$)…**, **Diagnostics and statistics…** and **Check the program** are new in it.
+* **Diagnostics and statistics:** the inputs of the controller, the jobs, the running time, the alarms and errors of the machine, and the maintenance counters, in the window the other programs have. The zip of diagnostics also holds the settings of the controller and the program.
+* **Check the program** (GRBL): the controller goes through the job in check mode, nothing moves and the lines it does not take are reported. The Advanced page of the device can ask for it before every run.
+* The quick guide named three entries in the wrong menu; a test now checks every entry it names.
+* A project with a camera overlay now opens with its picture in MillCreator, PenCreator and BaseCreator too.
+* The Grid array window is the shared one, and the lock icon is the same as in the other programs.
+
 ## v0.5.7
 
 * **Console:** the **Up** and **Down** keys in its field go through the commands you sent from it, and only those. Your commands have a colour of their own. **Settings → View options…** has the font size and the colours of the console (baseCreator v1.62.0).
