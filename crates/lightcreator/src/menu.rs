@@ -236,6 +236,7 @@ impl Act {
             Act::AutoJoin => StdAct::AutoJoin,
             Act::ClosePath => StdAct::ClosePath,
             Act::DogboneCorners => StdAct::DogboneCorners,
+            Act::GridArray => StdAct::GridArray,
             Act::CircleArray => StdAct::CircleArray,
             Act::CopyAlongPath => StdAct::CopyAlongPath,
             Act::TextOnPath => StdAct::TextOnPath,
