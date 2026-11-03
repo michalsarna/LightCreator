@@ -37,6 +37,10 @@ Każde urządzenie ma listę **materiałów** (co najmniej jeden: nowe urządzen
 
 **Zakładka Warstwy** edytuje warstwy wybranego materiału, a jej nagłówek mówi, który to. W nagłówku można wybrać inny materiał (warstwy przyjmują jego ustawienia; warstwy, których nie definiuje, wracają do domyślnych, a nazwy, kolory i przełączniki warstw zostają), dodać nowy, pusty (pod wpisaną nazwą; warstwy wracają do domyślnych, a te, których używa projekt, do niego dołączają), zmienić nazwę lub usunąć (ostatniego nie można usunąć). Warstwa, której projekt używa, a wybrany materiał jej nie ma, jest do niego od razu dodawana z ustawieniami domyślnymi; zmieniona warstwa zmienia się w materiale. Otwierany projekt wnosi swój materiał do listy urządzenia (albo go tam znajduje).
 
+## Presety warstw
+
+Nad ustawieniami warstwy: **Zapisz preset…** i **Wczytaj preset** otwierają okno **Presety warstw**. Pole z nazwą i przycisk zapisu zachowują sposób wypalania warstwy (tryb, prędkość, moc, przejścia, wypełnienie, obraz, szczelinę, mostki…) pod tą nazwą (preset o tej samej nazwie zostaje zastąpiony); pole wyszukiwania zawęża listę; kliknięcie presetu nakłada go na aktywną warstwę, z krokiem cofania; ołówek zmienia nazwę, a × usuwa preset; eksport zapisuje wszystkie presety do pliku, a import dodaje te z pliku (wpisy z liczbami spoza zakresu są pomijane). Nazwa, kolor, wyjście i widoczność warstwy zostają bez zmian. Presety nie są związane z urządzeniem ani materiałem: ta sama moc daje inny wynik na innym laserze, więc sprawdź preset na odpadzie. Lista jest w pliku `lc_layer_presets.json` we wspólnym folderze danych.
+
 ## Szczelina, perforacja i mostki (warstwy liniowe)
 * **Kerf offset:** przesuwa zamknięte kontury na zewnątrz o podaną odległość (do wewnątrz, gdy ujemna), by uwzględnić szerokość cięcia; otwory przesuwają się w drugą stronę. 0 = wyłączone. Używa tego tylko G-code; eksport HPGL / DXF i podgląd ścieżek pokazują kontury tak, jak je narysowano.
 * **Perforacja:** kontur jest cięty przez **Długość cięcia** (Cut length), pomijany przez **Długość pominięcia** (Skip length) i tak dalej. Pominięte odcinki to przejazdy z wyłączonym laserem.

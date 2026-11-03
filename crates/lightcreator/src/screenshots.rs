@@ -1564,3 +1564,8 @@ fn the_machine_menu_of_the_laser_follows_the_controller() {
     a.doc.device.controller = lc_core::Controller::Ruida;
     assert!(!a.act_enabled(Act::Firmware));
 }
+
+#[test]
+fn the_fonts_draw_every_symbol_of_the_program() {
+    base_ui::tool_check::check_symbols(&std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src"));
+}

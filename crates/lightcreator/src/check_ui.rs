@@ -157,7 +157,7 @@ impl App {
             for i in &dlg.issues {
                 ui.horizontal_wrapped(|ui| {
                     let (icon, colour) = match i.level {
-                        Level::Error => ("✖", Color32::from_rgb(0xc0, 0x30, 0x30)),
+                        Level::Error => ("×", Color32::from_rgb(0xc0, 0x30, 0x30)),
                         Level::Warning => ("⚠", Color32::from_rgb(0xe8, 0x8a, 0x1f)),
                     };
                     ui.label(RichText::new(icon).color(colour).strong());

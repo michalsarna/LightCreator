@@ -52,7 +52,7 @@ fn text_ok(s: &str, max: usize) -> bool {
 }
 
 /// The numbers of a layer of a material that comes from a file.
-fn layer_ok(l: &crate::doc::Layer) -> bool {
+pub fn layer_ok(l: &crate::doc::Layer) -> bool {
     between(l.speed, 0.0, 100_000.0)
         && between(l.power, 0.0, 100.0)
         && between(l.min_power, 0.0, 100.0)

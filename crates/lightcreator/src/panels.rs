@@ -151,13 +151,6 @@ impl App {
         ui.label(RichText::new(&im.name).color(theme::text_dim()));
         let dpi = im.px_w as f64 / (im.w / 25.4).max(1e-6);
         ui.label(format!("{} × {} px   {:.0} DPI   {} × {}", im.px_w, im.px_h, dpi, crate::units_ui::fmt_len(units, im.w, 1), crate::units_ui::fmt_len(units, im.h, 1)));
-        let mut invert = im.invert;
-        if ui.checkbox(&mut invert, tr("Negative image")).on_hover_text(tr("Engrave the light parts instead of the dark parts")).changed() {
-            self.checkpoint();
-            if let Some(Kind::Image(m)) = self.doc.unlocked_mut(id).map(|s| &mut s.kind) {
-                m.invert = invert;
-            }
-        }
         ui.label(RichText::new(tr("Engraving uses the layer's interval, speed, power and dithering.")).color(theme::text_dim()));
     }
 
@@ -243,6 +236,15 @@ impl App {
             ui.painter().rect_stroke(r, 3.0, egui::Stroke::new(1.0, theme::border()), egui::StrokeKind::Inside);
             ui.label(RichText::new(trf("Cut settings — {}", &[&l.name])).strong());
         });
+        let presets_ui = &mut self.presets_ui;
+        ui.horizontal(|ui| {
+            if ui.button(tr("Save preset…")).on_hover_text(tr("Keep the settings of this layer under this name")).clicked() {
+                presets_ui.show();
+            }
+            if ui.button(tr("Load preset")).on_hover_text(tr("Put these settings on the layer")).clicked() {
+                presets_ui.show();
+            }
+        });
         let panel_scope = format!("panel-{}", self.ed.active_layer);
         layer_settings_ui(ui, (units, su), l, panel_scope.as_str(), has_images, &layer_ctx);
         let now = ui.input(|i| i.time);
@@ -261,6 +263,25 @@ impl App {
             }
             self.last_layer_undo = now;
             self.touch();
+        }
+    }
+
+    /// The window of the layer presets: the list, search, rename, delete, export and import; a click puts the preset on the active
+    /// layer, with a step of undo. The name, colour, output and visibility of the layer stay.
+    pub(crate) fn layer_presets_window(&mut self, ctx: &egui::Context) {
+        use base_ui::layer_presets_ui::{window, Library, Pick};
+        if !self.presets_ui.open {
+            return;
+        }
+        let lib = self.presets.get_or_insert_with(|| Library::load(crate::layer_presets::FILE, &crate::layer_presets::valid));
+        let li = self.ed.active_layer.min(self.doc.layers.len().saturating_sub(1));
+        let current = self.doc.layers[li].clone();
+        if let Some(Pick::Apply(i)) = window(ctx, &mut self.presets_ui, lib, &|| current.clone(), &crate::layer_presets::valid) {
+            if let Some(p) = lib.items.get(i).map(|p| p.layer.clone()) {
+                self.checkpoint();
+                self.doc.layers[li].take_settings(&p);
+                self.touch();
+            }
         }
     }
 
