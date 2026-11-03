@@ -3,12 +3,11 @@ use base_ui::editor::EditorImages;
 use base_ui::editor::EditorCommands;
 use base_ui::editor::EditorHost;
 use crate::laser::{self, Cmd, ConsoleLine, Evt, LaserLink};
-use crate::units_ui::drag_len;
 use crate::i18n::{self, tr, trf, Lang};
 use crate::menu::{menus, Act};
 use crate::theme::{self, Scheme};
 use eframe::egui::{self, Color32, Key, Modifiers, RichText};
-use lc_core::{gcode, svg, Document, Pt, Shape, Xf};
+use lc_core::{gcode, svg, Document, Pt, Xf};
 use std::path::PathBuf;
 
 pub use base_ui::editor::{Tool, View};
@@ -170,14 +169,11 @@ pub struct App {
     pub start_sel: usize,
     pub confirm_delete: bool,
     pub cfg: Option<crate::device_ui::CfgEdit>,
-    pub show_array: bool,
-    pub array: (u32, u32, f64, f64),
     pub show_about: bool,
     pub show_prefs: bool,
     pub clip: crate::clipart_ui::ClipState,
     pub show_guide: bool,
     pub guide_filter: String,
-    pub esc_time: f64,
     pub layer_dlg: Option<usize>,
     pub show_stream: bool,
     pub ser2net: Option<crate::ser2net_ui::Ser2NetDlg>,
@@ -394,14 +390,11 @@ impl App {
             start_sel: active,
             confirm_delete: false,
             cfg: None,
-            show_array: false,
-            array: (3, 3, 5.0, 5.0),
             show_about: false,
             show_prefs: false,
             clip: crate::clipart_ui::new_state(lc_core::clipart::Library::open(crate::data_paths().gallery.clone())),
             show_guide: false,
             guide_filter: String::new(),
-            esc_time: -10.0,
             layer_dlg: None,
             show_stream: false,
             ser2net: None,
@@ -522,28 +515,6 @@ impl App {
             }
         }
     }
-    pub fn make_array(&mut self) {
-        let (cols, rows, dx, dy) = self.array;
-        let Some(b) = self.sel_bounds() else { return };
-        self.checkpoint();
-        let base: Vec<Shape> = self.ed.sel.iter().filter_map(|i| self.doc.shape(*i).cloned()).collect();
-        let mut new_sel = self.ed.sel.clone();
-        for r in 0..rows {
-            for c in 0..cols {
-                if r == 0 && c == 0 {
-                    continue;
-                }
-                let t = Xf::translate(c as f64 * (b.width() + dx), r as f64 * (b.height() + dy));
-                for s in &base {
-                    let mut s = s.clone();
-                    s.xf = s.xf.then(t);
-                    new_sel.push(self.doc.add_shape(s));
-                }
-            }
-        }
-        self.ed.sel = new_sel;
-    }
-
     // ---------- file operations ----------
     pub fn new_doc(&mut self) {
         let device = self.doc.device.clone();
@@ -1228,17 +1199,6 @@ impl App {
         }
     }
 
-    // ---------- UI ----------
-    /// A second Escape within half a second goes back to the select tool.
-    pub fn note_escape(&mut self, now: f64) {
-        if now - self.esc_time < 0.5 {
-            self.ed.tool = Tool::Select;
-            self.esc_time = -10.0;
-        } else {
-            self.esc_time = now;
-        }
-    }
-
     #[cfg(test)]
     pub fn shortcuts_for_test(&mut self, ctx: &egui::Context) {
         self.shortcuts(ctx)
@@ -1336,41 +1296,8 @@ impl App {
                 ctx.send_viewport_cmd(egui::ViewportCommand::Close);
             }
         }
-        let plain = |k: Key| ctx.input_mut(|i| i.consume_key(Modifiers::NONE, k));
-        if plain(Key::Delete) || plain(Key::Backspace) {
-            if self.ed.tool == Tool::Node && !self.ed.node_sel.is_empty() {
-                self.delete_nodes();
-            } else {
-                self.delete_selection();
-            }
-        }
-        for (t, _, k) in Tool::ALL {
-            if plain(k) {
-                self.ed.tool = t;
-                self.ed.pen_pts.clear();
-                self.ed.show_shape_popup = matches!(t, Tool::Polygon | Tool::Spiral);
-            }
-        }
-        if plain(Key::Escape) {
-            let now = ctx.input(|i| i.time);
-            self.note_escape(now);
-            self.ed.pen_pts.clear();
-            if self.ed.tool == Tool::Node && !self.ed.node_sel.is_empty() {
-                self.ed.node_sel.clear();
-            } else {
-                self.ed.sel.clear();
-            }
-        }
         // The arrows move the selected shapes, unless they move the machine (the Keyboard switch of the Control tab).
-        let step = if ctx.input(|i| i.modifiers.shift) { 10.0 } else { 1.0 };
-        for (k, dx, dy) in if self.keyboard_jog { vec![] } else { vec![(Key::ArrowLeft, -step, 0.0), (Key::ArrowRight, step, 0.0), (Key::ArrowUp, 0.0, -step), (Key::ArrowDown, 0.0, step)] } {
-            if ctx.input_mut(|i| i.consume_key(Modifiers::NONE, k)) || ctx.input_mut(|i| i.consume_key(Modifiers::SHIFT, k)) {
-                if !self.ed.sel.is_empty() {
-                    self.checkpoint();
-                    self.transform_selection(Xf::translate(dx, dy));
-                }
-            }
-        }
+        base_ui::editor::plain_keys(self, ctx, !self.keyboard_jog);
     }
 
     /// Is this action's check mark set? (None = not a check item.)
@@ -1476,7 +1403,7 @@ impl App {
                 self.open_online_clipart(ctx);
             }
             // The standard commands (also pictures and the operations on shapes) were run above, by baseCreator.
-            Act::ToCurves | Act::AutoJoin | Act::ClosePath | Act::DogboneCorners | Act::CircleArray | Act::CopyAlongPath | Act::TextOnPath | Act::TrimByShape | Act::RemoveDuplicates | Act::BreakApart | Act::SimplifyShapes | Act::SerialText | Act::MakeCode | Act::NestShapes | Act::MeasureShapes | Act::ExportSelectionSvg | Act::ExportSelectionDxf | Act::BoolUnion | Act::BoolIntersect | Act::BoolSubtract | Act::BoolXor | Act::OffsetShape | Act::RoundCorners | Act::ImportImage | Act::AdjustImage | Act::TraceImage | Act::Tool(_) | Act::SplitView(_) | Act::SingleView => {}
+            Act::ToCurves | Act::AutoJoin | Act::ClosePath | Act::DogboneCorners | Act::GridArray | Act::CircleArray | Act::CopyAlongPath | Act::TextOnPath | Act::TrimByShape | Act::RemoveDuplicates | Act::BreakApart | Act::SimplifyShapes | Act::SerialText | Act::MakeCode | Act::NestShapes | Act::MeasureShapes | Act::ExportSelectionSvg | Act::ExportSelectionDxf | Act::BoolUnion | Act::BoolIntersect | Act::BoolSubtract | Act::BoolXor | Act::OffsetShape | Act::RoundCorners | Act::ImportImage | Act::AdjustImage | Act::TraceImage | Act::Tool(_) | Act::SplitView(_) | Act::SingleView => {}
             Act::QuickGuide => self.show_guide = true,
             Act::OpenGithub => ctx.open_url(egui::OpenUrl::new_tab(crate::help_ui::GITHUB_URL)),
             Act::CameraOverlay => self.show_overlay = true,
@@ -1509,7 +1436,6 @@ impl App {
                     self.show_stream = true;
                 }
             }
-            Act::GridArray => self.show_array = true,
             Act::ToggleZones => self.zones_visible = !self.zones_visible,
             Act::TogglePreview => self.preview_on = !self.preview_on,
             Act::DeviceSettings => self.show_device = true,
@@ -1591,23 +1517,6 @@ impl App {
     }
 
 
-    /// Space held down: pan with the hand tool, and go back to the previous tool when it is released.
-    pub fn update_space(&mut self, down: bool) {
-        if down && self.ed.space_prev.is_none() {
-            if self.ed.tool != Tool::Pan {
-                self.ed.space_prev = Some(self.ed.tool);
-                self.ed.tool = Tool::Pan;
-                self.ed.pen_pts.clear();
-            }
-        } else if !down {
-            if let Some(t) = self.ed.space_prev.take() {
-                if self.ed.tool == Tool::Pan {
-                    self.ed.tool = t;
-                }
-            }
-        }
-    }
-
     /// Zoom by `f` around the middle of the canvas.
     pub fn zoom_about_centre(&mut self, f: f32) {
         let (w, h) = self.ed.canvas_avail;
@@ -1619,26 +1528,7 @@ impl App {
     }
 
     fn tool_bar(&mut self, ui: &mut egui::Ui) {
-        // Shape operations on the selected objects sit between the tools that insert and those that navigate.
-        let mut shape_ops = |app: &mut App, ui: &mut egui::Ui| {
-            let multi = app.ed.sel.len() >= 2;
-            let mut op = None;
-            for (a, icon, tip) in [
-                (Act::BoolUnion, "squares-unite", "Union"),
-                (Act::BoolIntersect, "squares-intersect", "Intersection"),
-                (Act::BoolSubtract, "squares-subtract", "Subtract"),
-                (Act::BoolXor, "squares-exclude", "Exclusive or"),
-            ] {
-                if icon_button(ui, icon, &tr(tip), multi, base_ui::editor::palette_button_size(ui)) {
-                    op = Some(a);
-                }
-            }
-            if let Some(a) = op {
-                let ctx = ui.ctx().clone();
-                app.do_act(&ctx, a);
-            }
-        };
-        base_ui::editor::tool_palette(self, ui, Some(&mut shape_ops));
+        base_ui::editor::tool_palette(self, ui);
     }
 
     /// Narrow strip between the work area and the side panel: align, turn, mirror and group the selection.
@@ -1665,87 +1555,8 @@ impl App {
         });
     }
 
-    /// Small window of the polygon and spiral tools: how many sides / turns. It sits in the corner of the work
-    /// area (not over the bars), looks like the preview window and has no OK button: a change applies at once, to
-    /// the shape drawn last as well as to the next ones. It stays while the tool is active.
-    fn shape_popup(&mut self, ctx: &egui::Context) {
-        let tool = self.ed.tool;
-        if !self.ed.show_shape_popup || !matches!(tool, Tool::Polygon | Tool::Spiral) {
-            return;
-        }
-        let polygon = tool == Tool::Polygon;
-        let mut open = true;
-        let before = if polygon { self.ed.polygon_sides } else { self.ed.spiral_turns };
-        let frame = egui::Frame::window(&ctx.global_style()).inner_margin(egui::Margin { left: 8, right: 8, top: 6, bottom: 6 });
-        let pos = self.ed.canvas_origin + egui::vec2(12.0, 12.0);
-        egui::Window::new("shape_popup").title_bar(false).frame(frame).default_pos(pos).resizable(false).show(ctx, |ui| {
-            crate::window_ui::mini_title(ui, &tr(if polygon { "Polygon" } else { "Spiral" }), &mut open, |_| {});
-            let (value, range, label): (&mut u32, std::ops::RangeInclusive<u32>, &str) = if polygon {
-                (&mut self.ed.polygon_sides, 3..=360, "Number of sides")
-            } else {
-                (&mut self.ed.spiral_turns, 1..=30, "Number of turns")
-            };
-            ui.horizontal(|ui| {
-                ui.label(tr(label));
-                ui.add(egui::DragValue::new(value).range(range.clone()));
-            });
-            // The usual choice sits on the slider (polygon 5 to 36, spiral 1 to 24); the number box takes more.
-            let slider = if polygon { 5..=36 } else { 1..=24 };
-            ui.spacing_mut().slider_width = 200.0;
-            ui.add(egui::Slider::new(value, slider).clamping(egui::SliderClamping::Never).show_value(false));
-            ui.label(RichText::new(tr("Drag on the work area to draw it.")).color(theme::text_dim()));
-        });
-        self.ed.polygon_sides = self.ed.polygon_sides.clamp(3, 360);
-        self.ed.spiral_turns = self.ed.spiral_turns.clamp(1, 30);
-        let now = if polygon { self.ed.polygon_sides } else { self.ed.spiral_turns };
-        if now != before {
-            self.reshape_last(tool);
-        }
-        self.ed.show_shape_popup = open;
-    }
-
-    /// Give the polygon or spiral drawn last the number of sides / turns now set, keeping its place and size.
-    pub fn reshape_last(&mut self, tool: Tool) {
-        let Some((t, id, w, h)) = self.ed.last_param else { return };
-        if t != tool || self.doc.shape(id).is_none() {
-            return;
-        }
-        let contour = if tool == Tool::Polygon { lc_core::Contour::polygon(self.ed.polygon_sides, w, h) } else { lc_core::Contour::spiral(self.ed.spiral_turns, w, h) };
-        self.checkpoint();
-        if let Some(s) = self.doc.unlocked_mut(id) {
-            s.kind = lc_core::Kind::Bezier(vec![contour]);
-            self.touch();
-        }
-    }
-
     fn dialogs(&mut self, ctx: &egui::Context) {
-        self.shape_popup(ctx);
         self.materials_window(ctx);
-
-        let mut open = self.show_array;
-        let mut apply = false;
-        crate::window_ui::popup(ctx, "array_window", &tr("Grid array"), [260.0, 220.0], &mut open, |ui| {
-            egui::Grid::new("arr").num_columns(2).show(ui, |ui| {
-                ui.label(tr("Columns"));
-                ui.add(egui::DragValue::new(&mut self.array.0).range(1..=100));
-                ui.end_row();
-                ui.label(tr("Rows"));
-                ui.add(egui::DragValue::new(&mut self.array.1).range(1..=100));
-                ui.end_row();
-                ui.label(tr("Gap X"));
-                drag_len(ui, self.doc.device.units, &mut self.array.2, 0.5, None);
-                ui.end_row();
-                ui.label(tr("Gap Y"));
-                drag_len(ui, self.doc.device.units, &mut self.array.3, 0.5, None);
-                ui.end_row();
-            });
-            apply = ui.button(tr("Create array")).clicked();
-        });
-        if apply {
-            self.make_array();
-            open = false;
-        }
-        self.show_array = open;
 
         let about = base_ui::dialogs::AboutInfo {
             title: &tr("About LightCreator"),
@@ -1892,9 +1703,6 @@ impl base_ui::editor::EditorHost for App {
     fn paint_over_shapes(&mut self, v: &base_ui::editor::CanvasView) {
         self.paint_preview(v)
     }
-    fn paint_lock(&self, ui: &egui::Ui, rect: egui::Rect) {
-        crate::icons::paint(ui, rect, "lock", theme::accent());
-    }
     fn pointer_claimed(&mut self, resp: &egui::Response, origin: egui::Pos2, press: Option<egui::Pos2>, hover: Option<egui::Pos2>) -> bool {
         self.overlay_interact(resp, origin, press, hover)
     }
@@ -2032,14 +1840,9 @@ impl App {
             return;
         }
         self.handle_drops(&ctx);
-        // Space held (and not typing): the hand tool, until it is released.
-        let typing = ctx.egui_wants_keyboard_input();
-        let space = self.screen == Screen::Editor && !typing && ctx.input(|i| i.key_down(Key::Space) && i.focused);
-        if space {
-            // Keep a focused button from reacting to the same key.
-            ctx.input_mut(|i| i.consume_key(Modifiers::NONE, Key::Space));
+        if self.screen == Screen::Editor {
+            base_ui::editor::hold_space(self, &ctx);
         }
-        self.update_space(space);
         self.read_tick(&ctx);
         self.reconnect_tick(&ctx);
         self.overlay_poll_camera(&ctx);
