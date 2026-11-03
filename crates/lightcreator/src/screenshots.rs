@@ -1509,7 +1509,8 @@ fn every_text_of_the_menus_has_a_translation() {
 /// The guide sends nobody to a place in the menus that is not there.
 #[test]
 fn the_quick_guide_names_only_what_the_menus_have() {
-    base_ui::tool_check::check_guide_paths(crate::guide::EN, &crate::menu::menus());
+    let _ = crate::app::App::build(&eframe::egui::Context::default(), None, false);
+    base_ui::tool_check::check_guide_paths(crate::guide::EN, &crate::menu::menus(), base_ui::i18n::Lang::En);
 }
 
 /// A check run counts as no work of the machine, an error in it does not raise the big window, and it ends the check mode.
