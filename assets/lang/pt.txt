@@ -66,7 +66,7 @@
 65|Camada {}
 66|Íman
 67|Pré-visualização
-68|Iniciar
+68|Start
 69|Envia o trabalho para o laser ligado
 70|Percorre o contorno da área
 71|Guardar G-code

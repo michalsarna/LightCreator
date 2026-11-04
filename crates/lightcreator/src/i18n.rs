@@ -128,7 +128,7 @@ const TABLE: &[[&str; 7]] = &[
     ["Layer {}", "Warstwa {}", "Ebene {}", "Livello {}", "Taso {}", "图层 {}", "लेयर {}"],
     ["Snap", "Przyciąganie", "Einrasten", "Aggancio", "Kohdistus", "吸附", "स्नैप"],
     ["Preview", "Podgląd", "Vorschau", "Anteprima", "Esikatselu", "预览", "पूर्वावलोकन"],
-    ["Start", "Start", "Start", "Avvia", "Käynnistä", "开始", "शुरू"],
+    ["Start", "Start", "Start", "Start", "Start", "Start", "Start"],
     ["Stream the job to the connected laser", "Wyślij zadanie do podłączonego lasera", "Auftrag an den verbundenen Laser senden", "Invia il lavoro al laser collegato", "Lähetä työ yhdistettyyn laseriin", "将任务发送到已连接的激光器", "जॉब को जुड़े लेज़र पर भेजें"],
     ["Trace the bounding box", "Obrysuj ramkę ograniczającą", "Begrenzungsrahmen abfahren", "Percorri il riquadro di delimitazione", "Seuraa rajauslaatikkoa", "沿边界框走一圈", "बाउंडिंग बॉक्स का आउटलाइन चलाएँ"],
     ["Save G-code", "Zapisz G-code", "G-Code speichern", "Salva G-code", "Tallenna G-koodi", "保存 G-code", "G-code सहेजें"],

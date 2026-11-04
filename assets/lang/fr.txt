@@ -66,7 +66,7 @@
 65|Calque {}
 66|Aimant
 67|Aperçu
-68|Démarrer
+68|Start
 69|Envoie le travail au laser connecté
 70|Trace le contour de la zone
 71|Enregistrer le G-code

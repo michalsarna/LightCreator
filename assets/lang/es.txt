@@ -66,7 +66,7 @@
 65|Capa {}
 66|Imán
 67|Vista previa
-68|Iniciar
+68|Start
 69|Envía el trabajo al láser conectado
 70|Recorre el contorno del área
 71|Guardar G-code
