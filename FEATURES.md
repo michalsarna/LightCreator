@@ -259,7 +259,7 @@
 * The status bar shows the state of the device and of the web server (off, on with the port, error). Save buttons are
   green, import buttons blue and delete buttons red; on the tool bar the icons are blue for a new project, orange for
   opening one and green for saving.
-* Colour schemes (14): Dark, Light Dark, Medium Light, Light, and a dark and a light one in blue, green, purple, brown and orange (the greys and the accent take the colour).
+* Colour schemes (18): Dark, Light Dark, Medium Light, Light, a dark and a light one in blue, green, purple, brown and orange (the greys and the accent take the colour), Superman, Batman, and Joker dark and light.
 * Application icon in every place the platform supports.
 * All interface icons (tool bar, menus, context menu, buttons) are SVG files and all text fonts (Noto Sans,
   Noto Sans Mono, Noto Sans SC, Noto Sans Devanagari) are font files from the `assets` folder, embedded in the
