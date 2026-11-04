@@ -35,7 +35,7 @@
 34|Ġib 'il quddiem
 35|Ibgħat lura
 36|Ikkonverti f'passaġġ
-37|Griglja ta' kopji…
+37|Firxa tal-griglja…
 38|Griglja
 39|Aqbad mal-griglja
 40|Previżjoni tal-passaġġi
@@ -385,7 +385,7 @@
 384|Grupp magħmul. L-oġġetti jżommu s-saffi tagħhom.
 385|Operazzjonijiet tal-forom
 386|Aġġusta l-istampa…
-387|Vettorizza l-istampa…
+387|Vettorizzazzjoni tal-istampa…
 388|Importazzjoni tal-istampa
 389|Aġġusta l-istampa
 390|Rotazzjoni u qlib

@@ -96,7 +96,7 @@ const TABLE: &[[&str; 7]] = &[
     ["Bring to front", "Przesuń na wierzch", "In den Vordergrund", "Porta in primo piano", "Tuo eteen", "置于顶层", "सबसे आगे लाएँ"],
     ["Send to back", "Przesuń na spód", "In den Hintergrund", "Porta in secondo piano", "Vie taakse", "置于底层", "सबसे पीछे भेजें"],
     ["Convert to path", "Zamień na ścieżkę", "In Pfad umwandeln", "Converti in tracciato", "Muunna poluksi", "转换为路径", "पाथ में बदलें"],
-    ["Grid array…", "Tablica siatki…", "Rasteranordnung…", "Matrice a griglia…", "Ruudukkotaulukko…", "网格阵列…", "ग्रिड ऐरे…"],
+    ["Grid array…", "Tablica siatkowa…", "Rasteranordnung…", "Matrice a griglia…", "Ruudukkotaulukko…", "网格阵列…", "ग्रिड ऐरे…"],
     ["Grid", "Siatka", "Raster", "Griglia", "Ruudukko", "网格", "ग्रिड"],
     ["Snap to grid", "Przyciągaj do siatki", "Am Raster einrasten", "Aggancia alla griglia", "Kohdista ruudukkoon", "对齐网格", "ग्रिड पर स्नैप करें"],
     ["Toolpath preview", "Podgląd ścieżek", "Werkzeugweg-Vorschau", "Anteprima percorsi", "Työstöratojen esikatselu", "刀路预览", "टूलपाथ पूर्वावलोकन"],
@@ -453,7 +453,7 @@ const TABLE: &[[&str; 7]] = &[
     ["{} moves", "{} ruchów", "{} Bewegungen", "{} movimenti", "{} liikettä", "{} 个移动", "{} गतियाँ"],
     // ---- groups, context menu, import / export submenus ----
     ["Import", "Importuj", "Importieren", "Importa", "Tuo", "导入", "आयात"],
-    ["Export", "Eksportuj", "Exportieren", "Esporta", "Vie", "导出", "निर्यात"],
+    ["Export", "Eksport", "Exportieren", "Esporta", "Vie", "导出", "निर्यात"],
     ["Import Adobe Illustrator / PDF…", "Importuj Adobe Illustrator / PDF…", "Adobe Illustrator / PDF importieren…", "Importa Adobe Illustrator / PDF…", "Tuo Adobe Illustrator / PDF…", "导入 Adobe Illustrator / PDF…", "Adobe Illustrator / PDF आयात करें…"],
     ["Group", "Grupuj", "Gruppieren", "Raggruppa", "Ryhmitä", "编组", "समूह बनाएँ"],
     ["Ungroup", "Rozgrupuj", "Gruppierung aufheben", "Separa", "Pura ryhmitys", "取消编组", "समूह हटाएँ"],
@@ -461,7 +461,7 @@ const TABLE: &[[&str; 7]] = &[
     ["Grouped. The objects keep their layers.", "Zgrupowano. Obiekty zachowują swoje warstwy.", "Gruppiert. Die Objekte behalten ihre Ebenen.", "Raggruppati. Gli oggetti mantengono i loro livelli.", "Ryhmitetty. Kohteet säilyttävät tasonsa.", "已编组。对象保留各自的图层。", "समूह बना। ऑब्जेक्ट अपनी लेयर बनाए रखते हैं।"],
     ["Shape operations", "Operacje na kształtach", "Formoperationen", "Operazioni sulle forme", "Muotojen toiminnot", "形状运算", "आकार संचालन"],
     ["Adjust image…", "Dostosuj obraz…", "Bild anpassen…", "Regola immagine…", "Säädä kuvaa…", "调整图像…", "छवि समायोजित करें…"],
-    ["Trace image…", "Wektoryzuj obraz…", "Bild nachzeichnen…", "Vettorializza immagine…", "Jäljitä kuva…", "描摹图像…", "छवि ट्रेस करें…"],
+    ["Trace image…", "Wektoryzacja obrazu…", "Bild nachzeichnen…", "Vettorializzazione immagine…", "Kuvan jäljitys…", "描摹图像…", "छवि ट्रेस…"],
     // ---- image dialogs ----
     ["Import image", "Import obrazu", "Bild importieren", "Importa immagine", "Tuo kuva", "导入图像", "छवि आयात"],
     ["Adjust image", "Dostosuj obraz", "Bild anpassen", "Regola immagine", "Säädä kuvaa", "调整图像", "छवि समायोजन"],

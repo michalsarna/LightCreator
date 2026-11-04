@@ -35,7 +35,7 @@
 34|Flytta längst fram
 35|Flytta längst bak
 36|Konvertera till bana
-37|Rutnätskopior…
+37|Rutnätsmatris…
 38|Rutnät
 39|Fäst mot rutnät
 40|Förhandsvisning av banor

@@ -35,7 +35,7 @@
 34|Flytt fremst
 35|Flytt bakerst
 36|Konverter til bane
-37|Rutenettkopier…
+37|Rutenettmatrise…
 38|Rutenett
 39|Fest til rutenett
 40|Forhåndsvisning av baner

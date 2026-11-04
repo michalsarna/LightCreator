@@ -35,7 +35,7 @@
 34|Traer al frente
 35|Enviar al fondo
 36|Convertir en trazado
-37|Matriz de copias…
+37|Matriz en cuadrícula…
 38|Cuadrícula
 39|Ajustar a la cuadrícula
 40|Vista previa de trayectorias

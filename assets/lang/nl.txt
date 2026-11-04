@@ -35,7 +35,7 @@
 34|Naar voren halen
 35|Naar achteren sturen
 36|Omzetten naar pad
-37|Rasterkopieën…
+37|Rasterpatroon…
 38|Raster
 39|Aan raster uitlijnen
 40|Voorbeeld van paden

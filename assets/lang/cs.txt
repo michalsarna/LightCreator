@@ -35,7 +35,7 @@
 34|Přenést do popředí
 35|Přenést do pozadí
 36|Převést na cestu
-37|Mřížka kopií…
+37|Mřížkové pole…
 38|Mřížka
 39|Přichytávat k mřížce
 40|Náhled drah
@@ -377,7 +377,7 @@
 376|Příliš mnoho pohybů: přejezdy jsou skryty.
 377|Pohybů: {}
 378|Import
-379|Export
+379|Exportovat
 380|Importovat Adobe Illustrator / PDF…
 381|Seskupit
 382|Zrušit seskupení
@@ -385,7 +385,7 @@
 384|Seskupeno. Objekty si ponechají své vrstvy.
 385|Operace s tvary
 386|Upravit obrázek…
-387|Vektorizovat obrázek…
+387|Vektorizace obrázku…
 388|Import obrázku
 389|Úprava obrázku
 390|Otočení a převrácení

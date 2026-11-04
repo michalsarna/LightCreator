@@ -35,7 +35,7 @@
 34|Előre hozás
 35|Hátra küldés
 36|Átalakítás útvonallá
-37|Rácsos másolat…
+37|Rácsos sokszorosítás…
 38|Rács
 39|Illesztés a rácshoz
 40|Pályák előnézete
