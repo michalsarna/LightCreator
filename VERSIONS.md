@@ -2,6 +2,14 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.6.0
+
+* **Camera overlay:** it is now the shared one. Corners, opacity and the USB or network camera stay as they were, also in old profiles. The corner handles are square, a GIF can be loaded too, closing the window turns the handles off, and changing the tab or opening a project stops the USB camera.
+* **One quick guide:** the sections on the window, drawing, import, the gallery, the machine and the keys are the same in every program (F1). In Polish the guide uses the Polish names of the menus, and a test checks them.
+* **Backup:** the zip now holds your layer presets. Restoring puts them in place of the current list; an older backup without them leaves the list alone.
+* **Start** is the word *Start* in every language.
+* In Polish, *Export* in the File menu is *Eksportuj* and *Opacity* is *Przezroczystość (krycie)*, as in the other programs.
+
 ## v0.5.9
 
 * **Layer presets:** **Save preset…** and **Load preset** above the settings of a layer keep its way of burning under a name and put it on the active layer later, in the same window as in MillCreator and PenCreator. Check a preset on a piece of scrap, as the same power gives a different result on another laser.
