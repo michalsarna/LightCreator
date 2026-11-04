@@ -7,10 +7,14 @@ use crate::i18n::{self, tr, trf, Lang};
 use crate::menu::{menus, Act};
 use crate::theme::{self, Scheme};
 use eframe::egui::{self, Color32, Key, Modifiers, RichText};
-use lc_core::{gcode, svg, Document, Pt, Xf};
+use lc_core::{gcode, svg, Document, Pt};
+#[cfg(test)]
+use lc_core::Xf;
 use std::path::PathBuf;
 
-pub use base_ui::editor::{Tool, View};
+pub use base_ui::editor::View;
+#[cfg(test)]
+pub use base_ui::editor::Tool;
 
 /// Human-facing release label (branch name matches it).
 pub const APP_VERSION: &str = "v0.6.0";
