@@ -418,7 +418,7 @@ const TABLE: &[[&str; 7]] = &[
     ["Camera", "Kamera", "Kamera", "Fotocamera", "Kamera", "摄像头", "कैमरा"],
     ["Overlay: {}", "Nakładka: {}", "Überlagerung: {}", "Sovrapposizione: {}", "Peitto: {}", "叠加：{}", "ओवरले: {}"],
     ["Show overlay", "Pokaż nakładkę", "Überlagerung anzeigen", "Mostra sovrapposizione", "Näytä peitto", "显示叠加", "ओवरले दिखाएँ"],
-    ["Opacity", "Krycie", "Deckkraft", "Opacità", "Peittävyys", "不透明度", "अपारदर्शिता"],
+    ["Opacity", "Przezroczystość (krycie)", "Deckkraft", "Opacità", "Peittävyys", "不透明度", "अपारदर्शिता"],
     ["Align: drag the four corners on the work area", "Dopasuj: przeciągnij cztery narożniki na obszarze roboczym", "Ausrichten: die vier Ecken auf dem Arbeitsbereich ziehen", "Allinea: trascina i quattro angoli sull'area di lavoro", "Kohdista: vedä neljää kulmaa työalueella", "对齐：在工作区域上拖动四个角", "संरेखित करें: कार्य क्षेत्र पर चारों कोने खींचें"],
     ["Drag each corner to the matching corner of the material or work area; perspective is corrected.", "Przeciągnij każdy narożnik do odpowiedniego narożnika materiału lub obszaru roboczego; perspektywa jest korygowana.", "Jede Ecke auf die passende Ecke des Materials oder Arbeitsbereichs ziehen; die Perspektive wird korrigiert.", "Trascina ogni angolo sull'angolo corrispondente del materiale o dell'area di lavoro; la prospettiva viene corretta.", "Vedä kukin kulma materiaalin tai työalueen vastaavaan kulmaan; perspektiivi korjataan.", "将每个角拖到材料或工作区域的对应角；透视会被校正。", "प्रत्येक कोने को सामग्री या कार्य क्षेत्र के संबंधित कोने तक खींचें; परिप्रेक्ष्य सुधारा जाता है।"],
     ["Reset to work area", "Przywróć do obszaru roboczego", "Auf Arbeitsbereich zurücksetzen", "Ripristina all'area di lavoro", "Palauta työalueeseen", "重置为工作区域", "कार्य क्षेत्र पर रीसेट करें"],
@@ -453,7 +453,7 @@ const TABLE: &[[&str; 7]] = &[
     ["{} moves", "{} ruchów", "{} Bewegungen", "{} movimenti", "{} liikettä", "{} 个移动", "{} गतियाँ"],
     // ---- groups, context menu, import / export submenus ----
     ["Import", "Importuj", "Importieren", "Importa", "Tuo", "导入", "आयात"],
-    ["Export", "Eksport", "Exportieren", "Esporta", "Vie", "导出", "निर्यात"],
+    ["Export", "Eksportuj", "Exportieren", "Esporta", "Vie", "导出", "निर्यात"],
     ["Import Adobe Illustrator / PDF…", "Importuj Adobe Illustrator / PDF…", "Adobe Illustrator / PDF importieren…", "Importa Adobe Illustrator / PDF…", "Tuo Adobe Illustrator / PDF…", "导入 Adobe Illustrator / PDF…", "Adobe Illustrator / PDF आयात करें…"],
     ["Group", "Grupuj", "Gruppieren", "Raggruppa", "Ryhmitä", "编组", "समूह बनाएँ"],
     ["Ungroup", "Rozgrupuj", "Gruppierung aufheben", "Separa", "Pura ryhmitys", "取消编组", "समूह हटाएँ"],

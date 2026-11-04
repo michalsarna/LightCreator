@@ -357,7 +357,8 @@ impl App {
             recovery: lc_core::autosave::find_all(&crate::data_paths().base, "lightcreator"),
             autosave_on: saved("autosave_on").map(|v| v != "0").unwrap_or(true),
             mat_edit: None,
-            presets: None,
+            // The tests never touch the presets of whoever runs them.
+            presets: cfg!(test).then(|| base_ui::layer_presets_ui::Library::from_path(None, &crate::layer_presets::valid)),
             presets_ui: Default::default(),
             materials_dlg: None,
             mat_rev: u64::MAX,
