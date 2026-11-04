@@ -1,127 +1,69 @@
-//! Camera / photo overlay: a picture shown under the design, aligned to the work area by four corner handles.
+//! The camera / photo overlay of LightCreator. The picture, its window, its corners and drawing are the shared ones
+//! (`base_ui::editor::EditorBackground`); here is what is the laser's own: the corners kept with the device, the USB camera that can be
+//! chosen in the window, and the project kept in the document.
 use crate::app::App;
 use crate::camera;
-use crate::i18n::{tr, trf};
+use crate::i18n::tr;
 use crate::theme;
+use base_ui::editor::EditorBackground;
 use eframe::egui::{self, RichText};
-use lc_core::{CameraCfg, Pt};
-
-pub struct Overlay {
-    pub tex: egui::TextureHandle,
-    pub size: (u32, u32),
-    /// Work-area positions (mm) of the picture's top-left, top-right, bottom-right and bottom-left corners.
-    pub corners: [Pt; 4],
-    pub opacity: f32,
-    pub name: String,
-    /// The picture as it is shown (shared with the texture's upload), for the project file.
-    pub image: std::sync::Arc<egui::ColorImage>,
-}
-
-/// Map the unit square onto the quad with a perspective transform (Heckbert's square-to-quad).
-pub fn quad_map(c: &[Pt; 4], u: f64, v: f64) -> Pt {
-    let (x0, y0, x1, y1, x2, y2, x3, y3) = (c[0].x, c[0].y, c[1].x, c[1].y, c[2].x, c[2].y, c[3].x, c[3].y);
-    let (dx1, dx2, dx3) = (x1 - x2, x3 - x2, x0 - x1 + x2 - x3);
-    let (dy1, dy2, dy3) = (y1 - y2, y3 - y2, y0 - y1 + y2 - y3);
-    let det = dx1 * dy2 - dy1 * dx2;
-    let (g, h) = if dx3.abs() < 1e-12 && dy3.abs() < 1e-12 || det.abs() < 1e-12 { (0.0, 0.0) } else { ((dx3 * dy2 - dy3 * dx2) / det, (dx1 * dy3 - dy1 * dx3) / det) };
-    let (a, b, cc) = (x1 - x0 + g * x1, x3 - x0 + h * x3, x0);
-    let (d, e, f) = (y1 - y0 + g * y1, y3 - y0 + h * y3, y0);
-    let w = g * u + h * v + 1.0;
-    Pt::new((a * u + b * v + cc) / w, (d * u + e * v + f) / w)
-}
+use lc_core::CameraCfg;
 
 impl App {
-    fn bed_corners(&self) -> [Pt; 4] {
-        let (w, h) = self.doc.device.work_size();
-        [Pt::new(0.0, 0.0), Pt::new(w, 0.0), Pt::new(w, h), Pt::new(0.0, h)]
-    }
-
-    /// Show `img` as the overlay. A saved calibration for the device is reused.
-    pub fn overlay_set_image(&mut self, ctx: &egui::Context, img: egui::ColorImage, name: &str) {
-        let size = (img.width() as u32, img.height() as u32);
-        let image = std::sync::Arc::new(img);
-        if let Some(ov) = &mut self.overlay {
-            if ov.size == size {
-                ov.tex.set(image.clone(), egui::TextureOptions::LINEAR);
-                ov.image = image;
-                ov.name = name.to_string();
-                return;
-            }
-        }
-        let saved = self.doc.device.camera.clone();
-        let corners = saved.as_ref().map(|c| c.corners).unwrap_or_else(|| self.bed_corners());
-        let opacity = saved.as_ref().map(|c| c.opacity as f32).unwrap_or(0.6);
-        let tex = ctx.load_texture("camera-overlay", image.clone(), egui::TextureOptions::LINEAR);
-        self.overlay = Some(Overlay { tex, size, corners, opacity, name: name.to_string(), image });
-        self.overlay_visible = true;
-    }
-
-    /// The overlay as the project file keeps it (`None`: there is none, or its picture cannot be written).
-    fn overlay_data(&self) -> Option<lc_core::OverlayData> {
-        let ov = self.overlay.as_ref()?;
-        let rgb: Vec<u8> = ov.image.pixels.iter().flat_map(|p| [p.r(), p.g(), p.b()]).collect();
-        lc_core::OverlayData::new(&ov.name, ov.corners, ov.opacity as f64, self.overlay_visible, &rgb, ov.size.0, ov.size.1).ok()
-    }
-
     /// Put the overlay into the project (call it before the project is written, or put away in its tab). An overlay that was just read
     /// from the file and is not on the screen yet is left as it is.
     pub fn overlay_sync_to_doc(&mut self) {
-        if self.overlay_reload {
+        if self.overlay_reload || self.ed.background_pending.is_some() {
             return;
         }
-        let data = self.overlay_data();
+        let data = self.ed.background.as_ref().and_then(|b| b.data());
         self.doc.set_overlay(data);
     }
 
-    /// Show the overlay of the project that is shown now (none: the overlay goes, unless the camera feeds it). Called when the project
+    /// Show the overlay of the project that is shown now (none: the overlay goes, unless the camera view feeds it). Called when the project
     /// changed: a new one, an opened file, another tab.
-    pub fn overlay_from_doc(&mut self, ctx: &egui::Context) {
+    pub fn overlay_from_doc(&mut self) {
         self.overlay_reload = false;
-        match self.doc.overlay().and_then(|d| d.decode().ok().map(|px| (d, px))) {
-            Some((d, (w, h, rgba))) => {
-                let img = egui::ColorImage::from_rgba_unmultiplied([w as usize, h as usize], &rgba);
-                let image = std::sync::Arc::new(img);
-                let tex = ctx.load_texture("camera-overlay", image.clone(), egui::TextureOptions::LINEAR);
-                self.overlay = Some(Overlay { tex, size: (w, h), corners: d.corners, opacity: d.opacity as f32, name: d.name, image });
-                self.overlay_visible = d.visible;
-                self.stream_overlay = false;
-            }
-            None if !self.stream_overlay => {
-                self.overlay = None;
-            }
-            None => {}
+        self.ed.background_live = false;
+        self.ed.background_pending = self.doc.overlay();
+        if self.ed.background_pending.is_some() {
+            self.ed.background = None;
+            self.stream_overlay = false;
+        } else if !self.stream_overlay {
+            self.ed.background = None;
         }
     }
 
-    pub fn overlay_load_file(&mut self, ctx: &egui::Context) {
-        let Some(p) = rfd::FileDialog::new().add_filter("Images", &["png", "jpg", "jpeg", "bmp", "webp"]).pick_file() else { return };
-        match image::open(&p) {
-            Ok(img) => {
-                let rgba = img.to_rgba8();
-                let ci = egui::ColorImage::from_rgba_unmultiplied([rgba.width() as usize, rgba.height() as usize], rgba.as_raw());
-                let name = p.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default();
-                self.overlay_set_image(ctx, ci, &name);
-                self.touch();
-                self.status = trf("Overlay: {}", &[&name]);
-            }
-            Err(e) => self.status = trf("Import failed: {}", &[&e]),
-        }
-    }
-
-    /// Persist the calibration with the device profile.
+    /// Persist the corners and the opacity with the device profile.
     pub fn overlay_save_cfg(&mut self) {
-        if let Some(ov) = &self.overlay {
-            self.doc.device.camera = Some(CameraCfg { corners: ov.corners, opacity: ov.opacity as f64, index: self.cam_index });
+        if let Some(b) = &self.ed.background {
+            self.doc.device.camera = Some(CameraCfg { corners: b.corners, opacity: b.opacity as f64, index: self.cam_index });
             self.sync_profile();
-            // The corners, the opacity and the picture are kept in the project too.
-            self.touch();
         }
+        // The corners, the opacity and the picture are kept in the project too.
+        self.touch();
     }
 
-    /// Take frames from the camera thread into the overlay texture.
+    /// Every frame: the project that changed, and a USB camera that is no longer asked for stops.
     pub fn overlay_poll_camera(&mut self, ctx: &egui::Context) {
         if self.overlay_reload {
-            self.overlay_from_doc(ctx);
+            self.overlay_from_doc();
+        }
+        self.background_tick(ctx);
+        if !self.ed.background_live {
+            self.cam_worker = None;
+        }
+    }
+
+    /// The USB camera runs and its frames are taken; the number of the last one, or `None` when it failed.
+    pub fn overlay_live_camera(&mut self, ctx: &egui::Context) -> Option<u64> {
+        if !camera::SUPPORTED {
+            return None;
+        }
+        if self.cam_worker.is_none() {
+            self.cam_error.clear();
+            let yuyv = self.doc.device.cameras.get(self.doc.device.active_camera).is_some_and(|c| c.image.prefer_yuyv);
+            self.cam_worker = Some(camera::spawn(self.cam_index, yuyv, ctx.clone()));
         }
         let mut latest = None;
         let mut error = None;
@@ -136,167 +78,75 @@ impl App {
         if let Some(e) = error {
             self.cam_error = e;
             self.cam_worker = None;
+            return None;
         }
         if let Some(fr) = latest {
             let rgb = self.cam_process(fr.rgb, fr.w, fr.h);
-            let ci = egui::ColorImage::from_rgb([fr.w as usize, fr.h as usize], &rgb);
-            self.overlay_set_image(ctx, ci, &tr("Camera"));
+            self.cam_frame = Some((fr.w as usize, fr.h as usize, rgb));
+            self.cam_frames += 1;
         }
+        Some(self.cam_frames)
     }
 
-    pub fn overlay_window(&mut self, ctx: &egui::Context) {
-        if !self.show_overlay {
+    /// The choice of the camera, in the shared window of the overlay.
+    pub fn overlay_camera_choice(&mut self, ui: &mut egui::Ui) {
+        ui.separator();
+        ui.label(RichText::new(tr("Live camera")).strong());
+        if !camera::SUPPORTED {
+            ui.label(RichText::new(tr("This build has no camera support. Build with: cargo run --release --features camera")).color(theme::text_dim()));
             return;
         }
-        let mut open = true;
-        let mut changed = false;
-        crate::window_ui::popup(ctx, "w_overlay_3", &tr("Camera overlay"), [340.0, 220.0], &mut open, |ui| {
-            ui.label(RichText::new(tr("Show a photo or the live camera under the design to position work on the material.")).color(theme::text_dim()));
-            ui.horizontal(|ui| {
-                if ui.button(tr("Load picture…")).clicked() {
-                    self.overlay_load_file(ctx);
-                    changed = true;
-                }
-                if self.overlay.is_some() && crate::window_ui::delete_button(ui, &tr("Remove")).clicked() {
-                    self.overlay = None;
-                    self.cam_worker = None;
-                    self.touch();
+        ui.horizontal(|ui| {
+            egui::ComboBox::from_id_salt("cam_sel").width(220.0).selected_text(self.cam_list.get(self.cam_index as usize).cloned().unwrap_or_else(|| tr("No camera").to_string())).show_ui(ui, |ui| {
+                for (i, n) in self.cam_list.iter().enumerate() {
+                    ui.selectable_value(&mut self.cam_index, i as u32, n);
                 }
             });
-            ui.separator();
-            ui.label(RichText::new(tr("Live camera")).strong());
-            if !camera::SUPPORTED {
-                ui.label(RichText::new(tr("This build has no camera support. Build with: cargo run --release --features camera")).color(theme::text_dim()));
-            } else {
-                ui.horizontal(|ui| {
-                    egui::ComboBox::from_id_salt("cam_sel")
-                        .width(220.0)
-                        .selected_text(self.cam_list.get(self.cam_index as usize).cloned().unwrap_or_else(|| tr("No camera").to_string()))
-                        .show_ui(ui, |ui| {
-                            for (i, n) in self.cam_list.iter().enumerate() {
-                                ui.selectable_value(&mut self.cam_index, i as u32, n);
-                            }
-                        });
-                    if ui.button(tr("Find cameras")).clicked() {
-                        self.cam_list = camera::list();
-                        self.cam_index = self.cam_index.min(self.cam_list.len().saturating_sub(1) as u32);
-                    }
-                });
-                ui.horizontal(|ui| {
-                    if self.cam_worker.is_none() {
-                        if ui.add_enabled(!self.cam_list.is_empty(), egui::Button::new(tr("Start camera"))).clicked() {
-                            self.cam_error.clear();
-                            self.cam_worker = Some(camera::spawn(self.cam_index, self.doc.device.cameras.get(self.doc.device.active_camera).is_some_and(|c| c.image.prefer_yuyv), ctx.clone()));
-                        }
-                    } else if ui.button(tr("Freeze frame")).clicked() {
-                        self.cam_worker = None;
-                    }
-                });
-                if !self.cam_error.is_empty() {
-                    ui.label(RichText::new(&self.cam_error).color(egui::Color32::from_rgb(0xc0, 0x30, 0x30)));
-                }
-            }
-            if let Some(ov) = &mut self.overlay {
-                ui.separator();
-                ui.label(RichText::new(trf("Overlay: {}", &[&ov.name])).strong());
-                changed |= ui.checkbox(&mut self.overlay_visible, tr("Show overlay")).changed();
-                changed |= ui.add(egui::Slider::new(&mut ov.opacity, 0.05..=1.0).text(tr("Opacity"))).changed();
-                ui.checkbox(&mut self.overlay_edit, tr("Align: drag the four corners on the work area")).on_hover_text(tr("Drag each corner to the matching corner of the material or work area; perspective is corrected."));
-                ui.horizontal_wrapped(|ui| {
-                    if ui.button(tr("Reset to work area")).clicked() {
-                        let (w, h) = self.doc.device.work_size();
-                        ov.corners = [Pt::new(0.0, 0.0), Pt::new(w, 0.0), Pt::new(w, h), Pt::new(0.0, h)];
-                        changed = true;
-                    }
-                    if ui.button(tr("Flip H")).clicked() {
-                        ov.corners.swap(0, 1);
-                        ov.corners.swap(3, 2);
-                        changed = true;
-                    }
-                    if ui.button(tr("Flip V")).clicked() {
-                        ov.corners.swap(0, 3);
-                        ov.corners.swap(1, 2);
-                        changed = true;
-                    }
-                    if ui.button(tr("Rotate 90°")).clicked() {
-                        ov.corners.rotate_right(1);
-                        changed = true;
-                    }
-                });
-                let (pw, ph) = (ov.size.0 as f64, ov.size.1 as f64);
-                let dev = &mut self.doc.device;
-                let active = dev.active_camera;
-                if let Some(cam) = dev.cameras.get_mut(active) {
-                    ui.collapsing(tr("Reference points"), |ui| {
-                        ui.label(RichText::new(tr("Pairs of a point in the picture (pixels) and the place it has in the work area (mm). At least 3, 4 recommended; they fix the alignment, perspective included.")).color(theme::text_dim()));
-                        let before = cam.reference.clone();
-                        let mut del = None;
-                        for (i, r) in cam.reference.iter_mut().enumerate() {
-                            ui.horizontal(|ui| {
-                                ui.label(format!("{}", i + 1));
-                                ui.label("px");
-                                ui.add(egui::DragValue::new(&mut r.px.0).speed(1.0).range(0.0..=pw));
-                                ui.add(egui::DragValue::new(&mut r.px.1).speed(1.0).range(0.0..=ph));
-                                ui.label("mm");
-                                ui.add(egui::DragValue::new(&mut r.mm.0).speed(0.5));
-                                ui.add(egui::DragValue::new(&mut r.mm.1).speed(0.5));
-                                if crate::window_ui::delete_icon(ui, &tr("Delete this point")).clicked() {
-                                    del = Some(i);
-                                }
-                            });
-                        }
-                        if let Some(i) = del {
-                            cam.reference.remove(i);
-                        }
-                        ui.horizontal_wrapped(|ui| {
-                            if ui.button(tr("Add a point")).clicked() && cam.reference.len() < 32 {
-                                cam.reference.push(lc_core::RefPoint { px: (pw / 2.0, ph / 2.0), mm: (0.0, 0.0) });
-                            }
-                            if ui.button(tr("Points from the current corners")).on_hover_text(tr("Replaces the points with the four corners of the picture and where they lie now.")).clicked() {
-                                cam.reference = lc_core::camimg::points_from_corners(&ov.corners, pw, ph);
-                            }
-                            let ok = lc_core::camimg::homography(&cam.reference);
-                            if ui.add_enabled(ok.is_some(), egui::Button::new(tr("Align by the points"))).on_hover_text(tr("Fits the picture to the points (least squares) and moves the corners accordingly.")).clicked() {
-                                if let Some(c) = ok.and_then(|h| lc_core::camimg::corners(&h, pw, ph)) {
-                                    ov.corners = c;
-                                }
-                                changed = true;
-                            }
-                        });
-                        if lc_core::camimg::homography(&cam.reference).is_none() {
-                            ui.label(RichText::new(tr("Not enough points, or they lie on one line.")).color(egui::Color32::from_rgb(0xc0, 0x80, 0x20)));
-                        }
-                        changed |= cam.reference != before;
-                    });
-                }
+            if ui.button(tr("Find cameras")).clicked() {
+                self.cam_list = camera::list();
+                self.cam_index = self.cam_index.min(self.cam_list.len().saturating_sub(1) as u32);
             }
         });
-        if changed {
-            self.overlay_save_cfg();
-        }
-        self.show_overlay = open;
-        if !open {
-            self.overlay_edit = false;
-        }
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use lc_core::Pt;
 
+    /// An aligned laser stays aligned: corners dragged in an older version are in the profile, and the picture takes them.
     #[test]
-    fn quad_map_hits_corners_and_handles_perspective() {
-        let c = [Pt::new(10.0, 10.0), Pt::new(110.0, 20.0), Pt::new(100.0, 90.0), Pt::new(0.0, 80.0)];
-        for (u, v, k) in [(0.0, 0.0, 0), (1.0, 0.0, 1), (1.0, 1.0, 2), (0.0, 1.0, 3)] {
-            assert!(quad_map(&c, u, v).dist(c[k]) < 1e-9, "corner {k}");
-        }
-        // Axis-aligned rectangle: plain linear interpolation.
-        let r = [Pt::new(0.0, 0.0), Pt::new(200.0, 0.0), Pt::new(200.0, 100.0), Pt::new(0.0, 100.0)];
-        assert!(quad_map(&r, 0.5, 0.5).dist(Pt::new(100.0, 50.0)) < 1e-9);
-        // A trapezoid keeps the centre inside the quad.
-        let t = [Pt::new(20.0, 0.0), Pt::new(80.0, 0.0), Pt::new(100.0, 100.0), Pt::new(0.0, 100.0)];
-        let m = quad_map(&t, 0.5, 0.5);
-        assert!(m.x > 40.0 && m.x < 60.0 && m.y > 0.0 && m.y < 100.0);
+    fn the_corners_kept_in_an_older_profile_are_used_and_a_drag_keeps_them() {
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        let kept = [Pt::new(3.0, 4.0), Pt::new(90.0, 5.0), Pt::new(91.0, 70.0), Pt::new(2.0, 71.0)];
+        let old = serde_json::json!({ "corners": kept, "opacity": 0.35 });
+        a.doc.device.camera = Some(serde_json::from_value(old).expect("the file of an older version has no camera number"));
+        a.set_background(&ctx, egui::ColorImage::from_rgb([4, 2], &[200u8; 24]), "photo");
+        let b = a.ed.background.as_mut().expect("the picture");
+        assert_eq!((b.corners, b.opacity), (kept, 0.35));
+        b.corners[0] = Pt::new(7.0, 8.0);
+        b.opacity = 0.5;
+        a.overlay_save_cfg();
+        let saved = a.doc.device.camera.as_ref().unwrap();
+        assert_eq!((saved.corners[0], saved.opacity), (Pt::new(7.0, 8.0), 0.5));
+        // Removing the picture keeps what the device knows.
+        a.ed.background = None;
+        a.overlay_save_cfg();
+        assert_eq!(a.doc.device.camera.as_ref().unwrap().corners[0], Pt::new(7.0, 8.0));
+    }
+
+    /// The hooks of the window: it is a camera overlay even with no camera set up, and with a picture from the USB camera.
+    #[test]
+    fn the_window_is_the_one_of_a_camera_overlay_and_the_usb_frame_goes_under_the_drawing() {
+        use base_ui::editor::EditorHost;
+        let ctx = egui::Context::default();
+        let mut a = App::build(&ctx, None, false);
+        assert!(a.overlay_is_camera());
+        assert!(a.background_camera_image().is_none(), "no frame yet");
+        a.cam_frame = Some((2, 1, vec![9u8; 6]));
+        let (img, _) = a.background_camera_image().expect("the frame");
+        assert_eq!((img.width(), img.height()), (2, 1));
     }
 }

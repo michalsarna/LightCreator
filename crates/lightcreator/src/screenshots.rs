@@ -11,6 +11,7 @@ use crate::app::{App, Screen, SideTab, Tool};
 use crate::i18n::{self, Lang};
 use crate::laser::{ConsoleLine, Dir};
 use crate::theme::{self, Scheme};
+use base_ui::editor::EditorBackground;
 use egui_kittest::kittest::Queryable;
 use egui_kittest::Harness;
 use lc_core::{Device, ImageData, Kind, Origin, TextData, Units, Xf};
@@ -227,7 +228,7 @@ fn render_screenshots() {
         let a = app(&mut h);
         a.doc.scene.shapes.clear();
         a.preview_on = false;
-        a.show_overlay = false;
+        a.ed.show_background = false;
         let (w, hh) = (320usize, 240usize);
         let mut px = Vec::with_capacity(w * hh * 4);
         for y in 0..hh {
@@ -239,24 +240,24 @@ fn render_screenshots() {
         }
         let img = eframe::egui::ColorImage::from_rgba_unmultiplied([w, hh], &px);
         let ctx2 = ctx.clone();
-        a.overlay_set_image(&ctx2, img, "Camera");
-        if let Some(ov) = &mut a.overlay {
+        a.set_background(&ctx2, img, "Camera");
+        if let Some(ov) = &mut a.ed.background {
             ov.corners = [lc_core::Pt::new(30.0, 40.0), lc_core::Pt::new(380.0, 25.0), lc_core::Pt::new(365.0, 330.0), lc_core::Pt::new(20.0, 350.0)];
             ov.opacity = 0.9;
         }
-        a.overlay_edit = true;
+        if let Some(b) = a.ed.background.as_mut() { b.edit = true; }
         let id = a.doc.add(0, Kind::Text(TextData { text: "Hello".into(), size: 40.0, ..TextData::default() }), Xf::translate(110.0, 150.0));
         a.ed.sel = vec![id];
-        a.show_overlay = true;
+        a.ed.show_background = true;
         a.status = "Ready".into();
     }
     save(&mut h, "10-camera-overlay.png");
 
     {
         let a = app(&mut h);
-        a.show_overlay = false;
-        a.overlay_edit = false;
-        a.overlay = None;
+        a.ed.show_background = false;
+        if let Some(b) = a.ed.background.as_mut() { b.edit = false; }
+        a.ed.background = None;
     }
 
     // Preview window: several operations, each in its own colour, with travel moves.
@@ -1568,4 +1569,65 @@ fn the_machine_menu_of_the_laser_follows_the_controller() {
 #[test]
 fn the_fonts_draw_every_symbol_of_the_program() {
     base_ui::tool_check::check_symbols(&std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src"));
+}
+
+/// The overlay through the real window: the button opens its one window, a corner is dragged with the pointer, the drag is kept with the
+/// device, and the shapes under the pointer stay where they are.
+#[test]
+fn the_overlay_works_through_the_window_and_a_dragged_corner_is_kept_with_the_device() {
+    use base_ui::editor::EditorHost;
+    use base_ui::tool_check::Drive;
+    use eframe::egui::{Event, Modifiers, PointerButton};
+    let mut h = egui_kittest::Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<crate::app::App>| {
+            let a = state.get_or_insert_with(|| crate::app::App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    {
+        let a = h.state_mut().as_mut().unwrap();
+        a.profiles = vec![Device::default()];
+        a.enter_editor(0);
+    }
+    h.run_steps(4);
+    assert!(h.state().as_ref().unwrap().ed.background.is_none());
+    h.get_by_label("Overlay").click();
+    h.run_steps(4);
+    assert!(h.state().as_ref().unwrap().ed.show_background, "the button opens the window");
+    assert_eq!(h.query_all_by_label("Camera overlay").count(), 1, "one window");
+    assert!(h.query_by_label("Live camera").is_some(), "with the choice of the camera");
+    let mut w = ToolWindow(h);
+    let ctx = w.ctx();
+    let shape = {
+        let a = w.app();
+        a.ed.show_background = false;
+        a.set_background(&ctx, eframe::egui::ColorImage::from_rgb([4, 2], &[200u8; 24]), "photo");
+        a.ed.background.as_mut().unwrap().edit = true;
+        a.doc.add(0, Kind::Rect { w: 20.0, h: 20.0 }, lc_core::Xf::translate(50.0, 50.0))
+    };
+    w.frames();
+    let (from, to, before) = {
+        let a = w.app();
+        let o = a.ed().canvas_origin;
+        let c = a.ed.background.as_ref().unwrap().corners[0];
+        (a.w2s(o, c), a.w2s(o, lc_core::Pt::new(c.x + 40.0, c.y + 30.0)), a.doc.shape(shape).unwrap().xf)
+    };
+    w.send(Event::PointerMoved(from));
+    w.frames();
+    w.send(Event::PointerButton { pos: from, button: PointerButton::Primary, pressed: true, modifiers: Modifiers::NONE });
+    w.frames();
+    w.send(Event::PointerMoved(from.lerp(to, 0.5)));
+    w.frames();
+    w.send(Event::PointerMoved(to));
+    w.frames();
+    w.send(Event::PointerButton { pos: to, button: PointerButton::Primary, pressed: false, modifiers: Modifiers::NONE });
+    w.frames();
+    let a = w.app();
+    let moved = a.ed.background.as_ref().unwrap().corners[0];
+    assert!((moved.x - 40.0).abs() < 2.0 && (moved.y - 30.0).abs() < 2.0, "{moved:?}");
+    let kept = a.doc.device.camera.as_ref().expect("kept with the device").corners[0];
+    assert_eq!(kept, moved);
+    assert_eq!(a.doc.shape(shape).unwrap().xf, before, "the shape stays");
 }

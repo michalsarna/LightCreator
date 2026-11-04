@@ -1,6 +1,7 @@
 //! The live picture from the device's camera URL. It can open in its own window (which may leave the
 //! app window and the screen), sit in the side panel as a tab or be a tab of the work area.
 use crate::app::{App, SideTab};
+use base_ui::editor::EditorBackground;
 use crate::camera::rotate_rgb;
 use crate::camera_stream::{self, Msg};
 use crate::i18n::{tr, trf};
@@ -132,7 +133,7 @@ impl App {
         self.cam_tab_shown = false;
         if self.stream_overlay {
             self.stream_overlay = false;
-            self.overlay_visible = false;
+            self.overlay_show(false);
         }
         if self.side_tab == SideTab::Camera {
             self.side_tab = SideTab::Properties;
@@ -178,7 +179,7 @@ impl App {
                 _ => self.stream_tex = Some(ctx.load_texture("camera-stream", img.clone(), egui::TextureOptions::LINEAR)),
             }
             if self.stream_overlay {
-                self.overlay_set_image(ctx, img, &tr("Camera view"));
+                self.set_background(ctx, img, &tr("Camera view"));
             }
         }
         self.cam_rec.tick(std::time::Instant::now());
@@ -434,27 +435,27 @@ mod tests {
         let ctx = egui::Context::default();
         let mut a = App::build(&ctx, None, false);
         a.screen = crate::app::Screen::Editor;
-        a.overlay_set_image(&ctx, egui::ColorImage::from_rgb([4, 2], &[200u8; 24]), "t");
+        a.set_background(&ctx, egui::ColorImage::from_rgb([4, 2], &[200u8; 24]), "t");
         (a, ctx)
     }
 
     #[test]
     fn overlay_can_be_hidden_from_the_menu_after_the_camera_window_closed() {
         let (mut a, ctx) = app_with_overlay();
-        assert!(a.overlay_visible);
+        assert!(a.overlay_shown());
         // The camera view fed the overlay, then its window was closed: the picture goes away with it.
         a.show_stream = true;
         a.stream_overlay = true;
         a.stream_closed();
-        assert!(!a.overlay_visible && !a.stream_overlay && !a.show_stream);
+        assert!(!a.overlay_shown() && !a.stream_overlay && !a.show_stream);
         // The menu toggle works without any window open, in both directions.
         assert_eq!(a.act_checked(Act::ToggleOverlay), Some(false));
         a.do_act(&ctx, Act::ToggleOverlay);
-        assert!(a.overlay_visible);
+        assert!(a.overlay_shown());
         a.do_act(&ctx, Act::ToggleOverlay);
-        assert!(!a.overlay_visible);
+        assert!(!a.overlay_shown());
         // Without an overlay the toggle is disabled.
-        a.overlay = None;
+        a.ed.background = None;
         assert!(!a.act_enabled(Act::ToggleOverlay));
     }
 

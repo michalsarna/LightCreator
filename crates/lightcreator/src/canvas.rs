@@ -4,7 +4,7 @@
 use crate::app::App;
 use crate::theme;
 use base_ui::editor::{CanvasView, EditorHost};
-use eframe::egui::{self, Color32, PointerButton, Pos2, Stroke};
+use eframe::egui::{self, Color32, Stroke};
 use lc_core::{Pt, PALETTE};
 
 pub use base_ui::editor::{fit_region, fit_view};
@@ -116,44 +116,6 @@ impl App {
 
     }
 
-    /// The camera picture under the design.
-    pub fn paint_camera_overlay(&mut self, v: &CanvasView) {
-        let painter = v.painter;
-        let o = v.origin;
-        // ---- camera overlay (under the design) ----
-        if self.overlay_visible {
-            if let Some(ov) = &self.overlay {
-                let n = 16usize;
-                let tint = Color32::from_white_alpha((ov.opacity * 255.0) as u8);
-                let mut mesh = egui::Mesh::with_texture(ov.tex.id());
-                for j in 0..=n {
-                    for i in 0..=n {
-                        let (u, v) = (i as f64 / n as f64, j as f64 / n as f64);
-                        let p = crate::overlay::quad_map(&ov.corners, u, v);
-                        mesh.vertices.push(egui::epaint::Vertex { pos: self.w2s(o, p), uv: egui::pos2(u as f32, v as f32), color: tint });
-                    }
-                }
-                for j in 0..n {
-                    for i in 0..n {
-                        let k = (j * (n + 1) + i) as u32;
-                        let w = (n + 1) as u32;
-                        mesh.indices.extend_from_slice(&[k, k + 1, k + w + 1, k, k + w + 1, k + w]);
-                    }
-                }
-                painter.add(egui::Shape::mesh(mesh));
-                if self.overlay_edit {
-                    let quad: Vec<Pos2> = ov.corners.iter().map(|c| self.w2s(o, *c)).collect();
-                    painter.add(egui::Shape::closed_line(quad.clone(), Stroke::new(1.5, theme::accent())));
-                    for q in quad {
-                        painter.circle_filled(q, 7.0, Color32::WHITE);
-                        painter.circle_stroke(q, 7.0, Stroke::new(2.0, theme::accent()));
-                    }
-                }
-            }
-        }
-
-    }
-
     /// The tool path preview over the design.
     pub fn paint_preview(&mut self, v: &CanvasView) {
         let painter = v.painter;
@@ -181,34 +143,5 @@ impl App {
             }
         }
 
-    }
-
-    /// Corner dragging for the camera overlay. Returns true while it owns the pointer.
-    pub fn overlay_interact(&mut self, resp: &egui::Response, o: Pos2, press: Option<Pos2>, hpos: Option<Pos2>) -> bool {
-        if !self.overlay_edit || self.overlay.is_none() {
-            self.overlay_drag = None;
-            return false;
-        }
-        if resp.drag_started_by(PointerButton::Primary) {
-            if let (Some(m), Some(ov)) = (press, &self.overlay) {
-                self.overlay_drag = (0..4).find(|i| self.w2s(o, ov.corners[*i]).distance(m) <= 12.0);
-            }
-        }
-        if let Some(i) = self.overlay_drag {
-            if resp.dragged_by(PointerButton::Primary) {
-                if let Some(m) = hpos {
-                    let w = self.s2w(o, m);
-                    if let Some(ov) = &mut self.overlay {
-                        ov.corners[i] = w;
-                    }
-                }
-            }
-            if resp.drag_stopped() {
-                self.overlay_drag = None;
-                self.overlay_save_cfg();
-            }
-            return true;
-        }
-        false
     }
 }

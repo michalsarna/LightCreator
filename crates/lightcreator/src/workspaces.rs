@@ -316,21 +316,23 @@ mod tests {
         a.touch();
     }
 
+    use base_ui::editor::EditorBackground;
+
     #[test]
     fn every_drawing_keeps_its_own_overlay_when_the_tabs_are_switched() {
         let ctx = egui::Context::default();
         let mut a = App::build(&ctx, None, false);
-        a.overlay_set_image(&ctx, egui::ColorImage::from_rgb([6, 3], &[90u8; 6 * 3 * 3]), "first");
+        a.set_background(&ctx, egui::ColorImage::from_rgb([6, 3], &[90u8; 6 * 3 * 3]), "first");
         a.new_tab();
         a.overlay_poll_camera(&ctx);
-        assert!(a.overlay.is_none(), "the new drawing has no overlay");
-        a.overlay_set_image(&ctx, egui::ColorImage::from_rgb([10, 5], &[30u8; 10 * 5 * 3]), "second");
+        assert!(a.ed.background.is_none(), "the new drawing has no overlay");
+        a.set_background(&ctx, egui::ColorImage::from_rgb([10, 5], &[30u8; 10 * 5 * 3]), "second");
         a.switch_to(0);
         a.overlay_poll_camera(&ctx);
-        assert_eq!(a.overlay.as_ref().map(|o| (o.name.clone(), o.size)), Some(("first".to_string(), (6, 3))));
+        assert_eq!(a.ed.background.as_ref().map(|o| (o.name.clone(), o.size)), Some(("first".to_string(), (6, 3))));
         a.switch_to(1);
         a.overlay_poll_camera(&ctx);
-        assert_eq!(a.overlay.as_ref().map(|o| (o.name.clone(), o.size)), Some(("second".to_string(), (10, 5))));
+        assert_eq!(a.ed.background.as_ref().map(|o| (o.name.clone(), o.size)), Some(("second".to_string(), (10, 5))));
     }
 
     #[test]

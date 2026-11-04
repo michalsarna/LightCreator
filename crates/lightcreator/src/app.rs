@@ -213,17 +213,15 @@ pub struct App {
     pub read_cfg: Option<crate::device_ui::ReadCfg>,
     pub show_preview: bool,
     pub pv: crate::preview_ui::PreviewState,
-    pub overlay: Option<crate::overlay::Overlay>,
-    pub overlay_visible: bool,
     /// The project changed (a new one, an opened file, another tab): the overlay on the screen is the one of the project, to be put there.
     pub overlay_reload: bool,
-    pub overlay_edit: bool,
-    pub overlay_drag: Option<usize>,
-    pub show_overlay: bool,
     pub cam_list: Vec<String>,
     pub cam_index: u32,
     pub cam_error: String,
     pub cam_worker: Option<crate::camera::Worker>,
+    /// The last frame of the USB camera, after the lens and the image settings, and how many have come.
+    pub cam_frame: Option<(usize, usize, Vec<u8>)>,
+    pub cam_frames: u64,
     /// The order of the tabs of the side panel, and whether it is collapsed.
     pub tabs: base_ui::side_tabs::SideTabs,
     /// Width of the side panel as drawn in the last frame.
@@ -431,16 +429,13 @@ impl App {
             read_cfg: None,
             show_preview: false,
             pv: Default::default(),
-            overlay: None,
-            overlay_visible: true,
             overlay_reload: false,
-            overlay_edit: false,
-            overlay_drag: None,
-            show_overlay: false,
             cam_list: vec![],
             cam_index: 0,
             cam_error: String::new(),
             cam_worker: None,
+            cam_frame: None,
+            cam_frames: 0,
             side_w: 0.0,
             tabs: base_ui::side_tabs::SideTabs::new(&SideTab::IDS, &saved("tab_order").unwrap_or_default(), saved("side_collapsed").is_some_and(|v| v == "1")),
             lang,
@@ -941,23 +936,33 @@ impl App {
     pub fn can_start(&self) -> bool {
         !self.doc.device.controller.is_serial() || self.connected
     }
+    /// Is there a picture under the drawing, and is it shown?
+    pub fn overlay_shown(&self) -> bool {
+        self.ed.background.as_ref().is_some_and(|b| b.visible)
+    }
+    /// Show or hide the picture; it stays in place either way.
+    pub fn overlay_show(&mut self, on: bool) {
+        if let Some(b) = self.ed.background.as_mut() {
+            b.visible = on;
+        }
+    }
     /// (shown, available) for the Overlay buttons. The button is always available: with no overlay it opens the window that makes one.
     pub fn overlay_state(&self) -> (bool, bool) {
-        (self.overlay.is_some() && self.overlay_visible, true)
+        (self.overlay_shown(), true)
     }
     /// The Overlay button of the camera view: the overlay is fed from the live camera while the view is open, otherwise it is the saved photo.
     pub fn toggle_stream_overlay(&mut self) {
-        let on = self.overlay.is_some() && self.overlay_visible;
+        let on = self.overlay_shown();
         if self.show_stream {
             if on && self.stream_overlay {
                 self.stream_overlay = false;
-                self.overlay_visible = false;
+                self.overlay_show(false);
             } else {
                 self.stream_overlay = true;
-                self.overlay_visible = true;
+                self.overlay_show(true);
             }
         } else {
-            self.overlay_visible = !self.overlay_visible;
+            self.overlay_show(!on);
         }
     }
     /// The Overlay button: an overlay that is shown is switched off (and no longer fed from the live camera); with none, the same window as
@@ -966,9 +971,9 @@ impl App {
         let (on, _) = self.overlay_state();
         if on {
             self.stream_overlay = false;
-            self.overlay_visible = false;
+            self.overlay_show(false);
         } else {
-            self.show_overlay = true;
+            self.ed.show_background = true;
         }
     }
     /// A job is being streamed to the laser.
@@ -1341,7 +1346,7 @@ impl App {
         }
         match a {
             Act::TogglePreview => Some(self.preview_on),
-            Act::ToggleOverlay => Some(self.overlay.is_some() && self.overlay_visible),
+            Act::ToggleOverlay => Some(self.overlay_shown()),
             Act::ToggleZones => Some(self.zones_visible),
             Act::SetLang(l) => Some(self.lang == l),
             Act::SetScheme(s) => Some(self.scheme == s),
@@ -1360,7 +1365,7 @@ impl App {
             Act::CheckProgram => self.doc.device.controller == lc_core::Controller::Grbl && self.connected && !self.job_running(),
             Act::StartJob => self.can_start() && !self.job_running(),
             Act::StartFrom => self.connected && !self.job_running(),
-            Act::ToggleOverlay => self.overlay.is_some(),
+            Act::ToggleOverlay => self.ed.background.is_some(),
             Act::ToggleZones => !self.doc.device.zones.is_empty(),
             _ => true,
         }
@@ -1442,7 +1447,7 @@ impl App {
             Act::ToCurves | Act::AutoJoin | Act::ClosePath | Act::DogboneCorners | Act::GridArray | Act::CircleArray | Act::CopyAlongPath | Act::TextOnPath | Act::TrimByShape | Act::RemoveDuplicates | Act::BreakApart | Act::SimplifyShapes | Act::SerialText | Act::MakeCode | Act::NestShapes | Act::MeasureShapes | Act::ExportSelectionSvg | Act::ExportSelectionDxf | Act::BoolUnion | Act::BoolIntersect | Act::BoolSubtract | Act::BoolXor | Act::OffsetShape | Act::RoundCorners | Act::ImportImage | Act::AdjustImage | Act::TraceImage | Act::Tool(_) | Act::SplitView(_) | Act::SingleView => {}
             Act::QuickGuide => self.show_guide = true,
             Act::OpenGithub => ctx.open_url(egui::OpenUrl::new_tab(crate::help_ui::GITHUB_URL)),
-            Act::CameraOverlay => self.show_overlay = true,
+            Act::CameraOverlay => self.ed.show_background = true,
             Act::GridOptions => self.show_prefs = true,
             Act::ProgramOptions => self.show_options = true,
             Act::CheckUpdates => self.start_update_check(ctx, true),
@@ -1462,8 +1467,8 @@ impl App {
             }
             Act::ShareSer2net => self.open_ser2net(),
             Act::ToggleOverlay => {
-                if self.overlay.is_some() {
-                    self.overlay_visible = !self.overlay_visible;
+                if let Some(b) = self.ed.background.as_mut() {
+                    b.visible = !b.visible;
                 } else {
                     self.status = tr("There is no camera overlay yet. Load a picture or start the camera view.").to_string();
                 }
@@ -1634,7 +1639,6 @@ impl App {
             self.send_job_from(from);
         }
         self.add_device_window(ctx);
-        self.overlay_window(ctx);
         self.prefs_window(ctx);
         self.preview_window(ctx);
         self.image_dialogs(ctx);
@@ -1738,17 +1742,44 @@ impl base_ui::editor::EditorHost for App {
     fn paint_work_area(&mut self, v: &base_ui::editor::CanvasView) {
         self.paint_machine_area(v)
     }
-    fn paint_under_shapes(&mut self, v: &base_ui::editor::CanvasView) {
-        self.paint_camera_overlay(v)
-    }
     fn paint_over_shapes(&mut self, v: &base_ui::editor::CanvasView) {
         self.paint_preview(v)
     }
-    fn pointer_claimed(&mut self, resp: &egui::Response, origin: egui::Pos2, press: Option<egui::Pos2>, hover: Option<egui::Pos2>) -> bool {
-        self.overlay_interact(resp, origin, press, hover)
+    fn overlay_camera(&mut self) -> Option<&mut lc_core::CameraSource> {
+        let at = self.doc.device.active_camera;
+        self.doc.device.cameras.get_mut(at)
+    }
+    fn overlay_camera_changed(&mut self) {
+        self.sync_profile();
+        self.touch();
+    }
+    fn live_camera(&mut self, ctx: &egui::Context) -> Option<u64> {
+        self.overlay_live_camera(ctx)
+    }
+    fn camera_error(&self) -> String {
+        self.cam_error.clone()
+    }
+    fn background_camera_image(&self) -> Option<(egui::ColorImage, String)> {
+        let (w, h, rgb) = self.cam_frame.as_ref()?;
+        Some((egui::ColorImage::from_rgb([*w, *h], rgb), tr("Camera").to_string()))
+    }
+    fn overlay_calibration(&self) -> Option<([Pt; 4], f32)> {
+        self.doc.device.camera.as_ref().map(|c| (c.corners, c.opacity as f32))
+    }
+    fn overlay_changed(&mut self) {
+        self.overlay_save_cfg();
+    }
+    fn overlay_is_camera(&mut self) -> bool {
+        true
+    }
+    fn overlay_can_start_camera(&self) -> bool {
+        crate::camera::SUPPORTED && !self.cam_list.is_empty()
+    }
+    fn overlay_camera_ui(&mut self, ui: &mut egui::Ui) {
+        self.overlay_camera_choice(ui);
     }
     fn canvas_context_menu(&mut self, ui: &mut egui::Ui, resp: &egui::Response) {
-        if self.overlay_edit {
+        if self.ed.background.as_ref().is_some_and(|b| b.edit) {
             return;
         }
         base_ui::editor::context_menu(self, ui, resp);
@@ -1957,18 +1988,20 @@ mod tests {
         assert!(a.gcode_texts[0].text.contains("; by hand"));
     }
 
+    use base_ui::editor::EditorBackground;
+
     #[test]
     fn the_overlay_picture_is_kept_in_the_project_file_and_comes_back_with_it() {
         let ctx = egui::Context::default();
         let mut a = App::build(&ctx, None, false);
-        assert!(a.overlay.is_none());
-        a.overlay_set_image(&ctx, egui::ColorImage::from_rgb([8, 4], &[120u8; 8 * 4 * 3]), "photo.jpg");
+        assert!(a.ed.background.is_none());
+        a.set_background(&ctx, egui::ColorImage::from_rgb([8, 4], &[120u8; 8 * 4 * 3]), "photo.jpg");
         let corners = [lc_core::Pt::new(1.0, 2.0), lc_core::Pt::new(50.0, 2.0), lc_core::Pt::new(50.0, 40.0), lc_core::Pt::new(1.0, 40.0)];
-        if let Some(ov) = &mut a.overlay {
+        if let Some(ov) = &mut a.ed.background {
             ov.corners = corners;
             ov.opacity = 0.35;
         }
-        a.overlay_visible = false;
+        a.overlay_show(false);
         // Saving puts the overlay into the file.
         a.overlay_sync_to_doc();
         let json = a.doc.to_json();
@@ -1976,16 +2009,16 @@ mod tests {
         // Another drawing has none.
         a.new_doc();
         a.overlay_poll_camera(&ctx);
-        assert!(a.overlay.is_none(), "a new project has no overlay");
+        assert!(a.ed.background.is_none(), "a new project has no overlay");
         // The file brings it back: the picture, where it lies, how see-through it is and that it was hidden.
         a.doc = lc_core::Document::from_json(&json).unwrap();
         a.overlay_reload = true;
         a.overlay_poll_camera(&ctx);
-        let ov = a.overlay.as_ref().expect("the overlay of the file");
+        let ov = a.ed.background.as_ref().expect("the overlay of the file");
         assert_eq!((ov.size, ov.name.as_str(), ov.corners, (ov.opacity * 100.0).round() as i32), ((8, 4), "photo.jpg", corners, 35));
-        assert!(!a.overlay_visible);
+        assert!(!a.overlay_shown());
         // An overlay that is waiting to be read from the file is not thrown away by a save in between.
-        a.overlay = None;
+        a.ed.background = None;
         a.overlay_reload = true;
         a.overlay_sync_to_doc();
         assert!(a.doc.overlay().is_some());
@@ -1997,16 +2030,16 @@ mod tests {
         let mut a = App::build(&ctx, None, false);
         assert_eq!(a.overlay_state(), (false, true), "always available");
         a.toggle_overlay_button();
-        assert!(a.show_overlay, "the same window as Overlay from… of the View menu");
-        a.show_overlay = false;
-        a.overlay_set_image(&ctx, egui::ColorImage::from_rgb([4, 2], &[200u8; 24]), "t");
+        assert!(a.ed.show_background, "the same window as Overlay from… of the View menu");
+        a.ed.show_background = false;
+        a.set_background(&ctx, egui::ColorImage::from_rgb([4, 2], &[200u8; 24]), "t");
         a.stream_overlay = true;
         assert!(a.overlay_state().0);
         a.toggle_overlay_button();
-        assert!(!a.overlay_state().0 && !a.stream_overlay && !a.show_overlay, "switched off, not the window");
+        assert!(!a.overlay_state().0 && !a.stream_overlay && !a.ed.show_background, "switched off, not the window");
         // Off with a picture: the button asks for the window again.
         a.toggle_overlay_button();
-        assert!(a.show_overlay);
+        assert!(a.ed.show_background);
     }
 
     #[test]
