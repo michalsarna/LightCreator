@@ -115,6 +115,11 @@ impl App {
         if let Some(v) = get("grid_main_mm").and_then(|v| v.parse::<f64>().ok()) {
             self.ed.grid = v;
         }
+        // A backup from before the presets were in it leaves them alone.
+        if let Some(text) = get(base_ui::layer_presets_ui::BACKUP_KEY) {
+            let valid = &crate::layer_presets::valid;
+            self.presets.get_or_insert_with(|| base_ui::layer_presets_ui::Library::load(crate::layer_presets::FILE, valid)).replace_text(text, valid);
+        }
         self.tabs.restore(get("tab_order").unwrap_or(""), get("side_collapsed").is_some_and(|v| v == "1"));
         self.cfg = None;
         if self.screen == crate::app::Screen::Editor && !self.profiles.is_empty() {
@@ -125,7 +130,14 @@ impl App {
     /// Write the zip: the settings as they are now, the whole shared gallery and a short README.
     /// Returns the number of files in it.
     pub fn write_backup(&self, dest: &Path) -> Result<usize, String> {
-        lc_core::backup::write(dest, "LightCreator", APP_VERSION, &self.settings_pairs(), self.clip.lib.dir())
+        lc_core::backup::write(dest, "LightCreator", APP_VERSION, &self.backup_pairs(), self.clip.lib.dir())
+    }
+
+    /// What goes into the settings of a backup: the settings of the program and the layer presets, which have a file of their own.
+    fn backup_pairs(&self) -> Vec<(&'static str, String)> {
+        let mut pairs = self.settings_pairs();
+        pairs.push(base_ui::layer_presets_ui::backup_pair(self.presets.as_ref(), crate::layer_presets::FILE, &crate::layer_presets::valid));
+        pairs
     }
 }
 
@@ -207,6 +219,35 @@ mod tests {
         let junk = dir.join("junk.zip");
         std::fs::write(&junk, "not a zip").unwrap();
         assert!(b.restore_backup(&ctx, &junk).is_err());
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn the_layer_presets_are_in_the_backup_and_an_older_backup_leaves_them_alone() {
+        let ctx = eframe::egui::Context::default();
+        let dir = std::env::temp_dir().join(format!("lc-backup-presets-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let mut a = App::build(&ctx, None, false);
+        let mut lib = base_ui::layer_presets_ui::Library::from_path(None, &crate::layer_presets::valid);
+        lib.put("birch 3 mm", lc_core::Layer::new(0));
+        a.presets = Some(lib);
+        let gallery = dir.join("gallery");
+        let zip = dir.join("b.zip");
+        lc_core::backup::write(&zip, "LightCreator", "test", &a.backup_pairs(), &gallery).unwrap();
+        assert!(!a.settings_pairs().iter().any(|(k, _)| *k == base_ui::layer_presets_ui::BACKUP_KEY), "the presets stay out of the saved settings");
+        // A program with a preset of its own: the list of the backup takes its place, as the other settings do.
+        let mut b = App::build(&ctx, None, false);
+        b.presets.as_mut().unwrap().put("mine", lc_core::Layer::new(0));
+        let r = lc_core::backup::restore(&zip, "LightCreator", &dir.join("gallery2")).unwrap();
+        b.apply_settings(&ctx, &r.settings);
+        let names: Vec<_> = b.presets.as_ref().unwrap().items.iter().map(|p| p.name.as_str()).collect();
+        assert_eq!(names, ["birch 3 mm"]);
+        // Without the entry nothing happens to them.
+        let mut older = r.settings.clone();
+        older.remove(base_ui::layer_presets_ui::BACKUP_KEY);
+        b.apply_settings(&ctx, &older);
+        assert_eq!(b.presets.as_ref().unwrap().items.len(), 1);
         let _ = std::fs::remove_dir_all(&dir);
     }
 

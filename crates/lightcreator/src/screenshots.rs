@@ -1568,6 +1568,12 @@ fn the_machine_menu_of_the_laser_follows_the_controller() {
 }
 
 #[test]
+fn the_same_things_have_the_same_polish_names() {
+    let _ = crate::i18n::tr("Start");
+    base_ui::tool_check::check_polish_names();
+}
+
+#[test]
 fn the_fonts_draw_every_symbol_of_the_program() {
     base_ui::tool_check::check_symbols(&std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src"));
 }
