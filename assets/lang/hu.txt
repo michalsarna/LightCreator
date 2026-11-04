@@ -66,7 +66,7 @@
 65|{}. réteg
 66|Mágnes
 67|Előnézet
-68|Indítás
+68|Start
 69|Elküldi a munkát a csatlakoztatott lézernek
 70|Bejárja a terület körvonalát
 71|G-code mentése

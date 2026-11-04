@@ -66,7 +66,7 @@
 65|Vrstva {}
 66|Magnet
 67|Náhľad
-68|Štart
+68|Start
 69|Odošle úlohu do pripojeného lasera
 70|Obíde obrys oblasti
 71|Uložiť G-code

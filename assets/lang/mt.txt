@@ -66,7 +66,7 @@
 65|Saff {}
 66|Manjetu
 67|Previżjoni
-68|Ibda
+68|Start
 69|Jibgħat ix-xogħol lejn il-lejżer imqabbad
 70|Isegwi l-kontorn taż-żona
 71|Salva l-G-code
