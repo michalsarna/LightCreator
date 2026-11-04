@@ -1375,16 +1375,6 @@ fn write_examples() {
 #[cfg(test)]
 mod tab_click_tests {
     use super::*;
-    use eframe::egui::{self, Event, Modifiers, PointerButton};
-
-    fn click(h: &mut Shot, pos: egui::Pos2) {
-        h.event(Event::PointerMoved(pos));
-        h.run_steps(2);
-        h.event(Event::PointerButton { pos, button: PointerButton::Primary, pressed: true, modifiers: Modifiers::NONE });
-        h.run_steps(2);
-        h.event(Event::PointerButton { pos, button: PointerButton::Primary, pressed: false, modifiers: Modifiers::NONE });
-        h.run_steps(3);
-    }
 
     #[test]
     fn the_plus_the_tab_and_the_cross_work() {
