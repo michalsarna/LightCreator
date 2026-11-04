@@ -65,7 +65,10 @@ impl App {
         let get = |k: &str| m.get(k).map(String::as_str);
         if let Some(l) = get("lang").and_then(crate::i18n::Lang::from_code) {
             self.lang = l;
-            crate::i18n::set_lang(l);
+            // The tests run side by side and look for the texts of their windows in English.
+            if !cfg!(test) {
+                crate::i18n::set_lang(l);
+            }
         }
         if let Some(s) = get("scheme").and_then(crate::theme::Scheme::from_id) {
             self.scheme = s;
