@@ -35,7 +35,7 @@
 34|Mettre au premier plan
 35|Mettre à l'arrière-plan
 36|Convertir en tracé
-37|Réseau de copies…
+37|Réseau en grille…
 38|Grille
 39|Aimanter à la grille
 40|Aperçu des trajectoires

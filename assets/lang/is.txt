@@ -35,7 +35,7 @@
 34|Færa fremst
 35|Færa aftast
 36|Breyta í feril
-37|Afritunarnet…
+37|Rist af eintökum…
 38|Rúðunet
 39|Grípa í rúðunet
 40|Forskoðun ferla
@@ -377,7 +377,7 @@
 376|Of margar hreyfingar: tómagangslínur eru faldar.
 377|Hreyfingar: {}
 378|Innflutningur
-379|Útflutningur
+379|Flytja út
 380|Flytja inn Adobe Illustrator / PDF…
 381|Hópa
 382|Afhópa
@@ -385,7 +385,7 @@
 384|Hópað. Hlutirnir halda lögum sínum.
 385|Formaðgerðir
 386|Laga mynd…
-387|Vigurgera mynd…
+387|Vigurgerð myndar…
 388|Innflutningur myndar
 389|Laga mynd
 390|Snúningur og speglun

@@ -35,7 +35,7 @@
 34|Tabhair chun tosaigh
 35|Seol ar gcúl
 36|Tiontaigh ina chosán
-37|Eangach cóipeanna…
+37|Eagar greille…
 38|Eangach
 39|Greamaigh den eangach
 40|Réamhamharc cosán
@@ -385,7 +385,7 @@
 384|Grúpáilte. Coinníonn na réada a gciseail.
 385|Oibríochtaí cruthanna
 386|Coigeartaigh an íomhá…
-387|Veicteoraigh an íomhá…
+387|Veicteoriú íomhá…
 388|Iompórtáil íomhá
 389|Coigeartaigh an íomhá
 390|Rothlú agus iompú

@@ -35,7 +35,7 @@
 34|Pārvietot uz priekšplānu
 35|Pārvietot uz fonu
 36|Pārvērst par ceļu
-37|Kopiju režģis…
+37|Režģa masīvs…
 38|Režģis
 39|Piesaistīt režģim
 40|Trajektoriju priekšskatījums
@@ -385,7 +385,7 @@
 384|Sagrupēts. Objekti saglabā savus slāņus.
 385|Formu darbības
 386|Pielāgot attēlu…
-387|Vektorizēt attēlu…
+387|Attēla vektorizēšana…
 388|Attēla imports
 389|Attēla pielāgošana
 390|Pagriešana un apvēršana

@@ -35,7 +35,7 @@
 34|Postavi naprej
 35|Postavi nazaj
 36|Pretvori v pot
-37|Mreža kopij…
+37|Mrežna razvrstitev…
 38|Mreža
 39|Pripni na mrežo
 40|Predogled poti
@@ -377,7 +377,7 @@
 376|Preveč gibov: črte praznih premikov so skrite.
 377|Gibov: {}
 378|Uvoz
-379|Izvoz
+379|Izvozi
 380|Uvozi Adobe Illustrator / PDF…
 381|Združi
 382|Razdruži
@@ -385,7 +385,7 @@
 384|Združeno. Predmeti obdržijo svoje sloje.
 385|Operacije z oblikami
 386|Prilagodi sliko…
-387|Vektoriziraj sliko…
+387|Vektorizacija slike…
 388|Uvoz slike
 389|Prilagodi sliko
 390|Vrtenje in zrcaljenje

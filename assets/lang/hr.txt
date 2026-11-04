@@ -35,7 +35,7 @@
 34|Prenesi naprijed
 35|Prenesi natrag
 36|Pretvori u putanju
-37|Mreža kopija…
+37|Mrežni niz…
 38|Mreža
 39|Prianjanje uz mrežu
 40|Pregled putanja
@@ -377,7 +377,7 @@
 376|Previše kretanja: linije praznih pomaka su skrivene.
 377|Kretanja: {}
 378|Uvoz
-379|Izvoz
+379|Izvezi
 380|Uvezi Adobe Illustrator / PDF…
 381|Grupiraj
 382|Razgrupiraj
@@ -385,7 +385,7 @@
 384|Grupirano. Objekti zadržavaju svoje slojeve.
 385|Operacije s oblicima
 386|Prilagodi sliku…
-387|Vektoriziraj sliku…
+387|Vektorizacija slike…
 388|Uvoz slike
 389|Prilagodi sliku
 390|Rotacija i zrcaljenje

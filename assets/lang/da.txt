@@ -35,7 +35,7 @@
 34|Bring forrest
 35|Send bagest
 36|Konvertér til sti
-37|Gitterkopier…
+37|Gitterarray…
 38|Gitter
 39|Fastgør til gitter
 40|Forhåndsvisning af stier
@@ -377,7 +377,7 @@
 376|For mange bevægelser: forflytningslinjer er skjult.
 377|{} bevægelser
 378|Importer
-379|Eksporter
+379|Eksportér
 380|Importer Adobe Illustrator / PDF…
 381|Gruppér
 382|Opløs gruppe

@@ -35,7 +35,7 @@
 34|Perkelti į priekį
 35|Perkelti į galą
 36|Konvertuoti į kontūrą
-37|Kopijų tinklelis…
+37|Tinklelio masyvas…
 38|Tinklelis
 39|Prilipdyti prie tinklelio
 40|Trajektorijų peržiūra
@@ -377,7 +377,7 @@
 376|Per daug judesių: tuščiosios eigos linijos paslėptos.
 377|Judesių: {}
 378|Importas
-379|Eksportas
+379|Eksportuoti
 380|Importuoti Adobe Illustrator / PDF…
 381|Grupuoti
 382|Išgrupuoti
@@ -385,7 +385,7 @@
 384|Sugrupuota. Objektai išlaiko savo sluoksnius.
 385|Formų operacijos
 386|Koreguoti paveikslėlį…
-387|Vektorizuoti paveikslėlį…
+387|Paveikslėlio vektorizavimas…
 388|Paveikslėlio importas
 389|Paveikslėlio koregavimas
 390|Sukimas ir apvertimas

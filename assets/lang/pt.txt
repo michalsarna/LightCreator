@@ -35,7 +35,7 @@
 34|Trazer para a frente
 35|Enviar para trás
 36|Converter em caminho
-37|Matriz de cópias…
+37|Matriz em grelha…
 38|Grelha
 39|Ajustar à grelha
 40|Pré-visualização dos percursos

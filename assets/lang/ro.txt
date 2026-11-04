@@ -35,7 +35,7 @@
 34|Adu în față
 35|Trimite în spate
 36|Convertește în traseu
-37|Rețea de copii…
+37|Matrice în grilă…
 38|Grilă
 39|Fixează pe grilă
 40|Previzualizarea traseelor

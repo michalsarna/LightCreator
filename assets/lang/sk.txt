@@ -35,7 +35,7 @@
 34|Preniesť do popredia
 35|Preniesť do pozadia
 36|Previesť na cestu
-37|Mriežka kópií…
+37|Mriežkové pole…
 38|Mriežka
 39|Prichytávať k mriežke
 40|Náhľad dráh
@@ -377,7 +377,7 @@
 376|Príliš veľa pohybov: presuny sú skryté.
 377|Pohybov: {}
 378|Import
-379|Export
+379|Exportovať
 380|Importovať Adobe Illustrator / PDF…
 381|Zoskupiť
 382|Zrušiť zoskupenie
@@ -385,7 +385,7 @@
 384|Zoskupené. Objekty si ponechajú svoje vrstvy.
 385|Operácie s tvarmi
 386|Upraviť obrázok…
-387|Vektorizovať obrázok…
+387|Vektorizácia obrázka…
 388|Import obrázka
 389|Úprava obrázka
 390|Otočenie a prevrátenie

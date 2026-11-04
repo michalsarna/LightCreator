@@ -35,7 +35,7 @@
 34|Porta al davant
 35|Envia al darrere
 36|Converteix en traçat
-37|Matriu de còpies…
+37|Matriu de quadrícula…
 38|Quadrícula
 39|Ajusta a la quadrícula
 40|Previsualització dels traçats

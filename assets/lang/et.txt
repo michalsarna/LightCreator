@@ -35,7 +35,7 @@
 34|Too ette
 35|Saada taha
 36|Teisenda teeks
-37|Koopiate ruudustik…
+37|Ruudustikmassiiv…
 38|Ruudustik
 39|Joondu ruudustikuga
 40|Trajektooride eelvaade
@@ -377,7 +377,7 @@
 376|Liiga palju liikumisi: tühikäigu jooned on peidetud.
 377|Liikumisi: {}
 378|Import
-379|Eksport
+379|Ekspordi
 380|Impordi Adobe Illustrator / PDF…
 381|Grupeeri
 382|Tühista grupeerimine
@@ -385,7 +385,7 @@
 384|Grupeeritud. Objektid säilitavad oma kihid.
 385|Kujundite toimingud
 386|Kohanda pilti…
-387|Vektoriseeri pilt…
+387|Pildi vektoriseerimine…
 388|Pildi import
 389|Pildi kohandamine
 390|Pööramine ja peegeldamine
