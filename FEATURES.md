@@ -233,7 +233,7 @@
 
 **Help**
 * **Download backup…** (Help menu): asks where to save a zip file with everything the program keeps on this computer,
-  the settings (`app.ron`: device profiles, language, colour scheme, recent files) and the whole
+  the settings (`app.ron`: device profiles, language, colour scheme, recent files, layer presets) and the whole
   shared `clipart` gallery, plus a README. **Restore from backup…** (Help menu) reads such a file back: the settings
   are replaced after a confirmation and the pictures are added to the gallery (nothing is removed, so pictures that
   MillCreator or PenCreator saved in the meantime stay; the same menu entries exist in both). When no profile files are found at start, the start window offers the same
