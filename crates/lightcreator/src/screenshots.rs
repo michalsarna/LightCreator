@@ -1623,6 +1623,41 @@ fn a_key_of_the_control_device_goes_to_the_machine_and_not_to_the_editor() {
     assert!(x(&mut h) < start, "no machine: the editor has it");
 }
 
+/// What is pasted into the address of a camera lands there: Cmd+V comes as the key and as the text, and the key must not paste shapes.
+#[test]
+fn an_address_can_be_pasted_into_the_field_of_a_camera() {
+    use eframe::egui::{self, Event, Key, Modifiers};
+    let mut h: Shot = Harness::builder().with_accessibility_check(false).with_size([1280.0, 800.0]).build_ui_state(
+        |ui, state: &mut Option<App>| {
+            let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+            a.draw(ui);
+        },
+        None,
+    );
+    h.run_steps(2);
+    {
+        let a = h.state_mut().as_mut().unwrap();
+        let mut d = Device::default();
+        d.cameras = vec![lc_core::CameraSource::url("Cam", "", 0)];
+        a.profiles = vec![d];
+        a.enter_editor(0);
+        a.open_cfg_edit(0);
+        a.cfg.as_mut().unwrap().page = crate::device_ui::CfgPage::Camera;
+    }
+    h.run_steps(4);
+    h.get_all_by_role(egui::accesskit::Role::TextInput).last().unwrap().click();
+    h.run_steps(4);
+    let shapes = h.state_mut().as_mut().unwrap().doc.scene.shapes.len();
+    h.event(Event::Key { key: Key::V, physical_key: None, pressed: true, repeat: false, modifiers: Modifiers::COMMAND });
+    h.event(Event::Paste("http://10.10.0.18/cam_s9/stream".to_string()));
+    h.event(Event::Key { key: Key::V, physical_key: None, pressed: false, repeat: false, modifiers: Modifiers::COMMAND });
+    h.run_steps(4);
+    let a = h.state_mut().as_mut().unwrap();
+    assert_eq!(a.doc.scene.shapes.len(), shapes, "no shape is pasted");
+    let cam = &a.cfg.as_ref().unwrap().draft.cameras[0];
+    assert_eq!(cam.kind, lc_core::CameraKind::Url("http://10.10.0.18/cam_s9/stream".to_string()));
+}
+
 #[test]
 fn the_fonts_draw_every_symbol_of_the_program() {
     base_ui::tool_check::check_symbols(&std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src"));

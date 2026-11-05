@@ -6,9 +6,11 @@ A USB pad or the keyboard can drive the machine. **Machine â†’ Control devices â
 
 ## Devices
 
-* **Add the keyboard** adds the keyboard. All the keyboards of the computer are one device: the system does not tell the window which one was pressed.
-* **Add** with the name of a pad adds a pad that is connected. Each pad model is a device with keys of its own; two pads of the same model count as one.
-* **Default for all machines and programs** makes a device the one that every machine uses unless it has its own. The first device you add becomes the default.
+The window has two lists. **Available in the system** shows the keyboard and the connected pads that are not set up yet, and **Configured** shows the ones that are. The arrow moves a device from one list to the other. A device moved back keeps its keys, in case it comes back.
+
+* All the keyboards of the computer are one device: the system does not tell the window which one was pressed.
+* Each pad model is a device with keys of its own; two pads of the same model count as one.
+* **Default device** chooses the one that every machine and program uses unless a machine has its own, or **No default device**. The first device you configure becomes the default.
 
 The devices and the default are common to LightCreator, MillCreator and PenCreator. A change in one program reaches the others within a second.
 
