@@ -2,6 +2,12 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.6.1
+
+* **USB keyboards and pads:** **Machine → Control devices** connects a keyboard and any number of pads, each with its own keys for the moves, Stop, Pause, Home and the air and a low-power beam while a key is held. A machine can have its own device; otherwise it uses the default one. The devices are common to LightCreator, MillCreator and PenCreator and are kept in the backup. Only the window in front takes the presses, and a move lasts while the key is held.
+* **New colour schemes:** Superman, Batman, and Joker in a dark and a light version.
+* No more compiler warnings when building.
+
 ## v0.6.0
 
 * **Camera overlay:** it is now the shared one. Corners, opacity and the USB or network camera stay as they were, also in old profiles. The corner handles are square, a GIF can be loaded too, closing the window turns the handles off, and changing the tab or opening a project stops the USB camera.
