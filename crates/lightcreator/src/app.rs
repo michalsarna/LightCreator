@@ -17,7 +17,7 @@ pub use base_ui::editor::View;
 pub use base_ui::editor::Tool;
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.6.0";
+pub const APP_VERSION: &str = "v0.6.1";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
@@ -186,7 +186,7 @@ pub struct App {
     pub show_stream: bool,
     pub ser2net: Option<crate::ser2net_ui::Ser2NetDlg>,
     pub print: Option<crate::print_ui::PrintDlg>,
-    pub cam_test: Option<crate::cam_test_ui::CamTest>,
+    pub cam_test: Option<base_ui::camera_feed::CamTest>,
     pub stream_mode: crate::stream_ui::StreamMode,
     pub tab_seen: bool,
     /// Rotation the current stream texture was made with.
@@ -1410,7 +1410,9 @@ impl App {
 
     fn do_app_act(&mut self, ctx: &egui::Context, a: Act) {
         if let Some(s) = a.std() {
-            s.run(self);
+            if !base_ui::menu::goes_to_text_field(ctx, s) {
+                s.run(self);
+            }
             return;
         }
         match a {
@@ -1591,7 +1593,7 @@ impl App {
 
     fn status_bar(&mut self, ui: &mut egui::Ui) {
         ui.horizontal_centered(|ui| {
-            ui.label(&self.status);
+            base_ui::widgets::message(ui, self.status.as_str());
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                 base_ui::editor::zoom_and_cursor(self, ui);
                 let web = if self.api.server.is_some() { (trf("Web server: on, port {}", &[&self.api.server.as_ref().map(|s| s.addr.port()).unwrap_or(0)]), Color32::from_rgb(0x2e, 0xa0, 0x4f)) } else if self.api_on { (tr("Web server: error").to_string(), Color32::from_rgb(0xc0, 0x30, 0x30)) } else { (tr("Web server: off").to_string(), theme::text_dim()) };

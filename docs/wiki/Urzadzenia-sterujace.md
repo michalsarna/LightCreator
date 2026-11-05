@@ -6,9 +6,11 @@ Maszyną można sterować padem USB albo klawiaturą. **Maszyna → Urządzenia 
 
 ## Urządzenia
 
-* **Dodaj klawiaturę** dodaje klawiaturę. Wszystkie klawiatury komputera to jedno urządzenie, bo system nie mówi oknu, która została naciśnięta.
-* **Dodaj** z nazwą pada dodaje podłączony pad. Każdy model pada to urządzenie z własnymi klawiszami; dwa pady tego samego modelu liczą się jako jedno.
-* **Domyślne dla wszystkich maszyn i programów** sprawia, że tego urządzenia używa każda maszyna bez własnego. Pierwsze dodane urządzenie staje się domyślne.
+Okno ma dwie listy. **Dostępne w systemie** pokazuje klawiaturę i podłączone pady, które nie są jeszcze ustawione, a **Skonfigurowane** te, które są. Strzałka przenosi urządzenie z jednej listy na drugą. Urządzenie przeniesione z powrotem zachowuje klawisze na wypadek ponownego dodania.
+
+* Wszystkie klawiatury komputera to jedno urządzenie, bo system nie mówi oknu, która została naciśnięta.
+* Każdy model pada to urządzenie z własnymi klawiszami; dwa pady tego samego modelu liczą się jako jedno.
+* **Domyślne urządzenie** wybiera to, którego używają wszystkie maszyny i programy, o ile maszyna nie ma własnego, albo **Brak domyślnego urządzenia**. Pierwsze skonfigurowane urządzenie staje się domyślne.
 
 Urządzenia i wybór domyślnego są wspólne dla LightCreatora, MillCreatora i PenCreatora. Zmiana w jednym programie dociera do pozostałych w ciągu sekundy.
 

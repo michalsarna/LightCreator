@@ -1,2 +1,4 @@
   <key>NSCameraUsageDescription</key>
   <string>LightCreator uses the camera to overlay a live view of the laser bed.</string>
+  <key>NSLocalNetworkUsageDescription</key>
+  <string>LightCreator connects to a controller or a camera on your local network.</string>
