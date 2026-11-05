@@ -38,12 +38,7 @@ fn camera_section(ui: &mut egui::Ui, d: &mut Device) -> Option<lc_core::CameraSo
                 }
             });
             match &mut c.kind {
-                lc_core::CameraKind::Url(u) => {
-                    ui.add(egui::TextEdit::singleline(u).hint_text("http://raspberrypi.local:8080/stream.mjpg").desired_width(300.0));
-                    if !lc_core::camimg::valid_url(u) && !u.trim().is_empty() {
-                        ui.label(RichText::new(tr("Not a camera address (http, https, rtsp, udp, rtp or rtmp).")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
-                    }
-                }
+                lc_core::CameraKind::Url(u) => base_ui::camera_feed::address_field(ui, u),
                 lc_core::CameraKind::Local(i) => {
                     ui.horizontal(|ui| {
                         ui.label(tr("Camera number"));
@@ -265,7 +260,7 @@ impl App {
             ui.add_space(8.0);
             ui.horizontal(|ui| {
                 let go = egui::Button::new(RichText::new(tr("Add device")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f));
-                if ui.add_enabled(!d.name.trim().is_empty(), go).clicked() {
+                if ui.add_enabled(!d.name.trim().is_empty() && !base_ui::camera_feed::lacks_address(&d.cameras), go).clicked() {
                     finish = true;
                 }
                 if ui.button(tr("More settings…")).on_hover_text(tr("Open the whole device window with what is entered here")).clicked() {
