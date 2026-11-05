@@ -141,6 +141,7 @@ Polecenia działają na zaznaczeniu. Większość z nich jest też w menu praweg
 | **Ustawienia urządzenia…** (Device settings…) | | Okno urządzenia ze wszystkimi stronami. Zobacz [Urządzenia i sterowniki](Urzadzenia-i-sterowniki). |
 | **Ustawienia firmware ($$)…** (Firmware settings ($$)…) | | Strona Firmware okna urządzenia (GRBL i Marlin). |
 | **Kalibracja…** (Calibration…) | | Wylicza liczbę kroków na milimetr osi ze zmierzonego ruchu oraz prostopadłość osi z dwóch zmierzonych przekątnych; może zapisać nową wartość w sterowniku. Wymaga połączenia. Zobacz [Urządzenia i sterowniki](Urzadzenia-i-sterowniki#kalibracja). |
+| **Urządzenia sterujące ▸** | | Ustawienia urządzeń sterujących… otwiera okno klawiatur i padów oraz ich klawiszy; Urządzenie sterujące tej maszyny… wybiera urządzenie otwartej maszyny. Zobacz [Urządzenia sterujące](Urzadzenia-sterujace). |
 | **Diagnostyka i statystyki…** (Diagnostics and statistics…) | | Wejścia sterownika, statystyki maszyny, liczniki przeglądów i zip do zapisania. |
 | **Udostępnij w sieci (ser2net)…** (Share over network (ser2net)…) | | Tylko Linux: udostępnia lokalny port szeregowy przez TCP za pomocą ser2net. Zobacz [Urządzenia i sterowniki](Urzadzenia-i-sterowniki#tcp-i-ser2net). |
 | **Obrys** (Frame) | | Laser objeżdża prostokąt wokół zaznaczonych kształtów (wszystkich, gdy nic nie jest zaznaczone) z mocą obrysu; to samo co **Obrys ramka** (Outline frame) w zakładce **Sterowanie**, a nie przycisk **Obrys** (Outline) obok niego, który objeżdża kształty jak gumka. Wymaga połączenia i braku trwającego zadania. |

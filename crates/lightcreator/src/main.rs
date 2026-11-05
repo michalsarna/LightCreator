@@ -1,6 +1,7 @@
 mod api_server;
 mod api_ui;
 mod app;
+mod control_devices_glue;
 mod layer_presets;
 mod panes_glue;
 mod check_ui;

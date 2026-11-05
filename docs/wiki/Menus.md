@@ -141,6 +141,7 @@ The commands work on the selection. Most of them are also in the right-click men
 | **Device settings…** | | The device window with all its pages. See [Devices and Controllers](Devices-and-Controllers). |
 | **Firmware settings ($$)…** | | The Firmware page of the device window (GRBL and Marlin). |
 | **Calibration…** | | Works out the steps per millimetre of an axis from a measured move, and the squareness of the axes from two measured diagonals; can write the new value to the controller. Needs a connection. See [Devices and Controllers](Devices-and-Controllers#calibration). |
+| **Control devices ▸** | | Control device settings… opens the window of the keyboards and pads and their keys; Control device of this machine… chooses the one of the open machine. See [Control Devices](Control-Devices). |
 | **Diagnostics and statistics…** | | The inputs of the controller, the statistics of the machine, the maintenance counters and a zip to save. |
 | **Share over network (ser2net)…** | | Linux only: shares a local serial port over TCP with ser2net. See [Devices and Controllers](Devices-and-Controllers#tcp-and-ser2net). |
 | **Frame** | | The laser traces the box round the selected shapes (all when nothing is selected) at the frame power; the same as **Outline frame** in the **Control** tab. Needs a connection and no running job. |

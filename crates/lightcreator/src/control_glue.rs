@@ -38,8 +38,8 @@ impl Where {
 }
 
 /// The laser as the Control tab sees it.
-struct LaserTarget<'a> {
-    app: &'a mut App,
+pub(crate) struct LaserTarget<'a> {
+    pub(crate) app: &'a mut App,
 }
 
 impl ControlTarget for LaserTarget<'_> {

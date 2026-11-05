@@ -72,6 +72,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::ExportDiagnostics => "file-output",
         Act::Firmware => "settings",
         Act::Diagnostics => "zap",
+        Act::ControlDevices | Act::ControlDeviceOfMachine => "settings",
         Act::CheckProgram => "check",
         Act::RestoreBackup => "package-open",
         Act::About => "info",
