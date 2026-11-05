@@ -2,6 +2,11 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.6.2
+
+* **Copy and paste with other programs:** a text field takes what you paste from another program, and **Copy** on a message reaches other programs. The builds had no access to the clipboard of the system, so this worked only inside the program.
+* **The address of a camera:** new lines and spaces around a pasted address are cut, and the settings of a device cannot be saved while a camera has no address.
+
 ## v0.6.1
 
 * **USB keyboards and pads:** **Machine → Control devices** connects a keyboard and any number of pads, each with its own keys for the moves, Stop, Pause, Home and the air and a low-power beam while a key is held. A machine can have its own device; otherwise it uses the default one. The devices are common to LightCreator, MillCreator and PenCreator and are kept in the backup. Only the window in front takes the presses, and a move lasts while the key is held.
