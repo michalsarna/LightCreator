@@ -1649,13 +1649,17 @@ fn an_address_can_be_pasted_into_the_field_of_a_camera() {
     h.run_steps(4);
     let shapes = h.state_mut().as_mut().unwrap().doc.scene.shapes.len();
     h.event(Event::Key { key: Key::V, physical_key: None, pressed: true, repeat: false, modifiers: Modifiers::COMMAND });
-    h.event(Event::Paste("http://10.10.0.18/cam_s9/stream".to_string()));
+    // What was copied from a page or a terminal often has a line break around it.
+    h.event(Event::Paste("\nhttp://10.10.0.18/cam_s9/stream\n".to_string()));
     h.event(Event::Key { key: Key::V, physical_key: None, pressed: false, repeat: false, modifiers: Modifiers::COMMAND });
     h.run_steps(4);
     let a = h.state_mut().as_mut().unwrap();
     assert_eq!(a.doc.scene.shapes.len(), shapes, "no shape is pasted");
     let cam = &a.cfg.as_ref().unwrap().draft.cameras[0];
     assert_eq!(cam.kind, lc_core::CameraKind::Url("http://10.10.0.18/cam_s9/stream".to_string()));
+    assert!(!base_ui::camera_feed::lacks_address(&a.cfg.as_ref().unwrap().draft.cameras));
+    a.cfg.as_mut().unwrap().draft.cameras[0].kind = lc_core::CameraKind::Url(String::new());
+    assert!(base_ui::camera_feed::lacks_address(&a.cfg.as_ref().unwrap().draft.cameras), "this is what keeps Save off");
 }
 
 #[test]

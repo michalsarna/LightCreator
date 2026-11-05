@@ -1012,7 +1012,7 @@ impl App {
                 }
                 let dup_tools = cfg.draft.has_duplicate_tools();
                 let notes_long = cfg.draft.notes.chars().count() > lc_core::profiles::MAX_NOTES;
-                let valid = !cfg.draft.name.trim().is_empty() && !notes_long && !bad_gcode && !dup_tools && hook_problem.is_none() && macro_problem.is_none();
+                let valid = !cfg.draft.name.trim().is_empty() && !base_ui::camera_feed::lacks_address(&cfg.draft.cameras) && !notes_long && !bad_gcode && !dup_tools && hook_problem.is_none() && macro_problem.is_none();
                 if dup_tools {
                     ui.label(RichText::new(tr("Two laser heads have the same tool number.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
                 }
@@ -1022,8 +1022,11 @@ impl App {
                 if !cfg.draft.controller.is_serial() {
                     ui.label(RichText::new(tr("This controller has no live connection: jobs are exported as files.")).color(theme::text_dim()));
                 }
-                if !valid {
+                if cfg.draft.name.trim().is_empty() {
                     ui.label(RichText::new(tr("A profile name is required.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
+                }
+                if base_ui::camera_feed::lacks_address(&cfg.draft.cameras) {
+                    ui.label(RichText::new(tr("Enter the address of the camera, or delete the camera.")).color(Color32::from_rgb(0xc0, 0x30, 0x30)));
                 }
                 ui.horizontal(|ui| {
                     if crate::window_ui::save_button_enabled(ui, valid, &tr("Save")).clicked() {
