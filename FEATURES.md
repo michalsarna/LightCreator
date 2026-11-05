@@ -232,6 +232,7 @@
   with four draggable corners (perspective corrected), opacity, flip and rotate; the picture and its corners are saved in the project file (and the calibration with the device). The *Overlay* button of the bar opens the *Overlay from…* window, or switches a shown overlay off.
 
 **Help**
+* **USB control devices:** a keyboard and any number of pads drive the machine, each with its own keys; a default device for all machines and programs, a device of its own for a machine, common to LightCreator, MillCreator and PenCreator and kept in the backup. Only the window in front takes the presses; a move lasts while the key is held. See the wiki page *Control Devices*.
 * **Download backup…** (Help menu): asks where to save a zip file with everything the program keeps on this computer,
   the settings (`app.ron`: device profiles, language, colour scheme, recent files, layer presets) and the whole
   shared `clipart` gallery, plus a README. **Restore from backup…** (Help menu) reads such a file back: the settings

@@ -97,6 +97,7 @@ pub struct App {
     /// What the Control tab remembers between frames, the arrow keys that jog, and where the last report said the head is.
     pub ctl: base_ui::control_ui::ControlUi,
     pub keyboard_jog: bool,
+    pub control_devices: base_ui::control_devices_ui::ControlDevicesUi,
     pub pos: crate::control_glue::Where,
     /// The jog step the Control tab and the device agreed on at the last frame.
     pub jog_seen_step: Option<f64>,
@@ -348,6 +349,7 @@ impl App {
             saved_revision: 0,
             ctl: Default::default(),
             keyboard_jog: false,
+            control_devices: if cfg!(test) { Default::default() } else { base_ui::control_devices_ui::ControlDevicesUi::from_file() },
             pos: Default::default(),
             jog_seen_step: None,
             close_program: false,
@@ -1460,6 +1462,8 @@ impl App {
             Act::ExportDiagnostics => self.export_diagnostics(),
             Act::Firmware => self.open_firmware_page(),
             Act::Diagnostics => self.diag.open = true,
+            Act::ControlDevices => self.control_devices.open = true,
+            Act::ControlDeviceOfMachine => self.control_devices.choice_open = true,
             Act::CheckProgram => self.check_program(),
             Act::RestoreBackup => {
                 let confirm = !self.profiles.is_empty();
@@ -1648,6 +1652,7 @@ impl App {
         self.preview_window(ctx);
         self.image_dialogs(ctx);
         self.layer_presets_window(ctx);
+        self.control_devices_windows(ctx);
         self.stream_window(ctx);
         self.ser2net_window(ctx);
         self.print_window(ctx);
@@ -1892,6 +1897,8 @@ impl App {
     pub fn draw(&mut self, ui: &mut egui::Ui) {
         let ctx = ui.ctx().clone();
         self.poll_laser();
+        // Before the editor: a key of the control device is not also a key of the editor.
+        self.control_devices_frame(&ctx);
         if self.preview_on && self.preview.as_ref().map(|p| p.0) != Some(self.job_stamp()) {
             self.preview = Some((self.job_stamp(), gcode::generate_with(&self.job_source(), None, &self.job_options())));
         }

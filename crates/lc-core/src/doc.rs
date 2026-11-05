@@ -750,6 +750,9 @@ impl LaserHead {
 #[serde(from = "DeviceWire")]
 pub struct Device {
     pub name: String,
+    /// The keyboard or pad of this machine; without one the default one drives it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub control_device: Option<String>,
     /// Display units; profiles saved before this existed load as millimetres.
     pub units: Units,
     /// Whether speeds are shown per second or per minute.
@@ -993,6 +996,7 @@ impl From<DeviceWire> for Device {
             heads.push(LaserHead { s_max: w.s_max.unwrap_or(1000.0), frame_power: w.frame_power.unwrap_or(0.0), laser: w.laser.unwrap_or_default(), ..LaserHead::default() });
         }
         let mut dev = Device {
+            control_device: None,
             name: w.name,
             units: w.units,
             speed_unit: w.speed_unit,
@@ -1231,6 +1235,7 @@ impl Device {
 impl Default for Device {
     fn default() -> Self {
         Device {
+            control_device: None,
             name: "GRBL 1.1 (diode / CO2)".into(),
             units: Units::Mm,
             speed_unit: SpeedUnit::default(),

@@ -120,6 +120,10 @@ impl App {
             let valid = &crate::layer_presets::valid;
             self.presets.get_or_insert_with(|| base_ui::layer_presets_ui::Library::load(crate::layer_presets::FILE, valid)).replace_text(text, valid);
         }
+        // A backup from before the devices were in it leaves them alone.
+        if let Some(text) = get(lc_core::control_devices::BACKUP_KEY) {
+            self.control_devices.restore(text);
+        }
         self.tabs.restore(get("tab_order").unwrap_or(""), get("side_collapsed").is_some_and(|v| v == "1"));
         self.cfg = None;
         if self.screen == crate::app::Screen::Editor && !self.profiles.is_empty() {
@@ -137,6 +141,7 @@ impl App {
     fn backup_pairs(&self) -> Vec<(&'static str, String)> {
         let mut pairs = self.settings_pairs();
         pairs.push(base_ui::layer_presets_ui::backup_pair(self.presets.as_ref(), crate::layer_presets::FILE, &crate::layer_presets::valid));
+        pairs.push(self.control_devices.backup_pair());
         pairs
     }
 }
@@ -248,6 +253,31 @@ mod tests {
         older.remove(base_ui::layer_presets_ui::BACKUP_KEY);
         b.apply_settings(&ctx, &older);
         assert_eq!(b.presets.as_ref().unwrap().items.len(), 1);
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn the_control_devices_are_in_the_backup_and_an_older_backup_leaves_them_alone() {
+        use lc_core::control_devices::{ControlDevice, KEYBOARD_ID};
+        let ctx = eframe::egui::Context::default();
+        let dir = std::env::temp_dir().join(format!("lc-backup-devices-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let mut a = App::build(&ctx, None, false);
+        a.control_devices.lib.add(ControlDevice::keyboard("Keyboard"));
+        let zip = dir.join("b.zip");
+        lc_core::backup::write(&zip, "LightCreator", "test", &a.backup_pairs(), &dir.join("gallery")).unwrap();
+        assert!(!a.settings_pairs().iter().any(|(k, _)| *k == lc_core::control_devices::BACKUP_KEY), "they have a file of their own");
+        let mut b = App::build(&ctx, None, false);
+        let r = lc_core::backup::restore(&zip, "LightCreator", &dir.join("gallery2")).unwrap();
+        b.apply_settings(&ctx, &r.settings);
+        assert_eq!(b.control_devices.lib.default.as_deref(), Some(KEYBOARD_ID));
+        let mut older = r.settings.clone();
+        older.remove(lc_core::control_devices::BACKUP_KEY);
+        b.control_devices.lib.remove(KEYBOARD_ID);
+        b.control_devices.lib.add(ControlDevice::pad("abc", "Pad"));
+        b.apply_settings(&ctx, &older);
+        assert_eq!(b.control_devices.lib.default.as_deref(), Some("pad-abc"));
         let _ = std::fs::remove_dir_all(&dir);
     }
 

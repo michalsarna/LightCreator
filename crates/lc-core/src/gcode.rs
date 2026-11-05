@@ -609,6 +609,17 @@ fn frame_and_flavour(text: &str, doc: &Document, dev: &Device, moves: &[Move]) -
     base_core::gcode_out::finish(text, &lines(&g.frame.very_start), &lines(&g.frame.very_end), &g.flavour)
 }
 
+/// The commands that switch the air on and off: M8 / M9 for GRBL, the fan commands for Marlin and Smoothieware, or the device's own.
+/// Each may be several lines.
+pub fn air_commands(dev: &Device) -> (String, String) {
+    let (def_on, def_off) = if dev.dialect().is_grbl() { ("M8", "M9") } else { ("M106 S255", "M107") };
+    let own = |text: &str, def: &str| match GcodeCfg::custom(text) {
+        Some(l) => l.iter().map(|s| s.trim()).filter(|s| !s.is_empty()).collect::<Vec<_>>().join("\n"),
+        None => def.to_string(),
+    };
+    (own(&dev.gcode.air_on, def_on), own(&dev.gcode.air_off, def_off))
+}
+
 pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job {
     let dev = &doc.device;
     let shapes: Vec<&Shape> = doc.scene.shapes.iter().collect();
@@ -643,12 +654,7 @@ pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job
     }
 
     // Air assist: M8 / M9 for GRBL, the fan commands for Marlin and Smoothieware, or the device's own commands.
-    let (def_on, def_off) = if dialect.is_grbl() { ("M8", "M9") } else { ("M106 S255", "M107") };
-    let own = |text: &str, def: &str| match GcodeCfg::custom(text) {
-        Some(l) => l.iter().map(|s| s.trim()).filter(|s| !s.is_empty()).collect::<Vec<_>>().join("\n"),
-        None => def.to_string(),
-    };
-    let (air_on, air_off) = (own(&dev.gcode.air_on, def_on), own(&dev.gcode.air_off, def_off));
+    let (air_on, air_off) = air_commands(dev);
     let (air_on, air_off) = (air_on.as_str(), air_off.as_str());
     let mut air = false;
     // The GRBL-like dialects can switch between constant and dynamic power from layer to layer.
