@@ -990,6 +990,7 @@ impl From<DeviceWire> for Device {
             home_on_connect: false,
             unlock_on_connect: false,
             grbl_version: Default::default(),
+            ..Connection::default()
         });
         let mut heads = w.heads.unwrap_or_default();
         if heads.is_empty() {
