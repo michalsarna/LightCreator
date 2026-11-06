@@ -4,8 +4,8 @@ use lc_core::ControllerSettings;
 use crate::app::App;
 use crate::device_ui::CfgEdit;
 use crate::i18n::tr;
-use eframe::egui::{self, Color32, RichText};
-use lc_core::{Controller, Device, LinkKind, Units};
+use eframe::egui;
+use lc_core::{Controller, Device, Units};
 
 /// A device with the program's plain defaults and no name.
 fn blank_device() -> Device {
@@ -15,59 +15,13 @@ fn blank_device() -> Device {
     d
 }
 
-/// The optional camera of a new device: nothing until "Add a camera"; then its name, where the picture comes from and
-/// the switch-off. Rotation, picture and lens settings are in the device window.
+/// The optional camera of a new device (the one of every program's window).
 fn camera_section(ui: &mut egui::Ui, d: &mut Device) -> Option<lc_core::CameraSource> {
-    let mut test = None;
-    egui::CollapsingHeader::new(RichText::new(tr("Camera")).strong()).id_salt("add_cam").default_open(!d.cameras.is_empty()).show(ui, |ui| {
-        let mut remove = false;
-        if let Some(c) = d.cameras.first_mut() {
-            ui.horizontal(|ui| {
-                ui.add(egui::TextEdit::singleline(&mut c.name).hint_text(tr("Camera name")).desired_width(180.0));
-                if crate::window_ui::delete_icon(ui, &tr("Delete this camera")).clicked() {
-                    remove = true;
-                }
-            });
-            ui.horizontal(|ui| {
-                let local = matches!(c.kind, lc_core::CameraKind::Local(_));
-                let mut want_local = local;
-                ui.radio_value(&mut want_local, false, tr("Address"));
-                ui.radio_value(&mut want_local, true, tr("Camera of this computer"));
-                if want_local != local {
-                    c.kind = if want_local { lc_core::CameraKind::Local(0) } else { lc_core::CameraKind::Url(String::new()) };
-                }
-            });
-            match &mut c.kind {
-                lc_core::CameraKind::Url(u) => base_ui::camera_feed::address_field(ui, u),
-                lc_core::CameraKind::Local(i) => {
-                    ui.horizontal(|ui| {
-                        ui.label(tr("Camera number"));
-                        ui.add(egui::DragValue::new(i).range(0..=15));
-                    });
-                }
-            }
-            base_ui::camera_feed::stream_options_ui(ui, c);
-            let testable = match &c.kind {
-                lc_core::CameraKind::Url(u) => lc_core::camimg::valid_url(u),
-                lc_core::CameraKind::Local(_) => crate::camera::SUPPORTED,
-            };
-            ui.horizontal(|ui| {
-                if ui.add_enabled(testable, egui::Button::new(tr("Test"))).on_hover_text(tr("Opens the picture of this camera as set here, without saving")).clicked() {
-                    test = Some(c.clone());
-                }
-                ui.label(tr("Camera rotation"));
-                for q in 0..4u8 {
-                    ui.selectable_value(&mut c.rotation, q, format!("{}°", q as u32 * 90));
-                }
-            });
-        } else if ui.button(tr("Add a camera")).clicked() {
-            crate::device_ui::add_camera(d);
-        }
-        if remove {
-            d.cameras.clear();
-            d.active_camera = 0;
-        }
-    });
+    let mut active = d.active_camera;
+    let test = base_ui::add_device_ui::camera_section(ui, &mut d.cameras, &mut active, crate::camera::SUPPORTED);
+    if active != d.active_camera && active < d.cameras.len() {
+        d.activate_camera(active);
+    }
     test
 }
 
@@ -118,9 +72,6 @@ impl App {
             self.add_dev = None;
             return;
         };
-        let mut finish = false;
-        let mut by_hand = false;
-        let mut dummy = false;
         let mut read = false;
         let reading = self.read_cfg.is_some();
         // How the last read ended: it is over when the read state is gone, and it worked when it filled the draft.
@@ -141,139 +92,85 @@ impl App {
         let was_read = self.add_dev_read;
         let read_err = self.add_dev_read_err;
         let mut open = true;
-        let mut close = false;
         let mut test_cam = None;
-        crate::window_ui::popup(ctx, "first_setup", &tr("Add a device"), [520.0, 640.0], &mut open, |ui| {
-            let d = &mut cfg.draft;
-            egui::ScrollArea::vertical().max_height((ui.ctx().content_rect().height() - 190.0).clamp(200.0, 600.0)).auto_shrink([false, true]).show(ui, |ui| {
-                egui::Grid::new("add_dev").num_columns(2).min_col_width(140.0).spacing([12.0, 6.0]).show(ui, |ui| {
-                    ui.label(tr("Name"));
-                    ui.add(egui::TextEdit::singleline(&mut d.name).hint_text(tr("e.g. My diode laser")));
-                    ui.end_row();
-                    ui.label(tr("Controller"));
-                    egui::ComboBox::from_id_salt("add_controller").selected_text(d.controller.label()).show_ui(ui, |ui| {
-                        for c in lc_core::Controller::ALL {
-                            ui.selectable_value(&mut d.controller, c, c.label());
-                        }
-                    });
-                    ui.end_row();
-                    ui.label(tr("Connection type"));
-                    egui::ComboBox::from_id_salt("add_link").selected_text(tr(d.connection.link.label())).show_ui(ui, |ui| {
-                        for k in LinkKind::ALL {
-                            ui.selectable_value(&mut d.connection.link, k, tr(k.label()));
-                        }
-                    });
-                    ui.end_row();
-                    if d.connection.link == LinkKind::Serial {
-                        ui.label(tr("Port"));
-                        ui.horizontal(|ui| {
-                            egui::ComboBox::from_id_salt("add_port").width(220.0).selected_text(if d.connection.port.is_empty() { tr("No port") } else { d.connection.port.as_str() }).show_ui(ui, |ui| {
-                                for p in &self.port_info {
-                                    ui.selectable_value(&mut d.connection.port, p.name.clone(), p.label());
-                                }
-                            });
-                            if ui.button(tr("Refresh")).clicked() {
-                                self.port_info = crate::laser::list_port_info();
-                                self.ports = self.port_info.iter().map(|p| p.name.clone()).collect();
-                            }
-                        });
-                        ui.end_row();
-                    } else {
-                        ui.label(tr("Host"));
-                        ui.horizontal(|ui| {
-                            ui.add(egui::TextEdit::singleline(&mut d.connection.host).hint_text("raspberrypi.local").desired_width(160.0));
-                            ui.label(tr("TCP port"));
-                            ui.add(egui::DragValue::new(&mut d.connection.tcp_port).range(1..=65535));
-                        });
-                        ui.end_row();
+        let mut refresh = false;
+        let ports = self.port_info.clone();
+        let state = if reading {
+            base_ui::add_device_ui::ReadState::Reading
+        } else if was_read {
+            base_ui::add_device_ui::ReadState::Done
+        } else if read_err {
+            base_ui::add_device_ui::ReadState::Failed
+        } else {
+            base_ui::add_device_ui::ReadState::Idle
+        };
+        let d = &mut cfg.draft;
+        let action = base_ui::add_device_ui::window(ctx, &mut open, |ui| {
+            base_ui::add_device_ui::grid(ui, |ui| {
+                ui.label(tr("Name"));
+                ui.add(egui::TextEdit::singleline(&mut d.name).hint_text(tr("e.g. My diode laser")));
+                ui.end_row();
+                ui.label(tr("Controller"));
+                egui::ComboBox::from_id_salt("add_controller").selected_text(d.controller.label()).show_ui(ui, |ui| {
+                    for c in lc_core::Controller::ALL {
+                        ui.selectable_value(&mut d.controller, c, c.label());
                     }
-                    ui.label("");
-                    let (label, fill) = if reading {
-                        (tr("Reading…"), Color32::from_rgb(0x2a, 0x6f, 0xd6))
-                    } else if was_read {
-                        (tr("Read OK"), Color32::from_rgb(0x2a, 0x6f, 0xd6))
-                    } else if read_err {
-                        (tr("Error reading"), Color32::from_rgb(0xc0, 0x30, 0x30))
-                    } else {
-                        (tr("Read from device"), Color32::from_rgb(0x2a, 0x6f, 0xd6))
-                    };
-                    let blue = egui::Button::new(RichText::new(label).color(Color32::WHITE).strong()).fill(fill);
-                    if ui.add_enabled(!reading && !was_read && d.has_target() && d.controller.settings_request().is_some(), blue).on_hover_text(tr("If the machine is connected now, its work area and speed can be read from the controller.")).clicked() {
-                        read = true;
-                    }
-                    ui.end_row();
-                    ui.label(tr("Units"));
-                    egui::ComboBox::from_id_salt("add_units").selected_text(tr(d.units.label())).show_ui(ui, |ui| {
-                        for u in Units::ALL {
-                            ui.selectable_value(&mut d.units, u, tr(u.label()));
-                        }
-                    });
-                    ui.end_row();
-                    ui.label(tr("Speed units"));
-                    egui::ComboBox::from_id_salt("add_speed_units").selected_text(tr(d.speed_unit.label())).show_ui(ui, |ui| {
-                        for k in lc_core::SpeedUnit::ALL {
-                            ui.selectable_value(&mut d.speed_unit, k, tr(k.label()));
-                        }
-                    });
-                    ui.end_row();
-                    let u = d.units;
-                    ui.label(tr("Work area"));
-                    ui.horizontal(|ui| {
-                        ui.label("X");
-                        crate::units_ui::drag_len(ui, u, &mut d.area.bed_w, 1.0, Some((10.0, 5000.0)));
-                        ui.label("Y");
-                        crate::units_ui::drag_len(ui, u, &mut d.area.bed_h, 1.0, Some((10.0, 5000.0)));
-                    });
-                    ui.end_row();
-                    ui.label(tr("Machine zero (0,0)"));
-                    egui::ComboBox::from_id_salt("add_origin").selected_text(tr(d.axes.origin.label())).show_ui(ui, |ui| {
-                        for o in lc_core::Origin::ALL {
-                            ui.selectable_value(&mut d.axes.origin, o, tr(o.label()));
-                        }
-                    });
-                    ui.end_row();
-                    ui.label(tr("S-value max ($30)"));
-                    ui.add(egui::DragValue::new(&mut d.heads[0].s_max).range(1.0..=100000.0));
-                    ui.end_row();
-                    ui.label(tr("Laser type"));
-                    egui::ComboBox::from_id_salt("add_laser").selected_text(tr(d.heads[0].laser.label())).show_ui(ui, |ui| {
-                        for k in lc_core::LaserKind::ALL {
-                            ui.selectable_value(&mut d.heads[0].laser, k, tr(k.label()));
-                        }
-                    });
-                    ui.end_row();
                 });
-                ui.add_space(4.0);
-                test_cam = camera_section(ui, d);
-                if was_read {
-                    ui.label(RichText::new(tr("The settings were read from the controller.")).color(Color32::from_rgb(0x2e, 0xa0, 0x4f)));
-                }
-                ui.add_space(6.0);
-                ui.label(RichText::new(tr("Worth checking")).strong());
-                for w in Self::add_dev_warnings(d, was_read) {
-                    egui::Frame::new().fill(Color32::from_rgb(0xe8, 0x8a, 0x1f)).corner_radius(3).inner_margin(egui::Margin::symmetric(6, 3)).show(ui, |ui| {
-                        ui.set_width(ui.available_width());
-                        ui.label(RichText::new(format!("• {w}")).size(14.0).color(Color32::BLACK));
-                    });
-                }
+                ui.end_row();
+                refresh = base_ui::add_device_ui::connection_rows(ui, &mut d.connection, &ports);
+                read = base_ui::add_device_ui::read_row(ui, state, d.has_target() && d.controller.settings_request().is_some());
+                ui.label(tr("Units"));
+                egui::ComboBox::from_id_salt("add_units").selected_text(tr(d.units.label())).show_ui(ui, |ui| {
+                    for u in Units::ALL {
+                        ui.selectable_value(&mut d.units, u, tr(u.label()));
+                    }
+                });
+                ui.end_row();
+                ui.label(tr("Speed units"));
+                egui::ComboBox::from_id_salt("add_speed_units").selected_text(tr(d.speed_unit.label())).show_ui(ui, |ui| {
+                    for k in lc_core::SpeedUnit::ALL {
+                        ui.selectable_value(&mut d.speed_unit, k, tr(k.label()));
+                    }
+                });
+                ui.end_row();
+                let u = d.units;
+                ui.label(tr("Work area"));
+                ui.horizontal(|ui| {
+                    ui.label("X");
+                    crate::units_ui::drag_len(ui, u, &mut d.area.bed_w, 1.0, Some((10.0, 5000.0)));
+                    ui.label("Y");
+                    crate::units_ui::drag_len(ui, u, &mut d.area.bed_h, 1.0, Some((10.0, 5000.0)));
+                });
+                ui.end_row();
+                ui.label(tr("Machine zero (0,0)"));
+                egui::ComboBox::from_id_salt("add_origin").selected_text(tr(d.axes.origin.label())).show_ui(ui, |ui| {
+                    for o in lc_core::Origin::ALL {
+                        ui.selectable_value(&mut d.axes.origin, o, tr(o.label()));
+                    }
+                });
+                ui.end_row();
+                ui.label(tr("S-value max ($30)"));
+                ui.add(egui::DragValue::new(&mut d.heads[0].s_max).range(1.0..=100000.0));
+                ui.end_row();
+                ui.label(tr("Laser type"));
+                egui::ComboBox::from_id_salt("add_laser").selected_text(tr(d.heads[0].laser.label())).show_ui(ui, |ui| {
+                    for k in lc_core::LaserKind::ALL {
+                        ui.selectable_value(&mut d.heads[0].laser, k, tr(k.label()));
+                    }
+                });
+                ui.end_row();
             });
-            ui.add_space(8.0);
-            ui.horizontal(|ui| {
-                let go = egui::Button::new(RichText::new(tr("Add device")).color(Color32::WHITE).strong()).fill(Color32::from_rgb(0x2e, 0xa0, 0x4f));
-                if ui.add_enabled(!d.name.trim().is_empty() && !base_ui::camera_feed::lacks_address(&d.cameras), go).clicked() {
-                    finish = true;
-                }
-                if ui.button(tr("More settings…")).on_hover_text(tr("Open the whole device window with what is entered here")).clicked() {
-                    by_hand = true;
-                }
-                if ui.button(tr("I have no device")).on_hover_text(tr("Work on a project without a machine: a plain device called Dummy, with the default work area and speeds")).clicked() {
-                    dummy = true;
-                }
-                if ui.button(tr("Cancel")).clicked() {
-                    close = true;
-                }
-            });
+            ui.add_space(4.0);
+            test_cam = camera_section(ui, d);
+            base_ui::add_device_ui::warnings(ui, &Self::add_dev_warnings(d, was_read), was_read);
+            !d.name.trim().is_empty() && !base_ui::camera_feed::lacks_address(&d.cameras)
         });
+        if refresh {
+            self.port_info = crate::laser::list_port_info();
+            self.ports = self.port_info.iter().map(|p| p.name.clone()).collect();
+        }
+        use base_ui::add_device_ui::AddAction;
+        let (finish, by_hand, dummy, close) = (action == Some(AddAction::Add), action == Some(AddAction::More), action == Some(AddAction::Dummy), action == Some(AddAction::Cancel));
         if let Some(cam) = test_cam {
             self.start_cam_test(ctx, cam);
         }
