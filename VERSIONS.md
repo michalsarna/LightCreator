@@ -2,6 +2,18 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.7.0
+
+* **The camera view** is the shared one of the three programs now: it works as before (separate window, side tab or tab of the work area, zoom bar), and its window has the bar of the main window.
+* **Paste a picture:** Ctrl/Cmd+V or **Edit → Paste** with a picture in the clipboard (a screenshot, a picture copied in a browser) opens the image import window with it. Shapes copied in the program are still pasted as shapes, unless a picture was copied after them. On Windows and Linux Ctrl+V over the drawing pastes the copied shapes again.
+* **Image import window:** it keeps its size (in Polish it grew to the width of the screen), and the picture zooms and moves as in the trace window.
+* **One zoom bar for every picture:** zoom in, zoom out and the whole picture, with the zoom, in the lower left corner of the preview, the trace and import windows, the G-code viewer and the camera view; in the preview it also fits all the objects (the fit icons left its title line).
+* **Node editing:** keys D delete, I insert a node, L line, S curve, C corner, R round, B break the path at the node (also a new **Break** button); a node dropped onto another one joins them (the ends of a path close it, neighbours merge, the ends of two paths make one).
+* **Properties:** arrows of their direction before W and H. **Font list:** the arrows go through the open list and change the font; ten fonts are seen.
+* **Secondary grid:** drawn only at a zoom of more than 200 %.
+* **Windows of their own** (a tab taken out, the camera) have the bar of the main window and square corners.
+* **grblHAL and FluidNC:** the start-up line of grblHAL is known (no wait after connecting), its build info is read whole, and the Control tab shows **Not homed** and the tool in the spindle.
+
 ## v0.6.2
 
 * **Copy and paste with other programs:** a text field takes what you paste from another program, and **Copy** on a message reaches other programs. The builds had no access to the clipboard of the system, so this worked only inside the program.
