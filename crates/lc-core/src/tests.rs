@@ -2483,3 +2483,93 @@ fn the_gcode_says_where_every_object_layer_and_path_starts_and_ends() {
     let commands: Vec<&str> = g.lines().filter(|l| !l.starts_with(';')).collect();
     assert!(commands.iter().all(|l| !l.contains("object") && !l.contains("path")));
 }
+
+/// The laser state as a dialect's G-code sets it, line by line: on with a power command or S above 0, off with S0 or the off command.
+/// For every dialect that does not switch the laser off by itself during G0 (old GRBL, the command dialects): no G0 runs with the
+/// laser on, and the job ends with the laser off.
+#[test]
+fn no_dialect_moves_with_the_laser_on_and_every_job_ends_with_it_off() {
+    for dialect in Dialect::ALL {
+        let mut d = square_doc(LayerMode::Fill);
+        d.add(0, Kind::Rect { w: 8.0, h: 4.0 }, Xf::translate(30.0, 20.0));
+        d.layers[0].power = 40.0;
+        d.device.gcode.dialect = Some(dialect);
+        if dialect == Dialect::Custom {
+            d.device.gcode.power_on = "M106 S{power}".into();
+            d.device.gcode.power_off = "M107".into();
+        }
+        let g = gcode::generate(&d).gcode;
+        let off_cmd = d.device.power_commands().map(|c| c.1);
+        let mut on = false;
+        for line in g.lines().map(|l| l.split(';').next().unwrap_or("").trim()).filter(|l| !l.is_empty()) {
+            let s_word = line.split_whitespace().find_map(|w| w.strip_prefix('S')).and_then(|v| v.parse::<f64>().ok());
+            if let Some(off) = &off_cmd {
+                assert!(!line.contains(" S") || line.starts_with("M3 P") || line.starts_with("M106") || !line.starts_with("G1"), "{dialect:?}: no S on the moves: {line}");
+                if line == off.as_str() {
+                    on = false;
+                } else if line.starts_with("M3 P") || line.starts_with("M67") || line.starts_with("M106") {
+                    on = s_word.or_else(|| line.split_whitespace().find_map(|w| w.strip_prefix('Q')).and_then(|v| v.parse::<f64>().ok())).is_some_and(|v| v > 0.0);
+                }
+            } else if line.starts_with("M5") {
+                on = false;
+            } else if let Some(s) = s_word {
+                on = s > 0.0;
+            }
+            let must_be_off = dialect == Dialect::GrblM3Old || dialect.by_command();
+            if must_be_off && line.starts_with("G0") {
+                assert!(!on, "{dialect:?}: a move with the laser on: {line}\n{g}");
+            }
+            if dialect == Dialect::LinuxCnc {
+                assert!(!line.starts_with("M4") && !line.starts_with('$'), "LinuxCNC: {line}");
+            }
+        }
+        assert!(!on, "{dialect:?}: the laser is on at the end:\n{g}");
+        if matches!(dialect, Dialect::LinuxCnc | Dialect::GrblM3Old) {
+            assert!(g.lines().any(|l| l.trim() == "M2"), "{dialect:?} ends the program with M2");
+        }
+        if dialect == Dialect::GrblM3Old {
+            assert!(!g.contains("M4"), "old GRBL has no M4");
+        }
+    }
+}
+
+#[test]
+fn the_command_dialects_write_their_power_commands() {
+    let mut d = square_doc(LayerMode::Line);
+    d.layers[0].power = 50.0;
+    d.device.gcode.dialect = Some(Dialect::Snapmaker);
+    d.device.heads[0].s_max = 255.0;
+    let g = gcode::generate(&d).gcode;
+    assert!(g.contains("M3 P50 S128"), "{g}");
+    d.device.gcode.dialect = Some(Dialect::LinuxCnc);
+    d.device.heads[0].s_max = 100.0;
+    let g = gcode::generate(&d).gcode;
+    assert!(g.contains("M67 E0 Q50") && g.contains("M67 E0 Q0"), "{g}");
+    // A device file without the new fields still reads, and an untouched device does not write them.
+    let json = serde_json::to_string(&Device::default()).unwrap();
+    assert!(!json.contains("power_on"));
+}
+
+/// Every entry of the list of controllers sets the controller, the dialect and the S max, and is recognised again from them.
+#[test]
+fn each_board_sets_its_controller_and_is_recognised() {
+    for b in Board::ALL {
+        let mut d = Device::default();
+        b.apply(&mut d);
+        assert_eq!(Board::of(&d), match b {
+            // GRBL-LPC and Gerbil-STM are GRBL 1.1 with other names: they read back as GRBL.
+            Board::GrblLpc | Board::GerbilStm => Board::Grbl,
+            other => other,
+        }, "{b:?}");
+    }
+    let mut d = Device::default();
+    Board::Snapmaker.apply(&mut d);
+    assert_eq!((d.controller, d.dialect(), d.heads[0].s_max), (Controller::Marlin, Dialect::Snapmaker, 255.0));
+    Board::LinuxCnc.apply(&mut d);
+    assert!(d.file_only() && d.dialect() == Dialect::LinuxCnc && d.heads[0].s_max == 100.0);
+    Board::GrblM3.apply(&mut d);
+    assert!(!d.file_only() && d.dialect() == Dialect::GrblM3Old);
+    // Old GRBL with laser mode off is what GRBL-M3 is for: no warning about $32.
+    let r = crate::controller::Reading { laser_mode: Some(false), ..Default::default() };
+    assert!(!r.check(&d).laser_mode_off);
+}

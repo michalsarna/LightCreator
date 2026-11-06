@@ -1129,3 +1129,15 @@
 1128|Bein mynd af vélinni: MJPEG-straumur, vistfang JPEG-skyndimyndar (http eða https) eða straumur sem ffmpeg les (rtsp, udp, rtp, rtmp).
 1129|Yfirlag frá…
 1130|Aðdráttur
+1131|GRBL (1.1f eða nýrra)
+1132|GRBL-M3 (1.1e eða eldra)
+1133|LinuxCNC (skrá)
+1134|Eigin G-kóði
+1135|Leysir á (afl)
+1136|Leysir af
+1137|{power} er aflið í einingum S max, {percent} aflið í prósentum. Kveikiskipunin kemur á undan brennslu, slökkviskipunin á undan hverri hreyfingu.
+1138|Eigin G-kóði: prófaðu fyrst skipanirnar til að kveikja og slökkva á leysinum á lægsta afli.
+1139|Snapmaker: aflið er skrifað sem M3 P (prósent) S (0–255) á undan brennslu og M5 á undan hreyfingu. Ekki prófað á raunverulegri vél.
+1140|LinuxCNC: Ræsa vistar G-kóðaskrána fyrir LinuxCNC. Aflið fer á hliðrænt úttak 0 (M67 E0 Q, frá 0 upp í S max), sem í HAL þínu verður að stýra leysinum. Ekki prófað á raunverulegri vél.
+1141|GRBL án leysihams: slökkt er á leysinum (S0) á undan hverri hreyfingu. Keyrðu fyrsta verkið á lægsta afli.
+1142|Gerbil-borð eru misjöfn í hámarks S-gildi ($30 er 1000 á sumum, 2048 á öðrum): lestu það úr tækinu.

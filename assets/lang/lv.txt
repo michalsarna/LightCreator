@@ -1129,3 +1129,15 @@
 1128|Iekārtas tiešraides attēls: MJPEG straume, JPEG momentuzņēmuma adrese (http vai https) vai straume, ko lasa ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Pārklājums no…
 1130|Tālummaiņa
+1131|GRBL (1.1f vai jaunāks)
+1132|GRBL-M3 (1.1e vai vecāks)
+1133|LinuxCNC (fails)
+1134|Savs G-kods
+1135|Lāzers ieslēgts (jauda)
+1136|Lāzers izslēgts
+1137|{power} ir jauda S max vienībās, {percent} — jauda procentos. Ieslēgšanas komanda ir pirms dedzināšanas, izslēgšanas komanda — pirms katras pārvietošanās.
+1138|Savs G-kods: vispirms pārbaudiet lāzera ieslēgšanas un izslēgšanas komandas ar mazāko jaudu.
+1139|Snapmaker: jauda tiek ierakstīta kā M3 P (procenti) S (0–255) pirms dedzināšanas un M5 pirms pārvietošanās. Nav izmēģināts uz īstas mašīnas.
+1140|LinuxCNC: Sākt saglabā G-koda failu LinuxCNC. Jauda nonāk analogajā izejā 0 (M67 E0 Q, no 0 līdz S max), kurai jūsu HAL ir jāvada lāzers. Nav izmēģināts uz īstas mašīnas.
+1141|GRBL bez lāzera režīma: lāzers tiek izslēgts (S0) pirms katras pārvietošanās. Pirmo darbu veiciet ar mazāko jaudu.
+1142|Gerbil platēm atšķiras maksimālā S vērtība ($30 dažām ir 1000, citām 2048): nolasiet to no ierīces.

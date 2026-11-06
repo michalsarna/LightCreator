@@ -414,17 +414,116 @@ pub enum Dialect {
     Marlin,
     /// Smoothieware (laser module; S is a fraction of the full power).
     Smoothieware,
+    /// GRBL 1.1e or older, without laser mode (`$32`): `M3` only, and the laser is switched off (`S0`) before every move with
+    /// it off, which it does not do by itself.
+    GrblM3Old,
+    /// Snapmaker (Marlin): the power is a command of its own before a burn, `M3 P<percent> S<0-255>`, and `M5` before a move.
+    Snapmaker,
+    /// LinuxCNC: the power on an analogue output, `M67 E0 Q<power>` before a burn and `M67 E0 Q0` before a move; never `M4`
+    /// (it would turn a spindle the other way). The program ends with `M2`.
+    LinuxCnc,
+    /// The device's own commands: one that switches the laser on with a power (`{power}`, `{percent}`) and one that switches it off.
+    Custom,
+}
+
+/// The controller as the list of a new device offers it: a name the person knows, which fills in the controller, the dialect of the
+/// G-code and the S max. It is applied only when it is picked, so a later change of the S max or the dialect stays.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Board {
+    /// GRBL 1.1f or newer: laser mode, dynamic power (`M4`).
+    Grbl,
+    /// GRBL 1.1e or older, without laser mode: `M3` only, the laser switched off for every move.
+    GrblM3,
+    /// GRBL on LPC boards (also Gerbil, X-Controller, ManaSE): GRBL 1.1.
+    GrblLpc,
+    /// Gerbil-STM (Mini Gerbil for the K40): GRBL 1.1; its S max differs between boards, read it from the device.
+    GerbilStm,
+    Marlin,
+    /// Snapmaker (Marlin): S 0–255 and the power as `M3 P<percent> S<s>`. Not tried on a real one.
+    Snapmaker,
+    Smoothieware,
+    /// LinuxCNC: a G-code file for it (the power with `M67 E0 Q`), not streamed. Not tried on a real one.
+    LinuxCnc,
+    /// Own commands for the laser on and off; streamed like GRBL.
+    CustomGcode,
+    Ruida,
+    Trocen,
+}
+
+impl Board {
+    pub const ALL: [Board; 11] = [Board::Grbl, Board::GrblM3, Board::GrblLpc, Board::GerbilStm, Board::Marlin, Board::Snapmaker, Board::Smoothieware, Board::LinuxCnc, Board::CustomGcode, Board::Ruida, Board::Trocen];
+    pub fn label(self) -> &'static str {
+        match self {
+            Board::Grbl => "GRBL (1.1f or newer)",
+            Board::GrblM3 => "GRBL-M3 (1.1e or older)",
+            Board::GrblLpc => "GRBL-LPC (Gerbil, X-Controller, ManaSE)",
+            Board::GerbilStm => "Gerbil-STM",
+            Board::Marlin => "Marlin",
+            Board::Snapmaker => "Snapmaker (Marlin)",
+            Board::Smoothieware => "Smoothieware",
+            Board::LinuxCnc => "LinuxCNC (file)",
+            Board::CustomGcode => "Own G-code",
+            Board::Ruida => "Ruida",
+            Board::Trocen => "Trocen",
+        }
+    }
+    /// Set the controller, the dialect and the S max of `d` for this controller.
+    pub fn apply(self, d: &mut Device) {
+        let (controller, dialect, s_max) = match self {
+            Board::Grbl | Board::GrblLpc | Board::GerbilStm => (Controller::Grbl, None, Some(1000.0)),
+            Board::GrblM3 => (Controller::Grbl, Some(Dialect::GrblM3Old), Some(1000.0)),
+            Board::Marlin => (Controller::Marlin, None, Some(255.0)),
+            Board::Snapmaker => (Controller::Marlin, Some(Dialect::Snapmaker), Some(255.0)),
+            Board::Smoothieware => (Controller::Smoothieware, None, None),
+            Board::LinuxCnc => (Controller::Grbl, Some(Dialect::LinuxCnc), Some(100.0)),
+            Board::CustomGcode => (Controller::Grbl, Some(Dialect::Custom), None),
+            Board::Ruida => (Controller::Ruida, None, None),
+            Board::Trocen => (Controller::Trocen, None, None),
+        };
+        d.controller = controller;
+        d.gcode.dialect = dialect;
+        if matches!(self, Board::Grbl | Board::GrblLpc | Board::GerbilStm) {
+            d.gcode.dynamic_power = true;
+        }
+        if let Some(s) = s_max {
+            for h in &mut d.heads {
+                h.s_max = s;
+            }
+        }
+    }
+    /// The entry of the list that matches what `d` is set to (the board itself is not kept: the fields are).
+    pub fn of(d: &Device) -> Board {
+        match (d.controller, d.gcode.dialect) {
+            (_, Some(Dialect::GrblM3Old)) => Board::GrblM3,
+            (_, Some(Dialect::Snapmaker)) => Board::Snapmaker,
+            (_, Some(Dialect::LinuxCnc)) => Board::LinuxCnc,
+            (_, Some(Dialect::Custom)) => Board::CustomGcode,
+            (Controller::Marlin, _) => Board::Marlin,
+            (Controller::Smoothieware, _) => Board::Smoothieware,
+            (Controller::Ruida, _) => Board::Ruida,
+            (Controller::Trocen, _) => Board::Trocen,
+            _ => Board::Grbl,
+        }
+    }
 }
 
 impl Dialect {
-    pub const ALL: [Dialect; 4] = [Dialect::Grbl, Dialect::GrblDynamic, Dialect::Marlin, Dialect::Smoothieware];
+    pub const ALL: [Dialect; 8] = [Dialect::Grbl, Dialect::GrblDynamic, Dialect::GrblM3Old, Dialect::Marlin, Dialect::Snapmaker, Dialect::Smoothieware, Dialect::LinuxCnc, Dialect::Custom];
     pub fn label(self) -> &'static str {
         match self {
             Dialect::Grbl => "GRBL (M3)",
             Dialect::GrblDynamic => "GRBL dynamic (M4)",
             Dialect::Marlin => "Marlin",
             Dialect::Smoothieware => "Smoothieware",
+            Dialect::GrblM3Old => "GRBL-M3 (1.1e or older)",
+            Dialect::Snapmaker => "Snapmaker (Marlin)",
+            Dialect::LinuxCnc => "LinuxCNC (M67)",
+            Dialect::Custom => "Own commands",
         }
+    }
+    /// The power is a command of its own (before a burn, and off before a move), not an `S` word of the moves.
+    pub fn by_command(self) -> bool {
+        matches!(self, Dialect::Snapmaker | Dialect::LinuxCnc | Dialect::Custom)
     }
     /// The GRBL-like flavours switch between `M3` and `M4`.
     pub fn is_grbl(self) -> bool {
@@ -469,6 +568,12 @@ pub struct GcodeCfg {
     /// The very start and the very end of the file (a `%`, a program number, the header of a controller).
     #[serde(default, skip_serializing_if = "is_unset")]
     pub frame: base_core::gcode_out::Frame,
+    /// Own commands (the dialect **Own commands**): the laser on with a power (`{power}` in the units of S max, `{percent}`)
+    /// and the laser off.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub power_on: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub power_off: String,
     /// The last pass over the finished program, for controllers that read G-code in their own way (all off by default).
     #[serde(default, skip_serializing_if = "is_unset")]
     pub flavour: base_core::gcode_out::Flavour,
@@ -515,6 +620,8 @@ impl Default for GcodeCfg {
             arc_tolerance: DEFAULT_ARC_TOL,
             flatten_tolerance: DEFAULT_FLATTEN_TOL,
             hooks: Hooks::default(),
+            power_on: String::new(),
+            power_off: String::new(),
         }
     }
 }
@@ -1153,6 +1260,23 @@ impl Device {
     /// Where the machine's zero is, in design coordinates (millimetres, y down). Jobs start and end here.
     pub fn home_point(&self) -> Pt {
         self.from_machine(0.0, 0.0)
+    }
+
+    /// The commands of a dialect that sets the power with a command of its own: the laser on (with `{power}` and `{percent}` to
+    /// fill in) and the laser off. `None` for the others.
+    pub fn power_commands(&self) -> Option<(String, String)> {
+        let or = |v: &str, d: &str| if v.trim().is_empty() { d.to_string() } else { v.trim().to_string() };
+        match self.dialect() {
+            Dialect::Snapmaker => Some(("M3 P{percent} S{power}".into(), "M5".into())),
+            Dialect::LinuxCnc => Some(("M67 E0 Q{power}".into(), "M67 E0 Q0".into())),
+            Dialect::Custom => Some((or(&self.gcode.power_on, "M3 S{power}"), or(&self.gcode.power_off, "M5"))),
+            _ => None,
+        }
+    }
+
+    /// Is a job a file for the controller's own program (Ruida, Trocen, LinuxCNC) rather than streamed?
+    pub fn file_only(&self) -> bool {
+        !self.controller.is_serial() || self.gcode.dialect == Some(Dialect::LinuxCnc)
     }
 
     /// The flavour of G-code this device gets.

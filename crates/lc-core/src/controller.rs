@@ -35,7 +35,8 @@ impl Reading {
     /// Compare what the controller reported with the profile of the device.
     pub fn check(&self, dev: &crate::doc::Device) -> FwCheck {
         FwCheck {
-            laser_mode_off: self.laser_mode == Some(false),
+            // Old GRBL without laser mode is written for (GRBL-M3: the laser off for every move): no warning for it.
+            laser_mode_off: self.laser_mode == Some(false) && dev.dialect() != crate::doc::Dialect::GrblM3Old,
             s_max: self.s_max.filter(|v| (*v - dev.s_max()).abs() > 1e-6),
         }
     }

@@ -412,11 +412,7 @@ impl App {
                             ui.add(egui::TextEdit::singleline(&mut d.name).hint_text(tr("e.g. My diode laser")));
                             ui.end_row();
                             ui.label(tr("Controller"));
-                            egui::ComboBox::from_id_salt("controller").selected_text(d.controller.label()).show_ui(ui, |ui| {
-                                for c in Controller::ALL {
-                                    ui.selectable_value(&mut d.controller, c, c.label());
-                                }
-                            });
+                            crate::add_device_ui::board_combo(ui, "controller", d);
                             ui.end_row();
                             ui.label(tr("Units"));
                             egui::ComboBox::from_id_salt("units").selected_text(tr(d.units.label())).show_ui(ui, |ui| {
@@ -658,6 +654,7 @@ impl App {
                             ui.add_space(6.0);
                             ui.label(RichText::new(tr("Arcs: GRBL usually handles G2 / G3, Marlin only when built with ARC_SUPPORT, and Smoothieware has its own behaviour. Some controllers ignore arcs or run them wrongly: test with the laser off. Arcs are used for outlines and rings, not for scan lines or images.")).color(Color32::from_rgb(0xe8, 0x8a, 0x1f)));
                         }
+                        crate::add_device_ui::power_commands_ui(ui, d);
                         if d.dialect() == lc_core::Dialect::Smoothieware {
                             ui.add_space(6.0);
                             ui.label(RichText::new(tr("Smoothieware: S is written as a fraction of the full power (set S-value max to 1). Streaming works like GRBL's; none of this has been tried on real hardware.")).color(theme::text_dim()));

@@ -88,7 +88,22 @@ impl<'a> Writer<'a> {
             return;
         }
         let (x, y) = self.map(p);
-        let _ = writeln!(self.out, "G0 X{:.3} {}", x, self.y_word(y));
+        // The laser is off for a move: the dialects that set the power with a command switch it off first; old GRBL (no laser
+        // mode) needs S0, as it keeps the laser on during G0.
+        let d = self.dev.dialect();
+        if d.by_command() && self.s.is_some_and(|s| s > 0.0) {
+            if let Some((_, off)) = self.dev.power_commands() {
+                let _ = writeln!(self.out, "{off}");
+            }
+            self.s = Some(0.0);
+        }
+        let off = if d == Dialect::GrblM3Old && self.s != Some(0.0) {
+            self.s = Some(0.0);
+            " S0"
+        } else {
+            ""
+        };
+        let _ = writeln!(self.out, "G0 X{:.3} {}{off}", x, self.y_word(y));
         self.moves.push(Move { a: self.pos, b: p, laser: false, layer: self.layer, op: self.op, dur: p.dist(self.pos) / self.dev.speeds.travel_speed.max(1.0) * 60.0, speed: self.dev.speeds.travel_speed.max(1.0) / 60.0 });
         self.seconds += p.dist(self.pos) / self.dev.speeds.travel_speed.max(1.0) * 60.0;
         self.pos = p;
@@ -162,6 +177,15 @@ impl<'a> Writer<'a> {
 
     /// Linear move with the laser at `power` percent and `speed` mm/s.
     fn line(&mut self, p: Pt, power: f64, speed: f64) {
+        // The dialects that set the power with a command: the command before the move, when the power changed.
+        if let Some((on, off)) = self.dev.power_commands() {
+            let s = (power / 100.0 * self.dev.head(self.head).s_max).round();
+            if self.s != Some(s) {
+                let cmd = if s > 0.0 { on.replace("{power}", &format!("{}", s as i64)).replace("{percent}", &format!("{}", power.round() as i64)) } else { off };
+                let _ = writeln!(self.out, "{cmd}");
+                self.s = Some(s);
+            }
+        }
         let (x, y) = self.map(p);
         let mut l = format!("G1 X{:.3} {}", x, self.y_word(y));
         self.modal(&mut l, power, speed);
@@ -185,6 +209,14 @@ impl<'a> Writer<'a> {
         let smooth = self.dev.dialect() == Dialect::Smoothieware;
         let s = if smooth { (raw * 1000.0).round() / 1000.0 } else { raw.round() };
         let f = (speed * 60.0).round();
+        // A dialect that sets the power with a command has no S on its moves.
+        if self.dev.dialect().by_command() {
+            if self.f != Some(f) {
+                let _ = write!(l, " F{}", f as i64);
+                self.f = Some(f);
+            }
+            return;
+        }
         if self.s != Some(s) {
             if smooth {
                 let _ = write!(l, " S{}", s);
@@ -646,8 +678,13 @@ pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job
                 Dialect::GrblDynamic => {
                     let _ = writeln!(w.out, "M4 S0");
                 }
-                Dialect::Grbl | Dialect::Smoothieware => {
+                Dialect::Grbl | Dialect::Smoothieware | Dialect::GrblM3Old => {
                     let _ = writeln!(w.out, "M3 S0");
+                }
+                Dialect::Snapmaker | Dialect::LinuxCnc | Dialect::Custom => {
+                    if let Some((_, off)) = dev.power_commands() {
+                        let _ = writeln!(w.out, "{off}");
+                    }
                 }
             }
         }
@@ -658,7 +695,7 @@ pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job
     let (air_on, air_off) = (air_on.as_str(), air_off.as_str());
     let mut air = false;
     // The GRBL-like dialects can switch between constant and dynamic power from layer to layer.
-    let mut mode = if dialect == Dialect::Grbl { PowerMode::Constant } else { PowerMode::Dynamic };
+    let mut mode = if matches!(dialect, Dialect::Grbl | Dialect::GrblM3Old) { PowerMode::Constant } else { PowerMode::Dynamic };
     // The head that is active when the job starts is the first one.
     let mut tool = 0usize;
     // Where we are in the job, for the variables of hooks.
@@ -805,7 +842,19 @@ pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job
     }
     let _ = writeln!(w.out, "; end of the job");
     w.rot = None;
-    let _ = writeln!(w.out, "{}", if dialect == Dialect::Marlin { "M5 I ; laser off" } else { "M5 ; laser off" });
+    match (dialect, dev.power_commands()) {
+        (_, Some((_, off))) => {
+            let _ = writeln!(w.out, "{off} ; laser off");
+        }
+        (Dialect::Marlin, _) => {
+            let _ = writeln!(w.out, "M5 I ; laser off");
+        }
+        _ => {
+            let _ = writeln!(w.out, "M5 ; laser off");
+        }
+    }
+    // Off now: the move home needs no second off.
+    w.s = Some(0.0);
     if dev.gcode.return_home {
         w.travel(back.unwrap_or_else(|| dev.home_point()));
     }
@@ -819,7 +868,7 @@ pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job
                 let _ = writeln!(w.out, "{l}");
             }
         }
-        None if dialect.is_grbl() => {
+        None if dialect.is_grbl() || matches!(dialect, Dialect::GrblM3Old | Dialect::LinuxCnc) => {
             let _ = writeln!(w.out, "M2");
         }
         None => {}
@@ -907,11 +956,15 @@ pub fn frame_path_gcode(points: &[Pt], dev: &Device, power: f64, speed_mm_s: f64
         Dialect::Marlin => {
             let _ = writeln!(w.out, "G21\nG90\nM3 I S0");
         }
-        Dialect::Smoothieware => {
+        Dialect::Smoothieware | Dialect::GrblM3Old => {
             let _ = writeln!(w.out, "G21\nG90\nM3 S0");
         }
         Dialect::Grbl | Dialect::GrblDynamic => {
             let _ = writeln!(w.out, "G21\nG90\nM4 S0");
+        }
+        Dialect::Snapmaker | Dialect::LinuxCnc | Dialect::Custom => {
+            let off = dev.power_commands().map(|c| c.1).unwrap_or_default();
+            let _ = writeln!(w.out, "G21\nG90\n{off}");
         }
     }
     let Some(first) = points.first().copied() else { return w.out };
@@ -919,7 +972,14 @@ pub fn frame_path_gcode(points: &[Pt], dev: &Device, power: f64, speed_mm_s: f64
     for p in points.iter().skip(1).copied().chain(std::iter::once(first)) {
         w.line(p, power, speed_mm_s);
     }
-    let _ = writeln!(w.out, "{}", if dev.dialect() == Dialect::Marlin { "M5 I" } else { "M5" });
+    match dev.power_commands() {
+        Some((_, off)) => {
+            let _ = writeln!(w.out, "{off}");
+        }
+        None => {
+            let _ = writeln!(w.out, "{}", if dev.dialect() == Dialect::Marlin { "M5 I" } else { "M5" });
+        }
+    }
     w.out
 }
 
@@ -929,6 +989,10 @@ pub fn focus_gcode(dev: &Device, on: bool) -> Option<Vec<String>> {
     let h = dev.head(0);
     if h.focus_power <= 0.0 {
         return None;
+    }
+    if let Some((on_cmd, off)) = dev.power_commands() {
+        let s = (h.focus_power / 100.0 * h.s_max).round();
+        return Some(vec![if on { on_cmd.replace("{power}", &format!("{}", s as i64)).replace("{percent}", &format!("{}", h.focus_power.round() as i64)) } else { off }]);
     }
     if !on {
         return Some(vec!["M5".to_string()]);

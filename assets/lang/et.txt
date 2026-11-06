@@ -1129,3 +1129,15 @@
 1128|Masina otsepilt: MJPEG-voog, JPEG-hetktõmmise aadress (http või https) või voog, mida ffmpeg loeb (rtsp, udp, rtp, rtmp).
 1129|Ülekate allikast…
 1130|Suum
+1131|GRBL (1.1f või uuem)
+1132|GRBL-M3 (1.1e või vanem)
+1133|LinuxCNC (fail)
+1134|Oma G-kood
+1135|Laser sees (võimsus)
+1136|Laser väljas
+1137|{power} on võimsus S max ühikutes, {percent} võimsus protsentides. Sisselülitamise käsk tuleb enne põletamist, väljalülitamise käsk enne iga liikumist.
+1138|Oma G-kood: kontrollige laseri sisse- ja väljalülitamise käske esmalt madalaima võimsusega.
+1139|Snapmaker: võimsus kirjutatakse enne põletamist kujul M3 P (protsent) S (0–255) ja enne liikumist M5. Pole päris masinal proovitud.
+1140|LinuxCNC: Start salvestab LinuxCNC jaoks G-koodi faili. Võimsus läheb analoogväljundisse 0 (M67 E0 Q, 0-st S max-ini), mis peab teie HAL-is laserit juhtima. Pole päris masinal proovitud.
+1141|GRBL ilma laserirežiimita: laser lülitatakse enne iga liikumist välja (S0). Tehke esimene töö madalaima võimsusega.
+1142|Gerbili plaatide suurim S-väärtus on erinev ($30 on mõnel 1000, teistel 2048): lugege see seadmest.

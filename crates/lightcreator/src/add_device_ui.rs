@@ -4,7 +4,7 @@ use lc_core::ControllerSettings;
 use crate::app::App;
 use crate::device_ui::CfgEdit;
 use crate::i18n::tr;
-use eframe::egui;
+use eframe::egui::{self, Color32, RichText};
 use lc_core::{Controller, Device, Units};
 
 /// A device with the program's plain defaults and no name.
@@ -13,6 +13,56 @@ fn blank_device() -> Device {
     d.name = String::new();
     d.speed_unit = lc_core::SpeedUnit::PerMinute;
     d
+}
+
+/// The list of the controllers, with the boards that are a controller with other settings (GRBL-M3, GRBL-LPC, Snapmaker…). Picking
+/// one sets the controller, the G-code dialect and the S max.
+pub fn board_combo(ui: &mut egui::Ui, id: &str, d: &mut Device) {
+    let now = lc_core::Board::of(d);
+    egui::ComboBox::from_id_salt(id).selected_text(board_label(now)).show_ui(ui, |ui| {
+        for b in lc_core::Board::ALL {
+            if ui.selectable_label(now == b, board_label(b)).clicked() && now != b {
+                b.apply(d);
+            }
+        }
+    });
+}
+
+/// The name of a board in the list: the ones with words are translated, the names of firmware are not.
+pub fn board_label(b: lc_core::Board) -> String {
+    match b {
+        lc_core::Board::Grbl | lc_core::Board::GrblM3 | lc_core::Board::LinuxCnc | lc_core::Board::CustomGcode => tr(b.label()).to_string(),
+        _ => b.label().to_string(),
+    }
+}
+
+/// The commands of the laser on and off for the dialect **Own commands**, and what the dialects that set the power with a command do.
+pub fn power_commands_ui(ui: &mut egui::Ui, d: &mut Device) {
+    let warn = Color32::from_rgb(0xe8, 0x8a, 0x1f);
+    match d.dialect() {
+        lc_core::Dialect::Custom => {
+            egui::Grid::new("power_cmds").num_columns(2).min_col_width(140.0).spacing([12.0, 6.0]).show(ui, |ui| {
+                ui.label(tr("Laser on (power)"));
+                ui.add(egui::TextEdit::singleline(&mut d.gcode.power_on).hint_text("M3 S{power}"));
+                ui.end_row();
+                ui.label(tr("Laser off"));
+                ui.add(egui::TextEdit::singleline(&mut d.gcode.power_off).hint_text("M5"));
+                ui.end_row();
+            });
+            ui.label(RichText::new(tr("{power} is the power in the units of S max, {percent} the power in percent. The laser-on command comes before a burn, the laser-off command before every move.")).color(crate::theme::text_dim()));
+            ui.label(RichText::new(tr("Own G-code: check the commands for the laser on and off with the laser at the lowest power first.")).color(warn));
+        }
+        lc_core::Dialect::Snapmaker => {
+            ui.label(RichText::new(tr("Snapmaker: the power is written as M3 P (percent) S (0–255) before a burn and M5 before a move. Not tried on a real machine.")).color(warn));
+        }
+        lc_core::Dialect::LinuxCnc => {
+            ui.label(RichText::new(tr("LinuxCNC: Start saves the G-code file for LinuxCNC. The power goes to the analogue output 0 (M67 E0 Q, from 0 to the S max), which must drive the laser in your HAL. Not tried on a real machine.")).color(warn));
+        }
+        lc_core::Dialect::GrblM3Old => {
+            ui.label(RichText::new(tr("GRBL without laser mode: the laser is switched off (S0) before every move. Try the first job at the lowest power.")).color(warn));
+        }
+        _ => {}
+    }
 }
 
 /// The optional camera of a new device (the one of every program's window).
@@ -35,10 +85,14 @@ impl App {
     /// The things to look at before a new profile is used, from what is known now.
     pub fn add_dev_warnings(d: &Device, read: bool) -> Vec<String> {
         let mut w = vec![];
-        if d.controller == Controller::Grbl && !read {
+        let board = lc_core::Board::of(d);
+        if d.controller == Controller::Grbl && !read && !d.file_only() && board != lc_core::Board::GrblM3 {
             w.push(tr("Laser mode ($32) and the maximum S value ($30) of the controller were not read: they are checked when you connect.").to_string());
         }
-        if d.controller.is_serial() && !d.has_target() {
+        if board == lc_core::Board::GerbilStm && !read {
+            w.push(tr("Gerbil boards differ in the maximum S value ($30 is 1000 on some, 2048 on others): read it from the device.").to_string());
+        }
+        if !d.file_only() && !d.has_target() {
             w.push(tr("No port or host is set yet: choose it in the device settings before connecting.").to_string());
         }
         if d.area.margins == lc_core::Margins::default() && d.area.soft_limits.is_none() {
@@ -111,11 +165,7 @@ impl App {
                 ui.add(egui::TextEdit::singleline(&mut d.name).hint_text(tr("e.g. My diode laser")));
                 ui.end_row();
                 ui.label(tr("Controller"));
-                egui::ComboBox::from_id_salt("add_controller").selected_text(d.controller.label()).show_ui(ui, |ui| {
-                    for c in lc_core::Controller::ALL {
-                        ui.selectable_value(&mut d.controller, c, c.label());
-                    }
-                });
+                board_combo(ui, "add_controller", d);
                 ui.end_row();
                 refresh = base_ui::add_device_ui::connection_rows(ui, &mut d.connection, &ports);
                 read = base_ui::add_device_ui::read_row(ui, state, d.has_target() && d.controller.settings_request().is_some());
@@ -160,6 +210,7 @@ impl App {
                 });
                 ui.end_row();
             });
+            power_commands_ui(ui, d);
             ui.add_space(4.0);
             test_cam = camera_section(ui, d);
             base_ui::add_device_ui::warnings(ui, &Self::add_dev_warnings(d, was_read), was_read);
