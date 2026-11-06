@@ -126,27 +126,11 @@ impl App {
         self.pv.job.take().map(|(_, j)| j)
     }
 
-    /// The two buttons that fit the picture. Icons are added right to left: the work area button is the one on the left.
-    fn preview_fit_buttons(pv: &mut PreviewState, ui: &mut egui::Ui) {
-        for (objects, icon, tip) in [(true, "expand", "Fit all objects"), (false, "scan", "Fit work area")] {
-            if crate::app::icon_button(ui, icon, &tr(tip), true, 22.0) {
-                pv.fit_objects = objects;
-                pv.view.need_fit = true;
-                pv.view.auto_fit = true;
-            }
-        }
-    }
-
     /// The preview as a tab of the work area, in place of the drawing.
     pub fn preview_work_panel(&mut self, ui: &mut egui::Ui) {
         let Some(job) = self.preview_prepare(ui.ctx()) else { return };
-        ui.horizontal(|ui| {
-            ui.spacing_mut().item_spacing.x = 4.0;
-            ui.label(RichText::new(tr("Preview")).strong());
-            ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                Self::preview_fit_buttons(&mut self.pv, ui);
-            });
-        });
+        // The fitting of the picture is on its zoom bar.
+        ui.label(RichText::new(tr("Preview")).strong());
         egui::Frame::new().inner_margin(egui::Margin { left: 8, right: 8, top: 0, bottom: 3 }).show(ui, |ui| self.preview_body(ui, &job));
         self.pv.job = Some((self.job_stamp(), job));
     }
@@ -369,7 +353,13 @@ impl App {
                 v.zoom = z;
                 v.auto_fit = false;
             };
-            match base_ui::zoom_bar::overlay(ui, rect, self.pv.view.zoom / whole, &tr("Drag: move · wheel: zoom")) {
+            // Its fourth button fits all the objects to burn; the whole picture is the work area.
+            match base_ui::zoom_bar::overlay_with(ui, rect, self.pv.view.zoom / whole, &tr("Drag: move · wheel: zoom"), true) {
+                Some(base_ui::zoom_bar::ZoomCmd::FitObjects) => {
+                    self.pv.fit_objects = true;
+                    self.pv.view.need_fit = true;
+                    self.pv.view.auto_fit = true;
+                }
                 Some(base_ui::zoom_bar::ZoomCmd::In) => zoom_about_middle(&mut self.pv.view, base_ui::zoom_bar::STEP),
                 Some(base_ui::zoom_bar::ZoomCmd::Out) => zoom_about_middle(&mut self.pv.view, 1.0 / base_ui::zoom_bar::STEP),
                 Some(base_ui::zoom_bar::ZoomCmd::Whole) => {
