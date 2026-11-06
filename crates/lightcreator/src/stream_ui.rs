@@ -5,7 +5,6 @@ use base_ui::editor::EditorBackground;
 use crate::camera::rotate_rgb;
 use crate::camera_stream::{self, Msg};
 use crate::i18n::{tr, trf};
-use crate::theme;
 use eframe::egui::{self, RichText};
 
 /// How long the camera window must keep its size to count as let go.
@@ -272,17 +271,6 @@ impl App {
             if crate::app::window_toggle(ui, &tr("Overlay"), &tr("Show or hide the camera overlay on the work area"), on, can) {
                 self.toggle_stream_overlay();
             }
-            ui.separator();
-            if ui.button("+").on_hover_text(tr("Zoom in")).clicked() {
-                self.stream_zoom = (self.stream_zoom * 1.25).min(MAX_ZOOM);
-            }
-            if ui.button("−").on_hover_text(tr("Zoom out")).clicked() {
-                self.stream_zoom = (self.stream_zoom / 1.25).max(1.0);
-            }
-            if ui.button(tr("Default zoom")).on_hover_text(tr("Back to the whole picture")).clicked() {
-                self.stream_zoom = 1.0;
-            }
-            ui.label(RichText::new(format!("{:.0} %", self.stream_zoom * 100.0)).color(theme::text_dim()));
         });
         let mut picture = None;
         match self.stream_tex.clone() {
@@ -291,7 +279,7 @@ impl App {
                 // 100 % is the picture fitted to the window, scaled up as well as down. What stands under it (the working time and
                 // a stream error) is left out of its height: the last frame measured it (`FitWindow`).
                 let (k, slack_x) = base_ui::window::fit_picture(ui, sz, self.cam_fit.under(40.0));
-                let (resp, painter) = ui.allocate_painter(sz * k, egui::Sense::drag());
+                let (resp, painter) = ui.allocate_painter(sz * k, egui::Sense::click_and_drag());
                 picture = Some((resp.rect, slack_x));
                 if resp.hovered() {
                     let scroll = ui.input(|i| i.smooth_scroll_delta.y);
@@ -301,6 +289,21 @@ impl App {
                 }
                 if resp.dragged() {
                     self.stream_pan += resp.drag_delta();
+                }
+                // The zoom bar of every picture, in the lower left corner, and a double click: the whole picture again.
+                match base_ui::zoom_bar::overlay(ui, resp.rect, self.stream_zoom, &tr("Scroll to zoom, drag to move, double click to see the whole picture")) {
+                    Some(base_ui::zoom_bar::ZoomCmd::In) => {
+                        let z = (self.stream_zoom * base_ui::zoom_bar::STEP).min(MAX_ZOOM);
+                        self.stream_pan *= z / self.stream_zoom;
+                        self.stream_zoom = z;
+                    }
+                    Some(base_ui::zoom_bar::ZoomCmd::Out) => {
+                        let z = (self.stream_zoom / base_ui::zoom_bar::STEP).max(1.0);
+                        self.stream_pan *= z / self.stream_zoom;
+                        self.stream_zoom = z;
+                    }
+                    Some(base_ui::zoom_bar::ZoomCmd::Whole) => self.stream_zoom = 1.0,
+                    None => {}
                 }
                 if resp.double_clicked() {
                     self.stream_zoom = 1.0;

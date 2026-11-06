@@ -33,7 +33,7 @@ const EN: &[Section] = &[
     Section {
         title: "Camera",
         lines: &[
-            "Give a device a camera URL (MJPEG stream or JPEG snapshot) to get the Camera view button. It can float, open as a separate window or dock as a tab (the three icons in the window); rotate the picture in the device settings. The + and − buttons or the mouse wheel zoom the picture, drag moves it and Default zoom returns to the whole picture.",
+            "Give a device a camera URL (MJPEG stream or JPEG snapshot) to get the Camera view button. It can float, open as a separate window or dock as a tab (the three icons in the window); rotate the picture in the device settings. The mouse wheel or the zoom buttons in the lower left corner of the picture zoom it, drag moves it, and the third button or a double click returns to the whole picture.",
             "The Overlay button (also in the camera window) shows or hides the picture under the design; while the camera window is open it shows the live picture. In the window of View > Overlay from… a USB camera can be chosen, and the corners are kept with the device.",
         ],
     },
@@ -69,7 +69,7 @@ const PL: &[Section] = &[
     Section {
         title: "Kamera",
         lines: &[
-            "Podaj w urządzeniu adres URL kamery (strumień MJPEG lub zdjęcie JPEG), aby pojawił się przycisk Widok z kamery. Okno może pływać, być osobne albo zadokowane jako karta (trzy ikony w oknie); obrót obrazu ustawisz w ustawieniach urządzenia. Przyciski + i − lub kółko myszy powiększają obraz, przeciąganie go przesuwa, a Domyślne powiększenie wraca do całego obrazu.",
+            "Podaj w urządzeniu adres URL kamery (strumień MJPEG lub zdjęcie JPEG), aby pojawił się przycisk Widok z kamery. Okno może pływać, być osobne albo zadokowane jako karta (trzy ikony w oknie); obrót obrazu ustawisz w ustawieniach urządzenia. Kółko myszy lub przyciski powiększenia w lewym dolnym rogu obrazu powiększają go, przeciąganie go przesuwa, a trzeci przycisk lub podwójne kliknięcie wraca do całego obrazu.",
             "Przycisk Nakładka (także w oknie kamery) pokazuje lub ukrywa obraz pod projektem; przy otwartym oknie kamery pokazuje obraz na żywo. W oknie Widok > Nakładka z… można wybrać kamerę USB, a narożniki są zapisywane przy urządzeniu.",
         ],
     },

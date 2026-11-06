@@ -357,14 +357,27 @@ impl App {
             painter.circle_filled(head, 4.5, Color32::from_rgb(0xe0, 0x20, 0x20));
             painter.circle_stroke(head, 4.5, Stroke::new(1.0, Color32::WHITE));
             if skip_travel && self.pv.show_travel {
-                painter.text(rect.left_bottom() + egui::vec2(8.0, -8.0), egui::Align2::LEFT_BOTTOM, tr("Too many moves: travel lines are hidden."), egui::FontId::proportional(12.0), theme::text_dim());
+                // Above the zoom bar.
+                painter.text(rect.left_bottom() + egui::vec2(8.0, -44.0), egui::Align2::LEFT_BOTTOM, tr("Too many moves: travel lines are hidden."), egui::FontId::proportional(12.0), theme::text_dim());
             }
-            // The slider of the zoom at the right edge: the same as the wheel, for a mouse without one.
-            let track = egui::Rect::from_min_max(Pos2::new(rect.right() - 28.0, rect.top() + 24.0), Pos2::new(rect.right() - 8.0, (rect.bottom() - 24.0).max(rect.top() + 80.0)));
-            let mut z = self.pv.view.zoom.max(0.05).ln();
-            if ui.put(track, egui::Slider::new(&mut z, 0.05f32.ln()..=200.0f32.ln()).vertical().show_value(false)).on_hover_text(tr("Zoom")).changed() {
-                self.pv.view.zoom = z.exp().clamp(0.05, 200.0);
-                self.pv.view.auto_fit = false;
+            // The zoom bar of every picture, in the lower left corner: the same as the wheel. Its zoom counts from the whole work area.
+            let whole = crate::canvas::fit_view((rect.width(), rect.height()), (bw, bh), 20.0).0.max(1e-6);
+            let zoom_about_middle = |v: &mut base_ui::editor::View, f: f32| {
+                let c = rect.size() / 2.0;
+                let z = (v.zoom * f).clamp(0.05, 200.0);
+                v.pan = c - (c - v.pan) * (z / v.zoom);
+                v.zoom = z;
+                v.auto_fit = false;
+            };
+            match base_ui::zoom_bar::overlay(ui, rect, self.pv.view.zoom / whole, &tr("Drag: move · wheel: zoom")) {
+                Some(base_ui::zoom_bar::ZoomCmd::In) => zoom_about_middle(&mut self.pv.view, base_ui::zoom_bar::STEP),
+                Some(base_ui::zoom_bar::ZoomCmd::Out) => zoom_about_middle(&mut self.pv.view, 1.0 / base_ui::zoom_bar::STEP),
+                Some(base_ui::zoom_bar::ZoomCmd::Whole) => {
+                    self.pv.fit_objects = false;
+                    self.pv.view.need_fit = true;
+                    self.pv.view.auto_fit = true;
+                }
+                None => {}
             }
         });
         });
