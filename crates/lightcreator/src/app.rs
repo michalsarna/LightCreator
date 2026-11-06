@@ -1862,7 +1862,7 @@ impl eframe::App for App {
     }
 }
 
-pub use base_ui::widgets::{icon_button, icon_button_ink, toggle_icon, window_toggle};
+pub use base_ui::widgets::{icon_button, icon_button_ink, window_toggle};
 
 impl App {
     /// Everything the program remembers between runs, as the key / value strings kept in `app.ron`.

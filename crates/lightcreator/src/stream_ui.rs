@@ -7,59 +7,21 @@ use crate::camera_stream::{self, Msg};
 use crate::i18n::{tr, trf};
 use eframe::egui::{self, RichText};
 
-/// How long the camera window must keep its size to count as let go.
-const CAM_STILL: std::time::Duration = std::time::Duration::from_millis(500);
-/// The smallest camera window (the same as its minimum inner size).
-const CAM_MIN: [f32; 2] = [320.0, 240.0];
-const MAX_ZOOM: f32 = 8.0;
+// The view itself (the three ways, the picture, the window of its own) is the camera view of every program (`base_ui::camera_view`);
+// here are the parts of LightCreator: the stream of its URL, the overlay, the recording and the working time.
+pub use base_ui::camera_view::StreamMode;
+use base_ui::camera_view::{self as cv, MAX_ZOOM};
+#[cfg(test)]
+use base_ui::camera_view::{MIN as CAM_MIN, STILL as CAM_STILL};
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
-pub enum StreamMode {
-    /// A separate operating-system window.
-    Detached,
-    /// A tab of the side panel.
-    Tab,
-    /// A tab of the work area, next to the drawings.
-    Workspace,
-}
+/// The window of its own of the camera view.
+const CAM_WINDOW: CamWindowId = CamWindowId;
 
-impl StreamMode {
-    pub fn from_index(i: u8) -> StreamMode {
-        match i {
-            1 => StreamMode::Detached,
-            2 => StreamMode::Tab,
-            3 => StreamMode::Workspace,
-            // 0 was a window inside the application: it is a tab of the side panel now.
-            _ => StreamMode::Tab,
-        }
-    }
-    pub fn index(self) -> u8 {
-        match self {
-            StreamMode::Detached => 1,
-            StreamMode::Tab => 2,
-            StreamMode::Workspace => 3,
-        }
-    }
+struct CamWindowId;
 
-    pub fn label(self) -> &'static str {
-        match self {
-            StreamMode::Detached => "Separate window",
-            StreamMode::Tab => "Side tab",
-            StreamMode::Workspace => "Tab in the work area",
-        }
-    }
-}
-
-/// The three ways of showing the camera view, with their icons.
-const MODE_ICONS: [(StreamMode, &str); 3] = [(StreamMode::Detached, "square-arrow-out-up-right"), (StreamMode::Tab, "panel-right"), (StreamMode::Workspace, "panel-top")];
-
-impl StreamMode {
-    /// The name of the mode, translated (the work-area tab is a text of the shared interface).
-    pub fn tip(self) -> String {
-        match self {
-            StreamMode::Workspace => base_ui::doc_tabs::work_tab_label().to_string(),
-            m => tr(m.label()).to_string(),
-        }
+impl From<CamWindowId> for egui::ViewportId {
+    fn from(_: CamWindowId) -> Self {
+        egui::ViewportId::from_hash_of("lightcreator-camera")
     }
 }
 
@@ -67,8 +29,7 @@ impl App {
     /// Take the way of showing the camera view from the device (when a device is entered).
     pub fn load_camera_view(&mut self) {
         let d = &self.doc.device;
-        let mode = d.cameras.get(d.active_camera).and_then(|c| c.view_mode).unwrap_or(d.camera_view.mode);
-        self.stream_mode = StreamMode::from_index(mode);
+        self.stream_mode = StreamMode::of(&d.camera_view, d.cameras.get(d.active_camera));
         self.stream_zoom = d.camera_view.zoom.clamp(1.0, MAX_ZOOM);
         self.cam_view_for = d.active_camera;
     }
@@ -76,16 +37,7 @@ impl App {
     /// Remember the mode (with the active camera) and the zoom (with the device) when they changed.
     pub(crate) fn save_camera_view(&mut self) {
         let d = &mut self.doc.device;
-        let (mode, zoom) = (self.stream_mode.index(), self.stream_zoom);
-        let cam = d.cameras.get(d.active_camera).and_then(|c| c.view_mode);
-        let new_cam = d.active_camera < d.cameras.len() && cam != Some(mode);
-        let v = &mut d.camera_view;
-        if new_cam || v.mode != mode || (v.zoom - zoom).abs() > 0.005 {
-            v.mode = mode;
-            v.zoom = zoom;
-            if let Some(c) = d.cameras.get_mut(d.active_camera) {
-                c.view_mode = Some(mode);
-            }
+        if cv::keep_mode(&mut d.camera_view, &mut d.cameras, d.active_camera, self.stream_mode, self.stream_zoom) {
             self.sync_profile();
         }
     }
@@ -186,21 +138,12 @@ impl App {
 
     /// Is the separate camera window being resized (its size changed a moment ago)?
     pub fn cam_resizing(&self) -> bool {
-        self.stream_mode == StreamMode::Detached && self.cam_win.is_some_and(|(_, t)| t.elapsed() < CAM_STILL)
+        self.stream_mode == StreamMode::Detached && cv::resizing(&self.cam_win)
     }
 
-    /// Note the size of the separate camera window; once it has stood still for a while (the edge was let go) and is bigger
-    /// than its picture needs, give back the empty strip: the window is cut to the scaled picture.
+    /// Note the size of the separate camera window and cut it to its picture once it was let go (`camera_view::settle`).
     fn cam_window_settle(&mut self, ctx: &egui::Context, size: [f32; 2]) {
-        match self.cam_win {
-            Some((s, _)) if s == size => {}
-            _ => self.cam_win = Some((size, std::time::Instant::now())),
-        }
-        if self.cam_resizing() {
-            ctx.request_repaint_after(CAM_STILL);
-        } else if let Some(w) = self.cam_fit.fitted(egui::vec2(size[0], size[1]), CAM_MIN) {
-            ctx.send_viewport_cmd(egui::ViewportCommand::InnerSize(w));
-        }
+        cv::settle(ctx, CAM_WINDOW.into(), &mut self.cam_win, &self.cam_fit, size);
     }
 
     /// Apply the active camera's lens correction and picture adjustments to a frame (RGB bytes of `w × h`).
@@ -214,27 +157,8 @@ impl App {
 
     /// In the view options: where the camera view of each camera opens.
     pub fn camera_mode_options(&mut self, ui: &mut egui::Ui) {
-        if self.doc.device.cameras.is_empty() {
-            return;
-        }
-        ui.add_space(8.0);
-        ui.label(RichText::new(tr("Camera view")).strong());
-        let rows: Vec<(String, StreamMode)> = self.doc.device.cameras.iter().map(|c| (c.name.clone(), StreamMode::from_index(c.view_mode.unwrap_or(self.doc.device.camera_view.mode)))).collect();
-        let mut pick = None;
-        egui::Grid::new("camera_modes").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
-            for (i, (name, now)) in rows.iter().enumerate() {
-                ui.label(name);
-                ui.horizontal(|ui| {
-                    for (m, icon) in MODE_ICONS {
-                        if crate::app::toggle_icon(ui, icon, &m.tip(), *now == m) {
-                            pick = Some((i, m));
-                        }
-                    }
-                });
-                ui.end_row();
-            }
-        });
-        if let Some((i, m)) = pick {
+        let d = &self.doc.device;
+        if let Some((i, m)) = cv::mode_options(ui, &d.camera_view, &d.cameras) {
             self.set_camera_mode(i, m);
         }
     }
@@ -255,10 +179,8 @@ impl App {
     pub fn stream_view(&mut self, ui: &mut egui::Ui) {
         ui.horizontal(|ui| {
             let before = self.stream_mode;
-            for (m, icon) in MODE_ICONS {
-                if crate::app::toggle_icon(ui, icon, &m.tip(), self.stream_mode == m) {
-                    self.stream_mode = m;
-                }
+            if let Some(m) = cv::mode_buttons(ui, self.stream_mode) {
+                self.stream_mode = m;
             }
             if before != self.stream_mode {
                 self.show_mode(self.stream_mode);
@@ -272,55 +194,8 @@ impl App {
                 self.toggle_stream_overlay();
             }
         });
-        let mut picture = None;
-        match self.stream_tex.clone() {
-            Some(t) => {
-                let sz = t.size_vec2();
-                // 100 % is the picture fitted to the window, scaled up as well as down. What stands under it (the working time and
-                // a stream error) is left out of its height: the last frame measured it (`FitWindow`).
-                let (k, slack_x) = base_ui::window::fit_picture(ui, sz, self.cam_fit.under(40.0));
-                let (resp, painter) = ui.allocate_painter(sz * k, egui::Sense::click_and_drag());
-                picture = Some((resp.rect, slack_x));
-                if resp.hovered() {
-                    let scroll = ui.input(|i| i.smooth_scroll_delta.y);
-                    if scroll != 0.0 {
-                        self.stream_zoom = (self.stream_zoom * (scroll * 0.0015).exp()).clamp(1.0, MAX_ZOOM);
-                    }
-                }
-                if resp.dragged() {
-                    self.stream_pan += resp.drag_delta();
-                }
-                // The zoom bar of every picture, in the lower left corner, and a double click: the whole picture again.
-                match base_ui::zoom_bar::overlay(ui, resp.rect, self.stream_zoom, &tr("Scroll to zoom, drag to move, double click to see the whole picture")) {
-                    Some(base_ui::zoom_bar::ZoomCmd::In) => {
-                        let z = (self.stream_zoom * base_ui::zoom_bar::STEP).min(MAX_ZOOM);
-                        self.stream_pan *= z / self.stream_zoom;
-                        self.stream_zoom = z;
-                    }
-                    Some(base_ui::zoom_bar::ZoomCmd::Out) => {
-                        let z = (self.stream_zoom / base_ui::zoom_bar::STEP).max(1.0);
-                        self.stream_pan *= z / self.stream_zoom;
-                        self.stream_zoom = z;
-                    }
-                    Some(base_ui::zoom_bar::ZoomCmd::Whole) => self.stream_zoom = 1.0,
-                    None => {}
-                }
-                if resp.double_clicked() {
-                    self.stream_zoom = 1.0;
-                }
-                // The picture cannot be pushed out of its frame.
-                let room = resp.rect.size() * (self.stream_zoom - 1.0) / 2.0;
-                self.stream_pan = self.stream_pan.clamp(-room, room);
-                let img = egui::Rect::from_center_size(resp.rect.center() + self.stream_pan, resp.rect.size() * self.stream_zoom);
-                painter.with_clip_rect(resp.rect).image(t.id(), img, egui::Rect::from_min_max(egui::pos2(0.0, 0.0), egui::pos2(1.0, 1.0)), egui::Color32::WHITE);
-            }
-            None => {
-                self.cam_fit.slack = egui::Vec2::ZERO;
-                ui.add_space(30.0);
-                ui.label(tr("Waiting for the picture…"));
-                ui.add_space(30.0);
-            }
-        }
+        let tex = self.stream_tex.clone();
+        let picture = cv::picture(ui, tex.as_ref(), &mut self.stream_zoom, &mut self.stream_pan, &mut self.cam_fit, 40.0);
         // Photos, video and time-lapse, with their folder.
         ui.add_space(4.0);
         ui.separator();
@@ -366,40 +241,19 @@ impl App {
         match self.stream_mode {
             StreamMode::Detached => {
                 let saved = self.doc.device.camera_view.clone();
-                let mut builder = egui::ViewportBuilder::default().with_title(tr("Camera view")).with_inner_size(saved.win_size.unwrap_or([720.0, 580.0])).with_min_inner_size([320.0, 240.0]);
-                if let Some(p) = saved.win_pos {
-                    builder = builder.with_position(p);
+                let logo = self.logo.clone();
+                let seen = cv::window(ctx, CAM_WINDOW.into(), &tr("Camera view"), logo.as_ref(), &saved, |ui| self.stream_view(ui));
+                if seen.embedded {
+                    // The backend cannot open real windows: fall back to the side tab.
+                    self.stream_mode = StreamMode::Tab;
                 }
-                let mut seen: Option<([f32; 2], [f32; 2])> = None;
-                let mut close = false;
-                ctx.show_viewport_immediate(egui::ViewportId::from_hash_of("lightcreator-camera"), builder, |ui, class| {
-                    if class == egui::ViewportClass::EmbeddedWindow {
-                        // The backend cannot open real windows: fall back to the side tab.
-                        self.stream_mode = StreamMode::Tab;
-                        return;
-                    }
-                    egui::CentralPanel::default().show(ui, |ui| self.stream_view(ui));
-                    ui.input(|i| {
-                        let vp = i.viewport();
-                        if let (Some(o), Some(inner)) = (vp.outer_rect, vp.inner_rect) {
-                            seen = Some(([o.min.x.round(), o.min.y.round()], [inner.width().round(), inner.height().round()]));
-                        }
-                    });
-                    if let Some((_, size)) = seen {
-                        self.cam_window_settle(ui.ctx(), size);
-                    }
-                    if ui.input(|i| i.viewport().close_requested()) {
-                        close = true;
-                    }
-                });
-                if let Some((pos, size)) = seen {
-                    let v = &mut self.doc.device.camera_view;
-                    if size[0] >= 100.0 && size[1] >= 100.0 && (v.win_pos != Some(pos) || v.win_size != Some(size)) && !ctx.input(|i| i.pointer.any_down()) {
-                        v.win_pos = Some(pos);
-                        v.win_size = Some(size);
-                        self.sync_profile();
-                    }
+                if let Some((_, size)) = seen.place {
+                    self.cam_window_settle(ctx, size);
                 }
+                if cv::keep_place(ctx, &mut self.doc.device.camera_view, seen.place) {
+                    self.sync_profile();
+                }
+                let close = seen.close;
                 if close {
                     self.stream_closed();
                 }

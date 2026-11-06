@@ -179,6 +179,9 @@ impl App {
 }
 
 impl PaneHost for App {
+    fn window_logo(&self) -> Option<egui::TextureHandle> {
+        self.logo.clone()
+    }
     fn tab_title(&self, c: Content) -> String {
         use base_ui::i18n::tr;
         match c {
