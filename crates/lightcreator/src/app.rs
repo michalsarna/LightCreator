@@ -2579,7 +2579,7 @@ mod project_open_tests {
         std::fs::write(&same, Document::default().to_json()).unwrap();
         a.open_path(same);
         assert!(a.toast.is_none());
-        // Another work area and controller: the warning names both.
+        // Another work area: the warning says so (the controller is not in the file).
         let mut d = Document::default();
         d.device.area.bed_w += 150.0;
         d.device.controller = lc_core::Controller::Marlin;
@@ -2587,7 +2587,7 @@ mod project_open_tests {
         std::fs::write(&other, d.to_json()).unwrap();
         a.open_path(other);
         let (text, _) = a.toast.clone().expect("a warning");
-        assert!(text.contains("Controller") && text.contains("Work area"), "{text}");
+        assert!(!text.contains("Controller") && text.contains("Work area"), "{text}");
         // The device in use is still the local one.
         assert_eq!(a.doc.device.area.bed_w, lc_core::Device::default().area.bed_w);
         std::fs::remove_dir_all(dir).ok();
