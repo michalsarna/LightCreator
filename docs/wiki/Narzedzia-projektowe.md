@@ -80,3 +80,11 @@ Poniższe polecenia menu **Rozmieść** (Arrange) są takie same w LightCreatorz
 * **Rozmieść kształty (nesting)…** (Nest shapes…) układa zaznaczone kształty w rzędach od rogu strony na podanym obszarze, z odstępem (według prostokątów kształtów, nie ich konturów; można pozwolić na obrót o ćwierć obrotu). **Pomiar…** (Measure…) pokazuje rozmiar, położenie, pole i długość zaznaczenia, a dla dwóch kształtów odległości między nimi.
 
 W oknie **Wektoryzacja obrazu** (Trace image) obraz można przybliżać kółkiem myszy albo przyciskami **Powiększ**, **Pomniejsz** i **Resetuj widok**, przeciągać i pokazać w całości dwuklikiem; **Wektoryzuj jasne obszary** obrysowuje jasne części zamiast ciemnych, a zielony przycisk **Wektoryzuj** tworzy kontury. (Obraz pod rysunkiem, z pliku albo z kamery, to nakładka z kamery: **Widok → Nakładka z…**, zobacz [Urządzenia i sterowniki](Urzadzenia-i-sterowniki#kamera).)
+
+## Linijka, zaznaczenie i pasek węzłów
+
+* **Linijka (M):** narzędzie po **Pomniejsz (X)** w palecie. Przeciągnij od jednego punktu do drugiego albo kliknij dwa punkty: linia nad rysunkiem pokazuje długość, ΔX, ΔY i kąt, w jednostkach programu. Punkt blisko węzła kształtu bierze sam węzeł (w przeciwnym razie siatkę, gdy przyciąganie jest włączone). Kliknięcie prostego odcinka kształtu (boku prostokąta, linii) mierzy ten odcinek. Pomiar zostaje do następnego, **Esc** albo zmiany narzędzia; w rysunku nic się nie zmienia.
+* **Prawy przycisk z narzędziem** (kształt, pióro, edycja węzłów, linijka…) działa jak podwójne **Esc**: wraca do **Zaznaczania (V)** bez zaznaczenia; linia rysowana piórem jest najpierw kończona. Przy narzędziu zaznaczania prawy przycisk otwiera menu podręczne jak dotąd.
+* **Kilka zaznaczonych obiektów:** oprócz ramki całego zaznaczenia każdy obiekt ma własną cienką, przerywaną ramkę.
+* **Pasek węzłów** pokazuje klawisze po nazwach: **Narożnik (C)**, **Na linię (L)**, **Na krzywą (S)**, **Dodaj węzeł (I)**, **Usuń węzeł (D)**, **Zaokrąglij (R)**, **Rozdziel (B)**. Nie ma już **Otwórz / zamknij**: **Rozdziel (B)** otwiera ścieżkę, a zamyka się ją, upuszczając jeden koniec na drugi.
+* **Warstwa, która nie jest wykonywana** (z wyłączonym wyjściem), pokazuje swoje obiekty wyblakłe w stronę koloru obszaru roboczego.

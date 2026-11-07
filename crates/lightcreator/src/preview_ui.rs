@@ -80,16 +80,23 @@ impl Default for PreviewState {
     }
 }
 
-/// Evenly spread, clearly different colours for the n-th of `n` operations.
+/// Evenly spread, clearly different colours for the n-th of `n` operations, deep enough to stand out on a light work area (as the
+/// pens of PenCreator do).
 fn op_color(i: usize, n: usize) -> Color32 {
     let h = (i as f32 / n.max(1) as f32) * 0.85 + 0.02;
-    let (s, v) = (0.78, 0.88 - 0.12 * ((i % 2) as f32));
+    let (s, v) = (0.85, 0.66 - 0.10 * ((i % 2) as f32));
     let k = |off: f32| {
         let t = (h * 6.0 + off).rem_euclid(6.0);
         let x = (t - 3.0).abs() - 1.0;
         v * (1.0 - s * x.clamp(0.0, 1.0))
     };
     Color32::from_rgb((k(0.0) * 255.0) as u8, (k(4.0) * 255.0) as u8, (k(2.0) * 255.0) as u8)
+}
+
+/// The colour of a layer in the preview: the colour of the layer, deepened so a light one (yellow, cyan) shows on a light work area.
+fn layer_ink(p: [u8; 3]) -> Color32 {
+    let k = |c: u8| (c as f32 * 0.7).round() as u8;
+    Color32::from_rgb(k(p[0]), k(p[1]), k(p[2]))
 }
 
 fn op_label(job: &gcode::Job, i: usize, layers: &[lc_core::Layer]) -> String {
@@ -237,8 +244,7 @@ impl App {
                             let c = match self.pv.color_by {
                                 ColorBy::Operation => op_color(i, n_ops),
                                 ColorBy::Layer => {
-                                    let p = PALETTE[self.doc.layers[job.ops[i].layer].color.min(lc_core::LAYER_COUNT - 1)];
-                                    Color32::from_rgb(p[0], p[1], p[2])
+                                    layer_ink(PALETTE[self.doc.layers[job.ops[i].layer].color.min(lc_core::LAYER_COUNT - 1)])
                                 }
                             };
                             let (r, _) = ui.allocate_exact_size(egui::vec2(14.0, 14.0), Sense::hover());
@@ -312,8 +318,7 @@ impl App {
                     let c = match self.pv.color_by {
                         ColorBy::Operation => op_color(m.op, n_ops),
                         ColorBy::Layer => {
-                            let p = PALETTE[self.doc.layers[m.layer].color.min(lc_core::LAYER_COUNT - 1)];
-                            Color32::from_rgb(p[0], p[1], p[2])
+                            layer_ink(PALETTE[self.doc.layers[m.layer].color.min(lc_core::LAYER_COUNT - 1)])
                         }
                     };
                     Some(Stroke::new(line_w * 0.8, c))

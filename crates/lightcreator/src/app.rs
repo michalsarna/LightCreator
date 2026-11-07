@@ -1751,7 +1751,7 @@ impl base_ui::editor::EditorHost for App {
         if self.preview_on {
             c = c.gamma_multiply(0.25);
         } else if !l.output {
-            c = c.gamma_multiply(0.45);
+            c = base_ui::editor::faded_colour(c, self.bed_fill());
         }
         Some(c)
     }
@@ -2127,8 +2127,8 @@ mod tests {
     #[test]
     fn navigation_tools_are_a_separate_group() {
         let nav: Vec<Tool> = Tool::ALL.iter().map(|t| t.0).filter(|t| t.is_nav()).collect();
-        assert_eq!(nav, vec![Tool::Pan, Tool::Zoom, Tool::ZoomOut]);
-        assert!(Tool::ALL.iter().filter(|t| !t.0.is_nav()).all(|t| !matches!(t.0, Tool::Pan | Tool::Zoom | Tool::ZoomOut)));
+        assert_eq!(nav, vec![Tool::Pan, Tool::Zoom, Tool::ZoomOut, Tool::Measure]);
+        assert!(Tool::ALL.iter().filter(|t| !t.0.is_nav()).all(|t| !matches!(t.0, Tool::Pan | Tool::Zoom | Tool::ZoomOut | Tool::Measure)));
     }
 
     #[test]
