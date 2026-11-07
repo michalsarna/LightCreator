@@ -2141,11 +2141,33 @@ fn machines_that_differ_are_reported_in_words_of_the_interface() {
     let a = Machine::of(&Device::default());
     let mut b = a.clone();
     assert!(a.differences(&b).is_empty());
-    b.area.bed_w += 100.0;
     b.name = "Another name".into();
+    assert!(a.differences(&b).is_empty(), "only the work area counts");
+    b.x += 100.0;
     assert_eq!(a.differences(&b), vec!["Work area"]);
-    b.controller = Controller::Marlin;
-    assert_eq!(a.differences(&b), vec!["Controller", "Work area"]);
+}
+
+#[test]
+fn the_project_keeps_only_the_name_and_work_area_of_the_machine() {
+    let mut d = Document::default();
+    d.device.name = "Garage laser".into();
+    d.device.area.bed_w = 410.0;
+    d.device.axes.has_z = true;
+    d.device.axes.z_max = 30.0;
+    d.device.controller = Controller::Marlin;
+    let v: serde_json::Value = serde_json::from_str(&d.to_json()).unwrap();
+    let m = &v["sections"]["laser"]["machine"];
+    let keys: Vec<&str> = m.as_object().unwrap().keys().map(|k| k.as_str()).collect();
+    assert_eq!(keys, ["name", "x", "y", "z"], "{m}");
+    assert_eq!((m["x"].as_f64(), m["y"].as_f64(), m["z"].as_f64()), (Some(410.0), Some(400.0), Some(30.0)));
+    let back = Document::from_json(&d.to_json()).unwrap();
+    assert_eq!((back.device.name.as_str(), back.device.area.bed_w, back.device.axes.z_max), ("Garage laser", 410.0, 30.0));
+    assert_eq!(back.device.controller, Device::default().controller, "the controller is not in the file");
+    // A file of an older version, with the whole machine: its name and work area are read.
+    let mut v = v;
+    v["sections"]["laser"]["machine"] = serde_json::json!({ "name": "Old", "controller": "Marlin", "area": { "bed_w": 300.0, "bed_h": 200.0 }, "axes": { "origin": "FrontLeft", "has_z": true, "z_min": 0.0, "z_max": 20.0 } });
+    let old = Document::from_json(&v.to_string()).unwrap();
+    assert_eq!((old.device.name.as_str(), old.device.area.bed_w, old.device.area.bed_h, old.device.axes.z_max), ("Old", 300.0, 200.0, 20.0));
 }
 
 #[test]

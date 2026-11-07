@@ -2757,93 +2757,10 @@
         }
       ],
       "machine": {
-        "area": {
-          "bed_h": 400.0,
-          "bed_w": 400.0,
-          "margins": {
-            "bottom": 0.0,
-            "left": 0.0,
-            "right": 0.0,
-            "top": 0.0
-          },
-          "soft_limits": null
-        },
-        "axes": {
-          "flip_x": false,
-          "flip_y": false,
-          "flip_z": false,
-          "has_z": false,
-          "orientation": "Native",
-          "origin": "FrontLeft",
-          "z_max": 50.0,
-          "z_min": 0.0
-        },
-        "controller": "Grbl",
-        "gcode": {
-          "air_off": "",
-          "air_on": "",
-          "arc_tolerance": 0.01,
-          "arcs": false,
-          "dialect": null,
-          "dynamic_power": true,
-          "flatten_tolerance": 0.05,
-          "hooks": {
-            "layer_end": {
-              "code": "",
-              "enabled": false
-            },
-            "layer_start": {
-              "code": "",
-              "enabled": false
-            },
-            "object_end": {
-              "code": "",
-              "enabled": false
-            },
-            "object_start": {
-              "code": "",
-              "enabled": false
-            }
-          },
-          "postscript": "",
-          "preamble": "",
-          "return_home": true
-        },
-        "heads": [
-          {
-            "colour": [
-              255,
-              122,
-              26
-            ],
-            "focus_power": 0.0,
-            "frame_power": 0.0,
-            "frame_speed": 40.0,
-            "laser": "Diode",
-            "name": "",
-            "optical_power_w": 0.0,
-            "pointer_dx": 0.0,
-            "pointer_dy": 0.0,
-            "pulse_max_us": 0.0,
-            "pulse_min_us": 0.0,
-            "pulse_width_us": 0.0,
-            "pwm_freq_hz": 0.0,
-            "pwm_max_freq_hz": 0.0,
-            "s_max": 1000.0,
-            "spot_x": 0.0,
-            "spot_y": 0.0,
-            "tool": 0,
-            "wavelength_nm": 0
-          }
-        ],
         "name": "GRBL 1.1 (diode / CO2)",
-        "speed_unit": "PerSecond",
-        "speeds": {
-          "acceleration": 0.0,
-          "max_cut_speed": 0.0,
-          "travel_speed": 3000.0
-        },
-        "units": "Mm"
+        "x": 400.0,
+        "y": 400.0,
+        "z": 0.0
       },
       "material": {
         "layers": [],

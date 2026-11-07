@@ -1419,57 +1419,94 @@ pub struct Others {
     pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 
-/// What a project keeps of the machine it was made for: enough to see that the machine at hand is a different one
-/// (and to work when the program has no device yet), never the connection, the cameras or other things of one computer.
+/// What a project keeps of the machine it was made for: its name and work area X/Y/Z (Z is the travel of the head, 0 without a Z
+/// axis), as in the other programs. Enough to see that the machine at hand is a different one; never the connection, the
+/// controller, the cameras or other things of one machine or computer. Files of older versions kept more: their name and work
+/// area are read, the rest is left.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Machine {
+    #[serde(default)]
     pub name: String,
-    pub units: Units,
-    pub speed_unit: SpeedUnit,
-    pub controller: Controller,
-    pub axes: Axes,
-    pub area: Area,
-    pub speeds: Speeds,
-    pub gcode: GcodeCfg,
-    pub heads: Vec<LaserHead>,
+    #[serde(default)]
+    pub x: f64,
+    #[serde(default)]
+    pub y: f64,
+    #[serde(default)]
+    pub z: f64,
+    /// The work area as older versions wrote it (read only).
+    #[serde(default, skip_serializing)]
+    area: Option<OldArea>,
+    /// The axes as older versions wrote them (read only), for the Z travel.
+    #[serde(default, skip_serializing)]
+    axes: Option<OldAxes>,
+}
+
+#[derive(Clone, Debug, PartialEq, Deserialize)]
+struct OldArea {
+    #[serde(default)]
+    bed_w: f64,
+    #[serde(default)]
+    bed_h: f64,
+}
+
+#[derive(Clone, Debug, PartialEq, Deserialize)]
+struct OldAxes {
+    #[serde(default)]
+    has_z: bool,
+    #[serde(default)]
+    z_min: f64,
+    #[serde(default)]
+    z_max: f64,
 }
 
 impl Machine {
     pub fn of(d: &Device) -> Machine {
-        Machine { name: d.name.clone(), units: d.units, speed_unit: d.speed_unit, controller: d.controller, axes: d.axes.clone(), area: d.area.clone(), speeds: d.speeds.clone(), gcode: d.gcode.clone(), heads: d.heads.clone() }
+        let z = if d.axes.has_z { (d.axes.z_max - d.axes.z_min).max(0.0) } else { 0.0 };
+        Machine { name: d.name.clone(), x: d.area.bed_w, y: d.area.bed_h, z, area: None, axes: None }
     }
 
-    /// A device with these machine settings and the defaults for the rest.
+    /// The machine as read, with the work area of an older file moved to X/Y/Z.
+    fn settled(mut self) -> Machine {
+        if let Some(a) = self.area.take() {
+            if self.x <= 0.0 && self.y <= 0.0 {
+                (self.x, self.y) = (a.bed_w, a.bed_h);
+            }
+        }
+        if let Some(a) = self.axes.take() {
+            if self.z <= 0.0 && a.has_z {
+                self.z = (a.z_max - a.z_min).max(0.0);
+            }
+        }
+        self
+    }
+
+    /// A device with this name and work area and the defaults for the rest.
     pub fn into_device(self) -> Device {
+        let m = self.settled();
         let mut d = Device::default();
-        d.name = self.name;
-        d.units = self.units;
-        d.speed_unit = self.speed_unit;
-        d.controller = self.controller;
-        d.axes = self.axes;
-        d.area = self.area;
-        d.speeds = self.speeds;
-        d.gcode = self.gcode;
-        if !self.heads.is_empty() {
-            d.heads = self.heads;
+        d.name = m.name;
+        if m.x > 0.0 && m.y > 0.0 {
+            d.area.bed_w = m.x;
+            d.area.bed_h = m.y;
+        }
+        if m.z > 0.0 {
+            d.axes.has_z = true;
+            d.axes.z_min = 0.0;
+            d.axes.z_max = m.z;
         }
         d
     }
 
-    /// What differs from `other` in a way that changes where or how the job is made, as English labels of the
-    /// interface (empty when the two machines agree on them).
+    /// What differs from `other` in a way that changes where the job is made, as English labels of the interface (empty when
+    /// the two machines agree on it): the work area.
     pub fn differences(&self, other: &Machine) -> Vec<&'static str> {
-        let mut v = vec![];
-        if self.controller != other.controller {
-            v.push("Controller");
+        let (a, b) = (self.clone().settled(), other.clone().settled());
+        let same = |p: f64, q: f64| (p - q).abs() < 0.5;
+        if same(a.x, b.x) && same(a.y, b.y) && same(a.z, b.z) {
+            vec![]
+        } else {
+            vec!["Work area"]
         }
-        if self.area != other.area {
-            v.push("Work area");
-        }
-        if self.axes != other.axes {
-            v.push("Machine zero (0,0)");
-        }
-        v
     }
 }
 
