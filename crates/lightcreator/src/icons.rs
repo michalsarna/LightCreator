@@ -43,7 +43,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::MakeCode => "grid-2x2",
         Act::NestShapes => "layers",
         Act::MeasureShapes => "move",
-        Act::ExportSelectionSvg | Act::ExportSelectionDxf => "file-output",
+        Act::ExportSelectionSvg | Act::ExportSelectionDxf | Act::ExportAs(_) => "file-output",
         Act::BoolUnion => "squares-unite",
         Act::BoolIntersect => "squares-intersect",
         Act::BoolSubtract => "squares-subtract",

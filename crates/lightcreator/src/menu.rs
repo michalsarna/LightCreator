@@ -49,6 +49,7 @@ pub enum Act {
     DogboneCorners,
     ExportSelectionSvg,
     ExportSelectionDxf,
+    ExportAs(base_ui::editor::Exchange),
     CircleArray,
     CopyAlongPath,
     TextOnPath,
@@ -190,6 +191,7 @@ impl From<StdAct> for Act {
             StdAct::BackgroundPicture => Act::CameraOverlay,
             StdAct::ExportSelectionSvg => Act::ExportSelectionSvg,
             StdAct::ExportSelectionDxf => Act::ExportSelectionDxf,
+            StdAct::ExportAs(f) => Act::ExportAs(f),
         }
     }
 }
@@ -258,6 +260,7 @@ impl Act {
             Act::Tool(t) => StdAct::Tool(t),
             Act::ExportSelectionSvg => StdAct::ExportSelectionSvg,
             Act::ExportSelectionDxf => StdAct::ExportSelectionDxf,
+            Act::ExportAs(f) => StdAct::ExportAs(f),
             _ => return None,
         })
     }

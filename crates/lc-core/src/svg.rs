@@ -8,6 +8,11 @@ pub fn import(data: &[u8], doc: &mut Document, layer: Option<usize>) -> Result<V
     Ok(place(base_core::svg::parse(data)?, doc, layer, false))
 }
 
+/// The pictures of an SVG, each with where it lies (`base_core::svg::images`).
+pub fn images(data: &[u8]) -> Vec<(base_core::image::ImageData, base_core::geom::Xf)> {
+    base_core::svg::images(data)
+}
+
 /// Put read outlines on layers: the forced one, or the layer whose palette colour is nearest to the outline's. With `by_layers`
 /// the outlines that are on an Illustrator layer go on the layer of the program with the number of that layer in the file (the
 /// first on layer 1, ...; the rest on the last one); the others still go by colour.
