@@ -1129,3 +1129,15 @@
 1128|Imagine live a mașinii: un flux MJPEG, adresa unui instantaneu JPEG (http sau https) sau un flux citit de ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Suprapunere din…
 1130|Zoom
+1131|GRBL (1.1f sau mai nou)
+1132|GRBL-M3 (1.1e sau mai vechi)
+1133|LinuxCNC (fișier)
+1134|G-code propriu
+1135|Laser pornit (putere)
+1136|Laser oprit
+1137|{power} este puterea în unitățile S max, {percent} puterea în procente. Comanda de pornire vine înainte de ardere, cea de oprire înainte de fiecare deplasare.
+1138|G-code propriu: verificați întâi comenzile de pornire și oprire a laserului la puterea cea mai mică.
+1139|Snapmaker: puterea se scrie ca M3 P (procent) S (0–255) înainte de ardere și M5 înainte de deplasare. Neîncercat pe o mașină reală.
+1140|LinuxCNC: Start salvează fișierul G-code pentru LinuxCNC. Puterea merge la ieșirea analogică 0 (M67 E0 Q, de la 0 la S max), care în HAL-ul dvs. trebuie să comande laserul. Neîncercat pe o mașină reală.
+1141|GRBL fără mod laser: laserul se oprește (S0) înainte de fiecare deplasare. Faceți prima lucrare la puterea cea mai mică.
+1142|Plăcile Gerbil diferă la valoarea S maximă ($30 este 1000 pe unele, 2048 pe altele): citiți-o de pe dispozitiv.

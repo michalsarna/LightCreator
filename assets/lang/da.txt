@@ -1129,3 +1129,15 @@
 1128|Livebillede af maskinen: en MJPEG-strøm, en adresse til et JPEG-billede (http eller https) eller en strøm, som ffmpeg læser (rtsp, udp, rtp, rtmp).
 1129|Overlay fra…
 1130|Zoom
+1131|GRBL (1.1f eller nyere)
+1132|GRBL-M3 (1.1e eller ældre)
+1133|LinuxCNC (fil)
+1134|Egen G-kode
+1135|Laser tændt (effekt)
+1136|Laser slukket
+1137|{power} er effekten i S max-enheder, {percent} effekten i procent. Kommandoen til at tænde kommer før en brænding, kommandoen til at slukke før hver bevægelse.
+1138|Egen G-kode: afprøv først kommandoerne for at tænde og slukke laseren ved laveste effekt.
+1139|Snapmaker: effekten skrives som M3 P (procent) S (0–255) før en brænding og M5 før en bevægelse. Ikke afprøvet på en rigtig maskine.
+1140|LinuxCNC: Start gemmer G-kode-filen til LinuxCNC. Effekten går til analog udgang 0 (M67 E0 Q, fra 0 til S max), som i din HAL skal styre laseren. Ikke afprøvet på en rigtig maskine.
+1141|GRBL uden lasertilstand: laseren slukkes (S0) før hver bevægelse. Kør det første job ved laveste effekt.
+1142|Gerbil-kort har forskellig maksimal S-værdi ($30 er 1000 på nogle, 2048 på andre): læs den fra enheden.

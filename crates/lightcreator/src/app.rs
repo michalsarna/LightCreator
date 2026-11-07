@@ -849,6 +849,11 @@ impl App {
     }
 
     pub fn send_job(&mut self) {
+        // LinuxCNC runs the file itself: Start saves the G-code.
+        if self.doc.device.gcode.dialect == Some(lc_core::Dialect::LinuxCnc) {
+            self.export_gcode();
+            return;
+        }
         if !self.doc.device.controller.is_serial() {
             self.export_cam();
             return;
@@ -941,7 +946,7 @@ impl App {
     /// Start can be pressed: a streaming controller needs a connected laser, the file-based ones (Ruida, Trocen)
     /// just export the job.
     pub fn can_start(&self) -> bool {
-        !self.doc.device.controller.is_serial() || self.connected
+        self.doc.device.file_only() || self.connected
     }
     /// Is there a picture under the drawing, and is it shown?
     pub fn overlay_shown(&self) -> bool {

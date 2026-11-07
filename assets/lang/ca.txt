@@ -1129,3 +1129,15 @@
 1128|Imatge en directe de la màquina: un flux MJPEG, l'adreça d'una instantània JPEG (http o https) o un flux que llegeix ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Superposició des de…
 1130|Zoom
+1131|GRBL (1.1f o posterior)
+1132|GRBL-M3 (1.1e o anterior)
+1133|LinuxCNC (fitxer)
+1134|G-code propi
+1135|Làser encès (potència)
+1136|Làser apagat
+1137|{power} és la potència en les unitats de S max, {percent} la potència en percentatge. L'ordre d'encendre va abans d'un gravat; la d'apagar, abans de cada desplaçament.
+1138|G-code propi: comproveu primer les ordres d'encendre i apagar el làser amb la potència més baixa.
+1139|Snapmaker: la potència s'escriu com a M3 P (percentatge) S (0–255) abans d'un gravat i M5 abans d'un desplaçament. No s'ha provat en una màquina real.
+1140|LinuxCNC: Inicia desa el fitxer G-code per a LinuxCNC. La potència va a la sortida analògica 0 (M67 E0 Q, de 0 a S max), que al vostre HAL ha de controlar el làser. No s'ha provat en una màquina real.
+1141|GRBL sense mode làser: el làser s'apaga (S0) abans de cada desplaçament. Feu la primera tasca amb la potència més baixa.
+1142|Les plaques Gerbil difereixen en el valor S màxim ($30 és 1000 en unes i 2048 en d'altres): llegiu-lo del dispositiu.

@@ -1129,3 +1129,15 @@
 1128|Image en direct de la machine : un flux MJPEG, l'adresse d'un instantané JPEG (http ou https) ou un flux lu par ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Superposition depuis…
 1130|Zoom
+1131|GRBL (1.1f ou plus récent)
+1132|GRBL-M3 (1.1e ou plus ancien)
+1133|LinuxCNC (fichier)
+1134|G-code personnel
+1135|Laser allumé (puissance)
+1136|Laser éteint
+1137|{power} est la puissance dans les unités de S max, {percent} la puissance en pourcentage. La commande d'allumage précède une gravure, celle d'extinction chaque déplacement.
+1138|G-code personnel : vérifiez d'abord les commandes d'allumage et d'extinction avec le laser à la puissance la plus faible.
+1139|Snapmaker : la puissance est écrite M3 P (pourcentage) S (0–255) avant une gravure et M5 avant un déplacement. Non essayé sur une vraie machine.
+1140|LinuxCNC : Démarrer enregistre le fichier G-code pour LinuxCNC. La puissance va à la sortie analogique 0 (M67 E0 Q, de 0 à S max), qui doit commander le laser dans votre HAL. Non essayé sur une vraie machine.
+1141|GRBL sans mode laser : le laser est éteint (S0) avant chaque déplacement. Faites le premier travail à la puissance la plus faible.
+1142|Les cartes Gerbil diffèrent par la valeur S maximale ($30 vaut 1000 sur certaines, 2048 sur d'autres) : lisez-la depuis l'appareil.

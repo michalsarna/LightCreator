@@ -1129,3 +1129,15 @@
 1128|A gép élő képe: MJPEG-adatfolyam, JPEG-pillanatkép címe (http vagy https), vagy az ffmpeg által olvasott adatfolyam (rtsp, udp, rtp, rtmp).
 1129|Fedőkép innen…
 1130|Nagyítás
+1131|GRBL (1.1f vagy újabb)
+1132|GRBL-M3 (1.1e vagy régebbi)
+1133|LinuxCNC (fájl)
+1134|Saját G-kód
+1135|Lézer be (teljesítmény)
+1136|Lézer ki
+1137|A {power} a teljesítmény S max egységekben, a {percent} a teljesítmény százalékban. A bekapcsoló parancs égetés előtt, a kikapcsoló minden mozgás előtt jön.
+1138|Saját G-kód: először a legkisebb teljesítménnyel ellenőrizze a lézer be- és kikapcsoló parancsait.
+1139|Snapmaker: a teljesítmény égetés előtt M3 P (százalék) S (0–255), mozgás előtt M5 formában kerül a fájlba. Valódi gépen nem próbálták ki.
+1140|LinuxCNC: az Indítás elmenti a G-kód fájlt a LinuxCNC-nek. A teljesítmény a 0. analóg kimenetre megy (M67 E0 Q, 0-tól S max-ig), amelynek a HAL-ban a lézert kell vezérelnie. Valódi gépen nem próbálták ki.
+1141|GRBL lézer mód nélkül: a lézer minden mozgás előtt kikapcsol (S0). Az első munkát a legkisebb teljesítménnyel végezze.
+1142|A Gerbil kártyák legnagyobb S értéke eltér ($30 egyeseken 1000, másokon 2048): olvassa ki az eszközből.

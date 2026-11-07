@@ -1129,3 +1129,15 @@
 1128|Imagen en directo de la máquina: un flujo MJPEG, la dirección de una instantánea JPEG (http o https) o un flujo que lee ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Superposición desde…
 1130|Zoom
+1131|GRBL (1.1f o posterior)
+1132|GRBL-M3 (1.1e o anterior)
+1133|LinuxCNC (archivo)
+1134|G-code propio
+1135|Láser encendido (potencia)
+1136|Láser apagado
+1137|{power} es la potencia en las unidades de S max, {percent} la potencia en porcentaje. La orden de encender va antes de un grabado; la de apagar, antes de cada desplazamiento.
+1138|G-code propio: compruebe primero las órdenes de encender y apagar el láser con la potencia más baja.
+1139|Snapmaker: la potencia se escribe como M3 P (porcentaje) S (0–255) antes de un grabado y M5 antes de un desplazamiento. No probado en una máquina real.
+1140|LinuxCNC: Iniciar guarda el archivo G-code para LinuxCNC. La potencia va a la salida analógica 0 (M67 E0 Q, de 0 a S max), que en su HAL debe controlar el láser. No probado en una máquina real.
+1141|GRBL sin modo láser: el láser se apaga (S0) antes de cada desplazamiento. Haga el primer trabajo con la potencia más baja.
+1142|Las placas Gerbil difieren en el valor S máximo ($30 es 1000 en unas y 2048 en otras): léalo del dispositivo.

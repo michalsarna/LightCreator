@@ -1129,3 +1129,15 @@
 1128|Xbieha ħajja tal-magna: fluss MJPEG, indirizz ta' snapshot JPEG (http jew https), jew fluss li jaqra ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Overlay minn…
 1130|Żum
+1131|GRBL (1.1f jew aktar ġdid)
+1132|GRBL-M3 (1.1e jew aktar antik)
+1133|LinuxCNC (fajl)
+1134|G-code tiegħek
+1135|Laser mixgħul (qawwa)
+1136|Laser mitfi
+1137|{power} hija l-qawwa fl-unitajiet ta' S max, {percent} il-qawwa f'perċentwali. Il-kmand biex jinxtegħel jiġi qabel il-ħruq, dak biex jintefa qabel kull moviment.
+1138|G-code tiegħek: iċċekkja l-ewwel il-kmandi biex tixgħel u titfi l-laser bl-inqas qawwa.
+1139|Snapmaker: il-qawwa tinkiteb bħala M3 P (perċentwali) S (0–255) qabel il-ħruq u M5 qabel moviment. Ma ġiex ippruvat fuq magna vera.
+1140|LinuxCNC: Ibda jissejvja l-fajl G-code għal LinuxCNC. Il-qawwa tmur fl-output analogu 0 (M67 E0 Q, minn 0 sa S max), li fil-HAL tiegħek irid imexxi l-laser. Ma ġiex ippruvat fuq magna vera.
+1141|GRBL mingħajr modalità laser: il-laser jintefa (S0) qabel kull moviment. Agħmel l-ewwel xogħol bl-inqas qawwa.
+1142|Il-bordijiet Gerbil ivarjaw fil-valur S massimu ($30 hu 1000 fuq xi wħud, 2048 fuq oħrajn): aqrah mill-apparat.

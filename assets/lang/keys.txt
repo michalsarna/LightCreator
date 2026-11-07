@@ -1129,3 +1129,15 @@
 1128	Live picture of the machine: an MJPEG stream, a JPEG snapshot address (http or https), or a stream that ffmpeg reads (rtsp, udp, rtp, rtmp).
 1129	Overlay from…
 1130	Zoom
+1131	GRBL (1.1f or newer)
+1132	GRBL-M3 (1.1e or older)
+1133	LinuxCNC (file)
+1134	Own G-code
+1135	Laser on (power)
+1136	Laser off
+1137	{power} is the power in the units of S max, {percent} the power in percent. The laser-on command comes before a burn, the laser-off command before every move.
+1138	Own G-code: check the commands for the laser on and off with the laser at the lowest power first.
+1139	Snapmaker: the power is written as M3 P (percent) S (0–255) before a burn and M5 before a move. Not tried on a real machine.
+1140	LinuxCNC: Start saves the G-code file for LinuxCNC. The power goes to the analogue output 0 (M67 E0 Q, from 0 to the S max), which must drive the laser in your HAL. Not tried on a real machine.
+1141	GRBL without laser mode: the laser is switched off (S0) before every move. Try the first job at the lowest power.
+1142	Gerbil boards differ in the maximum S value ($30 is 1000 on some, 2048 on others): read it from the device.

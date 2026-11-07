@@ -1129,3 +1129,15 @@
 1128|Živý obraz zo stroja: prúd MJPEG, adresa snímky JPEG (http alebo https) alebo prúd, ktorý číta ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Prekrytie z…
 1130|Priblíženie
+1131|GRBL (1.1f alebo novší)
+1132|GRBL-M3 (1.1e alebo starší)
+1133|LinuxCNC (súbor)
+1134|Vlastný G-kód
+1135|Laser zapnutý (výkon)
+1136|Laser vypnutý
+1137|{power} je výkon v jednotkách S max, {percent} výkon v percentách. Príkaz na zapnutie je pred pálením, príkaz na vypnutie pred každým presunom.
+1138|Vlastný G-kód: najprv vyskúšajte príkazy na zapnutie a vypnutie lasera pri najnižšom výkone.
+1139|Snapmaker: výkon sa zapisuje ako M3 P (percentá) S (0–255) pred pálením a M5 pred presunom. Nevyskúšané na skutočnom stroji.
+1140|LinuxCNC: Štart uloží súbor G-kódu pre LinuxCNC. Výkon ide na analógový výstup 0 (M67 E0 Q, od 0 po S max), ktorý vo vašom HAL musí riadiť laser. Nevyskúšané na skutočnom stroji.
+1141|GRBL bez laserového režimu: laser sa vypína (S0) pred každým presunom. Prvú úlohu urobte pri najnižšom výkone.
+1142|Dosky Gerbil sa líšia maximálnou hodnotou S ($30 je na niektorých 1000, na iných 2048): prečítajte ju zo zariadenia.

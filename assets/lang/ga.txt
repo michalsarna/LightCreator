@@ -1129,3 +1129,15 @@
 1128|Pictiúr beo den inneall: sruth MJPEG, seoladh seat JPEG (http nó https), nó sruth a léann ffmpeg (rtsp, udp, rtp, rtmp).
 1129|Forleagan ó…
 1130|Zúmáil
+1131|GRBL (1.1f nó níos nuaí)
+1132|GRBL-M3 (1.1e nó níos sine)
+1133|LinuxCNC (comhad)
+1134|G-chód féin
+1135|Léasar ar siúl (cumhacht)
+1136|Léasar múchta
+1137|Is é {power} an chumhacht in aonaid S max, {percent} an chumhacht mar chéatadán. Tagann an t-ordú lasta roimh dhó, an t-ordú múchta roimh gach gluaiseacht.
+1138|G-chód féin: seiceáil ar dtús na horduithe chun an léasar a lasadh agus a mhúchadh ar an gcumhacht is ísle.
+1139|Snapmaker: scríobhtar an chumhacht mar M3 P (céatadán) S (0–255) roimh dhó agus M5 roimh ghluaiseacht. Níor tástáladh ar mheaisín fíor é.
+1140|LinuxCNC: sábhálann Tosaigh an comhad G-chóid do LinuxCNC. Téann an chumhacht chuig aschur analógach 0 (M67 E0 Q, ó 0 go S max), nach mór dó an léasar a thiomáint i do HAL. Níor tástáladh ar mheaisín fíor é.
+1141|GRBL gan mód léasair: múchtar an léasar (S0) roimh gach gluaiseacht. Déan an chéad jab ar an gcumhacht is ísle.
+1142|Bíonn difríocht idir cláir Gerbil san uasluach S ($30 = 1000 ar chuid, 2048 ar chuid eile): léigh ón ngléas é.
