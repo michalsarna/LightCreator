@@ -2,6 +2,17 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.8.0
+
+* **Files of LightBurn and MillMage, both ways:** checked against the same drawings saved by LightBurn 2.2 and MillMage 0.9.
+  * **Import:** MillMage projects (`.mage`, **File → Import → Import LightBurn / MillMage project…**, the file window and drag and drop), the Illustrator files of the old PostScript kind that LightBurn writes, and the pictures inside an SVG (on the active layer). DXF of both kinds (current and R12, *legacy*) and LightBurn projects were read already.
+  * **Export:** **File → Export → Export DXF…** (the current kind, as LightBurn writes it), **Export DXF R12 (legacy)…**, **Export Adobe Illustrator…**, **Export LightBurn project…** (`.lbrn2`, or `.lbrn` when you name the file so; with the mode, power, speed, passes and interval of each layer) and **Export MillMage project…**. **Export SVG…** keeps the pictures now. Pictures go into SVG, LightBurn and MillMage files; DXF and Illustrator have no room for them.
+  * A LightBurn path closed by a curve into its first point came in slightly flattened there; fixed.
+* **Auto levels** in the image import window changed nothing on a real photo (it has a black and a white pixel somewhere). Now the outer 0.5 % of the pixels on each side are left out, and while it is on the two sliders of **Levels** are locked and show the range found in the picture.
+* **More controllers:** GRBL-M3, GRBL-LPC / Gerbil, Snapmaker, LinuxCNC (the job is saved as a file for LinuxCNC to run) and G-code commands of your own for the laser on and off.
+* **Project file:** the machine part keeps only the name and the work area X/Y/Z; older files still open. Opening a project made for another work area says so.
+* **Preview:** **Work area colour** in the bar of the preview (**Automatic** brings back the colour of the editor).
+
 ## v0.7.0
 
 * **The camera view** is the shared one of the three programs now: it works as before (separate window, side tab or tab of the work area, zoom bar), and its window has the bar of the main window.
