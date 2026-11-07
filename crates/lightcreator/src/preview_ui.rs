@@ -166,7 +166,7 @@ impl App {
     /// Options, totals and the picture of the toolpath (the same in the window and in the tab).
     pub(crate) fn preview_body(&mut self, ui: &mut egui::Ui, job: &gcode::Job) {
         let units = self.doc.device.units;
-        let bed_fill = self.bed_fill();
+        let bed_fill = self.ed.grid_prefs.preview_fill(self.scheme.is_dark());
         let line_w = self.ed.grid_prefs.line_width;
         let (bw, bh) = self.doc.device.work_size();
         let total = self.pv.cum.last().copied().unwrap_or(0.0);
@@ -176,6 +176,9 @@ impl App {
             ui.selectable_value(&mut self.pv.color_by, ColorBy::Layer, tr("Layer"));
             ui.separator();
             ui.checkbox(&mut self.pv.show_travel, tr("Show travel moves")).on_hover_text(tr("Moves of the machine with the laser off"));
+            ui.separator();
+            let auto = self.bed_fill();
+            base_ui::widgets::area_colour(ui, tr("Work area colour"), &mut self.ed.grid_prefs.preview_color, auto);
             ui.separator();
             // Fixed width, so the slider next to it does not move when the label changes.
             let (icon, label) = if self.pv.playing { ("pause", tr("Pause")) } else { ("play", tr("Play")) };
@@ -423,5 +426,29 @@ mod tests {
         });
         out.textures_delta.clear();
         assert!(a.preview_work_tab() && a.pv_tab_shown && !a.cam_tab_shown);
+    }
+
+    #[test]
+    fn the_preview_has_the_colour_of_the_work_area_and_paints_it() {
+        let (mut a, ctx) = editor();
+        a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::IDENTITY);
+        a.show_preview = true;
+        a.ed.grid_prefs.preview_color = Some([0x12, 0x34, 0x56, 0xff]);
+        let mut seen = (false, false);
+        for _ in 0..3 {
+            let mut out = ctx.run_ui(egui::RawInput::default(), |ui| {
+                a.preview_window(ui.ctx());
+                egui::CentralPanel::no_frame().show(ui, |ui| a.preview_work_panel(ui));
+            });
+            out.textures_delta.clear();
+            for s in &out.shapes {
+                match &s.shape {
+                    egui::epaint::Shape::Text(t) if t.galley.text() == "Work area colour" => seen.0 = true,
+                    egui::epaint::Shape::Rect(r) if r.fill == egui::Color32::from_rgb(0x12, 0x34, 0x56) => seen.1 = true,
+                    _ => {}
+                }
+            }
+        }
+        assert_eq!(seen, (true, true), "the label in the bar and the work area in that colour");
     }
 }
