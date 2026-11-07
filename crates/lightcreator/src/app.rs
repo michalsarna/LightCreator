@@ -561,7 +561,7 @@ impl App {
     }
     /// Open a project, an SVG or a LightBurn file; false when nothing came of it.
     pub fn open_path(&mut self, p: PathBuf) -> bool {
-        if p.extension().is_some_and(|e| e.eq_ignore_ascii_case("lbrn2") || e.eq_ignore_ascii_case("lbrn")) {
+        if p.extension().is_some_and(|e| lc_core::lightburn::EXTENSIONS.iter().any(|x| e.eq_ignore_ascii_case(x))) {
             return self.import_lightburn(p);
         }
         if p.extension().is_some_and(|e| e.eq_ignore_ascii_case("ugsd")) {
@@ -618,11 +618,11 @@ impl App {
         }
     }
     pub fn import_lightburn_dialog(&mut self) {
-        if let Some(p) = rfd::FileDialog::new().add_filter("LightBurn", &["lbrn2", "lbrn"]).pick_file() {
+        if let Some(p) = rfd::FileDialog::new().add_filter("LightBurn / MillMage", &lc_core::lightburn::EXTENSIONS).pick_file() {
             self.import_lightburn(p);
         }
     }
-    /// Import a LightBurn project into the drawing: its shapes are added (and selected, and can be undone), and its
+    /// Import a LightBurn or MillMage project into the drawing: its shapes are added (and selected, and can be undone), and its
     /// layers with their mode, speed and power are taken for the layers that have no shapes yet. LightBurn counts Y up
     /// from the bottom, so the drawing is turned over with the height of the work area.
     pub fn import_lightburn(&mut self, p: PathBuf) -> bool {
@@ -720,11 +720,19 @@ impl App {
     pub fn import_svg_path(&mut self, p: PathBuf) -> bool {
         match std::fs::read(&p).map_err(|e| e.to_string()).and_then(|d| {
             self.checkpoint();
-            svg::import(&d, &mut self.doc, None)
+            let paths = svg::import(&d, &mut self.doc, None)?;
+            // The pictures of the SVG (LightBurn writes them in) go on the active layer, as an imported picture does.
+            let layer = self.ed.active_layer;
+            let pictures: Vec<u64> = lc_core::svg::images(&d).into_iter().map(|(im, xf)| self.doc.add(layer, lc_core::Kind::Image(im), xf)).collect();
+            Ok((paths, pictures))
         }) {
-            Ok(ids) => {
-                self.status = trf("Imported {} paths from {}", &[&ids.len(), &p.display()]);
-                self.ed.sel = ids;
+            Ok((paths, pictures)) => {
+                self.status = if pictures.is_empty() {
+                    trf("Imported {} paths from {}", &[&paths.len(), &p.display()])
+                } else {
+                    trf("Imported {} paths and {} pictures from {}", &[&paths.len(), &pictures.len(), &p.display()])
+                };
+                self.ed.sel = paths.into_iter().chain(pictures).collect();
                 true
             }
             Err(e) => {
@@ -733,13 +741,10 @@ impl App {
             }
         }
     }
+    /// The whole drawing as SVG, the size of the work area, with the curves and the pictures (the export every program has).
     pub fn export_svg(&mut self) {
-        if let Some(p) = rfd::FileDialog::new().add_filter("SVG", &["svg"]).set_file_name("design.svg").save_file() {
-            self.status = match std::fs::write(&p, svg::export(&self.doc)) {
-                Ok(_) => trf("Exported {}", &[&p.display()]),
-                Err(e) => trf("Export failed: {}", &[&e]),
-            };
-        }
+        let stem = self.gcode_name();
+        base_ui::editor::EditorShapeOps::export_drawing_svg(self, &stem);
     }
     pub fn export_gcode(&mut self) {
         if self.guard(crate::check_ui::Pending::ExportGcode, None) {
@@ -1458,7 +1463,7 @@ impl App {
                 self.open_online_clipart(ctx);
             }
             // The standard commands (also pictures and the operations on shapes) were run above, by baseCreator.
-            Act::ToCurves | Act::AutoJoin | Act::ClosePath | Act::DogboneCorners | Act::GridArray | Act::CircleArray | Act::CopyAlongPath | Act::TextOnPath | Act::TrimByShape | Act::RemoveDuplicates | Act::BreakApart | Act::SimplifyShapes | Act::SerialText | Act::MakeCode | Act::NestShapes | Act::MeasureShapes | Act::ExportSelectionSvg | Act::ExportSelectionDxf | Act::BoolUnion | Act::BoolIntersect | Act::BoolSubtract | Act::BoolXor | Act::OffsetShape | Act::RoundCorners | Act::ImportImage | Act::AdjustImage | Act::TraceImage | Act::Tool(_) | Act::SplitView(_) | Act::SingleView => {}
+            Act::ToCurves | Act::AutoJoin | Act::ClosePath | Act::DogboneCorners | Act::GridArray | Act::CircleArray | Act::CopyAlongPath | Act::TextOnPath | Act::TrimByShape | Act::RemoveDuplicates | Act::BreakApart | Act::SimplifyShapes | Act::SerialText | Act::MakeCode | Act::NestShapes | Act::MeasureShapes | Act::ExportSelectionSvg | Act::ExportSelectionDxf | Act::ExportAs(_) | Act::BoolUnion | Act::BoolIntersect | Act::BoolSubtract | Act::BoolXor | Act::OffsetShape | Act::RoundCorners | Act::ImportImage | Act::AdjustImage | Act::TraceImage | Act::Tool(_) | Act::SplitView(_) | Act::SingleView => {}
             Act::QuickGuide => self.show_guide = true,
             Act::OpenGithub => ctx.open_url(egui::OpenUrl::new_tab(crate::help_ui::GITHUB_URL)),
             Act::CameraOverlay => self.ed.show_background = true,
@@ -1752,6 +1757,21 @@ impl base_ui::editor::EditorHost for App {
     }
     fn layer_color(&self, layer: usize) -> egui::Color32 {
         crate::canvas::col(layer)
+    }
+    fn export_stem(&self) -> String {
+        self.gcode_name()
+    }
+    /// A LightBurn project gets the mode, power, speed, passes and interval of the laser layers.
+    fn lightburn_cut(&self, layer: usize) -> Option<lc_core::lightburn::Cut> {
+        use lc_core::lightburn::CutKind;
+        let l = self.doc.layers.get(layer)?;
+        let kind = match l.mode {
+            lc_core::LayerMode::Line => CutKind::Line,
+            lc_core::LayerMode::Offset => CutKind::Offset,
+            lc_core::LayerMode::Fill | lc_core::LayerMode::FillAndLine => CutKind::Fill,
+            lc_core::LayerMode::Image => CutKind::Image,
+        };
+        Some(lc_core::lightburn::Cut { index: layer, name: l.name.clone(), kind, power_max: l.power, power_min: l.min_power, speed_mm_s: l.speed, passes: l.passes, interval_mm: Some(l.interval) })
     }
     fn dim_pictures(&self) -> bool {
         self.preview_on
@@ -2597,6 +2617,37 @@ mod project_open_tests {
 #[cfg(test)]
 mod lightburn_open_tests {
     use super::*;
+
+    /// Files that LightBurn and MillMage write (`tests/fixtures/interchange`, from baseCreator) come in, the picture of an SVG too.
+    #[test]
+    fn files_of_lightburn_and_millmage_come_in() {
+        let fx = |n: &str| PathBuf::from(format!("{}/tests/fixtures/interchange/{n}", env!("CARGO_MANIFEST_DIR")));
+        let fresh = || {
+            let mut a = App::build(&egui::Context::default(), None, false);
+            a.profiles = vec![lc_core::Device::default()];
+            a.active = 0;
+            a
+        };
+        let mut a = fresh();
+        assert!(a.open_path(fx("zdjecie.svg")), "{}", a.status);
+        assert_eq!(a.doc.scene.shapes.iter().filter(|s| s.is_image()).count(), 1, "{}", a.status);
+        for f in ["kwadrat.mage", "kwadrat-legacy.dxf"] {
+            let mut a = fresh();
+            assert!(a.open_path(fx(f)), "{f}: {}", a.status);
+            assert_eq!(a.doc.scene.shapes.len(), 1, "{f}: {}", a.status);
+        }
+        let mut a = fresh();
+        a.import_ai_path(fx("kwadrat.ai"));
+        // The file has an Illustrator layer: the program asks how to place it.
+        let (p, outlines) = a.ai_choice.take().expect("the question about the Illustrator layers");
+        a.finish_ai_import(p, outlines, true);
+        assert_eq!(a.doc.scene.shapes.len(), 1, "{}", a.status);
+        // The laser settings of a layer go into an exported LightBurn project.
+        use base_ui::editor::EditorHost;
+        a.doc.layers[0].power = 37.0;
+        let cut = a.lightburn_cut(0).expect("a laser layer");
+        assert_eq!(cut.power_max, 37.0);
+    }
 
     const LB: &str = r#"<LightBurnProject DeviceName="No Machine">
         <CutSetting type="Scan"><index Value="3"/><name Value="C03"/><maxPower Value="42"/><speed Value="25"/></CutSetting>

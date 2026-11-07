@@ -58,7 +58,7 @@ impl App {
         }
     }
 
-    fn finish_ai_import(&mut self, p: PathBuf, outlines: lc_core::pdf::Outlines, by_layers: bool) {
+    pub(crate) fn finish_ai_import(&mut self, p: PathBuf, outlines: lc_core::pdf::Outlines, by_layers: bool) {
         self.checkpoint();
         let ids = lc_core::pdf::place_outlines(outlines, &mut self.doc, by_layers);
         self.status_is(trf("Imported {} paths from {}", &[&ids.len(), &p.display()]));
@@ -118,8 +118,8 @@ impl App {
                 "dxf" => {
                     self.import_dxf_path(p);
                 }
-                "svg" | "cre" | "lbrn2" | "lbrn" | "ugsd" if self.screen == crate::app::Screen::Start => self.start_project(|app| app.open_path(p)),
-                "svg" | "cre" | "lbrn2" | "lbrn" | "ugsd" => {
+                "svg" | "cre" | "lbrn2" | "lbrn" | "mage" | "ugsd" if self.screen == crate::app::Screen::Start => self.start_project(|app| app.open_path(p)),
+                "svg" | "cre" | "lbrn2" | "lbrn" | "mage" | "ugsd" => {
                     self.open_path(p);
                 }
                 "ai" | "pdf" => self.import_ai_path(p),

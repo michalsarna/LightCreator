@@ -27,16 +27,21 @@ Pozycja, której nie można teraz użyć, jest wyszarzona (na przykład **Cofnij
 | **Zapisz** (Save) | Ctrl+S | Zapisuje projekt; projekt bez nazwy pliku pyta o nią. |
 | **Zapisz jako…** (Save as…) | Ctrl+Shift+S | Zapisuje projekt pod nową nazwą. |
 | **Importuj** ▸ **Importuj obraz…** (Import image…) | | Kładzie bitmapę (PNG, JPEG, BMP, GIF, WebP) na stronie, z oknem dostosowania. Zobacz [Narzędzia projektowe](Narzedzia-projektowe#import). |
-| **Importuj** ▸ **Importuj SVG…** | Ctrl+I | Dodaje kształty pliku SVG do rysunku; kolory trafiają na warstwy. |
-| **Importuj** ▸ **Importuj Adobe Illustrator / PDF…** | | Ścieżki wektorowe pierwszej strony pliku PDF lub pliku `.ai` zgodnego z PDF. |
-| **Importuj** ▸ **Importuj DXF…** | | Linie, łuki, okręgi, polilinie, splajny i bloki z DXF w postaci ASCII. |
-| **Importuj** ▸ **Importuj projekt LightBurn…** | | Kształty i ustawienia warstw z pliku `.lbrn2` / `.lbrn`. |
+| **Importuj** ▸ **Importuj SVG…** | Ctrl+I | Dodaje kształty pliku SVG do rysunku; kolory trafiają na warstwy. Obrazy z pliku (LightBurn je tam wkłada) też przychodzą, na aktywną warstwę. |
+| **Importuj** ▸ **Importuj Adobe Illustrator / PDF…** | | Ścieżki wektorowe pierwszej strony pliku PDF lub pliku `.ai` zgodnego z PDF, a także `.ai` starego rodzaju w PostScripcie (takie zapisuje LightBurn). |
+| **Importuj** ▸ **Importuj DXF…** | | Linie, łuki, okręgi, polilinie, splajny i bloki z DXF w postaci ASCII, obecnego rodzaju albo R12 (*legacy*). |
+| **Importuj** ▸ **Importuj projekt LightBurn / MillMage…** | | Kształty i ustawienia warstw z pliku `.lbrn2` / `.lbrn` LightBurna albo `.mage` MillMage'a. |
 | **Importuj** ▸ **Importuj projekt UGS…** | | Kształty z pliku UGS Designer (`.ugsd`). |
 | **Importuj** ▸ **Importuj wtyczką…** (Import with a plugin…) | | Wczytuje plik importerem wtyczki. Zobacz [Wtyczki](Wtyczki). |
 | **Importuj** ▸ **Generuj kształt…** (Generate shape…) | | Formularz generatora kształtów z wtyczki (ta sama pozycja jest w menu **Wstawianie**). |
 | **Eksportuj** ▸ **Eksportuj G-code…** (Export G-code…) | | Sprawdza zadanie i zapisuje G-code do pliku, przez włączone postprocesory. To samo co przycisk **Zapisz G-code** i **Laser → Eksportuj G-code…**. |
-| **Eksportuj** ▸ **Eksportuj SVG…** | | Zapisuje rysunek jako SVG. |
+| **Eksportuj** ▸ **Eksportuj SVG…** | | Zapisuje rysunek jako SVG, w rozmiarze obszaru roboczego, z krzywymi i obrazami. |
 | **Eksportuj** ▸ **Eksportuj PLT / DXF…** | | Sprawdza zadanie i zapisuje HPGL (`.plt`) lub DXF dla programów sterowników Ruida i Trocen. Zobacz [Urządzenia i sterowniki](Urzadzenia-i-sterowniki#sterowniki). |
+| **Eksportuj** ▸ **Eksportuj DXF…** (Export DXF…) | | Cały rysunek jako DXF obecnego rodzaju (AutoCAD 2007), tak jak zapisuje go LightBurn; krzywe są spłaszczane do 0,01 mm. |
+| **Eksportuj** ▸ **Eksportuj DXF R12 (starszy)…** (Export DXF R12 (legacy)…) | | To samo jako DXF R12, dla starszych programów i ploterów tnących (LightBurn nazywa go *legacy*). |
+| **Eksportuj** ▸ **Eksportuj Adobe Illustrator…** (Export Adobe Illustrator…) | | Obrysy jako plik Illustratora w postaci PostScript (tak jak zapisuje go LightBurn), z krzywymi, osobna warstwa Illustratora dla każdej warstwy projektu. Obrazy są pomijane. |
+| **Eksportuj** ▸ **Eksportuj projekt LightBurn…** (Export LightBurn project…) | | Projekt LightBurna (`.lbrn2`, albo `.lbrn`, gdy tak nazwiesz plik): kształty z krzywymi i obrazy, osobna warstwa LightBurna dla każdej warstwy projektu. |
+| **Eksportuj** ▸ **Eksportuj projekt MillMage…** (Export MillMage project…) | | To samo jako projekt MillMage (`.mage`), materiał w rozmiarze obszaru roboczego. |
 | **Eksportuj** ▸ **Eksportuj zaznaczenie jako SVG…** / **Eksportuj zaznaczenie jako DXF…** | | Zapisuje zaznaczone kształty (wszystkie, gdy nic nie jest zaznaczone). |
 | **Pokaż plik G-code…** (View G-code file…) | | Otwiera plik G-code w analizie G-code (karta z jego ścieżkami). |
 | **Drukuj…** (Print…) | Ctrl+P | Drukuje projekt na drukarce papierowej albo zapisuje go jako PDF. Zobacz [Ustawienia i pliki](Ustawienia-i-pliki#drukowanie). |
