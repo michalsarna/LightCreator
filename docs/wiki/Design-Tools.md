@@ -88,3 +88,16 @@ In the **Trace image** dialog the picture can be zoomed with the scroll wheel or
 * **Several objects selected:** besides the frame of the whole selection, every object has a thin dashed frame of its own.
 * **The node bar** shows the keys after the names: **Corner (C)**, **To line (L)**, **To curve (S)**, **Add node (I)**, **Delete node (D)**, **Round (R)**, **Break (B)**. **Open / close** is gone: **Break (B)** opens a path, and a path is closed by dropping one of its ends onto the other.
 * **A layer that is not made** (its output switched off) shows its objects faded towards the work area.
+
+## Preview: buttons and dimensions
+
+* The options of the bar of the preview are **buttons**: light blue while they are on (as the button of the camera view), a click turns them on or off.
+* **Dimensions** shows the sizes of the job as on a technical drawing: the width and height of the whole, of every part (when there are a few), and how far the whole is from the zero of the machine when the zero is in the picture.
+
+* **Pictures:** TIFF (`.tif`, `.tiff`) is read too, as PNG, JPEG, BMP, GIF and WebP.
+
+## Dimensions on the work area, the ruler and the node menu
+
+* **Dimensions** (the button next to **Toolpaths** on the bar over the work area) shows the drawing as on a technical drawing: the width and height of the whole and of every outline (the outside and the holes of a shape each by itself), and the diameters of the round ones, the same ones named once (**4 × Ø 6**). It changes nothing in the drawing.
+* **Ruler (M)** takes a node of a shape (a square marks it), the middle of a segment (a diamond) or the centre of a circle or an ellipse (a circle). A click on a circle shows its radius from the centre to the point clicked and its diameter; on an ellipse both radii and the radius to the point; on a curve its length, and when the curve is an arc of a circle, the radius drawn from the centre to the point clicked and its length.
+* **Node edit:** a right click on a node or a segment opens the menu of the node bar; **Smooth** has the key **G**, and the radius of **Round (R)** stands after its button.
