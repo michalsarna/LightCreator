@@ -418,7 +418,7 @@ impl App {
                             ui.end_row();
                             ui.label(tr("Units"));
                             egui::ComboBox::from_id_salt("units").selected_text(tr(d.units.label())).show_ui(ui, |ui| {
-                                for u in Units::ALL {
+                                for u in Units::DEVICE {
                                     ui.selectable_value(&mut d.units, u, tr(u.label()));
                                 }
                             });

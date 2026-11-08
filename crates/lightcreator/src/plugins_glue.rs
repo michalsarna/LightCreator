@@ -92,6 +92,8 @@ impl App {
 
     /// The text of a G-code file after the postprocessor the person chose (as it is when none). `None` after an error.
     pub fn postprocessed(&mut self, text: String) -> Option<String> {
+        // In the units of the machine: a device in inches gets G20 and lengths and feeds in inches.
+        let text = lc_core::gcode_units::for_machine(text, self.doc.device.units);
         let area = self.doc.device.work_size();
         match self.plugins.export_text(&text, area) {
             Ok((t, _said)) => Some(t),

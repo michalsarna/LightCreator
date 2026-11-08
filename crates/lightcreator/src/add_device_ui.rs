@@ -171,7 +171,7 @@ impl App {
                 read = base_ui::add_device_ui::read_row(ui, state, d.has_target() && d.controller.settings_request().is_some());
                 ui.label(tr("Units"));
                 egui::ComboBox::from_id_salt("add_units").selected_text(tr(d.units.label())).show_ui(ui, |ui| {
-                    for u in Units::ALL {
+                    for u in Units::DEVICE {
                         ui.selectable_value(&mut d.units, u, tr(u.label()));
                     }
                 });

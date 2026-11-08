@@ -1733,7 +1733,11 @@ impl base_ui::editor::EditorHost for App {
     fn work_size(&self) -> (f64, f64) {
         self.doc.device.work_size()
     }
+    /// The units of the program (Settings → Program options), or those of the device.
     fn units(&self) -> lc_core::Units {
+        self.ed.grid_prefs.display_units(self.doc.device.units)
+    }
+    fn machine_units(&self) -> lc_core::Units {
         self.doc.device.units
     }
     fn workspace_fill(&self) -> egui::Color32 {
@@ -2617,6 +2621,26 @@ mod project_open_tests {
 #[cfg(test)]
 mod lightburn_open_tests {
     use super::*;
+
+    /// A device in inches gets its G-code in inches (G20, lengths and feeds divided by 25.4); the units of the program only change
+    /// what is shown.
+    #[test]
+    fn a_machine_in_inches_gets_g_code_in_inches_whatever_the_program_shows() {
+        let mut a = App::build(&egui::Context::default(), None, false);
+        a.profiles = vec![lc_core::Device::default()];
+        a.active = 0;
+        a.enter_editor(0);
+        a.doc.add(0, lc_core::Kind::Rect { w: 40.0, h: 20.0 }, Xf::translate(10.0, 10.0));
+        let mm = a.gcode_text_now().expect("a program");
+        assert!(mm.contains("G21") && !mm.contains("G20"));
+        a.doc.device.units = lc_core::Units::Inch;
+        a.ed.grid_prefs.units = Some(lc_core::Units::Cm);
+        let inch = a.gcode_text_now().expect("a program");
+        assert!(inch.contains("G20"), "{inch}");
+        assert!(!inch.lines().any(|l| l.split(';').next().unwrap_or("").split_whitespace().any(|w| w == "G21")), "{inch}");
+        assert_eq!(base_ui::editor::EditorHost::units(&a), lc_core::Units::Cm);
+        assert_eq!(base_ui::editor::EditorHost::machine_units(&a), lc_core::Units::Inch);
+    }
 
     /// Files that LightBurn and MillMage write (`tests/fixtures/interchange`, from baseCreator) come in, the picture of an SVG too.
     #[test]

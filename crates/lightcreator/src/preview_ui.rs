@@ -354,8 +354,11 @@ impl App {
             painter.circle_stroke(head, 4.5, Stroke::new(1.0, Color32::WHITE));
             if self.pv.show_dims {
                 // The objects that are burnt, from the zero of the machine.
-                let parts: Vec<lc_core::geom::Rect> = self.doc.scene.shapes.iter().filter(|s| self.doc.layers.get(s.layer).is_some_and(|l| l.output && l.visible)).filter_map(|s| s.bounds()).collect();
-                base_ui::dims::plan(&painter, &w2s, &parts, Some(self.doc.device.home_point()), units, &base_ui::dims::DimStyle::on(bed_fill));
+                let burnt = self.doc.scene.shapes.iter().filter(|s| self.doc.layers.get(s.layer).is_some_and(|l| l.output && l.visible));
+                let f = base_ui::dims::Features::of(burnt, &|p| p);
+                let shown = base_ui::editor::EditorHost::units(self);
+                let st = base_ui::dims::DimStyle::on(bed_fill).in_units(shown, self.doc.device.units);
+                base_ui::dims::drawing(&painter, &w2s, &f, Some(self.doc.device.home_point()), &st);
             }
             if skip_travel && self.pv.show_travel {
                 // Above the zoom bar.

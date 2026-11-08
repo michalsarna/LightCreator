@@ -101,3 +101,9 @@ W oknie **Wektoryzacja obrazu** (Trace image) obraz można przybliżać kółkie
 * **Wymiary** (przycisk obok **Ścieżek** na pasku nad obszarem roboczym) pokazuje rysunek jak na rysunku technicznym: szerokość i wysokość całości i każdego obrysu (zewnętrznego i otworów kształtu, każdego osobno) oraz średnice okrągłych, te same nazwane raz (**4 × Ø 6**). W rysunku nic się nie zmienia.
 * **Linijka (M)** bierze węzeł kształtu (oznaczony kwadratem), środek odcinka (romb) albo środek okręgu lub elipsy (kółko). Kliknięcie okręgu pokazuje jego promień od środka do klikniętego punktu i średnicę; elipsy oba promienie i promień do punktu; krzywej jej długość, a gdy krzywa jest łukiem okręgu, promień wodzący od środka do klikniętego punktu i jego długość.
 * **Edycja węzłów:** prawy klik na węźle albo odcinku otwiera menu z poleceniami paska węzłów; **Gładki** ma klawisz **G**, a promień **Zaokrąglij (R)** stoi za tym przyciskiem.
+
+## Jednostki
+
+* **Ustawienia → Opcje programu… → Jednostki** wybiera jednostki, w których program pokazuje długości: milimetry, centymetry, metry, cale albo stopy, albo **Jak w urządzeniu**. Używają ich rozmiary we **Właściwościach**, linijka, **Wymiary** na rysunku i w podglądzie oraz rysunek techniczny.
+* **Jednostki urządzenia** (milimetry albo cale, w oknie urządzenia) to jednostki maszyny: w nich jest zapisany G-code. Urządzenie w calach dostaje **G20** i wszystkie długości oraz posuwy w calach; urządzenie w milimetrach **G21** i milimetry. Upewnij się, że to jednostki, w których pracuje sterownik.
+* Gdy urządzenie liczy w innym systemie niż program (cale wobec milimetrów), wymiary i linijka pokazują oba: najpierw jednostki programu, w nawiasie jednostki maszyny, na przykład **25.4 mm [1.000"]**.

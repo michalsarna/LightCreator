@@ -101,3 +101,9 @@ In the **Trace image** dialog the picture can be zoomed with the scroll wheel or
 * **Dimensions** (the button next to **Toolpaths** on the bar over the work area) shows the drawing as on a technical drawing: the width and height of the whole and of every outline (the outside and the holes of a shape each by itself), and the diameters of the round ones, the same ones named once (**4 × Ø 6**). It changes nothing in the drawing.
 * **Ruler (M)** takes a node of a shape (a square marks it), the middle of a segment (a diamond) or the centre of a circle or an ellipse (a circle). A click on a circle shows its radius from the centre to the point clicked and its diameter; on an ellipse both radii and the radius to the point; on a curve its length, and when the curve is an arc of a circle, the radius drawn from the centre to the point clicked and its length.
 * **Node edit:** a right click on a node or a segment opens the menu of the node bar; **Smooth** has the key **G**, and the radius of **Round (R)** stands after its button.
+
+## Units
+
+* **Settings → Program options… → Units** chooses the units the program shows lengths in: millimetres, centimetres, metres, inches or feet, or **As the device**. They are used by the sizes in **Properties**, the ruler, the **Dimensions** over the drawing and in the preview, and the technical drawing.
+* **The units of the device** (millimetres or inches, in the device window) are those of the machine: the G-code is written in them. A device in inches gets **G20** and every length and feed in inches; a device in millimetres **G21** and millimetres. Make sure they are the units the controller works in.
+* When the device counts in the other system than the program (inches against millimetres), the dimensions and the ruler show both: the units of the program first, those of the machine in brackets, for example **25.4 mm [1.000"]**.
