@@ -114,7 +114,7 @@
 113|Verze {}
 114|Open-source software pro návrh a ovládání laserových gravírek a řezaček.
 115|Původ: napsáno v jazyce Rust s využitím egui/eframe.
-116|Inspirováno programem LightBurn; rozhraní inspirováno programem VectorCraft.
+116|Rozhraní inspirováno programem VectorCraft.
 117|Autor: Michał Sarna
 118|Licence MIT.
 119|Vlastnosti

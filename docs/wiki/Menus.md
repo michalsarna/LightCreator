@@ -27,8 +27,8 @@ An entry that cannot be used at the moment is greyed out (for example **Undo** w
 | **Save** | Ctrl+S | Saves the project; a project without a file name asks for one. |
 | **Save as…** | Ctrl+Shift+S | Saves the project under a new name. |
 | **Import** ▸ **Import image…** | | Puts a bitmap (PNG, JPEG, BMP, GIF, WebP) on the page, with the adjust dialog. See [Design Tools](Design-Tools#importing). |
-| **Import** ▸ **Import SVG…** | Ctrl+I | Adds the shapes of an SVG file to the drawing; colours map to layers. The pictures in it (LightBurn puts them there) come too, on the active layer. |
-| **Import** ▸ **Import Adobe Illustrator / PDF…** | | The vector paths of the first page of a PDF or a PDF-compatible `.ai` file, and of an `.ai` of the old PostScript kind (LightBurn writes those). |
+| **Import** ▸ **Import SVG…** | Ctrl+I | Adds the shapes of an SVG file to the drawing; colours map to layers. The pictures in it come too, on the active layer. |
+| **Import** ▸ **Import Adobe Illustrator / PDF…** | | The vector paths of the first page of a PDF or a PDF-compatible `.ai` file, and of an `.ai` of the old PostScript kind. |
 | **Import** ▸ **Import DXF…** | | Lines, arcs, circles, polylines, splines and blocks of an ASCII DXF, of the current kind or R12 (*legacy*). |
 | **Import** ▸ **Import LightBurn / MillMage project…** | | Shapes and layer settings of a `.lbrn2` / `.lbrn` file of LightBurn or a `.mage` file of MillMage. |
 | **Import** ▸ **Import UGS design…** | | Shapes of a UGS Designer file (`.ugsd`). |
@@ -37,9 +37,9 @@ An entry that cannot be used at the moment is greyed out (for example **Undo** w
 | **Export** ▸ **Export G-code…** | | Checks the job and writes the G-code to a file, through the postprocessors you switched on. The same as the **Save G-code** button and **Laser → Export G-code…**. |
 | **Export** ▸ **Export SVG…** | | Writes the drawing as SVG, the size of the work area, with the curves and the pictures. |
 | **Export** ▸ **Export PLT / DXF…** | | Checks the job and writes HPGL (`.plt`) or DXF for the software of Ruida and Trocen controllers. See [Devices and Controllers](Devices-and-Controllers#controllers). |
-| **Export** ▸ **Export DXF…** | | The whole drawing as DXF of the current kind (AutoCAD 2007), the way LightBurn writes it; curves are flattened to 0.01 mm. |
-| **Export** ▸ **Export DXF R12 (legacy)…** | | The same as DXF R12, for older programs and cutters (LightBurn calls it *legacy*). |
-| **Export** ▸ **Export Adobe Illustrator…** | | The outlines as an Illustrator file of the PostScript kind (as LightBurn writes it), with the curves, an Illustrator layer for every layer of the project. Pictures are left out. |
+| **Export** ▸ **Export DXF…** | | The whole drawing as DXF of the current kind (AutoCAD 2007); curves are flattened to 0.01 mm. |
+| **Export** ▸ **Export DXF R12 (legacy)…** | | The same as DXF R12, for older programs and cutters (also called *legacy*). |
+| **Export** ▸ **Export Adobe Illustrator…** | | The outlines as an Illustrator file of the PostScript kind, with the curves, an Illustrator layer for every layer of the project. Pictures are left out. |
 | **Export** ▸ **Export LightBurn project…** | | A LightBurn project (`.lbrn2`, or `.lbrn` when you name the file so): the shapes with their curves and the pictures, a LightBurn layer for every layer of the project. |
 | **Export** ▸ **Export MillMage project…** | | The same as a MillMage project (`.mage`), the material the size of the work area. |
 | **Export** ▸ **Export selection as SVG…** / **Export selection as DXF…** | | Writes the selected shapes (all of them when nothing is selected). |

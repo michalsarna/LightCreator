@@ -114,7 +114,7 @@
 113|Versão {}
 114|Software livre de desenho e controlo para gravadoras e cortadoras laser.
 115|Origem: escrito em Rust com egui/eframe.
-116|Inspirado no LightBurn; interface inspirada no VectorCraft.
+116|Interface inspirada no VectorCraft.
 117|Autor: Michał Sarna
 118|Licença MIT.
 119|Propriedades

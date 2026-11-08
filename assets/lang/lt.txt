@@ -114,7 +114,7 @@
 113|Versija {}
 114|Atvirojo kodo programinė įranga lazerinių graviravimo ir pjovimo staklių projektavimui ir valdymui.
 115|Kilmė: parašyta Rust kalba naudojant egui/eframe.
-116|Įkvėpta LightBurn; sąsają įkvėpė VectorCraft.
+116|Sąsają įkvėpė VectorCraft.
 117|Autorius: Michał Sarna
 118|MIT licencija.
 119|Ypatybės

@@ -114,7 +114,7 @@
 113|Version {}
 114|Programvara med öppen källkod för design och styrning av lasergraverare och laserskärare.
 115|Ursprung: skrivet i Rust med egui/eframe.
-116|Inspirerat av LightBurn; gränssnittet inspirerat av VectorCraft.
+116|Gränssnittet inspirerat av VectorCraft.
 117|Upphovsperson: Michał Sarna
 118|MIT-licens.
 119|Egenskaper

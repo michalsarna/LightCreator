@@ -114,7 +114,7 @@
 113|Versija {}
 114|Atvērtā koda programmatūra lāzera gravēšanas un griešanas iekārtu projektēšanai un vadībai.
 115|Izcelsme: uzrakstīta Rust valodā, izmantojot egui/eframe.
-116|Iedvesmota no LightBurn; saskarni iedvesmojis VectorCraft.
+116|Saskarni iedvesmojis VectorCraft.
 117|Autors: Michał Sarna
 118|MIT licence.
 119|Īpašības

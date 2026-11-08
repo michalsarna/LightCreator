@@ -4,7 +4,7 @@
 
 # LightCreator
 
-Otwartoźródłowy odpowiednik [LightBurn](https://lightburnsoftware.com/) dla grawerek i ploterów laserowych CNC, napisany w Rust. Projektuj, ustawiaj cięcie i grawerowanie, podglądaj ścieżkę i wysyłaj ją do maszyny, na macOS, Windows i Linuksie.
+Otwartoźródłowy program dla grawerek i ploterów laserowych CNC, napisany w Rust. Projektuj, ustawiaj cięcie i grawerowanie, podglądaj ścieżkę i wysyłaj ją do maszyny, na macOS, Windows i Linuksie.
 
 ![Edytor](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/06-light-polish.png)
 
@@ -30,7 +30,7 @@ Otwartoźródłowy odpowiednik [LightBurn](https://lightburnsoftware.com/) dla g
 ## W skrócie
 
 * **Projektowanie:** kształty, edycja węzłów Béziera, tekst, operacje logiczne, offset, zaokrąglanie rogów, grupowanie, blokowanie; import SVG / Illustrator / PDF / DXF i bitmap, wektoryzacja obrazów, tablice, tekst na ścieżce, przycinanie, tekst seryjny, kody QR i nesting.
-* **Grawerowanie:** linia, wypełnienie, wypełnienie offsetem i obrazy rastrowe z sześcioma metodami ditheringu i mocą w skali szarości; 64 warstwy cięcia w stylu LightBurn; podgląd z szacowanym czasem.
+* **Grawerowanie:** linia, wypełnienie, wypełnienie offsetem i obrazy rastrowe z sześcioma metodami ditheringu i mocą w skali szarości; 64 warstwy cięcia; podgląd z szacowanym czasem.
 * **Urządzenia:** profil dla każdej maszyny; GRBL i Marlin przez port szeregowy lub TCP (ser2net); Ruida i Trocen przez eksport PLT / DXF.
 * **Pomocnicze:** widok z kamery ze zdjęciami, wideo i nagrywaniem poklatkowym (MJPEG, RTSP, UDP, RTP, RTMP), nakładka z kamery z wyrównaniem czterech rogów zapisywana w projekcie, G-code jako edytowalny tekst, galeria 310 clipartów z wyszukiwaniem online.
 * **Obszar roboczy:** karty rysunków, podglądu, G-code i kamery w maksymalnie trzech panelach; kartę można otworzyć we własnym oknie.

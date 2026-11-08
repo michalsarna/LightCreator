@@ -114,7 +114,7 @@
 113|Versió {}
 114|Programari de codi obert per dissenyar i controlar gravadores i talladores làser.
 115|Origen: escrit en Rust amb egui/eframe.
-116|Inspirat en LightBurn; interfície inspirada en VectorCraft.
+116|Interfície inspirada en VectorCraft.
 117|Autor: Michał Sarna
 118|Llicència MIT.
 119|Propietats

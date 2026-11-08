@@ -114,7 +114,7 @@
 113|Versioon {}
 114|Avatud lähtekoodiga tarkvara laser-graveerimis- ja lõikemasinate kavandamiseks ja juhtimiseks.
 115|Päritolu: kirjutatud Rustiga, kasutades egui/eframe'i.
-116|Inspireeritud LightBurnist; liides inspireeritud VectorCraftist.
+116|Liides inspireeritud VectorCraftist.
 117|Autor: Michał Sarna
 118|MIT-litsents.
 119|Atribuudid

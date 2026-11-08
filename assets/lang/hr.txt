@@ -114,7 +114,7 @@
 113|Verzija {}
 114|Softver otvorenog koda za dizajn i upravljanje laserskim graverima i rezačima.
 115|Podrijetlo: napisano u Rustu uz egui/eframe.
-116|Inspirirano programom LightBurn; sučelje inspirirano programom VectorCraft.
+116|Sučelje inspirirano programom VectorCraft.
 117|Autor: Michał Sarna
 118|MIT licenca.
 119|Svojstva
