@@ -17,7 +17,7 @@ pub use base_ui::editor::View;
 pub use base_ui::editor::Tool;
 
 /// Human-facing release label (branch name matches it).
-pub const APP_VERSION: &str = "v0.8.1";
+pub const APP_VERSION: &str = "v0.8.2";
 
 /// Tabs of the right-hand panel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
