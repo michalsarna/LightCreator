@@ -114,7 +114,7 @@
 113|Version {}
 114|Logiciel libre de conception et de pilotage pour graveuses et découpeuses laser.
 115|Origine : écrit en Rust avec egui/eframe.
-116|Inspiré de LightBurn ; interface inspirée de VectorCraft.
+116|Interface inspirée de VectorCraft.
 117|Auteur : Michał Sarna
 118|Licence MIT.
 119|Propriétés

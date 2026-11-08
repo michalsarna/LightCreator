@@ -1630,7 +1630,7 @@ impl App {
             lines: vec![
                 tr("Open-source design & control software for laser engravers and cutters.").to_string(),
                 tr("Origin: written in Rust with egui/eframe.").to_string(),
-                tr("Inspired by LightBurn; interface inspired by VectorCraft.").to_string(),
+                tr("Interface inspired by VectorCraft.").to_string(),
                 tr("Author: Michał Sarna").to_string(),
             ],
             url: crate::help_ui::GITHUB_URL,

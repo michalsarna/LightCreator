@@ -114,7 +114,7 @@
 113|Versie {}
 114|Opensourcesoftware voor ontwerp en besturing van lasergraveer- en lasersnijmachines.
 115|Herkomst: geschreven in Rust met egui/eframe.
-116|Geïnspireerd door LightBurn; interface geïnspireerd door VectorCraft.
+116|Interface geïnspireerd door VectorCraft.
 117|Auteur: Michał Sarna
 118|MIT-licentie.
 119|Eigenschappen

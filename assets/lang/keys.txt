@@ -114,7 +114,7 @@
 113	Version {}
 114	Open-source design & control software for laser engravers and cutters.
 115	Origin: written in Rust with egui/eframe.
-116	Inspired by LightBurn; interface inspired by VectorCraft.
+116	Interface inspired by VectorCraft.
 117	Author: Michał Sarna
 118	MIT licensed.
 119	Properties

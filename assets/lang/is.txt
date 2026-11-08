@@ -114,7 +114,7 @@
 113|Útgáfa {}
 114|Opinn hugbúnaður til hönnunar og stýringar á leysigröfurum og leysiskerum.
 115|Uppruni: skrifað í Rust með egui/eframe.
-116|Innblásið af LightBurn; viðmótið innblásið af VectorCraft.
+116|Viðmótið innblásið af VectorCraft.
 117|Höfundur: Michał Sarna
 118|MIT-leyfi.
 119|Eiginleikar

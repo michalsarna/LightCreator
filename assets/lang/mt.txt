@@ -114,7 +114,7 @@
 113|Verżjoni {}
 114|Softwer b'sors miftuħ għad-disinn u l-kontroll ta' magni tal-inċiżjoni u tal-qtugħ bil-lejżer.
 115|Oriġini: miktub bir-Rust bl-użu ta' egui/eframe.
-116|Ispirat minn LightBurn; l-interface ispirata minn VectorCraft.
+116|L-interface ispirata minn VectorCraft.
 117|Awtur: Michał Sarna
 118|Liċenzja MIT.
 119|Proprjetajiet

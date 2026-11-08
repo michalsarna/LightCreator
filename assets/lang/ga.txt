@@ -114,7 +114,7 @@
 113|Leagan {}
 114|Bogearraí foinse oscailte chun léasair ghreanta agus ghearrtha a dhearadh agus a rialú.
 115|Bunús: scríofa i Rust le egui/eframe.
-116|Spreagtha ag LightBurn; comhéadan spreagtha ag VectorCraft.
+116|Comhéadan spreagtha ag VectorCraft.
 117|Údar: Michał Sarna
 118|Ceadúnas MIT.
 119|Airíonna

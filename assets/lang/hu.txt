@@ -114,7 +114,7 @@
 113|{} verzió
 114|Nyílt forráskódú tervező- és vezérlőszoftver lézergravírozókhoz és lézervágókhoz.
 115|Eredet: Rust nyelven íródott az egui/eframe használatával.
-116|A LightBurn ihlette; a felületet a VectorCraft ihlette.
+116|A felületet a VectorCraft ihlette.
 117|Szerző: Michał Sarna
 118|MIT licenc.
 119|Tulajdonságok

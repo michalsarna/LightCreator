@@ -4,7 +4,7 @@
 
 # LightCreator
 
-An open-source alternative to [LightBurn](https://lightburnsoftware.com/) for CNC laser engravers and cutters, written in Rust. Design, lay out cuts and engravings, preview the toolpath and stream it to your machine, on macOS, Windows and Linux.
+An open-source program for CNC laser engravers and cutters, written in Rust. Design, lay out cuts and engravings, preview the toolpath and stream it to your machine, on macOS, Windows and Linux.
 
 ![Editor](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/02-editor-properties.png)
 
@@ -30,7 +30,7 @@ An open-source alternative to [LightBurn](https://lightburnsoftware.com/) for CN
 ## At a glance
 
 * **Design:** shapes, Bézier node editing, text, boolean operations, offset, round corners, grouping, locking; SVG / Illustrator / PDF / DXF and bitmap import, image tracing, arrays, text on a path, trimming, serial text, QR codes and nesting.
-* **Engraving:** line, fill, offset fill and raster images with six dithering methods and grayscale power; 64 LightBurn-style cut layers; preview with time estimate.
+* **Engraving:** line, fill, offset fill and raster images with six dithering methods and grayscale power; 64 cut layers; preview with time estimate.
 * **Devices:** per-machine profiles; GRBL and Marlin over serial or TCP (ser2net); Ruida and Trocen via PLT / DXF export.
 * **Helpers:** camera view with photos, video and time-lapse (MJPEG, RTSP, UDP, RTP, RTMP), camera overlay with four-corner alignment saved in the project, the G-code as editable text, 310-picture clipart gallery with online search.
 * **Work area:** tabs of drawings, preview, G-code and camera in up to three panes; a tab can open in a window of its own.

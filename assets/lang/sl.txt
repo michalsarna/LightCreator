@@ -114,7 +114,7 @@
 113|Različica {}
 114|Odprtokodna programska oprema za načrtovanje in upravljanje laserskih gravirnikov in rezalnikov.
 115|Izvor: napisano v jeziku Rust z egui/eframe.
-116|Navdihnjeno z LightBurn; vmesnik navdihnjen z VectorCraft.
+116|Vmesnik navdihnjen z VectorCraft.
 117|Avtor: Michał Sarna
 118|Licenca MIT.
 119|Lastnosti

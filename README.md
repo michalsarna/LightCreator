@@ -6,7 +6,7 @@ See [FEATURES.md](FEATURES.md) for what the app can do, [SUPPORT.md](SUPPORT.md)
 
 **Install:** from the [Releases page](https://github.com/michalsarna/LightCreator/releases), or with a package manager: `brew install --cask michalsarna/tap/lightcreator` (macOS), `scoop bucket add creator https://github.com/michalsarna/scoop-bucket` and `scoop install lightcreator` (Windows). See [the wiki](https://github.com/michalsarna/LightCreator/wiki/Installation).
 
-An open-source alternative to [LightBurn](https://lightburnsoftware.com/) for CNC laser engravers and cutters,
+An open-source program for CNC laser engravers and cutters,
 written in Rust. The interface follows the look of [VectorCraft](https://github.com/storytold/vectorcraft)
 (light flat chrome, vertical tool bar, collapsible side panels, colour swatch strip, red-orange accent).
 
@@ -42,7 +42,7 @@ A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
   exclusive or), shape offset, grouping, right-click context menu, SVG / Adobe Illustrator / PDF import,
   bitmap import with adjustments, image tracing.
 * **Engraving:** line, fill, offset fill and raster image engraving with six dithering methods and
-  grayscale power; LightBurn-style cut layers; toolpath preview with time estimate.
+  grayscale power; cut layers; toolpath preview with time estimate.
 * **Devices:** profile per machine (controller, laser type, work area, units, serial port or TCP / ser2net,
   jog settings, camera URL), start window, live console, camera view.
 * **Controllers:** GRBL and Marlin over a serial port. Ruida and Trocen jobs are exported as PLT / DXF for the
