@@ -2,6 +2,13 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.8.2
+
+* **G-code in the units of the machine:** a device set to inches gets **G20** and every length and feed in inches; a device in millimetres **G21** and millimetres. Before, every program was written in millimetres whatever the device said: check the units of your devices before the first job.
+* **Units of the program:** **Settings → Program options… → Units** shows lengths in millimetres, centimetres, metres, inches or feet, or as the device. They are used by the sizes in **Properties**, the ruler, the **Dimensions** and the preview. The device window offers millimetres or inches, the units of the controller.
+* **Both units** when the program and the machine count in different systems: the dimensions and the ruler show **25.4 mm [1.000"]**.
+* **Texts and help:** other programs are named only where their files are read or written.
+
 ## v0.8.1
 
 * **The preview** draws with deeper colours, so light layer colours show on a light work area.

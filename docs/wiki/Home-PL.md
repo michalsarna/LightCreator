@@ -38,4 +38,4 @@ Otwartoźródłowy program dla grawerek i ploterów laserowych CNC, napisany w R
 
 > ⚠️ **Bezpieczeństwo:** lasery są niebezpieczne. Testuj G-code przy niskiej mocy, noś okulary ochronne, nie zostawiaj pracującej maszyny bez nadzoru. Zobacz [Bezpieczeństwo i ograniczenia](Bezpieczenstwo-i-ograniczenia).
 
-Najnowsza wersja: **v0.8.1** · [Wydania](https://github.com/michalsarna/LightCreator/releases) · [Zgłoszenia](https://github.com/michalsarna/LightCreator/issues) · Licencja: [MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) lub [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE), do wyboru
+Najnowsza wersja: **v0.8.2** · [Wydania](https://github.com/michalsarna/LightCreator/releases) · [Zgłoszenia](https://github.com/michalsarna/LightCreator/issues) · Licencja: [MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) lub [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE), do wyboru
