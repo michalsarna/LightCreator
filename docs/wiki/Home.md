@@ -27,6 +27,16 @@ An open-source program for CNC laser engravers and cutters, written in Rust. Des
 | Test without a laser | [GRBL Simulator](GRBL-Simulator) |
 | Know what is tested | [Safety and Limitations](Safety-and-Limitations) |
 
+## Tested devices
+
+The program has been tried on these machines and works there:
+
+| Device | Kind | Controller |
+|---|---|---|
+| Sculpfun S9 | diode laser engraver and cutter | GRBL |
+
+It runs on another machine? Tell me in an [issue](https://github.com/michalsarna/LightCreator/issues) and it goes on the list.
+
 ## At a glance
 
 * **Design:** shapes, Bézier node editing, text, boolean operations, offset, round corners, grouping, locking; SVG / Illustrator / PDF / DXF and bitmap import, image tracing, arrays, text on a path, trimming, serial text, QR codes and nesting.
