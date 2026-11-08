@@ -48,4 +48,4 @@ It runs on another machine? Tell me in an [issue](https://github.com/michalsarna
 
 > ⚠️ **Safety:** lasers are dangerous. Test G-code at low power, wear eye protection, never leave a running machine unattended. See [Safety and Limitations](Safety-and-Limitations).
 
-Latest release: **v0.8.2** · [Releases](https://github.com/michalsarna/LightCreator/releases) · [Issues](https://github.com/michalsarna/LightCreator/issues) · Licence: [MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) or [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE), at your option
+Latest release: **v0.8.3** · [Releases](https://github.com/michalsarna/LightCreator/releases) · [Issues](https://github.com/michalsarna/LightCreator/issues) · Licence: [MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) or [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE), at your option
