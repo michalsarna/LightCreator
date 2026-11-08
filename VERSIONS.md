@@ -2,6 +2,11 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.8.3
+
+* **Help:** the README and the wiki list the machines LightCreator has been tested on (a Sculpfun S9 diode laser on GRBL).
+* The shared core of the programs is up to date (baseCreator v1.82.1).
+
 ## v0.8.2
 
 * **G-code in the units of the machine:** a device set to inches gets **G20** and every length and feed in inches; a device in millimetres **G21** and millimetres. Before, every program was written in millimetres whatever the device said: check the units of your devices before the first job.
