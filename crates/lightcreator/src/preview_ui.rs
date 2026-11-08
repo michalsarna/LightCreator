@@ -54,6 +54,8 @@ pub struct PreviewState {
     pub view: View,
     pub color_by: ColorBy,
     pub show_travel: bool,
+    /// The sizes of the job over the preview, as on a technical drawing.
+    pub show_dims: bool,
     /// 0..=1: how much of the job is drawn.
     pub progress: f32,
     pub playing: bool,
@@ -71,6 +73,7 @@ impl Default for PreviewState {
             view: View { zoom: 1.0, pan: egui::vec2(0.0, 0.0), need_fit: true, auto_fit: true },
             color_by: ColorBy::Operation,
             show_travel: false,
+            show_dims: false,
             progress: 1.0,
             playing: false,
             hidden: vec![],
@@ -182,7 +185,8 @@ impl App {
             ui.selectable_value(&mut self.pv.color_by, ColorBy::Operation, tr("Operation"));
             ui.selectable_value(&mut self.pv.color_by, ColorBy::Layer, tr("Layer"));
             ui.separator();
-            ui.checkbox(&mut self.pv.show_travel, tr("Show travel moves")).on_hover_text(tr("Moves of the machine with the laser off"));
+            base_ui::widgets::toggle(ui, &mut self.pv.show_travel, tr("Show travel moves"), tr("Moves of the machine with the laser off"));
+            base_ui::widgets::toggle(ui, &mut self.pv.show_dims, tr("Dimensions"), tr("Show the sizes of the job as on a technical drawing"));
             ui.separator();
             let auto = self.bed_fill();
             base_ui::widgets::area_colour(ui, tr("Work area colour"), &mut self.ed.grid_prefs.preview_color, auto);
@@ -348,6 +352,11 @@ impl App {
             painter.extend(shapes);
             painter.circle_filled(head, 4.5, Color32::from_rgb(0xe0, 0x20, 0x20));
             painter.circle_stroke(head, 4.5, Stroke::new(1.0, Color32::WHITE));
+            if self.pv.show_dims {
+                // The objects that are burnt, from the zero of the machine.
+                let parts: Vec<lc_core::geom::Rect> = self.doc.scene.shapes.iter().filter(|s| self.doc.layers.get(s.layer).is_some_and(|l| l.output && l.visible)).filter_map(|s| s.bounds()).collect();
+                base_ui::dims::plan(&painter, &w2s, &parts, Some(self.doc.device.home_point()), units, &base_ui::dims::DimStyle::on(bed_fill));
+            }
             if skip_travel && self.pv.show_travel {
                 // Above the zoom bar.
                 painter.text(rect.left_bottom() + egui::vec2(8.0, -44.0), egui::Align2::LEFT_BOTTOM, tr("Too many moves: travel lines are hidden."), egui::FontId::proportional(12.0), theme::text_dim());

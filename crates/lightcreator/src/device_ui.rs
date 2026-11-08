@@ -94,10 +94,12 @@ impl CfgPage {
 
     /// The pages offered for a controller: the connection page only exists for the ones with a live link.
     pub fn visible(controller: Controller) -> Vec<CfgPage> {
-        let mut v = vec![CfgPage::General, CfgPage::Hardware, CfgPage::Laser, CfgPage::Gcode];
+        // The connection right after the general page: it is the first thing set for a new machine.
+        let mut v = vec![CfgPage::General];
         if controller.is_serial() {
             v.push(CfgPage::Connection);
         }
+        v.extend([CfgPage::Hardware, CfgPage::Laser, CfgPage::Gcode]);
         v.push(CfgPage::Camera);
         v.push(CfgPage::Rotary);
         v.push(CfgPage::Zones);

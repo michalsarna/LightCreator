@@ -88,3 +88,16 @@ W oknie **Wektoryzacja obrazu** (Trace image) obraz można przybliżać kółkie
 * **Kilka zaznaczonych obiektów:** oprócz ramki całego zaznaczenia każdy obiekt ma własną cienką, przerywaną ramkę.
 * **Pasek węzłów** pokazuje klawisze po nazwach: **Narożnik (C)**, **Na linię (L)**, **Na krzywą (S)**, **Dodaj węzeł (I)**, **Usuń węzeł (D)**, **Zaokrąglij (R)**, **Rozdziel (B)**. Nie ma już **Otwórz / zamknij**: **Rozdziel (B)** otwiera ścieżkę, a zamyka się ją, upuszczając jeden koniec na drugi.
 * **Warstwa, która nie jest wykonywana** (z wyłączonym wyjściem), pokazuje swoje obiekty wyblakłe w stronę koloru obszaru roboczego.
+
+## Podgląd: przyciski i wymiary
+
+* Opcje paska podglądu to **przyciski**: jasnoniebieskie, gdy są włączone (jak przycisk widoku z kamery), kliknięcie włącza je albo wyłącza.
+* **Wymiary** pokazuje wymiary zadania jak na rysunku technicznym: szerokość i wysokość całości, każdej części (gdy jest ich kilka) i odległość całości od zera maszyny, gdy zero jest w obrazie.
+
+* **Obrazy:** wczytywany jest też TIFF (`.tif`, `.tiff`), tak jak PNG, JPEG, BMP, GIF i WebP.
+
+## Wymiary na obszarze roboczym, linijka i menu węzłów
+
+* **Wymiary** (przycisk obok **Ścieżek** na pasku nad obszarem roboczym) pokazuje rysunek jak na rysunku technicznym: szerokość i wysokość całości i każdego obrysu (zewnętrznego i otworów kształtu, każdego osobno) oraz średnice okrągłych, te same nazwane raz (**4 × Ø 6**). W rysunku nic się nie zmienia.
+* **Linijka (M)** bierze węzeł kształtu (oznaczony kwadratem), środek odcinka (romb) albo środek okręgu lub elipsy (kółko). Kliknięcie okręgu pokazuje jego promień od środka do klikniętego punktu i średnicę; elipsy oba promienie i promień do punktu; krzywej jej długość, a gdy krzywa jest łukiem okręgu, promień wodzący od środka do klikniętego punktu i jego długość.
+* **Edycja węzłów:** prawy klik na węźle albo odcinku otwiera menu z poleceniami paska węzłów; **Gładki** ma klawisz **G**, a promień **Zaokrąglij (R)** stoi za tym przyciskiem.

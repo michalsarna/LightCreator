@@ -265,6 +265,7 @@ impl App {
         if ui.add(btn).on_hover_text(tr("Show the toolpaths on the work area")).clicked() {
             self.preview_on = !self.preview_on;
         }
+        base_ui::editor::dims_button(ui, &mut self.ed);
         if window_toggle(ui, &tr("Preview…"), &tr("Open the preview window"), self.show_preview, true) {
             self.show_preview = !self.show_preview;
         }

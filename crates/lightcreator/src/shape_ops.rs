@@ -113,7 +113,7 @@ impl App {
                 _ if gcode => {
                     self.open_gcode(p);
                 }
-                "png" | "jpg" | "jpeg" | "bmp" | "gif" | "webp" => self.import_image_path(p),
+                "png" | "jpg" | "jpeg" | "bmp" | "gif" | "webp" | "tif" | "tiff" => self.import_image_path(p),
                 "dxf" if self.screen == crate::app::Screen::Start => self.start_project(|app| app.import_dxf_path(p)),
                 "dxf" => {
                     self.import_dxf_path(p);
