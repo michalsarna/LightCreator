@@ -27,6 +27,16 @@ Otwartoźródłowy program dla grawerek i ploterów laserowych CNC, napisany w R
 | Testować bez lasera | [Symulator GRBL](Symulator-GRBL) |
 | Wiedzieć, co jest sprawdzone | [Bezpieczeństwo i ograniczenia](Bezpieczenstwo-i-ograniczenia) |
 
+## Sprawdzone urządzenia
+
+Program został wypróbowany na tych maszynach i na nich działa:
+
+| Urządzenie | Rodzaj | Sterownik |
+|---|---|---|
+| Sculpfun S9 | laserowa grawerka i wycinarka diodowa | GRBL |
+
+Działa na innej maszynie? Napisz w [zgłoszeniu](https://github.com/michalsarna/LightCreator/issues), a trafi na listę.
+
 ## W skrócie
 
 * **Projektowanie:** kształty, edycja węzłów Béziera, tekst, operacje logiczne, offset, zaokrąglanie rogów, grupowanie, blokowanie; import SVG / Illustrator / PDF / DXF i bitmap, wektoryzacja obrazów, tablice, tekst na ścieżce, przycinanie, tekst seryjny, kody QR i nesting.

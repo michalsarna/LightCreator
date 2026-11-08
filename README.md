@@ -10,6 +10,16 @@ An open-source program for CNC laser engravers and cutters,
 written in Rust. The interface follows the look of [VectorCraft](https://github.com/storytold/vectorcraft)
 (light flat chrome, vertical tool bar, collapsible side panels, colour swatch strip, red-orange accent).
 
+## Tested devices
+
+The program has been tried on these machines and works there:
+
+| Device | Kind | Controller |
+|---|---|---|
+| Sculpfun S9 | diode laser engraver and cutter | GRBL |
+
+It runs on another machine? Tell me in an [issue](https://github.com/michalsarna/LightCreator/issues) and it goes on the list.
+
 ## Screenshots
 
 ![Editor, Properties tab, toolpath preview on](docs/screenshots/02-editor-properties.png)
