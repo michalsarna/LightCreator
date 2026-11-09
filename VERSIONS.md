@@ -2,6 +2,11 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.8.4
+
+* **Style trace:** **Arrange → Style trace…** (also in the right-click menu of a picture and in **Properties**) draws a picture again as lines in one of 19 styles: squiggle, sawtooth, springs, spiral, waves, halftone circles, etching, squares, needles, Truchet tiles, contour lines, Hilbert curve, stippling, one continuous line (TSP), triangles and cells, line art, flow lines, sketch and scribble. A live preview, the settings of each style, tone (black and white point, gamma), a random pattern for the random styles, and the layer the lines go on. The lines go on the first empty layer in the **Line** mode and are burnt as lines; the picture stays on its own layer. A layer that already holds shapes keeps how it works.
+* **Help:** a new wiki page **Style Trace** (**Obrysuj w stylu**).
+
 ## v0.8.3
 
 * **Help:** the README and the wiki list the machines LightCreator has been tested on (a Sculpfun S9 diode laser on GRBL).
