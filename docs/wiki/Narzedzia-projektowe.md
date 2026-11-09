@@ -62,6 +62,8 @@ Przesuwanie (H), powiększanie (Z), pomniejszanie (X), **Dopasuj obszar roboczy*
 * **Pliki UGS Designer (`.ugsd`):** **Plik → Importuj → Importuj projekt UGS…** (albo przeciągnięcie pliku) wczytuje ścieżki z krzywymi, prostokąty (także z zaokrąglonymi rogami), elipsy, punkty, tekst, obrazy i grupy; ukryte obiekty też są rysowane. Każdy sposób cięcia staje się warstwą: kieszenie i wypełnienia jako **Wypełnienie** (Fill), reszta jako **Linia** (Line). UGS to program do frezowania, więc jego posuwy i głębokości nie są brane dla lasera. Rzeźbienie V, planowanie powierzchni, mapy wysokości, zakładki i głębokości początkowe nie są obsługiwane i są wymienione w komunikacie.
 * **Wektoryzacja obrazu:** **Rozmieść → Wektoryzuj obraz…** (Trace image…, z zaznaczonym obrazem) zamienia ciemne lub jasne obszary na krzywe Béziera z progiem, filtrem plamek, uproszczeniem i wygładzaniem.
   ![Trasowanie](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/14-trace.png)
+* **Obrysuj w stylu:** **Rozmieść → Obrysuj w stylu…** rysuje obraz na nowo liniami w jednym z 19 stylów (wężyki, spirala, puentylizm, kreskowanie, linie przepływu, jedna ciągła linia…): zobacz [Obrysuj w stylu](Obrys-w-stylu).
+  ![Obrysuj w stylu](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/14b-style-trace.png)
 
 ## Zapis i eksport
 Własne projekty `.cre` (z osadzonymi obrazami, notatkami i obrazem nakładki) przez **Plik → Zapisz** / **Zapisz jako…**; **Plik → Eksportuj**: G-code, SVG, HPGL (`.plt`) / DXF dla Ruida i Trocen oraz zaznaczenie jako SVG lub DXF. Zobacz [Menu](Menu#plik-file).

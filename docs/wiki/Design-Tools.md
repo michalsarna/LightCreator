@@ -62,6 +62,8 @@ Pan (H), zoom in (Z), zoom out (X), **Fit work area** (Ctrl+Shift+0), **Fit all 
 * **UGS Designer files (`.ugsd`):** **File → Import → Import UGS design…** (or drag and drop) reads paths with curves, rectangles (also with rounded corners), ellipses, points, text, pictures and groups; hidden objects are drawn too. Every way of cutting becomes a layer: pockets and fills as *Fill*, the rest as *Line*. UGS is a milling program, so its feeds and depths are not taken for the laser. V-carving, surfacing, height maps, tabs and start depths are not supported and are named in the message.
 * **Trace image:** **Arrange → Trace image…** (with a picture selected) turns dark or light areas into Béziers with threshold, speckle filter, simplification and smoothing.
   ![Trace](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/14-trace.png)
+* **Style trace:** **Arrange → Style trace…** draws a picture again as lines in one of 19 styles (squiggles, a spiral, stippling, hatching, flow lines, one continuous line…): see [Style Trace](Style-Trace).
+  ![Style trace](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/14b-style-trace.png)
 
 ## Saving and export
 Native `.cre` projects (images, notes and the overlay picture embedded) with **File → Save** / **Save as…**; **File → Export**: G-code, SVG, HPGL (`.plt`) / DXF for Ruida and Trocen, and the selection as SVG or DXF. See [Menus](Menus#file).

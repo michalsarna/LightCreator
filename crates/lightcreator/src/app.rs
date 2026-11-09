@@ -1463,7 +1463,7 @@ impl App {
                 self.open_online_clipart(ctx);
             }
             // The standard commands (also pictures and the operations on shapes) were run above, by baseCreator.
-            Act::ToCurves | Act::AutoJoin | Act::ClosePath | Act::DogboneCorners | Act::GridArray | Act::CircleArray | Act::CopyAlongPath | Act::TextOnPath | Act::TrimByShape | Act::RemoveDuplicates | Act::BreakApart | Act::SimplifyShapes | Act::SerialText | Act::MakeCode | Act::NestShapes | Act::MeasureShapes | Act::ExportSelectionSvg | Act::ExportSelectionDxf | Act::ExportAs(_) | Act::BoolUnion | Act::BoolIntersect | Act::BoolSubtract | Act::BoolXor | Act::OffsetShape | Act::RoundCorners | Act::ImportImage | Act::AdjustImage | Act::TraceImage | Act::Tool(_) | Act::SplitView(_) | Act::SingleView => {}
+            Act::ToCurves | Act::AutoJoin | Act::ClosePath | Act::DogboneCorners | Act::GridArray | Act::CircleArray | Act::CopyAlongPath | Act::TextOnPath | Act::TrimByShape | Act::RemoveDuplicates | Act::BreakApart | Act::SimplifyShapes | Act::SerialText | Act::MakeCode | Act::NestShapes | Act::MeasureShapes | Act::ExportSelectionSvg | Act::ExportSelectionDxf | Act::ExportAs(_) | Act::BoolUnion | Act::BoolIntersect | Act::BoolSubtract | Act::BoolXor | Act::OffsetShape | Act::RoundCorners | Act::ImportImage | Act::AdjustImage | Act::TraceImage | Act::StyleTrace | Act::Tool(_) | Act::SplitView(_) | Act::SingleView => {}
             Act::QuickGuide => self.show_guide = true,
             Act::OpenGithub => ctx.open_url(egui::OpenUrl::new_tab(crate::help_ui::GITHUB_URL)),
             Act::CameraOverlay => self.ed.show_background = true,
@@ -1761,6 +1761,23 @@ impl base_ui::editor::EditorHost for App {
     }
     fn layer_color(&self, layer: usize) -> egui::Color32 {
         crate::canvas::col(layer)
+    }
+    fn layer_count(&self) -> usize {
+        self.doc.layers.len()
+    }
+    fn layer_name(&self, layer: usize) -> String {
+        self.doc.layers.get(layer).map_or_else(|| format!("C{layer:02}"), |l| l.name.clone())
+    }
+    /// The lines of a style trace are burnt as lines: an empty layer in the Line mode, else any empty one (set to Line).
+    fn line_layer(&self, picture_layer: usize) -> usize {
+        let empty = |l: usize| l != picture_layer && !self.doc.scene.shapes.iter().any(|s| s.layer == l);
+        let n = self.doc.layers.len();
+        (0..n).find(|&l| empty(l) && self.doc.layers[l].mode == lc_core::LayerMode::Line).or_else(|| (0..n).find(|&l| empty(l))).unwrap_or(picture_layer)
+    }
+    fn make_line_layer(&mut self, layer: usize) {
+        if let Some(l) = self.doc.layers.get_mut(layer) {
+            l.mode = lc_core::LayerMode::Line;
+        }
     }
     fn export_stem(&self) -> String {
         self.gcode_name()
@@ -2621,6 +2638,33 @@ mod project_open_tests {
 #[cfg(test)]
 mod lightburn_open_tests {
     use super::*;
+
+    /// A style trace of a picture is burnt as lines: it goes on an empty layer in the Line mode (a Fill layer is passed over),
+    /// and the G-code gets the lines besides the picture.
+    #[test]
+    fn a_style_trace_goes_on_an_empty_line_layer_and_is_burnt() {
+        use base_ui::editor::{EditorStyleTrace, StyleDlg};
+        let mut a = App::build(&egui::Context::default(), None, false);
+        a.profiles = vec![lc_core::Device::default()];
+        a.active = 0;
+        a.enter_editor(0);
+        let im = lc_core::ImageData { name: "grey.png".into(), px_w: 40, px_h: 30, gray: vec![60; 1200], w: 40.0, h: 30.0, invert: false };
+        let id = a.doc.add(0, lc_core::Kind::Image(im.clone()), Xf::translate(10.0, 10.0));
+        a.doc.normalize_image_layers();
+        a.doc.layers[1].mode = lc_core::LayerMode::Fill;
+        a.ed.sel = vec![id];
+        let before = a.gcode_text_now().expect("the picture is engraved").len();
+        a.open_style_trace();
+        let mut d: StyleDlg = a.ed.style_dlg.take().expect("the window opened");
+        assert_eq!(d.layer, 2, "the first empty layer in the Line mode");
+        d.params = lc_core::style_trace::Style::Squiggle.defaults();
+        let out = lc_core::style_trace::style_trace(&im, &d.params, &|| false);
+        a.apply_style_trace(&d, &out);
+        assert_eq!(a.doc.layers[2].mode, lc_core::LayerMode::Line);
+        assert_eq!(a.doc.layers[0].mode, lc_core::LayerMode::Image, "the picture is still engraved");
+        let after = a.gcode_text_now().expect("a program").len();
+        assert!(after > before, "the lines are burnt too: {before} -> {after} bytes");
+    }
 
     /// A device in inches gets its G-code in inches (G20, lengths and feeds divided by 25.4); the units of the program only change
     /// what is shown.

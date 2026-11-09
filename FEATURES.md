@@ -119,6 +119,10 @@
   auto levels, negative and size. The same dialog adjusts an image already on the page. The import and adjust dialog follows the size of the window and has a **Levels** column: a histogram of the greys with two sliders for the range (black and white point). The trace dialog zooms (scroll wheel) and moves (drag) its preview. The tool palette shrinks its buttons when the window is too low for it.
 * **Trace image:** turn the dark (or light) areas of a bitmap into Bézier outlines with threshold, speckle
   filter, simplification and curve smoothing.
+* **Style trace:** draw a picture again as lines in one of 19 styles: squiggle, sawtooth, springs, spiral, waves,
+  halftone circles, etching, squares, needles, Truchet tiles, contour lines, Hilbert curve, stippling, one line (TSP),
+  triangles and cells (Delaunay / Voronoi), line art, flow lines, sketch and scribble, with a live preview, tone
+  settings and the layer to burn them on.
 
 **Cuts and layers**
 * 64 colour layers with mode Line, Fill, Fill + Line or Offset fill; speed, power, passes, interval, scan

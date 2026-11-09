@@ -18,6 +18,8 @@ All pictures are rendered headlessly from the real UI. Back to the [README](../R
 | Preview window: every burn operation in its own colour, with travel moves | |
 | ![Import image](screenshots/13-image-import.png) | ![Trace image](screenshots/14-trace.png) |
 | Image import with rotate, flip, brightness, contrast and gamma | Trace an image into curves |
+| ![Style trace](screenshots/14b-style-trace.png) | |
+| Style trace: a picture drawn again as lines in one of 19 styles (here flow lines) | |
 | ![Grid options](screenshots/15-grid-layers.png) | ![Automatic shapes](screenshots/16-shapes.png) |
 | Main and secondary grid options, layers in burn order | Triangle, star and polygon tools with the sides popup |
 | ![Camera view as a tab](screenshots/17-camera-tab.png) | ![Share over network](screenshots/18-ser2net.png) |

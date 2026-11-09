@@ -117,6 +117,7 @@ The commands work on the selection. Most of them are also in the right-click men
 | **Measure…** | | Size, position, area and length of the selection, and distances between two shapes. |
 | **Adjust image…** | | Brightness, contrast, gamma and the rest of a selected picture. |
 | **Trace image…** | | Turns a selected picture into outlines. |
+| **Style trace…** | | Draws the selected picture again as lines in one of 19 styles. See [Style Trace](Style-Trace). |
 
 ## View
 
