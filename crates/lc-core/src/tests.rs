@@ -2595,3 +2595,18 @@ fn each_board_sets_its_controller_and_is_recognised() {
     let r = crate::controller::Reading { laser_mode: Some(false), ..Default::default() };
     assert!(!r.check(&d).laser_mode_off);
 }
+
+#[test]
+fn the_photos_aside_and_the_split_of_long_cuts_are_kept_with_the_device_and_bad_numbers_fall_back() {
+    let mut dev = Device::default();
+    assert!(!dev.photo_park.enabled && !dev.split.enabled, "off for a new device");
+    dev.photo_park = crate::photo_park::ParkSettings { enabled: true, x: 3.0, y: 4.0, settle: 2.0, keep_spindle: false };
+    dev.split = crate::gcode_split::SplitSettings { enabled: true, parts: 8, min_part: 2.0 };
+    let back: Device = serde_json::from_str(&serde_json::to_string(&dev).unwrap()).unwrap();
+    assert_eq!((back.photo_park, back.split), (dev.photo_park.clone(), dev.split));
+    let mut v = serde_json::to_value(&dev).unwrap();
+    v["photo_park"]["settle"] = serde_json::json!(1000.0);
+    v["split"]["parts"] = serde_json::json!(999);
+    let bad: Device = serde_json::from_value(v).unwrap();
+    assert_eq!((bad.photo_park, bad.split), (Default::default(), Default::default()));
+}

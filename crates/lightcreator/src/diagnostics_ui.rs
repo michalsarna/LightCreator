@@ -67,6 +67,7 @@ impl App {
 
     pub fn start_check(&mut self, lines: Vec<String>, then: Option<Vec<String>>) {
         self.layer_watch.stop();
+        self.trips.stop();
         self.check_run = Some(CheckRun { then, issues: 0, first: 0 });
         self.link.send(Cmd::Line("$C".into()));
         self.link.send(Cmd::Job(lines));
@@ -82,9 +83,8 @@ impl App {
         }
         match run.then {
             Some(lines) => {
-                self.layer_watch.start(self.job_marks.clone());
                 self.job_last_secs = 0.0;
-                self.link.send(Cmd::Job(lines));
+                self.send_job_lines(lines, true);
                 self.status = tr("The check found nothing. The job is running.").to_string();
             }
             None => self.status = tr("The check found nothing wrong.").to_string(),

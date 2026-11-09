@@ -47,6 +47,7 @@ impl App {
     pub fn abort_job(&mut self) {
         // The stop ends the check mode of GRBL by itself; one more `$C` would turn it on again.
         self.check_run = None;
+        self.trips.stop();
         self.link.send(Cmd::Abort);
         if self.focus_on {
             self.focus_on = false;
