@@ -316,6 +316,42 @@ fn render_screenshots() {
         a.open_trace();
     }
     save(&mut h, "14-trace.png");
+    // The style trace window on a lit sphere, in flow lines.
+    {
+        use base_ui::editor::EditorStyleTrace;
+        let a = app(&mut h);
+        a.ed.trace_dlg = None;
+        a.doc.scene.shapes.clear();
+        let (w, hh) = (240u32, 160u32);
+        let gray: Vec<u8> = (0..w * hh)
+            .map(|i| {
+                let (dx, dy) = (((i % w) as f64 - 100.0) / 70.0, ((i / w) as f64 - 80.0) / 70.0);
+                let r2 = dx * dx + dy * dy;
+                let ring = (((i % w) as f64 - 195.0).hypot((i / w) as f64 - 50.0) - 26.0).abs() < 8.0;
+                if ring {
+                    30
+                } else if r2 < 1.0 {
+                    (30.0 + 220.0 * (-0.5 * dx - 0.6 * dy + 0.62 * (1.0 - r2).sqrt()).max(0.0)) as u8
+                } else {
+                    240
+                }
+            })
+            .collect();
+        let im = ImageData { name: "sphere.png".into(), px_w: w, px_h: hh, gray, w: 120.0, h: 80.0, invert: false };
+        let id = a.doc.add(0, Kind::Image(im), Xf::translate(60.0, 60.0));
+        a.ed.sel = vec![id];
+        a.open_style_trace();
+        a.ed.style_dlg.as_mut().unwrap().params = lc_core::style_trace::Style::FlowLines.defaults();
+    }
+    for _ in 0..200 {
+        h.run_steps(1);
+        if app(&mut h).ed.style_dlg.as_ref().is_some_and(|d| d.ready().is_some()) {
+            break;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(20));
+    }
+    save(&mut h, "14b-style-trace.png");
+    app(&mut h).ed.style_dlg = None;
     {
         let a = app(&mut h);
         a.ed.trace_dlg = None;

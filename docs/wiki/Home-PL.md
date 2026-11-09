@@ -16,6 +16,7 @@ Otwartoźródłowy program dla grawerek i ploterów laserowych CNC, napisany w R
 | Wykonać pierwsze wypalanie | [Szybki start](Szybki-start) |
 | Znaleźć pozycję menu i to, co robi | [Menu](Menu) |
 | Rysować, edytować i importować | [Narzędzia projektowe](Narzedzia-projektowe) |
+| Narysować obraz liniami w stylu (puentylizm, wężyki, kreskowanie…) | [Obrysuj w stylu](Obrys-w-stylu) |
 | Ułożyć obszar roboczy: panele, karty, okna | [Panele i karty](Panele-i-karty) |
 | Ustawić prędkość, moc, wypełnienie, obrazy | [Cięcia i warstwy](Ciecia-i-warstwy) |
 | Podłączyć laser lub kamerę | [Urządzenia i sterowniki](Urzadzenia-i-sterowniki) |

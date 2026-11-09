@@ -77,6 +77,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::RestoreBackup => "package-open",
         Act::About => "info",
         Act::TraceImage => "portrait",
+        Act::StyleTrace => "palette",
         Act::AdjustImage => "sliders-horizontal",
         // The standard commands were answered above.
         Act::Undo | Act::Redo | Act::Copy | Act::Paste | Act::Duplicate | Act::Delete | Act::SelectAll | Act::Align(_) | Act::CenterOnBed | Act::CenterEachOther | Act::FlipH | Act::FlipV | Act::RotCw | Act::RotCcw | Act::ToFront | Act::ToBack | Act::ToPath | Act::EditNodes | Act::Group | Act::Ungroup | Act::Lock | Act::Unlock | Act::ToggleGrid | Act::ToggleSnap | Act::ToggleSnapObjects | Act::FitBed | Act::FitAll | Act::ZoomIn | Act::ZoomOut | Act::ToggleAutoFit => return None,

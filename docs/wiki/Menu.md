@@ -117,6 +117,7 @@ Polecenia działają na zaznaczeniu. Większość z nich jest też w menu praweg
 | **Pomiar…** (Measure…) | | Rozmiar, położenie, pole i długość zaznaczenia oraz odległości między dwoma kształtami. |
 | **Dostosuj obraz…** (Adjust image…) | | Jasność, kontrast, gamma i reszta ustawień zaznaczonego obrazu. |
 | **Wektoryzuj obraz…** (Trace image…) | | Zamienia zaznaczony obraz w obrysy. |
+| **Obrysuj w stylu…** (Style trace…) | | Rysuje zaznaczony obraz na nowo liniami w jednym z 19 stylów. Zobacz [Obrysuj w stylu](Obrys-w-stylu). |
 
 ## Widok (View)
 

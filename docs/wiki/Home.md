@@ -16,6 +16,7 @@ An open-source program for CNC laser engravers and cutters, written in Rust. Des
 | Make my first burn | [Quick Start](Quick-Start) |
 | Find a menu entry and what it does | [Menus](Menus) |
 | Draw, edit and import | [Design Tools](Design-Tools) |
+| Draw a picture as lines in a style (stippling, squiggles, hatching…) | [Style Trace](Style-Trace) |
 | Arrange the work area: panes, tabs, windows | [Panes and Tabs](Panes-and-Tabs) |
 | Set speed, power, fill, images | [Cuts and Layers](Cuts-and-Layers) |
 | Connect a laser or camera | [Devices and Controllers](Devices-and-Controllers) |
