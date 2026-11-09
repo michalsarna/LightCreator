@@ -913,6 +913,10 @@ pub struct Device {
     pub stats: base_core::control::Stats,
     /// Run the program in the check mode of GRBL (`$C`) before the real run.
     pub check_first: bool,
+    /// The photos of a time-lapse taken with the head moved aside during a job.
+    pub photo_park: base_core::photo_park::ParkSettings,
+    /// Long straight cuts sent as several shorter lines.
+    pub split: base_core::gcode_split::SplitSettings,
 }
 
 /// A counter of working time that can be reset, with an optional limit after which it asks for attention.
@@ -1061,6 +1065,10 @@ struct DeviceWire {
     stats: base_core::control::Stats,
     #[serde(default)]
     check_first: bool,
+    #[serde(default)]
+    photo_park: base_core::photo_park::ParkSettings,
+    #[serde(default)]
+    split: base_core::gcode_split::SplitSettings,
     // Flat fields of profiles saved before the groups existed.
     origin: Option<Origin>,
     bed_w: Option<f64>,
@@ -1135,6 +1143,9 @@ impl From<DeviceWire> for Device {
             fw_copies: w.fw_copies,
             stats: w.stats,
             check_first: w.check_first,
+            // Numbers out of range from a file: the settings as new.
+            photo_park: if w.photo_park.check().is_ok() { w.photo_park } else { Default::default() },
+            split: if w.split.check().is_ok() { w.split } else { Default::default() },
         };
         dev.ensure_materials();
         dev
@@ -1391,6 +1402,8 @@ impl Default for Device {
             fw_copies: Default::default(),
             stats: Default::default(),
             check_first: false,
+            photo_park: Default::default(),
+            split: Default::default(),
         }
     }
 }

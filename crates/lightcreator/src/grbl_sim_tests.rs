@@ -155,3 +155,47 @@ fn grbl_sim_check_mode_of_a_generated_job_finds_nothing_moves_nothing_and_ends()
     s.wait("machine idle after the job", 60.0, |v| v.state == "Idle" && v.progress == (n, n));
     assert!(s.errors().is_empty(), "{:?}", s.errors_described());
 }
+
+#[test]
+#[ignore = "needs grbl-sim: tools/grbl-sim/build.sh of baseCreator"]
+fn grbl_sim_a_laser_job_with_long_cuts_split_goes_aside_for_a_photo_with_the_beam_off_and_ends() {
+    use base_ui::photo_trip::{PhotoTrip, TripSetup};
+    use lc_core::gcode_split::{split_long_lines, SplitSettings};
+    use lc_core::photo_park::{ParkSettings, StopKind};
+    let mut s = Session::connect();
+    s.wait_banner();
+    s.fast_machine(LASER);
+    let whole = sample_job(1.0);
+    let job = split_long_lines(&whole, &SplitSettings { enabled: true, parts: 4, min_part: 2.0 });
+    assert!(job.len() > whole.len(), "the long cuts were split");
+    let n = job.len();
+    let setup = TripSetup { park: ParkSettings { enabled: true, x: 1.0, y: 1.0, settle: 0.1, keep_spindle: false }, kind: StopKind::AnyLine, safe_z: 5.0, spin_up: 0.0, spindle_off: true, hpgl_park: false, every_lift: false };
+    let (mut trip, cmds) = PhotoTrip::start(&job, setup);
+    s.link.send(Cmd::Job(job));
+    for c in cmds {
+        s.link.send(c);
+    }
+    // A picture is due a little into the job.
+    s.wait("a part of the job", 30.0, |v| v.progress.0 > n / 4);
+    for c in trip.request() {
+        s.link.send(c);
+    }
+    s.wait("the photo stop", 30.0, |v| !v.photo_stops.is_empty());
+    for c in trip.stopped(s.seen.photo_stops[0]) {
+        s.link.send(c);
+    }
+    s.wait("the head aside", 30.0, |v| v.photo_ready > 0);
+    assert!((s.seen.pos.0 - 1.0).abs() < 0.01 && (s.seen.pos.1 - 1.0).abs() < 0.01, "aside at {:?}", s.seen.pos);
+    assert!(s.parser_state().contains("M5"), "the beam is off for the trip");
+    let now = std::time::Instant::now();
+    trip.ready(now);
+    std::thread::sleep(std::time::Duration::from_millis(150));
+    let later = std::time::Instant::now();
+    let (back, shoot) = trip.tick(later, Some(later));
+    assert!(shoot);
+    for c in back {
+        s.link.send(c);
+    }
+    s.wait("machine idle after the job", 120.0, |v| v.state == "Idle" && v.progress == (n, n));
+    assert!(s.errors().is_empty(), "GRBL rejected lines: {:?}", s.errors_described());
+}

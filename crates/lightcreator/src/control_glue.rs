@@ -306,6 +306,10 @@ impl App {
         if ui.add_enabled(self.connected, egui::Checkbox::new(&mut live, tr("Live laser Position"))).on_hover_text(tr("Shows the position of the laser head as a dot on the work area. Switched on while the machine stands still, it homes first; during a job or a frame it only shows the position, refreshed every second. Needs a connected device.")).changed() {
             self.set_live_position(live);
         }
+        // The photos of a time-lapse with the head moved aside, and the long cuts in parts (a laser has no spindle to keep running).
+        let mpos = self.connected.then(|| self.pos.mpos.unwrap_or([self.machine.1, self.machine.2, self.machine_z]));
+        let dev = &mut self.doc.device;
+        control_ui::park_and_split_ui(ui, &mut dev.photo_park, &mut dev.split, mpos, false);
         self.sync_profile();
     }
 

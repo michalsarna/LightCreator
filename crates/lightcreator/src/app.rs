@@ -213,6 +213,8 @@ pub struct App {
     pub cam_rec: base_ui::camera_rec::Recorder,
     /// Where the layers of the job being sent end, for a picture after each layer, and the numbers of the program that is being made.
     pub layer_watch: base_ui::camera_rec::LayerWatch,
+    /// The photos of the time-lapse taken with the head moved aside, for the job that runs.
+    pub trips: base_ui::photo_trip::Trips,
     pub job_marks: Vec<usize>,
     pub stream_overlay: bool,
     pub read_cfg: Option<crate::device_ui::ReadCfg>,
@@ -431,6 +433,7 @@ impl App {
             stream_err: String::new(),
             cam_rec: base_ui::camera_rec::Recorder::default(),
             layer_watch: base_ui::camera_rec::LayerWatch::default(),
+            trips: base_ui::photo_trip::Trips::default(),
             job_marks: vec![],
             stream_overlay: false,
             read_cfg: None,
@@ -940,13 +943,31 @@ impl App {
         };
         self.push_console(ConsoleLine::info(trf("Starting job: {} lines, ~{}", &[&lines.len(), &fmt_time(self.job_est)])));
         self.job_last_secs = 0.0;
-        // A picture after each layer of the time-lapse of the camera (the numbers fit a job that starts at the first line).
-        if from == 0 {
-            self.layer_watch.start(self.job_marks.clone());
+        self.send_job_lines(lines, from == 0);
+    }
+
+    /// Hand a job to the link: its long cuts split when the device asks for it, a picture after each layer of the time-lapse
+    /// (the numbers fit a job that starts at the first line, `whole`), and the photos aside.
+    pub fn send_job_lines(&mut self, lines: Vec<String>, whole: bool) {
+        let lines = lc_core::gcode_split::split_long_lines(&lines, &self.doc.device.split);
+        if whole {
+            self.layer_watch.start(base_ui::link::layer_marks(&lines));
         } else {
             self.layer_watch.stop();
         }
+        let setup = self.trip_setup();
+        let trip_lines = if setup.park.enabled { lines.clone() } else { vec![] };
         self.link.send(Cmd::Job(lines));
+        let link = &self.link;
+        self.trips.start(&trip_lines, Some(setup), &mut |c| link.send(c));
+    }
+
+    /// How a laser goes aside for a photo: at any line, the beam off for the trip. Only a controller that says when it stands
+    /// still (GRBL) can stop for one.
+    pub fn trip_setup(&self) -> base_ui::photo_trip::TripSetup {
+        let mut park = self.doc.device.photo_park.clone();
+        park.enabled &= self.doc.device.link_controller().stops_for_photos();
+        base_ui::photo_trip::TripSetup { park, kind: lc_core::photo_park::StopKind::AnyLine, safe_z: 5.0, spin_up: 0.0, spindle_off: true, hpgl_park: false, every_lift: false }
     }
     /// Start can be pressed: a streaming controller needs a connected laser, the file-based ones (Ruida, Trocen)
     /// just export the job.
@@ -1241,6 +1262,7 @@ impl App {
                     self.progress = (done, total);
                     self.layer_progress(done, total);
                     if done >= total {
+                        self.trips.stop();
                         self.stall = None;
                         if self.check_run.is_some() {
                             self.finish_check();
@@ -1251,8 +1273,16 @@ impl App {
                 // Pauses are left to the controller here, and the full report is not used.
                 Evt::Report(r) => self.pos.take(&r),
                 Evt::Barrier { .. } => {}
+                Evt::PhotoStop { line } => {
+                    let link = &self.link;
+                    self.trips.stopped(line, &mut |c| link.send(c));
+                }
+                Evt::PhotoReady => self.trips.ready(std::time::Instant::now()),
             }
         }
+        // The photos aside: a picture that is due stops the job at its next line.
+        let link = &self.link;
+        self.trips.frame(&mut self.cam_rec, std::time::Instant::now(), &mut |c| link.send(c));
     }
 
     #[cfg(test)]
@@ -2638,6 +2668,24 @@ mod project_open_tests {
 #[cfg(test)]
 mod lightburn_open_tests {
     use super::*;
+
+    /// The photos aside go with a controller that says when it stands still (GRBL), never with Marlin; and the Control tab draws
+    /// their section.
+    #[test]
+    fn photos_aside_are_only_for_a_controller_that_reports_standing_still_and_the_control_tab_shows_them() {
+        let mut a = App::build(&egui::Context::default(), None, false);
+        a.profiles = vec![lc_core::Device::default()];
+        a.active = 0;
+        a.enter_editor(0);
+        a.doc.device.photo_park.enabled = true;
+        a.doc.device.controller = lc_core::Controller::Grbl;
+        assert!(a.trip_setup().park.enabled);
+        a.doc.device.controller = lc_core::Controller::Marlin;
+        assert!(!a.trip_setup().park.enabled, "Marlin does not report Idle");
+        let ctx = egui::Context::default();
+        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| a.control_panel(ui));
+        out.textures_delta.clear();
+    }
 
     /// A style trace of a picture is burnt as lines: it goes on an empty layer in the Line mode (a Fill layer is passed over),
     /// and the G-code gets the lines besides the picture.
