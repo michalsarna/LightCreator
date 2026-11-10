@@ -79,6 +79,9 @@ impl App {
             SideTab::Console => self.console_panel(ui),
             SideTab::Clipart => self.clipart_panel(ui),
             SideTab::Description => self.description_panel(ui),
+            SideTab::Recording => {
+                egui::ScrollArea::vertical().id_salt("tab_recording").auto_shrink([false, false]).show(ui, |ui| self.recording_tab(ui));
+            }
             SideTab::Plugin => {
                 let id = self.plugin_tab;
                 egui::ScrollArea::vertical().id_salt("tab_plugin").auto_shrink([false, false]).show(ui, |ui| {

@@ -84,7 +84,7 @@ Jeden rysunek jest **aktywny**: na nim działają narzędzia, menu i klawisze. R
 
 ## Panel boczny
 
-Panel po prawej to coś innego niż panele obszaru roboczego. Ma własne zakładki: **Właściwości**, **Warstwy**, **Urządzenie**, **Sterowanie**, **Konsola**, **Clipart** i **Opis**, a także kamerę lub wtyczkę, gdy są potrzebne (te dwie zostają na końcu rzędu).
+Panel po prawej to coś innego niż panele obszaru roboczego. Ma własne zakładki: **Właściwości**, **Warstwy**, **Urządzenie**, **Sterowanie**, **Konsola**, **Clipart**, **Opis** i **Nagrywanie** (panel dla każdej kamery, zdjęcia z boku, długie linie), a także kamerę lub wtyczkę, gdy są potrzebne (te dwie zostają na końcu rzędu).
 
 * **Przeciągnij zakładkę** w jej rzędzie, żeby zmienić kolejność. Kolejność jest zapamiętywana.
 * **Przeciągnij lewą krawędź** panelu, żeby zmienić jego szerokość.

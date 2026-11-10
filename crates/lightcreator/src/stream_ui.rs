@@ -42,6 +42,20 @@ impl App {
         }
     }
 
+    /// The Recording tab: a panel for each camera, the photos aside and the long lines (a laser has no spindle to keep running).
+    pub fn recording_tab(&mut self, ui: &mut egui::Ui) {
+        let mpos = self.connected.then(|| self.pos.mpos.unwrap_or([self.machine.1, self.machine.2, self.machine_z]));
+        let view = self.doc.device.camera_view.clone();
+        let d = &mut self.doc.device;
+        let out = base_ui::recording_ui::tab(ui, &mut self.rigs, &mut d.cameras, &view, &mut d.photo_park, &mut d.split, &base_ui::recording_ui::MachineCtx { mpos, spindle: false });
+        if let Some((i, m)) = out.mode {
+            self.set_camera_mode(i, m);
+        }
+        if out.cameras || out.machine {
+            self.sync_profile();
+        }
+    }
+
     /// Set how the camera view of camera `i` opens (from the view options). The one in use changes at once.
     pub fn set_camera_mode(&mut self, i: usize, mode: StreamMode) {
         let Some(c) = self.doc.device.cameras.get_mut(i) else { return };
@@ -123,7 +137,7 @@ impl App {
             let rgb = self.cam_process(f.rgb, f.w, f.h);
             let (w, h, rgb) = rotate_rgb(&rgb, f.w, f.h, rotation);
             self.api_publish_frame(w, h, &rgb);
-            self.cam_rec.feed(std::time::Instant::now(), w, h, rgb.clone());
+            self.rigs.feed(self.doc.device.active_camera, std::time::Instant::now(), w, h, rgb.clone());
             let img = egui::ColorImage::from_rgb([w as usize, h as usize], &rgb);
             match &mut self.stream_tex {
                 Some(t) if t.size() == [w as usize, h as usize] => t.set(img.clone(), egui::TextureOptions::LINEAR),
@@ -133,7 +147,6 @@ impl App {
                 self.set_background(ctx, img, &tr("Camera view"));
             }
         }
-        self.cam_rec.tick(std::time::Instant::now());
     }
 
     /// Is the separate camera window being resized (its size changed a moment ago)?
@@ -199,9 +212,10 @@ impl App {
         // Photos, video and time-lapse, with their folder.
         ui.add_space(4.0);
         ui.separator();
-        self.cam_rec.set_project(self.path.as_deref());
-        self.cam_rec.set_source(self.doc.device.cameras.get(self.doc.device.active_camera));
-        self.cam_rec.controls(ui);
+        // A photo, a video and the time-lapse of this camera; their settings are on the Recording tab.
+        if let Some(r) = self.rigs.rec(self.doc.device.active_camera) {
+            r.quick(ui);
+        }
         // The working time of the job, over the estimate: 00:04:12 / 00:13:00.
         let elapsed = self.job_started.map_or(self.job_last_secs, |t| t.elapsed().as_secs_f64());
         ui.label(RichText::new(format!("{} {} / {}", tr("Working time"), crate::app::fmt_clock(elapsed), crate::app::fmt_clock(self.job_est))).monospace().strong());
@@ -221,12 +235,19 @@ impl App {
 
     pub fn stream_window(&mut self, ctx: &egui::Context) {
         let url = self.doc.device.stream_url().unwrap_or("").to_string();
+        // Every camera records on its own; the one of the view gets its pictures from the view's stream, the others read their own.
+        self.rigs.sync(&self.doc.device.cameras, self.path.as_deref());
+        let view = (!url.is_empty()).then_some(self.doc.device.active_camera);
+        self.rigs.pump(ctx, &self.doc.device.cameras, view, std::time::Instant::now());
+        if self.rigs.reading() {
+            ctx.request_repaint_after(std::time::Duration::from_millis(100));
+        }
         if !self.show_stream || url.is_empty() {
             if self.show_stream {
                 self.stream_closed();
             }
             // A recording goes on when the camera view is closed: the stream is kept while something is recorded.
-            if self.cam_rec.active() && !url.is_empty() {
+            if self.rigs.active(self.doc.device.active_camera) && !url.is_empty() {
                 self.stream_poll(ctx, &url);
                 ctx.request_repaint_after(std::time::Duration::from_millis(100));
                 self.tab_seen = false;
@@ -514,10 +535,11 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("lc-lapse-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        a.cam_rec = base_ui::camera_rec::Recorder::new(RecSettings { dir: Some(dir.clone()), interval: 5.0, mode: LapseMode::PerLayer, format: Default::default() });
+        a.rigs.sync(&[lc_core::CameraSource::url("t", "http://127.0.0.1:1/x", 0)], None);
+        *a.rigs.rec(0).unwrap() = base_ui::camera_rec::Recorder::new(RecSettings { dir: Some(dir.clone()), interval: 5.0, mode: LapseMode::PerLayer, format: Default::default() });
         let now = std::time::Instant::now();
-        a.cam_rec.feed(now, 4, 2, vec![80; 24]);
-        a.cam_rec.start_lapse(now);
+        a.rigs.rec(0).unwrap().feed(now, 4, 2, vec![80; 24]);
+        a.rigs.rec(0).unwrap().start_lapse(now);
         // The view is closed, a time-lapse runs: the stream stays.
         a.doc.device.cameras = vec![lc_core::CameraSource::url("c", "http://127.0.0.1:9/none.mjpg", 0)];
         a.doc.device.active_camera = 0;
@@ -526,24 +548,24 @@ mod tests {
         let mut out = ctx.run_ui(Default::default(), |ui| a.stream_window(ui.ctx()));
         out.textures_delta.clear();
         assert!(a.stream.is_some(), "recorded: the stream is kept");
-        a.cam_rec.stop_lapse();
+        a.rigs.rec(0).unwrap().stop_lapse();
         a.stream = None;
         let mut out = ctx.run_ui(Default::default(), |ui| a.stream_window(ui.ctx()));
         out.textures_delta.clear();
         assert!(a.stream.is_none(), "nothing recorded: no stream");
         // Two layers: one picture when the second begins, one when the job is over; a stopped job (progress 0, 0) does nothing more.
-        a.cam_rec.start_lapse(now);
+        a.rigs.rec(0).unwrap().start_lapse(now);
         a.layer_watch.start(vec![6]);
         a.layer_progress(3, 10);
-        assert_eq!(a.cam_rec.lapse_shots(), Some(0));
+        assert_eq!(a.rigs.rec(0).unwrap().lapse_shots(), Some(0));
         a.layer_progress(6, 10);
-        assert_eq!(a.cam_rec.lapse_shots(), Some(1));
+        assert_eq!(a.rigs.rec(0).unwrap().lapse_shots(), Some(1));
         a.layer_progress(10, 10);
-        assert_eq!(a.cam_rec.lapse_shots(), Some(2));
+        assert_eq!(a.rigs.rec(0).unwrap().lapse_shots(), Some(2));
         a.layer_watch.start(vec![2]);
         a.layer_progress(0, 0);
         a.layer_progress(5, 10);
-        assert_eq!(a.cam_rec.lapse_shots(), Some(2));
+        assert_eq!(a.rigs.rec(0).unwrap().lapse_shots(), Some(2));
         let _ = std::fs::remove_dir_all(&dir);
     }
 }
