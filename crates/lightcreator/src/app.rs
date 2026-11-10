@@ -31,6 +31,8 @@ pub enum SideTab {
     Clipart,
     /// A free text about the project.
     Description,
+    /// The recording of every camera, the photos aside and the long lines.
+    Recording,
     /// The camera picture; only listed while the stream is shown as a tab.
     Camera,
     /// The tab of a plugin with settings (which one: `App::plugin_tab`).
@@ -38,7 +40,7 @@ pub enum SideTab {
 }
 
 impl SideTab {
-    pub const ALL: [(SideTab, &'static str); 7] = [
+    pub const ALL: [(SideTab, &'static str); 8] = [
         (SideTab::Properties, "Properties"),
         (SideTab::Layers, "Layers"),
         (SideTab::Device, "Device"),
@@ -46,6 +48,7 @@ impl SideTab {
         (SideTab::Console, "Console"),
         (SideTab::Clipart, "Clipart"),
         (SideTab::Description, "Description"),
+        (SideTab::Recording, "Recording"),
     ];
 
     pub fn id(self) -> &'static str {
@@ -57,13 +60,14 @@ impl SideTab {
             SideTab::Console => "console",
             SideTab::Clipart => "clipart",
             SideTab::Description => "description",
+            SideTab::Recording => "recording",
             SideTab::Camera => "camera",
             SideTab::Plugin => "plugin",
         }
     }
 
     /// The ids of the tabs that are always there, for the order the user arranges them in.
-    pub const IDS: [&'static str; 7] = ["properties", "layers", "device", "control", "console", "clipart", "description"];
+    pub const IDS: [&'static str; 8] = ["properties", "layers", "device", "control", "console", "clipart", "description", "recording"];
 
     pub fn from_id(id: &str) -> Option<SideTab> {
         SideTab::ALL.iter().map(|(t, _)| *t).chain([SideTab::Camera]).find(|t| t.id() == id)
@@ -210,7 +214,7 @@ pub struct App {
     pub cam_tab_seen: bool,
     pub stream_err: String,
     /// Photos, video and time-lapse of the camera view (the folder and the interval are remembered).
-    pub cam_rec: base_ui::camera_rec::Recorder,
+    pub rigs: base_ui::camera_rec::Rigs,
     /// Where the layers of the job being sent end, for a picture after each layer, and the numbers of the program that is being made.
     pub layer_watch: base_ui::camera_rec::LayerWatch,
     /// The photos of the time-lapse taken with the head moved aside, for the job that runs.
@@ -431,7 +435,7 @@ impl App {
             pv_tab_seen: false,
             cam_tab_seen: false,
             stream_err: String::new(),
-            cam_rec: base_ui::camera_rec::Recorder::default(),
+            rigs: base_ui::camera_rec::Rigs::default(),
             layer_watch: base_ui::camera_rec::LayerWatch::default(),
             trips: base_ui::photo_trip::Trips::default(),
             job_marks: vec![],
@@ -898,7 +902,7 @@ impl App {
             n += self.layer_watch.finished();
         }
         for _ in 0..n {
-            self.cam_rec.layer_done(now);
+            self.rigs.recorders().into_iter().for_each(|r| r.layer_done(now));
         }
     }
 
@@ -1282,7 +1286,7 @@ impl App {
         }
         // The photos aside: a picture that is due stops the job at its next line.
         let link = &self.link;
-        self.trips.frame(&mut self.cam_rec, std::time::Instant::now(), &mut |c| link.send(c));
+        self.trips.frame_all(self.rigs.recorders(), std::time::Instant::now(), &mut |c| link.send(c));
     }
 
     #[cfg(test)]
@@ -2668,6 +2672,24 @@ mod project_open_tests {
 #[cfg(test)]
 mod lightburn_open_tests {
     use super::*;
+
+    /// The Recording tab is there also for a tab order saved before it, and it has a recorder and a panel for each camera.
+    #[test]
+    fn the_recording_tab_is_there_for_an_old_order_of_tabs_and_has_a_panel_for_each_camera() {
+        let tabs = base_ui::side_tabs::SideTabs::new(&SideTab::IDS, "control,properties,layers", false);
+        assert!(tabs.order().contains(&"recording"));
+        assert_eq!(SideTab::from_id("recording"), Some(SideTab::Recording));
+        let mut a = App::build(&egui::Context::default(), None, false);
+        a.profiles = vec![lc_core::Device::default()];
+        a.active = 0;
+        a.enter_editor(0);
+        a.doc.device.cameras = vec![lc_core::CameraSource::url("Top camera", "http://127.0.0.1:1/a", 0), lc_core::CameraSource::url("Side camera", "http://127.0.0.1:1/b", 0)];
+        a.rigs.sync(&a.doc.device.cameras, None);
+        assert_eq!(a.rigs.rigs.len(), 2);
+        let ctx = egui::Context::default();
+        let mut out = ctx.run_ui(egui::RawInput::default(), |ui| a.recording_tab(ui));
+        out.textures_delta.clear();
+    }
 
     /// The photos aside go with a controller that says when it stands still (GRBL), never with Marlin; and the Control tab draws
     /// their section.
