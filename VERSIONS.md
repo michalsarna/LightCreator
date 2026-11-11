@@ -2,6 +2,17 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.8.6
+
+* **Time of a job** planned as the controller does it: the acceleration, the slower corners and the look-ahead (device settings: acceleration of X, Y, Z and junction deviation).
+* **Leads** of the closed outlines of Line layers: a short line or arc from the waste side and an overlap past the start, so the mark where the laser starts is not on the part.
+* **No-go zones** (device settings): moves with the laser off go round them, a burn in one blocks the job. **Add as no-go zone** in the right-click menu and in Arrange makes zones of shapes; a **No-go zones** tab of the side panel lists them while there are any; **Machine → No-go zones…** opens their page.
+* **Nesting by the real outlines** (a small part in the hole of a big one) and what does not fit onto **new sheets** in tabs of their own.
+* **Preview with a rotary attachment:** the job on the workpiece as a **3D cylinder** (turn it with the mouse) or **flat**; also **View → Cylinder in the preview (rotary)** and **View → Dimensions in the preview**.
+* **Closing the last drawing** asks whether to close the program or go back to the start screen.
+* **Menus:** Laser → Layer presets…, Preview G-code; the right-click menu has Auto-join, Close path, Dogbone corners, arrays and nesting.
+* **Help:** the quick guide (F1) has the new tools; `TESTS_ON_DEVICES.md` lists the machines the program is confirmed on.
+
 ## v0.8.5
 
 * **Recording tab:** a new tab of the side panel with a panel for each camera of the device, named after the camera: **Take a photo**, **Record video**, the **Time-lapse**, the **Video format**, the **Folder** and the way its **Camera view** opens. Each camera records on its own, with its own settings kept with it; a camera that records and is not shown reads its own picture. With more than one camera the names of the files have the camera in them. The camera view keeps only the buttons: a photo, a video, the time-lapse started and stopped.
