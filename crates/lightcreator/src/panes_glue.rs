@@ -237,6 +237,7 @@ impl PaneHost for App {
                     TextAction::MakeAgain => self.remake_gcode_text(slot),
                     TextAction::Analyse => {
                         let g: &GcodeText = &self.gcode_texts[i];
+                        self.time_gcode_for_device();
                         if let Err(e) = base_ui::gcode_view_ui::open_text(&mut self.gcode_view, &g.name, &g.text) {
                             self.status = e;
                         }

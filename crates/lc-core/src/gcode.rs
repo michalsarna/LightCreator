@@ -878,41 +878,35 @@ pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job
     Job { ops: w.ops, gcode: text, moves: w.moves, est_seconds: est, cut_length: w.cut_len }
 }
 
-/// Time of `len` mm at `v` mm/s from and to rest with acceleration `a` mm/s² (trapezoid, or triangle when short).
-fn ramp_time(len: f64, v: f64, a: f64) -> f64 {
-    if len <= 0.0 || v <= 0.0 {
-        return 0.0;
-    }
-    if a <= 0.0 {
-        return len / v;
-    }
-    let ramp = v * v / a;
-    if len >= ramp { len / v + v / a } else { 2.0 * (len / a).sqrt() }
-}
-
-/// Durations of the moves with the machine's limits: cutting speed capped at the maximum, and a start and a stop
-/// ramp for every run of moves at one speed (travel moves each start and stop). Without limits the plain
-/// distance / speed times stay. Returns the total.
+/// Durations of the moves with the machine's limits: cutting speed capped at the maximum, and with the acceleration the
+/// planner of the controller (`base_core::motion`): the speeding up and slowing down, slower corners, a lookahead of the
+/// controller's buffer. Without limits the plain distance / speed times stay. Returns the total.
 fn timing(moves: &mut [Move], dev: &Device, plain_total: f64) -> f64 {
+    use base_core::motion::{durations_with, Block, Motion, LOOKAHEAD};
     let (a, vmax) = (dev.speeds.acceleration, dev.speeds.max_cut_speed / 60.0);
-    if a <= 0.0 && vmax <= 0.0 {
+    if (a <= 0.0 && vmax <= 0.0) || moves.is_empty() {
         return plain_total;
     }
-    let mut i = 0;
-    while i < moves.len() {
-        let travel = !moves[i].laser && moves[i].speed == dev.speeds.travel_speed.max(1.0) / 60.0;
-        let mut j = i + 1;
-        // Travel moves stand alone; cutting moves at the same speed form one run.
-        while !travel && j < moves.len() && moves[j].laser == moves[i].laser && (moves[j].speed - moves[i].speed).abs() < 1e-9 && moves[j].a.dist(moves[j - 1].b) < 1e-9 {
-            j += 1;
-        }
-        let v = if !travel && vmax > 0.0 { moves[i].speed.min(vmax) } else { moves[i].speed };
-        let len: f64 = moves[i..j].iter().map(|m| m.a.dist(m.b)).sum();
-        let t = ramp_time(len, v, a);
-        for m in &mut moves[i..j] {
-            m.dur = if len > 0.0 { t * m.a.dist(m.b) / len } else { 0.0 };
-        }
-        i = j;
+    let travel_v = dev.speeds.travel_speed.max(1.0) / 60.0;
+    let blocks: Vec<Block> = moves
+        .iter()
+        .enumerate()
+        .map(|(i, m)| {
+            let travel = !m.laser && m.speed == travel_v;
+            let v = if !travel && vmax > 0.0 { m.speed.min(vmax) } else { m.speed };
+            Block { to: [m.b.x, m.b.y, 0.0], feed: v * 60.0, stop: i > 0 && moves[i - 1].b.dist(m.a) > 1e-9 }
+        })
+        .collect();
+    // Smoothieware plans 32 moves ahead, LinuxCNC blends as far as it needs; GRBL and Marlin 15.
+    let lookahead = match dev.dialect() {
+        Dialect::Smoothieware => 31,
+        Dialect::LinuxCnc => usize::MAX / 2,
+        _ => LOOKAHEAD,
+    };
+    let start = [moves[0].a.x, moves[0].a.y, 0.0];
+    let d = durations_with(start, &blocks, &Motion::flat(a.max(0.0)), lookahead);
+    for (m, t) in moves.iter_mut().zip(d) {
+        m.dur = t;
     }
     moves.iter().map(|m| m.dur).sum()
 }

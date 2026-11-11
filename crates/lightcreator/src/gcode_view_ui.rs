@@ -13,7 +13,14 @@ impl App {
         }
     }
 
+    /// The files opened in the viewer are timed for the laser of the device: its acceleration and its speed of moves.
+    pub fn time_gcode_for_device(&self) {
+        let s = &self.doc.device.speeds;
+        base_ui::gcode_view_ui::set_machine(lc_core::motion::Motion::flat(s.acceleration.max(0.0)), s.travel_speed);
+    }
+
     pub fn open_gcode(&mut self, p: PathBuf) -> bool {
+        self.time_gcode_for_device();
         match base_ui::gcode_view_ui::open(&mut self.gcode_view, p) {
             Ok(()) => true,
             Err(e) => {
