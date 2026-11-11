@@ -787,6 +787,7 @@ impl App {
                 Err(e) => trf("Export failed: {}", &[&e]),
             };
             if self.ed.grid_prefs.gcode_preview_after_save && p.exists() {
+                self.time_gcode_for_device();
                 if let Err(e) = base_ui::gcode_view_ui::open(&mut self.gcode_view, p) {
                     self.status = e;
                 }

@@ -156,7 +156,7 @@
   canvas, jog stops at them); a **check before the job** blocks Start, Frame and export when something lies outside the
   allowed area and asks for confirmation on warnings (0 % power, nothing to burn); after connecting GRBL is read once
   and warned about laser mode off (`$32`) and a `$30` that differs from the profile.
-* **G-code per device:** maximum cutting speed and acceleration (ramped time estimate, speed warning), dialects (GRBL M3 /
+* **G-code per device:** maximum cutting speed and acceleration (time estimate planned as the controller does: ramps, slower corners, lookahead; speed warning), dialects (GRBL M3 /
   M4, Marlin, Smoothieware), an Advanced page with own start / end of the job and air assist commands, power mode per
   layer (M3 / M4), and optional arcs (G2 / G3) with their own tolerance and a setting for the curve flattening.
 * **Connection and firmware:** simple (one line at a time) or counting streaming, a report when a job waits for an answer

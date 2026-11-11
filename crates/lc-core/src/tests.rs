@@ -993,6 +993,19 @@ fn estimate_with_acceleration_adds_the_ramps_and_caps_the_speed() {
 }
 
 #[test]
+fn with_acceleration_sharp_corners_slow_the_laser_down() {
+    // The same 100 mm as a straight run of short pieces and as a zigzag with right angles: the corners cost time.
+    let mut d = long_line_doc(50.0);
+    d.device.speeds.acceleration = 200.0;
+    let s = 5.0 / 2f64.sqrt();
+    d.scene.shapes[0].kind = Kind::Path(vec![Polyline::new((0..=20).map(|i| Pt::new(i as f64 * 5.0, 0.0)).collect(), false)]);
+    let straight = gcode::generate(&d).est_seconds;
+    d.scene.shapes[0].kind = Kind::Path(vec![Polyline::new((0..=20).map(|i| Pt::new(i as f64 * s, if i % 2 == 1 { s } else { 0.0 })).collect(), false)]);
+    let zigzag = gcode::generate(&d).est_seconds;
+    assert!(zigzag > straight * 1.3, "{zigzag} vs {straight}");
+}
+
+#[test]
 fn a_run_of_short_segments_ramps_once_and_a_layer_above_the_maximum_warns() {
     let mut d = long_line_doc(10.0);
     d.scene.shapes[0].kind = Kind::Path(vec![Polyline::new((0..=100).map(|i| Pt::new(i as f64, 0.0)).collect(), false)]);
