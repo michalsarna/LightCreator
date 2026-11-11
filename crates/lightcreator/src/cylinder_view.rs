@@ -61,7 +61,8 @@ impl Projection {
     }
 
     fn screen(&self, p: [f64; 3]) -> Pos2 {
-        // Swing round the vertical axis of the screen.
+        // Swing round the vertical axis of the screen: the viewer looks along (−sin yaw, 0, cos yaw), so a point nearer to them (a
+        // bigger Z) lies further right.
         let (s, c) = self.o.yaw.sin_cos();
         let x = p[0] * c + p[2] * s;
         Pos2::new(self.centre.x + (x * self.k) as f32, self.centre.y + (p[1] * self.k) as f32)
@@ -111,8 +112,9 @@ pub fn paint_body(painter: &egui::Painter, pj: &Projection, wood: [u8; 3]) {
         let col = shade(wood, light);
         painter.add(egui::Shape::convex_polygon(quad, col, Stroke::new(1.0, col)));
     }
-    // The end facing the viewer: the right one when the axis swings that way.
-    let end_x = if pj.o.yaw >= 0.0 { c.x1 } else { c.x0 };
+    // The end facing the viewer: with the axis swung by a positive yaw the viewer stands off its left end (the screen X grows with
+    // the depth, see `screen`), so that end shows and the right one is hidden behind the side.
+    let end_x = if pj.o.yaw >= 0.0 { c.x0 } else { c.x1 };
     let ring: Vec<Pos2> = (0..64).map(|i| pj.screen(pj.space(end_x, std::f64::consts::TAU * i as f64 / 64.0, c.r))).collect();
     if pj.o.yaw.abs() > 0.02 {
         painter.add(egui::Shape::convex_polygon(ring.clone(), shade(wood, 0.35), Stroke::new(1.0, shade(wood, 0.2))));
@@ -169,6 +171,21 @@ mod tests {
         // A whole way round comes back to the same place.
         let (again, _) = p.surface(Pt::new(100.0, 50.0 + std::f64::consts::TAU * 25.0));
         assert!((again - front).length() < 1e-3);
+    }
+
+    #[test]
+    fn the_end_that_is_drawn_is_the_one_turned_to_the_viewer() {
+        // With a positive swing a point on the near side at the left end lies right of the left end's middle: the left end is the
+        // one seen (the near side does not cover it), the right end hides behind the side.
+        let p = pj(Orbit::default());
+        let near_left = p.screen(p.space(0.0, 0.0, 25.0));
+        let far_left = p.screen(p.space(0.0, std::f64::consts::PI, 25.0));
+        let near_right = p.screen(p.space(200.0, 0.0, 25.0));
+        let far_right = p.screen(p.space(200.0, std::f64::consts::PI, 25.0));
+        assert!(near_left.x > far_left.x && near_right.x > far_right.x);
+        // The left end disc spans from far_left to near_left; the near side starts at near_left and goes right: they only touch.
+        let body_left_of_near_side = (0..=20).map(|i| p.screen(p.space(200.0 * i as f64 / 20.0, 0.0, 25.0)).x).fold(f32::MAX, f32::min);
+        assert!((body_left_of_near_side - near_left.x).abs() < 1e-3);
     }
 
     #[test]
