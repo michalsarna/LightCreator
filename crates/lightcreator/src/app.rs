@@ -1887,6 +1887,12 @@ impl base_ui::editor::EditorHost for App {
         self.side_tab = SideTab::Clipart;
         base_ui::clipart_ui::ClipGallery::open_online_clipart(self, ctx);
     }
+    fn can_add_sheets(&self) -> bool {
+        true
+    }
+    fn add_sheets(&mut self, sheets: Vec<Vec<lc_core::Shape>>) -> usize {
+        self.open_sheets(sheets)
+    }
     fn say(&mut self, msg: String) {
         self.status = msg;
     }
@@ -2513,6 +2519,22 @@ mod live_position_tests {
         a.connected = true;
         a.machine = ("Idle".into(), 10.0, 20.0);
         a
+    }
+
+    #[test]
+    fn a_nesting_opens_new_sheets_in_tabs_with_a_copy_of_the_document() {
+        use lc_core::Kind;
+        let mut a = app();
+        a.doc.layers[0].speed = 42.0;
+        a.doc.add(0, Kind::Rect { w: 10.0, h: 10.0 }, lc_core::Xf::IDENTITY);
+        let mut other = lc_core::Document::default();
+        other.add(0, Kind::Rect { w: 20.0, h: 20.0 }, lc_core::Xf::IDENTITY);
+        assert_eq!(a.open_sheets(vec![other.scene.shapes.clone()]), 1);
+        assert_eq!(a.tab_count(), 2);
+        assert_eq!(a.doc.scene.shapes.len(), 1);
+        a.switch_to(1);
+        assert_eq!(a.doc.layers[0].speed, 42.0);
+        assert!(a.is_dirty());
     }
 
     #[test]

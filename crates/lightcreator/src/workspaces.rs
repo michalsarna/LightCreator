@@ -159,6 +159,26 @@ impl App {
         self.make_room()
     }
 
+    /// New sheets of a nesting: every list of shapes in a new tab with a copy of the shown document (its layers, material and
+    /// device), unsaved; then the shown drawing again. The number of sheets opened (fewer when the tabs run out).
+    pub fn open_sheets(&mut self, sheets: Vec<Vec<lc_core::Shape>>) -> usize {
+        self.ensure_tabs();
+        let back = self.tabs_state.active;
+        let model = self.doc.clone();
+        let (next_id, next_group) = self.doc.scene.counters();
+        let mut n = 0;
+        for shapes in sheets {
+            if !self.make_room() {
+                break;
+            }
+            self.doc = Document { scene: lc_core::Scene::from_parts(shapes, next_id, next_group), ..model.clone() };
+            self.revision += 1;
+            n += 1;
+        }
+        self.switch_to(back);
+        n
+    }
+
     pub fn switch_to(&mut self, i: usize) {
         self.cam_tab_shown = false;
         self.pv_tab_shown = false;
