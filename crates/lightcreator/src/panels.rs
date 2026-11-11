@@ -534,6 +534,11 @@ pub fn layer_settings_ui(ui: &mut egui::Ui, (units, su): (lc_core::Units, lc_cor
 /// Perforation and tabs of a line layer (collapsed until switched on).
 fn cut_options_ui(ui: &mut egui::Ui, units: lc_core::Units, l: &mut lc_core::Layer, id_scope: &str) {
     use lc_core::cutopts::TabMode;
+    egui::CollapsingHeader::new(format!("{} / {}", tr("Lead in"), tr("Lead out"))).id_salt(("lead", id_scope)).default_open(!l.lead.is_off()).show(ui, |ui| {
+        egui::Grid::new(("lead_g", id_scope)).num_columns(2).spacing([10.0, 6.0]).show(ui, |ui| {
+            base_ui::lead_ui::rows(ui, units, &mut l.lead);
+        });
+    });
     egui::CollapsingHeader::new(tr("Perforation")).id_salt(("perf", id_scope)).default_open(l.perforation.enabled).show(ui, |ui| {
         ui.checkbox(&mut l.perforation.enabled, tr("Perforation mode")).on_hover_text(tr("Alternates cutting and skipping along the outline."));
         ui.add_enabled_ui(l.perforation.enabled, |ui| {

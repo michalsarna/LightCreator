@@ -505,6 +505,22 @@ fn burn(w: &mut Writer, li: usize, layer: &Layer, polys: &[Polyline], tags: &[Ta
         for (i, p) in ordered.into_iter().enumerate() {
             path_start(w, i, n, &p);
             let is_inner = layer.tabs.enabled && layer.tabs.skip_inner && crate::cutopts::is_inner(&p, &all);
+            // Leads of a closed outline: a hole (inside an odd number of the others) has its waste inside.
+            let led = (p.closed && p.pts.len() >= 3 && !layer.lead.is_off()).then(|| {
+                let p = base_core::lead::good_start(&p);
+                let first = p.pts[0];
+                let hole = all.iter().filter(|q| q.closed && q.pts.len() >= 3 && q.pts != p.pts && q.contains(first) && q.area().abs() > p.area().abs()).count() % 2 == 1;
+                let leads = base_core::lead::plan(&p, hole, &layer.lead, &all);
+                (p, leads)
+            });
+            let p = led.as_ref().map_or(p.clone(), |(q, _)| q.clone());
+            if let Some((_, leads)) = &led {
+                if leads.lead_in.len() > 1 {
+                    let _ = writeln!(w.out, "; lead in");
+                    w.travel(leads.lead_in[0]);
+                    w.stroke(&leads.lead_in, layer.power, layer.speed);
+                }
+            }
             for piece in crate::cutopts::pieces(&p, &layer.perforation, &layer.tabs, is_inner) {
                 if piece.pts.len() < 2 {
                     continue;
@@ -514,6 +530,18 @@ fn burn(w: &mut Writer, li: usize, layer: &Layer, polys: &[Polyline], tags: &[Ta
                     w.travel(*piece.pts.last().unwrap());
                 } else {
                     w.stroke(&piece.pts, layer.power * piece.factor, layer.speed);
+                }
+            }
+            if let Some((ring, leads)) = &led {
+                if leads.overlap > 0.0 {
+                    let way = base_core::lead::ring_with_overlap(ring, leads.overlap);
+                    let tail: Vec<Pt> = way[ring.pts.len()..].to_vec();
+                    w.stroke(&tail, layer.power, layer.speed);
+                }
+                if leads.lead_out.len() > 1 {
+                    let _ = writeln!(w.out, "; lead out");
+                    w.travel(leads.lead_out[0]);
+                    w.stroke(&leads.lead_out, layer.power, layer.speed);
                 }
             }
             let _ = writeln!(w.out, "; path {} end", i + 1);
