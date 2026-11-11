@@ -181,8 +181,8 @@ checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
 
 [[package]]
 name = "base-core"
-version = "1.89.1"
-source = "git+https://github.com/michalsarna/baseCreator?tag=v1.89.1#edb20de1f70d0345b1552a0bfa0c9b644a94b12e"
+version = "1.90.0"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v1.90.0#f34fef433dbcd5399b78fd7df573bdcb211c4e61"
 dependencies = [
  "base64 0.23.1",
  "i_overlay",
@@ -202,8 +202,8 @@ dependencies = [
 
 [[package]]
 name = "base-ui"
-version = "1.89.1"
-source = "git+https://github.com/michalsarna/baseCreator?tag=v1.89.1#edb20de1f70d0345b1552a0bfa0c9b644a94b12e"
+version = "1.90.0"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v1.90.0#f34fef433dbcd5399b78fd7df573bdcb211c4e61"
 dependencies = [
  "arboard",
  "base-core",

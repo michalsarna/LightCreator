@@ -10,9 +10,9 @@ use lc_core::{Dither, Kind, LayerMode, PALETTE};
 
 impl App {
     /// The ids of the tabs that exist only sometimes: the camera view, and the tab of every plugin that has settings.
-    fn extra_tabs(&self) -> Vec<&'static str> {
+    pub(crate) fn extra_tabs(&self) -> Vec<&'static str> {
         let camera_tab = self.show_stream && self.stream_mode == crate::stream_ui::StreamMode::Tab;
-        camera_tab.then_some("camera").into_iter().chain(self.plugins.side_tabs().into_iter().map(|(id, _)| id)).collect()
+        camera_tab.then_some("camera").into_iter().chain((!self.doc.device.zones.is_empty()).then_some("zones")).chain(self.plugins.side_tabs().into_iter().map(|(id, _)| id)).collect()
     }
 
     /// The label of a tab (translated), also of a tab of a plugin.
@@ -56,7 +56,7 @@ impl App {
         self.side_w = ui.max_rect().width();
         let extra = self.extra_tabs();
         // A tab that is gone (the stream was closed, the plugin removed or switched off) gives way to the first one.
-        if self.side_tab == SideTab::Camera && !extra.contains(&"camera") || self.side_tab == SideTab::Plugin && !extra.contains(&self.plugin_tab) {
+        if self.side_tab == SideTab::Camera && !extra.contains(&"camera") || self.side_tab == SideTab::Zones && !extra.contains(&"zones") || self.side_tab == SideTab::Plugin && !extra.contains(&self.plugin_tab) {
             self.side_tab = SideTab::Properties;
         }
         let labels: std::collections::HashMap<&str, String> = SideTab::IDS.iter().copied().chain(extra.iter().copied()).map(|id| (id, self.tab_label(id))).collect();
@@ -88,10 +88,27 @@ impl App {
                     self.plugins.side_tab_ui(ui, id);
                 });
             }
+            SideTab::Zones => {
+                let u = self.doc.device.units;
+                let has_z = self.doc.device.axes.has_z;
+                let mut zones = self.doc.device.zones.clone();
+                if base_ui::zones_ui::panel(ui, u, &mut zones, has_z, &tr(crate::device_ui::ZONE_HEIGHTS)) {
+                    self.set_zones(zones);
+                }
+            }
             SideTab::Camera => {
                 egui::ScrollArea::vertical().id_salt("tab_camera").auto_shrink([false, false]).show(ui, |ui| self.stream_view(ui));
             }
         }
+    }
+
+    /// New no-go zones of the device in use: into the document's device and into the list of devices, where they are kept.
+    pub fn set_zones(&mut self, zones: Vec<lc_core::Zone>) {
+        if let Some(d) = self.profiles.get_mut(self.active) {
+            d.zones = zones.clone();
+        }
+        self.doc.device.zones = zones;
+        self.touch();
     }
 
     /// The description of the project, saved in the project file (the tab is the one of baseCreator).

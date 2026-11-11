@@ -11,6 +11,9 @@ use crate::units_ui::{drag_len, drag_speed, fmt_len, fmt_speed};
 use lc_core::controller::Action;
 use lc_core::{Controller, Device, LaserKind, LinkKind, Orientation, Origin, SpeedUnit, Units};
 
+/// What the heights of a no-go zone count from in LightCreator.
+pub(crate) const ZONE_HEIGHTS: &str = "The heights are those of the Z axis of the machine (as on the Control tab).";
+
 /// An in-progress "read settings from the device" request.
 pub struct ReadCfg {
     pub controller: Controller,
@@ -859,7 +862,7 @@ impl App {
                         }
                     }
                     CfgPage::Zones => {
-                        base_ui::zones_ui::page(ui, u, &mut d.zones, d.axes.has_z, &tr("The heights are those of the Z axis of the machine (as on the Control tab)."));
+                        base_ui::zones_ui::page(ui, u, &mut d.zones, d.axes.has_z, &tr(ZONE_HEIGHTS));
                     }
                     CfgPage::Firmware => {
                         if self.connected {

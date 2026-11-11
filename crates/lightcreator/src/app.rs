@@ -35,6 +35,8 @@ pub enum SideTab {
     Recording,
     /// The camera picture; only listed while the stream is shown as a tab.
     Camera,
+    /// The no-go zones of the device, while it has any.
+    Zones,
     /// The tab of a plugin with settings (which one: `App::plugin_tab`).
     Plugin,
 }
@@ -62,6 +64,7 @@ impl SideTab {
             SideTab::Description => "description",
             SideTab::Recording => "recording",
             SideTab::Camera => "camera",
+            SideTab::Zones => "zones",
             SideTab::Plugin => "plugin",
         }
     }
@@ -70,11 +73,14 @@ impl SideTab {
     pub const IDS: [&'static str; 8] = ["properties", "layers", "device", "control", "console", "clipart", "description", "recording"];
 
     pub fn from_id(id: &str) -> Option<SideTab> {
-        SideTab::ALL.iter().map(|(t, _)| *t).chain([SideTab::Camera]).find(|t| t.id() == id)
+        SideTab::ALL.iter().map(|(t, _)| *t).chain([SideTab::Camera, SideTab::Zones]).find(|t| t.id() == id)
     }
 
     /// The English name of the tab (translated where it is shown).
     pub fn label(self) -> &'static str {
+        if self == SideTab::Zones {
+            return base_ui::zones_ui::PAGE;
+        }
         SideTab::ALL.iter().find(|(t, _)| *t == self).map(|(_, l)| *l).unwrap_or("Camera view")
     }
 }
@@ -1890,6 +1896,16 @@ impl base_ui::editor::EditorHost for App {
     fn can_add_sheets(&self) -> bool {
         true
     }
+    fn can_add_zones(&self) -> bool {
+        true
+    }
+    fn add_zones(&mut self, zones: Vec<lc_core::Zone>) {
+        let mut all = self.doc.device.zones.clone();
+        all.extend(zones);
+        all.truncate(100);
+        self.set_zones(all);
+        self.side_tab = SideTab::Zones;
+    }
     fn add_sheets(&mut self, sheets: Vec<Vec<lc_core::Shape>>) -> usize {
         self.open_sheets(sheets)
     }
@@ -2519,6 +2535,24 @@ mod live_position_tests {
         a.connected = true;
         a.machine = ("Idle".into(), 10.0, 20.0);
         a
+    }
+
+    #[test]
+    fn shapes_made_into_zones_go_to_the_device_and_its_tab_shows_while_it_has_zones() {
+        let mut a = app();
+        a.doc.device.zones.clear();
+        a.profiles = vec![a.doc.device.clone()];
+        a.active = 0;
+        assert!(!a.extra_tabs().contains(&"zones"));
+        let id = a.doc.add(0, lc_core::Kind::Rect { w: 30.0, h: 20.0 }, lc_core::Xf::translate(10.0, 10.0));
+        a.ed.sel = vec![id];
+        base_ui::editor::add_as_zones(&mut a);
+        assert!(a.doc.shape(id).is_none(), "the shape left the drawing");
+        assert_eq!(a.doc.device.zones.len(), 1);
+        assert_eq!(a.profiles[a.active].zones, a.doc.device.zones, "kept with the device");
+        assert!(a.extra_tabs().contains(&"zones") && a.side_tab == SideTab::Zones);
+        a.set_zones(vec![]);
+        assert!(!a.extra_tabs().contains(&"zones"));
     }
 
     #[test]
