@@ -1142,3 +1142,8 @@
 1141|GRBL gan mód léasair: múchtar an léasar (S0) roimh gach gluaiseacht. Déan an chéad jab ar an gcumhacht is ísle.
 1142|Bíonn difríocht idir cláir Gerbil san uasluach S ($30 = 1000 ar chuid, 2048 ar chuid eile): léigh ón ngléas é.
 1143|Is iad na hairde sin airde ais Z an mheaisín (mar atá ar an gcluaisín Rialú).
+1144|Sorcóir (3D)
+1145|An píosa ar an ais rothlach leis an méid a dhóitear air. Tarraing chun é a chasadh; zúmálann an roth.
+1146|Cothrom
+1147|Dromchla an phíosa leata amach, mar atá ar an limistéar oibre
+1148|Tarraing: cas · roth: zúmáil

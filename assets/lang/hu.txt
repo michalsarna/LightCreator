@@ -1142,3 +1142,8 @@
 1141|GRBL lézer mód nélkül: a lézer minden mozgás előtt kikapcsol (S0). Az első munkát a legkisebb teljesítménnyel végezze.
 1142|A Gerbil kártyák legnagyobb S értéke eltér ($30 egyeseken 1000, másokon 2048): olvassa ki az eszközből.
 1143|A magasságok a gép Z tengelyéé (mint a Vezérlés lapon).
+1144|Henger (3D)
+1145|A munkadarab a forgótengelyen azzal, amit ráégetnek. Húzással forgatható, a görgő nagyít.
+1146|Lapos
+1147|A munkadarab kiterített felülete, mint a munkaterületen
+1148|Húzás: forgatás · görgő: nagyítás

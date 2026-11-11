@@ -1142,3 +1142,8 @@
 1141|GRBL uden lasertilstand: laseren slukkes (S0) før hver bevægelse. Kør det første job ved laveste effekt.
 1142|Gerbil-kort har forskellig maksimal S-værdi ($30 er 1000 på nogle, 2048 på andre): læs den fra enheden.
 1143|Højderne er maskinens Z-akses (som på fanen Styring).
+1144|Cylinder (3D)
+1145|Emnet på drejeaksen med det, der brændes på det. Træk for at dreje det; hjulet zoomer.
+1146|Flad
+1147|Emnets udfoldede overflade, som på arbejdsområdet
+1148|Træk: drej · hjul: zoom

@@ -57,6 +57,7 @@ Przeciąganie przenosi kartę tylko między istniejącymi panelami: nowy panel p
 
 * **Widok → Jeden widok** zbiera wszystkie karty z powrotem w jednym panelu.
 * Zamknięcie ostatniej karty panelu zamyka panel, a pozostałe się zsuwają. Tak samo działa przeniesienie jego ostatniej karty gdzie indziej.
+* Zamknięcie ostatniego otwartego rysunku (po pytaniu o zapis, gdy ma niezapisane zmiany) pyta **Zamknąć program?**: **Zamknij program** zamyka go, **Wróć do ekranu startowego** (albo Escape) pokazuje ekran startowy.
 
 ## Zamykanie karty
 

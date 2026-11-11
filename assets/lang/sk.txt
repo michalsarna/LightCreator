@@ -1142,3 +1142,8 @@
 1141|GRBL bez laserového režimu: laser sa vypína (S0) pred každým presunom. Prvú úlohu urobte pri najnižšom výkone.
 1142|Dosky Gerbil sa líšia maximálnou hodnotou S ($30 je na niektorých 1000, na iných 2048): prečítajte ju zo zariadenia.
 1143|Výšky sú výšky osi Z stroja (ako na karte Ovládanie).
+1144|Valec (3D)
+1145|Obrobok na otočnej osi s tým, čo sa naň vypáli. Ťahaním ho otočíte, koliesko približuje.
+1146|Plocho
+1147|Rozvinutý povrch obrobku, ako na pracovnej ploche
+1148|Ťahanie: otočiť · koliesko: priblížiť

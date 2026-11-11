@@ -8,6 +8,7 @@ mod check_ui;
 mod cam_test_ui;
 mod clipart_ui;
 mod canvas;
+mod cylinder_view;
 mod control_glue;
 mod device_ui;
 mod firmware_ui;
@@ -56,6 +57,7 @@ const FESTIVE: base_ui::seasonal::Variants = base_ui::seasonal::Variants {
     new_years_eve: (include_bytes!("../../../assets/icons/seasonal/newyear-256.png"), include_bytes!("../../../assets/icons/seasonal/newyear-512.png")),
     halloween: (include_bytes!("../../../assets/icons/seasonal/halloween-256.png"), include_bytes!("../../../assets/icons/seasonal/halloween-512.png")),
     easter: (include_bytes!("../../../assets/icons/seasonal/easter-256.png"), include_bytes!("../../../assets/icons/seasonal/easter-512.png")),
+    chinese_new_year: (include_bytes!("../../../assets/icons/seasonal/chinesenewyear-256.png"), include_bytes!("../../../assets/icons/seasonal/chinesenewyear-512.png")),
 };
 
 /// The 256 px and 512 px logo of the day; the tests (and so the screenshots) always get the normal one.

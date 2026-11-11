@@ -2,6 +2,8 @@
 
 # Urządzenia i sterowniki
 
+> Maszyny, na których LightCreator na pewno działa, i jak dopisać swoją: [TESTS_ON_DEVICES.md](https://github.com/michalsarna/LightCreator/blob/main/TESTS_ON_DEVICES.md).
+
 ![Konfiguracja urządzenia](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/05-device-config.png)
 
 ![Dodawanie urządzenia](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/33-add-device.png)
@@ -55,7 +57,8 @@ Strona **Laser** wymienia głowice lasera maszyny (co najmniej jedna). Głowica 
   * obwód przedmiotu `C = π × średnica przedmiotu`; projekt nie może być wyższy (kontrola zadania);
   * tryb *Replaces Y*: Y zostaje milimetrami po powierzchni, a sterownik potrzebuje `$101 = mikrokroki na obrót / (π × średnica napędzająca)`, gdzie średnica napędzająca to przedmiot dla uchwytu i rolka dla rolek (powierzchnia przedmiotu przesuwa się jak powierzchnia rolki). Strona pokazuje wartość i może ją zapisać przez edytor firmware po potwierdzeniu;
   * tryb *True A axis*: `A` w stopniach zastępuje `Y`, `A = Y × 360 / (π × średnica napędzająca)`. Wymaga firmware z czwartą osią; GRBL 1.1 ma trzy, więc tam opcja jest wyłączona i używane jest Y. Na osi A nie są zapisywane łuki;
-  * warstwy oznacza się jako *rotary*; warstw obrotowych i płaskich nie można mieszać w jednym zadaniu; kanwa pokazuje, gdzie powtarza się obwód.
+  * warstwy oznacza się jako *rotary*; warstw obrotowych i płaskich nie można mieszać w jednym zadaniu; kanwa pokazuje, gdzie powtarza się obwód;
+  * **Podgląd** pokazuje zadanie na przedmiocie: **Walec (3D)** to walec o średnicy przedmiotu z wypalonymi liniami nawiniętymi na niego (bliższa strona; przeciąganie w górę i w dół obraca go, w lewo i w prawo przechyla, kółko powiększa, przyciski dopasowania ustawiają go z powrotem), **Płasko** to rozwinięta powierzchnia jak dotąd.
 * **Strefy zakazane z Z:** z osią Z strefę można ograniczyć do zakresu wysokości (jak pudełko lub walec stojący na stole); ruch na wysokości poza zakresem jest wolny. Warstwy bez ustawionego Z są traktowane jak na każdej wysokości.
 
 ## Profile urządzeń

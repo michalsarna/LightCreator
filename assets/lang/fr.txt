@@ -1142,3 +1142,8 @@
 1141|GRBL sans mode laser : le laser est éteint (S0) avant chaque déplacement. Faites le premier travail à la puissance la plus faible.
 1142|Les cartes Gerbil diffèrent par la valeur S maximale ($30 vaut 1000 sur certaines, 2048 sur d'autres) : lisez-la depuis l'appareil.
 1143|Les hauteurs sont celles de l'axe Z de la machine (comme dans l'onglet Contrôle).
+1144|Cylindre (3D)
+1145|La pièce sur l'axe rotatif avec ce qui y est gravé. Faites glisser pour la tourner, la molette zoome.
+1146|À plat
+1147|La surface déroulée de la pièce, comme sur la zone de travail
+1148|Glisser : tourner · molette : zoom

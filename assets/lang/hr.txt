@@ -1142,3 +1142,8 @@
 1141|GRBL bez laserskog načina: laser se isključuje (S0) prije svakog pomaka. Prvi posao napravite na najmanjoj snazi.
 1142|Pločice Gerbil razlikuju se po najvećoj vrijednosti S ($30 je na nekima 1000, na drugima 2048): očitajte je s uređaja.
 1143|Visine su one osi Z stroja (kao na kartici Upravljanje).
+1144|Valjak (3D)
+1145|Izradak na rotacijskoj osi s onim što se na njemu pali. Povucite da ga okrenete; kotačić zumira.
+1146|Ravno
+1147|Razvijena površina izratka, kao na radnom području
+1148|Povuci: okreni · kotačić: zum

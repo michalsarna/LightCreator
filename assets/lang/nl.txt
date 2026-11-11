@@ -1142,3 +1142,8 @@
 1141|GRBL zonder lasermodus: de laser wordt vóór elke verplaatsing uitgezet (S0). Doe de eerste taak op het laagste vermogen.
 1142|Gerbil-borden verschillen in de maximale S-waarde ($30 is 1000 op sommige, 2048 op andere): lees hem van het apparaat.
 1143|De hoogten zijn die van de Z-as van de machine (zoals op het tabblad Besturing).
+1144|Cilinder (3D)
+1145|Het werkstuk op de draaias met wat erop wordt gebrand. Sleep om het te draaien; het wiel zoomt.
+1146|Plat
+1147|Het uitgerolde oppervlak van het werkstuk, zoals op het werkgebied
+1148|Slepen: draaien · wiel: zoomen
