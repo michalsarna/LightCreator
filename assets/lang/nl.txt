@@ -1147,3 +1147,5 @@
 1146|Plat
 1147|Het uitgerolde oppervlak van het werkstuk, zoals op het werkgebied
 1148|Slepen: draaien · wiel: zoomen
+1149|Maten in het voorbeeld
+1150|Cilinder in het voorbeeld (draaias)

@@ -1147,3 +1147,5 @@
 1146|Ċatt
 1147|Il-wiċċ tal-biċċa miftuħ, bħal fuq iż-żona tax-xogħol
 1148|Ikkaxkar: dawwar · rota: żum
+1149|Dimensjonijiet fil-preview
+1150|Ċilindru fil-preview (fus li jdur)

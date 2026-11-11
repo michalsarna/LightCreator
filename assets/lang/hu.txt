@@ -1147,3 +1147,5 @@
 1146|Lapos
 1147|A munkadarab kiterített felülete, mint a munkaterületen
 1148|Húzás: forgatás · görgő: nagyítás
+1149|Méretek az előnézetben
+1150|Henger az előnézetben (forgótengely)

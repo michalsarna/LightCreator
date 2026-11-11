@@ -118,6 +118,7 @@ The commands work on the selection. Most of them are also in the right-click men
 | **Adjust image…** | | Brightness, contrast, gamma and the rest of a selected picture. |
 | **Trace image…** | | Turns a selected picture into outlines. |
 | **Style trace…** | | Draws the selected picture again as lines in one of 19 styles. See [Style Trace](Style-Trace). |
+| **Add as no-go zone** | | Every unlocked selected shape becomes a no-go zone of the device (a circle when it is round, otherwise the rectangle round it) and leaves the drawing. Also in the right-click menu. |
 
 ## View
 
@@ -138,6 +139,8 @@ The commands work on the selection. Most of them are also in the right-click men
 | **Show camera overlay** | | Shows or hides the overlay picture under the design; greyed out while there is no overlay. |
 | **Overlay from…** | | Opens the **Camera overlay** window: load a picture or start a camera, then align it. |
 | **Show no-go zones** | | Draws the no-go zones of the device in red; greyed out when the device has none. |
+| **Dimensions in the preview** | | Shows the sizes of the job over the preview (as its **Dimensions** switch), and opens the preview. |
+| **Cylinder in the preview (rotary)** | | With a rotary attachment: the preview shows the job on the workpiece in 3D, or (off) flat. The same as **Cylinder (3D)** / **Flat** in the preview. |
 
 ## Machine
 
@@ -147,6 +150,7 @@ The commands work on the selection. Most of them are also in the right-click men
 | **Device settings…** | | The device window with all its pages. See [Devices and Controllers](Devices-and-Controllers). |
 | **Firmware settings ($$)…** | | The Firmware page of the device window (GRBL and Marlin). |
 | **Calibration…** | | Works out the steps per millimetre of an axis from a measured move, and the squareness of the axes from two measured diagonals; can write the new value to the controller. Needs a connection. See [Devices and Controllers](Devices-and-Controllers#calibration). |
+| **No-go zones…** | | The device window on its **No-go zones** page. |
 | **Control devices ▸** | | Control device settings… opens the window of the keyboards and pads and their keys; Control device of this machine… chooses the one of the open machine. See [Control Devices](Control-Devices). |
 | **Diagnostics and statistics…** | | The inputs of the controller, the statistics of the machine, the maintenance counters and a zip to save. |
 | **Share over network (ser2net)…** | | Linux only: shares a local serial port over TCP with ser2net. See [Devices and Controllers](Devices-and-Controllers#tcp-and-ser2net). |
@@ -160,6 +164,8 @@ The commands work on the selection. Most of them are also in the right-click men
 | Entry | Key | What it does |
 |---|---|---|
 | **Materials…** | | The materials window of the device: materials, their layer settings, export and import. See [Cuts and Layers](Cuts-and-Layers#materials). |
+| **Layer presets…** | | The window of the presets of layers: save the settings of the active layer under a name, or put a preset on it. |
+| **Preview G-code** | | The G-code of the job as text in a tab, without saving it (the same as the **Preview G-code** button). |
 | **Preview window…** | Ctrl+Shift+P | Opens the preview of the job as a tab of the work area. See [Cuts and Layers](Cuts-and-Layers#preview). |
 | **Export G-code…** | Ctrl+E | The same as **File → Export → Export G-code…** and the **Save G-code** button. |
 

@@ -1147,3 +1147,5 @@
 1146|Plocho
 1147|Rozvinutý povrch obrobku, ako na pracovnej ploche
 1148|Ťahanie: otočiť · koliesko: priblížiť
+1149|Rozmery v náhľade
+1150|Valec v náhľade (otočná os)

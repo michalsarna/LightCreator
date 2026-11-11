@@ -1147,3 +1147,5 @@
 1146|Pla
 1147|La superfície de la peça desplegada, com a l'àrea de treball
 1148|Arrossega: gira · roda: zoom
+1149|Dimensions a la previsualització
+1150|Cilindre a la previsualització (eix rotatiu)

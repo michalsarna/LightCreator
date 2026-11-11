@@ -1147,3 +1147,5 @@
 1146|Plat
 1147|Suprafața piesei desfășurată, ca pe zona de lucru
 1148|Trage: rotește · rotiță: zoom
+1149|Dimensiuni în previzualizare
+1150|Cilindru în previzualizare (axă rotativă)

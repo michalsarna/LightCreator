@@ -1147,3 +1147,5 @@
 1146|Tasane
 1147|Tooriku lahtirullitud pind, nagu tööalal
 1148|Lohista: pööra · ratas: suumi
+1149|Mõõdud eelvaates
+1150|Silinder eelvaates (pöördtelg)

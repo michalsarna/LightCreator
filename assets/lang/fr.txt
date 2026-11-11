@@ -1147,3 +1147,5 @@
 1146|À plat
 1147|La surface déroulée de la pièce, comme sur la zone de travail
 1148|Glisser : tourner · molette : zoom
+1149|Cotes dans l'aperçu
+1150|Cylindre dans l'aperçu (axe rotatif)

@@ -1409,6 +1409,8 @@ impl App {
             Act::TogglePreview => Some(self.preview_on),
             Act::ToggleOverlay => Some(self.overlay_shown()),
             Act::ToggleZones => Some(self.zones_visible),
+            Act::ToggleCylinder => Some(self.pv.cylinder),
+            Act::TogglePreviewDims => Some(self.pv.show_dims),
             Act::SetLang(l) => Some(self.lang == l),
             Act::SetScheme(s) => Some(self.scheme == s),
             _ => None,
@@ -1428,6 +1430,8 @@ impl App {
             Act::StartFrom => self.connected && !self.job_running(),
             Act::ToggleOverlay => self.ed.background.is_some(),
             Act::ToggleZones => !self.doc.device.zones.is_empty(),
+            Act::ToggleCylinder => self.doc.device.rotary.enabled,
+            Act::TogglePreviewDims => !(self.doc.device.rotary.enabled && self.pv.cylinder),
             _ => true,
         }
     }
@@ -1507,7 +1511,7 @@ impl App {
                 self.open_online_clipart(ctx);
             }
             // The standard commands (also pictures and the operations on shapes) were run above, by baseCreator.
-            Act::ToCurves | Act::AutoJoin | Act::ClosePath | Act::DogboneCorners | Act::GridArray | Act::CircleArray | Act::CopyAlongPath | Act::TextOnPath | Act::TrimByShape | Act::RemoveDuplicates | Act::BreakApart | Act::SimplifyShapes | Act::SerialText | Act::MakeCode | Act::NestShapes | Act::MeasureShapes | Act::ExportSelectionSvg | Act::ExportSelectionDxf | Act::ExportAs(_) | Act::BoolUnion | Act::BoolIntersect | Act::BoolSubtract | Act::BoolXor | Act::OffsetShape | Act::RoundCorners | Act::ImportImage | Act::AdjustImage | Act::TraceImage | Act::StyleTrace | Act::Tool(_) | Act::SplitView(_) | Act::SingleView => {}
+            Act::ToCurves | Act::AutoJoin | Act::ClosePath | Act::DogboneCorners | Act::AddAsZones | Act::GridArray | Act::CircleArray | Act::CopyAlongPath | Act::TextOnPath | Act::TrimByShape | Act::RemoveDuplicates | Act::BreakApart | Act::SimplifyShapes | Act::SerialText | Act::MakeCode | Act::NestShapes | Act::MeasureShapes | Act::ExportSelectionSvg | Act::ExportSelectionDxf | Act::ExportAs(_) | Act::BoolUnion | Act::BoolIntersect | Act::BoolSubtract | Act::BoolXor | Act::OffsetShape | Act::RoundCorners | Act::ImportImage | Act::AdjustImage | Act::TraceImage | Act::StyleTrace | Act::Tool(_) | Act::SplitView(_) | Act::SingleView => {}
             Act::QuickGuide => self.show_guide = true,
             Act::OpenGithub => ctx.open_url(egui::OpenUrl::new_tab(crate::help_ui::GITHUB_URL)),
             Act::CameraOverlay => self.ed.show_background = true,
@@ -1546,6 +1550,22 @@ impl App {
                 }
             }
             Act::ToggleZones => self.zones_visible = !self.zones_visible,
+            Act::ToggleCylinder => {
+                self.pv.cylinder = !self.pv.cylinder;
+                self.show_preview = true;
+            }
+            Act::TogglePreviewDims => {
+                self.pv.show_dims = !self.pv.show_dims;
+                self.show_preview = true;
+            }
+            Act::PreviewGcode => self.preview_gcode(),
+            Act::LayerPresets => self.presets_ui.show(),
+            Act::ZoneSettings => {
+                self.open_cfg_edit(self.active);
+                if let Some(c) = self.cfg.as_mut() {
+                    c.page = crate::device_ui::CfgPage::Zones;
+                }
+            }
             Act::TogglePreview => self.preview_on = !self.preview_on,
             Act::DeviceSettings => self.show_device = true,
             Act::SwitchDevice => {

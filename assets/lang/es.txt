@@ -1147,3 +1147,5 @@
 1146|Plano
 1147|La superficie de la pieza desenrollada, como en el área de trabajo
 1148|Arrastrar: girar · rueda: zoom
+1149|Dimensiones en la vista previa
+1150|Cilindro en la vista previa (eje rotativo)

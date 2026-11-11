@@ -1147,3 +1147,5 @@
 1146|Platt
 1147|Arbetsstyckets utvikta yta, som på arbetsytan
 1148|Dra: vrid · hjul: zoom
+1149|Mått i förhandsgranskningen
+1150|Cylinder i förhandsgranskningen (rotationsaxel)

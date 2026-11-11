@@ -118,6 +118,7 @@ Polecenia działają na zaznaczeniu. Większość z nich jest też w menu praweg
 | **Dostosuj obraz…** (Adjust image…) | | Jasność, kontrast, gamma i reszta ustawień zaznaczonego obrazu. |
 | **Wektoryzuj obraz…** (Trace image…) | | Zamienia zaznaczony obraz w obrysy. |
 | **Obrysuj w stylu…** (Style trace…) | | Rysuje zaznaczony obraz na nowo liniami w jednym z 19 stylów. Zobacz [Obrysuj w stylu](Obrys-w-stylu). |
+| **Dodaj jako strefę zakazaną** (Add as no-go zone) | | Każdy zaznaczony, niezablokowany kształt staje się strefą zakazaną urządzenia (okręgiem, gdy jest okrągły, w przeciwnym razie prostokątem wokół niego) i znika z rysunku. Jest też w menu prawego przycisku. |
 
 ## Widok (View)
 
@@ -138,6 +139,8 @@ Polecenia działają na zaznaczeniu. Większość z nich jest też w menu praweg
 | **Pokaż nakładkę z kamery** (Show camera overlay) | | Pokazuje lub ukrywa obraz nakładki pod projektem; wyszarzona, dopóki nie ma nakładki. |
 | **Nakładka z…** (Overlay from…) | | Otwiera okno **Nakładka z kamery**: wczytaj obraz albo włącz kamerę, a potem go wyrównaj. |
 | **Pokaż strefy zakazane** (Show no-go zones) | | Rysuje na czerwono strefy zakazane urządzenia; wyszarzona, gdy urządzenie ich nie ma. |
+| **Wymiary w podglądzie** (Dimensions in the preview) | | Pokazuje wymiary zadania na podglądzie (jak jego przełącznik **Wymiary**) i otwiera podgląd. |
+| **Walec w podglądzie (obrotnica)** (Cylinder in the preview (rotary)) | | Z obrotnicą: podgląd pokazuje zadanie na przedmiocie w 3D albo (wyłączone) płasko. To samo co **Walec (3D)** / **Płasko** w podglądzie. |
 
 ## Maszyna (Machine)
 
@@ -147,6 +150,7 @@ Polecenia działają na zaznaczeniu. Większość z nich jest też w menu praweg
 | **Ustawienia urządzenia…** (Device settings…) | | Okno urządzenia ze wszystkimi stronami. Zobacz [Urządzenia i sterowniki](Urzadzenia-i-sterowniki). |
 | **Ustawienia firmware ($$)…** (Firmware settings ($$)…) | | Strona Firmware okna urządzenia (GRBL i Marlin). |
 | **Kalibracja…** (Calibration…) | | Wylicza liczbę kroków na milimetr osi ze zmierzonego ruchu oraz prostopadłość osi z dwóch zmierzonych przekątnych; może zapisać nową wartość w sterowniku. Wymaga połączenia. Zobacz [Urządzenia i sterowniki](Urzadzenia-i-sterowniki#kalibracja). |
+| **Strefy zakazane…** (No-go zones…) | | Okno urządzenia na stronie **Strefy zakazane**. |
 | **Urządzenia sterujące ▸** | | Ustawienia urządzeń sterujących… otwiera okno klawiatur i padów oraz ich klawiszy; Urządzenie sterujące tej maszyny… wybiera urządzenie otwartej maszyny. Zobacz [Urządzenia sterujące](Urzadzenia-sterujace). |
 | **Diagnostyka i statystyki…** (Diagnostics and statistics…) | | Wejścia sterownika, statystyki maszyny, liczniki przeglądów i zip do zapisania. |
 | **Udostępnij w sieci (ser2net)…** (Share over network (ser2net)…) | | Tylko Linux: udostępnia lokalny port szeregowy przez TCP za pomocą ser2net. Zobacz [Urządzenia i sterowniki](Urzadzenia-i-sterowniki#tcp-i-ser2net). |
@@ -160,6 +164,8 @@ Polecenia działają na zaznaczeniu. Większość z nich jest też w menu praweg
 | Pozycja | Klawisz | Co robi |
 |---|---|---|
 | **Materiały…** (Materials…) | | Okno materiałów urządzenia: materiały, ustawienia ich warstw, eksport i import. Zobacz [Cięcia i warstwy](Ciecia-i-warstwy#materiały). |
+| **Presety warstw…** (Layer presets…) | | Okno presetów warstw: zapisz ustawienia aktywnej warstwy pod nazwą albo nałóż na nią preset. |
+| **Podgląd G-code** (Preview G-code) | | G-code zadania jako tekst na karcie, bez zapisywania (to samo co przycisk **Podgląd G-code**). |
 | **Okno podglądu…** (Preview window…) | Ctrl+Shift+P | Otwiera podgląd zadania jako kartę obszaru roboczego. Zobacz [Cięcia i warstwy](Ciecia-i-warstwy#podgląd). |
 | **Eksportuj G-code…** (Export G-code…) | Ctrl+E | To samo co **Plik → Eksportuj → Eksportuj G-code…** i przycisk **Zapisz G-code**. |
 

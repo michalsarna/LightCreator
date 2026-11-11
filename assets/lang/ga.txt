@@ -1147,3 +1147,5 @@
 1146|Cothrom
 1147|Dromchla an phíosa leata amach, mar atá ar an limistéar oibre
 1148|Tarraing: cas · roth: zúmáil
+1149|Toisí sa réamhamharc
+1150|Sorcóir sa réamhamharc (ais rothlach)
