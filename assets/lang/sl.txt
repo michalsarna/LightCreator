@@ -1147,3 +1147,5 @@
 1146|Ravno
 1147|Razvita površina obdelovanca, kot na delovnem območju
 1148|Povleci: zavrti · kolešček: povečava
+1149|Mere v predogledu
+1150|Valj v predogledu (vrtljiva os)

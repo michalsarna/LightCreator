@@ -1147,3 +1147,5 @@
 1146|Plakans
 1147|Sagataves izritinātā virsma, kā darba laukā
 1148|Velkt: pagriezt · ritenis: tuvināt
+1149|Izmēri priekšskatījumā
+1150|Cilindrs priekšskatījumā (rotācijas ass)

@@ -1147,3 +1147,5 @@
 1146|Ravno
 1147|Razvijena površina izratka, kao na radnom području
 1148|Povuci: okreni · kotačić: zum
+1149|Dimenzije u pregledu
+1150|Valjak u pregledu (rotacijska os)

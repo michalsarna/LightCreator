@@ -47,6 +47,15 @@ pub enum Act {
     AutoJoin,
     ClosePath,
     DogboneCorners,
+    AddAsZones,
+    /// The device settings, on their page of the no-go zones.
+    ZoneSettings,
+    PreviewGcode,
+    LayerPresets,
+    /// The preview of a job on a rotary: the cylinder in 3D, or flat.
+    ToggleCylinder,
+    /// The sizes of the job over the preview.
+    TogglePreviewDims,
     ExportSelectionSvg,
     ExportSelectionDxf,
     ExportAs(base_ui::editor::Exchange),
@@ -175,6 +184,7 @@ impl From<StdAct> for Act {
             StdAct::AutoJoin => Act::AutoJoin,
             StdAct::ClosePath => Act::ClosePath,
             StdAct::DogboneCorners => Act::DogboneCorners,
+            StdAct::AddAsZones => Act::AddAsZones,
             StdAct::GridArray => Act::GridArray,
             StdAct::CircleArray => Act::CircleArray,
             StdAct::CopyAlongPath => Act::CopyAlongPath,
@@ -246,6 +256,7 @@ impl Act {
             Act::AutoJoin => StdAct::AutoJoin,
             Act::ClosePath => StdAct::ClosePath,
             Act::DogboneCorners => StdAct::DogboneCorners,
+            Act::AddAsZones => StdAct::AddAsZones,
             Act::GridArray => StdAct::GridArray,
             Act::CircleArray => StdAct::CircleArray,
             Act::CopyAlongPath => StdAct::CopyAlongPath,
@@ -277,7 +288,7 @@ pub fn menus() -> base_ui::menu::Menus<Act> {
         device_settings: Act::DeviceSettings,
         firmware: Act::Firmware,
         calibration: Act::Calibration,
-        own: vec![],
+        own: vec![Item(Act::ZoneSettings, "No-go zones…", None)],
         control_devices: Act::ControlDevices,
         control_device_of_machine: Act::ControlDeviceOfMachine,
         diagnostics: Act::Diagnostics,
@@ -290,6 +301,8 @@ pub fn menus() -> base_ui::menu::Menus<Act> {
     let mut view = vec![Item(Act::TogglePreview, "Toolpath preview", None), Item(Act::CameraView, "Camera view", None)];
     view.extend(overlay_entries(Act::ToggleOverlay, Act::CameraOverlay));
     view.push(Item(Act::ToggleZones, "Show no-go zones", None));
+    view.push(Item(Act::TogglePreviewDims, "Dimensions in the preview", None));
+    view.push(Item(Act::ToggleCylinder, "Cylinder in the preview (rotary)", None));
     standard_menus(MenuParts {
         new: Act::New,
         open: Act::Open,
@@ -326,10 +339,11 @@ pub fn menus() -> base_ui::menu::Menus<Act> {
         view_extra: view,
         background: false,
         machine,
-        process: ("Laser", vec![Item(Act::Materials, "Materials…", None), Sep, Item(Act::PreviewWindow, "Preview window…", key("CmdOrCtrl+Shift+P", "Ctrl+Shift+P")), Item(Act::ExportGcode, "Export G-code…", key("CmdOrCtrl+E", "Ctrl+E"))]),
+        process: ("Laser", vec![Item(Act::Materials, "Materials…", None), Item(Act::LayerPresets, "Layer presets…", None), Sep, Item(Act::PreviewGcode, "Preview G-code", None), Item(Act::PreviewWindow, "Preview window…", key("CmdOrCtrl+Shift+P", "Ctrl+Shift+P")), Item(Act::ExportGcode, "Export G-code…", key("CmdOrCtrl+E", "Ctrl+E"))]),
         settings_extra: vec![],
         help_first: vec![Item(Act::QuickGuide, "Quick guide", key("F1", "F1"))],
         help_extra: vec![Item(Act::ExportDiagnostics, "Export diagnostics (zip)…", None)],
+        zones: true,
     })
 }
 

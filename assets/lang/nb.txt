@@ -1147,3 +1147,5 @@
 1146|Flat
 1147|Emnets utbrettede overflate, som på arbeidsområdet
 1148|Dra: snu · hjul: zoom
+1149|Mål i forhåndsvisningen
+1150|Sylinder i forhåndsvisningen (dreieakse)

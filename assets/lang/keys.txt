@@ -1147,3 +1147,5 @@
 1146	Flat
 1147	The surface of the workpiece unrolled, as on the work area
 1148	Drag: turn · wheel: zoom
+1149	Dimensions in the preview
+1150	Cylinder in the preview (rotary)

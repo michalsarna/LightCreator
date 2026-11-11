@@ -1147,3 +1147,5 @@
 1146|Plano
 1147|A superfície da peça desenrolada, como na área de trabalho
 1148|Arrastar: rodar · roda: zoom
+1149|Dimensões na pré-visualização
+1150|Cilindro na pré-visualização (eixo rotativo)

@@ -1147,3 +1147,5 @@
 1146|Flad
 1147|Emnets udfoldede overflade, som på arbejdsområdet
 1148|Træk: drej · hjul: zoom
+1149|Mål i forhåndsvisningen
+1150|Cylinder i forhåndsvisningen (drejeakse)

@@ -1291,6 +1291,8 @@ const TABLE: &[[&str; 7]] = &[
     ["Flat", "Płasko", "Flach", "Piatto", "Tasainen", "平面", "सपाट"],
     ["The surface of the workpiece unrolled, as on the work area", "Rozwinięta powierzchnia przedmiotu, jak na obszarze roboczym", "Die abgewickelte Oberfläche des Werkstücks, wie auf dem Arbeitsbereich", "La superficie del pezzo srotolata, come sull'area di lavoro", "Kappaleen pinta aukilevitettynä, kuten työalueella", "工件表面展开，与工作区相同", "वर्कपीस की खुली हुई सतह, जैसे कार्य क्षेत्र पर"],
     ["Drag: turn · wheel: zoom", "Przeciągnij: obrót · kółko: powiększenie", "Ziehen: drehen · Rad: zoomen", "Trascina: ruota · rotella: zoom", "Vedä: käännä · rulla: zoomaa", "拖动：转动 · 滚轮：缩放", "खींचें: घुमाएँ · व्हील: ज़ूम"],
+    ["Dimensions in the preview", "Wymiary w podglądzie", "Maße in der Vorschau", "Dimensioni nell'anteprima", "Mitat esikatselussa", "预览中的尺寸", "पूर्वावलोकन में आयाम"],
+    ["Cylinder in the preview (rotary)", "Walec w podglądzie (obrotnica)", "Zylinder in der Vorschau (Drehachse)", "Cilindro nell'anteprima (asse rotante)", "Lieriö esikatselussa (pyörityslaite)", "预览中的圆柱（旋转轴）", "पूर्वावलोकन में बेलन (रोटरी)"],
 ];
 #[cfg(test)]
 mod tests {

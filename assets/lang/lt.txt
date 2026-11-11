@@ -1147,3 +1147,5 @@
 1146|Plokščias
 1147|Išskleistas ruošinio paviršius, kaip darbo srityje
 1148|Vilkite: pasukti · ratukas: mastelis
+1149|Matmenys peržiūroje
+1150|Cilindras peržiūroje (sukimo ašis)

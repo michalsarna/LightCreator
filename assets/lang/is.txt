@@ -1147,3 +1147,5 @@
 1146|Flatt
 1147|Útflatt yfirborð vinnustykkisins, eins og á vinnusvæðinu
 1148|Draga: snúa · hjól: aðdráttur
+1149|Mál í forskoðun
+1150|Sívalningur í forskoðun (snúningsás)
