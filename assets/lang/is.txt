@@ -1142,3 +1142,8 @@
 1141|GRBL án leysihams: slökkt er á leysinum (S0) á undan hverri hreyfingu. Keyrðu fyrsta verkið á lægsta afli.
 1142|Gerbil-borð eru misjöfn í hámarks S-gildi ($30 er 1000 á sumum, 2048 á öðrum): lestu það úr tækinu.
 1143|Hæðirnar eru hæðir Z-áss vélarinnar (eins og á Stjórnun-flipanum).
+1144|Sívalningur (3D)
+1145|Vinnustykkið á snúningsásnum með því sem er brennt á það. Dragðu til að snúa því; hjólið stækkar.
+1146|Flatt
+1147|Útflatt yfirborð vinnustykkisins, eins og á vinnusvæðinu
+1148|Draga: snúa · hjól: aðdráttur

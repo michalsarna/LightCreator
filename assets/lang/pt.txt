@@ -1142,3 +1142,8 @@
 1141|GRBL sem modo laser: o laser é desligado (S0) antes de cada deslocação. Faça o primeiro trabalho com a potência mais baixa.
 1142|As placas Gerbil diferem no valor S máximo ($30 é 1000 nalgumas, 2048 noutras): leia-o do dispositivo.
 1143|As alturas são as do eixo Z da máquina (como no separador Controlo).
+1144|Cilindro (3D)
+1145|A peça no eixo rotativo com o que nela é gravado. Arraste para a rodar; a roda faz zoom.
+1146|Plano
+1147|A superfície da peça desenrolada, como na área de trabalho
+1148|Arrastar: rodar · roda: zoom

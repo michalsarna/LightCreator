@@ -19,6 +19,7 @@ The program has been tried on these machines and works there:
 | Sculpfun S9 | diode laser engraver and cutter | GRBL |
 
 It runs on another machine? Tell me in an [issue](https://github.com/michalsarna/LightCreator/issues) and it goes on the list.
+The list with how to add a machine: [TESTS_ON_DEVICES.md](TESTS_ON_DEVICES.md).
 
 ## Screenshots
 

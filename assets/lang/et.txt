@@ -1142,3 +1142,8 @@
 1141|GRBL ilma laserirežiimita: laser lülitatakse enne iga liikumist välja (S0). Tehke esimene töö madalaima võimsusega.
 1142|Gerbili plaatide suurim S-väärtus on erinev ($30 on mõnel 1000, teistel 2048): lugege see seadmest.
 1143|Kõrgused on masina Z-telje omad (nagu vahekaardil Juhtimine).
+1144|Silinder (3D)
+1145|Toorik pöördteljel koos sellega, mis sellele põletatakse. Lohista pööramiseks, ratas suumib.
+1146|Tasane
+1147|Tooriku lahtirullitud pind, nagu tööalal
+1148|Lohista: pööra · ratas: suumi

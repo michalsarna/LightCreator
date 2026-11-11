@@ -200,10 +200,15 @@ impl App {
         lc_core::autosave::clear_slot(&self.data_base, "lightcreator", self.slot);
         let n = self.tabs_state.parked.len();
         if n <= 1 {
-            // The last tab: what is in it is saved or given up by now. The drawing is cleared (so the exit saves nothing)
-            // and the program closes.
+            // The last tab: what is in it is saved or given up by now. The drawing is cleared (so the exit saves nothing).
+            // While the program is closing anyway it goes on; otherwise the person is asked whether to close the program or
+            // to go back to the start screen.
             self.new_doc();
-            self.close_program = true;
+            if self.show_close_dlg {
+                self.close_program = true;
+            } else {
+                self.ask_quit = true;
+            }
             return;
         }
         let at = self.tabs_state.active;
@@ -542,8 +547,17 @@ mod tests {
         assert_eq!(lc_core::autosave::find_all(&a.data_base, "lightcreator").len(), 1);
         a.discard_active();
         a.close_shown_tab();
-        assert!(a.close_program, "the last tab closed: the program closes");
+        assert!(a.ask_quit && !a.close_program, "the last tab closed: the program asks whether to close");
         let ctx = egui::Context::default();
+        // Escape (or "Back to the start screen") keeps the program open on the start screen.
+        a.screen = crate::app::Screen::Editor;
+        let mut raw = egui::RawInput::default();
+        raw.events.push(egui::Event::Key { key: egui::Key::Escape, physical_key: None, pressed: true, repeat: false, modifiers: Default::default() });
+        let mut out = ctx.run_ui(raw, |ui| a.session_tick(ui.ctx()));
+        out.textures_delta.clear();
+        assert!(a.screen == crate::app::Screen::Start && !a.ask_quit && !a.close_program);
+        // "Close the program" closes it.
+        a.close_program = true;
         let mut out = ctx.run_ui(egui::RawInput::default(), |ui| a.session_tick(ui.ctx()));
         out.textures_delta.clear();
         let closing = out.viewport_output.values().any(|v| v.commands.iter().any(|c| matches!(c, egui::ViewportCommand::Close)));

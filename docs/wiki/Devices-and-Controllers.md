@@ -2,6 +2,8 @@
 
 # Devices and Controllers
 
+> The machines LightCreator is confirmed to work on, and how to add yours: [TESTS_ON_DEVICES.md](https://github.com/michalsarna/LightCreator/blob/main/TESTS_ON_DEVICES.md).
+
 ![Device configuration](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/05-device-config.png)
 
 ![Add a device](https://raw.githubusercontent.com/michalsarna/LightCreator/main/docs/screenshots/33-add-device.png)
@@ -55,7 +57,8 @@ The **Laser** page lists the laser heads of the machine (at least one). A head h
   * circumference of the work `C = π × workpiece diameter`; the design may not be higher than that (job check);
   * *Replaces Y* mode: Y stays millimetres on the surface and the controller needs `$101 = microsteps per turn / (π × drive diameter)`, where the drive diameter is the workpiece for a chuck and the roller for rollers (the surface of the work moves like the surface of a roller). The page shows the value and can write it through the firmware editor, after a confirmation;
   * *True A axis* mode: `A` in degrees takes the place of `Y`, `A = Y × 360 / (π × drive diameter)`. It needs firmware with a fourth axis; GRBL 1.1 has three, so there the option is disabled and Y is used. No arcs are written on the A axis;
-  * layers are marked *rotary*; rotary and flat layers cannot be in one job; the canvas marks where the circumference repeats.
+  * layers are marked *rotary*; rotary and flat layers cannot be in one job; the canvas marks where the circumference repeats;
+  * the **Preview** shows the job on the workpiece: **Cylinder (3D)** is a cylinder of the workpiece diameter with the burned lines wound round it (the near side; drag up and down to turn it, left and right to swing it, the wheel zooms, the fit buttons turn it back), **Flat** the unrolled surface as before.
 * **No-go zones with Z:** with a Z axis a zone can be limited to a range of heights (like a box or a cylinder standing on the table); a move at a height outside the range is free. Layers that do not set Z are treated as being at every height.
 
 ## Device profiles

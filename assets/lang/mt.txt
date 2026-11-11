@@ -1142,3 +1142,8 @@
 1141|GRBL mingħajr modalità laser: il-laser jintefa (S0) qabel kull moviment. Agħmel l-ewwel xogħol bl-inqas qawwa.
 1142|Il-bordijiet Gerbil ivarjaw fil-valur S massimu ($30 hu 1000 fuq xi wħud, 2048 fuq oħrajn): aqrah mill-apparat.
 1143|L-għoli huma dawk tal-assi Z tal-magna (bħal fit-tab Kontroll).
+1144|Ċilindru (3D)
+1145|Il-biċċa fuq il-fus li jdur b'dak li jinħaraq fuqha. Ikkaxkar biex iddawwarha; ir-rota tkabbar.
+1146|Ċatt
+1147|Il-wiċċ tal-biċċa miftuħ, bħal fuq iż-żona tax-xogħol
+1148|Ikkaxkar: dawwar · rota: żum

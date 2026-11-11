@@ -1142,3 +1142,8 @@
 1141|GRBL sense mode làser: el làser s'apaga (S0) abans de cada desplaçament. Feu la primera tasca amb la potència més baixa.
 1142|Les plaques Gerbil difereixen en el valor S màxim ($30 és 1000 en unes i 2048 en d'altres): llegiu-lo del dispositiu.
 1143|Les altures són les de l'eix Z de la màquina (com a la pestanya Control).
+1144|Cilindre (3D)
+1145|La peça a l'eix rotatiu amb el que s'hi crema. Arrossega per girar-la; la roda amplia.
+1146|Pla
+1147|La superfície de la peça desplegada, com a l'àrea de treball
+1148|Arrossega: gira · roda: zoom

@@ -1142,3 +1142,8 @@
 1141|GRBL fără mod laser: laserul se oprește (S0) înainte de fiecare deplasare. Faceți prima lucrare la puterea cea mai mică.
 1142|Plăcile Gerbil diferă la valoarea S maximă ($30 este 1000 pe unele, 2048 pe altele): citiți-o de pe dispozitiv.
 1143|Înălțimile sunt cele ale axei Z a mașinii (ca în fila Control).
+1144|Cilindru (3D)
+1145|Piesa pe axa rotativă cu ce se arde pe ea. Trageți pentru a o roti; rotița mărește.
+1146|Plat
+1147|Suprafața piesei desfășurată, ca pe zona de lucru
+1148|Trage: rotește · rotiță: zoom

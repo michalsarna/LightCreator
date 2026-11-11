@@ -1142,3 +1142,8 @@
 1141|GRBL sin modo láser: el láser se apaga (S0) antes de cada desplazamiento. Haga el primer trabajo con la potencia más baja.
 1142|Las placas Gerbil difieren en el valor S máximo ($30 es 1000 en unas y 2048 en otras): léalo del dispositivo.
 1143|Las alturas son las del eje Z de la máquina (como en la pestaña Control).
+1144|Cilindro (3D)
+1145|La pieza en el eje rotativo con lo que se graba en ella. Arrastra para girarla; la rueda amplía.
+1146|Plano
+1147|La superficie de la pieza desenrollada, como en el área de trabajo
+1148|Arrastrar: girar · rueda: zoom

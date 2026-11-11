@@ -1142,3 +1142,8 @@
 1141|GRBL brez laserskega načina: laser se izklopi (S0) pred vsakim premikom. Prvo opravilo naredite pri najnižji moči.
 1142|Plošče Gerbil se razlikujejo po največji vrednosti S ($30 je na nekaterih 1000, na drugih 2048): preberite jo iz naprave.
 1143|Višine so višine osi Z stroja (kot na zavihku Upravljanje).
+1144|Valj (3D)
+1145|Obdelovanec na vrtljivi osi s tem, kar se bo vžgalo nanj. Povlecite, da ga zavrtite; kolešček povečuje.
+1146|Ravno
+1147|Razvita površina obdelovanca, kot na delovnem območju
+1148|Povleci: zavrti · kolešček: povečava

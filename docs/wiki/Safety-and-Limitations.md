@@ -2,6 +2,8 @@
 
 # Safety and Limitations
 
+> The machines LightCreator is confirmed to work on, and how to add yours: [TESTS_ON_DEVICES.md](https://github.com/michalsarna/LightCreator/blob/main/TESTS_ON_DEVICES.md).
+
 > ⚠️ **Lasers are dangerous.** Test G-code at low power, wear eye protection, never leave a running machine unattended, and verify your machine's `$30` (S-max) and `$32` (laser mode) settings.
 
 ## What has been verified

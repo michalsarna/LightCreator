@@ -175,7 +175,8 @@
   tab of the side panel lists the zones while there are any.
 * **File format of the G-code:** the very start and the very end of the file with `{variables}` (the project, the path, the date, the box of the paths, the device) and an **own file format** for controllers: decimal point after whole numbers, `%` lines, the dwell word, line numbers, no comments. All off by default; the file is the same as before.
 * **Z axis and rotary:** an optional Z axis (range, layer heights and a step per pass, Z jog, checked heights) and a rotary
-  attachment (chuck or rollers, Y or true A axis, steps per mm for `$101`, rotary layers, circumference check and marks).
+  attachment (chuck or rollers, Y or true A axis, steps per mm for `$101`, rotary layers, circumference check and marks). With a rotary the preview shows
+  the job on the workpiece as a 3D cylinder (turn it with the mouse), or flat.
 * **While a job runs** the Device and Control tabs lock jog, cancel jog, home, unlock and the jog options; pause, resume and STOP
   stay. Connect is green and Disconnect purple.
 * **Read from device:** the device configuration window can connect and read work area, S-value max, travel

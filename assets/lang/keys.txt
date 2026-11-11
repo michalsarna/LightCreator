@@ -1142,3 +1142,8 @@
 1141	GRBL without laser mode: the laser is switched off (S0) before every move. Try the first job at the lowest power.
 1142	Gerbil boards differ in the maximum S value ($30 is 1000 on some, 2048 on others): read it from the device.
 1143	The heights are those of the Z axis of the machine (as on the Control tab).
+1144	Cylinder (3D)
+1145	The workpiece on the rotary attachment with what is burned on it. Drag to turn it, the wheel zooms.
+1146	Flat
+1147	The surface of the workpiece unrolled, as on the work area
+1148	Drag: turn · wheel: zoom

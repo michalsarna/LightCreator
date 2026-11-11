@@ -37,6 +37,7 @@ Program został wypróbowany na tych maszynach i na nich działa:
 | Sculpfun S9 | laserowa grawerka i wycinarka diodowa | GRBL |
 
 Działa na innej maszynie? Napisz w [zgłoszeniu](https://github.com/michalsarna/LightCreator/issues), a trafi na listę.
+Lista i opis, jak dopisać maszynę: [TESTS_ON_DEVICES.md](https://github.com/michalsarna/LightCreator/blob/main/TESTS_ON_DEVICES.md).
 
 ## W skrócie
 

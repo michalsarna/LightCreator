@@ -63,6 +63,10 @@ pub struct PreviewState {
     /// Fit the view to the burned objects (true) or to the whole work area (false).
     pub fit_objects: bool,
     pub job: Option<(u64, gcode::Job)>,
+    /// With a rotary attachment: the job on the workpiece in 3D (true), or flat as on the work area.
+    pub cylinder: bool,
+    /// How the cylinder is looked at.
+    pub orbit: crate::cylinder_view::Orbit,
 }
 
 impl Default for PreviewState {
@@ -79,6 +83,8 @@ impl Default for PreviewState {
             hidden: vec![],
             fit_objects: true,
             job: None,
+            cylinder: true,
+            orbit: Default::default(),
         }
     }
 }
@@ -180,13 +186,21 @@ impl App {
         let line_w = self.ed.grid_prefs.line_width;
         let (bw, bh) = self.doc.device.work_size();
         let total = self.pv.cum.last().copied().unwrap_or(0.0);
+        let rotary = self.doc.device.rotary.enabled;
         ui.horizontal_wrapped(|ui| {
+            if rotary {
+                ui.selectable_value(&mut self.pv.cylinder, true, tr("Cylinder (3D)")).on_hover_text(tr("The workpiece on the rotary attachment with what is burned on it. Drag to turn it, the wheel zooms."));
+                ui.selectable_value(&mut self.pv.cylinder, false, tr("Flat")).on_hover_text(tr("The surface of the workpiece unrolled, as on the work area"));
+                ui.separator();
+            }
             ui.label(tr("Colour by"));
             ui.selectable_value(&mut self.pv.color_by, ColorBy::Operation, tr("Operation"));
             ui.selectable_value(&mut self.pv.color_by, ColorBy::Layer, tr("Layer"));
             ui.separator();
             base_ui::widgets::toggle(ui, &mut self.pv.show_travel, tr("Show travel moves"), tr("Moves of the machine with the laser off"));
-            base_ui::widgets::toggle(ui, &mut self.pv.show_dims, tr("Dimensions"), tr("Show the sizes of the job as on a technical drawing"));
+            if !(rotary && self.pv.cylinder) {
+                base_ui::widgets::toggle(ui, &mut self.pv.show_dims, tr("Dimensions"), tr("Show the sizes of the job as on a technical drawing"));
+            }
             ui.separator();
             let auto = self.bed_fill();
             base_ui::widgets::area_colour(ui, tr("Work area colour"), &mut self.ed.grid_prefs.preview_color, auto);
@@ -264,6 +278,10 @@ impl App {
             let (resp, painter) = ui.allocate_painter(avail, Sense::click_and_drag());
             let rect = resp.rect;
             painter.rect_filled(rect, 0.0, self.workspace_fill());
+            if rotary && self.pv.cylinder {
+                self.cylinder_picture(ui, &resp, &painter.with_clip_rect(rect), job, total, line_w);
+                return;
+            }
             if (self.pv.view.need_fit || self.pv.view.auto_fit) && rect.width() > 50.0 {
                 let mut bounds: Option<(f64, f64, f64, f64)> = None;
                 if self.pv.fit_objects {
@@ -395,6 +413,94 @@ impl App {
     }
 }
 
+impl App {
+    /// The colour of a move in the preview, or `None` when it is not drawn.
+    fn move_stroke(&self, m: &gcode::Move, n_ops: usize, line_w: f32, travel: bool) -> Option<Stroke> {
+        if self.pv.hidden.contains(&m.op) {
+            return None;
+        }
+        if m.laser {
+            let c = match self.pv.color_by {
+                ColorBy::Operation => op_color(m.op, n_ops),
+                ColorBy::Layer => layer_ink(PALETTE[self.doc.layers[m.layer].color.min(lc_core::LAYER_COUNT - 1)]),
+            };
+            Some(Stroke::new(line_w * 0.8, c))
+        } else if travel {
+            Some(Stroke::new(0.5, Color32::from_rgb(0x90, 0x90, 0xa0).gamma_multiply(0.8)))
+        } else {
+            None
+        }
+    }
+
+    /// The cylinder of the rotary in the preview: the workpiece of the diameter of the device, as long as the job and a little more,
+    /// the middle of the job facing the viewer; the burned lines wound round it up to the time of the slider, and the head.
+    fn cylinder_picture(&mut self, ui: &mut egui::Ui, resp: &egui::Response, painter: &egui::Painter, job: &gcode::Job, total: f64, line_w: f32) {
+        use crate::cylinder_view::{self as cv, Cylinder, Orbit, Projection};
+        let rect = resp.rect;
+        let r = (self.doc.device.rotary.diameter / 2.0).max(0.5);
+        let burns = job.moves.iter().filter(|m| m.laser).flat_map(|m| [m.a, m.b]);
+        let (x0, x1, y0, y1) = burns.fold((f64::INFINITY, f64::NEG_INFINITY, f64::INFINITY, f64::NEG_INFINITY), |b, p| (b.0.min(p.x), b.1.max(p.x), b.2.min(p.y), b.3.max(p.y)));
+        let (bw, _) = self.doc.device.work_size();
+        let (x0, x1, y_mid) = if x0.is_finite() { (x0 - 15.0, x1 + 15.0, (y0 + y1) / 2.0) } else { (0.0, bw, 0.0) };
+        let (x0, x1) = if x1 - x0 < 2.0 * r { ((x0 + x1) / 2.0 - r, (x0 + x1) / 2.0 + r) } else { (x0, x1) };
+        // Dragging turns the cylinder (up and down) and swings it (left and right); the wheel zooms.
+        if resp.dragged() {
+            let d = resp.drag_delta();
+            let o = &mut self.pv.orbit;
+            o.spin += d.y as f64 / (r * 2.0).max(10.0) * 0.6;
+            o.yaw = (o.yaw + d.x as f64 * 0.01).clamp(-1.2, 1.2);
+        }
+        if resp.hovered() {
+            let scroll = ui.input(|i| i.smooth_scroll_delta.y);
+            if scroll.abs() > 0.0 {
+                self.pv.orbit.zoom = (self.pv.orbit.zoom * (scroll * 0.0015).exp()).clamp(0.2, 20.0);
+            }
+        }
+        let pj = Projection::new(rect, Cylinder { r, x0, x1, y_mid }, self.pv.orbit);
+        cv::paint_body(painter, &pj, [0xd8, 0xb0, 0x7c]);
+        let n_ops = job.ops.len();
+        let skip_travel = job.moves.len() > 200_000;
+        let travel = self.pv.show_travel && !skip_travel;
+        let t_now = self.pv.progress as f64 * total;
+        let cur = self.pv.cum.partition_point(|c| *c <= t_now).min(job.moves.len());
+        let mut shapes = Vec::with_capacity(cur);
+        // A little thicker than on the flat picture: the lines lie on a shaded surface.
+        let line_w = line_w.max(1.6);
+        for m in job.moves.iter().take(cur) {
+            if let Some(st) = self.move_stroke(m, n_ops, line_w, travel) {
+                cv::wound_line(&mut shapes, &pj, m.a, m.b, st);
+            }
+        }
+        let mut head = None;
+        if let Some(m) = job.moves.get(cur) {
+            let before = if cur == 0 { 0.0 } else { self.pv.cum[cur - 1] };
+            let f = if m.dur > 1e-12 { ((t_now - before) / m.dur).clamp(0.0, 1.0) } else { 1.0 };
+            let p = lc_core::Pt::new(m.a.x + (m.b.x - m.a.x) * f, m.a.y + (m.b.y - m.a.y) * f);
+            if let Some(st) = self.move_stroke(m, n_ops, line_w, travel) {
+                cv::wound_line(&mut shapes, &pj, m.a, p, st);
+            }
+            head = Some(p);
+        } else if let Some(m) = job.moves.last() {
+            head = Some(m.b);
+        }
+        painter.extend(shapes);
+        if let Some(p) = head {
+            let (at, facing) = pj.surface(p);
+            if facing > 0.0 {
+                painter.circle_filled(at, 4.5, Color32::from_rgb(0xe0, 0x20, 0x20));
+                painter.circle_stroke(at, 4.5, Stroke::new(1.0, Color32::WHITE));
+            }
+        }
+        painter.text(rect.left_top() + egui::vec2(8.0, 8.0), egui::Align2::LEFT_TOP, format!("Ø {}", crate::units_ui::fmt_len(self.doc.device.units, 2.0 * r, 1)), egui::FontId::proportional(12.0), theme::text_dim());
+        match base_ui::zoom_bar::overlay_with(ui, rect, self.pv.orbit.zoom, &tr("Drag: turn · wheel: zoom"), true) {
+            Some(base_ui::zoom_bar::ZoomCmd::In) => self.pv.orbit.zoom = (self.pv.orbit.zoom * base_ui::zoom_bar::STEP).min(20.0),
+            Some(base_ui::zoom_bar::ZoomCmd::Out) => self.pv.orbit.zoom = (self.pv.orbit.zoom / base_ui::zoom_bar::STEP).max(0.2),
+            Some(base_ui::zoom_bar::ZoomCmd::FitObjects | base_ui::zoom_bar::ZoomCmd::Whole) => self.pv.orbit = Orbit::default(),
+            None => {}
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::app::{App, Screen};
@@ -467,5 +573,41 @@ mod tests {
             }
         }
         assert_eq!(seen, (true, true), "the label in the bar and the work area in that colour");
+    }
+}
+
+#[cfg(test)]
+mod cylinder_tests {
+    use crate::app::{App, Screen};
+    use eframe::egui;
+
+    fn rotary_app() -> App {
+        let mut a = App::build(&egui::Context::default(), None, false);
+        a.screen = Screen::Editor;
+        a.doc.device.rotary.enabled = true;
+        a.doc.device.rotary.diameter = 60.0;
+        a.doc.add(0, lc_core::Kind::Rect { w: 80.0, h: 40.0 }, lc_core::Xf::translate(60.0, 40.0));
+        a.doc.add(0, lc_core::Kind::Ellipse { w: 30.0, h: 30.0 }, lc_core::Xf::translate(85.0, 45.0));
+        a.show_preview = true;
+        a
+    }
+
+    /// With a rotary attachment the preview starts on the cylinder, and Flat brings back the work area; both draw.
+    #[test]
+    fn with_a_rotary_the_preview_shows_the_cylinder_and_can_go_flat() {
+        let a = rotary_app();
+        assert!(a.pv.cylinder);
+        let shot = std::env::var("LC_CYL_SHOT").ok();
+        let mut h = egui_kittest::Harness::builder().with_accessibility_check(false).with_size([1000.0, 560.0]).with_context_setup(|ctx| {
+            base_ui::fonts::install(ctx);
+            crate::icons::install(ctx);
+        }).build_ui_state(|ui, a: &mut App| a.preview_work_panel(ui), a);
+        h.run_steps(4);
+        if let Some(p) = shot {
+            h.render().unwrap().save(p).unwrap();
+        }
+        h.state_mut().pv.cylinder = false;
+        h.run_steps(2);
+        assert!(!h.state().pv.cylinder);
     }
 }

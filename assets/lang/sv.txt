@@ -1142,3 +1142,8 @@
 1141|GRBL utan laserläge: lasern släcks (S0) före varje förflyttning. Kör det första jobbet med lägsta effekt.
 1142|Gerbil-kort skiljer sig i högsta S-värde ($30 är 1000 på vissa, 2048 på andra): läs det från enheten.
 1143|Höjderna är maskinens Z-axels (som på fliken Styrning).
+1144|Cylinder (3D)
+1145|Arbetsstycket på rotationsaxeln med det som bränns på det. Dra för att vrida det; hjulet zoomar.
+1146|Platt
+1147|Arbetsstyckets utvikta yta, som på arbetsytan
+1148|Dra: vrid · hjul: zoom

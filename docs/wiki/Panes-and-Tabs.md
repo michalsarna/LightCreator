@@ -57,6 +57,7 @@ Dragging moves a tab only between the panes there are: a new pane comes from the
 
 * **View → Single view** puts all the tabs in one pane again.
 * Closing the last tab of a pane closes the pane, and the others close up. So does moving its last tab away.
+* Closing the last open drawing (after the question about saving it, when it has unsaved work) asks **Close the program?**: **Close the program** closes it, **Back to the start screen** (or Escape) shows the start screen.
 
 ## Close a tab
 

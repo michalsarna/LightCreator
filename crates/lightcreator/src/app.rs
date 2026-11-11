@@ -113,6 +113,8 @@ pub struct App {
     pub jog_seen_step: Option<f64>,
     /// The last tab was closed: the program closes too.
     pub close_program: bool,
+    /// The last tab was closed: asking whether to close the program or to go back to the start screen.
+    pub ask_quit: bool,
     /// The tabs of open drawings (the shown one is the live fields above), and the number of the recovery file of the shown one.
     pub tabs_state: crate::workspaces::Tabs,
     /// The central area in panes (one pane unless the person split the view).
@@ -365,6 +367,7 @@ impl App {
             pos: Default::default(),
             jog_seen_step: None,
             close_program: false,
+            ask_quit: false,
             tabs_state: Default::default(),
             gcode_texts: vec![],
             closing_text: None,
