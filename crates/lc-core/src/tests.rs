@@ -1006,6 +1006,33 @@ fn with_acceleration_sharp_corners_slow_the_laser_down() {
 }
 
 #[test]
+fn leads_start_the_cut_off_the_part_and_holes_from_inside() {
+    use base_core::lead::{Lead, LeadKind};
+    // A 40 mm square with a 10 mm square hole in the middle.
+    let mut d = long_line_doc(10.0);
+    d.scene.shapes.clear();
+    d.add(0, Kind::Path(vec![Polyline::new(vec![Pt::new(50.0, 50.0), Pt::new(90.0, 50.0), Pt::new(90.0, 90.0), Pt::new(50.0, 90.0)], true)]), Xf::IDENTITY);
+    d.add(0, Kind::Path(vec![Polyline::new(vec![Pt::new(65.0, 65.0), Pt::new(75.0, 65.0), Pt::new(75.0, 75.0), Pt::new(65.0, 75.0)], true)]), Xf::IDENTITY);
+    let plain = gcode::generate(&d);
+    d.layers[0].lead = Lead { lead_in: LeadKind::Arc, lead_out: LeadKind::Line, length: 3.0, overlap: 1.0, ..Lead::default() };
+    let job = gcode::generate(&d);
+    assert!(job.gcode.contains("; lead in") && job.gcode.contains("; lead out"), "{}", job.gcode);
+    // Every burn starts where the laser was off: in the waste, never on the ring of the part between the two squares.
+    let on_part = |p: Pt| (p.x > 50.0 && p.x < 90.0 && p.y > 50.0 && p.y < 90.0) && !(p.x > 65.0 && p.x < 75.0 && p.y > 65.0 && p.y < 75.0);
+    let starts: Vec<Pt> = job.moves.windows(2).filter(|w| !w[0].laser && w[1].laser).map(|w| w[1].a).collect();
+    assert_eq!(starts.len(), 2, "{starts:?}");
+    for s in &starts {
+        assert!(!on_part(*s), "a burn starts on the part at {s:?}");
+    }
+    let burnt = |j: &gcode::Job| j.moves.iter().filter(|m| m.laser).map(|m| m.a.dist(m.b)).sum::<f64>();
+    assert!(burnt(&job) > burnt(&plain) + 4.0, "{} vs {}", burnt(&job), burnt(&plain));
+    // Off: the same job as before, and the setting is not written.
+    d.layers[0].lead = Lead::default();
+    assert_eq!(gcode::generate(&d).gcode, plain.gcode);
+    assert!(!serde_json::to_string(&d.layers[0]).unwrap().contains("lead"));
+}
+
+#[test]
 fn a_run_of_short_segments_ramps_once_and_a_layer_above_the_maximum_warns() {
     let mut d = long_line_doc(10.0);
     d.scene.shapes[0].kind = Kind::Path(vec![Polyline::new((0..=100).map(|i| Pt::new(i as f64, 0.0)).collect(), false)]);

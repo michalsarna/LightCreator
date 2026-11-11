@@ -73,6 +73,7 @@ pub fn layer_ok(l: &crate::doc::Layer) -> bool {
         && l.tabs.per_shape <= 1000
         && l.tabs.min_tabs <= 1000
         && l.tabs.max_tabs <= 100_000
+        && l.lead.check().is_ok()
 }
 
 /// Is a material that comes from a file within sane limits? The first thing wrong, in words.

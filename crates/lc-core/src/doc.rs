@@ -121,6 +121,10 @@ pub struct Layer {
     /// Line layers: tabs (bridges) left in the outline.
     #[serde(default)]
     pub tabs: crate::cutopts::Tabs,
+    /// Line layers: the cut of a closed outline starts and ends off the part (a line or an arc from the waste side) and goes on
+    /// past its start.
+    #[serde(default, skip_serializing_if = "base_core::lead::Lead::is_default")]
+    pub lead: base_core::lead::Lead,
 }
 
 impl Layer {
@@ -133,7 +137,7 @@ impl Layer {
 
     /// Does the layer use the kerf, perforation or tabs (so that its outlines are not written as they are)?
     pub fn has_cut_options(&self) -> bool {
-        (self.kerf.is_finite() && self.kerf != 0.0) || self.perforation.enabled || self.tabs.enabled
+        (self.kerf.is_finite() && self.kerf != 0.0) || self.perforation.enabled || self.tabs.enabled || !self.lead.is_off()
     }
 
     /// The Z positions of the passes, or nothing when the layer does not move Z.
@@ -195,6 +199,7 @@ impl Layer {
             kerf: 0.0,
             perforation: Default::default(),
             tabs: Default::default(),
+            lead: Default::default(),
         }
     }
 }
