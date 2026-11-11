@@ -1141,3 +1141,4 @@
 1140|LinuxCNC: Ibda jissejvja l-fajl G-code għal LinuxCNC. Il-qawwa tmur fl-output analogu 0 (M67 E0 Q, minn 0 sa S max), li fil-HAL tiegħek irid imexxi l-laser. Ma ġiex ippruvat fuq magna vera.
 1141|GRBL mingħajr modalità laser: il-laser jintefa (S0) qabel kull moviment. Agħmel l-ewwel xogħol bl-inqas qawwa.
 1142|Il-bordijiet Gerbil ivarjaw fil-valur S massimu ($30 hu 1000 fuq xi wħud, 2048 fuq oħrajn): aqrah mill-apparat.
+1143|L-għoli huma dawk tal-assi Z tal-magna (bħal fit-tab Kontroll).

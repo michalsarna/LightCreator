@@ -1141,3 +1141,4 @@
 1140|LinuxCNC: az Indítás elmenti a G-kód fájlt a LinuxCNC-nek. A teljesítmény a 0. analóg kimenetre megy (M67 E0 Q, 0-tól S max-ig), amelynek a HAL-ban a lézert kell vezérelnie. Valódi gépen nem próbálták ki.
 1141|GRBL lézer mód nélkül: a lézer minden mozgás előtt kikapcsol (S0). Az első munkát a legkisebb teljesítménnyel végezze.
 1142|A Gerbil kártyák legnagyobb S értéke eltér ($30 egyeseken 1000, másokon 2048): olvassa ki az eszközből.
+1143|A magasságok a gép Z tengelyéé (mint a Vezérlés lapon).

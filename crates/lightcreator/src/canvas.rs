@@ -88,23 +88,7 @@ impl App {
         }
         // No-go zones: red areas the machine must not enter (switched off in the View menu).
         if self.zones_visible {
-            for z in &self.doc.device.zones {
-                let (fill, edge) = if z.enabled { (Color32::from_rgba_unmultiplied(0xc0, 0x30, 0x30, 70), Color32::from_rgb(0xc0, 0x30, 0x30)) } else { (Color32::from_rgba_unmultiplied(0x90, 0x90, 0x90, 30), Color32::from_gray(0x90)) };
-                let b = z.shape.bounds();
-                match z.shape {
-                    lc_core::ZoneShape::Rect { .. } => {
-                        let r = egui::Rect::from_min_max(self.w2s(o, b.min), self.w2s(o, b.max));
-                        painter.rect_filled(r, 0.0, fill);
-                        painter.rect_stroke(r, 0.0, Stroke::new(1.5, edge), egui::StrokeKind::Middle);
-                    }
-                    lc_core::ZoneShape::Circle { x, y, r } => {
-                        let c = self.w2s(o, Pt::new(x, y));
-                        painter.circle(c, r.abs() as f32 * self.ed.view.zoom, fill, Stroke::new(1.5, edge));
-                    }
-                }
-                let at = self.w2s(o, Pt::new(b.min.x, b.min.y));
-                painter.text(at + egui::vec2(4.0, 2.0), egui::Align2::LEFT_TOP, &z.name, egui::FontId::proportional(11.0), edge);
-            }
+            base_ui::zones_ui::paint(painter, &|p| self.w2s(o, p), self.ed.view.zoom, &self.doc.device.zones);
         }
         // Origin marker (machine zero)
         painter.circle_filled(self.w2s(o, self.doc.device.home_point()), 4.0, theme::accent());

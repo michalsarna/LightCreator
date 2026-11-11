@@ -1141,3 +1141,4 @@
 1140|LinuxCNC: Ræsa vistar G-kóðaskrána fyrir LinuxCNC. Aflið fer á hliðrænt úttak 0 (M67 E0 Q, frá 0 upp í S max), sem í HAL þínu verður að stýra leysinum. Ekki prófað á raunverulegri vél.
 1141|GRBL án leysihams: slökkt er á leysinum (S0) á undan hverri hreyfingu. Keyrðu fyrsta verkið á lægsta afli.
 1142|Gerbil-borð eru misjöfn í hámarks S-gildi ($30 er 1000 á sumum, 2048 á öðrum): lestu það úr tækinu.
+1143|Hæðirnar eru hæðir Z-áss vélarinnar (eins og á Stjórnun-flipanum).

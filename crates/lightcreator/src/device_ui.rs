@@ -859,66 +859,7 @@ impl App {
                         }
                     }
                     CfgPage::Zones => {
-                        ui.label(RichText::new(tr("Parts of the work area the machine must never enter (a clamp, a fixture). A move that touches an enabled zone, also one with the laser off, stops Start, Frame and export. The program does not route around zones.")).color(theme::text_dim()));
-                        ui.add_space(4.0);
-                        let mut remove = None;
-                        let has_z = d.axes.has_z;
-                        for (i, z) in d.zones.iter_mut().enumerate() {
-                            ui.horizontal_wrapped(|ui| {
-                                ui.checkbox(&mut z.enabled, "");
-                                ui.add(egui::TextEdit::singleline(&mut z.name).hint_text(tr("Zone name")).desired_width(150.0));
-                                let rect = matches!(z.shape, lc_core::ZoneShape::Rect { .. });
-                                let mut want_rect = rect;
-                                egui::ComboBox::from_id_salt(("zone_shape", i)).selected_text(tr(if rect { "Rectangle" } else { "Circle" })).show_ui(ui, |ui| {
-                                    ui.selectable_value(&mut want_rect, true, tr("Rectangle"));
-                                    ui.selectable_value(&mut want_rect, false, tr("Circle"));
-                                });
-                                if want_rect != rect {
-                                    let b = z.shape.bounds();
-                                    z.shape = if want_rect { lc_core::ZoneShape::Rect { x: b.min.x, y: b.min.y, w: b.width(), h: b.height() } } else { lc_core::ZoneShape::Circle { x: b.center().x, y: b.center().y, r: (b.width().max(b.height())) / 2.0 } };
-                                }
-                                if crate::window_ui::delete_icon(ui, &tr("Delete this zone")).clicked() {
-                                    remove = Some(i);
-                                }
-                            });
-                            if has_z {
-                                ui.horizontal_wrapped(|ui| {
-                                    ui.add_space(24.0);
-                                    let mut limited = z.z_range.is_some();
-                                    if ui.checkbox(&mut limited, tr("Only at these heights (Z)")).on_hover_text(tr("Like a box or a cylinder standing on the table: moves above or below the range are free.")).changed() {
-                                        z.z_range = if limited { Some((0.0, 10.0)) } else { None };
-                                    }
-                                    if let Some((lo, hi)) = &mut z.z_range {
-                                        ui.add(egui::DragValue::new(lo).speed(0.5).suffix(" mm"));
-                                        ui.label("–");
-                                        ui.add(egui::DragValue::new(hi).speed(0.5).suffix(" mm"));
-                                    }
-                                });
-                            }
-                            ui.horizontal_wrapped(|ui| {
-                                ui.add_space(24.0);
-                                match &mut z.shape {
-                                    lc_core::ZoneShape::Rect { x, y, w, h } => {
-                                        for (label, v) in [("X", x), ("Y", y), ("W", w), ("H", h)] {
-                                            ui.label(label);
-                                            drag_len(ui, u, v, 0.5, Some((-5000.0, 5000.0)));
-                                        }
-                                    }
-                                    lc_core::ZoneShape::Circle { x, y, r } => {
-                                        for (label, v) in [("X", x), ("Y", y), ("R", r)] {
-                                            ui.label(label);
-                                            drag_len(ui, u, v, 0.5, Some((-5000.0, 5000.0)));
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                        if let Some(i) = remove {
-                            d.zones.remove(i);
-                        }
-                        if ui.button(tr("Add a zone")).clicked() {
-                            d.zones.push(lc_core::Zone { name: trf("Zone {}", &[&(d.zones.len() + 1)]), enabled: true, shape: lc_core::ZoneShape::Rect { x: 10.0, y: 10.0, w: 50.0, h: 30.0 }, z_range: None });
-                        }
+                        base_ui::zones_ui::page(ui, u, &mut d.zones, d.axes.has_z, &tr("The heights are those of the Z axis of the machine (as on the Control tab)."));
                     }
                     CfgPage::Firmware => {
                         if self.connected {

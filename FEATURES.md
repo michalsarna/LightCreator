@@ -168,8 +168,9 @@
   settings, beam spot, pointer offset, stored PWM values); layers choose a head, the G-code scales S by the head's S max
   and writes `T<n>`; a focus beam with a safety off switch; pointer alignment and a laser-off dry run.
 * **Hooks, macros and no-go zones:** own G-code at the start and end of layers and objects with `{variables}`, named macros
-  with `@include` run from the Device tab, and rectangular / round no-go zones that block Start, Frame and export when
-  any move (also travel) touches them; all validated before they are kept.
+  with `@include` run from the Device tab, and rectangular / round no-go zones: moves with the laser off go round them by
+  themselves, a burn (or a move that cannot go round) that touches one blocks Start, Frame and export; all validated before
+  they are kept.
 * **File format of the G-code:** the very start and the very end of the file with `{variables}` (the project, the path, the date, the box of the paths, the device) and an **own file format** for controllers: decimal point after whole numbers, `%` lines, the dwell word, line numbers, no comments. All off by default; the file is the same as before.
 * **Z axis and rotary:** an optional Z axis (range, layer heights and a step per pass, Z jog, checked heights) and a rotary
   attachment (chuck or rollers, Y or true A axis, steps per mm for `$101`, rotary layers, circumference check and marks).

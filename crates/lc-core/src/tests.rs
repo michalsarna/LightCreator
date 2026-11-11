@@ -1371,18 +1371,27 @@ fn zoned_doc() -> Document {
 }
 
 #[test]
-fn a_zone_in_the_way_of_any_move_is_an_error_naming_the_zone_and_the_layer() {
+fn a_move_through_the_air_goes_round_a_zone_and_a_burn_in_a_zone_is_an_error() {
     // The rectangle sits at (100,100): the zone is not on its outline ...
     let mut d = zoned_doc();
     assert!(check::job_check(&d).is_empty(), "{:?}", check::job_check(&d));
-    // ... but the way back to the machine's zero (front-left: bottom-left of the design) is a move too: put a zone on it.
+    // ... and a zone on the way back to the machine's zero (front-left: bottom-left of the design) is gone round.
     d.device.zones.push(Zone { name: "Way home".into(), enabled: true, shape: ZoneShape::Circle { x: 50.0, y: 150.0, r: 5.0 }, z_range: None });
+    let issues = check::job_check(&d);
+    assert!(!issues.iter().any(|i| i.kind == check::IssueKind::NoGoZone), "{issues:?}");
+    let job = gcode::generate(&d);
+    assert!(job.gcode.contains("; round a no-go zone"), "{}", job.gcode);
+    for m in &job.moves {
+        assert!(!zones::segment_hits(&d.device.zones[1].shape, m.a, m.b), "{m:?}");
+    }
+    // A zone round the machine's zero cannot be gone round: an error naming the zone and the layer.
+    d.device.zones[1].shape = ZoneShape::Circle { x: 0.0, y: 200.0, r: 5.0 };
     let issues = check::job_check(&d);
     let hit: Vec<_> = issues.iter().filter(|i| i.kind == check::IssueKind::NoGoZone).collect();
     assert_eq!(hit.len(), 1, "{issues:?}");
     assert_eq!((hit[0].zone, hit[0].level), (Some(1), check::Level::Error));
     assert_eq!(hit[0].layer, Some(0));
-    // A zone on the outline itself.
+    // A zone on the outline itself: the burn is an error.
     let mut on = zoned_doc();
     on.device.zones[0].shape = ZoneShape::Rect { x: 110.0, y: 95.0, w: 5.0, h: 20.0 };
     assert!(check::job_check(&on).iter().any(|i| i.kind == check::IssueKind::NoGoZone && i.zone == Some(0)));

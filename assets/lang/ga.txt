@@ -1141,3 +1141,4 @@
 1140|LinuxCNC: sábhálann Tosaigh an comhad G-chóid do LinuxCNC. Téann an chumhacht chuig aschur analógach 0 (M67 E0 Q, ó 0 go S max), nach mór dó an léasar a thiomáint i do HAL. Níor tástáladh ar mheaisín fíor é.
 1141|GRBL gan mód léasair: múchtar an léasar (S0) roimh gach gluaiseacht. Déan an chéad jab ar an gcumhacht is ísle.
 1142|Bíonn difríocht idir cláir Gerbil san uasluach S ($30 = 1000 ar chuid, 2048 ar chuid eile): léigh ón ngléas é.
+1143|Is iad na hairde sin airde ais Z an mheaisín (mar atá ar an gcluaisín Rialú).

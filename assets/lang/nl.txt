@@ -1141,3 +1141,4 @@
 1140|LinuxCNC: Start slaat het G-codebestand voor LinuxCNC op. Het vermogen gaat naar analoge uitgang 0 (M67 E0 Q, van 0 tot S max), die in uw HAL de laser moet aansturen. Niet op een echte machine getest.
 1141|GRBL zonder lasermodus: de laser wordt vóór elke verplaatsing uitgezet (S0). Doe de eerste taak op het laagste vermogen.
 1142|Gerbil-borden verschillen in de maximale S-waarde ($30 is 1000 op sommige, 2048 op andere): lees hem van het apparaat.
+1143|De hoogten zijn die van de Z-as van de machine (zoals op het tabblad Besturing).

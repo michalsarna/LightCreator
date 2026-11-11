@@ -1141,3 +1141,4 @@
 1140|LinuxCNC: Sākt saglabā G-koda failu LinuxCNC. Jauda nonāk analogajā izejā 0 (M67 E0 Q, no 0 līdz S max), kurai jūsu HAL ir jāvada lāzers. Nav izmēģināts uz īstas mašīnas.
 1141|GRBL bez lāzera režīma: lāzers tiek izslēgts (S0) pirms katras pārvietošanās. Pirmo darbu veiciet ar mazāko jaudu.
 1142|Gerbil platēm atšķiras maksimālā S vērtība ($30 dažām ir 1000, citām 2048): nolasiet to no ierīces.
+1143|Augstumi ir mašīnas Z ass augstumi (kā cilnē Vadība).
