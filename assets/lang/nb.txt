@@ -1141,3 +1141,4 @@
 1140|LinuxCNC: Start lagrer G-kodefilen for LinuxCNC. Effekten går til analog utgang 0 (M67 E0 Q, fra 0 til S max), som i HAL-en din må styre laseren. Ikke prøvd på en ekte maskin.
 1141|GRBL uten lasermodus: laseren slås av (S0) før hver forflytning. Kjør den første jobben med lavest effekt.
 1142|Gerbil-kort har ulik maksimal S-verdi ($30 er 1000 på noen, 2048 på andre): les den fra enheten.
+1143|Høydene er maskinens Z-akse (som på fanen Styring).

@@ -1141,3 +1141,4 @@
 1140|LinuxCNC: Iniciar guarda o ficheiro G-code para o LinuxCNC. A potência vai para a saída analógica 0 (M67 E0 Q, de 0 a S max), que no seu HAL tem de comandar o laser. Não experimentado numa máquina real.
 1141|GRBL sem modo laser: o laser é desligado (S0) antes de cada deslocação. Faça o primeiro trabalho com a potência mais baixa.
 1142|As placas Gerbil diferem no valor S máximo ($30 é 1000 nalgumas, 2048 noutras): leia-o do dispositivo.
+1143|As alturas são as do eixo Z da máquina (como no separador Controlo).

@@ -1141,3 +1141,4 @@
 1140|LinuxCNC: Štart uloží súbor G-kódu pre LinuxCNC. Výkon ide na analógový výstup 0 (M67 E0 Q, od 0 po S max), ktorý vo vašom HAL musí riadiť laser. Nevyskúšané na skutočnom stroji.
 1141|GRBL bez laserového režimu: laser sa vypína (S0) pred každým presunom. Prvú úlohu urobte pri najnižšom výkone.
 1142|Dosky Gerbil sa líšia maximálnou hodnotou S ($30 je na niektorých 1000, na iných 2048): prečítajte ju zo zariadenia.
+1143|Výšky sú výšky osi Z stroja (ako na karte Ovládanie).

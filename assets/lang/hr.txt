@@ -1141,3 +1141,4 @@
 1140|LinuxCNC: Start sprema G-kod datoteku za LinuxCNC. Snaga ide na analogni izlaz 0 (M67 E0 Q, od 0 do S max), koji u vašem HAL-u mora upravljati laserom. Nije isprobano na pravom stroju.
 1141|GRBL bez laserskog načina: laser se isključuje (S0) prije svakog pomaka. Prvi posao napravite na najmanjoj snazi.
 1142|Pločice Gerbil razlikuju se po najvećoj vrijednosti S ($30 je na nekima 1000, na drugima 2048): očitajte je s uređaja.
+1143|Visine su one osi Z stroja (kao na kartici Upravljanje).

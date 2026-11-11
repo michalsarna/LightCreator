@@ -1141,3 +1141,4 @@
 1140|LinuxCNC: Start salvestab LinuxCNC jaoks G-koodi faili. Võimsus läheb analoogväljundisse 0 (M67 E0 Q, 0-st S max-ini), mis peab teie HAL-is laserit juhtima. Pole päris masinal proovitud.
 1141|GRBL ilma laserirežiimita: laser lülitatakse enne iga liikumist välja (S0). Tehke esimene töö madalaima võimsusega.
 1142|Gerbili plaatide suurim S-väärtus on erinev ($30 on mõnel 1000, teistel 2048): lugege see seadmest.
+1143|Kõrgused on masina Z-telje omad (nagu vahekaardil Juhtimine).

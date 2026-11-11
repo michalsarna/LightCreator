@@ -83,7 +83,27 @@ impl<'a> Writer<'a> {
         self.dev.to_machine(p)
     }
 
+    /// A move with the laser off to `p`, round the enabled no-go zones of the device (1 mm away from them) when the straight
+    /// way crosses one. A move that cannot go round (it starts or ends in a zone) goes straight and the job check reports it.
     fn travel(&mut self, p: Pt) {
+        if p.dist(self.pos) < 1e-6 {
+            return;
+        }
+        if self.rot.is_none() && self.dev.zones.iter().any(|z| z.enabled) {
+            let zones: Vec<ZoneShape> = self.dev.zones.iter().filter(|z| z.enabled).map(|z| z.shape).collect();
+            if let Some(way) = crate::zones::route(&zones, self.pos, p, ZONE_MARGIN) {
+                if !way.is_empty() {
+                    let _ = writeln!(self.out, "; round a no-go zone");
+                }
+                for q in way {
+                    self.travel_straight(q);
+                }
+            }
+        }
+        self.travel_straight(p);
+    }
+
+    fn travel_straight(&mut self, p: Pt) {
         if p.dist(self.pos) < 1e-6 {
             return;
         }
@@ -905,6 +925,9 @@ pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job
     let text = frame_and_flavour(&w.out, doc, dev, &w.moves);
     Job { ops: w.ops, gcode: text, moves: w.moves, est_seconds: est, cut_length: w.cut_len }
 }
+
+/// How far a move through the air keeps from a no-go zone (mm).
+const ZONE_MARGIN: f64 = 1.0;
 
 /// Durations of the moves with the machine's limits: cutting speed capped at the maximum, and with the acceleration the
 /// planner of the controller (`base_core::motion`): the speeding up and slowing down, slower corners, a lookahead of the

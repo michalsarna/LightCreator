@@ -1141,3 +1141,4 @@
 1140|LinuxCNC: Inicia desa el fitxer G-code per a LinuxCNC. La potència va a la sortida analògica 0 (M67 E0 Q, de 0 a S max), que al vostre HAL ha de controlar el làser. No s'ha provat en una màquina real.
 1141|GRBL sense mode làser: el làser s'apaga (S0) abans de cada desplaçament. Feu la primera tasca amb la potència més baixa.
 1142|Les plaques Gerbil difereixen en el valor S màxim ($30 és 1000 en unes i 2048 en d'altres): llegiu-lo del dispositiu.
+1143|Les altures són les de l'eix Z de la màquina (com a la pestanya Control).

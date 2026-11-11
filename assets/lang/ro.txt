@@ -1141,3 +1141,4 @@
 1140|LinuxCNC: Start salvează fișierul G-code pentru LinuxCNC. Puterea merge la ieșirea analogică 0 (M67 E0 Q, de la 0 la S max), care în HAL-ul dvs. trebuie să comande laserul. Neîncercat pe o mașină reală.
 1141|GRBL fără mod laser: laserul se oprește (S0) înainte de fiecare deplasare. Faceți prima lucrare la puterea cea mai mică.
 1142|Plăcile Gerbil diferă la valoarea S maximă ($30 este 1000 pe unele, 2048 pe altele): citiți-o de pe dispozitiv.
+1143|Înălțimile sunt cele ale axei Z a mașinii (ca în fila Control).

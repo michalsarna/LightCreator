@@ -976,28 +976,10 @@ impl Maintenance {
     }
 }
 
-/// The shape of a no-go zone, in design millimetres.
-#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
-pub enum ZoneShape {
-    /// A rectangle: top-left corner and size.
-    Rect { x: f64, y: f64, w: f64, h: f64 },
-    /// A circle: centre and radius.
-    Circle { x: f64, y: f64, r: f64 },
-}
+/// The no-go zones of a device live in baseCreator, the same in every program.
+pub use base_core::zones::{Zone, ZoneShape};
 
-/// A no-go zone of a device.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Zone {
-    pub name: String,
-    #[serde(default = "d_true")]
-    pub enabled: bool,
-    pub shape: ZoneShape,
-    /// With a Z axis: the zone only stops what happens at a height inside this range (machine Z, both ends included),
-    /// like a box or a cylinder standing on the table. `None` = at every height.
-    #[serde(default)]
-    pub z_range: Option<(f64, f64)>,
-}
-
+#[allow(dead_code)]
 fn d_true() -> bool {
     true
 }

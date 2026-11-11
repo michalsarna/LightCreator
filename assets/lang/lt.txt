@@ -1141,3 +1141,4 @@
 1140|LinuxCNC: Pradėti įrašo G kodo failą LinuxCNC. Galia eina į analoginį išėjimą 0 (M67 E0 Q, nuo 0 iki S max), kuris jūsų HAL turi valdyti lazerį. Neišbandyta tikroje mašinoje.
 1141|GRBL be lazerio režimo: lazeris išjungiamas (S0) prieš kiekvieną judesį. Pirmą darbą atlikite mažiausia galia.
 1142|Gerbil plokštės skiriasi didžiausia S reikšme ($30 vienose yra 1000, kitose 2048): nuskaitykite ją iš įrenginio.
+1143|Aukščiai yra mašinos Z ašies (kaip kortelėje Valdymas).
