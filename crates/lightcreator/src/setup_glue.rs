@@ -3,7 +3,7 @@
 //! horizontal or the vertical middle line, with alignment marks), and the switch between the sides with the ghosts of the other one.
 use crate::app::App;
 use lc_core::geom::{Polyline, Pt, Xf};
-use lc_core::setup::{self, FlipAxis};
+use lc_core::setup::FlipAxis;
 use base_ui::i18n::{tr, trf};
 use base_ui::project_setup::{Answer, Kind};
 use eframe::egui;
@@ -113,17 +113,17 @@ impl App {
         a.bed_h = h.max(10.0);
     }
 
-    /// Four L-shaped marks just outside the corners of the piece, on the first empty layer as lines: burned on the sheet under the
+    /// Four L-shaped marks just outside the corners of the piece, on the last layer (64) as lines: burned on the sheet under the
     /// material before side A, they show where to put it back after it is turned over.
     pub fn add_alignment_marks(&mut self) {
         let (w, h) = self.doc.piece_size();
-        let Some(layer) = (0..self.doc.layers.len()).find(|&l| !self.doc.scene.shapes.iter().any(|s| s.layer == l)) else {
-            self.status = tr("No empty layer for the holes").to_string();
-            return;
-        };
+        let o = self.doc.piece_origin();
+        // The last layer (64), out of the way of the layers of the job.
+        let Some(layer) = self.doc.layers.len().checked_sub(1) else { return };
         let (g, a) = (MARK_GAP, MARK_ARM);
         let corners = [(-g, -g, 1.0, 1.0), (w + g, -g, -1.0, 1.0), (-g, h + g, 1.0, -1.0), (w + g, h + g, -1.0, -1.0)];
         for (x, y, sx, sy) in corners {
+            let (x, y) = (x + o.x, y + o.y);
             let l = Polyline::new(vec![Pt::new(x + sx * a, y), Pt::new(x, y), Pt::new(x, y + sy * a)], false);
             self.doc.add(layer, ShapeKind::Path(vec![l]), Xf::IDENTITY);
         }
@@ -158,14 +158,23 @@ impl App {
         }
     }
 
-    /// The ghosts of the other side under the shapes of the shown one, and the name of the shown side.
+    /// The piece of material where it lies (a faint dashed outline), the ghosts of the other side under the shapes of the shown one,
+    /// and the name of the shown side.
     pub fn paint_sides(&self, v: &base_ui::editor::CanvasView) {
+        let to = |p: Pt| base_ui::editor::EditorHost::w2s(self, v.origin, p);
+        if self.doc.piece.is_some() {
+            let (w, h) = self.doc.piece_size();
+            let o = self.doc.piece_origin();
+            let pts = [o, Pt::new(o.x + w, o.y), Pt::new(o.x + w, o.y + h), Pt::new(o.x, o.y + h), o].map(to);
+            let ink = egui::Color32::from_rgba_unmultiplied(0xb0, 0x7a, 0x30, 200);
+            v.painter.add(egui::Shape::dashed_line(&pts, egui::Stroke::new(1.2, ink), 8.0, 4.0));
+        }
         let Some(t) = &self.doc.two else { return };
         if t.ghosts {
-            let (w, h) = self.doc.piece_size();
-            let ghosts = setup::turned(&t.other, t.flip, w, h);
+            let turn = self.doc.side_turn().unwrap_or(Xf::IDENTITY);
+            let ghosts: Vec<lc_core::Shape> = t.other.shapes.iter().map(|s| lc_core::Shape { xf: s.xf.then(turn), ..s.clone() }).collect();
             let colour = base_ui::two_sided::ghost_colour(self.ed.grid_prefs.bed_fill(self.scheme.is_dark()));
-            base_ui::two_sided::paint_ghosts(v.painter, &|p| base_ui::editor::EditorHost::w2s(self, v.origin, p), &ghosts, colour);
+            base_ui::two_sided::paint_ghosts(v.painter, &to, &ghosts, colour);
         }
         base_ui::two_sided::paint_side_name(v.painter, v.bed.left_top() + egui::vec2(6.0, 6.0), t.shown_b);
     }
@@ -194,6 +203,18 @@ mod tests {
         a.apply_setup();
         assert_eq!(a.doc.piece, Some([200.0, 100.0, a.setup.t]));
         assert_eq!(a.doc.scene.shapes.len(), 4, "four corner marks on side A");
+        assert!(a.doc.scene.shapes.iter().all(|s| s.layer == a.doc.layers.len() - 1), "on the last layer");
+        // The piece lies in the corner of the zero of the machine, and the marks round it.
+        let o = a.doc.piece_origin();
+        let home = a.doc.device.home_point();
+        let (aw, ah) = a.doc.device.work_size();
+        let near = |h: f64, lo: f64, len: f64| (h - lo).abs().min((h - (lo + len)).abs()) <= lc_core::PIECE_MARGIN + 1e-6;
+        assert!(near(home.x, o.x, 200.0) || aw < 200.0, "{home:?} {o:?}");
+        assert!(near(home.y, o.y, 100.0) || ah < 100.0, "{home:?} {o:?}");
+        let inside = |v: f64, len: f64| v >= -1e-6 && v <= len + 1e-6;
+        let marks = a.doc.scene.shapes.iter().filter_map(|s| s.bounds()).reduce(lc_core::Rect::union).unwrap();
+        assert!((marks.min.x - (o.x - 2.0)).abs() < 1e-6 && (marks.max.y - (o.y + 102.0)).abs() < 1e-6, "{marks:?} {o:?}");
+        assert!(inside(marks.min.x, aw) && inside(marks.max.x, aw) && inside(marks.min.y, ah) && inside(marks.max.y, ah), "the marks are on the work area");
         a.show_side(true);
         assert!(a.doc.scene.shapes.is_empty() && a.doc.two.as_ref().unwrap().shown_b);
         a.doc.add(0, lc_core::Kind::Rect { w: 10.0, h: 10.0 }, lc_core::Xf::IDENTITY);
