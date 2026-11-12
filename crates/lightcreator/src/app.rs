@@ -115,6 +115,8 @@ pub struct App {
     pub close_program: bool,
     /// The last tab was closed: asking whether to close the program or to go back to the start screen.
     pub ask_quit: bool,
+    /// The window of the project setup (File → Project setup…, and after File → New).
+    pub setup: base_ui::project_setup::Setup,
     /// The tabs of open drawings (the shown one is the live fields above), and the number of the recovery file of the shown one.
     pub tabs_state: crate::workspaces::Tabs,
     /// The central area in panes (one pane unless the person split the view).
@@ -362,6 +364,7 @@ impl App {
             jog_seen_step: None,
             close_program: false,
             ask_quit: false,
+            setup: Default::default(),
             tabs_state: Default::default(),
             gcode_texts: vec![],
             closing_text: None,
@@ -1429,7 +1432,13 @@ impl App {
         if self.screen == Screen::Start {
             match a {
                 // Starting a project takes the selected device, or the Dummy when there is none.
-                Act::New => self.start_project(|app| app.new_tab_from_start()),
+                Act::New => self.start_project(|app| {
+                    let made = app.new_tab_from_start();
+                    if made {
+                        app.open_setup();
+                    }
+                    made
+                }),
                 Act::Open => {
                     if let Some(p) = Self::pick_project() {
                         self.start_project(|app| app.open_path(p));
@@ -1463,8 +1472,11 @@ impl App {
         }
         match a {
             Act::New => {
-                self.new_tab();
+                if self.new_tab() {
+                    self.open_setup();
+                }
             }
+            Act::ProjectSetup => self.open_setup(),
             Act::Open => self.open(),
             Act::OpenRecent(i) => {
                 if let Some(p) = self.recent.get(i as usize).cloned() {
@@ -1674,6 +1686,7 @@ impl App {
 
     fn dialogs(&mut self, ctx: &egui::Context) {
         self.materials_window(ctx);
+        self.setup_window(ctx);
 
         let about = base_ui::dialogs::AboutInfo {
             title: &tr("About LightCreator"),
@@ -1851,6 +1864,9 @@ impl base_ui::editor::EditorHost for App {
     }
     fn paint_work_area(&mut self, v: &base_ui::editor::CanvasView) {
         self.paint_machine_area(v)
+    }
+    fn paint_under_shapes(&mut self, v: &base_ui::editor::CanvasView) {
+        self.paint_sides(v);
     }
     fn paint_over_shapes(&mut self, v: &base_ui::editor::CanvasView) {
         self.paint_preview(v)

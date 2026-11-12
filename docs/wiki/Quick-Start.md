@@ -26,6 +26,10 @@ The first time the list is empty. Press **Add device…**. One window asks for t
 
 Select the device and press **New**. (With no device at all, **New** and **Open…** make and use the Dummy.) The editor opens with an empty drawing in a tab. You can check or change the device later under **Machine → Device settings…** and choose another one with **Machine → Switch device…**. All the settings are on [Devices and Controllers](Devices-and-Controllers).
 
+### The project setup
+
+After **New** the window **Project setup** (also **File → Project setup…**) asks about the piece of material: a **Block** (its width, height and thickness; **Work area is the material** makes the work area as big as the piece) or a **Cylinder (rotary)** (its diameter and length; applying switches the rotary attachment of the device on). A block can be a **Two-sided job**: side A and side B become two work areas with a **Side A / Side B** switch over the work area. Choose the line the material is **Turned over round**: **H** (the horizontal axis: back and front change places) or **V** (the vertical axis: left and right change places), and whether to add **Alignment marks**: four corner marks just outside the material, on their own layer, burned on the sheet under it before side A, to put the turned-over material back in the same place. Side B is drawn as the material lies after it is turned over and is burned as drawn (the job is always the side that is shown); each side shows the other turned over as faint dashed **ghosts** that cannot be picked (**Ghosts of the other side**). **Skip** keeps things as they are.
+
 ## 2. Draw a shape or import a design
 
 * **Draw:** pick a tool on the left or in the **Insert** menu, for example **Rectangle (R)**, and drag it on the work area (Shift keeps it square). **Text (T)**: click and type. The size and the position can be typed in the **Properties** tab on the right.

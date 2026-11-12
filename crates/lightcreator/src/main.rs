@@ -38,6 +38,7 @@ mod stream_ui;
 #[cfg(test)]
 mod screenshots;
 mod session_ui;
+mod setup_glue;
 mod workspaces;
 mod update_ui;
 mod backup_ui;

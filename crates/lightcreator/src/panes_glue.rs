@@ -217,7 +217,11 @@ impl PaneHost for App {
 
     fn draw_pane(&mut self, ui: &mut egui::Ui, content: Content, view: &mut Option<base_ui::editor::View>) -> PaneEvent {
         match content {
-            Content::Doc(slot) if slot == self.slot => self.canvas(ui),
+            Content::Doc(slot) if slot == self.slot => {
+                // A two-sided job: the switch between the sides over its work area.
+                self.sides_bar(ui);
+                self.canvas(ui)
+            }
             Content::Doc(slot) => {
                 let Some(w) = self.tabs_state.parked.iter().flatten().find(|w| w.slot == slot) else { return PaneEvent::Nothing };
                 let colour = |l: usize| w.doc.layers.get(l).and_then(|l| l.visible.then(|| crate::canvas::col(l.color)));
