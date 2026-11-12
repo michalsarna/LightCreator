@@ -2,6 +2,12 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.8.7
+
+* **Web server and API** now come from baseCreator and are the same in every program; LightCreator stays on port 8765, MillCreator uses 8766, PenCreator 8767 and BaseCreator 8768, so all of them can run on one computer.
+* **Preview with a rotary:** the 3D cylinder draws the end turned to the viewer (the hidden one covered the burned lines before).
+* **File dialogs:** rfd 0.18.
+
 ## v0.8.6
 
 * **Time of a job** planned as the controller does it: the acceleration, the slower corners and the look-ahead (device settings: acceleration of X, Y, Z and junction deviation).
