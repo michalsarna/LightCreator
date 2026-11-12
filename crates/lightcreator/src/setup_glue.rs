@@ -15,9 +15,10 @@ fn kind() -> Kind {
         zero: false,
         cylinder: true,
         marks_tip: "Four corner marks just outside the material, burned on the sheet under it before side A: put the turned-over material back into them for side B.",
-        block_note: "The material lies at the top left of the work area. For a two-sided job lay it in the same place for both sides (the alignment marks show where).",
+        block_note: "The material lies in the corner of the zero of the machine. For a two-sided job lay it in the same place for both sides (the alignment marks show where).",
         cylinder_note: "The workpiece lies on the rotary attachment; Y of the drawing goes round it and the drawing is unrolled from its surface.",
         colour: [0xd8, 0xb0, 0x7c],
+        paper: false,
     }
 }
 
