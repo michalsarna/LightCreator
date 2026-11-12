@@ -187,7 +187,15 @@ impl App {
         let (bw, bh) = self.doc.device.work_size();
         let total = self.pv.cum.last().copied().unwrap_or(0.0);
         let rotary = self.doc.device.rotary.enabled;
+        let side_b = self.doc.two.as_ref().map(|t| t.shown_b);
+        let mut want_b = side_b;
         ui.horizontal_wrapped(|ui| {
+            // A two-sided job: the preview is of one side, the same one as the work area shows (and the one that is burned).
+            if let Some(b) = want_b.as_mut() {
+                ui.selectable_value(b, false, tr("Side A"));
+                ui.selectable_value(b, true, tr("Side B"));
+                ui.separator();
+            }
             if rotary {
                 ui.selectable_value(&mut self.pv.cylinder, true, tr("Cylinder (3D)")).on_hover_text(tr("The workpiece on the rotary attachment with what is burned on it. Drag to turn it, the wheel zooms."));
                 ui.selectable_value(&mut self.pv.cylinder, false, tr("Flat")).on_hover_text(tr("The surface of the workpiece unrolled, as on the work area"));
@@ -222,6 +230,11 @@ impl App {
                 }
             });
         });
+        if let (Some(now), Some(want)) = (side_b, want_b) {
+            if now != want {
+                self.show_side(want);
+            }
+        }
         ui.separator();
         let n_ops = job.ops.len();
         // Totals under the picture: time, length, number of passes (operations) and moves.
@@ -609,5 +622,35 @@ mod cylinder_tests {
         h.state_mut().pv.cylinder = false;
         h.run_steps(2);
         assert!(!h.state().pv.cylinder);
+    }
+}
+
+#[cfg(test)]
+mod side_tests {
+    use crate::app::{App, Screen};
+    use eframe::egui;
+
+    /// A two-sided job: the preview shows the side chosen in it, which is also the side of the work area.
+    #[test]
+    fn the_preview_of_a_two_sided_job_shows_the_side_chosen() {
+        let mut a = App::build(&egui::Context::default(), None, false);
+        a.screen = Screen::Editor;
+        a.setup.two_sided = true;
+        a.setup.marks = false;
+        a.apply_setup();
+        a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::IDENTITY);
+        a.show_side(true);
+        a.doc.add(0, lc_core::Kind::Rect { w: 5.0, h: 5.0 }, lc_core::Xf::translate(50.0, 50.0));
+        a.show_preview = true;
+        let mut h = egui_kittest::Harness::builder().with_accessibility_check(false).with_size([1000.0, 600.0]).with_context_setup(|ctx| {
+            base_ui::fonts::install(ctx);
+            crate::icons::install(ctx);
+        }).build_ui_state(|ui, a: &mut App| a.preview_work_panel(ui), a);
+        h.run_steps(3);
+        use egui_kittest::kittest::Queryable;
+        h.get_by_label("Side A").click();
+        h.run_steps(3);
+        assert!(!h.state().doc.two.as_ref().unwrap().shown_b, "side A is shown");
+        assert_eq!(h.state().doc.scene.shapes.len(), 1);
     }
 }

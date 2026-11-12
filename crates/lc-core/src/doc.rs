@@ -1416,6 +1416,9 @@ pub struct Document {
     pub two: Option<TwoSides>,
 }
 
+/// How far the piece of the project setup lies in from the edges of the work area (mm): room for the alignment marks.
+pub const PIECE_MARGIN: f64 = 3.0;
+
 /// The two sides of a two-sided job (File → Project setup…): side A and side B are two work areas of one project; `Document::scene`
 /// is the one shown and the other waits here. Both are in every copy of the document, so undo brings back the two together.
 #[derive(Clone, Debug)]
@@ -1714,6 +1717,27 @@ impl Document {
             Some(t) => (&self.scene, Some(&t.other)),
             None => (&self.scene, None),
         }
+    }
+
+    /// Where the piece of material lies on the work area (its top left corner, design millimetres): in the corner of the zero of
+    /// the machine, so that the job starts near it; the whole work area without a piece.
+    pub fn piece_origin(&self) -> Pt {
+        let (aw, ah) = self.device.work_size();
+        let (w, h) = self.piece_size();
+        let home = self.device.home_point();
+        // A little in from the edges, so that the alignment marks round it are still on the work area.
+        let m = PIECE_MARGIN.min(((aw - w) / 2.0).max(0.0)).min(((ah - h) / 2.0).max(0.0));
+        let x = if home.x > aw / 2.0 { (aw - w - m).max(0.0) } else { m };
+        let y = if home.y > ah / 2.0 { (ah - h - m).max(0.0) } else { m };
+        Pt::new(x, y)
+    }
+
+    /// What a shape of one side lies under on the other side: turned over round the middle line of the piece where it lies.
+    pub fn side_turn(&self) -> Option<Xf> {
+        let t = self.two.as_ref()?;
+        let (w, h) = self.piece_size();
+        let o = self.piece_origin();
+        Some(Xf::translate(-o.x, -o.y).then(base_core::setup::turn(t.flip, w, h)).then(Xf::translate(o.x, o.y)))
     }
 
     /// The size the sides are turned over in: the piece of the project setup, or the work area.
