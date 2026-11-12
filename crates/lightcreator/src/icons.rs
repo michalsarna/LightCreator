@@ -58,6 +58,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::CameraView => "video",
         Act::ToggleOverlay | Act::CameraOverlay => "layers",
         Act::ToggleZones => "eye",
+        Act::ProjectSetup => "sliders-horizontal",
         Act::ZoneSettings | Act::AddAsZones => "ban",
         Act::PreviewGcode => "file-code",
         Act::LayerPresets => "layers",

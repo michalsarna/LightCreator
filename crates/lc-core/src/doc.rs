@@ -1410,6 +1410,21 @@ pub struct Document {
     /// The parts of the project file that belong to other programs (mill, pen...): kept as they were read and
     /// written back, so opening and saving here loses nothing of theirs.
     pub others: Others,
+    /// The piece of material of the project setup (width, height, thickness, mm), when it was given.
+    pub piece: Option<[f64; 3]>,
+    /// A two-sided job: the side that is not shown (`scene` is the shown one), and how the two lie.
+    pub two: Option<TwoSides>,
+}
+
+/// The two sides of a two-sided job (File → Project setup…): side A and side B are two work areas of one project; `Document::scene`
+/// is the one shown and the other waits here. Both are in every copy of the document, so undo brings back the two together.
+#[derive(Clone, Debug)]
+pub struct TwoSides {
+    pub flip: base_core::setup::FlipAxis,
+    pub ghosts: bool,
+    /// Side B is the one shown.
+    pub shown_b: bool,
+    pub other: Scene,
 }
 
 /// Sections and top-level entries of a project file this program does not own.
@@ -1534,6 +1549,9 @@ struct LaserSection {
     layers: Vec<Layer>,
     #[serde(default = "identity_order")]
     order: Vec<usize>,
+    /// The piece of material of the project setup.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    piece: Option<[f64; 3]>,
 }
 
 fn identity_order() -> Vec<usize> {
@@ -1550,6 +1568,8 @@ impl Default for Document {
             description: String::new(),
             job_info: JobInfo::default(),
             others: Others::default(),
+            piece: None,
+            two: None,
         }
     }
 }
@@ -1666,8 +1686,42 @@ impl Document {
         p.description = self.description.clone();
         p.restore_sections(&self.others.sections);
         p.restore_extra(&self.others.extra);
-        p.set_section(LASER_SECTION, &LaserSection { format: LASER_SECTION_FORMAT, machine: Machine::of(&self.device), material: self.device.material().clone(), layers: self.layers.clone(), order: self.order.clone() });
+        p.set_section(LASER_SECTION, &LaserSection { format: LASER_SECTION_FORMAT, machine: Machine::of(&self.device), material: self.device.material().clone(), layers: self.layers.clone(), order: self.order.clone(), piece: self.piece });
+        // A two-sided job: the drawing of the file is side A, side B goes into its own section.
+        p.remove_section(base_core::setup::SECTION);
+        if let Some(t) = &self.two {
+            let (a, b) = if t.shown_b { (&t.other, &self.scene) } else { (&self.scene, &t.other) };
+            p.scene = a.clone();
+            p.set_section(base_core::setup::SECTION, &base_core::setup::TwoSided::with_side_b(t.flip, t.ghosts, b));
+        }
         p
+    }
+
+    /// Show side B (`true`) or side A of a two-sided job: the shown drawing and the waiting one change places.
+    pub fn show_side(&mut self, b: bool) {
+        if let Some(t) = self.two.as_mut() {
+            if t.shown_b != b {
+                std::mem::swap(&mut self.scene, &mut t.other);
+                t.shown_b = b;
+            }
+        }
+    }
+
+    /// The drawing of side A and, in a two-sided job, of side B.
+    pub fn sides(&self) -> (&Scene, Option<&Scene>) {
+        match &self.two {
+            Some(t) if t.shown_b => (&t.other, Some(&self.scene)),
+            Some(t) => (&self.scene, Some(&t.other)),
+            None => (&self.scene, None),
+        }
+    }
+
+    /// The size the sides are turned over in: the piece of the project setup, or the work area.
+    pub fn piece_size(&self) -> (f64, f64) {
+        match self.piece {
+            Some([w, h, _]) if w > 0.0 && h > 0.0 => (w, h),
+            _ => self.device.work_size(),
+        }
     }
 
     /// A document from a project file. Without a laser section (a file made by another program) the drawing comes
@@ -1675,6 +1729,8 @@ impl Document {
     /// a program that has devices of its own puts one of them in its place.
     pub fn from_project(p: Project) -> Result<Document, String> {
         let laser: Option<LaserSection> = p.section(LASER_SECTION)?;
+        let piece = laser.as_ref().and_then(|l| l.piece).filter(|v| v.iter().all(|x| x.is_finite() && *x > 0.0 && *x <= 100_000.0));
+        let two = p.section::<base_core::setup::TwoSided>(base_core::setup::SECTION)?.map(|t| TwoSides { flip: t.flip, ghosts: t.ghosts, shown_b: false, other: t.side_b() });
         let (layers, order, device) = match laser {
             Some(l) => {
                 if l.format > LASER_SECTION_FORMAT {
@@ -1701,12 +1757,12 @@ impl Document {
         };
         let mut sections = std::collections::BTreeMap::new();
         for n in p.section_names() {
-            if n != LASER_SECTION {
+            if n != LASER_SECTION && n != base_core::setup::SECTION {
                 sections.insert(n.to_string(), p.section::<serde_json::Value>(n)?.unwrap_or_default());
             }
         }
         let extra = p.extra().clone();
-        Ok(Document { scene: p.scene, layers, device, order, description: p.description, job_info: JobInfo::default(), others: Others { sections, extra } })
+        Ok(Document { scene: p.scene, layers, device, order, description: p.description, job_info: JobInfo::default(), others: Others { sections, extra }, piece, two })
     }
 
     /// A document from a LightBurn project read by `base_core::lightburn::import`: the shapes, and for each layer the

@@ -9,6 +9,7 @@ const EN: &[Section] = &[
         lines: &[
             "The start window asks which device you work with. Create a device profile first (Add device…): name, controller (GRBL, Marlin, Ruida, Trocen), laser type, work area, units and how to connect. Pick the profile and press New or Open…. Without a machine press I have no device (or just press New): the stand-in Dummy is used.",
             "Everything is stored in your profile list and remembered.",
+            "After New, the window of File > Project setup… asks about the piece of material: a block (its size and thickness) or a cylinder on the rotary attachment. A Two-sided job gives side A and side B, turned over round the horizontal (H) or vertical (V) axis, with corner marks to put the material back: a switch over the work area shows one side or the other, with the ghosts of the other side turned over.",
         ],
     },
     Section {
@@ -46,6 +47,7 @@ const PL: &[Section] = &[
         lines: &[
             "Okno startowe pyta, z którym urządzeniem pracujesz. Najpierw utwórz profil urządzenia (Dodaj urządzenie…): nazwa, sterownik (GRBL, Marlin, Ruida, Trocen), typ lasera, obszar roboczy, jednostki i sposób połączenia. Wybierz profil i naciśnij Nowy lub Otwórz…. Bez maszyny naciśnij Nie mam urządzenia (albo po prostu Nowy): użyte będzie zastępcze urządzenie Dummy.",
             "Profile są zapamiętywane.",
+            "Po wybraniu Nowy okno Plik > Ustawienia projektu… pyta o kawałek materiału: blok (rozmiar i grubość) albo walec na obrotnicy. Zadanie dwustronne daje stronę A i stronę B, odwracane wokół osi poziomej (H) albo pionowej (V), ze znacznikami narożników do ponownego ułożenia materiału: przełącznik nad obszarem roboczym pokazuje jedną albo drugą stronę, z duchami drugiej strony odwróconymi.",
         ],
     },
     Section {

@@ -125,6 +125,8 @@ pub enum Act {
     ShareSer2net,
     ToggleOverlay,
     ToggleZones,
+    /// File → Project setup…: the piece of material, a cylinder, a two-sided job.
+    ProjectSetup,
     ToggleSnapObjects,
     Frame,
     StartJob,
@@ -323,7 +325,7 @@ pub fn menus() -> base_ui::menu::Menus<Act> {
         download_backup: Act::DownloadBackup,
         restore_backup: Act::RestoreBackup,
         check_updates: Act::CheckUpdates,
-        file_extra: vec![],
+        file_extra: vec![Item(Act::ProjectSetup, "Project setup…", None)],
         import_svg: Act::ImportSvg,
         import_ai: Act::ImportAi,
         import_dxf: Act::ImportDxf,

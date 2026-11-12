@@ -26,6 +26,10 @@ Za pierwszym razem lista jest pusta. Naciśnij **Dodaj urządzenie…**. Jedno o
 
 Zaznacz urządzenie i naciśnij **Nowy**. (Gdy nie ma żadnego urządzenia, **Nowy** i **Otwórz…** tworzą i używają urządzenia Dummy.) Edytor otwiera się z pustym rysunkiem w karcie. Urządzenie sprawdzisz lub zmienisz później w **Maszyna → Ustawienia urządzenia…** (Machine → Device settings…), a inne wybierzesz przez **Maszyna → Zmień urządzenie…**. Wszystkie ustawienia są na stronie [Urządzenia i sterowniki](Urzadzenia-i-sterowniki).
 
+### Ustawienia projektu
+
+Po **Nowy** okno **Ustawienia projektu** (także **Plik → Ustawienia projektu…**) pyta o kawałek materiału: **Blok** (szerokość, wysokość i grubość; **Obszar roboczy to materiał** robi obszar roboczy tak duży jak kawałek) albo **Walec (obrotnica)** (średnica i długość; zastosowanie włącza obrotnicę urządzenia). Blok może być **zadaniem dwustronnym**: strona A i strona B stają się dwoma obszarami roboczymi z przełącznikiem **Strona A / Strona B** nad obszarem roboczym. Wybierz, wokół której osi materiał jest **odwracany**: **H** (oś pozioma: tył i przód zamieniają się miejscami) albo **V** (oś pionowa: lewa i prawa strona zamieniają się miejscami), i czy dodać **Znaczniki bazujące**: cztery znaczniki narożników tuż poza materiałem, na osobnej warstwie, wypalane na podkładzie przed stroną A, żeby odwrócony materiał położyć w tym samym miejscu. Stronę B rysuje się tak, jak materiał leży po odwróceniu, i wypala tak, jak narysowana (zadanie to zawsze pokazana strona); każda strona pokazuje drugą odwróconą jako blade, przerywane **duchy**, których nie da się zaznaczyć (**Duchy drugiej strony**). **Pomiń** zostawia wszystko bez zmian.
+
 ## 2. Narysuj kształt albo zaimportuj projekt
 
 * **Rysowanie:** wybierz narzędzie po lewej albo w menu **Wstawianie** (Insert), na przykład **Prostokąt (R)**, i przeciągnij je na obszarze roboczym (Shift trzyma kwadrat). **Tekst (T)**: kliknij i pisz. Rozmiar i położenie można wpisać w zakładce **Właściwości** (Properties) po prawej.

@@ -277,3 +277,4 @@
 
 **Not yet implemented:** direct Ruida / Trocen binary protocols, kerning and complex
 script shaping in text, automatic lens calibration for the camera (the lens correction is entered by hand).
+* **Project setup** (File → Project setup…, after New): a block (size, thickness) or a cylinder on the rotary, with a picture; a **two-sided job** makes side A and side B two work areas (a switch over the work area, the other side as ghosts turned over H or V, corner alignment marks burned on the sheet under the material). The same window as in MillCreator.
