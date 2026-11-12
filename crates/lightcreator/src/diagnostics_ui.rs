@@ -252,7 +252,7 @@ mod tests {
     fn the_zip_holds_the_files_and_no_access_key() {
         let ctx = eframe::egui::Context::default();
         let mut a = App::build(&ctx, None, false);
-        a.api_access = "TOPSECRET".into();
+        a.web.access = "TOPSECRET".into();
         a.doc.device.cameras = vec![lc_core::CameraSource::url("A", "http://admin:hunter2@10.0.0.2/video", 0)];
         let dest = std::env::temp_dir().join(format!("lc-diag-{}.zip", std::process::id()));
         a.write_diagnostics(&dest).unwrap();

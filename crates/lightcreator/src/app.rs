@@ -139,14 +139,8 @@ pub struct App {
     pub materials_dlg: Option<crate::materials_win::MaterialsDlg>,
     /// The revision the selected material was last compared with the layers at.
     pub mat_rev: u64,
-    pub api_on: bool,
-    pub api_port: u16,
-    pub api_lan: bool,
-    /// The access phrase of the web server (what its pages ask for), and what is typed in its field.
-    pub api_access: String,
-    pub api_access_edit: String,
-    pub api_access_typing: bool,
-    pub api: crate::api_ui::ApiState,
+    /// The web server and API (the one of baseCreator, on the port of LightCreator).
+    pub web: base_ui::web_api::WebApi,
     pub autosave_secs: u32,
     pub last_autosave: std::time::Instant,
     /// A short message (text, until when) such as "file saved".
@@ -383,13 +377,7 @@ impl App {
             presets_ui: Default::default(),
             materials_dlg: None,
             mat_rev: u64::MAX,
-            api_on: saved("api_on").map(|v| v == "1").unwrap_or(false),
-            api_port: saved("api_port").and_then(|v| v.parse::<u16>().ok()).filter(|p| *p >= 1024).unwrap_or(crate::api_ui::DEFAULT_PORT),
-            api_lan: saved("api_lan").map(|v| v == "1").unwrap_or(false),
-            api_access: saved("api_access").and_then(|v| crate::api_server::access_from_setting(&v)).unwrap_or_else(|| crate::api_server::DEFAULT_ACCESS.to_string()),
-            api_access_edit: String::new(),
-            api_access_typing: false,
-            api: Default::default(),
+            web: base_ui::web_api::WebApi::from_saved("LightCreator", base_ui::web_api::PORT_LIGHTCREATOR, &|k| saved(k)),
             autosave_secs: saved("autosave_secs").and_then(|v| v.parse().ok()).filter(|v| (10..=3600).contains(v)).unwrap_or(crate::session_ui::DEFAULT_AUTOSAVE_SECS),
             last_autosave: std::time::Instant::now(),
             toast: None,
@@ -1670,7 +1658,7 @@ impl App {
             base_ui::widgets::message(ui, self.status.as_str());
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                 base_ui::editor::zoom_and_cursor(self, ui);
-                let web = if self.api.server.is_some() { (trf("Web server: on, port {}", &[&self.api.server.as_ref().map(|s| s.addr.port()).unwrap_or(0)]), Color32::from_rgb(0x2e, 0xa0, 0x4f)) } else if self.api_on { (tr("Web server: error").to_string(), Color32::from_rgb(0xc0, 0x30, 0x30)) } else { (tr("Web server: off").to_string(), theme::text_dim()) };
+                let web = self.web.status_word().unwrap_or_else(|| (tr("Web server: off").to_string(), theme::text_dim()));
                 ui.label(RichText::new(web.0).color(web.1));
                 ui.separator();
                 let color = if self.connected { Color32::from_rgb(0x2e, 0xa0, 0x4f) } else { theme::text_dim() };
@@ -1999,10 +1987,7 @@ impl App {
         }
         v.push(("active_profile", self.active.to_string()));
         v.push(("autosave_on", if self.autosave_on { "1" } else { "0" }.into()));
-        v.push(("api_on", if self.api_on { "1" } else { "0" }.into()));
-        v.push(("api_port", self.api_port.to_string()));
-        v.push(("api_lan", if self.api_lan { "1" } else { "0" }.into()));
-        v.push(("api_access", crate::api_server::access_to_setting(&self.api_access)));
+        v.extend(self.web.settings_pairs().into_iter().map(|(k, v)| (k, v)));
         v.push(("autosave_secs", self.autosave_secs.to_string()));
         v.push(("check_updates", if self.check_updates { "1" } else { "0" }.into()));
         if let Ok(j) = serde_json::to_string(&self.recent) {
