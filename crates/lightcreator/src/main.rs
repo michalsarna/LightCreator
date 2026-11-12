@@ -1,4 +1,3 @@
-mod api_server;
 mod api_ui;
 mod app;
 mod control_devices_glue;

@@ -596,7 +596,7 @@ fn render_screenshots() {
     {
         let a = app(&mut h);
         a.side_tab = SideTab::Properties;
-        a.api_on = true;
+        a.web.on = true;
         a.show_options = true;
     }
     save(&mut h, "36-options-web-server.png");

@@ -8,6 +8,8 @@
 
 **Every request needs the access phrase** (set in the same options with the *Save* button next to it; it starts as `LightCreator`, change it before you let other computers in). The browser asks for it (any user name, the phrase is the password field); programs send it as HTTP Basic authentication, e.g. `curl -u any:LightCreator http://localhost:8765/api/status`. A wrong phrase is answered with 401 after a short wait. **There is no encryption**, so the phrase and the data can be read by anyone who can listen on the network, and the phrase is kept in `app.ron` as base64 (not readable at a glance, but base64 is an encoding, not encryption). By default the server listens only on this computer (`http://localhost:8765`). *Reachable from other computers on the network* makes it listen on every interface: then anyone on the network can see the machine and stop or move it. Use that only on a network you trust, and never open the port to the internet.
 
+The same server is in MillCreator, PenCreator and BaseCreator, each on its own port so that all of them can run on one computer: **8765** LightCreator, **8766** MillCreator, **8767** PenCreator, **8768** BaseCreator (BaseCreator shows only the project).
+
 ## The web page
 `http://localhost:<port>/` has a bar with the device, its state, the position, the job's working time over the estimate and a progress bar, and a **Theme** list: the page starts in the colour scheme of the program (all 18 schemes are offered; your choice is kept in the browser).
 
