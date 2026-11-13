@@ -543,6 +543,8 @@ impl App {
         let device = self.doc.device.clone();
         self.doc = Document::default();
         self.doc.device = device;
+        // A new project has the work area of the machine, not the one an earlier project made of it.
+        self.restore_machine_area();
         self.doc.select_material(self.doc.device.active_material);
         self.sync_profile();
         self.undo.clear();
@@ -1795,6 +1797,18 @@ impl base_ui::editor::EditorHost for App {
     }
     fn ghost_shapes(&self) -> Vec<lc_core::Shape> {
         self.ghosts()
+    }
+    /// A click on a face of a post or a block unfolded beside the shown one shows that face.
+    fn click_empty(&mut self, p: lc_core::Pt) -> bool {
+        let (Some(solid), Some(shown)) = (self.doc.solid(), self.doc.two.as_ref().map(|t| t.shown)) else { return false };
+        let o = self.doc.piece_origin();
+        match solid.face_at(shown, lc_core::Pt::new(p.x - o.x, p.y - o.y)).filter(|_| solid.count() > 2) {
+            Some(j) => {
+                self.show_face(j);
+                true
+            }
+            None => false,
+        }
     }
     fn checkpoint(&mut self) {
         App::checkpoint(self)

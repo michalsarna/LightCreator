@@ -1253,10 +1253,38 @@ impl App {
 
     /// Keep the stored profile in step with live edits made in the Device tab.
     pub fn sync_profile(&mut self) {
+        // A work area the project made as big as its material (or as a face of a post or a block) stays in the project: the device
+        // keeps its own.
+        let own = self.project_area_override();
         if let Some(p) = self.profiles.get_mut(self.active) {
-            if *p != self.doc.device {
-                *p = self.doc.device.clone();
+            let mut d = self.doc.device.clone();
+            if own {
+                d.area.bed_w = p.area.bed_w;
+                d.area.bed_h = p.area.bed_h;
             }
+            if *p != d {
+                *p = d;
+            }
+        }
+    }
+
+    /// Is the work area of the project its material (as the project setup makes it), not the one of the machine?
+    pub fn project_area_override(&self) -> bool {
+        let (w, h) = (self.doc.device.area.bed_w, self.doc.device.area.bed_h);
+        let mat = |v: f64, m: f64| (v - m.max(10.0)).abs() < 1e-6;
+        self.doc.piece.is_some_and(|p| mat(w, p[0]) && mat(h, p[1])) || self.doc.two.is_some()
+    }
+
+    /// The work area of the machine itself (its profile, as the drawing lies on it), whatever a project made of it.
+    pub fn machine_area(&self) -> (f64, f64) {
+        self.profiles.get(self.active).unwrap_or(&self.doc.device).work_size()
+    }
+
+    /// The work area of the project made the one of the machine again.
+    pub fn restore_machine_area(&mut self) {
+        if let Some(p) = self.profiles.get(self.active) {
+            self.doc.device.area.bed_w = p.area.bed_w;
+            self.doc.device.area.bed_h = p.area.bed_h;
         }
     }
 
