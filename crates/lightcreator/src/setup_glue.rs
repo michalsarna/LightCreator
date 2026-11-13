@@ -258,6 +258,46 @@ mod tests {
         a
     }
 
+    /// A click on a ghost of side A, where it lies under side B (turned over round the middle of the piece, which lies at the zero of
+    /// the machine), selects it as the reference; the shape of side B is aligned to it, and the ghost stays where it is.
+    #[test]
+    fn a_ghost_is_picked_where_it_lies_and_the_shape_aligns_to_it() {
+        use base_ui::editor::{EditorCommands, EditorHost};
+        let mut a = app();
+        a.setup.w = 120.0;
+        a.setup.h = 80.0;
+        a.setup.two_sided = true;
+        a.setup.marks = false;
+        a.apply_setup();
+        let o = a.doc.piece_origin();
+        a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(o.x + 10.0, o.y + 10.0));
+        a.show_side(true);
+        let on_b = a.doc.add(0, lc_core::Kind::Rect { w: 5.0, h: 5.0 }, lc_core::Xf::translate(o.x + 50.0, o.y + 50.0));
+        let ghost = a.ghosts()[0].clone();
+        let gb = ghost.bounds().unwrap();
+        assert!((gb.max.x - (o.x + 110.0)).abs() < 1e-6, "turned over round the middle of the piece: {gb:?} {o:?}");
+        let ctx = egui::Context::default();
+        let screen = egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1200.0, 800.0));
+        let mut frame = |a: &mut App, events: Vec<egui::Event>| {
+            let mut out = ctx.run_ui(egui::RawInput { screen_rect: Some(screen), events, ..Default::default() }, |ui| {
+                egui::CentralPanel::no_frame().show(ui, |ui| base_ui::editor::EditorCanvas::canvas(a, ui));
+            });
+            out.textures_delta.clear();
+        };
+        frame(&mut a, vec![]);
+        frame(&mut a, vec![]);
+        let at = a.w2s(a.ed.canvas_origin, gb.center());
+        let button = |down: bool| egui::Event::PointerButton { pos: at, button: egui::PointerButton::Primary, pressed: down, modifiers: Default::default() };
+        frame(&mut a, vec![egui::Event::PointerMoved(at), button(true), button(false)]);
+        frame(&mut a, vec![]);
+        assert_eq!(a.ed.ghost_sel, vec![ghost.id], "the ghost is picked");
+        assert!(a.ed.sel.is_empty());
+        a.ed.sel = vec![on_b];
+        a.align(0);
+        assert!((a.doc.scene.shape(on_b).unwrap().bounds().unwrap().min.x - gb.min.x).abs() < 1e-6, "left edges together");
+        assert_eq!(a.ghosts()[0].bounds(), Some(gb), "the ghost stays");
+    }
+
     #[test]
     fn a_two_sided_setup_makes_side_b_with_marks_on_side_a_and_they_are_saved() {
         let mut a = app();

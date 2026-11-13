@@ -1782,6 +1782,12 @@ impl base_ui::editor::EditorHost for App {
     fn layer_visible(&self, layer: usize) -> bool {
         self.doc.layers.get(layer).is_some_and(|l| l.visible)
     }
+    /// Tests never read the clipboard of the system: there is one for the whole machine, and parallel tests that read it at once
+    /// crash in AppKit.
+    #[cfg(test)]
+    fn clipboard_image(&self) -> Option<base_ui::clip_image::ClipImage> {
+        None
+    }
     fn ghost_shapes(&self) -> Vec<lc_core::Shape> {
         self.ghosts()
     }
