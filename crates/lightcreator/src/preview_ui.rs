@@ -147,8 +147,10 @@ impl App {
         let Some(job) = self.preview_prepare(ui.ctx()) else { return };
         // The fitting of the picture is on its zoom bar.
         ui.label(RichText::new(tr("Preview")).strong());
+        // The stamp of the job that was shown: when the body changed the project (the switch of the side), the job is made again.
+        let stamp = self.job_stamp();
         egui::Frame::new().inner_margin(egui::Margin { left: 8, right: 8, top: 0, bottom: 3 }).show(ui, |ui| self.preview_body(ui, &job));
-        self.pv.job = Some((self.job_stamp(), job));
+        self.pv.job = Some((stamp, job));
     }
 
     /// Is the preview a tab of the work area (so that the bar of the tabs has one for it)?
@@ -652,5 +654,11 @@ mod side_tests {
         h.run_steps(3);
         assert!(!h.state().doc.two.as_ref().unwrap().shown_b, "side A is shown");
         assert_eq!(h.state().doc.scene.shapes.len(), 1);
+        // The picture is of side A too (its rectangle at the left), not the job of side B made before the switch.
+        let burned = |a: &App| -> f64 { a.pv.job.as_ref().map_or(f64::NAN, |(_, j)| j.moves.iter().filter(|m| m.laser).map(|m| m.a.x.max(m.b.x)).fold(0.0, f64::max)) };
+        assert!(burned(h.state()) <= 20.0 + 1e-6, "side A burned: {}", burned(h.state()));
+        h.get_by_label("Side B").click();
+        h.run_steps(3);
+        assert!(burned(h.state()) >= 50.0, "side B burned: {}", burned(h.state()));
     }
 }

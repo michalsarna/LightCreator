@@ -141,6 +141,7 @@ impl App {
             self.checkpoint();
             self.doc.show_side(b);
             self.ed.sel.clear();
+            self.ed.ghost_sel.clear();
             self.ed.node_sel.clear();
             self.touch();
         }
@@ -159,6 +160,72 @@ impl App {
         }
     }
 
+    /// The ghosts of the other side as they lie under the shown one (turned over), while they are shown.
+    pub fn ghosts(&self) -> Vec<lc_core::Shape> {
+        match &self.doc.two {
+            Some(t) if t.ghosts => {
+                let turn = self.doc.side_turn().unwrap_or(Xf::IDENTITY);
+                t.other.shapes.iter().map(|s| lc_core::Shape { xf: s.xf.then(turn), ..s.clone() }).collect()
+            }
+            _ => vec![],
+        }
+    }
+
+    /// The question of Save G-code in a two-sided job, and the saving when it is answered.
+    pub fn sides_save_window(&mut self, ctx: &egui::Context) {
+        let Some(flip) = self.doc.two.as_ref().map(|t| t.flip) else {
+            self.sides_save.open = false;
+            return;
+        };
+        if let Some(c) = base_ui::two_sided::save_window(ctx, &mut self.sides_save, flip) {
+            self.export_sides(c);
+        }
+    }
+
+    /// The G-code of both sides of a two-sided job: in one file (side A, a stop to turn the material over or none, side B) or in
+    /// two files named `_A` and `_B`. Each side says at its head which one it is.
+    pub fn export_sides(&mut self, how: base_ui::two_sided::SaveSides) {
+        use base_ui::two_sided::{hold_comment, side_comment, side_paths, SaveSides};
+        let Some(flip) = self.doc.two.as_ref().map(|t| t.flip) else { return };
+        let side = |b: bool| {
+            let mut d = self.doc.clone();
+            d.show_side(b);
+            d
+        };
+        let (a, b) = (side(false), side(true));
+        let one_by_one = self.one_by_one;
+        let opts = |b: bool| lc_core::gcode::JobOptions { one_by_one, side_note: Some(side_comment(b, flip)), then: None };
+        self.stamp_job();
+        let Some(p) = rfd::FileDialog::new().add_filter("G-code", &["gcode", "nc"]).set_file_name(format!("{}.gcode", self.gcode_name())).save_file() else { return };
+        let files: Vec<(std::path::PathBuf, String)> = match how {
+            SaveSides::Separate => {
+                let (pa, pb) = side_paths(&p);
+                vec![(pa, lc_core::gcode::generate_with(&a, None, &opts(false)).gcode), (pb, lc_core::gcode::generate_with(&b, None, &opts(true)).gcode)]
+            }
+            SaveSides::OneFile | SaveSides::OneFileWithHold => {
+                let hold = (how == SaveSides::OneFileWithHold).then(|| hold_comment(flip));
+                let then = lc_core::gcode::Then { scene: b.scene.clone(), note: side_comment(true, flip), hold };
+                vec![(p, lc_core::gcode::generate_with(&a, None, &lc_core::gcode::JobOptions { then: Some(then), ..opts(false) }).gcode)]
+            }
+        };
+        let mut saved = vec![];
+        for (path, text) in files {
+            let Some(text) = self.postprocessed(text) else { return };
+            if let Err(e) = std::fs::write(&path, text) {
+                self.status = trf("Export failed: {}", &[&e]);
+                return;
+            }
+            saved.push(path);
+        }
+        self.status = trf("Saved G-code {}", &[&saved.iter().map(|p| p.display().to_string()).collect::<Vec<_>>().join(", ")]);
+        if let Some(first) = saved.into_iter().next().filter(|p| self.ed.grid_prefs.gcode_preview_after_save && p.exists()) {
+            self.time_gcode_for_device();
+            if let Err(e) = base_ui::gcode_view_ui::open(&mut self.gcode_view, first) {
+                self.status = e;
+            }
+        }
+    }
+
     /// The piece of material where it lies (a faint dashed outline), the ghosts of the other side under the shapes of the shown one,
     /// and the name of the shown side.
     pub fn paint_sides(&self, v: &base_ui::editor::CanvasView) {
@@ -172,8 +239,7 @@ impl App {
         }
         let Some(t) = &self.doc.two else { return };
         if t.ghosts {
-            let turn = self.doc.side_turn().unwrap_or(Xf::IDENTITY);
-            let ghosts: Vec<lc_core::Shape> = t.other.shapes.iter().map(|s| lc_core::Shape { xf: s.xf.then(turn), ..s.clone() }).collect();
+            let ghosts = self.ghosts();
             let colour = base_ui::two_sided::ghost_colour(self.ed.grid_prefs.bed_fill(self.scheme.is_dark()));
             base_ui::two_sided::paint_ghosts(v.painter, &to, &ghosts, colour);
         }
@@ -190,6 +256,46 @@ mod tests {
         let mut a = App::build(&egui::Context::default(), None, false);
         a.screen = Screen::Editor;
         a
+    }
+
+    /// A click on a ghost of side A, where it lies under side B (turned over round the middle of the piece, which lies at the zero of
+    /// the machine), selects it as the reference; the shape of side B is aligned to it, and the ghost stays where it is.
+    #[test]
+    fn a_ghost_is_picked_where_it_lies_and_the_shape_aligns_to_it() {
+        use base_ui::editor::{EditorCommands, EditorHost};
+        let mut a = app();
+        a.setup.w = 120.0;
+        a.setup.h = 80.0;
+        a.setup.two_sided = true;
+        a.setup.marks = false;
+        a.apply_setup();
+        let o = a.doc.piece_origin();
+        a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(o.x + 10.0, o.y + 10.0));
+        a.show_side(true);
+        let on_b = a.doc.add(0, lc_core::Kind::Rect { w: 5.0, h: 5.0 }, lc_core::Xf::translate(o.x + 50.0, o.y + 50.0));
+        let ghost = a.ghosts()[0].clone();
+        let gb = ghost.bounds().unwrap();
+        assert!((gb.max.x - (o.x + 110.0)).abs() < 1e-6, "turned over round the middle of the piece: {gb:?} {o:?}");
+        let ctx = egui::Context::default();
+        let screen = egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1200.0, 800.0));
+        let mut frame = |a: &mut App, events: Vec<egui::Event>| {
+            let mut out = ctx.run_ui(egui::RawInput { screen_rect: Some(screen), events, ..Default::default() }, |ui| {
+                egui::CentralPanel::no_frame().show(ui, |ui| base_ui::editor::EditorCanvas::canvas(a, ui));
+            });
+            out.textures_delta.clear();
+        };
+        frame(&mut a, vec![]);
+        frame(&mut a, vec![]);
+        let at = a.w2s(a.ed.canvas_origin, gb.center());
+        let button = |down: bool| egui::Event::PointerButton { pos: at, button: egui::PointerButton::Primary, pressed: down, modifiers: Default::default() };
+        frame(&mut a, vec![egui::Event::PointerMoved(at), button(true), button(false)]);
+        frame(&mut a, vec![]);
+        assert_eq!(a.ed.ghost_sel, vec![ghost.id], "the ghost is picked");
+        assert!(a.ed.sel.is_empty());
+        a.ed.sel = vec![on_b];
+        a.align(0);
+        assert!((a.doc.scene.shape(on_b).unwrap().bounds().unwrap().min.x - gb.min.x).abs() < 1e-6, "left edges together");
+        assert_eq!(a.ghosts()[0].bounds(), Some(gb), "the ghost stays");
     }
 
     #[test]

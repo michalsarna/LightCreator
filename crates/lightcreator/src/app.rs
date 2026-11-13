@@ -117,6 +117,8 @@ pub struct App {
     pub ask_quit: bool,
     /// The window of the project setup (File → Project setup…, and after File → New).
     pub setup: base_ui::project_setup::Setup,
+    /// The question how the G-code of a two-sided job is saved.
+    pub sides_save: base_ui::two_sided::SaveDialog,
     /// The tabs of open drawings (the shown one is the live fields above), and the number of the recovery file of the shown one.
     pub tabs_state: crate::workspaces::Tabs,
     /// The central area in panes (one pane unless the person split the view).
@@ -365,6 +367,7 @@ impl App {
             close_program: false,
             ask_quit: false,
             setup: Default::default(),
+            sides_save: Default::default(),
             tabs_state: Default::default(),
             gcode_texts: vec![],
             closing_text: None,
@@ -778,6 +781,11 @@ impl App {
             self.status = tr("Nothing to burn: nothing is selected").into();
             return;
         }
+        if self.doc.two.is_some() && !self.selection_only {
+            // A two-sided job: asked first whether in one file or in two (`export_sides`).
+            self.sides_save.open = true;
+            return;
+        }
         self.stamp_job();
         if let Some(p) = rfd::FileDialog::new().add_filter("G-code", &["gcode", "nc"]).set_file_name("job.gcode").save_file() {
             let job = gcode::generate_with(&self.job_source(), None, &self.job_options());
@@ -1081,7 +1089,9 @@ impl App {
 
     /// How the job is made (the options of the Control tab).
     pub fn job_options(&self) -> gcode::JobOptions {
-        gcode::JobOptions { one_by_one: self.one_by_one }
+        // A two-sided job says at its head which side it is.
+        let side_note = self.doc.two.as_ref().map(|t| base_ui::two_sided::side_comment(t.shown_b, t.flip));
+        gcode::JobOptions { one_by_one: self.one_by_one, side_note, then: None }
     }
 
     /// Changes whenever the drawing or what the job makes of it changes: the key of the previews of the job.
@@ -1687,6 +1697,7 @@ impl App {
     fn dialogs(&mut self, ctx: &egui::Context) {
         self.materials_window(ctx);
         self.setup_window(ctx);
+        self.sides_save_window(ctx);
 
         let about = base_ui::dialogs::AboutInfo {
             title: &tr("About LightCreator"),
@@ -1770,6 +1781,15 @@ impl base_ui::editor::EditorHost for App {
     }
     fn layer_visible(&self, layer: usize) -> bool {
         self.doc.layers.get(layer).is_some_and(|l| l.visible)
+    }
+    /// Tests never read the clipboard of the system: there is one for the whole machine, and parallel tests that read it at once
+    /// crash in AppKit.
+    #[cfg(test)]
+    fn clipboard_image(&self) -> Option<base_ui::clip_image::ClipImage> {
+        None
+    }
+    fn ghost_shapes(&self) -> Vec<lc_core::Shape> {
+        self.ghosts()
     }
     fn checkpoint(&mut self) {
         App::checkpoint(self)

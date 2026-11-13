@@ -2506,7 +2506,7 @@ fn one_by_one_burns_all_layers_and_passes_of_an_element_before_the_next_and_the_
     let by_layer = gcode::generate(&d);
     assert_eq!(layers(&by_layer.gcode), vec![l0.clone(), "; pass 1/2".into(), "; pass 2/2".into(), l1.clone()]);
     // One by one: the group at x = 0 is nearer to the head than the one at 200, and is done completely first.
-    let one = gcode::generate_with(&d, None, &gcode::JobOptions { one_by_one: true });
+    let one = gcode::generate_with(&d, None, &gcode::JobOptions { one_by_one: true, ..Default::default() });
     let want: Vec<String> = [l0.clone(), "; pass 1/2".into(), "; pass 2/2".into(), l1.clone(), l0, "; pass 1/2".into(), "; pass 2/2".into(), l1].to_vec();
     assert_eq!(layers(&one.gcode), want);
     assert_eq!(burnt_order(&one).first(), Some(&0), "the near group is first: {:?}", burnt_order(&one));
@@ -2518,14 +2518,14 @@ fn one_by_one_burns_all_layers_and_passes_of_an_element_before_the_next_and_the_
 #[test]
 fn single_shapes_that_are_in_no_group_are_elements_of_their_own_in_the_order_of_distance() {
     let (d, _) = three_rects();
-    let one = gcode::generate_with(&d, None, &gcode::JobOptions { one_by_one: true });
+    let one = gcode::generate_with(&d, None, &gcode::JobOptions { one_by_one: true, ..Default::default() });
     assert_eq!(burnt_order(&one), vec![0, 1, 2], "nearest first, not the order they were drawn in");
 }
 
 #[test]
 fn a_job_of_the_selection_burns_only_those_shapes_in_either_order() {
     let (d, [far, near, mid]) = three_rects();
-    let burnt = |d: &Document, one_by_one: bool| burnt_order(&gcode::generate_with(d, None, &gcode::JobOptions { one_by_one }));
+    let burnt = |d: &Document, one_by_one: bool| burnt_order(&gcode::generate_with(d, None, &gcode::JobOptions { one_by_one, ..Default::default() }));
     assert_eq!(burnt(&d.only_shapes(&[mid]), false), vec![1]);
     assert_eq!(burnt(&d.only_shapes(&[far, near]), true), vec![0, 2]);
     // Nothing selected: nothing burnt (and the job has no laser move).
@@ -2658,4 +2658,31 @@ fn the_photos_aside_and_the_split_of_long_cuts_are_kept_with_the_device_and_bad_
     v["split"]["parts"] = serde_json::json!(999);
     let bad: Device = serde_json::from_value(v).unwrap();
     assert_eq!((bad.photo_park, bad.split), (Default::default(), Default::default()));
+}
+
+/// Both sides of a two-sided job in one file: each side says which one it is, the laser is off before the stop (M0) that waits for
+/// the material to be turned over and ready again after it, and the job ends once, after side B.
+#[test]
+fn two_sides_in_one_file_have_their_names_a_stop_between_them_and_one_end() {
+    let mut d = Document::default();
+    d.add(0, Kind::Rect { w: 10.0, h: 10.0 }, Xf::translate(5.0, 5.0));
+    let mut b = base_core::scene::Scene::default();
+    b.add(0, Kind::Rect { w: 4.0, h: 4.0 }, Xf::translate(60.0, 40.0));
+    let then = gcode::Then { scene: b.clone(), note: "Side B: the material is turned over side to side".into(), hold: Some("Turn the material over".into()) };
+    let opts = gcode::JobOptions { side_note: Some("Side A".into()), then: Some(then), ..Default::default() };
+    let g = gcode::generate_with(&d, None, &opts).gcode;
+    let at = |t: &str| g.find(t).unwrap_or_else(|| panic!("no {t:?} in\n{g}"));
+    let (a, stop, side_b) = (at("; Side A"), at("M0 ; Turn the material over"), at("; Side B:"));
+    assert!(a < stop && stop < side_b, "{g}");
+    let before = &g[..stop];
+    let off = before.rfind("M5 ; laser off").expect("laser off before the stop");
+    assert!(before[off..].lines().all(|l| !l.starts_with("G1")), "nothing burned after the laser went off");
+    assert!(g[stop..side_b].contains("S0"), "the laser made ready again: {}", &g[stop..side_b]);
+    assert_eq!(g.matches("M2").count(), 1, "one end of the job");
+    assert!(g.rfind("M2").unwrap() > side_b);
+    // Without the stop the sides follow one another; with no side B the file is as before with the name of the side.
+    let opts = gcode::JobOptions { side_note: Some("Side A".into()), then: Some(gcode::Then { scene: b, note: "Side B".into(), hold: None }), ..Default::default() };
+    assert!(!gcode::generate_with(&d, None, &opts).gcode.contains("M0"));
+    let one = gcode::generate_with(&d, None, &gcode::JobOptions { side_note: Some("Side A".into()), ..Default::default() }).gcode;
+    assert!(one.contains("; Side A") && !one.contains("Side B"));
 }
