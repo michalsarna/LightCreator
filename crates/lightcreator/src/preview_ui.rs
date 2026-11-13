@@ -238,7 +238,7 @@ impl App {
             ui.selectable_value(&mut self.pv.color_by, ColorBy::Layer, tr("Layer"));
             ui.separator();
             base_ui::widgets::toggle(ui, &mut self.pv.show_travel, tr("Show travel moves"), tr("Moves of the machine with the laser off"));
-            if !(rotary && self.pv.cylinder) {
+            if !(rotary && self.pv.cylinder) && !(!rotary && self.pv.box3d.unwrap_or(self.doc.two.is_some())) {
                 base_ui::widgets::toggle(ui, &mut self.pv.show_dims, tr("Dimensions"), tr("Show the sizes of the job as on a technical drawing"));
             }
             ui.separator();

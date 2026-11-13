@@ -28,14 +28,19 @@ fn kind() -> Kind {
 /// The colour of the material in the pictures and in the 3D view.
 pub const WOOD: [u8; 3] = [0xd8, 0xb0, 0x7c];
 
-/// The words at the head of face `i`: its name and size, and on a post or a block that the laser is focused on its top (the faces lie
-/// at different heights).
+/// The words at the head of face `i`: its name and size.
 fn face_note(solid: &Solid, i: usize) -> String {
-    let head = solid.head_comment(i);
+    solid.head_comment(i)
+}
+
+/// The words of the stop before face `i`: how to lay the object, and on a post or a block that the laser is focused on its top (the
+/// faces lie at different heights).
+fn hold_note(solid: &Solid, i: usize) -> String {
+    let turn = solid.turn_comment(i);
     if solid.count() > 2 {
-        format!("{head}\nFocus the laser on the top of face {}", Solid::letter(i))
+        format!("{turn}; focus the laser on its top")
     } else {
-        head
+        turn
     }
 }
 
@@ -319,7 +324,7 @@ impl App {
                         for s in &mut scene.shapes {
                             s.xf = s.xf.then(to_first);
                         }
-                        lc_core::gcode::Then { scene, note: face_note(&solid, i), hold: hold.then(|| solid.turn_comment(i)) }
+                        lc_core::gcode::Then { scene, note: face_note(&solid, i), hold: hold.then(|| hold_note(&solid, i)) }
                     })
                     .collect();
                 vec![lc_core::gcode::generate_with(&docs[0], None, &lc_core::gcode::JobOptions { then, ..opts(0) }).gcode]
@@ -611,7 +616,7 @@ mod tests {
         let t = &one[0];
         let at = |s: &str| t.find(s).unwrap_or_else(|| panic!("no {s:?} in\n{t}"));
         assert!(at("; Face A of 4") < at("M0 ; Roll it a quarter turn back: face B up") && at("M0 ; Roll it a quarter turn back: face B up") < at("; Face B of 4"));
-        assert!(t.contains("; Focus the laser on the top of face B"));
+        assert!(t.contains("M0 ; Roll it a quarter turn back: face B up, face A at the back; focus the laser on its top"), "{t}");
         // Face B in the one file is burned where its own file burns it (from the corner of the zero of its own work area).
         let sep = a.sides_texts(SaveSides::Separate).unwrap();
         assert_eq!(sep.len(), 4);
