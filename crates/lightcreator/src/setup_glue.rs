@@ -141,6 +141,7 @@ impl App {
             self.checkpoint();
             self.doc.show_side(b);
             self.ed.sel.clear();
+            self.ed.ghost_sel.clear();
             self.ed.node_sel.clear();
             self.touch();
         }
@@ -159,6 +160,72 @@ impl App {
         }
     }
 
+    /// The ghosts of the other side as they lie under the shown one (turned over), while they are shown.
+    pub fn ghosts(&self) -> Vec<lc_core::Shape> {
+        match &self.doc.two {
+            Some(t) if t.ghosts => {
+                let turn = self.doc.side_turn().unwrap_or(Xf::IDENTITY);
+                t.other.shapes.iter().map(|s| lc_core::Shape { xf: s.xf.then(turn), ..s.clone() }).collect()
+            }
+            _ => vec![],
+        }
+    }
+
+    /// The question of Save G-code in a two-sided job, and the saving when it is answered.
+    pub fn sides_save_window(&mut self, ctx: &egui::Context) {
+        let Some(flip) = self.doc.two.as_ref().map(|t| t.flip) else {
+            self.sides_save.open = false;
+            return;
+        };
+        if let Some(c) = base_ui::two_sided::save_window(ctx, &mut self.sides_save, flip) {
+            self.export_sides(c);
+        }
+    }
+
+    /// The G-code of both sides of a two-sided job: in one file (side A, a stop to turn the material over or none, side B) or in
+    /// two files named `_A` and `_B`. Each side says at its head which one it is.
+    pub fn export_sides(&mut self, how: base_ui::two_sided::SaveSides) {
+        use base_ui::two_sided::{hold_comment, side_comment, side_paths, SaveSides};
+        let Some(flip) = self.doc.two.as_ref().map(|t| t.flip) else { return };
+        let side = |b: bool| {
+            let mut d = self.doc.clone();
+            d.show_side(b);
+            d
+        };
+        let (a, b) = (side(false), side(true));
+        let one_by_one = self.one_by_one;
+        let opts = |b: bool| lc_core::gcode::JobOptions { one_by_one, side_note: Some(side_comment(b, flip)), then: None };
+        self.stamp_job();
+        let Some(p) = rfd::FileDialog::new().add_filter("G-code", &["gcode", "nc"]).set_file_name(format!("{}.gcode", self.gcode_name())).save_file() else { return };
+        let files: Vec<(std::path::PathBuf, String)> = match how {
+            SaveSides::Separate => {
+                let (pa, pb) = side_paths(&p);
+                vec![(pa, lc_core::gcode::generate_with(&a, None, &opts(false)).gcode), (pb, lc_core::gcode::generate_with(&b, None, &opts(true)).gcode)]
+            }
+            SaveSides::OneFile | SaveSides::OneFileWithHold => {
+                let hold = (how == SaveSides::OneFileWithHold).then(|| hold_comment(flip));
+                let then = lc_core::gcode::Then { scene: b.scene.clone(), note: side_comment(true, flip), hold };
+                vec![(p, lc_core::gcode::generate_with(&a, None, &lc_core::gcode::JobOptions { then: Some(then), ..opts(false) }).gcode)]
+            }
+        };
+        let mut saved = vec![];
+        for (path, text) in files {
+            let Some(text) = self.postprocessed(text) else { return };
+            if let Err(e) = std::fs::write(&path, text) {
+                self.status = trf("Export failed: {}", &[&e]);
+                return;
+            }
+            saved.push(path);
+        }
+        self.status = trf("Saved G-code {}", &[&saved.iter().map(|p| p.display().to_string()).collect::<Vec<_>>().join(", ")]);
+        if let Some(first) = saved.into_iter().next().filter(|p| self.ed.grid_prefs.gcode_preview_after_save && p.exists()) {
+            self.time_gcode_for_device();
+            if let Err(e) = base_ui::gcode_view_ui::open(&mut self.gcode_view, first) {
+                self.status = e;
+            }
+        }
+    }
+
     /// The piece of material where it lies (a faint dashed outline), the ghosts of the other side under the shapes of the shown one,
     /// and the name of the shown side.
     pub fn paint_sides(&self, v: &base_ui::editor::CanvasView) {
@@ -172,8 +239,7 @@ impl App {
         }
         let Some(t) = &self.doc.two else { return };
         if t.ghosts {
-            let turn = self.doc.side_turn().unwrap_or(Xf::IDENTITY);
-            let ghosts: Vec<lc_core::Shape> = t.other.shapes.iter().map(|s| lc_core::Shape { xf: s.xf.then(turn), ..s.clone() }).collect();
+            let ghosts = self.ghosts();
             let colour = base_ui::two_sided::ghost_colour(self.ed.grid_prefs.bed_fill(self.scheme.is_dark()));
             base_ui::two_sided::paint_ghosts(v.painter, &to, &ghosts, colour);
         }

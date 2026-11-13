@@ -122,7 +122,7 @@ fn grbl_sim_one_element_at_a_time_and_a_job_of_the_selection_both_run() {
     s.wait_banner();
     s.fast_machine(LASER);
     let jobs = [
-        gcode::generate_with(&d, None, &gcode::JobOptions { one_by_one: true }),
+        gcode::generate_with(&d, None, &gcode::JobOptions { one_by_one: true, ..Default::default() }),
         gcode::generate_with(&d.only_shapes(&first), None, &gcode::JobOptions::default()),
     ];
     for job in jobs {
