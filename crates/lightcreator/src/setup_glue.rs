@@ -51,8 +51,9 @@ const MARK_ARM: f64 = 10.0;
 impl App {
     /// Open the window with what the project has now (or the work area when it has nothing yet).
     pub fn open_setup(&mut self) {
-        let (aw, ah) = self.doc.device.work_size();
-        let piece = self.doc.piece.unwrap_or([aw.min(300.0), ah.min(200.0), 3.0]);
+        // Without a piece of its own the project takes the whole work area of the machine.
+        let (aw, ah) = self.machine_area();
+        let piece = self.doc.piece.unwrap_or([aw, ah, 3.0]);
         let rot = &self.doc.device.rotary;
         self.setup = base_ui::project_setup::Setup {
             open: true,
@@ -64,6 +65,7 @@ impl App {
             length: aw.min(150.0),
             flip: self.doc.two.as_ref().map_or(FlipAxis::SideToSide, |t| t.flip()),
             marks: self.doc.two.as_ref().is_none_or(|t| t.marks),
+            max: (aw, ah),
             ..Default::default()
         };
         let solid = self.doc.solid();
@@ -134,6 +136,9 @@ impl App {
             self.doc.piece = Some([w, h, t]);
             if st.work_area {
                 self.set_work_area(w, h);
+            } else {
+                // The work area of the machine again (a job on more than one side, or the material, may have changed it).
+                self.restore_machine_area();
             }
             self.status = trf("Project set up: material {} x {} x {} mm, zero at {}", &[&format!("{w:.1}"), &format!("{h:.1}"), &format!("{t:.1}"), &tr("Front left")]);
             if st.sides == Sides::Two {
@@ -646,5 +651,57 @@ mod tests {
         a.setup.round = false;
         a.apply_setup();
         assert!(!a.doc.device.rotary.enabled);
+    }
+
+    /// A click beside the work area, on a face of the post unfolded there, shows that face.
+    #[test]
+    fn a_click_on_a_face_unfolded_beside_the_work_area_shows_it() {
+        use base_ui::editor::EditorHost;
+        let mut a = app();
+        a.open_setup();
+        a.setup.sides = base_ui::project_setup::Sides::Post;
+        a.setup.post = [60.0, 40.0, 250.0];
+        a.apply_setup();
+        let ctx = egui::Context::default();
+        let screen = egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1200.0, 800.0));
+        let mut frame = |a: &mut App, events: Vec<egui::Event>| {
+            let mut out = ctx.run_ui(egui::RawInput { screen_rect: Some(screen), events, ..Default::default() }, |ui| {
+                egui::CentralPanel::no_frame().show(ui, |ui| base_ui::editor::EditorCanvas::canvas(a, ui));
+            });
+            out.textures_delta.clear();
+        };
+        frame(&mut a, vec![]);
+        frame(&mut a, vec![]);
+        // Face D lies above face A (at its back), 40 mm deep.
+        let o = a.doc.piece_origin();
+        let at = a.w2s(a.ed.canvas_origin, lc_core::Pt::new(o.x + 100.0, o.y - 15.0));
+        let button = |down: bool| egui::Event::PointerButton { pos: at, button: egui::PointerButton::Primary, pressed: down, modifiers: Default::default() };
+        frame(&mut a, vec![egui::Event::PointerMoved(at), button(true), button(false)]);
+        frame(&mut a, vec![]);
+        assert_eq!(a.doc.two.as_ref().unwrap().shown, 3, "face D");
+        assert_eq!(a.doc.device.work_size(), (250.0, 40.0));
+    }
+
+    /// The work area of the machine stays its own: a post makes the work area of the project as big as a face, but the profile of the
+    /// device keeps its size, a new project gets it back, and the setup of one side starts from it.
+    #[test]
+    fn the_work_area_of_the_machine_stays_its_own_and_one_side_starts_from_it() {
+        let mut a = app();
+        let mut dev = a.doc.device.clone();
+        dev.area.bed_w = 400.0;
+        dev.area.bed_h = 300.0;
+        a.profiles = vec![dev.clone()];
+        a.active = 0;
+        a.doc.device = dev;
+        a.open_setup();
+        assert_eq!((a.setup.w, a.setup.h), (400.0, 300.0), "the whole work area of the machine");
+        a.setup.sides = base_ui::project_setup::Sides::Post;
+        a.setup.post = [60.0, 40.0, 250.0];
+        a.apply_setup();
+        assert_eq!(a.doc.device.work_size(), (250.0, 60.0));
+        a.sync_profile();
+        assert_eq!((a.profiles[0].area.bed_w, a.profiles[0].area.bed_h), (400.0, 300.0), "the device keeps its own");
+        a.new_doc();
+        assert_eq!(a.doc.device.work_size(), (400.0, 300.0), "a new project has the machine's");
     }
 }
