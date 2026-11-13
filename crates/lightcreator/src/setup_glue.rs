@@ -171,22 +171,28 @@ impl App {
         }
     }
 
-    /// The question of Save G-code in a two-sided job, and the saving when it is answered.
+    /// The question of Save G-code (or of Preview G-code) in a two-sided job, and the saving or the showing when it is answered.
     pub fn sides_save_window(&mut self, ctx: &egui::Context) {
         let Some(flip) = self.doc.two.as_ref().map(|t| t.flip) else {
             self.sides_save.open = false;
             return;
         };
+        let show = self.sides_save.show;
         if let Some(c) = base_ui::two_sided::save_window(ctx, &mut self.sides_save, flip) {
-            self.export_sides(c);
+            if show {
+                self.show_sides(c);
+            } else {
+                self.export_sides(c);
+            }
         }
     }
 
-    /// The G-code of both sides of a two-sided job: in one file (side A, a stop to turn the material over or none, side B) or in
-    /// two files named `_A` and `_B`. Each side says at its head which one it is.
-    pub fn export_sides(&mut self, how: base_ui::two_sided::SaveSides) {
-        use base_ui::two_sided::{hold_comment, side_comment, side_paths, SaveSides};
-        let Some(flip) = self.doc.two.as_ref().map(|t| t.flip) else { return };
+    /// The G-code of both sides of a two-sided job the way `how` says, with the postprocessors: one text (side A, a stop to turn the
+    /// material over or none, side B) or two (side A, side B). Each side says at its head which one it is. `None` when a
+    /// postprocessor failed (the reason is in the status line).
+    pub fn sides_texts(&mut self, how: base_ui::two_sided::SaveSides) -> Option<Vec<String>> {
+        use base_ui::two_sided::{hold_comment, side_comment, SaveSides};
+        let flip = self.doc.two.as_ref().map(|t| t.flip)?;
         let side = |b: bool| {
             let mut d = self.doc.clone();
             d.show_side(b);
@@ -196,21 +202,31 @@ impl App {
         let one_by_one = self.one_by_one;
         let opts = |b: bool| lc_core::gcode::JobOptions { one_by_one, side_note: Some(side_comment(b, flip)), then: None };
         self.stamp_job();
-        let Some(p) = rfd::FileDialog::new().add_filter("G-code", &["gcode", "nc"]).set_file_name(format!("{}.gcode", self.gcode_name())).save_file() else { return };
-        let files: Vec<(std::path::PathBuf, String)> = match how {
-            SaveSides::Separate => {
-                let (pa, pb) = side_paths(&p);
-                vec![(pa, lc_core::gcode::generate_with(&a, None, &opts(false)).gcode), (pb, lc_core::gcode::generate_with(&b, None, &opts(true)).gcode)]
-            }
+        let texts = match how {
+            SaveSides::Separate => vec![lc_core::gcode::generate_with(&a, None, &opts(false)).gcode, lc_core::gcode::generate_with(&b, None, &opts(true)).gcode],
             SaveSides::OneFile | SaveSides::OneFileWithHold => {
                 let hold = (how == SaveSides::OneFileWithHold).then(|| hold_comment(flip));
                 let then = lc_core::gcode::Then { scene: b.scene.clone(), note: side_comment(true, flip), hold };
-                vec![(p, lc_core::gcode::generate_with(&a, None, &lc_core::gcode::JobOptions { then: Some(then), ..opts(false) }).gcode)]
+                vec![lc_core::gcode::generate_with(&a, None, &lc_core::gcode::JobOptions { then: Some(then), ..opts(false) }).gcode]
             }
         };
+        texts.into_iter().map(|t| self.postprocessed(t)).collect()
+    }
+
+    /// The G-code of both sides of a two-sided job: in one file or in two files named `_A` and `_B`.
+    pub fn export_sides(&mut self, how: base_ui::two_sided::SaveSides) {
+        use base_ui::two_sided::{side_paths, SaveSides};
+        let Some(p) = rfd::FileDialog::new().add_filter("G-code", &["gcode", "nc"]).set_file_name(format!("{}.gcode", self.gcode_name())).save_file() else { return };
+        let Some(texts) = self.sides_texts(how) else { return };
+        let paths = match how {
+            SaveSides::Separate => {
+                let (pa, pb) = side_paths(&p);
+                vec![pa, pb]
+            }
+            _ => vec![p],
+        };
         let mut saved = vec![];
-        for (path, text) in files {
-            let Some(text) = self.postprocessed(text) else { return };
+        for (path, text) in paths.into_iter().zip(texts) {
             if let Err(e) = std::fs::write(&path, text) {
                 self.status = trf("Export failed: {}", &[&e]);
                 return;
@@ -224,6 +240,42 @@ impl App {
                 self.status = e;
             }
         }
+    }
+
+    /// The G-code of both sides of a two-sided job in tabs, the way `how` says: one tab with the whole job, or a tab for each side
+    /// (`name_A`, `name_B`). Nothing is saved.
+    pub fn show_sides(&mut self, how: base_ui::two_sided::SaveSides) {
+        use base_ui::two_sided::{SaveSides, SIDE_B_TEXT};
+        let Some(texts) = self.sides_texts(how) else { return };
+        let stem = self.gcode_name();
+        let slot = self.slot;
+        let names = if how == SaveSides::Separate { vec![format!("{stem}_A.gcode"), format!("{stem}_B.gcode")] } else { vec![format!("{stem}.gcode")] };
+        if how != SaveSides::Separate {
+            // The tab of side B alone goes, unless it has edits.
+            self.gcode_texts.retain(|g| g.slot != (slot | SIDE_B_TEXT) || g.dirty());
+        }
+        let stamp = self.gcode_stamp();
+        for (i, (name, text)) in names.into_iter().zip(texts).enumerate() {
+            let key = if i == 0 { slot } else { slot | SIDE_B_TEXT };
+            match self.gcode_texts.iter_mut().find(|g| g.slot == key) {
+                Some(g) => {
+                    if !g.dirty() {
+                        g.replace(text);
+                        g.stamp = stamp;
+                    }
+                    g.name = name;
+                    g.sides = Some(how);
+                }
+                None => {
+                    let mut g = base_ui::gcode_text_ui::GcodeText::new(key, &name, text);
+                    g.stamp = stamp;
+                    g.sides = Some(how);
+                    self.gcode_texts.push(g);
+                }
+            }
+        }
+        self.panes.select(base_ui::work_panes::Content::GcodeText(slot));
+        self.status = tr("The G-code is shown, nothing is saved").to_string();
     }
 
     /// The piece of material where it lies (a faint dashed outline), the ghosts of the other side under the shapes of the shown one,
@@ -256,6 +308,44 @@ mod tests {
         let mut a = App::build(&egui::Context::default(), None, false);
         a.screen = Screen::Editor;
         a
+    }
+
+    /// Preview G-code of a two-sided job asks how, then shows one tab with the whole job or a tab for each side; the tab of side B is
+    /// made again with the project like the other one; Save G-code in such a tab asks how to save.
+    #[test]
+    fn the_g_code_of_a_two_sided_job_is_shown_whole_or_a_tab_for_each_side() {
+        use base_ui::two_sided::{SaveSides, SIDE_B_TEXT};
+        let mut a = app();
+        a.setup.two_sided = true;
+        a.setup.marks = false;
+        a.apply_setup();
+        a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(10.0, 10.0));
+        a.show_side(true);
+        a.doc.add(0, lc_core::Kind::Rect { w: 5.0, h: 5.0 }, lc_core::Xf::translate(40.0, 30.0));
+        a.preview_gcode();
+        assert!(a.sides_save.open && a.sides_save.show, "asked first");
+        let slot = a.slot;
+        a.show_sides(SaveSides::Separate);
+        let tab = |a: &App, key: usize| a.gcode_texts.iter().find(|g| g.slot == key).map(|g| (g.name.clone(), g.text.clone(), g.sides));
+        let (ta, tb) = (tab(&a, slot).unwrap(), tab(&a, slot | SIDE_B_TEXT).unwrap());
+        assert!(ta.0.ends_with("_A.gcode") && tb.0.ends_with("_B.gcode"));
+        assert!(ta.1.contains("; Side A") && !ta.1.contains("Side B") && tb.1.contains("; Side B"));
+        // The tab of side B follows the project.
+        let before = tb.1.clone();
+        a.show_side(true);
+        a.doc.add(0, lc_core::Kind::Rect { w: 7.0, h: 7.0 }, lc_core::Xf::translate(60.0, 30.0));
+        a.touch();
+        a.mark_saved();
+        a.refresh_gcode_text_after(std::time::Duration::ZERO);
+        assert_ne!(tab(&a, slot | SIDE_B_TEXT).unwrap().1, before, "side B made again");
+        // One file: one tab with both sides and the stop; the tab of side B goes.
+        a.show_sides(SaveSides::OneFileWithHold);
+        assert!(tab(&a, slot | SIDE_B_TEXT).is_none());
+        let whole = tab(&a, slot).unwrap();
+        assert!(whole.1.contains("; Side A") && whole.1.contains("M0 ;") && whole.1.contains("; Side B"), "{}", whole.1);
+        assert_eq!(whole.2, Some(SaveSides::OneFileWithHold));
+        // A closed project takes the tab of its side B with it, never another project's.
+        assert_eq!(base_ui::two_sided::text_slot(slot | SIDE_B_TEXT), slot);
     }
 
     /// A click on a ghost of side A, where it lies under side B (turned over round the middle of the piece, which lies at the zero of

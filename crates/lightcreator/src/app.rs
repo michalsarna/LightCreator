@@ -783,7 +783,7 @@ impl App {
         }
         if self.doc.two.is_some() && !self.selection_only {
             // A two-sided job: asked first whether in one file or in two (`export_sides`).
-            self.sides_save.open = true;
+            self.sides_save.ask_save();
             return;
         }
         self.stamp_job();
@@ -810,6 +810,11 @@ impl App {
         }
         if self.selection_only && self.ed.sel.is_empty() {
             self.status = tr("Nothing to burn: nothing is selected").into();
+            return;
+        }
+        if self.doc.two.is_some() && !self.selection_only {
+            // A two-sided job: asked first whether as one text or one for each side (`show_sides`).
+            self.sides_save.ask_show();
             return;
         }
         let slot = self.slot;

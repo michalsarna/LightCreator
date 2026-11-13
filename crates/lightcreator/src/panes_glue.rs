@@ -16,7 +16,7 @@ impl App {
     fn pane_tabs(&mut self) -> Vec<Content> {
         let slots = self.doc_slots();
         // The G-code of a project that is closed goes with it.
-        self.gcode_texts.retain(|g| slots.contains(&g.slot));
+        self.gcode_texts.retain(|g| slots.contains(&base_ui::two_sided::text_slot(g.slot)));
         let mut v: Vec<Content> = slots.iter().map(|s| Content::Doc(*s)).collect();
         if self.preview_work_tab() {
             v.push(Content::Preview);
@@ -149,31 +149,42 @@ impl App {
 
     /// [`refresh_gcode_text`] with the wait given; returns whether a change is still waiting for its moment.
     pub(crate) fn refresh_gcode_text_after(&mut self, wait: std::time::Duration) -> bool {
-        let slot = self.slot;
-        if !self.gcode_texts.iter().any(|g| g.slot == slot) {
-            return false;
+        // The tab of the project, and the one of side B when the sides of a two-sided job are shown apart.
+        let mut waiting = false;
+        for key in [self.slot, self.slot | base_ui::two_sided::SIDE_B_TEXT] {
+            if !self.gcode_texts.iter().any(|g| g.slot == key) {
+                continue;
+            }
+            let stamp = self.gcode_stamp();
+            let Some(g) = self.gcode_texts.iter_mut().find(|g| g.slot == key) else { continue };
+            if !g.due(stamp, wait) {
+                waiting |= g.stamp != stamp && !g.dirty();
+                continue;
+            }
+            // One try for every change, whatever comes of it (a postprocessor that fails says so in the status line).
+            g.stamp = stamp;
+            self.remake_gcode_text(key);
         }
-        let stamp = self.gcode_stamp();
-        let Some(g) = self.gcode_texts.iter_mut().find(|g| g.slot == slot) else { return false };
-        if !g.due(stamp, wait) {
-            return g.stamp != stamp && !g.dirty();
-        }
-        // One try for every change, whatever comes of it (a postprocessor that fails says so in the status line).
-        g.stamp = stamp;
-        self.remake_gcode_text(slot);
-        false
+        waiting
     }
 
-    /// Make the G-code text of the project of `slot` again (the project becomes the active one first: the program is made from it).
-    fn remake_gcode_text(&mut self, slot: usize) {
-        self.activate_slot(slot);
-        if let Some(text) = self.gcode_text_now() {
-            if let Some(g) = self.gcode_texts.iter_mut().find(|g| g.slot == slot) {
+    /// Make the G-code text of the tab `key` again (its project becomes the active one first: the program is made from it). A text of a
+    /// two-sided job is made the way it was chosen: the whole job, or the side of the tab.
+    fn remake_gcode_text(&mut self, key: usize) {
+        use base_ui::two_sided::SIDE_B_TEXT;
+        self.activate_slot(base_ui::two_sided::text_slot(key));
+        let sides = self.gcode_texts.iter().find(|g| g.slot == key).and_then(|g| g.sides);
+        let text = match sides {
+            Some(how) if self.doc.two.is_some() => self.sides_texts(how).and_then(|t| t.into_iter().nth(usize::from(key & SIDE_B_TEXT != 0))),
+            _ => self.gcode_text_now(),
+        };
+        if let Some(text) = text {
+            if let Some(g) = self.gcode_texts.iter_mut().find(|g| g.slot == key) {
                 g.replace(text);
             }
         }
         let stamp = self.gcode_stamp();
-        if let Some(g) = self.gcode_texts.iter_mut().find(|g| g.slot == slot && !g.dirty()) {
+        if let Some(g) = self.gcode_texts.iter_mut().find(|g| g.slot == key && !g.dirty()) {
             g.stamp = stamp;
         }
     }
@@ -239,6 +250,8 @@ impl PaneHost for App {
                 let Some(i) = self.gcode_texts.iter().position(|g| g.slot == slot) else { return PaneEvent::Nothing };
                 match base_ui::gcode_text_ui::show(ui, &mut self.gcode_texts[i]) {
                     TextAction::MakeAgain => self.remake_gcode_text(slot),
+                    // A two-sided job: asked how to save, as by the button of the program.
+                    TextAction::SaveSides => self.sides_save.ask_save(),
                     TextAction::Analyse => {
                         let g: &GcodeText = &self.gcode_texts[i];
                         self.time_gcode_for_device();
