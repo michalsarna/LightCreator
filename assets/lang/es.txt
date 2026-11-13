@@ -1149,3 +1149,12 @@
 1148|Arrastrar: girar · rueda: zoom
 1149|Dimensiones en la vista previa
 1150|Cilindro en la vista previa (eje rotativo)
+1151|Las caras que desaparecerían tienen formas: el proyecto se queda como estaba. Bórrelas primero.
+1152|un poste
+1153|un bloque
+1154|Proyecto configurado: {} de {} x {} x {} mm, cero en {}
+1155|Cuatro marcas de esquina justo fuera del material, grabadas como un trabajo aparte en la plancha de debajo antes de colocar el material: ponga el material en ellas para la cara A y, volteado, para la cara B.
+1156|El objeto grabado en 3D, tan grande como el material de la configuración del proyecto, con lo que se graba en cada cara. Arrastre para girarlo; la rueda hace zoom.
+1157|El trabajo en el área de trabajo, tal como lo graba la máquina
+1158|Colores de quemado
+1159|Las líneas más oscuras con más potencia, como quemadas en madera; desactivado: con los colores de las operaciones o las capas

@@ -1149,3 +1149,12 @@
 1148|Ťahanie: otočiť · koliesko: priblížiť
 1149|Rozmery v náhľade
 1150|Valec v náhľade (otočná os)
+1151|Steny, ktoré by zmizli, majú tvary: projekt zostáva, aký bol. Najprv ich zmažte.
+1152|stĺpik
+1153|kocka
+1154|Projekt nastavený: {} {} x {} x {} mm, nula v {}
+1155|Štyri rohové značky tesne mimo materiálu, vypálené samostatnou úlohou na dosku pod ním, kým sa materiál položí: vložte doň materiál pre stranu A a otočený pre stranu B.
+1156|Vypálený predmet v 3D, veľký ako materiál z nastavenia projektu, s tým, čo sa vypáli na každú jeho stenu. Ťahaním ho otočíte, koliesko približuje.
+1157|Úloha na pracovnej ploche, ako ju stroj vypaľuje
+1158|Farby vypálenia
+1159|Čiary tmavšie pri vyššom výkone, ako vypálené do dreva; vypnuté: vo farbách operácií alebo vrstiev

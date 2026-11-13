@@ -1,12 +1,14 @@
 //! The project setup of LightCreator: the shared window of baseCreator (`base_ui::project_setup`, as in MillCreator) and what it does
-//! here: the piece of material, a cylinder on the rotary attachment, and a two-sided job (side A and side B, turned over round the
-//! horizontal or the vertical middle line, with alignment marks), and the switch between the sides with the ghosts of the other one.
+//! here: the piece of material, a cylinder on the rotary attachment, and a job on more than one side (side A and side B of a sheet
+//! turned over round the horizontal or the vertical middle line, with alignment marks burned as a job of their own; the four faces of
+//! a post; the six faces of a block), and the switch between the sides with the ghosts of the others.
 use crate::app::App;
+use base_ui::i18n::{tr, trf};
+use base_ui::project_setup::{Answer, Kind, Sides};
+use eframe::egui;
+use lc_core::faces::{Body, Relation, Solid};
 use lc_core::geom::{Polyline, Pt, Xf};
 use lc_core::setup::FlipAxis;
-use base_ui::i18n::{tr, trf};
-use base_ui::project_setup::{Answer, Kind};
-use eframe::egui;
 use lc_core::{Kind as ShapeKind, LayerMode, TwoSides};
 
 /// What LightCreator asks of the shared window.
@@ -14,11 +16,31 @@ fn kind() -> Kind {
     Kind {
         zero: false,
         cylinder: true,
-        marks_tip: "Four corner marks just outside the material, burned on the sheet under it before side A: put the turned-over material back into them for side B.",
+        marks_tip: "Four corner marks just outside the material, burned as a job of their own on the sheet under it before the material is laid down: put the material into them for side A and, turned over, for side B.",
         block_note: "The material lies in the corner of the zero of the machine. For a two-sided job lay it in the same place for both sides (the alignment marks show where).",
         cylinder_note: "The workpiece lies on the rotary attachment; Y of the drawing goes round it and the drawing is unrolled from its surface.",
-        colour: [0xd8, 0xb0, 0x7c],
+        colour: WOOD,
         paper: false,
+        solids: true,
+    }
+}
+
+/// The colour of the material in the pictures and in the 3D view.
+pub const WOOD: [u8; 3] = [0xd8, 0xb0, 0x7c];
+
+/// The words at the head of face `i`: its name and size.
+fn face_note(solid: &Solid, i: usize) -> String {
+    solid.head_comment(i)
+}
+
+/// The words of the stop before face `i`: how to lay the object, and on a post or a block that the laser is focused on its top (the
+/// faces lie at different heights).
+fn hold_note(solid: &Solid, i: usize) -> String {
+    let turn = solid.turn_comment(i);
+    if solid.count() > 2 {
+        format!("{turn}; focus the laser on its top")
+    } else {
+        turn
     }
 }
 
@@ -40,11 +62,13 @@ impl App {
             round: rot.enabled,
             diameter: rot.diameter.clamp(1.0, 1000.0),
             length: aw.min(150.0),
-            two_sided: self.doc.two.is_some(),
-            flip: self.doc.two.as_ref().map_or(FlipAxis::SideToSide, |t| t.flip),
-            marks: self.doc.two.is_none(),
+            flip: self.doc.two.as_ref().map_or(FlipAxis::SideToSide, |t| t.flip()),
+            marks: self.doc.two.as_ref().is_none_or(|t| t.marks),
             ..Default::default()
         };
+        let solid = self.doc.solid();
+        self.setup.take_solid(solid.as_ref());
+        self.setup.work_area = self.setup.sides.many();
     }
 
     pub fn setup_window(&mut self, ctx: &egui::Context) {
@@ -56,7 +80,11 @@ impl App {
 
     /// Put the choices into the project.
     pub fn apply_setup(&mut self) {
-        let st = self.setup.clone();
+        let mut st = self.setup.clone();
+        // A job on more than one side has the material as its work area.
+        if st.sides.many() {
+            st.work_area = true;
+        }
         self.checkpoint();
         if st.round {
             let d = st.diameter.clamp(1.0, 1000.0);
@@ -75,36 +103,83 @@ impl App {
             self.doc.device.rotary.enabled = false;
             self.sync_profile();
         }
-        let (w, h, t) = (st.w.clamp(1.0, 20_000.0), st.h.clamp(1.0, 20_000.0), st.t.clamp(0.1, base_ui::project_setup::MAX_THICKNESS));
-        self.doc.piece = Some([w, h, t]);
-        if st.work_area {
-            self.set_work_area(w, h);
+        if let (Sides::Post | Sides::Block, Some(solid)) = (st.sides, st.solid()) {
+            if !self.make_faces(solid) {
+                self.status = tr("The faces that would go have shapes: the project stays as it was. Delete them first.").to_string();
+                return;
+            }
+            let s = solid.size;
+            let what = if solid.body == Body::Post { tr("a post") } else { tr("a block") };
+            self.status = trf("Project set up: {} of {} x {} x {} mm, zero at {}", &[&what, &format!("{:.1}", s[0]), &format!("{:.1}", s[1]), &format!("{:.1}", s[2]), &tr("Front left")]);
+        } else {
+            let (w, h, t) = (st.w.clamp(1.0, 20_000.0), st.h.clamp(1.0, 20_000.0), st.t.clamp(0.1, base_ui::project_setup::MAX_THICKNESS));
+            if st.sides == Sides::Two {
+                if !self.make_faces(Solid::sheet(w, h, t, st.flip)) {
+                    self.status = tr("The faces that would go have shapes: the project stays as it was. Delete them first.").to_string();
+                    return;
+                }
+                if let Some(two) = self.doc.two.as_mut() {
+                    two.marks = st.marks;
+                }
+                if st.marks {
+                    self.ready_marks_layer();
+                }
+            } else if self.doc.two.is_some() {
+                if !self.make_one_sided() {
+                    self.status = tr("Side B has shapes: the project stays two-sided. Delete them first to make it one-sided.").to_string();
+                    self.touch();
+                    return;
+                }
+            }
+            self.doc.piece = Some([w, h, t]);
+            if st.work_area {
+                self.set_work_area(w, h);
+            }
+            self.status = trf("Project set up: material {} x {} x {} mm, zero at {}", &[&format!("{w:.1}"), &format!("{h:.1}"), &format!("{t:.1}"), &tr("Front left")]);
+            if st.sides == Sides::Two {
+                self.status = format!("{} — {}", self.status, base_ui::project_setup::flip_name(st.flip));
+            }
         }
-        self.status = trf("Project set up: material {} x {} x {} mm, zero at {}", &[&format!("{w:.1}"), &format!("{h:.1}"), &format!("{t:.1}"), &tr("Front left")]);
         if was_rotary {
             self.status = format!("{} {}", self.status, tr("The rotary attachment of the device is off."));
         }
-        if st.two_sided {
-            let first = self.doc.two.is_none();
-            match self.doc.two.as_mut() {
-                Some(two) => two.flip = st.flip,
-                None => self.doc.two = Some(TwoSides { flip: st.flip, ghosts: true, shown_b: false, other: lc_core::Scene::default() }),
-            }
-            if first && st.marks {
-                self.doc.show_side(false);
-                self.add_alignment_marks();
-            }
-            self.status = format!("{} — {}", self.status, base_ui::project_setup::flip_name(st.flip));
-        } else if self.doc.two.is_some() {
-            if self.doc.sides().1.is_some_and(|b| !b.shapes.is_empty()) {
-                self.status = tr("Side B has shapes: the project stays two-sided. Delete them first to make it one-sided.").to_string();
-            } else {
-                self.doc.show_side(false);
-                self.doc.two = None;
-            }
-        }
         self.ed.view.need_fit = true;
         self.touch();
+    }
+
+    /// Make the project a job on the faces of `solid` (or change its size); the drawings stay. A face that would go must be empty:
+    /// false when the project stays as it was.
+    pub fn make_faces(&mut self, solid: Solid) -> bool {
+        let n = solid.count();
+        if let Some(t) = &self.doc.two {
+            if (n..t.others.len()).any(|i| !self.doc.face_scene(i).shapes.is_empty()) {
+                return false;
+            }
+            if t.shown >= n {
+                self.doc.show_face(0);
+            }
+        }
+        let t = self.doc.two.get_or_insert_with(|| TwoSides::new(solid));
+        t.solid = solid;
+        t.others.resize(n, lc_core::Scene::default());
+        if !t.is_solid() {
+            t.marks = false;
+        }
+        self.doc.apply_face_size();
+        self.ed.sel.clear();
+        self.ed.ghost_sel.clear();
+        true
+    }
+
+    /// One side again: only while the other faces are empty (their shapes are never thrown away).
+    pub fn make_one_sided(&mut self) -> bool {
+        let Some(t) = &self.doc.two else { return true };
+        if (1..t.others.len()).any(|i| !self.doc.face_scene(i).shapes.is_empty()) {
+            return false;
+        }
+        self.doc.show_face(0);
+        self.doc.two = None;
+        true
     }
 
     /// The work area of the device in this project made as big as the piece.
@@ -114,71 +189,105 @@ impl App {
         a.bed_h = h.max(10.0);
     }
 
-    /// Four L-shaped marks just outside the corners of the piece, on the last layer (64) as lines: burned on the sheet under the
-    /// material before side A, they show where to put it back after it is turned over.
-    pub fn add_alignment_marks(&mut self) {
+    /// The last layer (64) burns the alignment marks: lines, out of the way of the layers of the job.
+    fn ready_marks_layer(&mut self) {
+        let Some(layer) = self.doc.layers.len().checked_sub(1) else { return };
+        let l = &mut self.doc.layers[layer];
+        l.mode = LayerMode::Line;
+        l.output = true;
+        l.name = tr("Alignment marks").to_string();
+    }
+
+    /// Four L-shaped marks just outside the corners of the piece, on the last layer (64): burned as a job of their own on the sheet
+    /// under the material before it is laid down, they show where it lies for side A and, turned over, for side B.
+    pub fn marks_scene(&self) -> lc_core::Scene {
+        let mut sc = lc_core::Scene::default();
         let (w, h) = self.doc.piece_size();
         let o = self.doc.piece_origin();
-        // The last layer (64), out of the way of the layers of the job.
-        let Some(layer) = self.doc.layers.len().checked_sub(1) else { return };
+        let Some(layer) = self.doc.layers.len().checked_sub(1) else { return sc };
         let (g, a) = (MARK_GAP, MARK_ARM);
         let corners = [(-g, -g, 1.0, 1.0), (w + g, -g, -1.0, 1.0), (-g, h + g, 1.0, -1.0), (w + g, h + g, -1.0, -1.0)];
         for (x, y, sx, sy) in corners {
             let (x, y) = (x + o.x, y + o.y);
             let l = Polyline::new(vec![Pt::new(x + sx * a, y), Pt::new(x, y), Pt::new(x, y + sy * a)], false);
-            self.doc.add(layer, ShapeKind::Path(vec![l]), Xf::IDENTITY);
+            sc.add(layer, ShapeKind::Path(vec![l]), Xf::IDENTITY);
         }
-        let l = &mut self.doc.layers[layer];
-        l.mode = LayerMode::Line;
-        l.output = true;
-        l.name = tr("Alignment marks").to_string();
-        self.status = tr("Alignment marks").to_string();
+        sc
     }
 
-    /// Show side B (`true`) or side A; undo can take it back.
-    pub fn show_side(&mut self, b: bool) {
-        if self.doc.two.as_ref().is_some_and(|t| t.shown_b != b) {
+    /// The G-code of the alignment marks alone (with the postprocessors), when the project has them.
+    pub fn marks_text(&mut self) -> Option<String> {
+        if !self.doc.two.as_ref().is_some_and(|t| t.marks && !t.is_solid()) {
+            return None;
+        }
+        let mut d = self.doc.clone();
+        d.scene = self.marks_scene();
+        d.two = None;
+        let opts = lc_core::gcode::JobOptions { one_by_one: false, side_note: Some("Alignment marks: burn them on the sheet under the material, then lay the material into them".into()), then: vec![] };
+        let text = lc_core::gcode::generate_with(&d, None, &opts).gcode;
+        self.postprocessed(text)
+    }
+
+    /// Show face `i` (side B of a sheet is 1); undo can take it back.
+    pub fn show_face(&mut self, i: usize) {
+        if self.doc.two.as_ref().is_some_and(|t| t.shown != i && i < t.others.len()) {
             self.checkpoint();
-            self.doc.show_side(b);
+            let solid = self.doc.two.as_ref().is_some_and(|t| t.is_solid());
+            self.doc.show_face(i);
             self.ed.sel.clear();
             self.ed.ghost_sel.clear();
             self.ed.node_sel.clear();
+            if solid {
+                self.ed.view.need_fit = true;
+            }
             self.touch();
         }
     }
 
-    /// The switch over the work area: side A or B, and the ghosts.
+    /// Show side B (`true`) or side A of a sheet.
+    #[cfg(test)]
+    pub fn show_side(&mut self, b: bool) {
+        self.show_face(usize::from(b));
+    }
+
+    /// The switch over the work area: the side or the face, and the ghosts.
     pub fn sides_bar(&mut self, ui: &mut egui::Ui) {
+        let Some(solid) = self.doc.solid() else { return };
         let Some(t) = self.doc.two.as_mut() else { return };
-        let (shown_b, flip) = (t.shown_b, t.flip);
-        let changed = base_ui::two_sided::bar(ui, shown_b, &mut t.ghosts, flip);
+        let shown = t.shown;
+        let changed = base_ui::two_sided::faces_bar(ui, &solid, shown, &mut t.ghosts);
         if changed.ghosts {
             self.touch();
         }
-        if changed.side {
-            self.show_side(!shown_b);
+        if let Some(i) = changed.face {
+            self.show_face(i);
         }
     }
 
-    /// The ghosts of the other side as they lie under the shown one (turned over), while they are shown.
+    /// The ghosts of the other faces where they lie to the shown one, while they are shown. On a post or a block each face's ghosts
+    /// get ids of their own (the drawings of the faces count their ids apart).
     pub fn ghosts(&self) -> Vec<lc_core::Shape> {
-        match &self.doc.two {
-            Some(t) if t.ghosts => {
-                let turn = self.doc.side_turn().unwrap_or(Xf::IDENTITY);
-                t.other.shapes.iter().map(|s| lc_core::Shape { xf: s.xf.then(turn), ..s.clone() }).collect()
-            }
-            _ => vec![],
-        }
+        let Some(t) = self.doc.two.as_ref().filter(|t| t.ghosts) else { return vec![] };
+        let many = t.others.len() > 2;
+        (0..t.others.len())
+            .filter(|j| *j != t.shown)
+            .flat_map(|j| {
+                let xf = self.doc.ghost_xf(j).unwrap_or(Xf::IDENTITY);
+                t.others[j].shapes.iter().map(move |s| lc_core::Shape { xf: s.xf.then(xf), id: if many { s.id + ((j as u64 + 1) << 40) } else { s.id }, ..s.clone() })
+            })
+            .collect()
     }
 
-    /// The question of Save G-code (or of Preview G-code) in a two-sided job, and the saving or the showing when it is answered.
+    /// The question of Save G-code (or of Preview G-code) in a job on more than one side, and the saving or the showing when it is
+    /// answered.
     pub fn sides_save_window(&mut self, ctx: &egui::Context) {
-        let Some(flip) = self.doc.two.as_ref().map(|t| t.flip) else {
+        let Some(solid) = self.doc.solid() else {
             self.sides_save.open = false;
             return;
         };
+        let marks = self.doc.two.as_ref().is_some_and(|t| t.marks && !t.is_solid());
         let show = self.sides_save.show;
-        if let Some(c) = base_ui::two_sided::save_window(ctx, &mut self.sides_save, flip) {
+        if let Some(c) = base_ui::two_sided::save_window_for(ctx, &mut self.sides_save, &solid, marks) {
             if show {
                 self.show_sides(c);
             } else {
@@ -187,44 +296,60 @@ impl App {
         }
     }
 
-    /// The G-code of both sides of a two-sided job the way `how` says, with the postprocessors: one text (side A, a stop to turn the
-    /// material over or none, side B) or two (side A, side B). Each side says at its head which one it is. `None` when a
-    /// postprocessor failed (the reason is in the status line).
+    /// The number of sides or faces of the job (1 without).
+    pub fn face_count(&self) -> usize {
+        self.doc.two.as_ref().map_or(1, |t| t.others.len())
+    }
+
+    /// The G-code of all the sides of the job the way `how` says, with the postprocessors: one text (side A, a stop to turn the
+    /// object or none, side B...) or one for each side. Each says at its head which side it is. `None` when a postprocessor failed
+    /// (the reason is in the status line).
     pub fn sides_texts(&mut self, how: base_ui::two_sided::SaveSides) -> Option<Vec<String>> {
-        use base_ui::two_sided::{hold_comment, side_comment, SaveSides};
-        let flip = self.doc.two.as_ref().map(|t| t.flip)?;
-        let side = |b: bool| {
-            let mut d = self.doc.clone();
-            d.show_side(b);
-            d
-        };
-        let (a, b) = (side(false), side(true));
+        use base_ui::two_sided::SaveSides;
+        let solid = self.doc.solid()?;
+        let n = solid.count();
         let one_by_one = self.one_by_one;
-        let opts = |b: bool| lc_core::gcode::JobOptions { one_by_one, side_note: Some(side_comment(b, flip)), then: None };
         self.stamp_job();
+        let docs: Vec<lc_core::Document> = (0..n).map(|i| self.doc.with_face(i)).collect();
+        let opts = |i: usize| lc_core::gcode::JobOptions { one_by_one, side_note: Some(face_note(&solid, i)), then: vec![] };
         let texts = match how {
-            SaveSides::Separate => vec![lc_core::gcode::generate_with(&a, None, &opts(false)).gcode, lc_core::gcode::generate_with(&b, None, &opts(true)).gcode],
+            SaveSides::Separate => docs.iter().enumerate().map(|(i, d)| lc_core::gcode::generate_with(d, None, &opts(i)).gcode).collect(),
             SaveSides::OneFile | SaveSides::OneFileWithHold => {
-                let hold = (how == SaveSides::OneFileWithHold).then(|| hold_comment(flip));
-                let then = lc_core::gcode::Then { scene: b.scene.clone(), note: side_comment(true, flip), hold };
-                vec![lc_core::gcode::generate_with(&a, None, &lc_core::gcode::JobOptions { then: Some(then), ..opts(false) }).gcode]
+                let hold = how == SaveSides::OneFileWithHold;
+                // Every face is moved so that the device of face A burns it where the device of its own face would.
+                let then = (1..n)
+                    .map(|i| {
+                        let to_first = if solid.count() > 2 { self.doc.face_to_first(i) } else { Xf::IDENTITY };
+                        let mut scene = docs[i].scene.clone();
+                        for s in &mut scene.shapes {
+                            s.xf = s.xf.then(to_first);
+                        }
+                        lc_core::gcode::Then { scene, note: face_note(&solid, i), hold: hold.then(|| hold_note(&solid, i)) }
+                    })
+                    .collect();
+                vec![lc_core::gcode::generate_with(&docs[0], None, &lc_core::gcode::JobOptions { then, ..opts(0) }).gcode]
             }
         };
         texts.into_iter().map(|t| self.postprocessed(t)).collect()
     }
 
-    /// The G-code of both sides of a two-sided job: in one file or in two files named `_A` and `_B`.
+    /// The G-code of all the sides of the job: in one file or in one file for each (`_A`, `_B`...), and the alignment marks in a file
+    /// of their own (`_marks`) when asked.
     pub fn export_sides(&mut self, how: base_ui::two_sided::SaveSides) {
-        use base_ui::two_sided::{side_paths, SaveSides};
+        use base_ui::two_sided::{face_paths, marks_path, SaveSides};
         let Some(p) = rfd::FileDialog::new().add_filter("G-code", &["gcode", "nc"]).set_file_name(format!("{}.gcode", self.gcode_name())).save_file() else { return };
-        let Some(texts) = self.sides_texts(how) else { return };
-        let paths = match how {
-            SaveSides::Separate => {
-                let (pa, pb) = side_paths(&p);
-                vec![pa, pb]
-            }
-            _ => vec![p],
+        let n = self.face_count();
+        let Some(mut texts) = self.sides_texts(how) else { return };
+        let mut paths = match how {
+            SaveSides::Separate => face_paths(&p, n),
+            _ => vec![p.clone()],
         };
+        if self.sides_save.marks {
+            if let Some(m) = self.marks_text() {
+                texts.push(m);
+                paths.push(marks_path(&p));
+            }
+        }
         let mut saved = vec![];
         for (path, text) in paths.into_iter().zip(texts) {
             if let Err(e) = std::fs::write(&path, text) {
@@ -242,21 +367,29 @@ impl App {
         }
     }
 
-    /// The G-code of both sides of a two-sided job in tabs, the way `how` says: one tab with the whole job, or a tab for each side
-    /// (`name_A`, `name_B`). Nothing is saved.
+    /// The G-code of all the sides of the job in tabs, the way `how` says: one tab with the whole job, or a tab for each side
+    /// (`name_A`, `name_B`...), and one for the alignment marks when asked. Nothing is saved.
     pub fn show_sides(&mut self, how: base_ui::two_sided::SaveSides) {
-        use base_ui::two_sided::{SaveSides, SIDE_B_TEXT};
+        use base_ui::two_sided::{face_text, text_face, text_slot, SaveSides, MARKS_FACE};
         let Some(texts) = self.sides_texts(how) else { return };
         let stem = self.gcode_name();
         let slot = self.slot;
-        let names = if how == SaveSides::Separate { vec![format!("{stem}_A.gcode"), format!("{stem}_B.gcode")] } else { vec![format!("{stem}.gcode")] };
-        if how != SaveSides::Separate {
-            // The tab of side B alone goes, unless it has edits.
-            self.gcode_texts.retain(|g| g.slot != (slot | SIDE_B_TEXT) || g.dirty());
+        let mut tabs: Vec<(usize, String, String)> = if how == SaveSides::Separate {
+            texts.into_iter().enumerate().map(|(i, t)| (i, format!("{stem}_{}.gcode", Solid::letter(i)), t)).collect()
+        } else {
+            texts.into_iter().map(|t| (0, format!("{stem}.gcode"), t)).collect()
+        };
+        if self.sides_save.marks {
+            if let Some(m) = self.marks_text() {
+                tabs.push((MARKS_FACE, format!("{stem}_marks.gcode"), m));
+            }
         }
+        // The tabs of the faces that are not shown now go (unless they have edits).
+        let faces: Vec<usize> = tabs.iter().map(|t| t.0).collect();
+        self.gcode_texts.retain(|g| text_slot(g.slot) != slot || faces.contains(&text_face(g.slot)) || g.dirty());
         let stamp = self.gcode_stamp();
-        for (i, (name, text)) in names.into_iter().zip(texts).enumerate() {
-            let key = if i == 0 { slot } else { slot | SIDE_B_TEXT };
+        for (i, name, text) in tabs {
+            let key = face_text(slot, i);
             match self.gcode_texts.iter_mut().find(|g| g.slot == key) {
                 Some(g) => {
                     if !g.dirty() {
@@ -278,8 +411,9 @@ impl App {
         self.status = tr("The G-code is shown, nothing is saved").to_string();
     }
 
-    /// The piece of material where it lies (a faint dashed outline), the ghosts of the other side under the shapes of the shown one,
-    /// and the name of the shown side.
+    /// The piece of material where it lies (a faint dashed outline), the ghosts of the other faces (the one under the shown face on
+    /// the work area, those beside it unfolded round it), the net of the faces round it, the alignment marks of a sheet, and the
+    /// name of the shown face.
     pub fn paint_sides(&self, v: &base_ui::editor::CanvasView) {
         let to = |p: Pt| base_ui::editor::EditorHost::w2s(self, v.origin, p);
         if self.doc.piece.is_some() {
@@ -289,13 +423,31 @@ impl App {
             let ink = egui::Color32::from_rgba_unmultiplied(0xb0, 0x7a, 0x30, 200);
             v.painter.add(egui::Shape::dashed_line(&pts, egui::Stroke::new(1.2, ink), 8.0, 4.0));
         }
-        let Some(t) = &self.doc.two else { return };
+        let (Some(t), Some(solid)) = (&self.doc.two, self.doc.solid()) else { return };
+        let colour = base_ui::two_sided::ghost_colour(self.ed.grid_prefs.bed_fill(self.scheme.is_dark()));
+        let outside = base_ui::two_sided::ghost_colour(base_ui::editor::EditorHost::workspace_fill(self));
         if t.ghosts {
-            let ghosts = self.ghosts();
-            let colour = base_ui::two_sided::ghost_colour(self.ed.grid_prefs.bed_fill(self.scheme.is_dark()));
-            base_ui::two_sided::paint_ghosts(v.painter, &to, &ghosts, colour);
+            for j in (0..t.others.len()).filter(|j| *j != t.shown) {
+                let xf = self.doc.ghost_xf(j).unwrap_or(Xf::IDENTITY);
+                let g: Vec<lc_core::Shape> = t.others[j].shapes.iter().map(|s| lc_core::Shape { xf: s.xf.then(xf), ..s.clone() }).collect();
+                let c = if solid.relation(j, t.shown) == Relation::Opposite { colour } else { outside };
+                base_ui::two_sided::paint_ghosts(v.painter, &to, &g, c);
+            }
         }
-        base_ui::two_sided::paint_side_name(v.painter, v.bed.left_top() + egui::vec2(6.0, 6.0), t.shown_b);
+        if t.others.len() > 2 {
+            base_ui::two_sided::paint_net(v.painter, &to, self.doc.piece_origin(), &solid, t.shown, outside);
+        }
+        if t.marks && !t.is_solid() {
+            // The marks are a job of their own: drawn as they will be burned, round the material.
+            let ink = egui::Color32::from_rgb(0xd0, 0x40, 0x30);
+            for s in self.marks_scene().shapes {
+                for p in s.polys() {
+                    let pts: Vec<egui::Pos2> = p.pts.iter().map(|q| to(*q)).collect();
+                    v.painter.add(egui::Shape::line(pts, egui::Stroke::new(1.6, ink)));
+                }
+            }
+        }
+        base_ui::two_sided::paint_face_name(v.painter, v.bed.left_top() + egui::vec2(6.0, 6.0), &solid, t.shown);
     }
 }
 
@@ -316,7 +468,7 @@ mod tests {
     fn the_g_code_of_a_two_sided_job_is_shown_whole_or_a_tab_for_each_side() {
         use base_ui::two_sided::{SaveSides, SIDE_B_TEXT};
         let mut a = app();
-        a.setup.two_sided = true;
+        a.setup.sides = base_ui::project_setup::Sides::Two;
         a.setup.marks = false;
         a.apply_setup();
         a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(10.0, 10.0));
@@ -356,7 +508,7 @@ mod tests {
         let mut a = app();
         a.setup.w = 120.0;
         a.setup.h = 80.0;
-        a.setup.two_sided = true;
+        a.setup.sides = base_ui::project_setup::Sides::Two;
         a.setup.marks = false;
         a.apply_setup();
         let o = a.doc.piece_origin();
@@ -388,48 +540,97 @@ mod tests {
         assert_eq!(a.ghosts()[0].bounds(), Some(gb), "the ghost stays");
     }
 
+    /// A two-sided job: the work area is the material; the alignment marks are a job of their own (four corners just outside the
+    /// material, on the last layer), saved with the project and in a file of their own beside the files of the sides.
     #[test]
-    fn a_two_sided_setup_makes_side_b_with_marks_on_side_a_and_they_are_saved() {
+    fn a_two_sided_setup_makes_side_b_and_the_marks_are_a_job_of_their_own() {
         let mut a = app();
         a.open_setup();
-        assert!(a.setup.open && !a.setup.two_sided);
+        assert!(a.setup.open && a.setup.sides == base_ui::project_setup::Sides::One);
         a.setup.w = 200.0;
         a.setup.h = 100.0;
-        a.setup.two_sided = true;
+        a.setup.sides = base_ui::project_setup::Sides::Two;
         a.setup.flip = lc_core::setup::FlipAxis::EndToEnd;
         a.apply_setup();
         assert_eq!(a.doc.piece, Some([200.0, 100.0, a.setup.t]));
-        assert_eq!(a.doc.scene.shapes.len(), 4, "four corner marks on side A");
-        assert!(a.doc.scene.shapes.iter().all(|s| s.layer == a.doc.layers.len() - 1), "on the last layer");
-        // The piece lies in the corner of the zero of the machine, and the marks round it.
+        assert_eq!(a.doc.device.work_size(), (200.0, 100.0), "the work area is the material");
+        assert!(a.doc.scene.shapes.is_empty(), "the marks are not shapes of side A");
+        let t = a.doc.two.as_ref().unwrap();
+        assert!(t.marks && t.flip() == lc_core::setup::FlipAxis::EndToEnd);
+        let marks = a.marks_scene();
+        assert_eq!(marks.shapes.len(), 4);
+        assert!(marks.shapes.iter().all(|s| s.layer == a.doc.layers.len() - 1), "on the last layer");
         let o = a.doc.piece_origin();
-        let home = a.doc.device.home_point();
-        let (aw, ah) = a.doc.device.work_size();
-        let near = |h: f64, lo: f64, len: f64| (h - lo).abs().min((h - (lo + len)).abs()) <= lc_core::PIECE_MARGIN + 1e-6;
-        assert!(near(home.x, o.x, 200.0) || aw < 200.0, "{home:?} {o:?}");
-        assert!(near(home.y, o.y, 100.0) || ah < 100.0, "{home:?} {o:?}");
-        let inside = |v: f64, len: f64| v >= -1e-6 && v <= len + 1e-6;
-        let marks = a.doc.scene.shapes.iter().filter_map(|s| s.bounds()).reduce(lc_core::Rect::union).unwrap();
-        assert!((marks.min.x - (o.x - 2.0)).abs() < 1e-6 && (marks.max.y - (o.y + 102.0)).abs() < 1e-6, "{marks:?} {o:?}");
-        assert!(inside(marks.min.x, aw) && inside(marks.max.x, aw) && inside(marks.min.y, ah) && inside(marks.max.y, ah), "the marks are on the work area");
+        let b = marks.shapes.iter().filter_map(|s| s.bounds()).reduce(lc_core::Rect::union).unwrap();
+        assert!((b.min.x - (o.x - 2.0)).abs() < 1e-6 && (b.max.y - (o.y + 102.0)).abs() < 1e-6, "{b:?} {o:?}");
+        let g = a.marks_text().expect("the marks job");
+        assert!(g.contains("; Alignment marks") && g.matches("G1").count() >= 8, "{g}");
         a.show_side(true);
-        assert!(a.doc.scene.shapes.is_empty() && a.doc.two.as_ref().unwrap().shown_b);
+        assert!(a.doc.scene.shapes.is_empty() && a.doc.two.as_ref().unwrap().shown_b());
         a.doc.add(0, lc_core::Kind::Rect { w: 10.0, h: 10.0 }, lc_core::Xf::IDENTITY);
-        // Undo takes the change of side back (with what was drawn since): side A with its marks again.
+        // Undo takes the change of side back (with what was drawn since): side A again.
         a.do_undo();
-        assert!(!a.doc.two.as_ref().unwrap().shown_b && a.doc.scene.shapes.len() == 4);
+        assert!(!a.doc.two.as_ref().unwrap().shown_b() && a.doc.scene.shapes.is_empty());
         a.show_side(true);
         a.doc.add(0, lc_core::Kind::Rect { w: 10.0, h: 10.0 }, lc_core::Xf::IDENTITY);
-        // Saved and read back: side A is the drawing of the file, side B its section.
+        // Saved and read back: side A is the drawing of the file, side B and the marks in its section.
         let back = lc_core::Document::from_json(&a.doc.to_json()).unwrap();
         let (sa, sb) = back.sides();
-        assert!(sa.shapes.len() == 4 && sb.is_some_and(|b| b.shapes.len() == 1), "{} {:?}", sa.shapes.len(), sb.map(|b| b.shapes.len()));
+        assert!(sa.shapes.is_empty() && sb.is_some_and(|b| b.shapes.len() == 1));
         assert!(back.others.sections.keys().all(|k| k != lc_core::setup::SECTION));
+        assert!(back.two.as_ref().unwrap().marks);
         assert_eq!(back.piece, a.doc.piece);
+        // Saved apart: a file for each side and one for the marks.
+        a.sides_save.marks = true;
+        a.show_sides(base_ui::two_sided::SaveSides::Separate);
+        let names: Vec<&str> = a.gcode_texts.iter().map(|g| g.name.as_str()).collect();
+        assert!(names.iter().any(|n| n.ends_with("_marks.gcode")) && names.iter().any(|n| n.ends_with("_B.gcode")), "{names:?}");
         // One-sided again only while side B is empty.
-        a.setup.two_sided = false;
+        a.setup.sides = base_ui::project_setup::Sides::One;
         a.apply_setup();
         assert!(a.doc.two.is_some());
+    }
+
+    /// A post: four faces, each a work area as big as the face with the piece as thick as the post is deep there; the faces beside
+    /// the shown one show unfolded round it; in one file each face comes after a stop that says how to roll the post, and is burned
+    /// from its own corner of the zero.
+    #[test]
+    fn a_post_has_four_faces_with_their_own_work_area_and_one_file_rolls_it_between_them() {
+        use base_ui::two_sided::SaveSides;
+        let mut a = app();
+        a.open_setup();
+        a.setup.sides = base_ui::project_setup::Sides::Post;
+        a.setup.post = [60.0, 40.0, 250.0];
+        a.apply_setup();
+        assert_eq!((a.doc.device.work_size(), a.doc.piece), ((250.0, 60.0), Some([250.0, 60.0, 40.0])));
+        a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(10.0, 10.0));
+        a.show_face(1);
+        assert_eq!((a.doc.device.work_size(), a.doc.piece), ((250.0, 40.0), Some([250.0, 40.0, 60.0])));
+        a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(10.0, 10.0));
+        // On face B face A lies at the back, above the work area.
+        let g = a.ghosts();
+        assert_eq!(g.len(), 1);
+        assert!(g[0].bounds().unwrap().max.y < 0.0, "{:?}", g[0].bounds());
+        a.show_face(0);
+        let one = a.sides_texts(SaveSides::OneFileWithHold).unwrap();
+        let t = &one[0];
+        let at = |s: &str| t.find(s).unwrap_or_else(|| panic!("no {s:?} in\n{t}"));
+        assert!(at("; Face A of 4") < at("M0 ; Roll it a quarter turn back: face B up") && at("M0 ; Roll it a quarter turn back: face B up") < at("; Face B of 4"));
+        assert!(t.contains("M0 ; Roll it a quarter turn back: face B up, face A at the back; focus the laser on its top"), "{t}");
+        // Face B in the one file is burned where its own file burns it (from the corner of the zero of its own work area).
+        let sep = a.sides_texts(SaveSides::Separate).unwrap();
+        assert_eq!(sep.len(), 4);
+        let burns = |text: &str| -> Vec<String> { text.lines().filter(|l| l.starts_with("G1 ")).map(|l| l.split(" S").next().unwrap_or(l).to_string()).collect() };
+        let in_one = burns(&t[at("; Face B of 4")..]);
+        assert!(!in_one.is_empty());
+        assert_eq!(in_one, burns(&sep[1]), "face B from its own corner");
+        // Saved and read back with the four faces; it opens on face A.
+        a.show_face(1);
+        let back = lc_core::Document::from_json(&a.doc.to_json()).unwrap();
+        let bt = back.two.as_ref().unwrap();
+        assert_eq!((bt.shown, bt.others.len()), (0, 4));
+        assert_eq!(back.device.work_size(), (250.0, 60.0));
+        assert_eq!(back.face_scene(1).shapes.len(), 1);
     }
 
     #[test]

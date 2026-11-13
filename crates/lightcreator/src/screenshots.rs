@@ -1763,3 +1763,109 @@ fn the_overlay_works_through_the_window_and_a_dragged_corner_is_kept_with_the_de
     assert_eq!(kept, moved);
     assert_eq!(a.doc.shape(shape).unwrap().xf, before, "the shape stays");
 }
+
+/// A post and a block burned on all their faces: the project setup, the editor of a face with the ghosts and the net round it, and
+/// the preview of the burned object in 3D. `SHOT_OUT=<folder> cargo test -p lightcreator pictures_of_posts_and_blocks -- --ignored`
+/// (nothing is written without `SHOT_OUT`).
+#[test]
+#[ignore = "writes pictures; run explicitly"]
+fn pictures_of_posts_and_blocks() {
+    use base_ui::project_setup::Sides;
+    use lc_core::{Kind, Xf};
+    let Ok(out) = std::env::var("SHOT_OUT").map(PathBuf::from) else { return };
+    let shot = |h: &mut Shot, name: &str| {
+        h.run_steps(5);
+        let img = h.render().expect("render");
+        std::fs::create_dir_all(&out).unwrap();
+        img.save(out.join(name)).unwrap();
+    };
+    let mut h = editor_harness();
+    {
+        let a = app(&mut h);
+        a.open_setup();
+        a.setup.sides = Sides::Post;
+        a.setup.post = [60.0, 40.0, 250.0];
+    }
+    shot(&mut h, "lc-post-setup.png");
+    {
+        let a = app(&mut h);
+        a.apply_setup();
+        a.setup.open = false;
+        let text = |a: &mut App, s: &str, x: f64, y: f64| {
+            a.doc.add(0, Kind::Text(TextData { text: s.into(), size: 14.0, ..Default::default() }), Xf::translate(x, y));
+        };
+        text(a, "FACE A", 30.0, 20.0);
+        a.doc.add(1, Kind::Ellipse { w: 30.0, h: 30.0 }, Xf::translate(190.0, 15.0));
+        a.show_face(1);
+        text(a, "FACE B", 30.0, 12.0);
+        a.doc.add(1, Kind::Rect { w: 60.0, h: 20.0 }, Xf::translate(160.0, 10.0));
+        a.show_face(2);
+        text(a, "FACE C", 30.0, 20.0);
+        a.show_face(3);
+        a.doc.add(1, Kind::Ellipse { w: 20.0, h: 20.0 }, Xf::translate(110.0, 10.0));
+        a.show_face(1);
+        a.ed.view.need_fit = true;
+    }
+    shot(&mut h, "lc-post-editor-face-b.png");
+    {
+        let a = app(&mut h);
+        a.show_face(0);
+        a.show_preview = true;
+    }
+    shot(&mut h, "lc-post-3d.png");
+    {
+        let a = app(&mut h);
+        a.pv.orbit3.look_from([0.3, 0.6, -0.7]);
+    }
+    shot(&mut h, "lc-post-3d-under.png");
+    {
+        let a = app(&mut h);
+        a.pv.orbit3 = Default::default();
+        a.show_preview = false;
+        a.open_setup();
+        a.setup.sides = Sides::Block;
+        a.setup.block = [120.0, 80.0, 60.0];
+    }
+    shot(&mut h, "lc-block-setup.png");
+    {
+        let a = app(&mut h);
+        // The faces of the post must be empty first: a new project.
+        a.new_doc();
+        a.open_setup();
+        a.setup.sides = Sides::Block;
+        a.setup.block = [120.0, 80.0, 60.0];
+        a.apply_setup();
+        a.setup.open = false;
+        for i in 0..6 {
+            a.show_face(i);
+            let (w, h) = a.doc.piece_size();
+            a.doc.add(0, Kind::Text(TextData { text: format!("{}", lc_core::faces::Solid::letter(i)), size: 30.0, ..Default::default() }), Xf::translate(w / 2.0 - 10.0, h / 2.0 - 15.0));
+            a.doc.add(1, Kind::Rect { w: w - 10.0, h: h - 10.0 }, Xf::translate(5.0, 5.0));
+        }
+        a.show_face(0);
+        a.show_preview = true;
+    }
+    shot(&mut h, "lc-block-3d.png");
+    {
+        let a = app(&mut h);
+        a.show_preview = false;
+        a.new_doc();
+        a.open_setup();
+        a.setup.sides = Sides::Two;
+        a.setup.w = 200.0;
+        a.setup.h = 120.0;
+        a.apply_setup();
+        a.setup.open = false;
+        a.doc.add(0, Kind::Text(TextData { text: "SIDE A".into(), size: 20.0, ..Default::default() }), Xf::translate(20.0, 20.0));
+        a.show_face(1);
+        a.doc.add(1, Kind::Ellipse { w: 40.0, h: 40.0 }, Xf::translate(130.0, 60.0));
+        a.ed.view.need_fit = true;
+    }
+    shot(&mut h, "lc-two-sided-marks.png");
+    {
+        let a = app(&mut h);
+        a.sides_save.ask_save();
+        a.sides_save.marks = true;
+    }
+    shot(&mut h, "lc-two-sided-save.png");
+}

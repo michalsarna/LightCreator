@@ -1095,8 +1095,8 @@ impl App {
     /// How the job is made (the options of the Control tab).
     pub fn job_options(&self) -> gcode::JobOptions {
         // A two-sided job says at its head which side it is.
-        let side_note = self.doc.two.as_ref().map(|t| base_ui::two_sided::side_comment(t.shown_b, t.flip));
-        gcode::JobOptions { one_by_one: self.one_by_one, side_note, then: None }
+        let side_note = self.doc.solid().zip(self.doc.two.as_ref()).map(|(s, t)| s.head_comment(t.shown));
+        gcode::JobOptions { one_by_one: self.one_by_one, side_note, then: vec![] }
     }
 
     /// Changes whenever the drawing or what the job makes of it changes: the key of the previews of the job.

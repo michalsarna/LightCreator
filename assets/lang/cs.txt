@@ -1149,3 +1149,12 @@
 1148|Tažení: otočit · kolečko: přiblížit
 1149|Rozměry v náhledu
 1150|Válec v náhledu (otočná osa)
+1151|Stěny, které by zmizely, mají tvary: projekt zůstává, jak byl. Nejprve je smažte.
+1152|sloupek
+1153|kostka
+1154|Projekt nastaven: {} {} x {} x {} mm, nula v {}
+1155|Čtyři rohové značky těsně mimo materiál, vypálené samostatnou úlohou na desku pod ním, než se materiál položí: vložte do nich materiál pro stranu A a otočený pro stranu B.
+1156|Vypálený předmět ve 3D, velký jako materiál z nastavení projektu, s tím, co se vypálí na každou jeho stěnu. Tažením jej otočíte, kolečko přibližuje.
+1157|Úloha na pracovní ploše, jak ji stroj vypaluje
+1158|Barvy vypálení
+1159|Čáry tmavší při vyšším výkonu, jako vypálené do dřeva; vypnuto: v barvách operací nebo vrstev

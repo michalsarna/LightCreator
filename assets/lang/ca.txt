@@ -1149,3 +1149,12 @@
 1148|Arrossega: gira · roda: zoom
 1149|Dimensions a la previsualització
 1150|Cilindre a la previsualització (eix rotatiu)
+1151|Les cares que desapareixerien tenen formes: el projecte queda com era. Esborreu-les primer.
+1152|un pilar
+1153|un bloc
+1154|Projecte configurat: {} de {} x {} x {} mm, zero a {}
+1155|Quatre marques de cantonada just fora del material, gravades com a treball a part a la planxa de sota abans de posar el material: poseu-hi el material per a la cara A i, girat, per a la cara B.
+1156|L'objecte gravat en 3D, tan gran com el material de la configuració del projecte, amb el que es grava a cada cara. Arrossegueu per girar-lo; la roda fa zoom.
+1157|El treball a l'àrea de treball, tal com el grava la màquina
+1158|Colors de cremat
+1159|Les línies més fosques amb més potència, com cremades a la fusta; desactivat: amb els colors de les operacions o les capes

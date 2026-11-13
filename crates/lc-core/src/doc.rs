@@ -1412,22 +1412,58 @@ pub struct Document {
     pub others: Others,
     /// The piece of material of the project setup (width, height, thickness, mm), when it was given.
     pub piece: Option<[f64; 3]>,
-    /// A two-sided job: the side that is not shown (`scene` is the shown one), and how the two lie.
+    /// A job on more than one side (a sheet on both sides, the four faces of a post, the six of a block): the sides that are not
+    /// shown (`scene` is the shown one), and the object.
     pub two: Option<TwoSides>,
 }
 
 /// How far the piece of the project setup lies in from the edges of the work area (mm): room for the alignment marks.
 pub const PIECE_MARGIN: f64 = 3.0;
 
-/// The two sides of a two-sided job (File → Project setup…): side A and side B are two work areas of one project; `Document::scene`
-/// is the one shown and the other waits here. Both are in every copy of the document, so undo brings back the two together.
+/// The sides of a job on more than one side (File → Project setup…): side A and side B of a sheet, the faces A to D of a post or A
+/// to F of a block are work areas of one project; `Document::scene` is the one shown and the others wait here. They are all in every
+/// copy of the document, so undo brings them back together. A face of a post or a block has a work area as big as the face, and the
+/// piece under it is as thick as the object is deep there (`Document::show_face` sets them).
 #[derive(Clone, Debug)]
 pub struct TwoSides {
-    pub flip: base_core::setup::FlipAxis,
+    /// The object; the size of a sheet is the piece of the document (`Document::solid`).
+    pub solid: base_core::faces::Solid,
     pub ghosts: bool,
-    /// Side B is the one shown.
-    pub shown_b: bool,
-    pub other: Scene,
+    /// The face shown; A is 0.
+    pub shown: usize,
+    /// The drawings of the faces; the one of the shown face is `Document::scene` (here it is empty).
+    pub others: Vec<Scene>,
+    /// A sheet with alignment marks round it, burned as a job of their own before it is laid down.
+    pub marks: bool,
+}
+
+impl TwoSides {
+    pub fn new(solid: base_core::faces::Solid) -> TwoSides {
+        TwoSides { solid, ghosts: true, shown: 0, others: vec![Scene::default(); solid.count()], marks: false }
+    }
+    /// A sheet turned over round `flip`.
+    pub fn sheet(flip: base_core::setup::FlipAxis) -> TwoSides {
+        TwoSides::new(base_core::faces::Solid::sheet(1.0, 1.0, 1.0, flip))
+    }
+    /// Side B of a sheet is shown.
+    pub fn shown_b(&self) -> bool {
+        !self.is_solid() && self.shown == 1
+    }
+    /// How a sheet is turned over.
+    pub fn flip(&self) -> base_core::setup::FlipAxis {
+        match self.solid.body {
+            base_core::faces::Body::Sheet(f) => f,
+            _ => base_core::setup::FlipAxis::SideToSide,
+        }
+    }
+    /// A post or a block.
+    pub fn is_solid(&self) -> bool {
+        !matches!(self.solid.body, base_core::faces::Body::Sheet(_))
+    }
+    /// The side of a sheet that is not shown.
+    pub fn other(&self) -> &Scene {
+        &self.others[1 - self.shown.min(1)]
+    }
 }
 
 /// Sections and top-level entries of a project file this program does not own.
@@ -1692,31 +1728,94 @@ impl Document {
         p.set_section(LASER_SECTION, &LaserSection { format: LASER_SECTION_FORMAT, machine: Machine::of(&self.device), material: self.device.material().clone(), layers: self.layers.clone(), order: self.order.clone(), piece: self.piece });
         // A two-sided job: the drawing of the file is side A, side B goes into its own section.
         p.remove_section(base_core::setup::SECTION);
-        if let Some(t) = &self.two {
-            let (a, b) = if t.shown_b { (&t.other, &self.scene) } else { (&self.scene, &t.other) };
-            p.scene = a.clone();
-            p.set_section(base_core::setup::SECTION, &base_core::setup::TwoSided::with_side_b(t.flip, t.ghosts, b));
+        p.remove_section(base_core::faces::SECTION);
+        if let (Some(t), Some(solid)) = (&self.two, self.solid()) {
+            let scenes = (0..solid.count()).map(|i| self.face_scene(i).clone()).collect();
+            base_core::faces::Faces { solid, ghosts: t.ghosts, scenes, marks: t.marks }.write(&mut p);
         }
         p
     }
 
-    /// Show side B (`true`) or side A of a two-sided job: the shown drawing and the waiting one change places.
-    pub fn show_side(&mut self, b: bool) {
-        if let Some(t) = self.two.as_mut() {
-            if t.shown_b != b {
-                std::mem::swap(&mut self.scene, &mut t.other);
-                t.shown_b = b;
-            }
+    /// The object of a job on more than one side, with the size of a sheet from the piece of the document.
+    pub fn solid(&self) -> Option<base_core::faces::Solid> {
+        let t = self.two.as_ref()?;
+        Some(if t.is_solid() {
+            t.solid
+        } else {
+            let (w, h) = self.piece_size();
+            base_core::faces::Solid::sheet(w, h, self.piece.map_or(3.0, |p| p[2]), t.flip())
+        })
+    }
+
+    /// Show face `i` (side B of a sheet is 1): the shown drawing and the waiting one change places; the work area and the piece of
+    /// a post or a block become those of the face.
+    pub fn show_face(&mut self, i: usize) {
+        let Some(t) = self.two.as_mut() else { return };
+        if t.shown == i || i >= t.others.len() {
+            return;
         }
+        let was = t.shown;
+        std::mem::swap(&mut self.scene, &mut t.others[was]);
+        std::mem::swap(&mut self.scene, &mut t.others[i]);
+        t.shown = i;
+        self.apply_face_size();
+    }
+
+    /// The work area and the piece of the shown face of a post or a block: as big as the face, as thick as the object is deep there.
+    pub fn apply_face_size(&mut self) {
+        let Some(t) = self.two.as_ref().filter(|t| t.is_solid()) else { return };
+        let f = t.solid.face(t.shown);
+        self.piece = Some([f.w, f.h, f.depth]);
+        self.device.area.bed_w = f.w.max(10.0);
+        self.device.area.bed_h = f.h.max(10.0);
+    }
+
+    /// Show side B (`true`) or side A of a sheet.
+    pub fn show_side(&mut self, b: bool) {
+        self.show_face(usize::from(b));
+    }
+
+    /// The drawing of face `i`, whichever is shown.
+    pub fn face_scene(&self, i: usize) -> &Scene {
+        match &self.two {
+            Some(t) if t.shown != i => &t.others[i],
+            _ => &self.scene,
+        }
+    }
+
+    /// The document with face `i` shown (for its job).
+    pub fn with_face(&self, i: usize) -> Document {
+        let mut d = self.clone();
+        d.show_face(i);
+        d
     }
 
     /// The drawing of side A and, in a two-sided job, of side B.
     pub fn sides(&self) -> (&Scene, Option<&Scene>) {
         match &self.two {
-            Some(t) if t.shown_b => (&t.other, Some(&self.scene)),
-            Some(t) => (&self.scene, Some(&t.other)),
-            None => (&self.scene, None),
+            Some(t) if t.others.len() > 1 => (self.face_scene(0), Some(self.face_scene(1))),
+            _ => (&self.scene, None),
         }
+    }
+
+    /// Where the shapes of face `other` show on the shown face, round the piece where it lies: the face under it seen through, the
+    /// faces beside it unfolded over its edges.
+    pub fn ghost_xf(&self, other: usize) -> Option<Xf> {
+        let (t, solid) = (self.two.as_ref()?, self.solid()?);
+        let o = self.piece_origin();
+        Some(Xf::translate(-o.x, -o.y).then(solid.ghost_xf(other, t.shown)).then(Xf::translate(o.x, o.y)))
+    }
+
+    /// What moves a drawing of face `i` so that the device of face A writes it where the device of its own face would (the corner of
+    /// the zero of each face): for the faces of a post or a block in one file.
+    pub fn face_to_first(&self, i: usize) -> Xf {
+        let (fi, f0) = (self.with_face(i), self.with_face(0));
+        let at = |p: Pt| {
+            let (x, y) = fi.device.to_machine(p);
+            f0.device.from_machine(x, y)
+        };
+        let (p0, p1, p2) = (at(Pt::new(0.0, 0.0)), at(Pt::new(1.0, 0.0)), at(Pt::new(0.0, 1.0)));
+        Xf { a: p1.x - p0.x, b: p1.y - p0.y, c: p2.x - p0.x, d: p2.y - p0.y, e: p0.x, f: p0.y }
     }
 
     /// Where the piece of material lies on the work area (its top left corner, design millimetres): in the corner of the zero of
@@ -1737,7 +1836,7 @@ impl Document {
         let t = self.two.as_ref()?;
         let (w, h) = self.piece_size();
         let o = self.piece_origin();
-        Some(Xf::translate(-o.x, -o.y).then(base_core::setup::turn(t.flip, w, h)).then(Xf::translate(o.x, o.y)))
+        Some(Xf::translate(-o.x, -o.y).then(base_core::setup::turn(t.flip(), w, h)).then(Xf::translate(o.x, o.y)))
     }
 
     /// The size the sides are turned over in: the piece of the project setup, or the work area.
@@ -1754,7 +1853,17 @@ impl Document {
     pub fn from_project(p: Project) -> Result<Document, String> {
         let laser: Option<LaserSection> = p.section(LASER_SECTION)?;
         let piece = laser.as_ref().and_then(|l| l.piece).filter(|v| v.iter().all(|x| x.is_finite() && *x > 0.0 && *x <= 100_000.0));
-        let two = p.section::<base_core::setup::TwoSided>(base_core::setup::SECTION)?.map(|t| TwoSides { flip: t.flip, ghosts: t.ghosts, shown_b: false, other: t.side_b() });
+        let mut p = p;
+        let sheet = piece.unwrap_or([0.0, 0.0, 3.0]);
+        let two = base_core::faces::Faces::read(&mut p, sheet).map(|f| {
+            let mut t = TwoSides::new(f.solid);
+            t.ghosts = f.ghosts;
+            t.marks = f.marks;
+            for (i, sc) in f.scenes.into_iter().enumerate().skip(1) {
+                t.others[i] = sc;
+            }
+            t
+        });
         let (layers, order, device) = match laser {
             Some(l) => {
                 if l.format > LASER_SECTION_FORMAT {
@@ -1781,12 +1890,15 @@ impl Document {
         };
         let mut sections = std::collections::BTreeMap::new();
         for n in p.section_names() {
-            if n != LASER_SECTION && n != base_core::setup::SECTION {
+            if n != LASER_SECTION && n != base_core::setup::SECTION && n != base_core::faces::SECTION {
                 sections.insert(n.to_string(), p.section::<serde_json::Value>(n)?.unwrap_or_default());
             }
         }
         let extra = p.extra().clone();
-        Ok(Document { scene: p.scene, layers, device, order, description: p.description, job_info: JobInfo::default(), others: Others { sections, extra }, piece, two })
+        let mut doc = Document { scene: p.scene, layers, device, order, description: p.description, job_info: JobInfo::default(), others: Others { sections, extra }, piece, two };
+        // A post or a block opens on face A, with its work area and piece.
+        doc.apply_face_size();
+        Ok(doc)
     }
 
     /// A document from a LightBurn project read by `base_core::lightburn::import`: the shapes, and for each layer the

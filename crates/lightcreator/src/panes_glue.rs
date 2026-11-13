@@ -149,9 +149,10 @@ impl App {
 
     /// [`refresh_gcode_text`] with the wait given; returns whether a change is still waiting for its moment.
     pub(crate) fn refresh_gcode_text_after(&mut self, wait: std::time::Duration) -> bool {
-        // The tab of the project, and the one of side B when the sides of a two-sided job are shown apart.
+        // The tab of the project, those of the other faces when they are shown apart, and the one of the alignment marks.
         let mut waiting = false;
-        for key in [self.slot, self.slot | base_ui::two_sided::SIDE_B_TEXT] {
+        let keys: Vec<usize> = (0..self.face_count()).chain(std::iter::once(base_ui::two_sided::MARKS_FACE)).map(|i| base_ui::two_sided::face_text(self.slot, i)).collect();
+        for key in keys {
             if !self.gcode_texts.iter().any(|g| g.slot == key) {
                 continue;
             }
@@ -171,11 +172,12 @@ impl App {
     /// Make the G-code text of the tab `key` again (its project becomes the active one first: the program is made from it). A text of a
     /// two-sided job is made the way it was chosen: the whole job, or the side of the tab.
     fn remake_gcode_text(&mut self, key: usize) {
-        use base_ui::two_sided::SIDE_B_TEXT;
+        use base_ui::two_sided::{text_face, MARKS_FACE};
         self.activate_slot(base_ui::two_sided::text_slot(key));
         let sides = self.gcode_texts.iter().find(|g| g.slot == key).and_then(|g| g.sides);
         let text = match sides {
-            Some(how) if self.doc.two.is_some() => self.sides_texts(how).and_then(|t| t.into_iter().nth(usize::from(key & SIDE_B_TEXT != 0))),
+            Some(_) if text_face(key) == MARKS_FACE => self.marks_text(),
+            Some(how) if self.doc.two.is_some() => self.sides_texts(how).and_then(|t| t.into_iter().nth(text_face(key))),
             _ => self.gcode_text_now(),
         };
         if let Some(text) = text {

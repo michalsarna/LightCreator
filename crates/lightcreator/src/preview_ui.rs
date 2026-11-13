@@ -67,6 +67,14 @@ pub struct PreviewState {
     pub cylinder: bool,
     /// How the cylinder is looked at.
     pub orbit: crate::cylinder_view::Orbit,
+    /// The burned object in 3D (true) or flat as on the work area; `None`: in 3D for a job on more than one side, else flat.
+    pub box3d: Option<bool>,
+    /// How the object is looked at.
+    pub orbit3: crate::box_view::Orbit3,
+    /// The lines in the colour of a burn on wood (darker for more power) instead of the colours of the operations.
+    pub burn_look: bool,
+    /// The jobs of all the faces of a job on more than one side, for the object in 3D, made for the project as it was then.
+    pub face_jobs: Option<(u64, Vec<gcode::Job>)>,
 }
 
 impl Default for PreviewState {
@@ -85,6 +93,10 @@ impl Default for PreviewState {
             job: None,
             cylinder: true,
             orbit: Default::default(),
+            box3d: None,
+            orbit3: Default::default(),
+            burn_look: true,
+            face_jobs: None,
         }
     }
 }
@@ -189,18 +201,36 @@ impl App {
         let (bw, bh) = self.doc.device.work_size();
         let total = self.pv.cum.last().copied().unwrap_or(0.0);
         let rotary = self.doc.device.rotary.enabled;
-        let side_b = self.doc.two.as_ref().map(|t| t.shown_b);
-        let mut want_b = side_b;
+        let box3d = self.pv.box3d.unwrap_or(self.doc.two.is_some());
+        let solid = self.doc.solid();
+        let shown = self.doc.two.as_ref().map(|t| t.shown);
+        let mut want = shown;
         ui.horizontal_wrapped(|ui| {
-            // A two-sided job: the preview is of one side, the same one as the work area shows (and the one that is burned).
-            if let Some(b) = want_b.as_mut() {
-                ui.selectable_value(b, false, tr("Side A"));
-                ui.selectable_value(b, true, tr("Side B"));
+            // A job on more than one side: the preview is of one side, the same one as the work area shows (and the one that is
+            // burned).
+            if let (Some(solid), Some(w)) = (solid.as_ref(), want.as_mut()) {
+                for i in 0..solid.count() {
+                    let r = ui.selectable_value(w, i, base_ui::two_sided::face_label(solid, i));
+                    if solid.count() > 2 {
+                        r.on_hover_text(base_ui::two_sided::face_tip(solid, i));
+                    }
+                }
                 ui.separator();
             }
             if rotary {
                 ui.selectable_value(&mut self.pv.cylinder, true, tr("Cylinder (3D)")).on_hover_text(tr("The workpiece on the rotary attachment with what is burned on it. Drag to turn it, the wheel zooms."));
                 ui.selectable_value(&mut self.pv.cylinder, false, tr("Flat")).on_hover_text(tr("The surface of the workpiece unrolled, as on the work area"));
+                ui.separator();
+            } else {
+                let mut on = box3d;
+                ui.selectable_value(&mut on, true, "3D").on_hover_text(tr("The burned object in 3D, as big as the material of the project setup, with what is burned on each of its faces. Drag to turn it, the wheel zooms."));
+                ui.selectable_value(&mut on, false, tr("Flat")).on_hover_text(tr("The job on the work area, as the machine burns it"));
+                if on != box3d {
+                    self.pv.box3d = Some(on);
+                }
+                if on {
+                    base_ui::widgets::toggle(ui, &mut self.pv.burn_look, tr("Burn colours"), tr("The lines darker for more power, as burned on wood; off: in the colours of the operations or the layers"));
+                }
                 ui.separator();
             }
             ui.label(tr("Colour by"));
@@ -208,7 +238,7 @@ impl App {
             ui.selectable_value(&mut self.pv.color_by, ColorBy::Layer, tr("Layer"));
             ui.separator();
             base_ui::widgets::toggle(ui, &mut self.pv.show_travel, tr("Show travel moves"), tr("Moves of the machine with the laser off"));
-            if !(rotary && self.pv.cylinder) {
+            if !(rotary && self.pv.cylinder) && !(!rotary && self.pv.box3d.unwrap_or(self.doc.two.is_some())) {
                 base_ui::widgets::toggle(ui, &mut self.pv.show_dims, tr("Dimensions"), tr("Show the sizes of the job as on a technical drawing"));
             }
             ui.separator();
@@ -232,9 +262,9 @@ impl App {
                 }
             });
         });
-        if let (Some(now), Some(want)) = (side_b, want_b) {
+        if let (Some(now), Some(want)) = (shown, want) {
             if now != want {
-                self.show_side(want);
+                self.show_face(want);
             }
         }
         ui.separator();
@@ -295,6 +325,10 @@ impl App {
             painter.rect_filled(rect, 0.0, self.workspace_fill());
             if rotary && self.pv.cylinder {
                 self.cylinder_picture(ui, &resp, &painter.with_clip_rect(rect), job, total, line_w);
+                return;
+            }
+            if !rotary && self.pv.box3d.unwrap_or(self.doc.two.is_some()) {
+                self.box_picture(ui, &resp, &painter.with_clip_rect(rect), job, total, line_w);
                 return;
             }
             if (self.pv.view.need_fit || self.pv.view.auto_fit) && rect.width() > 50.0 {
@@ -444,6 +478,102 @@ impl App {
             Some(Stroke::new(0.5, Color32::from_rgb(0x90, 0x90, 0xa0).gamma_multiply(0.8)))
         } else {
             None
+        }
+    }
+
+    /// The object of the project in 3D: the piece of material (or the post or the block) with the jobs of all its faces burned on
+    /// them, the shown face up to the time of the slider, and the head.
+    fn box_picture(&mut self, ui: &mut egui::Ui, resp: &egui::Response, painter: &egui::Painter, job: &gcode::Job, total: f64, line_w: f32) {
+        use crate::box_view::{self as bv, BoxProjection, Orbit3};
+        use lc_core::faces::Solid;
+        let rect = resp.rect;
+        let solid = self.doc.solid().unwrap_or_else(|| {
+            let (w, h) = self.doc.piece_size();
+            Solid::sheet(w, h, self.doc.piece.map_or(3.0, |p| p[2]), lc_core::setup::FlipAxis::SideToSide)
+        });
+        let shown = self.doc.two.as_ref().map_or(0, |t| t.shown);
+        if resp.dragged() {
+            self.pv.orbit3.drag(resp.drag_delta());
+        }
+        if resp.hovered() {
+            let scroll = ui.input(|i| i.smooth_scroll_delta.y);
+            if scroll.abs() > 0.0 {
+                self.pv.orbit3.zoom = (self.pv.orbit3.zoom * (scroll * 0.0015).exp()).clamp(0.2, 30.0);
+            }
+        }
+        if resp.double_clicked() {
+            self.pv.orbit3 = Orbit3::default();
+        }
+        // The jobs of the other faces, whole.
+        let stamp = self.job_stamp();
+        if self.doc.two.is_some() && self.pv.face_jobs.as_ref().is_none_or(|(k, _)| *k != stamp) {
+            let opts = gcode::JobOptions { one_by_one: self.one_by_one, side_note: None, then: vec![] };
+            let jobs = (0..solid.count()).map(|i| gcode::generate_with(&self.doc.with_face(i), None, &opts)).collect();
+            self.pv.face_jobs = Some((stamp, jobs));
+        }
+        let pj = BoxProjection::new(rect, &solid, self.pv.orbit3);
+        bv::paint_body(painter, &pj, &solid, crate::setup_glue::WOOD, self.doc.two.is_some());
+        let n_ops = job.ops.len();
+        let travel = self.pv.show_travel && job.moves.len() <= 200_000;
+        let o = self.doc.piece_origin();
+        let local = |p: lc_core::Pt| lc_core::Pt::new(p.x - o.x, p.y - o.y);
+        let line_w = line_w.max(1.3);
+        let stroke = |m: &gcode::Move, n_ops: usize| -> Option<Stroke> {
+            if self.pv.burn_look && m.laser && !self.pv.hidden.contains(&m.op) {
+                let p = self.doc.layers.get(m.layer).map_or(50.0, |l| l.power);
+                return Some(Stroke::new(line_w, bv::burn_colour(crate::setup_glue::WOOD, p)));
+            }
+            self.move_stroke(m, n_ops, line_w, travel)
+        };
+        let mut shapes = vec![];
+        if let Some((_, jobs)) = &self.pv.face_jobs {
+            for (j, fj) in jobs.iter().enumerate().filter(|(j, _)| *j != shown && self.doc.two.is_some()) {
+                for m in fj.moves.iter().filter(|m| m.laser) {
+                    if let Some(st) = stroke(m, fj.ops.len()) {
+                        bv::face_line(&mut shapes, &pj, &solid, j, local(m.a), local(m.b), st);
+                    }
+                }
+            }
+        }
+        let t_now = self.pv.progress as f64 * total;
+        let cur = self.pv.cum.partition_point(|c| *c <= t_now).min(job.moves.len());
+        for m in job.moves.iter().take(cur) {
+            if let Some(st) = stroke(m, n_ops) {
+                bv::face_line(&mut shapes, &pj, &solid, shown, local(m.a), local(m.b), st);
+            }
+        }
+        let mut head = None;
+        if let Some(m) = job.moves.get(cur) {
+            let before = if cur == 0 { 0.0 } else { self.pv.cum[cur - 1] };
+            let f = if m.dur > 1e-12 { ((t_now - before) / m.dur).clamp(0.0, 1.0) } else { 1.0 };
+            let p = lc_core::Pt::new(m.a.x + (m.b.x - m.a.x) * f, m.a.y + (m.b.y - m.a.y) * f);
+            if let Some(st) = stroke(m, n_ops) {
+                bv::face_line(&mut shapes, &pj, &solid, shown, local(m.a), local(p), st);
+            }
+            head = Some(p);
+        }
+        painter.extend(shapes);
+        let face = solid.face(shown);
+        if let (Some(p), true) = (head, pj.facing(face.out) > 0.0 && self.pv.progress < 1.0) {
+            let at = pj.at(face.at(local(p), 0.0));
+            painter.circle_filled(at, 4.5, Color32::from_rgb(0xe0, 0x20, 0x20));
+            painter.circle_stroke(at, 4.5, Stroke::new(1.0, Color32::WHITE));
+        }
+        let units = self.doc.device.units;
+        let s = solid.bbox();
+        let size = format!("{} × {} × {}", crate::units_ui::fmt_len(units, s[0], 1), crate::units_ui::fmt_len(units, s[1], 1), crate::units_ui::fmt_len(units, s[2], 1));
+        painter.text(rect.left_top() + egui::vec2(8.0, 8.0), egui::Align2::LEFT_TOP, size, egui::FontId::proportional(12.0), theme::text_dim());
+        let (eye, right, up) = self.pv.orbit3.axes();
+        match base_ui::navicube::show(ui, rect, &[right, up, eye]) {
+            Some(base_ui::navicube::Nav::LookFrom(d)) => self.pv.orbit3.look_from(d),
+            Some(base_ui::navicube::Nav::Home) => self.pv.orbit3 = Orbit3::default(),
+            None => {}
+        }
+        match base_ui::zoom_bar::overlay_with(ui, rect, self.pv.orbit3.zoom, &tr("Drag: turn · wheel: zoom"), true) {
+            Some(base_ui::zoom_bar::ZoomCmd::In) => self.pv.orbit3.zoom = (self.pv.orbit3.zoom * base_ui::zoom_bar::STEP).min(30.0),
+            Some(base_ui::zoom_bar::ZoomCmd::Out) => self.pv.orbit3.zoom = (self.pv.orbit3.zoom / base_ui::zoom_bar::STEP).max(0.2),
+            Some(base_ui::zoom_bar::ZoomCmd::FitObjects | base_ui::zoom_bar::ZoomCmd::Whole) => self.pv.orbit3 = Orbit3::default(),
+            None => {}
         }
     }
 
@@ -637,7 +767,7 @@ mod side_tests {
     fn the_preview_of_a_two_sided_job_shows_the_side_chosen() {
         let mut a = App::build(&egui::Context::default(), None, false);
         a.screen = Screen::Editor;
-        a.setup.two_sided = true;
+        a.setup.sides = base_ui::project_setup::Sides::Two;
         a.setup.marks = false;
         a.apply_setup();
         a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::IDENTITY);
@@ -652,7 +782,7 @@ mod side_tests {
         use egui_kittest::kittest::Queryable;
         h.get_by_label("Side A").click();
         h.run_steps(3);
-        assert!(!h.state().doc.two.as_ref().unwrap().shown_b, "side A is shown");
+        assert!(!h.state().doc.two.as_ref().unwrap().shown_b(), "side A is shown");
         assert_eq!(h.state().doc.scene.shapes.len(), 1);
         // The picture is of side A too (its rectangle at the left), not the job of side B made before the switch.
         let burned = |a: &App| -> f64 { a.pv.job.as_ref().map_or(f64::NAN, |(_, j)| j.moves.iter().filter(|m| m.laser).map(|m| m.a.x.max(m.b.x)).fold(0.0, f64::max)) };

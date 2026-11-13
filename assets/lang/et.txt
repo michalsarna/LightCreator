@@ -1149,3 +1149,12 @@
 1148|Lohista: pööra · ratas: suumi
 1149|Mõõdud eelvaates
 1150|Silinder eelvaates (pöördtelg)
+1151|Kaduvatel külgedel on kujundeid: projekt jääb samaks. Kustutage need enne.
+1152|post
+1153|plokk
+1154|Projekt seadistatud: {} {} x {} x {} mm, null: {}
+1155|Neli nurgamärki kohe materjalist väljas, põletatud eraldi tööna alumisele plaadile enne materjali pealepanekut: asetage materjal neisse külje A jaoks ja ümberpööratuna külje B jaoks.
+1156|Põletatud ese 3D-s, projekti seadistuse materjali suurune, koos sellega, mis igale küljele põletatakse. Lohistage pööramiseks, ratas suumib.
+1157|Töö tööalal, nii nagu masin selle põletab
+1158|Põletusvärvid
+1159|Jooned suurema võimsusega tumedamad, nagu puitu põletatud; väljas: toimingute või kihtide värvides

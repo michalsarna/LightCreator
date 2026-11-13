@@ -1149,3 +1149,12 @@
 1148|Træk: drej · hjul: zoom
 1149|Mål i forhåndsvisningen
 1150|Cylinder i forhåndsvisningen (drejeakse)
+1151|Siderne, der ville forsvinde, har former: projektet forbliver som det var. Slet dem først.
+1152|en stolpe
+1153|en klods
+1154|Projekt sat op: {} på {} x {} x {} mm, nulpunkt {}
+1155|Fire hjørnemærker lige uden for materialet, brændt som et job for sig på pladen nedenunder, før materialet lægges på: læg materialet i dem til side A og, vendt, til side B.
+1156|Det brændte emne i 3D, lige så stort som materialet i projektopsætningen, med det der brændes på hver af dets sider. Træk for at dreje det, hjulet zoomer.
+1157|Jobbet på arbejdsområdet, som maskinen brænder det
+1158|Brændefarver
+1159|Linjerne mørkere ved mere effekt, som brændt i træ; fra: i operationernes eller lagenes farver

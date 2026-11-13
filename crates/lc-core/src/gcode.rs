@@ -600,8 +600,8 @@ pub struct JobOptions {
     pub one_by_one: bool,
     /// A two-sided job: which side this is, written at the head of the G-code (ASCII).
     pub side_note: Option<String>,
-    /// A second part burned after the first one in the same file (side B of a two-sided job).
-    pub then: Option<Then>,
+    /// The parts burned after the first one in the same file (side B of a two-sided job, the next faces of a post or a block).
+    pub then: Vec<Then>,
 }
 
 /// The part of a job that comes after the drawing of the document in the same file: its shapes (on the layers of the document),
@@ -744,7 +744,7 @@ pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job
     let mut tool = 0usize;
     let mut element: Option<usize> = None;
     let mut parts: Vec<(&base_core::scene::Scene, Option<&str>, Option<&str>)> = vec![(&doc.scene, opts.side_note.as_deref(), None)];
-    if let Some(t) = &opts.then {
+    for t in &opts.then {
         parts.push((&t.scene, Some(t.note.as_str()), Some(t.hold.as_deref().unwrap_or(""))));
     }
     for (part, (scene, note, hold)) in parts.into_iter().enumerate() {
@@ -770,7 +770,9 @@ pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job
         mode = if matches!(dialect, Dialect::Grbl | Dialect::GrblM3Old) { PowerMode::Constant } else { PowerMode::Dynamic };
     }
     if let Some(n) = note {
-        let _ = writeln!(w.out, "; {n}");
+        for l in n.lines() {
+            let _ = writeln!(w.out, "; {l}");
+        }
     }
     let shapes: Vec<&Shape> = scene.shapes.iter().collect();
     // Where we are in the job, for the variables of hooks.

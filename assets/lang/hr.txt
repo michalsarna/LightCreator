@@ -1149,3 +1149,12 @@
 1148|Povuci: okreni · kotačić: zum
 1149|Dimenzije u pregledu
 1150|Valjak u pregledu (rotacijska os)
+1151|Strane koje bi nestale imaju oblike: projekt ostaje kakav je bio. Najprije ih izbrišite.
+1152|stup
+1153|blok
+1154|Projekt postavljen: {} {} x {} x {} mm, nula u {}
+1155|Četiri kutne oznake tik izvan materijala, spaljene kao zaseban posao na ploči ispod prije nego što se materijal položi: stavite materijal u njih za stranu A i, okrenut, za stranu B.
+1156|Spaljeni predmet u 3D, velik kao materijal iz postavki projekta, s onim što se spaljuje na svakoj njegovoj strani. Povucite za okretanje, kotačić zumira.
+1157|Posao na radnoj površini, kako ga stroj spaljuje
+1158|Boje paljenja
+1159|Linije tamnije pri većoj snazi, kao spaljene na drvu; isključeno: u bojama operacija ili slojeva

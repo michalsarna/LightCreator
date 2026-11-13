@@ -2669,7 +2669,7 @@ fn two_sides_in_one_file_have_their_names_a_stop_between_them_and_one_end() {
     let mut b = base_core::scene::Scene::default();
     b.add(0, Kind::Rect { w: 4.0, h: 4.0 }, Xf::translate(60.0, 40.0));
     let then = gcode::Then { scene: b.clone(), note: "Side B: the material is turned over side to side".into(), hold: Some("Turn the material over".into()) };
-    let opts = gcode::JobOptions { side_note: Some("Side A".into()), then: Some(then), ..Default::default() };
+    let opts = gcode::JobOptions { side_note: Some("Side A".into()), then: vec![then], ..Default::default() };
     let g = gcode::generate_with(&d, None, &opts).gcode;
     let at = |t: &str| g.find(t).unwrap_or_else(|| panic!("no {t:?} in\n{g}"));
     let (a, stop, side_b) = (at("; Side A"), at("M0 ; Turn the material over"), at("; Side B:"));
@@ -2681,7 +2681,7 @@ fn two_sides_in_one_file_have_their_names_a_stop_between_them_and_one_end() {
     assert_eq!(g.matches("M2").count(), 1, "one end of the job");
     assert!(g.rfind("M2").unwrap() > side_b);
     // Without the stop the sides follow one another; with no side B the file is as before with the name of the side.
-    let opts = gcode::JobOptions { side_note: Some("Side A".into()), then: Some(gcode::Then { scene: b, note: "Side B".into(), hold: None }), ..Default::default() };
+    let opts = gcode::JobOptions { side_note: Some("Side A".into()), then: vec![gcode::Then { scene: b, note: "Side B".into(), hold: None }], ..Default::default() };
     assert!(!gcode::generate_with(&d, None, &opts).gcode.contains("M0"));
     let one = gcode::generate_with(&d, None, &gcode::JobOptions { side_note: Some("Side A".into()), ..Default::default() }).gcode;
     assert!(one.contains("; Side A") && !one.contains("Side B"));
