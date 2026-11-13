@@ -1149,3 +1149,12 @@
 1148|Dra: vrid · hjul: zoom
 1149|Mått i förhandsgranskningen
 1150|Cylinder i förhandsgranskningen (rotationsaxel)
+1151|Sidorna som skulle försvinna har former: projektet förblir som det var. Ta bort dem först.
+1152|en stolpe
+1153|en kloss
+1154|Projekt inställt: {} på {} x {} x {} mm, nollpunkt {}
+1155|Fyra hörnmärken precis utanför materialet, brända som ett eget jobb på skivan under innan materialet läggs på: lägg materialet i dem för sida A och, vänt, för sida B.
+1156|Det brända föremålet i 3D, lika stort som materialet i projektinställningen, med det som bränns på var och en av dess sidor. Dra för att vrida det, hjulet zoomar.
+1157|Jobbet på arbetsområdet, som maskinen bränner det
+1158|Bränningsfärger
+1159|Linjerna mörkare vid mer effekt, som brända i trä; av: i operationernas eller lagrens färger

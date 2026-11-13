@@ -1149,3 +1149,12 @@
 1148|Ikkaxkar: dawwar · rota: żum
 1149|Dimensjonijiet fil-preview
 1150|Ċilindru fil-preview (fus li jdur)
+1151|Il-wiċċijiet li jitneħħew għandhom forom: il-proġett jibqa' kif kien. Ħassarhom l-ewwel.
+1152|arblu
+1153|blokk
+1154|Proġett issettjat: {} ta' {} x {} x {} mm, żero f'{}
+1155|Erba' marki tal-kantunieri eżatt barra mill-materjal, maħruqa bħala xogħol għalihom fuq il-folja taħtu qabel ma jitqiegħed il-materjal: poġġi l-materjal fihom għan-naħa A u, maqlub, għan-naħa B.
+1156|L-oġġett maħruq fi 3D, kbir daqs il-materjal tas-settjar tal-proġett, b'dak li jinħaraq fuq kull wiċċ tiegħu. Kaxkar biex iddawru, ir-rota tagħmel zoom.
+1157|Ix-xogħol fuq iż-żona tax-xogħol, kif taħarqu l-magna
+1158|Kuluri tal-ħruq
+1159|Il-linji aktar skuri b'aktar qawwa, bħal maħruqa fuq l-injam; mitfi: fil-kuluri tal-operazzjonijiet jew tas-saffi

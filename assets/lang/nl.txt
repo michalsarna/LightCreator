@@ -1149,3 +1149,12 @@
 1148|Slepen: draaien · wiel: zoomen
 1149|Maten in het voorbeeld
 1150|Cilinder in het voorbeeld (draaias)
+1151|De vlakken die zouden verdwijnen hebben vormen: het project blijft zoals het was. Verwijder ze eerst.
+1152|een paal
+1153|een blok
+1154|Project ingesteld: {} van {} x {} x {} mm, nulpunt {}
+1155|Vier hoekmarkeringen net buiten het materiaal, als eigen taak gebrand op de plaat eronder voordat het materiaal wordt neergelegd: leg het materiaal erin voor zijde A en, omgedraaid, voor zijde B.
+1156|Het gebrande voorwerp in 3D, zo groot als het materiaal van de projectinstellingen, met wat op elk vlak wordt gebrand. Sleep om het te draaien, het wieltje zoomt.
+1157|De taak op het werkgebied, zoals de machine hem brandt
+1158|Brandkleuren
+1159|De lijnen donkerder bij meer vermogen, zoals in hout gebrand; uit: in de kleuren van de bewerkingen of lagen

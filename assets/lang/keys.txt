@@ -1149,3 +1149,12 @@
 1148	Drag: turn · wheel: zoom
 1149	Dimensions in the preview
 1150	Cylinder in the preview (rotary)
+1151	The faces that would go have shapes: the project stays as it was. Delete them first.
+1152	a post
+1153	a block
+1154	Project set up: {} of {} x {} x {} mm, zero at {}
+1155	Four corner marks just outside the material, burned as a job of their own on the sheet under it before the material is laid down: put the material into them for side A and, turned over, for side B.
+1156	The burned object in 3D, as big as the material of the project setup, with what is burned on each of its faces. Drag to turn it, the wheel zooms.
+1157	The job on the work area, as the machine burns it
+1158	Burn colours
+1159	The lines darker for more power, as burned on wood; off: in the colours of the operations or the layers

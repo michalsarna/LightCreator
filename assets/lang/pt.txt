@@ -1149,3 +1149,12 @@
 1148|Arrastar: rodar · roda: zoom
 1149|Dimensões na pré-visualização
 1150|Cilindro na pré-visualização (eixo rotativo)
+1151|As faces que desapareceriam têm formas: o projeto fica como estava. Apague-as primeiro.
+1152|um poste
+1153|um bloco
+1154|Projeto configurado: {} de {} x {} x {} mm, zero em {}
+1155|Quatro marcas de canto mesmo fora do material, gravadas como trabalho próprio na placa por baixo antes de pousar o material: ponha o material nelas para o lado A e, virado, para o lado B.
+1156|O objeto gravado em 3D, tão grande como o material da configuração do projeto, com o que é gravado em cada uma das faces. Arraste para o rodar, a roda faz zoom.
+1157|O trabalho na área de trabalho, como a máquina o grava
+1158|Cores de queimado
+1159|As linhas mais escuras com mais potência, como queimadas na madeira; desligado: nas cores das operações ou das camadas

@@ -1149,3 +1149,12 @@
 1148|Draga: snúa · hjól: aðdráttur
 1149|Mál í forskoðun
 1150|Sívalningur í forskoðun (snúningsás)
+1151|Hliðarnar sem myndu hverfa hafa form: verkefnið helst óbreytt. Eyddu þeim fyrst.
+1152|stólpi
+1153|kubbur
+1154|Verkefni sett upp: {} {} x {} x {} mm, núll við {}
+1155|Fjögur hornmerki rétt utan við efnið, brennd sem sérstakt verk á plötuna undir áður en efnið er lagt niður: settu efnið í þau fyrir hlið A og, snúið við, fyrir hlið B.
+1156|Brenndi hluturinn í 3D, jafnstór efni verkefnisstillingarinnar, með því sem er brennt á hverja hlið hans. Dragðu til að snúa honum, hjólið aðdráttar.
+1157|Verkið á vinnusvæðinu, eins og vélin brennir það
+1158|Brunalitir
+1159|Línurnar dekkri við meira afl, eins og brenndar í við; slökkt: í litum aðgerðanna eða laganna

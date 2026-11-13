@@ -1149,3 +1149,12 @@
 1148|Trage: rotește · rotiță: zoom
 1149|Dimensiuni în previzualizare
 1150|Cilindru în previzualizare (axă rotativă)
+1151|Fețele care ar dispărea au forme: proiectul rămâne cum era. Ștergeți-le mai întâi.
+1152|un stâlp
+1153|un bloc
+1154|Proiect configurat: {} de {} x {} x {} mm, zero la {}
+1155|Patru marcaje de colț chiar în afara materialului, arse ca lucrare separată pe placa de dedesubt înainte de a așeza materialul: puneți materialul în ele pentru fața A și, întors, pentru fața B.
+1156|Obiectul ars în 3D, cât materialul din configurarea proiectului, cu ce se arde pe fiecare față. Trageți pentru a-l roti, rotița mărește.
+1157|Lucrarea pe zona de lucru, așa cum o arde mașina
+1158|Culori de ardere
+1159|Liniile mai închise la putere mai mare, ca arse pe lemn; oprit: în culorile operațiilor sau ale straturilor

@@ -7,6 +7,7 @@ mod check_ui;
 mod cam_test_ui;
 mod clipart_ui;
 mod canvas;
+mod box_view;
 mod cylinder_view;
 mod control_glue;
 mod device_ui;

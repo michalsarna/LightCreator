@@ -1149,3 +1149,12 @@
 1148|Glisser : tourner · molette : zoom
 1149|Cotes dans l'aperçu
 1150|Cylindre dans l'aperçu (axe rotatif)
+1151|Les faces qui disparaîtraient ont des formes : le projet reste tel quel. Supprimez-les d'abord.
+1152|un poteau
+1153|un bloc
+1154|Projet configuré : {} de {} x {} x {} mm, zéro à {}
+1155|Quatre repères d'angle juste à l'extérieur du matériau, gravés comme un travail à part sur la plaque dessous avant de poser le matériau : placez-y le matériau pour la face A et, retourné, pour la face B.
+1156|L'objet gravé en 3D, aussi grand que le matériau de la configuration du projet, avec ce qui est gravé sur chacune de ses faces. Faites glisser pour le tourner ; la molette zoome.
+1157|Le travail sur la zone de travail, tel que la machine le grave
+1158|Couleurs de brûlure
+1159|Les lignes plus sombres avec plus de puissance, comme brûlées sur le bois ; désactivé : aux couleurs des opérations ou des calques

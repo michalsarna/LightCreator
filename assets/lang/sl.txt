@@ -1149,3 +1149,12 @@
 1148|Povleci: zavrti · kolešček: povečava
 1149|Mere v predogledu
 1150|Valj v predogledu (vrtljiva os)
+1151|Ploskve, ki bi izginile, imajo oblike: projekt ostane, kot je bil. Najprej jih izbrišite.
+1152|steber
+1153|kocka
+1154|Projekt nastavljen: {} {} x {} x {} mm, ničla v {}
+1155|Štiri kotne oznake tik zunaj materiala, požgane kot samostojno opravilo na ploščo pod njim, preden material položimo: vstavite vanje material za stran A in, obrnjenega, za stran B.
+1156|Požgani predmet v 3D, velik kot material iz nastavitev projekta, s tem, kar se požge na vsako njegovo ploskev. Povlecite za vrtenje, kolesce povečuje.
+1157|Opravilo na delovnem območju, kot ga požge stroj
+1158|Barve žganja
+1159|Črte temnejše pri večji moči, kot požgane v les; izklopljeno: v barvah operacij ali plasti

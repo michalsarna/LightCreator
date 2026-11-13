@@ -1149,3 +1149,12 @@
 1148|Dra: snu · hjul: zoom
 1149|Mål i forhåndsvisningen
 1150|Sylinder i forhåndsvisningen (dreieakse)
+1151|Sidene som ville forsvinne har former: prosjektet forblir som det var. Slett dem først.
+1152|en stolpe
+1153|en kloss
+1154|Prosjekt satt opp: {} på {} x {} x {} mm, nullpunkt {}
+1155|Fire hjørnemerker like utenfor materialet, brent som en egen jobb på platen under før materialet legges på: legg materialet i dem for side A og, snudd, for side B.
+1156|Det brente emnet i 3D, like stort som materialet i prosjektoppsettet, med det som brennes på hver av sidene. Dra for å snu det, hjulet zoomer.
+1157|Jobben på arbeidsområdet, slik maskinen brenner den
+1158|Brennfarger
+1159|Linjene mørkere ved mer effekt, som brent i tre; av: i fargene til operasjonene eller lagene

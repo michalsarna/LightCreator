@@ -1149,3 +1149,12 @@
 1148|Tarraing: cas · roth: zúmáil
 1149|Toisí sa réamhamharc
 1150|Sorcóir sa réamhamharc (ais rothlach)
+1151|Tá cruthanna ar na taobhanna a d'imeodh: fanann an tionscadal mar a bhí. Scrios iad ar dtús.
+1152|cuaille
+1153|bloc
+1154|Tionscadal socraithe: {} {} x {} x {} mm, nialas ag {}
+1155|Ceithre mharc cúinne díreach lasmuigh den ábhar, dóite mar jab ar leith ar an leathán faoi sula leagtar an t-ábhar: cuir an t-ábhar iontu do thaobh A agus, iompaithe, do thaobh B.
+1156|An rud dóite i 3D, chomh mór le hábhar shocrú an tionscadail, leis an méid a dhóitear ar gach taobh de. Tarraing chun é a chasadh; zúmálann an roth.
+1157|An jab ar an limistéar oibre, mar a dhónn an meaisín é
+1158|Dathanna dóite
+1159|Na línte níos dorcha le níos mó cumhachta, mar a dhóitear ar adhmad; múchta: i ndathanna na n-oibríochtaí nó na sraitheanna

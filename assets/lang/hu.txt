@@ -1149,3 +1149,12 @@
 1148|Húzás: forgatás · görgő: nagyítás
 1149|Méretek az előnézetben
 1150|Henger az előnézetben (forgótengely)
+1151|A megszűnő lapokon alakzatok vannak: a projekt marad, ahogy volt. Előbb törölje őket.
+1152|oszlop
+1153|tömb
+1154|A projekt beállítva: {} {} x {} x {} mm, nullpont: {}
+1155|Négy sarokjel közvetlenül az anyagon kívül, külön munkaként az alatta lévő lapra égetve, mielőtt az anyagot ráfektetjük: tegye beléjük az anyagot az A oldalhoz, és megfordítva a B oldalhoz.
+1156|Az égetett tárgy 3D-ben, akkora, mint a projektbeállítás anyaga, azzal, amit minden lapjára égetünk. Húzással forgatható, a görgő nagyít.
+1157|A munka a munkaterületen, ahogy a gép égeti
+1158|Égetési színek
+1159|A vonalak nagyobb teljesítménynél sötétebbek, mint fába égetve; ki: a műveletek vagy rétegek színeivel

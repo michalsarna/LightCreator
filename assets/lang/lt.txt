@@ -1149,3 +1149,12 @@
 1148|Vilkite: pasukti · ratukas: mastelis
 1149|Matmenys peržiūroje
 1150|Cilindras peržiūroje (sukimo ašis)
+1151|Sienose, kurios išnyktų, yra figūrų: projektas lieka koks buvo. Pirmiau jas ištrinkite.
+1152|stulpelis
+1153|kaladėlė
+1154|Projektas nustatytas: {} {} x {} x {} mm, nulis: {}
+1155|Keturios kampų žymės tiesiai už medžiagos, išdegamos atskiru darbu ant plokštės po ja prieš padedant medžiagą: įdėkite į jas medžiagą A pusei ir, apverstą, B pusei.
+1156|Išdegtas daiktas 3D, medžiagos iš projekto nustatymų dydžio, su tuo, kas išdeginama kiekvienoje jo sienoje. Tempkite, kad pasuktumėte, ratukas keičia mastelį.
+1157|Darbas darbo lauke, kaip jį išdegina staklės
+1158|Išdegimo spalvos
+1159|Linijos tamsesnės esant didesnei galiai, kaip išdegintos medyje; išjungta: operacijų ar sluoksnių spalvomis

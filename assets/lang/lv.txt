@@ -1149,3 +1149,12 @@
 1148|Velkt: pagriezt · ritenis: tuvināt
 1149|Izmēri priekšskatījumā
 1150|Cilindrs priekšskatījumā (rotācijas ass)
+1151|Skaldnēm, kas pazustu, ir figūras: projekts paliek, kāds bija. Vispirms tās izdzēsiet.
+1152|stabiņš
+1153|klucis
+1154|Projekts iestatīts: {} {} x {} x {} mm, nulle: {}
+1155|Četras stūru atzīmes tieši ārpus materiāla, iededzinātas kā atsevišķs darbs uz plāksnes zem tā, pirms materiālu noliek: ievietojiet tajās materiālu A pusei un, apgrieztu, B pusei.
+1156|Iededzinātais priekšmets 3D, tik liels kā projekta iestatījumu materiāls, ar to, kas iededzināts katrā tā skaldnē. Velciet, lai pagrieztu; ritenis tuvina.
+1157|Darbs darba laukā, kā mašīna to iededzina
+1158|Iededzināšanas krāsas
+1159|Līnijas tumšākas pie lielākas jaudas, kā iededzinātas kokā; izslēgts: darbību vai slāņu krāsās
