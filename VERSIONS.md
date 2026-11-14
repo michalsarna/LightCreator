@@ -2,6 +2,18 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.8.8 (not released yet)
+
+* **Project setup** (File → Project setup…, and the window of every new project): a block of material (width, height, thickness) or a cylinder on the rotary attachment (switched on with its diameter), with a picture of it and its sizes. **Work area is the material** makes the work area as big as the piece; with 2, 4 or 6 sides it is always on and cannot be unticked.
+* **Two-sided jobs** (2 sides): side A and side B, each a work area of its own, turned over round the axis chosen; the shapes of the other side show as **ghosts** (faint), which can be clicked to align and snap to but never move. The piece lies at the zero of the machine; the **alignment marks** are a job of their own (a `_marks` file, burned first on the sheet under the material).
+* **Posts and blocks**: **4 sides (post)** burns the four long faces of a post a × b, H long, rolled a quarter turn back between them; **6 sides (block)** burns all six faces of a block a × b × c. Each face is a work area of its own, as big as the face; the faces beside it are unfolded round it with their ghosts and the face under it shows through. A click on an unfolded face shows that face.
+* **The 3D preview of the burned object**: the piece, the post or the block as a box with what is burned drawn on its faces, the shown face up to the time of the slider; turn it with the mouse and the navigation cube, see its bottom too. The face buttons over the preview **turn the object** so the shown face is up (as the laser sees it), the same as in MillCreator; **Burn colours** draws the burns darker the more power the layer gives. The 3D preview now comes from baseCreator, shared with MillCreator.
+* **Save G-code and Preview G-code of a job on several sides** ask how: all the sides in one file with a stop to turn the object (with what to do and to focus the laser on its top), one file without stops, or a file for each side (`_A` … `_F`); the preview in one tab or a tab for each side.
+* **Rendering quality** (Settings → Program options…): a slider from 1 (quick) to 5 (sharp) for how fine the previews are drawn (the round of a cylinder on the rotary and its lines).
+* **The start window of the project setup** in every program: the green **Apply** and the blue **Skip** are bigger, in the middle at the bottom under a line; the pictures are bigger and in the middle. **Skip** or closing the window gives a project on one side as big as the work area of the device.
+* **The work area of the device stays its own**: a project on several sides no longer changes the work area kept in the device profile (a device whose work area was changed that way by an earlier version must be set right once in Device settings).
+* **The switch of the sides and faces** over the work area has the colour of the theme.
+
 ## v0.8.7
 
 * **Web server and API** now come from baseCreator and are the same in every program; LightCreator stays on port 8765, MillCreator uses 8766, PenCreator 8767 and BaseCreator 8768, so all of them can run on one computer.

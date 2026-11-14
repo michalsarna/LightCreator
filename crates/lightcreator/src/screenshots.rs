@@ -1847,6 +1847,24 @@ fn pictures_of_posts_and_blocks() {
     }
     shot(&mut h, "lc-block-3d.png");
     {
+        // The switch of the faces turns the object: face B up.
+        let a = app(&mut h);
+        a.show_face(1);
+    }
+    shot(&mut h, "lc-block-3d-face-b.png");
+    {
+        let a = app(&mut h);
+        a.show_face(0);
+        a.show_preview = false;
+        a.new_doc();
+        a.open_start_setup();
+    }
+    shot(&mut h, "lc-one-side-setup.png");
+    {
+        let a = app(&mut h);
+        a.setup.open = false;
+    }
+    {
         let a = app(&mut h);
         a.show_preview = false;
         a.new_doc();
