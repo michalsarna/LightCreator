@@ -128,7 +128,8 @@ pub struct App {
     pub closing_text: Option<usize>,
     pub slot: usize,
     pub autosaved_revision: u64,
-    pub autosave_on: bool,
+    /// Auto-save on or off and how often (Settings → Program options; the same in every program, from base).
+    pub autosave_opts: lc_core::autosave::Options,
     /// The shared data folder (the recovery file of this program is in it).
     pub data_base: std::path::PathBuf,
     /// An unsaved project left by an earlier run (offered on the start screen).
@@ -145,7 +146,6 @@ pub struct App {
     pub mat_rev: u64,
     /// The web server and API (the one of baseCreator, on the port of LightCreator).
     pub web: base_ui::web_api::WebApi,
-    pub autosave_secs: u32,
     pub last_autosave: std::time::Instant,
     /// A short message (text, until when) such as "file saved".
     pub toast: Option<(String, std::time::Instant)>,
@@ -375,7 +375,7 @@ impl App {
             autosaved_revision: 0,
             data_base: crate::data_paths().base.clone(),
             recovery: lc_core::autosave::find_all(&crate::data_paths().base, "lightcreator"),
-            autosave_on: saved("autosave_on").map(|v| v != "0").unwrap_or(true),
+            autosave_opts: lc_core::autosave::Options::from_settings(|k| saved(k)),
             mat_edit: None,
             // The tests never touch the presets of whoever runs them.
             presets: cfg!(test).then(|| base_ui::layer_presets_ui::Library::from_path(None, &crate::layer_presets::valid)),
@@ -383,7 +383,6 @@ impl App {
             materials_dlg: None,
             mat_rev: u64::MAX,
             web: base_ui::web_api::WebApi::from_saved("LightCreator", base_ui::web_api::PORT_LIGHTCREATOR, &|k| saved(k)),
-            autosave_secs: saved("autosave_secs").and_then(|v| v.parse().ok()).filter(|v| (10..=3600).contains(v)).unwrap_or(crate::session_ui::DEFAULT_AUTOSAVE_SECS),
             last_autosave: std::time::Instant::now(),
             toast: None,
             show_close_dlg: false,
@@ -2031,9 +2030,8 @@ impl App {
             v.push(("profiles", j));
         }
         v.push(("active_profile", self.active.to_string()));
-        v.push(("autosave_on", if self.autosave_on { "1" } else { "0" }.into()));
+        v.extend(self.autosave_opts.settings());
         v.extend(self.web.settings_pairs().into_iter().map(|(k, v)| (k, v)));
-        v.push(("autosave_secs", self.autosave_secs.to_string()));
         v.push(("check_updates", if self.check_updates { "1" } else { "0" }.into()));
         if let Ok(j) = serde_json::to_string(&self.recent) {
             v.push(("recent_files", j));
