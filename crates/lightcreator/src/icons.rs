@@ -55,6 +55,7 @@ pub fn act_icon(a: Act) -> Option<&'static str> {
         Act::GridArray => "grid-3x3",
         Act::TogglePreview => "route",
         Act::PreviewWindow => "play",
+        Act::TogglePreviewWindow => "play",
         Act::CameraView => "video",
         Act::ToggleOverlay | Act::CameraOverlay => "layers",
         Act::ToggleZones => "eye",

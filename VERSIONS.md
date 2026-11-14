@@ -4,6 +4,9 @@ Each release gets the next version number and a branch with the same name. Newes
 
 ## v0.9.1 (not released yet)
 
+* **View menu: Preview and Preview G-code**, as the buttons of the main window (as in MillCreator).
+* **A drag with the right mouse button moves the view of the editor**, on the work area and beside it (before only the middle button did, or the Pan tool); a right click that does not move still opens the menu.
+* baseCreator v2.0.1.
 * Updated dependencies (lopdf 0.47, zip 9.5.0).
 
 ## v0.9.0

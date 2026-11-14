@@ -141,6 +141,8 @@ The commands work on the selection. Most of them are also in the right-click men
 | **Show no-go zones** | | Draws the no-go zones of the device in red; greyed out when the device has none. |
 | **Dimensions in the preview** | | Shows the sizes of the job over the preview (as its **Dimensions** switch), and opens the preview. |
 | **Cylinder in the preview (rotary)** | | With a rotary attachment: the preview shows the job on the workpiece in 3D, or (off) flat. The same as **Cylinder (3D)** / **Flat** in the preview. |
+| **Preview** | | Shows or hides the preview, as the **Preview…** button. |
+| **Preview G-code** | | The G-code of the job in a tab, as the **Preview G-code** button. |
 
 ## Machine
 

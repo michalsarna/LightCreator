@@ -141,6 +141,8 @@ Polecenia działają na zaznaczeniu. Większość z nich jest też w menu praweg
 | **Pokaż strefy zakazane** (Show no-go zones) | | Rysuje na czerwono strefy zakazane urządzenia; wyszarzona, gdy urządzenie ich nie ma. |
 | **Wymiary w podglądzie** (Dimensions in the preview) | | Pokazuje wymiary zadania na podglądzie (jak jego przełącznik **Wymiary**) i otwiera podgląd. |
 | **Walec w podglądzie (obrotnica)** (Cylinder in the preview (rotary)) | | Z obrotnicą: podgląd pokazuje zadanie na przedmiocie w 3D albo (wyłączone) płasko. To samo co **Walec (3D)** / **Płasko** w podglądzie. |
+| **Podgląd** (Preview) | | Pokazuje albo chowa podgląd, jak przycisk **Podgląd…**. |
+| **Podgląd G-code** (Preview G-code) | | G-code zadania w karcie, jak przycisk **Podgląd G-code**. |
 
 ## Maszyna (Machine)
 

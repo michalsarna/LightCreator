@@ -93,7 +93,7 @@ With **Keyboard** switched on in the **Control** tab (off by default) the keys m
 | Gesture | Action |
 |---|---|
 | Wheel | Zoom around the pointer (also in the preview and the camera view) |
-| Middle button drag | Pan |
+| Middle or right button drag | Pan (on the work area and beside it; a right click that does not move opens the menu) |
 | Pinch (touchpad) | Zoom |
 | Click; **Shift**+click or **Ctrl**+click | Select; add to / remove from the selection |
 | Drag a frame left → right | Select what is wholly inside |

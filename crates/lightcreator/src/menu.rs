@@ -121,6 +121,8 @@ pub enum Act {
     ExportDiagnostics,
     RestoreBackup,
     PreviewWindow,
+    /// The preview window shown or hidden, as the Preview… button does (View menu).
+    TogglePreviewWindow,
     CameraView,
     ShareSer2net,
     ToggleOverlay,
@@ -305,6 +307,8 @@ pub fn menus() -> base_ui::menu::Menus<Act> {
     view.push(Item(Act::ToggleZones, "Show no-go zones", None));
     view.push(Item(Act::TogglePreviewDims, "Dimensions in the preview", None));
     view.push(Item(Act::ToggleCylinder, "Cylinder in the preview (rotary)", None));
+    // What the buttons of the main window show: the preview and the G-code.
+    view.extend([Sep, Item(Act::TogglePreviewWindow, "Preview", None), Item(Act::PreviewGcode, "Preview G-code", None)]);
     standard_menus(MenuParts {
         new: Act::New,
         open: Act::Open,
@@ -360,5 +364,9 @@ mod tests {
         assert!(base_ui::menu::key_clashes(&m).is_empty(), "{:?}", base_ui::menu::key_clashes(&m));
         let titles: Vec<&str> = m.iter().map(|(t, _)| *t).collect();
         assert_eq!(titles, ["File", "Edit", "Insert", "Arrange", "View", "Machine", "Laser", "Settings", "Help"]);
+        // View has the preview and the G-code, as the buttons of the main window.
+        let view = &m.iter().find(|(t, _)| *t == "View").unwrap().1;
+        let items: Vec<Act> = view.iter().filter_map(|e| match e { base_ui::menu::Entry::Item(a, ..) => Some(*a), _ => None }).collect();
+        assert!(items.contains(&Act::TogglePreviewWindow) && items.contains(&Act::PreviewGcode), "{items:?}");
     }
 }
