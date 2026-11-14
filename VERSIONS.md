@@ -4,6 +4,7 @@ Each release gets the next version number and a branch with the same name. Newes
 
 ## v0.9.3 (not released yet)
 
+* **The preview has the colour under the work area** (of the theme, or the one chosen in the view options) instead of black round the options of the tab.
 * **Auto-save options from baseCreator**: the same two rows of the program options as in the other programs (nothing changes in use).
 * baseCreator v2.3.0.
 

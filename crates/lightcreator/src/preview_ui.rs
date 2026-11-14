@@ -156,6 +156,9 @@ impl App {
 
     /// The preview as a tab of the work area, in place of the drawing.
     pub fn preview_work_panel(&mut self, ui: &mut egui::Ui) {
+        // The whole tab has the colour under the work area (of the theme, or the one of the view options), not the black of the window.
+        let fill = base_ui::editor::EditorHost::workspace_fill(self);
+        ui.painter().rect_filled(ui.max_rect(), 0.0, fill);
         let Some(job) = self.preview_prepare(ui.ctx()) else { return };
         // The fitting of the picture is on its zoom bar.
         ui.label(RichText::new(tr("Preview")).strong());
