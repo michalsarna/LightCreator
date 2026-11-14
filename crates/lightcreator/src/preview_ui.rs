@@ -379,7 +379,8 @@ impl App {
             // Everything before the current time is drawn whole; the current move only up to the head.
             let t_now = self.pv.progress as f64 * total;
             let cur = self.pv.cum.partition_point(|c| *c <= t_now).min(job.moves.len());
-            let mut shapes = Vec::with_capacity(cur);
+            // Moves that follow each other are one line, what is too small or out of sight is left out (`base_ui::lines`).
+            let mut shapes = base_ui::lines::Lines::new(painter.clip_rect());
             let skip_travel = job.moves.len() > 200_000;
             let style_of = |m: &gcode::Move| -> Option<Stroke> {
                 if self.pv.hidden.contains(&m.op) {
@@ -401,7 +402,7 @@ impl App {
             };
             for m in job.moves.iter().take(cur) {
                 if let Some(st) = style_of(m) {
-                    shapes.push(egui::Shape::line_segment([w2s(m.a), w2s(m.b)], st));
+                    shapes.add(w2s(m.a), w2s(m.b), st, false);
                 }
             }
             let mut head = home;
@@ -410,13 +411,13 @@ impl App {
                 let f = if m.dur > 1e-12 { ((t_now - before) / m.dur).clamp(0.0, 1.0) } else { 1.0 };
                 let p = lc_core::Pt::new(m.a.x + (m.b.x - m.a.x) * f, m.a.y + (m.b.y - m.a.y) * f);
                 if let Some(st) = style_of(m) {
-                    shapes.push(egui::Shape::line_segment([w2s(m.a), w2s(p)], st));
+                    shapes.add(w2s(m.a), w2s(p), st, false);
                 }
                 head = w2s(p);
             } else if let Some(m) = job.moves.last() {
                 head = w2s(m.b);
             }
-            painter.extend(shapes);
+            shapes.paint(&painter);
             painter.circle_filled(head, 4.5, Color32::from_rgb(0xe0, 0x20, 0x20));
             painter.circle_stroke(head, 4.5, Stroke::new(1.0, Color32::WHITE));
             if self.pv.show_dims {
@@ -525,7 +526,7 @@ impl App {
             }
             self.move_stroke(m, n_ops, line_w, travel)
         };
-        let mut shapes = vec![];
+        let mut shapes = base_ui::lines::Lines::new(painter.clip_rect());
         if let Some((_, jobs)) = &self.pv.face_jobs {
             for (j, fj) in jobs.iter().enumerate().filter(|(j, _)| *j != shown && self.doc.two.is_some()) {
                 for m in fj.moves.iter().filter(|m| m.laser) {
@@ -552,7 +553,7 @@ impl App {
             }
             head = Some(p);
         }
-        painter.extend(shapes);
+        shapes.paint(painter);
         if let (Some(p), true) = (head, pj.facing(frame.out(shown)) > 0.0 && self.pv.progress < 1.0) {
             let at = pj.project(frame.at(&solid, shown, local(p)));
             painter.circle_filled(at, 4.5, Color32::from_rgb(0xe0, 0x20, 0x20));
@@ -600,7 +601,7 @@ impl App {
         let travel = self.pv.show_travel && !skip_travel;
         let t_now = self.pv.progress as f64 * total;
         let cur = self.pv.cum.partition_point(|c| *c <= t_now).min(job.moves.len());
-        let mut shapes = Vec::with_capacity(cur);
+        let mut shapes = base_ui::lines::Lines::new(painter.clip_rect());
         // A little thicker than on the flat picture: the lines lie on a shaded surface.
         let line_w = line_w.max(1.6);
         for m in job.moves.iter().take(cur) {
@@ -620,7 +621,7 @@ impl App {
         } else if let Some(m) = job.moves.last() {
             head = Some(m.b);
         }
-        painter.extend(shapes);
+        shapes.paint(painter);
         if let Some(p) = head {
             let (at, facing) = pj.surface(p);
             if facing > 0.0 {

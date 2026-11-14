@@ -9,11 +9,11 @@ use lc_core::Pt;
 
 /// Add a line of the drawing of face `face` (its millimetres, from the top left corner of the face) where it lies on the object, when
 /// that face is turned to the eye.
-pub fn face_line(out: &mut Vec<egui::Shape>, pj: &Projector, frame: &FaceFrame, solid: &Solid, face: usize, a: Pt, b: Pt, stroke: Stroke) {
+pub fn face_line(out: &mut base_ui::lines::Lines, pj: &Projector, frame: &FaceFrame, solid: &Solid, face: usize, a: Pt, b: Pt, stroke: Stroke) {
     if pj.facing(frame.out(face)) <= 1e-6 {
         return;
     }
-    out.push(egui::Shape::line_segment([pj.project(frame.at(solid, face, a)), pj.project(frame.at(solid, face, b))], stroke));
+    out.add(pj.project(frame.at(solid, face, a)), pj.project(frame.at(solid, face, b)), stroke, false);
 }
 
 /// The colour of a burn on wood: the darker the more power the layer gives (a cut through is black).
@@ -45,12 +45,12 @@ mod tests {
         let s = Solid::post(40.0, 30.0, 250.0);
         let frame = FaceFrame::of(&s, 0);
         let pj = projector(&frame, &Camera::default());
-        let mut out = vec![];
+        let mut out = base_ui::lines::Lines::new(rect());
         // Face A (top) and B (front) are seen, C (bottom) and D (back) are not.
         for face in 0..4 {
             face_line(&mut out, &pj, &frame, &s, face, Pt::new(10.0, 5.0), Pt::new(100.0, 5.0), Stroke::new(1.0, Color32::RED));
         }
-        assert_eq!(out.len(), 2);
+        assert_eq!(out.shapes().len(), 2);
         // A line along the top edge of face B lies on the front edge of face A.
         let (a_edge, b_edge) = (pj.project(frame.at(&s, 0, Pt::new(50.0, 40.0))), pj.project(frame.at(&s, 1, Pt::new(50.0, 0.0))));
         assert!((a_edge - b_edge).length() < 1e-3);
