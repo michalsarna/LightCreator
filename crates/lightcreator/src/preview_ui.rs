@@ -247,7 +247,10 @@ impl App {
             ui.separator();
             let auto = self.bed_fill();
             base_ui::widgets::area_colour(ui, tr("Work area colour"), &mut self.ed.grid_prefs.preview_color, auto);
-            ui.separator();
+        });
+        // The playing in a row of its own, the slider as wide as the row allows: a row wider than the tab made the whole tab wider
+        // than what is seen, and the picture with it.
+        ui.horizontal(|ui| {
             // Fixed width, so the slider next to it does not move when the label changes.
             let (icon, label) = if self.pv.playing { ("pause", tr("Pause")) } else { ("play", tr("Play")) };
             let play = egui::Button::image_and_text(crate::icons::slot(Some(icon), theme::text()), label);
@@ -257,7 +260,7 @@ impl App {
                 }
                 self.pv.playing = !self.pv.playing;
             }
-            ui.spacing_mut().slider_width = 220.0;
+            ui.spacing_mut().slider_width = (ui.available_width() - 120.0).clamp(60.0, 600.0);
             ui.add(egui::Slider::new(&mut self.pv.progress, 0.0..=1.0).show_value(false));
             egui::ComboBox::from_id_salt("pv_speed").width(90.0).selected_text(tr(self.pv.speed.label())).show_ui(ui, |ui| {
                 for s in PlaySpeed::ALL {
@@ -324,7 +327,8 @@ impl App {
             // Leave room under the picture for the totals row.
             let avail = ui.available_size();
             let (resp, painter) = ui.allocate_painter(avail, Sense::click_and_drag());
-            let rect = resp.rect;
+            // Only what is seen: the picture is fitted to it.
+            let rect = resp.rect.intersect(ui.clip_rect());
             painter.rect_filled(rect, 0.0, self.workspace_fill());
             if rotary && self.pv.cylinder {
                 self.cylinder_picture(ui, &resp, &painter.with_clip_rect(rect), job, total, line_w);
@@ -491,7 +495,7 @@ impl App {
         use crate::box_view as bv;
         use base_ui::view3d::{self as v3, FaceFrame, Projector};
         use lc_core::faces::Solid;
-        let rect = resp.rect;
+        let rect = resp.rect.intersect(painter.clip_rect());
         let solid = self.doc.solid().unwrap_or_else(|| {
             let (w, h) = self.doc.piece_size();
             Solid::sheet(w, h, self.doc.piece.map_or(3.0, |p| p[2]), lc_core::setup::FlipAxis::SideToSide)
@@ -576,7 +580,7 @@ impl App {
     /// the middle of the job facing the viewer; the burned lines wound round it up to the time of the slider, and the head.
     fn cylinder_picture(&mut self, ui: &mut egui::Ui, resp: &egui::Response, painter: &egui::Painter, job: &gcode::Job, total: f64, line_w: f32) {
         use crate::cylinder_view::{self as cv, Cylinder, Orbit, Projection};
-        let rect = resp.rect;
+        let rect = resp.rect.intersect(painter.clip_rect());
         let r = (self.doc.device.rotary.diameter / 2.0).max(0.5);
         let burns = job.moves.iter().filter(|m| m.laser).flat_map(|m| [m.a, m.b]);
         let (x0, x1, y0, y1) = burns.fold((f64::INFINITY, f64::NEG_INFINITY, f64::INFINITY, f64::NEG_INFINITY), |b, p| (b.0.min(p.x), b.1.max(p.x), b.2.min(p.y), b.3.max(p.y)));
