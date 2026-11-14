@@ -70,7 +70,7 @@ pub struct PreviewState {
     /// The burned object in 3D (true) or flat as on the work area; `None`: in 3D for a job on more than one side, else flat.
     pub box3d: Option<bool>,
     /// How the object is looked at.
-    pub orbit3: crate::box_view::Orbit3,
+    pub orbit3: base_ui::view3d::Camera,
     /// The lines in the colour of a burn on wood (darker for more power) instead of the colours of the operations.
     pub burn_look: bool,
     /// The jobs of all the faces of a job on more than one side, for the object in 3D, made for the project as it was then.
@@ -484,7 +484,8 @@ impl App {
     /// The object of the project in 3D: the piece of material (or the post or the block) with the jobs of all its faces burned on
     /// them, the shown face up to the time of the slider, and the head.
     fn box_picture(&mut self, ui: &mut egui::Ui, resp: &egui::Response, painter: &egui::Painter, job: &gcode::Job, total: f64, line_w: f32) {
-        use crate::box_view::{self as bv, BoxProjection, Orbit3};
+        use crate::box_view as bv;
+        use base_ui::view3d::{self as v3, FaceFrame, Projector};
         use lc_core::faces::Solid;
         let rect = resp.rect;
         let solid = self.doc.solid().unwrap_or_else(|| {
@@ -492,18 +493,9 @@ impl App {
             Solid::sheet(w, h, self.doc.piece.map_or(3.0, |p| p[2]), lc_core::setup::FlipAxis::SideToSide)
         });
         let shown = self.doc.two.as_ref().map_or(0, |t| t.shown);
-        if resp.dragged() {
-            self.pv.orbit3.drag(resp.drag_delta());
-        }
-        if resp.hovered() {
-            let scroll = ui.input(|i| i.smooth_scroll_delta.y);
-            if scroll.abs() > 0.0 {
-                self.pv.orbit3.zoom = (self.pv.orbit3.zoom * (scroll * 0.0015).exp()).clamp(0.2, 30.0);
-            }
-        }
-        if resp.double_clicked() {
-            self.pv.orbit3 = Orbit3::default();
-        }
+        // A post or a block may be turned to see its bottom.
+        self.pv.orbit3.under = true;
+        v3::handle_input(ui, resp, &mut self.pv.orbit3);
         // The jobs of the other faces, whole.
         let stamp = self.job_stamp();
         if self.doc.two.is_some() && self.pv.face_jobs.as_ref().is_none_or(|(k, _)| *k != stamp) {
@@ -511,8 +503,16 @@ impl App {
             let jobs = (0..solid.count()).map(|i| gcode::generate_with(&self.doc.with_face(i), None, &opts)).collect();
             self.pv.face_jobs = Some((stamp, jobs));
         }
-        let pj = BoxProjection::new(rect, &solid, self.pv.orbit3);
-        bv::paint_body(painter, &pj, &solid, crate::setup_glue::WOOD, self.doc.two.is_some());
+        // The object lies as the laser sees the shown face: that face up, so the switch of the faces turns it.
+        let frame = FaceFrame::of(&solid, shown);
+        let (target, radius) = frame.framing();
+        let pj = Projector::new(&self.pv.orbit3, target, radius, rect);
+        let wood = crate::setup_glue::WOOD;
+        v3::paint_box(painter, &pj, frame.lo, frame.hi, wood);
+        if self.doc.two.is_some() {
+            let letters: Vec<_> = (0..solid.count()).map(|j| { let f = solid.face(j); (frame.moves[j], [f.w, f.h], Solid::letter(j)) }).collect();
+            v3::paint_letters(painter, &pj, &letters, wood);
+        }
         let n_ops = job.ops.len();
         let travel = self.pv.show_travel && job.moves.len() <= 200_000;
         let o = self.doc.piece_origin();
@@ -530,7 +530,7 @@ impl App {
             for (j, fj) in jobs.iter().enumerate().filter(|(j, _)| *j != shown && self.doc.two.is_some()) {
                 for m in fj.moves.iter().filter(|m| m.laser) {
                     if let Some(st) = stroke(m, fj.ops.len()) {
-                        bv::face_line(&mut shapes, &pj, &solid, j, local(m.a), local(m.b), st);
+                        bv::face_line(&mut shapes, &pj, &frame, &solid, j, local(m.a), local(m.b), st);
                     }
                 }
             }
@@ -539,7 +539,7 @@ impl App {
         let cur = self.pv.cum.partition_point(|c| *c <= t_now).min(job.moves.len());
         for m in job.moves.iter().take(cur) {
             if let Some(st) = stroke(m, n_ops) {
-                bv::face_line(&mut shapes, &pj, &solid, shown, local(m.a), local(m.b), st);
+                bv::face_line(&mut shapes, &pj, &frame, &solid, shown, local(m.a), local(m.b), st);
             }
         }
         let mut head = None;
@@ -548,14 +548,13 @@ impl App {
             let f = if m.dur > 1e-12 { ((t_now - before) / m.dur).clamp(0.0, 1.0) } else { 1.0 };
             let p = lc_core::Pt::new(m.a.x + (m.b.x - m.a.x) * f, m.a.y + (m.b.y - m.a.y) * f);
             if let Some(st) = stroke(m, n_ops) {
-                bv::face_line(&mut shapes, &pj, &solid, shown, local(m.a), local(p), st);
+                bv::face_line(&mut shapes, &pj, &frame, &solid, shown, local(m.a), local(p), st);
             }
             head = Some(p);
         }
         painter.extend(shapes);
-        let face = solid.face(shown);
-        if let (Some(p), true) = (head, pj.facing(face.out) > 0.0 && self.pv.progress < 1.0) {
-            let at = pj.at(face.at(local(p), 0.0));
+        if let (Some(p), true) = (head, pj.facing(frame.out(shown)) > 0.0 && self.pv.progress < 1.0) {
+            let at = pj.project(frame.at(&solid, shown, local(p)));
             painter.circle_filled(at, 4.5, Color32::from_rgb(0xe0, 0x20, 0x20));
             painter.circle_stroke(at, 4.5, Stroke::new(1.0, Color32::WHITE));
         }
@@ -563,17 +562,9 @@ impl App {
         let s = solid.bbox();
         let size = format!("{} × {} × {}", crate::units_ui::fmt_len(units, s[0], 1), crate::units_ui::fmt_len(units, s[1], 1), crate::units_ui::fmt_len(units, s[2], 1));
         painter.text(rect.left_top() + egui::vec2(8.0, 8.0), egui::Align2::LEFT_TOP, size, egui::FontId::proportional(12.0), theme::text_dim());
-        let (eye, right, up) = self.pv.orbit3.axes();
-        match base_ui::navicube::show(ui, rect, &[right, up, eye]) {
-            Some(base_ui::navicube::Nav::LookFrom(d)) => self.pv.orbit3.look_from(d),
-            Some(base_ui::navicube::Nav::Home) => self.pv.orbit3 = Orbit3::default(),
-            None => {}
-        }
-        match base_ui::zoom_bar::overlay_with(ui, rect, self.pv.orbit3.zoom, &tr("Drag: turn · wheel: zoom"), true) {
-            Some(base_ui::zoom_bar::ZoomCmd::In) => self.pv.orbit3.zoom = (self.pv.orbit3.zoom * base_ui::zoom_bar::STEP).min(30.0),
-            Some(base_ui::zoom_bar::ZoomCmd::Out) => self.pv.orbit3.zoom = (self.pv.orbit3.zoom / base_ui::zoom_bar::STEP).max(0.2),
-            Some(base_ui::zoom_bar::ZoomCmd::FitObjects | base_ui::zoom_bar::ZoomCmd::Whole) => self.pv.orbit3 = Orbit3::default(),
-            None => {}
+        // The cube and the zoom bar: the last two buttons bring the whole object back into the view.
+        if v3::overlays(ui, rect, &mut self.pv.orbit3).is_some() {
+            self.pv.orbit3.reset();
         }
     }
 
@@ -602,7 +593,8 @@ impl App {
             }
         }
         let pj = Projection::new(rect, Cylinder { r, x0, x1, y_mid }, self.pv.orbit);
-        cv::paint_body(painter, &pj, [0xd8, 0xb0, 0x7c]);
+        let detail = base_ui::view3d::quality_detail(self.ed.grid_prefs.render_quality);
+        cv::paint_body(painter, &pj, [0xd8, 0xb0, 0x7c], detail);
         let n_ops = job.ops.len();
         let skip_travel = job.moves.len() > 200_000;
         let travel = self.pv.show_travel && !skip_travel;
@@ -613,7 +605,7 @@ impl App {
         let line_w = line_w.max(1.6);
         for m in job.moves.iter().take(cur) {
             if let Some(st) = self.move_stroke(m, n_ops, line_w, travel) {
-                cv::wound_line(&mut shapes, &pj, m.a, m.b, st);
+                cv::wound_line(&mut shapes, &pj, m.a, m.b, st, detail);
             }
         }
         let mut head = None;
@@ -622,7 +614,7 @@ impl App {
             let f = if m.dur > 1e-12 { ((t_now - before) / m.dur).clamp(0.0, 1.0) } else { 1.0 };
             let p = lc_core::Pt::new(m.a.x + (m.b.x - m.a.x) * f, m.a.y + (m.b.y - m.a.y) * f);
             if let Some(st) = self.move_stroke(m, n_ops, line_w, travel) {
-                cv::wound_line(&mut shapes, &pj, m.a, p, st);
+                cv::wound_line(&mut shapes, &pj, m.a, p, st, detail);
             }
             head = Some(p);
         } else if let Some(m) = job.moves.last() {

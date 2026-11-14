@@ -75,9 +75,28 @@ impl App {
 
     pub fn setup_window(&mut self, ctx: &egui::Context) {
         let units = self.doc.device.units;
-        if base_ui::project_setup::window(ctx, &mut self.setup, units, kind()) == Some(Answer::Apply) {
-            self.apply_setup();
+        match base_ui::project_setup::window(ctx, &mut self.setup, units, kind()) {
+            Some(Answer::Apply) => self.apply_setup(),
+            Some(Answer::Skip) if self.setup.start => self.skip_start_setup(),
+            _ => {}
         }
+    }
+
+    /// The window of a new project: Skip (or closing it) leaves the project as the program starts one.
+    pub fn open_start_setup(&mut self) {
+        self.open_setup();
+        self.setup.start = true;
+    }
+
+    /// Skip of the window of a new project: one side, no piece of material, the work area of the machine, the whole of it in the view.
+    pub fn skip_start_setup(&mut self) {
+        if !self.make_one_sided() {
+            return;
+        }
+        self.doc.piece = None;
+        self.restore_machine_area();
+        self.ed.view.need_fit = true;
+        self.touch();
     }
 
     /// Put the choices into the project.
@@ -525,7 +544,7 @@ mod tests {
         assert!((gb.max.x - (o.x + 110.0)).abs() < 1e-6, "turned over round the middle of the piece: {gb:?} {o:?}");
         let ctx = egui::Context::default();
         let screen = egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1200.0, 800.0));
-        let mut frame = |a: &mut App, events: Vec<egui::Event>| {
+        let frame = |a: &mut App, events: Vec<egui::Event>| {
             let mut out = ctx.run_ui(egui::RawInput { screen_rect: Some(screen), events, ..Default::default() }, |ui| {
                 egui::CentralPanel::no_frame().show(ui, |ui| base_ui::editor::EditorCanvas::canvas(a, ui));
             });
@@ -664,7 +683,7 @@ mod tests {
         a.apply_setup();
         let ctx = egui::Context::default();
         let screen = egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1200.0, 800.0));
-        let mut frame = |a: &mut App, events: Vec<egui::Event>| {
+        let frame = |a: &mut App, events: Vec<egui::Event>| {
             let mut out = ctx.run_ui(egui::RawInput { screen_rect: Some(screen), events, ..Default::default() }, |ui| {
                 egui::CentralPanel::no_frame().show(ui, |ui| base_ui::editor::EditorCanvas::canvas(a, ui));
             });
@@ -703,5 +722,33 @@ mod tests {
         assert_eq!((a.profiles[0].area.bed_w, a.profiles[0].area.bed_h), (400.0, 300.0), "the device keeps its own");
         a.new_doc();
         assert_eq!(a.doc.device.work_size(), (400.0, 300.0), "a new project has the machine's");
+    }
+
+    #[test]
+    fn skipping_the_window_of_a_new_project_gives_one_side_and_the_work_area_of_the_machine() {
+        let mut a = app();
+        let mut dev = a.doc.device.clone();
+        dev.area.bed_w = 400.0;
+        dev.area.bed_h = 300.0;
+        a.profiles = vec![dev.clone()];
+        a.active = 0;
+        a.doc.device = dev;
+        let machine = a.machine_area();
+        a.open_setup();
+        a.setup.sides = base_ui::project_setup::Sides::Block;
+        a.setup.block = [100.0, 80.0, 60.0];
+        a.apply_setup();
+        assert_ne!(a.doc.device.work_size(), machine);
+        a.sync_profile();
+        a.new_doc();
+        a.open_start_setup();
+        assert!(a.setup.start);
+        a.skip_start_setup();
+        assert!(a.doc.two.is_none() && a.doc.piece.is_none());
+        assert_eq!(a.doc.device.work_size(), machine);
+        assert_eq!(a.profiles[a.active].work_size(), machine, "the device keeps its own work area");
+        assert!(a.ed.view.need_fit);
+        a.open_setup();
+        assert!(!a.setup.start, "from the menu the window is not the one of a new project");
     }
 }

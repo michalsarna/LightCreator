@@ -1452,7 +1452,7 @@ impl App {
                 Act::New => self.start_project(|app| {
                     let made = app.new_tab_from_start();
                     if made {
-                        app.open_setup();
+                        app.open_start_setup();
                     }
                     made
                 }),
@@ -1490,7 +1490,7 @@ impl App {
         match a {
             Act::New => {
                 if self.new_tab() {
-                    self.open_setup();
+                    self.open_start_setup();
                 }
             }
             Act::ProjectSetup => self.open_setup(),

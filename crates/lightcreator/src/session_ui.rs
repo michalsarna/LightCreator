@@ -163,6 +163,7 @@ impl App {
                 ui.checkbox(&mut self.check_updates, tr("Look for a newer version when the program starts"));
                 ui.end_row();
                 base_ui::units_ui::display_units_row(ui, &mut self.ed.grid_prefs.units);
+                base_ui::view3d::quality_row(ui, &mut self.ed.grid_prefs.render_quality);
                 self.api_options_ui(ui);
                 ui.end_row();
             });
