@@ -28,7 +28,7 @@ An entry that cannot be used at the moment is greyed out (for example **Undo** w
 | **Save as…** | Ctrl+Shift+S | Saves the project under a new name. |
 | **Import** ▸ **Import image…** | | Puts a bitmap (PNG, JPEG, BMP, GIF, WebP) on the page, with the adjust dialog. See [Design Tools](Design-Tools#importing). |
 | **Import** ▸ **Import SVG…** | Ctrl+I | Adds the shapes of an SVG file to the drawing; colours map to layers. The pictures in it come too, on the active layer. |
-| **Import** ▸ **Import Adobe Illustrator / PDF…** | | The vector paths of the first page of a PDF or a PDF-compatible `.ai` file, and of an `.ai` of the old PostScript kind. |
+| **Import** ▸ **Import Adobe Illustrator / PDF / EPS / VectorCraft…** | | The vector paths of the first page of a PDF or a PDF-compatible `.ai` file, of an `.ai` of the old PostScript kind and of an EPS; a VectorCraft drawing (`.vectorcraft`, or an EPS written by VectorCraft 0.8 or later) with its pictures. |
 | **Import** ▸ **Import DXF…** | | Lines, arcs, circles, polylines, splines and blocks of an ASCII DXF, of the current kind or R12 (*legacy*). |
 | **Import** ▸ **Import LightBurn / MillMage project…** | | Shapes and layer settings of a `.lbrn2` / `.lbrn` file of LightBurn or a `.mage` file of MillMage. |
 | **Import** ▸ **Import UGS design…** | | Shapes of a UGS Designer file (`.ugsd`). |

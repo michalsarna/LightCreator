@@ -3,7 +3,7 @@ use base_ui::editor::EditorImages;
 #[cfg(test)]
 use base_ui::editor::{EditorCommands, EditorHost, EditorShapeOps};
 use crate::app::App;
-use crate::i18n::{tr, trf};
+use crate::i18n::trf;
 use eframe::egui;
 #[cfg(test)]
 use lc_core::{Pt, Xf};
@@ -15,7 +15,7 @@ impl App {
     }
 
     pub fn import_ai(&mut self) {
-        if let Some(p) = rfd::FileDialog::new().add_filter("Adobe Illustrator / PDF", &["ai", "pdf"]).pick_file() {
+        if let Some(p) = rfd::FileDialog::new().add_filter("Adobe Illustrator / PDF / EPS / VectorCraft", &["ai", "pdf", "eps", "vectorcraft"]).pick_file() {
             self.import_ai_path(p);
         }
     }
@@ -35,7 +35,7 @@ impl App {
         match std::fs::read(&p).map_err(|e| e.to_string()).and_then(|d| lc_core::dxf::parse(&d, area_h)) {
             Ok(dxf) => {
                 let n = dxf.outlines.len();
-                self.finish_ai_import(p.clone(), dxf.outlines, true);
+                self.place_drawing(&p, dxf.outlines, true);
                 if !dxf.warnings.is_empty() {
                     self.status.push_str(&format!(" ({})", dxf.warnings.join("; ")));
                 }
@@ -48,51 +48,10 @@ impl App {
         }
     }
 
+    /// File > Import > Import Adobe Illustrator / PDF / EPS / VectorCraft…: the import of the editor of base, as in the other
+    /// programs (the paths by colour or by the layers of the file, the pictures of a VectorCraft drawing on the active layer).
     pub fn import_ai_path(&mut self, p: PathBuf) {
-        let res = std::fs::read(&p).map_err(|e| e.to_string()).and_then(|d| lc_core::pdf::read(&d));
-        match res {
-            // A file with Illustrator layers asks how to put the paths on the layers of the program.
-            Ok(outlines) if lc_core::pdf::layer_count(&outlines) > 0 => self.ai_choice = Some((p, outlines)),
-            Ok(outlines) => self.finish_ai_import(p, outlines, false),
-            Err(e) => self.status_is(trf("Import failed: {}", &[&e])),
-        }
-    }
-
-    pub(crate) fn finish_ai_import(&mut self, p: PathBuf, outlines: lc_core::pdf::Outlines, by_layers: bool) {
-        self.checkpoint();
-        let ids = lc_core::pdf::place_outlines(outlines, &mut self.doc, by_layers);
-        self.status_is(trf("Imported {} paths from {}", &[&ids.len(), &p.display()]));
-        self.ed.sel = ids;
-    }
-
-    /// The question after reading a file with Illustrator layers: by colour or by layers.
-    pub fn ai_choice_window(&mut self, ctx: &egui::Context) {
-        let Some((p, outlines)) = self.ai_choice.take() else { return };
-        let n = lc_core::pdf::layer_count(&outlines);
-        let mut open = true;
-        let mut pick: Option<bool> = None;
-        let mut cancel = false;
-        crate::window_ui::popup(ctx, "ai_layers", &tr("Illustrator layers"), [480.0, 170.0], &mut open, |ui| {
-            ui.label(trf("The file has {} Illustrator layers. Put the paths on the layers of the program by:", &[&n]));
-            ui.label(egui::RichText::new(tr("The first Illustrator layer goes on layer 1, the second on layer 2, and so on; the rest go on the last layer.")).small().weak());
-            ui.add_space(6.0);
-            ui.horizontal(|ui| {
-                if ui.button(tr("Colour")).clicked() {
-                    pick = Some(false);
-                }
-                if ui.button(tr("Illustrator layers")).clicked() {
-                    pick = Some(true);
-                }
-                if ui.button(tr("Cancel")).clicked() {
-                    cancel = true;
-                }
-            });
-        });
-        match pick {
-            Some(by_layers) => self.finish_ai_import(p, outlines, by_layers),
-            None if open && !cancel => self.ai_choice = Some((p, outlines)),
-            None => {}
-        }
+        self.import_drawing_path(p);
     }
 
     pub fn import_image_path(&mut self, p: PathBuf) {
@@ -122,7 +81,7 @@ impl App {
                 "svg" | "cre" | "lbrn2" | "lbrn" | "mage" | "ugsd" => {
                     self.open_path(p);
                 }
-                "ai" | "pdf" => self.import_ai_path(p),
+                "ai" | "pdf" | "eps" | "vectorcraft" => self.import_ai_path(p),
                 _ if self.plugin_reads(&p) => self.plugin_import_from_start(p),
                 _ => {}
             }

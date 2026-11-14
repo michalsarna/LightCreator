@@ -378,7 +378,7 @@
 377|Kustības: {}
 378|Importēt
 379|Eksportēt
-380|Importēt Adobe Illustrator / PDF…
+380|Importēt Adobe Illustrator / PDF / EPS / VectorCraft…
 381|Grupēt
 382|Atgrupēt
 383|Lai grupētu, atlasiet vismaz divus objektus.

@@ -50,7 +50,7 @@ choose in the file dialog.
 A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
 
 * **Design:** shapes (including triangle, star and 3 to 360 sided polygons), Bézier node editing, text tool, boolean operations (union, intersection, subtract,
-  exclusive or), shape offset, grouping, right-click context menu, SVG / Adobe Illustrator / PDF import,
+  exclusive or), shape offset, grouping, right-click context menu, SVG / Adobe Illustrator / PDF / EPS / VectorCraft import,
   bitmap import with adjustments, image tracing.
 * **Engraving:** line, fill, offset fill and raster image engraving with six dithering methods and
   grayscale power; cut layers; toolpath preview with time estimate.

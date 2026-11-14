@@ -378,7 +378,7 @@
 377|{} bewegingen
 378|Importeren
 379|Exporteren
-380|Adobe Illustrator / PDF importeren…
+380|Adobe Illustrator / PDF / EPS / VectorCraft importeren…
 381|Groeperen
 382|Groep opheffen
 383|Selecteer minstens twee objecten om te groeperen.

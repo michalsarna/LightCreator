@@ -378,7 +378,7 @@
 377|{} mouvements
 378|Importer
 379|Exporter
-380|Importer Adobe Illustrator / PDF…
+380|Importer Adobe Illustrator / PDF / EPS / VectorCraft…
 381|Grouper
 382|Dissocier
 383|Sélectionnez au moins deux objets à grouper.

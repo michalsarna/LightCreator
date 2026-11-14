@@ -28,7 +28,7 @@ Pozycja, której nie można teraz użyć, jest wyszarzona (na przykład **Cofnij
 | **Zapisz jako…** (Save as…) | Ctrl+Shift+S | Zapisuje projekt pod nową nazwą. |
 | **Importuj** ▸ **Importuj obraz…** (Import image…) | | Kładzie bitmapę (PNG, JPEG, BMP, GIF, WebP) na stronie, z oknem dostosowania. Zobacz [Narzędzia projektowe](Narzedzia-projektowe#import). |
 | **Importuj** ▸ **Importuj SVG…** | Ctrl+I | Dodaje kształty pliku SVG do rysunku; kolory trafiają na warstwy. Obrazy z pliku też przychodzą, na aktywną warstwę. |
-| **Importuj** ▸ **Importuj Adobe Illustrator / PDF…** | | Ścieżki wektorowe pierwszej strony pliku PDF lub pliku `.ai` zgodnego z PDF, a także `.ai` starego rodzaju w PostScripcie. |
+| **Importuj** ▸ **Importuj Adobe Illustrator / PDF / EPS / VectorCraft…** | | Ścieżki wektorowe pierwszej strony pliku PDF lub pliku `.ai` zgodnego z PDF, `.ai` starego rodzaju w PostScripcie i pliku EPS; rysunek VectorCrafta (`.vectorcraft` albo EPS zapisany przez VectorCraft 0.8 lub nowszy) razem z obrazami. |
 | **Importuj** ▸ **Importuj DXF…** | | Linie, łuki, okręgi, polilinie, splajny i bloki z DXF w postaci ASCII, obecnego rodzaju albo R12 (*legacy*). |
 | **Importuj** ▸ **Importuj projekt LightBurn / MillMage…** | | Kształty i ustawienia warstw z pliku `.lbrn2` / `.lbrn` LightBurna albo `.mage` MillMage'a. |
 | **Importuj** ▸ **Importuj projekt UGS…** | | Kształty z pliku UGS Designer (`.ugsd`). |

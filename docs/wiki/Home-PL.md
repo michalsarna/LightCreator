@@ -41,7 +41,7 @@ Lista i opis, jak dopisać maszynę: [TESTS_ON_DEVICES.md](https://github.com/mi
 
 ## W skrócie
 
-* **Projektowanie:** kształty, edycja węzłów Béziera, tekst, operacje logiczne, offset, zaokrąglanie rogów, grupowanie, blokowanie; import SVG / Illustrator / PDF / DXF i bitmap, wektoryzacja obrazów, tablice, tekst na ścieżce, przycinanie, tekst seryjny, kody QR i nesting.
+* **Projektowanie:** kształty, edycja węzłów Béziera, tekst, operacje logiczne, offset, zaokrąglanie rogów, grupowanie, blokowanie; import SVG / Illustrator / PDF / EPS / VectorCraft / DXF i bitmap, wektoryzacja obrazów, tablice, tekst na ścieżce, przycinanie, tekst seryjny, kody QR i nesting.
 * **Grawerowanie:** linia, wypełnienie, wypełnienie offsetem i obrazy rastrowe z sześcioma metodami ditheringu i mocą w skali szarości; 64 warstwy cięcia; podgląd z szacowanym czasem.
 * **Urządzenia:** profil dla każdej maszyny; GRBL i Marlin przez port szeregowy lub TCP (ser2net); Ruida i Trocen przez eksport PLT / DXF.
 * **Pomocnicze:** widok z kamery ze zdjęciami, wideo i nagrywaniem poklatkowym (MJPEG, RTSP, UDP, RTP, RTMP), nakładka z kamery z wyrównaniem czterech rogów zapisywana w projekcie, G-code jako edytowalny tekst, galeria 310 clipartów z wyszukiwaniem online.

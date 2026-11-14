@@ -378,7 +378,7 @@
 377|{} rörelser
 378|Importera
 379|Exportera
-380|Importera Adobe Illustrator / PDF…
+380|Importera Adobe Illustrator / PDF / EPS / VectorCraft…
 381|Gruppera
 382|Avgruppera
 383|Markera minst två objekt för att gruppera.

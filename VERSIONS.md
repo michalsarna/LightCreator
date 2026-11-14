@@ -2,6 +2,12 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.9.2 (not released yet)
+
+* **Import of EPS and VectorCraft drawings** (File → Import → Import Adobe Illustrator / PDF / EPS / VectorCraft…, or a file dropped on the window): a `.vectorcraft` file (VectorCraft 0.8 and later) with its paths, colours, layers and pictures; an EPS (also with a TIFF preview): the one VectorCraft writes with its pictures, others as PostScript (their paths).
+* **The import is the one of the other programs** (from baseCreator): LightCreator no longer has its own copy for SVG, Illustrator / PDF and DXF; the question about the layers of the file is the common one.
+* baseCreator v2.1.0.
+
 ## v0.9.1
 
 * **View menu: Preview and Preview G-code**, as the buttons of the main window (as in MillCreator).

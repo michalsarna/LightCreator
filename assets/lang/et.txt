@@ -378,7 +378,7 @@
 377|Liikumisi: {}
 378|Import
 379|Ekspordi
-380|Impordi Adobe Illustrator / PDF…
+380|Impordi Adobe Illustrator / PDF / EPS / VectorCraft…
 381|Grupeeri
 382|Tühista grupeerimine
 383|Grupeerimiseks valige vähemalt kaks objekti.
