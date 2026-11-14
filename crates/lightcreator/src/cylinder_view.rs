@@ -133,7 +133,7 @@ pub fn paint_body(painter: &egui::Painter, pj: &Projection, wood: [u8; 3], detai
 
 /// Add a line of the design wound round the surface: cut into short pieces (it curves when it goes round), the pieces on the far
 /// side left out. `detail` (the rendering quality) makes the pieces shorter.
-pub fn wound_line(out: &mut Vec<egui::Shape>, pj: &Projection, a: Pt, b: Pt, stroke: Stroke, detail: f64) {
+pub fn wound_line(out: &mut base_ui::lines::Lines, pj: &Projection, a: Pt, b: Pt, stroke: Stroke, detail: f64) {
     // Pieces of at most 3° of the way round at the usual quality.
     let step = pj.c.r.max(0.1) * 3f64.to_radians() / detail.max(0.1);
     let n = (((b.y - a.y).abs() / step).ceil() as usize).clamp(1, 2000);
@@ -143,7 +143,7 @@ pub fn wound_line(out: &mut Vec<egui::Shape>, pj: &Projection, a: Pt, b: Pt, str
         let p = Pt::new(a.x + (b.x - a.x) * f, a.y + (b.y - a.y) * f);
         let now = pj.surface(p);
         if prev.1 > 0.0 && now.1 > 0.0 {
-            out.push(egui::Shape::line_segment([prev.0, now.0], stroke));
+            out.add(prev.0, now.0, stroke, false);
         }
         prev = now;
     }
@@ -192,10 +192,12 @@ mod tests {
     #[test]
     fn a_line_round_the_cylinder_shows_only_its_near_half_and_a_spin_turns_it() {
         let p = pj(Orbit::default());
-        let mut out = vec![];
-        // A ring all the way round at x = 100.
+        let mut out = base_ui::lines::Lines::new(egui::Rect::from_min_size(Pos2::ZERO, egui::vec2(800.0, 400.0)));
+        // A ring all the way round at x = 100: the near half is one line of about half of the 120 pieces.
         wound_line(&mut out, &p, Pt::new(100.0, 50.0 - std::f64::consts::PI * 25.0), Pt::new(100.0, 50.0 + std::f64::consts::PI * 25.0), Stroke::new(1.0, Color32::RED), 1.0);
-        assert!(!out.is_empty() && out.len() < 70, "about half of 120 pieces: {}", out.len());
+        let shapes = out.shapes();
+        let points: usize = shapes.iter().map(|s| if let egui::Shape::Path(p) = s { p.points.len() } else { 2 }).sum();
+        assert!(!shapes.is_empty() && points > 10 && points < 70, "about half of 120 pieces: {points}");
         let turned = pj(Orbit { spin: std::f64::consts::PI, ..Orbit::default() });
         assert!(turned.surface(Pt::new(100.0, 50.0)).1 < 0.0, "turned half way: the middle is at the back");
         // The zoom scales the picture.
