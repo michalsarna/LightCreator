@@ -80,11 +80,8 @@ impl App {
         self.active = get("active_profile").and_then(|v| v.parse::<usize>().ok()).filter(|i| *i < self.profiles.len()).unwrap_or(0);
         self.start_sel = self.active;
         self.web.restore(&|k| get(k).map(String::from));
-        if let Some(v) = get("autosave_on") {
-            self.autosave_on = v != "0";
-        }
-        if let Some(v) = get("autosave_secs").and_then(|v| v.parse::<u32>().ok()).filter(|v| (10..=3600).contains(v)) {
-            self.autosave_secs = v;
+        if get("autosave_on").is_some() || get("autosave_secs").is_some() {
+            self.autosave_opts = lc_core::autosave::Options::from_settings(|k| get(k).map(String::from));
         }
         if let Some(v) = get("check_updates") {
             self.check_updates = v != "0";

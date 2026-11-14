@@ -2,6 +2,11 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.9.3 (not released yet)
+
+* **Auto-save options from baseCreator**: the same two rows of the program options as in the other programs (nothing changes in use).
+* baseCreator v2.3.0.
+
 ## v0.9.2
 
 * **Offset fill a hundred times lighter, with the same path** (baseCreator): every ring is the outline taken in by its distance, not the ring before taken in again, whose round corners came back as more points every time. The G-code is as much shorter and made at once.

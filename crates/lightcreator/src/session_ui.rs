@@ -8,7 +8,6 @@ use std::time::{Duration, Instant};
 
 /// How long the "file saved" message stays on screen.
 const TOAST_SECS: u64 = 5;
-pub const DEFAULT_AUTOSAVE_SECS: u32 = 120;
 
 /// The file for work that has not been saved under a name yet: the same one on every run, so the start screen can offer
 /// to recover it after a crash (`lc_core::autosave`).
@@ -72,8 +71,8 @@ impl App {
         }
         // Auto-save: the shown tab, and the ones that are not shown.
         let shown_due = self.is_dirty() && self.revision != self.autosaved_revision;
-        if self.autosave_on && (shown_due || self.parked_need_autosave()) {
-            let every = Duration::from_secs(self.autosave_secs.max(5) as u64);
+        if self.autosave_opts.on && (shown_due || self.parked_need_autosave()) {
+            let every = self.autosave_opts.every();
             if self.last_autosave.elapsed() >= every {
                 if shown_due {
                     if let Some(p) = self.autosave_now() {
@@ -153,12 +152,7 @@ impl App {
         let mut open = true;
         crate::window_ui::popup(ctx, "w_session_ui_1", &tr("Program options"), [340.0, 220.0], &mut open, |ui| {
             egui::Grid::new("program_options").num_columns(2).spacing([12.0, 8.0]).show(ui, |ui| {
-                ui.label(tr("Auto-save"));
-                ui.checkbox(&mut self.autosave_on, tr("Save the work automatically")).on_hover_text(tr("Work without a file name goes to a temporary folder; a file with a name is saved in place"));
-                ui.end_row();
-                ui.label(tr("Auto-save every"));
-                ui.add_enabled(self.autosave_on, egui::DragValue::new(&mut self.autosave_secs).range(10..=3600).suffix(" s"));
-                ui.end_row();
+                base_ui::autosave_ui::options_rows(ui, &mut self.autosave_opts);
                 ui.label(tr("Updates"));
                 ui.checkbox(&mut self.check_updates, tr("Look for a newer version when the program starts"));
                 ui.end_row();
