@@ -1415,6 +1415,7 @@ impl App {
         }
         match a {
             Act::TogglePreview => Some(self.preview_on),
+            Act::TogglePreviewWindow => Some(self.show_preview),
             Act::ToggleOverlay => Some(self.overlay_shown()),
             Act::ToggleZones => Some(self.zones_visible),
             Act::ToggleCylinder => Some(self.pv.cylinder),
@@ -1584,6 +1585,15 @@ impl App {
                 }
             }
             Act::TogglePreview => self.preview_on = !self.preview_on,
+            Act::TogglePreviewWindow => {
+                if self.show_preview {
+                    self.show_preview = false;
+                } else {
+                    self.show_preview = true;
+                    self.pv_tab_shown = true;
+                    self.cam_tab_shown = false;
+                }
+            }
             Act::DeviceSettings => self.show_device = true,
             Act::SwitchDevice => {
                 self.start_sel = self.active;

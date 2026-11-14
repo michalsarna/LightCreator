@@ -93,7 +93,7 @@ Gdy w zakładce **Sterowanie** (Control) jest włączona **Klawiatura** (Keyboar
 | Gest | Działanie |
 |---|---|
 | Kółko | Zbliżenie wokół wskaźnika (także w podglądzie i w widoku z kamery) |
-| Przeciąganie środkowym przyciskiem | Przesuwanie widoku |
+| Przeciąganie środkowym lub prawym przyciskiem | Przesuwanie widoku (na obszarze roboczym i obok niego; prawy klik bez ruchu otwiera menu) |
 | Szczypanie (touchpad) | Zbliżenie |
 | Klik; **Shift**+klik lub **Ctrl**+klik | Zaznacz; dodaj do zaznaczenia lub odejmij od niego |
 | Ramka przeciągnięta z lewej do prawej | Zaznacza to, co jest w całości w środku |
