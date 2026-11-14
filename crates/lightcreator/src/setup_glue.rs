@@ -751,4 +751,34 @@ mod tests {
         a.open_setup();
         assert!(!a.setup.start, "from the menu the window is not the one of a new project");
     }
+
+    /// Saving the device settings while face B of a block is shown keeps the work area of the device its own, and the one of the
+    /// project the face's.
+    #[test]
+    fn saving_the_device_settings_on_a_face_keeps_both_work_areas() {
+        let mut a = app();
+        let mut dev = a.doc.device.clone();
+        dev.area.bed_w = 400.0;
+        dev.area.bed_h = 300.0;
+        a.profiles = vec![dev.clone()];
+        a.active = 0;
+        a.doc.device = dev;
+        a.screen = crate::app::Screen::Editor;
+        a.open_setup();
+        a.setup.sides = base_ui::project_setup::Sides::Block;
+        a.setup.block = [100.0, 80.0, 60.0];
+        a.apply_setup();
+        a.show_face(1);
+        let face = a.doc.device.work_size();
+        assert_ne!(face, (400.0, 300.0));
+        a.open_cfg_edit(0);
+        let mut cfg = a.cfg.take().unwrap();
+        cfg.draft.speeds.travel_speed = 4321.0;
+        a.save_cfg(cfg);
+        a.sync_profile();
+        assert_eq!((a.profiles[0].area.bed_w, a.profiles[0].area.bed_h), (400.0, 300.0), "the device keeps its own");
+        assert_eq!(a.profiles[0].speeds.travel_speed, 4321.0);
+        assert_eq!(a.doc.device.work_size(), face, "the project keeps the face's");
+        assert_eq!(a.doc.device.speeds.travel_speed, 4321.0);
+    }
 }

@@ -1030,35 +1030,47 @@ impl App {
             self.start_read(&cfg.draft);
         }
         if save {
-            cfg.draft.name = cfg.draft.name.trim().to_string();
-            // The time counted while the window was open belongs to the profile, not to the draft: names and limits
-            // come from the draft, the times from the profile.
-            if let Some(live) = cfg.idx.and_then(|i| self.profiles.get(i)) {
-                cfg.draft.maintenance.total_secs = live.maintenance.total_secs;
-                for (i, c) in cfg.draft.maintenance.counters.iter_mut().enumerate() {
-                    if let Some(l) = live.maintenance.counters.get(i) {
-                        c.secs = l.secs;
-                    }
-                }
-            }
-            let idx = match cfg.idx {
-                Some(i) if i < self.profiles.len() => {
-                    self.profiles[i] = cfg.draft.clone();
-                    i
-                }
-                _ => {
-                    cfg.draft.add_starter_materials();
-                    self.profiles.push(cfg.draft.clone());
-                    self.profiles.len() - 1
-                }
-            };
-            self.start_sel = idx;
-            if self.screen == Screen::Editor && idx == self.active {
-                self.doc.device = cfg.draft;
-                self.touch();
-            }
+            self.save_cfg(cfg);
         } else if !cancel {
             self.cfg = Some(cfg);
+        }
+    }
+
+    /// The device settings saved: into the list of devices (a new one gets the starter materials), and into the project when it is
+    /// the device in use.
+    pub fn save_cfg(&mut self, mut cfg: CfgEdit) {
+        cfg.draft.name = cfg.draft.name.trim().to_string();
+        // The time counted while the window was open belongs to the profile, not to the draft: names and limits
+        // come from the draft, the times from the profile.
+        if let Some(live) = cfg.idx.and_then(|i| self.profiles.get(i)) {
+            cfg.draft.maintenance.total_secs = live.maintenance.total_secs;
+            for (i, c) in cfg.draft.maintenance.counters.iter_mut().enumerate() {
+                if let Some(l) = live.maintenance.counters.get(i) {
+                    c.secs = l.secs;
+                }
+            }
+        }
+        let idx = match cfg.idx {
+            Some(i) if i < self.profiles.len() => {
+                self.profiles[i] = cfg.draft.clone();
+                i
+            }
+            _ => {
+                cfg.draft.add_starter_materials();
+                self.profiles.push(cfg.draft.clone());
+                self.profiles.len() - 1
+            }
+        };
+        self.start_sel = idx;
+        if self.screen == Screen::Editor && idx == self.active {
+            // A work area the project made as big as its material (or as a face of a post or a block) stays the project's.
+            let own = self.project_area_override();
+            let area = (self.doc.device.area.bed_w, self.doc.device.area.bed_h);
+            self.doc.device = cfg.draft;
+            if own {
+                (self.doc.device.area.bed_w, self.doc.device.area.bed_h) = area;
+            }
+            self.touch();
         }
     }
 

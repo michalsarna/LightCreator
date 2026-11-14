@@ -11,7 +11,7 @@ Each release gets the next version number and a branch with the same name. Newes
 * **Save G-code and Preview G-code of a job on several sides** ask how: all the sides in one file with a stop to turn the object (with what to do and to focus the laser on its top), one file without stops, or a file for each side (`_A` … `_F`); the preview in one tab or a tab for each side.
 * **Rendering quality** (Settings → Program options…): a slider from 1 (quick) to 5 (sharp) for how fine the previews are drawn (the round of a cylinder on the rotary and its lines).
 * **The start window of the project setup** in every program: the green **Apply** and the blue **Skip** are bigger, in the middle at the bottom under a line; the pictures are bigger and in the middle. **Skip** or closing the window gives a project on one side as big as the work area of the device.
-* **The work area of the device stays its own**: a project on several sides no longer changes the work area kept in the device profile (a device whose work area was changed that way by an earlier version must be set right once in Device settings).
+* **The work area of the device stays its own**: a project on several sides no longer changes the work area kept in the device profile, and saving the device settings no longer takes the work area of the face away from the project (a device whose work area was changed that way by an earlier version must be set right once in Device settings).
 * **The switch of the sides and faces** over the work area has the colour of the theme.
 
 ## v0.8.7
