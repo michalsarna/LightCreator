@@ -2,6 +2,10 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.9.1 (not released yet)
+
+* Updated dependencies (lopdf 0.47, zip 9.5.0).
+
 ## v0.9.0
 
 * **Project setup** (File → Project setup…, and the window of every new project): a block of material (width, height, thickness) or a cylinder on the rotary attachment (switched on with its diameter), with a picture of it and its sizes. **Work area is the material** makes the work area as big as the piece; with 2, 4 or 6 sides it is always on and cannot be unticked.
