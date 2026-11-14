@@ -2,7 +2,7 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
-## v0.8.8 (not released yet)
+## v0.9.0
 
 * **Project setup** (File → Project setup…, and the window of every new project): a block of material (width, height, thickness) or a cylinder on the rotary attachment (switched on with its diameter), with a picture of it and its sizes. **Work area is the material** makes the work area as big as the piece; with 2, 4 or 6 sides it is always on and cannot be unticked.
 * **Two-sided jobs** (2 sides): side A and side B, each a work area of its own, turned over round the axis chosen; the shapes of the other side show as **ghosts** (faint), which can be clicked to align and snap to but never move. The piece lies at the zero of the machine; the **alignment marks** are a job of their own (a `_marks` file, burned first on the sheet under the material).
