@@ -33,7 +33,7 @@ After **New** the window **Project setup** (also **File → Project setup…**) 
 ## 2. Draw a shape or import a design
 
 * **Draw:** pick a tool on the left or in the **Insert** menu, for example **Rectangle (R)**, and drag it on the work area (Shift keeps it square). **Text (T)**: click and type. The size and the position can be typed in the **Properties** tab on the right.
-* **Import:** **File → Import → Import SVG…** (Ctrl+I) adds the shapes of an SVG file; each colour of the file goes to a layer. The same submenu reads pictures, Illustrator / PDF, DXF, LightBurn and UGS files. A file can also be dragged onto the window.
+* **Import:** **File → Import → Import SVG…** (Ctrl+I) adds the shapes of an SVG file; each colour of the file goes to a layer. The same submenu reads pictures, Illustrator / PDF / EPS / VectorCraft, DXF, LightBurn and UGS files. A file can also be dragged onto the window.
 * **Ready-made pictures:** the **Clipart** tab, see [Clipart Gallery](Clipart-Gallery).
 
 Select with a click or a frame, move by dragging or with the arrow keys (1 mm, Shift: 10 mm). The **Arrange** menu and the narrow bar next to the work area align, centre, turn and group. See [Design Tools](Design-Tools).

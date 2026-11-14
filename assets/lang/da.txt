@@ -378,7 +378,7 @@
 377|{} bevægelser
 378|Importer
 379|Eksportér
-380|Importer Adobe Illustrator / PDF…
+380|Importer Adobe Illustrator / PDF / EPS / VectorCraft…
 381|Gruppér
 382|Opløs gruppe
 383|Markér mindst to objekter for at gruppere.

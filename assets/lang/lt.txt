@@ -378,7 +378,7 @@
 377|Judesių: {}
 378|Importas
 379|Eksportuoti
-380|Importuoti Adobe Illustrator / PDF…
+380|Importuoti Adobe Illustrator / PDF / EPS / VectorCraft…
 381|Grupuoti
 382|Išgrupuoti
 383|Norėdami grupuoti, pasirinkite bent du objektus.

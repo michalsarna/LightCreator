@@ -378,7 +378,7 @@
 377	{} moves
 378	Import
 379	Export
-380	Import Adobe Illustrator / PDF…
+380	Import Adobe Illustrator / PDF / EPS / VectorCraft…
 381	Group
 382	Ungroup
 383	Select at least two objects to group.

@@ -378,7 +378,7 @@
 377|{} mozgás
 378|Importálás
 379|Exportálás
-380|Adobe Illustrator / PDF importálása…
+380|Adobe Illustrator / PDF / EPS / VectorCraft importálása…
 381|Csoportosítás
 382|Csoport bontása
 383|A csoportosításhoz jelöljön ki legalább két objektumot.

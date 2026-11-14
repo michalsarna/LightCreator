@@ -378,7 +378,7 @@
 377|Movimenti: {}
 378|Importa
 379|Esporta
-380|Importa Adobe Illustrator / PDF…
+380|Importa Adobe Illustrator / PDF / EPS / VectorCraft…
 381|Igruppa
 382|Neħħi l-grupp
 383|Agħżel mill-inqas żewġ oġġetti biex tigruppa.

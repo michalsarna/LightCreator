@@ -378,7 +378,7 @@
 377|Gibov: {}
 378|Uvoz
 379|Izvozi
-380|Uvozi Adobe Illustrator / PDF…
+380|Uvozi Adobe Illustrator / PDF / EPS / VectorCraft…
 381|Združi
 382|Razdruži
 383|Za združevanje izberite vsaj dva predmeta.

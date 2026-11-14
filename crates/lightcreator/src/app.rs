@@ -7,7 +7,7 @@ use crate::i18n::{self, tr, trf, Lang};
 use crate::menu::{menus, Act};
 use crate::theme::{self, Scheme};
 use eframe::egui::{self, Color32, Key, Modifiers, RichText};
-use lc_core::{gcode, svg, Document, Pt};
+use lc_core::{gcode, Document, Pt};
 #[cfg(test)]
 use lc_core::Xf;
 use std::path::PathBuf;
@@ -161,7 +161,6 @@ pub struct App {
     /// A running job waits for an answer while the machine stands still: seconds and machine state.
     pub stall: Option<(u64, String)>,
     /// A PDF / Illustrator file with layers waits for the choice of how to put them on the layers of the program: the path and the outlines.
-    pub ai_choice: Option<(std::path::PathBuf, lc_core::pdf::Outlines)>,
     /// A G-code file shown over the work area.
     pub gcode_view: Option<base_ui::gcode_view_ui::GcodeViewer>,
     /// The box the frame command traces.
@@ -393,7 +392,6 @@ impl App {
             check_dlg: None,
             fw_warn: None,
             stall: None,
-            ai_choice: None,
             gcode_view: None,
             frame_bounds: None,
             frame_path: None,
@@ -729,29 +727,12 @@ impl App {
             self.import_svg_path(p);
         }
     }
+    /// An SVG into the drawing, by the import of the editor of base (as in the other programs): its paths on the layers by colour, its
+    /// pictures on the active layer. True when something was read (or the question about its layers is open).
     pub fn import_svg_path(&mut self, p: PathBuf) -> bool {
-        match std::fs::read(&p).map_err(|e| e.to_string()).and_then(|d| {
-            self.checkpoint();
-            let paths = svg::import(&d, &mut self.doc, None)?;
-            // The pictures of the SVG (LightBurn writes them in) go on the active layer, as an imported picture does.
-            let layer = self.ed.active_layer;
-            let pictures: Vec<u64> = lc_core::svg::images(&d).into_iter().map(|(im, xf)| self.doc.add(layer, lc_core::Kind::Image(im), xf)).collect();
-            Ok((paths, pictures))
-        }) {
-            Ok((paths, pictures)) => {
-                self.status = if pictures.is_empty() {
-                    trf("Imported {} paths from {}", &[&paths.len(), &p.display()])
-                } else {
-                    trf("Imported {} paths and {} pictures from {}", &[&paths.len(), &pictures.len(), &p.display()])
-                };
-                self.ed.sel = paths.into_iter().chain(pictures).collect();
-                true
-            }
-            Err(e) => {
-                self.status = trf("Import failed: {}", &[&e]);
-                false
-            }
-        }
+        let before = self.doc.scene.shapes.len();
+        self.import_drawing_path(p);
+        self.doc.scene.shapes.len() > before || self.ed.drawing_choice.is_some()
     }
     /// The whole drawing as SVG, the size of the work area, with the curves and the pictures (the export every program has).
     pub fn export_svg(&mut self) {
@@ -1743,7 +1724,6 @@ impl App {
         self.check_window(ctx);
         self.fw_window(ctx);
         self.stall_window(ctx);
-        self.ai_choice_window(ctx);
         self.problem_window(ctx);
         self.fw_windows(ctx);
         let mut cal = std::mem::take(&mut self.cal);
@@ -2908,9 +2888,19 @@ mod lightburn_open_tests {
         let mut a = fresh();
         a.import_ai_path(fx("kwadrat.ai"));
         // The file has an Illustrator layer: the program asks how to place it.
-        let (p, outlines) = a.ai_choice.take().expect("the question about the Illustrator layers");
-        a.finish_ai_import(p, outlines, true);
+        let (p, outlines) = a.ed.drawing_choice.take().expect("the question about the Illustrator layers");
+        a.place_drawing(&p, outlines, true);
         assert_eq!(a.doc.scene.shapes.len(), 1, "{}", a.status);
+        // VectorCraft and its EPS through the same import as the other programs; the photo of a VectorCraft drawing comes as a picture.
+        for f in ["kwadrat.vectorcraft", "kwadrat.eps"] {
+            let mut b = fresh();
+            b.import_ai_path(fx(f));
+            assert_eq!(b.doc.scene.shapes.len(), 1, "{f}: {}", b.status);
+            assert_eq!(b.ed.sel.len(), 1, "{f}: selected");
+        }
+        let mut b = fresh();
+        b.import_ai_path(fx("zdjecie.vectorcraft"));
+        assert_eq!(b.doc.scene.shapes.iter().filter(|s| s.is_image()).count(), 1, "{}", b.status);
         // The laser settings of a layer go into an exported LightBurn project.
         use base_ui::editor::EditorHost;
         a.doc.layers[0].power = 37.0;

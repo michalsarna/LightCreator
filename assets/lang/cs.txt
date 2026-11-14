@@ -378,7 +378,7 @@
 377|Pohybů: {}
 378|Import
 379|Exportovat
-380|Importovat Adobe Illustrator / PDF…
+380|Importovat Adobe Illustrator / PDF / EPS / VectorCraft…
 381|Seskupit
 382|Zrušit seskupení
 383|Pro seskupení vyberte alespoň dva objekty.

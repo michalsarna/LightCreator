@@ -378,7 +378,7 @@
 377|Hreyfingar: {}
 378|Innflutningur
 379|Flytja út
-380|Flytja inn Adobe Illustrator / PDF…
+380|Flytja inn Adobe Illustrator / PDF / EPS / VectorCraft…
 381|Hópa
 382|Afhópa
 383|Veldu að minnsta kosti tvo hluti til að hópa.

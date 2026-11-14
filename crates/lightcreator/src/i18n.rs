@@ -454,7 +454,7 @@ const TABLE: &[[&str; 7]] = &[
     // ---- groups, context menu, import / export submenus ----
     ["Import", "Importuj", "Importieren", "Importa", "Tuo", "导入", "आयात"],
     ["Export", "Eksportuj", "Exportieren", "Esporta", "Vie", "导出", "निर्यात"],
-    ["Import Adobe Illustrator / PDF…", "Importuj Adobe Illustrator / PDF…", "Adobe Illustrator / PDF importieren…", "Importa Adobe Illustrator / PDF…", "Tuo Adobe Illustrator / PDF…", "导入 Adobe Illustrator / PDF…", "Adobe Illustrator / PDF आयात करें…"],
+    ["Import Adobe Illustrator / PDF / EPS / VectorCraft…", "Importuj Adobe Illustrator / PDF / EPS / VectorCraft…", "Adobe Illustrator / PDF / EPS / VectorCraft importieren…", "Importa Adobe Illustrator / PDF / EPS / VectorCraft…", "Tuo Adobe Illustrator / PDF / EPS / VectorCraft…", "导入 Adobe Illustrator / PDF / EPS / VectorCraft…", "Adobe Illustrator / PDF / EPS / VectorCraft आयात करें…"],
     ["Group", "Grupuj", "Gruppieren", "Raggruppa", "Ryhmitä", "编组", "समूह बनाएँ"],
     ["Ungroup", "Rozgrupuj", "Gruppierung aufheben", "Separa", "Pura ryhmitys", "取消编组", "समूह हटाएँ"],
     ["Select at least two objects to group.", "Zaznacz co najmniej dwa obiekty do zgrupowania.", "Wähle mindestens zwei Objekte zum Gruppieren.", "Seleziona almeno due oggetti da raggruppare.", "Valitse vähintään kaksi ryhmitettävää kohdetta.", "请至少选择两个对象进行编组。", "समूह बनाने के लिए कम से कम दो ऑब्जेक्ट चुनें।"],

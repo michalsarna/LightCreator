@@ -41,7 +41,7 @@ The list with how to add a machine: [TESTS_ON_DEVICES.md](https://github.com/mic
 
 ## At a glance
 
-* **Design:** shapes, Bézier node editing, text, boolean operations, offset, round corners, grouping, locking; SVG / Illustrator / PDF / DXF and bitmap import, image tracing, arrays, text on a path, trimming, serial text, QR codes and nesting.
+* **Design:** shapes, Bézier node editing, text, boolean operations, offset, round corners, grouping, locking; SVG / Illustrator / PDF / EPS / VectorCraft / DXF and bitmap import, image tracing, arrays, text on a path, trimming, serial text, QR codes and nesting.
 * **Engraving:** line, fill, offset fill and raster images with six dithering methods and grayscale power; 64 cut layers; preview with time estimate.
 * **Devices:** per-machine profiles; GRBL and Marlin over serial or TCP (ser2net); Ruida and Trocen via PLT / DXF export.
 * **Helpers:** camera view with photos, video and time-lapse (MJPEG, RTSP, UDP, RTP, RTMP), camera overlay with four-corner alignment saved in the project, the G-code as editable text, 310-picture clipart gallery with online search.

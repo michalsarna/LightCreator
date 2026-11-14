@@ -378,7 +378,7 @@
 377|Pohybov: {}
 378|Import
 379|Exportovať
-380|Importovať Adobe Illustrator / PDF…
+380|Importovať Adobe Illustrator / PDF / EPS / VectorCraft…
 381|Zoskupiť
 382|Zrušiť zoskupenie
 383|Na zoskupenie vyberte aspoň dva objekty.

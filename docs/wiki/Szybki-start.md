@@ -33,7 +33,7 @@ Po **Nowy** okno **Ustawienia projektu** (także **Plik → Ustawienia projektu�
 ## 2. Narysuj kształt albo zaimportuj projekt
 
 * **Rysowanie:** wybierz narzędzie po lewej albo w menu **Wstawianie** (Insert), na przykład **Prostokąt (R)**, i przeciągnij je na obszarze roboczym (Shift trzyma kwadrat). **Tekst (T)**: kliknij i pisz. Rozmiar i położenie można wpisać w zakładce **Właściwości** (Properties) po prawej.
-* **Import:** **Plik → Importuj → Importuj SVG…** (Ctrl+I) dodaje kształty z pliku SVG; każdy kolor pliku trafia na warstwę. To samo podmenu wczytuje obrazy, Illustrator / PDF, DXF, pliki LightBurn i UGS. Plik można też przeciągnąć na okno.
+* **Import:** **Plik → Importuj → Importuj SVG…** (Ctrl+I) dodaje kształty z pliku SVG; każdy kolor pliku trafia na warstwę. To samo podmenu wczytuje obrazy, Illustrator / PDF / EPS / VectorCraft, DXF, pliki LightBurn i UGS. Plik można też przeciągnąć na okno.
 * **Gotowe obrazki:** zakładka **Clipart**, zobacz [Galeria clipartów](Galeria-clipartow).
 
 Zaznaczaj kliknięciem albo ramką, przesuwaj przeciąganiem lub strzałkami (1 mm, Shift: 10 mm). Menu **Rozmieść** (Arrange) i wąski pasek obok obszaru roboczego wyrównują, środkują, obracają i grupują. Zobacz [Narzędzia projektowe](Narzedzia-projektowe).

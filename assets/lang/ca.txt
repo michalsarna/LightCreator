@@ -378,7 +378,7 @@
 377|{} moviments
 378|Importa
 379|Exporta
-380|Importa Adobe Illustrator / PDF…
+380|Importa Adobe Illustrator / PDF / EPS / VectorCraft…
 381|Agrupa
 382|Desagrupa
 383|Seleccioneu com a mínim dos objectes per agrupar.

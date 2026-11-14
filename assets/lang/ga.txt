@@ -378,7 +378,7 @@
 377|Gluaiseachtaí: {}
 378|Iompórtáil
 379|Easpórtáil
-380|Iompórtáil Adobe Illustrator / PDF…
+380|Iompórtáil Adobe Illustrator / PDF / EPS / VectorCraft…
 381|Grúpáil
 382|Dí-ghrúpáil
 383|Roghnaigh dhá réad ar a laghad chun grúpáil.

@@ -378,7 +378,7 @@
 377|{} mișcări
 378|Importă
 379|Exportă
-380|Importă Adobe Illustrator / PDF…
+380|Importă Adobe Illustrator / PDF / EPS / VectorCraft…
 381|Grupează
 382|Degrupează
 383|Selectați cel puțin două obiecte pentru a grupa.

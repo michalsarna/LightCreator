@@ -378,7 +378,7 @@
 377|Kretanja: {}
 378|Uvoz
 379|Izvezi
-380|Uvezi Adobe Illustrator / PDF…
+380|Uvezi Adobe Illustrator / PDF / EPS / VectorCraft…
 381|Grupiraj
 382|Razgrupiraj
 383|Za grupiranje odaberite barem dva objekta.
