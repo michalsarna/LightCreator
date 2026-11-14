@@ -88,10 +88,11 @@ fn shade(base: [u8; 3], light: f64) -> Color32 {
 }
 
 /// Draw the workpiece: the near half of its side in bands shaded by how they face the light, and the end that is turned towards the
-/// viewer.
-pub fn paint_body(painter: &egui::Painter, pj: &Projection, wood: [u8; 3]) {
+/// viewer. `detail` (the rendering quality, `base_ui::view3d::quality_detail`) makes the bands and the rings finer.
+pub fn paint_body(painter: &egui::Painter, pj: &Projection, wood: [u8; 3], detail: f64) {
     let c = pj.c;
-    let n = 120;
+    let n = ((120.0 * detail).round() as usize).max(24);
+    let round = ((64.0 * detail).round() as usize).max(16);
     // The whole way round, the far half first: with the axis swung, the far side shows past the near end.
     let mut bands: Vec<(f64, f64)> = (0..n).map(|i| {
         let a0 = std::f64::consts::TAU * i as f64 / n as f64;
@@ -115,12 +116,12 @@ pub fn paint_body(painter: &egui::Painter, pj: &Projection, wood: [u8; 3]) {
     // The end facing the viewer: with the axis swung by a positive yaw the viewer stands off its left end (the screen X grows with
     // the depth, see `screen`), so that end shows and the right one is hidden behind the side.
     let end_x = if pj.o.yaw >= 0.0 { c.x0 } else { c.x1 };
-    let ring: Vec<Pos2> = (0..64).map(|i| pj.screen(pj.space(end_x, std::f64::consts::TAU * i as f64 / 64.0, c.r))).collect();
+    let ring: Vec<Pos2> = (0..round).map(|i| pj.screen(pj.space(end_x, std::f64::consts::TAU * i as f64 / round as f64, c.r))).collect();
     if pj.o.yaw.abs() > 0.02 {
         painter.add(egui::Shape::convex_polygon(ring.clone(), shade(wood, 0.35), Stroke::new(1.0, shade(wood, 0.2))));
         // The growth rings of the wood on the end.
         for f in [0.35, 0.65] {
-            let inner: Vec<Pos2> = (0..=64).map(|i| pj.screen(pj.space(end_x, std::f64::consts::TAU * i as f64 / 64.0, c.r * f))).collect();
+            let inner: Vec<Pos2> = (0..=round).map(|i| pj.screen(pj.space(end_x, std::f64::consts::TAU * i as f64 / round as f64, c.r * f))).collect();
             painter.add(egui::Shape::line(inner, Stroke::new(1.0, shade(wood, 0.25))));
         }
     }
@@ -131,10 +132,10 @@ pub fn paint_body(painter: &egui::Painter, pj: &Projection, wood: [u8; 3]) {
 }
 
 /// Add a line of the design wound round the surface: cut into short pieces (it curves when it goes round), the pieces on the far
-/// side left out.
-pub fn wound_line(out: &mut Vec<egui::Shape>, pj: &Projection, a: Pt, b: Pt, stroke: Stroke) {
-    // Pieces of at most 3° of the way round.
-    let step = pj.c.r.max(0.1) * 3f64.to_radians();
+/// side left out. `detail` (the rendering quality) makes the pieces shorter.
+pub fn wound_line(out: &mut Vec<egui::Shape>, pj: &Projection, a: Pt, b: Pt, stroke: Stroke, detail: f64) {
+    // Pieces of at most 3° of the way round at the usual quality.
+    let step = pj.c.r.max(0.1) * 3f64.to_radians() / detail.max(0.1);
     let n = (((b.y - a.y).abs() / step).ceil() as usize).clamp(1, 2000);
     let mut prev = pj.surface(a);
     for i in 1..=n {
@@ -193,7 +194,7 @@ mod tests {
         let p = pj(Orbit::default());
         let mut out = vec![];
         // A ring all the way round at x = 100.
-        wound_line(&mut out, &p, Pt::new(100.0, 50.0 - std::f64::consts::PI * 25.0), Pt::new(100.0, 50.0 + std::f64::consts::PI * 25.0), Stroke::new(1.0, Color32::RED));
+        wound_line(&mut out, &p, Pt::new(100.0, 50.0 - std::f64::consts::PI * 25.0), Pt::new(100.0, 50.0 + std::f64::consts::PI * 25.0), Stroke::new(1.0, Color32::RED), 1.0);
         assert!(!out.is_empty() && out.len() < 70, "about half of 120 pieces: {}", out.len());
         let turned = pj(Orbit { spin: std::f64::consts::PI, ..Orbit::default() });
         assert!(turned.surface(Pt::new(100.0, 50.0)).1 < 0.0, "turned half way: the middle is at the back");

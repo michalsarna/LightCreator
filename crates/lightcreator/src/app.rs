@@ -1452,7 +1452,7 @@ impl App {
                 Act::New => self.start_project(|app| {
                     let made = app.new_tab_from_start();
                     if made {
-                        app.open_setup();
+                        app.open_start_setup();
                     }
                     made
                 }),
@@ -1490,7 +1490,7 @@ impl App {
         match a {
             Act::New => {
                 if self.new_tab() {
-                    self.open_setup();
+                    self.open_start_setup();
                 }
             }
             Act::ProjectSetup => self.open_setup(),
@@ -2440,15 +2440,16 @@ mod version_tests {
         assert!(eframe.contains("\"links\""), "{eframe}");
     }
 
-    /// The version shown in About, the Cargo version, the newest VERSIONS.md section and the supported
+    /// The version shown in About, the Cargo version, the newest released VERSIONS.md section and the supported
     /// version in SECURITY.md must all name the same release.
     #[test]
     fn version_is_the_same_everywhere() {
         let cargo = env!("CARGO_PKG_VERSION");
         assert_eq!(super::APP_VERSION, format!("v{cargo}"), "APP_VERSION in app.rs vs Cargo.toml");
         let versions = include_str!("../../../VERSIONS.md");
-        let top = versions.lines().find_map(|l| l.strip_prefix("## ")).expect("a section in VERSIONS.md");
-        assert_eq!(top.trim(), super::APP_VERSION, "newest section of VERSIONS.md");
+        // The changes not released yet are listed above the newest release, under a heading of their own.
+        let top = versions.lines().filter_map(|l| l.strip_prefix("## ")).find(|h| !h.ends_with("(not released yet)")).expect("a section in VERSIONS.md");
+        assert_eq!(top.trim(), super::APP_VERSION, "newest released section of VERSIONS.md");
         let security = include_str!("../../../SECURITY.md");
         let latest = security.lines().find(|l| l.contains("(latest)")).expect("a (latest) row in SECURITY.md");
         assert!(latest.contains(super::APP_VERSION), "SECURITY.md latest row: {latest}");
