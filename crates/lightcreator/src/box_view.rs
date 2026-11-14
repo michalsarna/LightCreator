@@ -3,7 +3,7 @@
 //! faces are the 3D preview of base (`base_ui::view3d`), the same as the one of MillCreator: the object lies as the laser sees the
 //! shown face (that face up), so the switch of the faces turns it. Here: the lines of a face on the object, and the colour of a burn.
 use base_ui::view3d::{FaceFrame, Projector};
-use eframe::egui::{self, Color32, Stroke};
+use eframe::egui::{Color32, Stroke};
 use lc_core::faces::Solid;
 use lc_core::Pt;
 
@@ -29,6 +29,7 @@ pub fn burn_colour(wood: [u8; 3], power_pct: f64) -> Color32 {
 mod tests {
     use super::*;
     use base_ui::view3d::Camera;
+    use eframe::egui;
     use eframe::egui::Pos2;
 
     fn rect() -> egui::Rect {

@@ -2,7 +2,7 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
-## v0.9.2 (not released yet)
+## v0.9.2
 
 * **Offset fill a hundred times lighter, with the same path** (baseCreator): every ring is the outline taken in by its distance, not the ring before taken in again, whose round corners came back as more points every time. The G-code is as much shorter and made at once.
 * **Faster drawing of the toolpaths** (the preview, the 3D views of a cylinder, a post and a block, and the Toolpaths button): moves that follow each other are one line, straight runs one piece, points closer than half a pixel and what is out of sight are left out.
