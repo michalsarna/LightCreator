@@ -37,6 +37,8 @@ pub enum SideTab {
     Camera,
     /// The no-go zones of the device, while it has any.
     Zones,
+    /// The styles of a picture, while one is selected.
+    PictureStyles,
     /// The tab of a plugin with settings (which one: `App::plugin_tab`).
     Plugin,
 }
@@ -65,6 +67,7 @@ impl SideTab {
             SideTab::Recording => "recording",
             SideTab::Camera => "camera",
             SideTab::Zones => "zones",
+            SideTab::PictureStyles => base_ui::editor::style_gallery::TAB_ID,
             SideTab::Plugin => "plugin",
         }
     }
@@ -73,13 +76,16 @@ impl SideTab {
     pub const IDS: [&'static str; 8] = ["properties", "layers", "device", "control", "console", "clipart", "description", "recording"];
 
     pub fn from_id(id: &str) -> Option<SideTab> {
-        SideTab::ALL.iter().map(|(t, _)| *t).chain([SideTab::Camera, SideTab::Zones]).find(|t| t.id() == id)
+        SideTab::ALL.iter().map(|(t, _)| *t).chain([SideTab::Camera, SideTab::Zones, SideTab::PictureStyles]).find(|t| t.id() == id)
     }
 
     /// The English name of the tab (translated where it is shown).
     pub fn label(self) -> &'static str {
         if self == SideTab::Zones {
             return base_ui::zones_ui::PAGE;
+        }
+        if self == SideTab::PictureStyles {
+            return "Picture styles";
         }
         SideTab::ALL.iter().find(|(t, _)| *t == self).map(|(_, l)| *l).unwrap_or("Camera view")
     }
@@ -92,6 +98,8 @@ pub enum Screen {
 }
 
 pub struct App {
+    /// Was a picture selected the frame before (a picture that becomes selected shows the tab of its styles)?
+    pub picture_was_selected: bool,
     pub doc: Document,
     /// The state of the editor itself (selection, tool, view, grid, snapping), shared with other applications.
     pub ed: base_ui::editor::EditorState,
@@ -373,6 +381,7 @@ impl App {
             panes: base_ui::work_panes::Panes::from_json(&saved("panes").unwrap_or_default()),
             slot: 0,
             autosaved_revision: 0,
+            picture_was_selected: false,
             data_base: crate::data_paths().base.clone(),
             recovery: lc_core::autosave::find_all(&crate::data_paths().base, "lightcreator"),
             autosave_opts: lc_core::autosave::Options::from_settings(|k| saved(k)),

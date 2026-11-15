@@ -578,6 +578,10 @@ mod tests {
             id
         };
         h.run_steps(4);
+        // A picture that becomes selected shows the tab of its styles; the properties are a click away.
+        assert_eq!(h.state().as_ref().unwrap().side_tab, SideTab::PictureStyles);
+        h.state_mut().as_mut().unwrap().side_tab = SideTab::Properties;
+        h.run_steps(4);
         assert_eq!(h.query_all_by_label("Negative image").count(), 1, "one option, the shared one");
         h.get_by_label("Negative image").click();
         h.run_steps(4);

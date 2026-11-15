@@ -12,13 +12,16 @@ impl App {
     /// The ids of the tabs that exist only sometimes: the camera view, and the tab of every plugin that has settings.
     pub(crate) fn extra_tabs(&self) -> Vec<&'static str> {
         let camera_tab = self.show_stream && self.stream_mode == crate::stream_ui::StreamMode::Tab;
-        camera_tab.then_some("camera").into_iter().chain((!self.doc.device.zones.is_empty()).then_some("zones")).chain(self.plugins.side_tabs().into_iter().map(|(id, _)| id)).collect()
+        camera_tab.then_some("camera").into_iter().chain((!self.doc.device.zones.is_empty()).then_some("zones")).chain(self.plugins.side_tabs().into_iter().map(|(id, _)| id)).chain(base_ui::editor::style_gallery::picture_selected(self).then_some(base_ui::editor::style_gallery::TAB_ID)).collect()
     }
 
     /// The label of a tab (translated), also of a tab of a plugin.
     fn tab_label(&self, id: &str) -> String {
         if base_ui::plugins_ui::PluginsUi::is_side_tab(id) {
             return self.plugins.side_tab_label(id);
+        }
+        if id == base_ui::editor::style_gallery::TAB_ID {
+            return base_ui::editor::style_gallery::tab_label().to_string();
         }
         SideTab::from_id(id).map(|t| tr(t.label()).to_string()).unwrap_or_default()
     }
@@ -56,9 +59,15 @@ impl App {
         self.side_w = ui.max_rect().width();
         let extra = self.extra_tabs();
         // A tab that is gone (the stream was closed, the plugin removed or switched off) gives way to the first one.
-        if self.side_tab == SideTab::Camera && !extra.contains(&"camera") || self.side_tab == SideTab::Zones && !extra.contains(&"zones") || self.side_tab == SideTab::Plugin && !extra.contains(&self.plugin_tab) {
+        if self.side_tab == SideTab::Camera && !extra.contains(&"camera") || self.side_tab == SideTab::Zones && !extra.contains(&"zones") || self.side_tab == SideTab::Plugin && !extra.contains(&self.plugin_tab) || self.side_tab == SideTab::PictureStyles && !extra.contains(&base_ui::editor::style_gallery::TAB_ID) {
             self.side_tab = SideTab::Properties;
         }
+        // A picture that becomes selected shows the tab of its styles.
+        let picture = base_ui::editor::style_gallery::picture_selected(self);
+        if picture && !self.picture_was_selected {
+            self.side_tab = SideTab::PictureStyles;
+        }
+        self.picture_was_selected = picture;
         let labels: std::collections::HashMap<&str, String> = SideTab::IDS.iter().copied().chain(extra.iter().copied()).map(|id| (id, self.tab_label(id))).collect();
         let label = |id: &str| labels.get(id).cloned().unwrap_or_default();
         if let Some(t) = self.tabs.bar(ui, self.shown_tab_id(), &extra, &label) {
@@ -88,6 +97,7 @@ impl App {
                     self.plugins.side_tab_ui(ui, id);
                 });
             }
+            SideTab::PictureStyles => base_ui::editor::style_gallery::panel(self, ui),
             SideTab::Zones => {
                 let u = self.doc.device.units;
                 let has_z = self.doc.device.axes.has_z;

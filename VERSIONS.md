@@ -2,6 +2,11 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.9.6 (not released yet)
+
+* **The panel of picture styles** (baseCreator): while a picture is selected, the side panel has a tab **Picture styles**, opened by itself when a picture becomes selected. At its top a button as wide as the panel opens Trace image; under it, laid out as the gallery, a small picture of every style (a triangle drawn in it), and a click on one opens Style trace with that style chosen.
+* baseCreator v2.6.0.
+
 ## v0.9.5
 
 * **Geometric polygons** (Arrange → Geometric polygons…, and a new style of Style trace; baseCreator): the dark shape of the picture split into polygons (triangles and quadrangles), more of them where the picture has edges, with a gap between them and round the outline, as geometric (low poly) wall art. Settings: gap between the polygons, number of polygons, follow the edges; another seed gives other polygons.
