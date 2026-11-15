@@ -181,8 +181,8 @@ checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
 
 [[package]]
 name = "base-core"
-version = "2.5.1"
-source = "git+https://github.com/michalsarna/baseCreator?tag=v2.5.1#ee592c985d8ef9f5f422cfd06209a051b6062ce6"
+version = "2.6.0"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v2.6.0#dad3d679c33ee96c61d3063168f6df22f7bbfd15"
 dependencies = [
  "base64 0.23.1",
  "flate2",
@@ -203,8 +203,8 @@ dependencies = [
 
 [[package]]
 name = "base-ui"
-version = "2.5.1"
-source = "git+https://github.com/michalsarna/baseCreator?tag=v2.5.1#ee592c985d8ef9f5f422cfd06209a051b6062ce6"
+version = "2.6.0"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v2.6.0#dad3d679c33ee96c61d3063168f6df22f7bbfd15"
 dependencies = [
  "arboard",
  "base-core",
