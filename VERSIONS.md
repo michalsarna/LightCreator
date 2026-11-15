@@ -2,6 +2,11 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.9.5 (not released yet)
+
+* **Geometric polygons** (Arrange → Geometric polygons…, and a new style of Style trace; baseCreator): the dark shape of the picture split into polygons (triangles and quadrangles), more of them where the picture has edges, with a gap between them and round the outline, as geometric (low poly) wall art. Settings: gap between the polygons, number of polygons, follow the edges; another seed gives other polygons.
+* baseCreator v2.5.0.
+
 ## v0.9.4
 
 * **Style trace: V-carve** (baseCreator): lines at an angle of your choice, the width of the lines apart, each cut into pieces whose brightness sets how wide the line is there: thin in the lights, wide in the shadows, as a V-bit cuts deeper and so wider. Each line is one closed outline, smooth or angular. Settings: width of the lines, length of the pieces, thinnest line, angle.
