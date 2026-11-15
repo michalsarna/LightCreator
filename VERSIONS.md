@@ -2,7 +2,7 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
-## v0.9.3 (not released yet)
+## v0.9.3
 
 * **Adjust image shows its result on the work area at once** (baseCreator): the work area kept the picture as it was before Apply (and before undo), while the project and the G-code had the new pixels.
 * **Every Apply button is green** (baseCreator).
