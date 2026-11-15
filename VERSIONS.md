@@ -4,10 +4,12 @@ Each release gets the next version number and a branch with the same name. Newes
 
 ## v0.9.3 (not released yet)
 
+* **Adjust image shows its result on the work area at once** (baseCreator): the work area kept the picture as it was before Apply (and before undo), while the project and the G-code had the new pixels.
+* **Every Apply button is green** (baseCreator).
+* baseCreator v2.3.1.
 * **The preview fits its tab**: the playing (button, slider, speed) is in a row of its own with the slider as wide as the row allows; that row, wider than a narrow tab, made the whole tab wider than what is seen, so the picture was cut off on the right and fitted to what was not seen.
 * **The preview has the colour under the work area** (of the theme, or the one chosen in the view options) instead of black round the options of the tab.
 * **Auto-save options from baseCreator**: the same two rows of the program options as in the other programs (nothing changes in use).
-* baseCreator v2.3.0.
 
 ## v0.9.2
 
