@@ -117,7 +117,8 @@ The commands work on the selection. Most of them are also in the right-click men
 | **Measure…** | | Size, position, area and length of the selection, and distances between two shapes. |
 | **Adjust image…** | | Brightness, contrast, gamma and the rest of a selected picture. |
 | **Trace image…** | | Turns a selected picture into outlines. |
-| **Style trace…** | | Draws the selected picture again as lines in one of 19 styles. See [Style Trace](Style-Trace). |
+| **Style trace…** | | Draws the selected picture again as lines in one of 21 styles. See [Style Trace](Style-Trace). |
+| **Geometric polygons…** | | The selected picture as geometric (low poly) polygons with a gap between them and round the outline: the Style trace window on that style. See [Style Trace](Style-Trace). |
 | **Add as no-go zone** | | Every unlocked selected shape becomes a no-go zone of the device (a circle when it is round, otherwise the rectangle round it) and leaves the drawing. Also in the right-click menu. |
 
 ## View
