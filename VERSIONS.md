@@ -2,7 +2,7 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
-## v0.9.4 (not released yet)
+## v0.9.4
 
 * **Style trace: V-carve** (baseCreator): lines at an angle of your choice, the width of the lines apart, each cut into pieces whose brightness sets how wide the line is there: thin in the lights, wide in the shadows, as a V-bit cuts deeper and so wider. Each line is one closed outline, smooth or angular. Settings: width of the lines, length of the pieces, thinnest line, angle.
 * **Trace image: no long straight lines across the preview** (baseCreator): sharp turns of an outline were drawn as long spikes; the preview and the shapes on the work area are drawn without them (and faster with thousands of outlines).
