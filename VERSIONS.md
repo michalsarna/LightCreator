@@ -2,7 +2,7 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
-## v0.9.5 (not released yet)
+## v0.9.5
 
 * **Geometric polygons** (Arrange → Geometric polygons…, and a new style of Style trace; baseCreator): the dark shape of the picture split into polygons (triangles and quadrangles), more of them where the picture has edges, with a gap between them and round the outline, as geometric (low poly) wall art. Settings: gap between the polygons, number of polygons, follow the edges; another seed gives other polygons.
 * **Style trace: the values of the settings are seen in every language** (baseCreator): a long name pushed the slider and its value out of the column; every setting now has its name on a line of its own and the slider under it.
