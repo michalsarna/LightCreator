@@ -94,6 +94,10 @@ pub enum Act {
     StyleTrace,
     GeometricTrace,
     AdjustImage,
+    /// The photo editor of the selected picture.
+    EditImage,
+    /// The selected shapes as one picture.
+    ToImage,
     BoolUnion,
     BoolIntersect,
     BoolSubtract,
@@ -180,6 +184,8 @@ impl From<StdAct> for Act {
             StdAct::TraceImage => Act::TraceImage,
             StdAct::StyleTrace => Act::StyleTrace,
             StdAct::GeometricTrace => Act::GeometricTrace,
+            StdAct::EditImage => Act::EditImage,
+            StdAct::ToImage => Act::ToImage,
             StdAct::BoolUnion => Act::BoolUnion,
             StdAct::BoolIntersect => Act::BoolIntersect,
             StdAct::BoolSubtract => Act::BoolSubtract,
@@ -253,6 +259,8 @@ impl Act {
             Act::TraceImage => StdAct::TraceImage,
             Act::StyleTrace => StdAct::StyleTrace,
             Act::GeometricTrace => StdAct::GeometricTrace,
+            Act::EditImage => StdAct::EditImage,
+            Act::ToImage => StdAct::ToImage,
             Act::BoolUnion => StdAct::BoolUnion,
             Act::BoolIntersect => StdAct::BoolIntersect,
             Act::BoolSubtract => StdAct::BoolSubtract,
