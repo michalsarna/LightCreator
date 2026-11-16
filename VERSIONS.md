@@ -5,7 +5,8 @@ Each release gets the next version number and a branch with the same name. Newes
 ## v0.9.6 (not released yet)
 
 * **The panel of picture styles** (baseCreator): while a picture is selected, the side panel has a tab **Picture styles**, opened by itself when a picture becomes selected. At its top a button as wide as the panel opens Trace image; under it, laid out as the gallery, a small picture of every style (a triangle drawn in it), and a click on one opens Style trace with that style chosen.
-* baseCreator v2.6.0.
+* **The pictures of the styles are a third smaller, black lines on white** (baseCreator).
+* baseCreator v2.6.1.
 
 ## v0.9.5
 
