@@ -520,6 +520,10 @@ impl App {
         self.touch();
     }
     pub fn do_undo(&mut self) {
+        // While the photo editor is open, its own strokes are undone, not the drawing.
+        if base_ui::editor::photo_edit::take_undo(self, false) {
+            return;
+        }
         if let Some(d) = self.undo.pop() {
             self.redo.push(std::mem::replace(&mut self.doc, d));
             self.ed.sel.retain(|id| self.doc.shape(*id).is_some());
@@ -527,6 +531,10 @@ impl App {
         }
     }
     pub fn do_redo(&mut self) {
+        // While the photo editor is open, its own strokes are undone, not the drawing.
+        if base_ui::editor::photo_edit::take_undo(self, true) {
+            return;
+        }
         if let Some(d) = self.redo.pop() {
             self.undo.push(std::mem::replace(&mut self.doc, d));
             self.ed.sel.retain(|id| self.doc.shape(*id).is_some());
@@ -1518,7 +1526,7 @@ impl App {
                 self.open_online_clipart(ctx);
             }
             // The standard commands (also pictures and the operations on shapes) were run above, by baseCreator.
-            Act::ToCurves | Act::AutoJoin | Act::ClosePath | Act::DogboneCorners | Act::AddAsZones | Act::GridArray | Act::CircleArray | Act::CopyAlongPath | Act::TextOnPath | Act::TrimByShape | Act::RemoveDuplicates | Act::BreakApart | Act::SimplifyShapes | Act::SerialText | Act::MakeCode | Act::NestShapes | Act::MeasureShapes | Act::ExportSelectionSvg | Act::ExportSelectionDxf | Act::ExportAs(_) | Act::BoolUnion | Act::BoolIntersect | Act::BoolSubtract | Act::BoolXor | Act::OffsetShape | Act::RoundCorners | Act::ImportImage | Act::AdjustImage | Act::TraceImage | Act::StyleTrace | Act::GeometricTrace | Act::Tool(_) | Act::SplitView(_) | Act::SingleView => {}
+            Act::ToCurves | Act::AutoJoin | Act::ClosePath | Act::DogboneCorners | Act::AddAsZones | Act::GridArray | Act::CircleArray | Act::CopyAlongPath | Act::TextOnPath | Act::TrimByShape | Act::RemoveDuplicates | Act::BreakApart | Act::SimplifyShapes | Act::SerialText | Act::MakeCode | Act::NestShapes | Act::MeasureShapes | Act::ExportSelectionSvg | Act::ExportSelectionDxf | Act::ExportAs(_) | Act::BoolUnion | Act::BoolIntersect | Act::BoolSubtract | Act::BoolXor | Act::OffsetShape | Act::RoundCorners | Act::ImportImage | Act::AdjustImage | Act::TraceImage | Act::StyleTrace | Act::GeometricTrace | Act::EditImage | Act::ToImage | Act::Tool(_) | Act::SplitView(_) | Act::SingleView => {}
             Act::QuickGuide => self.show_guide = true,
             Act::OpenGithub => ctx.open_url(egui::OpenUrl::new_tab(crate::help_ui::GITHUB_URL)),
             Act::CameraOverlay => self.ed.show_background = true,

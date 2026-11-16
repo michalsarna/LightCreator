@@ -6,7 +6,10 @@ Each release gets the next version number and a branch with the same name. Newes
 
 * **The panel of picture styles** (baseCreator): while a picture is selected, the side panel has a tab **Picture styles**, opened by itself when a picture becomes selected. At its top a button as wide as the panel opens Trace image; under it, laid out as the gallery, a small picture of every style (a triangle drawn in it), and a click on one opens Style trace with that style chosen.
 * **The pictures of the styles are a third smaller, black lines on white** (baseCreator).
-* baseCreator v2.6.1.
+* **Photo editor** (baseCreator): **Arrange → Edit image…**, the menu of the right mouse button, or the orange button at the top of the **Picture styles** tab. A brush, an eraser, a clone stamp and a fill, in greys only, with size, hardness, opacity, tolerance, Undo and Redo (the undo keys work in it while it is open); the drawing changes only on Apply.
+* **Convert to image…** (baseCreator): the selected shapes (no pictures among them) as one picture, with a preview, resolution, size, filled closed shapes and line width; **Delete the objects afterwards**, and **Hide the objects** for the preview only. The picture goes on a layer without other shapes.
+* **Hide the picture** in the windows Trace image and Style trace (baseCreator): the result alone in the preview.
+* baseCreator v2.7.0.
 
 ## v0.9.5
 

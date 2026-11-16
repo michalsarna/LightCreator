@@ -557,6 +557,40 @@ mod tests {
     }
 
     #[test]
+    fn the_undo_key_goes_to_the_photo_editor_while_it_is_open() {
+        let mut h = Harness::builder().with_accessibility_check(false).with_size([1280.0, 1000.0]).build_ui_state(
+            |ui, state: &mut Option<App>| {
+                let a = state.get_or_insert_with(|| App::build(ui.ctx(), None, false));
+                a.draw(ui);
+            },
+            None,
+        );
+        h.run_steps(2);
+        {
+            let a = h.state_mut().as_mut().unwrap();
+            a.profiles = vec![lc_core::Device::default()];
+            a.cfg = None;
+            assert!(a.enter_editor(0));
+            let im = lc_core::ImageData { name: "p".into(), px_w: 40, px_h: 40, gray: vec![255; 1600], w: 10.0, h: 10.0, invert: false };
+            a.checkpoint();
+            let id = a.doc.add(0, lc_core::Kind::Image(im), lc_core::Xf::IDENTITY);
+            a.ed.sel = vec![id];
+            base_ui::editor::photo_edit::open(a);
+            let d = a.ed.photo_dlg.as_mut().unwrap();
+            let b = base_ui::editor::photo_edit::Brush { size: 6.0, hardness: 1.0, opacity: 1.0 };
+            d.canvas.begin(20.0, 20.0, base_ui::editor::photo_edit::Paint::Shade(0), b);
+            d.canvas.end();
+        }
+        h.run_steps(3);
+        h.key_press_modifiers(egui::Modifiers::COMMAND, egui::Key::Z);
+        h.run_steps(3);
+        let a = h.state().as_ref().unwrap();
+        let d = a.ed.photo_dlg.as_ref().expect("the editor stays open");
+        assert!(!d.canvas.changed(), "the stroke was undone");
+        assert_eq!(a.doc.scene.shapes.len(), 1, "the drawing keeps its picture");
+    }
+
+    #[test]
     fn the_negative_of_a_picture_is_set_in_properties_through_the_window() {
         let mut h = Harness::builder().with_accessibility_check(false).with_size([1280.0, 1000.0]).build_ui_state(
             |ui, state: &mut Option<App>| {
