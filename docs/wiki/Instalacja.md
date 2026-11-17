@@ -11,7 +11,9 @@ Każde wydanie na [stronie Releases](https://github.com/michalsarna/LightCreator
 | macOS, Intel | `lightcreator-vX.Y.Z-macos-x86_64.dmg` | – |
 | Debian / Ubuntu i pochodne, x86_64 | `lightcreator-vX.Y.Z-linux-amd64.deb` | `lightcreator-vX.Y.Z-linux-x86_64.tar.gz` |
 | Debian / Ubuntu i pochodne, ARM64 (np. Raspberry Pi 4/5, system 64-bitowy) | `lightcreator-vX.Y.Z-linux-arm64.deb` | `lightcreator-vX.Y.Z-linux-arm64.tar.gz` |
-| Inny Linux (Fedora, Arch, openSUSE…) | – | powyższe `.tar.gz` |
+| Fedora, openSUSE, x86_64 | `lightcreator-vX.Y.Z-linux-x86_64.rpm` | `lightcreator-vX.Y.Z-linux-x86_64.tar.gz` |
+| Fedora, openSUSE, ARM64 | `lightcreator-vX.Y.Z-linux-aarch64.rpm` | `lightcreator-vX.Y.Z-linux-arm64.tar.gz` |
+| Inny Linux (Arch…) | – | powyższe `.tar.gz` |
 
 ## Menedżery pakietów
 
@@ -55,6 +57,14 @@ sudo apt install ./lightcreator-vX.Y.Z-linux-amd64.deb     # albo ...-linux-arm6
 ```
 
 `apt` doinstaluje potrzebne biblioteki (`libxkbcommon-x11-0`, `libgl1`), doda wpis w menu i umieści `lightcreator` w ścieżce. Usunięcie: `sudo apt remove lightcreator`.
+
+**Fedora, openSUSE i inne systemy z nowym glibc.**
+
+```sh
+sudo dnf install ./lightcreator-vX.Y.Z-linux-x86_64.rpm     # albo ...-linux-aarch64.rpm; openSUSE: sudo zypper install ./...
+```
+
+`dnf` doinstaluje potrzebne biblioteki, doda wpis w menu i umieści `lightcreator` w ścieżce. Usunięcie: `sudo dnf remove lightcreator`. Program jest budowany na nowym Ubuntu, więc starszy system (RHEL / Alma / Rocky 9) może nie mieć potrzebnej wersji glibc.
 
 **Inne dystrybucje (tar.gz).**
 

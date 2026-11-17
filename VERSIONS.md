@@ -4,8 +4,9 @@ Each release gets the next version number and a branch with the same name. Newes
 
 ## v0.9.x (not released yet)
 
+* **RPM packages** for Fedora and openSUSE (x86_64 and ARM64): `lightcreator-vX.Y.Z-linux-x86_64.rpm` and `-linux-aarch64.rpm` (`sudo dnf install ./lightcreator-*.rpm`), with the menu entry, the icons and ffmpeg. Each one is installed in a Fedora container while the release is built, which must find every library the program and ffmpeg need. The program needs a recent glibc (not RHEL / Alma / Rocky 9).
 * Library zip 9.5.1. The build steps use the actions of baseCreator v2.7.1.
-* baseCreator v2.7.1.
+* baseCreator v2.7.2.
 
 ## v0.9.6
 

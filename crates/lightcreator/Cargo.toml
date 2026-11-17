@@ -7,7 +7,7 @@ description = "LightCreator — open-source laser engraver / cutter design and c
 
 [dependencies]
 lc-core = { path = "../lc-core" }
-base-ui = { git = "https://github.com/michalsarna/baseCreator", tag = "v2.7.1" }
+base-ui = { git = "https://github.com/michalsarna/baseCreator", tag = "v2.7.2" }
 eframe = { version = "0.37", default-features = false, features = ["clipboard", "default_fonts", "glow", "x11", "wayland", "persistence", "links"] }
 rfd = "0.18"
 serialport = { version = "4", default-features = false }
@@ -55,11 +55,33 @@ assets = [
   ["../../target/ffmpeg/FFMPEG-NOTICE.txt", "usr/share/doc/lightcreator/FFMPEG-NOTICE.txt", "644"],
 ]
 
+# The .rpm of the releases (cargo generate-rpm -p crates/lightcreator, run in the workspace folder: the sources are relative to it).
+[package.metadata.generate-rpm]
+assets = [
+  { source = "target/release/lightcreator", dest = "/usr/bin/lightcreator", mode = "755" },
+  { source = "assets/lightcreator.desktop", dest = "/usr/share/applications/lightcreator.desktop", mode = "644" },
+  { source = "assets/icons/icon-48.png", dest = "/usr/share/icons/hicolor/48x48/apps/lightcreator.png", mode = "644" },
+  { source = "assets/icons/icon-128.png", dest = "/usr/share/icons/hicolor/128x128/apps/lightcreator.png", mode = "644" },
+  { source = "assets/icons/icon-256.png", dest = "/usr/share/icons/hicolor/256x256/apps/lightcreator.png", mode = "644" },
+  { source = "assets/icons/icon-512.png", dest = "/usr/share/icons/hicolor/512x512/apps/lightcreator.png", mode = "644" },
+  { source = "README.md", dest = "/usr/share/doc/lightcreator/README.md", mode = "644", doc = true },
+  { source = "LICENSE", dest = "/usr/share/doc/lightcreator/LICENSE", mode = "644", doc = true },
+  { source = "LICENSE-APACHE", dest = "/usr/share/doc/lightcreator/LICENSE-APACHE", mode = "644", doc = true },
+  { source = "target/ffmpeg/ffmpeg", dest = "/usr/lib/lightcreator/ffmpeg", mode = "755" },
+  { source = "target/ffmpeg/COPYING.LGPLv2.1", dest = "/usr/share/doc/lightcreator/COPYING.LGPLv2.1", mode = "644", doc = true },
+  { source = "target/ffmpeg/FFMPEG-NOTICE.txt", dest = "/usr/share/doc/lightcreator/FFMPEG-NOTICE.txt", mode = "644", doc = true },
+]
+
+# The other libraries are found in the binary; these two the GUI loads at run time.
+[package.metadata.generate-rpm.requires]
+"libxkbcommon-x11.so.0()(64bit)" = "*"
+"libGL.so.1()(64bit)" = "*"
+
 [dev-dependencies]
 # Renders the UI headlessly to PNG for the README screenshots (see src/screenshots.rs).
 egui_kittest = { version = "0.37", features = ["wgpu"] }
 # The harness of the tests against the GRBL simulator (src/grbl_sim_tests.rs).
-base-ui = { git = "https://github.com/michalsarna/baseCreator", tag = "v2.7.1", features = ["sim-tests", "tool-checks"] }
+base-ui = { git = "https://github.com/michalsarna/baseCreator", tag = "v2.7.2", features = ["sim-tests", "tool-checks"] }
 
 [features]
 # Live camera capture for the camera overlay: cargo run --release --features camera

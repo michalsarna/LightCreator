@@ -44,8 +44,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { os: ubuntu-26.04, name: linux-x86_64, deb: amd64 }
-          - { os: ubuntu-26.04-arm, name: linux-arm64, deb: arm64 }
+          - { os: ubuntu-26.04, name: linux-x86_64, deb: amd64, rpm: x86_64 }
+          - { os: ubuntu-26.04-arm, name: linux-arm64, deb: arm64, rpm: aarch64 }
           - { os: windows-latest, name: windows-x86_64 }
           - { os: macos-latest, name: macos-arm64 }
           - { os: macos-15-intel, name: macos-x86_64 }
@@ -98,6 +98,21 @@ jobs:
         run: |
           cargo install cargo-deb --locked
           cargo deb -p lightcreator --no-build --output "lightcreator-${TAG}-linux-${{ matrix.deb }}.deb"
+
+      # Linux: .rpm (Fedora, openSUSE), made without rpmbuild; then installed in a Fedora container, which must find
+      # every library the program and its ffmpeg need.
+      - name: RPM package
+        if: runner.os == 'Linux'
+        run: |
+          cargo install cargo-generate-rpm --locked
+          strip -s target/release/lightcreator
+          rpm="lightcreator-${TAG}-linux-${{ matrix.rpm }}.rpm"
+          cargo generate-rpm -p crates/lightcreator --output "$rpm"
+          docker run --rm -v "$PWD:/w" fedora:latest bash -euc "
+            dnf install -y -q /w/$rpm
+            rpm -qi lightcreator | head -3
+            if ldd /usr/bin/lightcreator /usr/lib/lightcreator/ffmpeg | grep 'not found'; then exit 1; fi
+            test -f /usr/share/applications/lightcreator.desktop"
 
       # Windows: NSIS installer (makensis is preinstalled on the runner image; install it if missing)
       - name: Windows installer

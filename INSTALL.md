@@ -15,6 +15,7 @@ Every tagged release on the [Releases page](https://github.com/michalsarna/Light
 | Windows | `lightcreator-vX.Y.Z-windows-x86_64-setup.exe` | run the installer (Start-menu entry + uninstaller); the `.zip` is a portable copy |
 | macOS (Apple silicon / Intel) | `lightcreator-vX.Y.Z-macos-arm64.dmg` / `-macos-x86_64.dmg` | drag *LightCreator* to *Applications*; the app is only ad-hoc signed (not notarized), so the first time right-click → *Open*; if macOS says it is "damaged", run `xattr -cr /Applications/LightCreator.app` |
 | Debian / Ubuntu (x86_64 / ARM64) | `lightcreator-vX.Y.Z-linux-amd64.deb` / `-linux-arm64.deb` | `sudo apt install ./lightcreator-*.deb`; the `.tar.gz` is a plain binary for other distributions |
+| Fedora / openSUSE (x86_64 / ARM64) | `lightcreator-vX.Y.Z-linux-x86_64.rpm` / `-linux-aarch64.rpm` | `sudo dnf install ./lightcreator-*.rpm` (openSUSE: `sudo zypper install ./lightcreator-*.rpm`); needs a recent glibc, so not RHEL / Alma / Rocky 9 |
 
 Verify downloads with `SHA256SUMS.txt`. On Linux, add yourself to the serial-port group to reach the laser
 (`sudo usermod -aG dialout $USER`, then log in again). The sections below build from source instead.
