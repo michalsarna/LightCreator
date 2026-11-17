@@ -181,8 +181,8 @@ checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
 
 [[package]]
 name = "base-core"
-version = "2.7.0"
-source = "git+https://github.com/michalsarna/baseCreator?tag=v2.7.0#acb73d3ed9e22bdc1f326694b49ffa30bcc4e5dc"
+version = "2.7.1"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v2.7.1#b109a5f0e7e4f1005a892ae286c3fb90a501c53e"
 dependencies = [
  "base64 0.23.1",
  "flate2",
@@ -203,8 +203,8 @@ dependencies = [
 
 [[package]]
 name = "base-ui"
-version = "2.7.0"
-source = "git+https://github.com/michalsarna/baseCreator?tag=v2.7.0#acb73d3ed9e22bdc1f326694b49ffa30bcc4e5dc"
+version = "2.7.1"
+source = "git+https://github.com/michalsarna/baseCreator?tag=v2.7.1#b109a5f0e7e4f1005a892ae286c3fb90a501c53e"
 dependencies = [
  "arboard",
  "base-core",
@@ -5552,9 +5552,9 @@ dependencies = [
 
 [[package]]
 name = "zip"
-version = "9.5.0"
+version = "9.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0700e6c427aff64acdbf02e85fbfd946c2ee12319d1af013092f3a2178914ff8"
+checksum = "e3476fd497ac8af5b1ec7b51acab7bef380f7e8dd8e0487595bafd839417a302"
 dependencies = [
  "constant_time_eq",
  "crc32fast",
