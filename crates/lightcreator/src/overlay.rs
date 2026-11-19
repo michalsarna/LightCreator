@@ -107,6 +107,9 @@ impl App {
                 self.cam_index = self.cam_index.min(self.cam_list.len().saturating_sub(1) as u32);
             }
         });
+        if let Some(why) = camera::unavailable() {
+            ui.label(RichText::new(why).color(theme::text_dim()));
+        }
     }
 }
 

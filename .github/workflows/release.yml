@@ -62,10 +62,12 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libudev-dev libxkbcommon-x11-dev libgl1-mesa-dev
       # Windows: the C runtime is linked into the program, so it starts without the Visual C++ Redistributable
-      # (VCRUNTIME140.dll is not on every Windows; the winget validation failed on it).
+      # (VCRUNTIME140.dll is not on every Windows; the winget validation failed on it). Media Foundation (the camera) is
+      # loaded only when a camera starts (delay-loaded), so the program also starts on a Windows "N" edition without the
+      # Media Feature Pack; the camera then says what to install (base_ui::camera::unavailable).
       - run: cargo build --release -p lightcreator
         env:
-          RUSTFLAGS: ${{ runner.os == 'Windows' && '-C target-feature=+crt-static' || '' }}
+          RUSTFLAGS: ${{ runner.os == 'Windows' && '-C target-feature=+crt-static -C link-arg=/DELAYLOAD:mf.dll -C link-arg=/DELAYLOAD:mfplat.dll -C link-arg=/DELAYLOAD:mfreadwrite.dll -C link-arg=delayimp.lib' || '' }}
 
       # The small ffmpeg that reads the RTSP stream of a camera comes with every package (LGPL: licence and build recipe go along).
       - name: ffmpeg (Linux, macOS)
