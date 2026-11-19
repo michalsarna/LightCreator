@@ -2,6 +2,11 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.9.x (not released yet)
+
+* **Windows "N" without the Media Feature Pack** (baseCreator): the program starts (Media Foundation, which the camera needs, is loaded only when a camera starts), the list of cameras is empty and the camera says to install the Media Feature Pack (Settings → Optional features). Before, the program did not start at all on such a Windows.
+* baseCreator v2.7.4.
+
 ## v0.9.7
 
 * **Windows: the program starts without the Visual C++ Redistributable** (the C runtime is linked in; before, a Windows without it reported a missing VCRUNTIME140.dll). The release build checks it.
