@@ -5,7 +5,7 @@ Each release gets the next version number and a branch with the same name. Newes
 ## v0.9.x (not released yet)
 
 * **Windows "N" without the Media Feature Pack** (baseCreator): the program starts (Media Foundation, which the camera needs, is loaded only when a camera starts), the list of cameras is empty and the camera says to install the Media Feature Pack (Settings → Optional features). Before, the program did not start at all on such a Windows.
-* baseCreator v2.7.4.
+* baseCreator v2.7.5. Libraries: zip 9.6.1, resvg / usvg 0.50.0, i_overlay 9.2.0, ureq 3.5.2.
 
 ## v0.9.7
 
