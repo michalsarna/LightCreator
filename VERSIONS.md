@@ -2,7 +2,7 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
-## v0.9.x (not released yet)
+## v0.9.9
 
 * **FreeBSD** (x86_64): the program builds there and its tests pass (a FreeBSD 15.0 virtual machine in CI); a release has `lightcreator-vX.Y.Z-freebsd-x86_64.tar.gz`. It needs `pkg install libudev-devd libxkbcommon mesa-libs ffmpeg` (see Installation). USB cameras do not work there yet (the camera says so); network (IP) cameras do. Libraries nix 0.31.4 and libc 0.2.191 (the older ones do not build on FreeBSD). baseCreator v2.7.7.
 
