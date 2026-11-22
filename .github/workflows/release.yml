@@ -161,10 +161,45 @@ jobs:
           name: ${{ matrix.name }}
           path: lightcreator-*
 
+  # FreeBSD (x86_64): built in a FreeBSD virtual machine; a .tar.gz with the program, without ffmpeg (`pkg install ffmpeg`
+  # gives it). The job fails when a library the program links to is missing.
+  freebsd:
+    needs: check-main
+    if: ${{ !cancelled() && (needs.check-main.result == 'success' || needs.check-main.result == 'skipped') }}
+    runs-on: ubuntu-26.04
+    timeout-minutes: 120
+    env:
+      TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'v0.0.0' }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build in FreeBSD
+        uses: vmactions/freebsd-vm@v1.5.9
+        with:
+          release: "15.0"
+          usesh: true
+          envs: TAG
+          prepare: |
+            pkg install -y curl pkgconf libudev-devd evdev-proto libxkbcommon mesa-libs wayland
+            curl -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
+          run: |
+            set -e
+            . "$HOME/.cargo/env"
+            cargo build --release -p lightcreator
+            strip target/release/lightcreator
+            ldd target/release/lightcreator
+            if ldd target/release/lightcreator | grep 'not found'; then exit 1; fi
+            mkdir dist
+            cp README.md LICENSE LICENSE-APACHE target/release/lightcreator dist/
+            tar czf "lightcreator-${TAG}-freebsd-x86_64.tar.gz" -C dist .
+      - uses: actions/upload-artifact@v7
+        with:
+          name: freebsd-x86_64
+          path: lightcreator-*
+
   release:
-    needs: build
+    needs: [build, freebsd]
     # Also after a skipped check-main (a dry run); never after a failed build.
-    if: ${{ !cancelled() && needs.build.result == 'success' }}
+    if: ${{ !cancelled() && needs.build.result == 'success' && needs.freebsd.result == 'success' }}
     runs-on: ubuntu-26.04
     steps:
       - uses: actions/download-artifact@v8
