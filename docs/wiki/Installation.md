@@ -14,6 +14,7 @@ Every release on the [Releases page](https://github.com/michalsarna/LightCreator
 | Fedora, openSUSE, x86_64 | `lightcreator-vX.Y.Z-linux-x86_64.rpm` | `lightcreator-vX.Y.Z-linux-x86_64.tar.gz` |
 | Fedora, openSUSE, ARM64 | `lightcreator-vX.Y.Z-linux-aarch64.rpm` | `lightcreator-vX.Y.Z-linux-arm64.tar.gz` |
 | Other Linux (Arch…) | – | the `.tar.gz` above |
+| FreeBSD, x86_64 | – | `lightcreator-vX.Y.Z-freebsd-x86_64.tar.gz` |
 
 ## Package managers
 
@@ -80,6 +81,15 @@ The program needs the X11 keyboard and OpenGL libraries: `libxkbcommon-x11` and 
 **Laser connection.** Your user needs access to the serial device: `sudo usermod -aG dialout $USER` (group `uucp` on Arch), then log in again. Ports are `/dev/ttyUSB0` or `/dev/ttyACM0`.
 
 **Fonts.** Chinese and Hindi need Noto fonts on Linux (`fonts-noto-cjk fonts-noto-core` on Debian / Ubuntu); the other languages are unaffected.
+
+## FreeBSD
+Unpack `lightcreator-vX.Y.Z-freebsd-x86_64.tar.gz` and run `lightcreator`. It needs a few packages and an X11 or Wayland desktop (as root):
+
+```sh
+pkg install libudev-devd libxkbcommon mesa-libs ffmpeg
+```
+
+`ffmpeg` is for network (IP) cameras; USB cameras do not work on FreeBSD yet (the camera says so). The laser on USB is `/dev/cuaU0`: add yourself to the group `dialer` (`pw groupmod dialer -m $USER`, then log in again). Built and its tests run on FreeBSD 15.0 (x86_64 only); not yet tried on a FreeBSD desktop. To build it from source there: `pkg install rust pkgconf libudev-devd evdev-proto` first.
 
 ## Updating
 

@@ -14,6 +14,7 @@ Każde wydanie na [stronie Releases](https://github.com/michalsarna/LightCreator
 | Fedora, openSUSE, x86_64 | `lightcreator-vX.Y.Z-linux-x86_64.rpm` | `lightcreator-vX.Y.Z-linux-x86_64.tar.gz` |
 | Fedora, openSUSE, ARM64 | `lightcreator-vX.Y.Z-linux-aarch64.rpm` | `lightcreator-vX.Y.Z-linux-arm64.tar.gz` |
 | Inny Linux (Arch…) | – | powyższe `.tar.gz` |
+| FreeBSD, x86_64 | – | `lightcreator-vX.Y.Z-freebsd-x86_64.tar.gz` |
 
 ## Menedżery pakietów
 
@@ -80,6 +81,15 @@ Program potrzebuje bibliotek klawiatury X11 i OpenGL: `libxkbcommon-x11` oraz `m
 **Połączenie z laserem.** Twój użytkownik musi mieć dostęp do portu szeregowego: `sudo usermod -aG dialout $USER` (grupa `uucp` w Arch), potem zaloguj się ponownie. Porty to `/dev/ttyUSB0` lub `/dev/ttyACM0`.
 
 **Czcionki.** Chiński i hindi wymagają w Linuksie czcionek Noto (`fonts-noto-cjk fonts-noto-core` w Debianie / Ubuntu); pozostałe języki działają bez nich.
+
+## FreeBSD
+Rozpakuj `lightcreator-vX.Y.Z-freebsd-x86_64.tar.gz` i uruchom `lightcreator`. Program potrzebuje kilku pakietów i pulpitu X11 albo Wayland (jako root):
+
+```sh
+pkg install libudev-devd libxkbcommon mesa-libs ffmpeg
+```
+
+`ffmpeg` jest dla kamer sieciowych (IP); kamery USB nie działają jeszcze na FreeBSD (kamera o tym mówi). Port USB lasera to `/dev/cuaU0`: dodaj się do grupy `dialer` (`pw groupmod dialer -m $USER`, potem zaloguj się ponownie). Budowany i testowany automatycznie na FreeBSD 15.0 (tylko x86_64); jeszcze niewypróbowany na pulpicie FreeBSD. Aby zbudować go tam ze źródeł, najpierw `pkg install rust pkgconf libudev-devd evdev-proto`.
 
 ## Aktualizacja
 
