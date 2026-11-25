@@ -177,6 +177,8 @@ pub struct App {
     pub frame_path: Option<Vec<Pt>>,
     pub allow_close: bool,
     pub show_options: bool,
+    /// File → Project information.
+    pub show_project_info: bool,
     /// Look for a newer release on GitHub when the program starts.
     pub check_updates: bool,
     pub update: crate::update_ui::UpdateState,
@@ -322,6 +324,8 @@ pub struct App {
 
 impl App {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+        // The name recorded in the projects that are saved (Program options), shared by all the programs.
+        base_ui::authorship_ui::init(&crate::data_paths().base);
         let mut app = Self::build(&cc.egui_ctx, cc.storage, true);
         app.after_plugins_changed();
         if app.check_updates {
@@ -405,6 +409,7 @@ impl App {
             frame_path: None,
             allow_close: false,
             show_options: false,
+            show_project_info: false,
             check_updates: saved("check_updates").map(|v| v != "0").unwrap_or(true),
             update: Default::default(),
             zones_visible: saved("zones_visible").map(|v| v != "0").unwrap_or(true),
@@ -725,6 +730,8 @@ impl App {
             self.path.clone()
         };
         if let Some(p) = path {
+            // Who saves it, and when: kept with the project for the next save too.
+            base_ui::authorship_ui::stamp(&mut self.doc.others.authorship, "LightCreator", APP_VERSION, false);
             match std::fs::write(&p, self.doc.to_json()) {
                 Ok(_) => {
                     self.status = trf("Saved {}", &[&p.display()]);
@@ -1506,6 +1513,7 @@ impl App {
             Act::ClearRecent => self.recent.clear(),
             Act::Save => self.save(false),
             Act::SaveAs => self.save(true),
+            Act::ProjectInfo => self.show_project_info = true,
             Act::ImportSvg => self.import_svg(),
             Act::Print => self.open_print(),
             Act::ExportSvg => self.export_svg(),
@@ -3047,5 +3055,36 @@ impl base_ui::layer_bar::LayerBarHost for App {
     }
     fn click_layer(&mut self, layer: usize) {
         self.assign_layer(layer);
+    }
+}
+
+#[cfg(test)]
+mod authorship_tests {
+    use super::*;
+
+    /// A project made by someone else gets the person saving it as a contributor, once, with this program and its version.
+    #[test]
+    fn saving_a_project_of_someone_else_adds_a_contributor_once() {
+        use lc_core::authorship::Signer;
+        let dir = std::env::temp_dir().join(format!("lightcreator-authorship-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let mut d = Document::default();
+        d.others.authorship.stamp(Signer { name: "Anna", program: "MillCreator", version: "v0.9.9" }, 1_795_000_000, false);
+        let file = dir.join("box.cre");
+        std::fs::write(&file, d.to_json()).unwrap();
+        base_ui::authorship_ui::init(&dir);
+        base_ui::authorship_ui::set_name("Jan").unwrap();
+        let mut a = App::build(&egui::Context::default(), None, false);
+        a.doc = Document::from_json(&std::fs::read_to_string(&file).unwrap()).unwrap();
+        a.path = Some(file.clone());
+        assert!(a.act_enabled(Act::ProjectInfo));
+        a.save(false);
+        a.save(false);
+        let back = Document::from_json(&std::fs::read_to_string(&file).unwrap()).unwrap().others.authorship;
+        assert_eq!(back.creator.unwrap().name, "Anna");
+        assert_eq!(back.contributors.len(), 1);
+        assert_eq!((back.contributors[0].name.as_str(), back.contributors[0].program.as_str(), back.contributors[0].version.as_str()), ("Jan", "LightCreator", APP_VERSION));
+        assert_eq!(back.edits.len(), 3, "the edit of Anna and the two saves");
+        std::fs::remove_dir_all(dir).ok();
     }
 }

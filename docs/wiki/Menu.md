@@ -26,6 +26,7 @@ Pozycja, której nie można teraz użyć, jest wyszarzona (na przykład **Cofnij
 | **Otwórz ostatnie** (Open recent) ▸ | | Ostatnie 10 projektów i plików, które otwierałeś lub zapisywałeś; **Wyczyść listę** ją opróżnia. Plik, którego już nie ma, znika z listy. |
 | **Zapisz** (Save) | Ctrl+S | Zapisuje projekt; projekt bez nazwy pliku pyta o nią. |
 | **Zapisz jako…** (Save as…) | Ctrl+Shift+S | Zapisuje projekt pod nową nazwą. |
+| **Informacje o projekcie…** (Project information…) | | Plik (nazwa, folder, rozmiar, czas utworzenia i zmiany), czas utworzenia projektu, twórca, współtwórcy i edycje. Każdy zapis zapamiętuje imię ustawione w **Ustawienia → Opcje programu → Twoje imię i nazwisko** (takie samo w każdym programie), czas oraz program z wersją. |
 | **Importuj** ▸ **Importuj obraz…** (Import image…) | | Kładzie bitmapę (PNG, JPEG, BMP, GIF, WebP) na stronie, z oknem dostosowania. Zobacz [Narzędzia projektowe](Narzedzia-projektowe#import). |
 | **Importuj** ▸ **Importuj SVG…** | Ctrl+I | Dodaje kształty pliku SVG do rysunku; kolory trafiają na warstwy. Obrazy z pliku też przychodzą, na aktywną warstwę. |
 | **Importuj** ▸ **Importuj Adobe Illustrator / PDF / EPS / VectorCraft…** | | Ścieżki wektorowe pierwszej strony pliku PDF lub pliku `.ai` zgodnego z PDF, `.ai` starego rodzaju w PostScripcie i pliku EPS; rysunek VectorCrafta (`.vectorcraft` albo EPS zapisany przez VectorCraft 0.8 lub nowszy) razem z obrazami. |
