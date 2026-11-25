@@ -46,7 +46,7 @@ impl App {
             // Written to its own file: a save of the project (joined with the edit before it).
             base_ui::authorship_ui::stamp(&mut self.doc.others.authorship, "LightCreator", crate::app::APP_VERSION, true);
         }
-        lc_core::autosave::write_atomic(&target, &self.doc.to_json()).ok()?;
+        lc_core::autosave::write_atomic(&target, &self.lock.seal(self.doc.to_json())).ok()?;
         self.autosaved_revision = self.revision;
         if self.path.is_some() {
             // The real file is up to date, so there is nothing left to ask about when closing.
@@ -54,6 +54,29 @@ impl App {
         }
         self.last_autosave = Instant::now();
         Some(target)
+    }
+
+    /// Open the recovery file of `slot` (unlocked already when it is protected) as unsaved work in a tab.
+    pub(crate) fn recover_one(&mut self, path: std::path::PathBuf, slot: usize) {
+        let recent = self.recent.clone();
+        if self.screen == crate::app::Screen::Start {
+            self.start_project(|app| app.open_path(path));
+        } else {
+            self.open_path(path);
+        }
+        if self.screen == crate::app::Screen::Editor {
+            if self.slot != slot {
+                lc_core::autosave::clear_slot(&self.data_base, "lightcreator", self.slot);
+                self.slot = slot;
+            }
+            self.path = None;
+            self.recent = recent;
+            self.touch();
+            self.autosave_now();
+            if !self.lock.locked() {
+                self.status = tr("Recovered the project that was not saved").to_string();
+            }
+        }
     }
 
     /// Close the program, after asking when there is unsaved work.
@@ -392,6 +415,11 @@ impl App {
                 while !self.recovery.is_empty() {
                     let f = self.recovery.remove(0);
                     let path = f.path.clone();
+                    // A protected project waits for its password; it is recovered when it is given.
+                    if let Some(text) = std::fs::read_to_string(&path).ok().filter(|t| lc_core::protect::is_sealed(t)) {
+                        self.unlock.push(base_ui::protect_ui::Prompt::new(path, text, crate::app::RECOVER + f.slot as u32));
+                        continue;
+                    }
                     if first {
                         self.start_project(|app| app.open_path(path));
                     } else {

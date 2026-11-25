@@ -12,6 +12,8 @@ use std::path::PathBuf;
 /// themselves are not kept, because the caches of the program (the preview, the materials) are keyed by the live revision,
 /// which is a new number every time a tab is shown.
 pub struct Workspace {
+    /// Its password protection.
+    pub lock: base_ui::protect_ui::DocLock,
     pub doc: Document,
     pub undo: Vec<Document>,
     pub redo: Vec<Document>,
@@ -25,7 +27,7 @@ pub struct Workspace {
 
 impl Workspace {
     fn empty(doc: Document, slot: usize) -> Workspace {
-        Workspace { doc, undo: vec![], redo: vec![], path: None, clean: true, autosaved_clean: true, view: DocView::default(), slot }
+        Workspace { lock: Default::default(), doc, undo: vec![], redo: vec![], path: None, clean: true, autosaved_clean: true, view: DocView::default(), slot }
     }
 
     /// Unsaved work, as `App::is_dirty` says it for the shown tab.
@@ -50,7 +52,9 @@ impl App {
         // The overlay of the drawing that is put away goes into it; the one of the drawing that comes is shown by the next frame.
         self.overlay_sync_to_doc();
         self.overlay_reload = true;
-        let Workspace { doc, undo, redo, path, clean, autosaved_clean, view, slot } = w;
+        let Workspace { lock, doc, undo, redo, path, clean, autosaved_clean, view, slot } = w;
+        std::mem::swap(&mut self.lock, lock);
+        self.ed.locked = self.lock.locked();
         std::mem::swap(&mut self.doc, doc);
         std::mem::swap(&mut self.undo, undo);
         std::mem::swap(&mut self.redo, redo);
@@ -245,8 +249,8 @@ impl App {
                 base_ui::authorship_ui::stamp(&mut w.doc.others.authorship, "LightCreator", crate::app::APP_VERSION, true);
             }
             let ok = match &w.path {
-                Some(p) => lc_core::autosave::write_atomic(p, &w.doc.to_json()).is_ok(),
-                None => lc_core::autosave::save_slot(&base, "lightcreator", w.slot, &w.doc.to_json()).is_ok(),
+                Some(p) => lc_core::autosave::write_atomic(p, &w.lock.seal(w.doc.to_json())).is_ok(),
+                None => lc_core::autosave::save_slot(&base, "lightcreator", w.slot, &w.lock.seal(w.doc.to_json())).is_ok(),
             };
             if ok {
                 w.autosaved_clean = true;

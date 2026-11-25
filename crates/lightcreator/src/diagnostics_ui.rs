@@ -220,7 +220,7 @@ impl App {
             ("grbl-settings.txt", fw),
             ("console.txt", console),
             ("program.gcode", gcode),
-            ("project.cre", self.doc.to_json()),
+            ("project.cre", self.lock.seal(self.doc.to_json())),
         ]
     }
 
