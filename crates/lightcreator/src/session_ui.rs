@@ -159,11 +159,16 @@ impl App {
         }
         let mut open = true;
         crate::window_ui::popup(ctx, "w_session_ui_1", &tr("Program options"), [340.0, 360.0], &mut open, |ui| {
-            egui::Grid::new("program_options").num_columns(2).spacing([12.0, 8.0]).show(ui, |ui| {
-                base_ui::autosave_ui::options_rows(ui, &mut self.autosave_opts);
+            use base_ui::widgets::{options_grid, options_line};
+            options_grid(ui, "program_options_updates", |ui| {
                 ui.label(tr("Updates"));
                 ui.checkbox(&mut self.check_updates, tr("Look for a newer version when the program starts"));
                 ui.end_row();
+            });
+            options_line(ui);
+            options_grid(ui, "program_options_autosave", |ui| base_ui::autosave_ui::options_rows(ui, &mut self.autosave_opts));
+            options_line(ui);
+            options_grid(ui, "program_options", |ui| {
                 base_ui::units_ui::display_units_row(ui, &mut self.ed.grid_prefs.units);
                 base_ui::view3d::quality_row(ui, &mut self.ed.grid_prefs.render_quality);
                 self.api_options_ui(ui);

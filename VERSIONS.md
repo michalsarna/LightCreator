@@ -6,7 +6,8 @@ Each release gets the next version number and a branch with the same name. Newes
 
 * **Creator and contributors in the project file** (baseCreator): the first save makes you the creator of a project; anyone else who saves it is added once as a contributor; a save by hand is an edit, at most one a minute for the same person and program (the last 200; automatic saves add none). Each entry has the name, the e-mail and a free text (a company, a website…), the time (UTC) and the program with its version. Set them in **Settings → Program options**, in the **Author** part (**Your name**, **Email**, **Other**); they are the same in LightCreator, MillCreator, PenCreator and BaseCreator. A file without this stays as it was, and older versions keep the record when they save.
 * **File → Project information…**: the file (name, folder, size, when it was created and changed), the authors (when the project was created, the creator and the contributors with their e-mail and the rest) and a table of the edits (time, person, program).
-* baseCreator v2.7.9.
+* **Program options** in parts separated by lines: the updates, the auto-save, the other options and the author (baseCreator).
+* baseCreator v2.7.10.
 
 ## v0.9.9
 
