@@ -97,9 +97,17 @@ pub enum Screen {
     Editor,
 }
 
+/// The purpose of a password question for a recovery file: this plus its slot.
+pub(crate) const RECOVER: u32 = 1000;
+
 pub struct App {
     /// Was a picture selected the frame before (a picture that becomes selected shows the tab of its styles)?
     pub picture_was_selected: bool,
+    /// The password protection of the shown drawing (and the guard of a drawing opened with the open password).
+    pub lock: base_ui::protect_ui::DocLock,
+    /// Protected files waiting for their password, and the one just unlocked (its path, JSON and protection) for `open_path`.
+    pub unlock: Vec<base_ui::protect_ui::Prompt>,
+    pub unlocked: Option<(PathBuf, String, lc_core::protect::Protection)>,
     pub doc: Document,
     /// The state of the editor itself (selection, tool, view, grid, snapping), shared with other applications.
     pub ed: base_ui::editor::EditorState,
@@ -386,6 +394,9 @@ impl App {
             slot: 0,
             autosaved_revision: 0,
             picture_was_selected: false,
+            lock: Default::default(),
+            unlock: vec![],
+            unlocked: None,
             data_base: crate::data_paths().base.clone(),
             recovery: lc_core::autosave::find_all(&crate::data_paths().base, "lightcreator"),
             autosave_opts: lc_core::autosave::Options::from_settings(|k| saved(k)),
@@ -570,6 +581,8 @@ impl App {
         self.redo.clear();
         self.ed.sel.clear();
         self.path = None;
+        self.lock = Default::default();
+        self.ed.locked = false;
         self.overlay_reload = true;
         self.touch();
         self.mark_saved();
@@ -609,7 +622,21 @@ impl App {
             }
             return ok;
         }
-        match std::fs::read_to_string(&p).map_err(|e| e.to_string()).and_then(|s| Document::from_json(&s)) {
+        // A protected project: its password first (`dialogs` comes back here with what it unlocked).
+        let unlocked = self.unlocked.take().filter(|(q, ..)| *q == p);
+        let protection = unlocked.as_ref().map(|(_, _, pr)| pr.clone());
+        let read = match unlocked {
+            Some((_, json, _)) => Document::from_json(&json),
+            None => match std::fs::read_to_string(&p) {
+                Ok(text) if lc_core::protect::is_sealed(&text) => {
+                    self.unlock.push(base_ui::protect_ui::Prompt::new(p, text, 0));
+                    return false;
+                }
+                Ok(text) => Document::from_json(&text),
+                Err(e) => Err(e.to_string()),
+            },
+        };
+        match read {
             Ok(d) => {
                 // A project goes into a tab of its own (a blank tab is used as it is); one that is open is shown.
                 if !self.tab_for_file(&p) {
@@ -636,6 +663,11 @@ impl App {
                 }
                 self.add_recent(&p);
                 self.path = Some(p);
+                self.lock = base_ui::protect_ui::DocLock::new(protection, &self.doc.scene);
+                self.ed.locked = self.lock.locked();
+                if self.lock.locked() {
+                    self.status = base_ui::protect_ui::locked_message();
+                }
                 self.overlay_reload = true;
                 self.touch();
                 self.mark_saved();
@@ -732,7 +764,7 @@ impl App {
         if let Some(p) = path {
             // Who saves it, and when: kept with the project for the next save too.
             base_ui::authorship_ui::stamp(&mut self.doc.others.authorship, "LightCreator", APP_VERSION, false);
-            match std::fs::write(&p, self.doc.to_json()) {
+            match std::fs::write(&p, self.lock.seal(self.doc.to_json())) {
                 Ok(_) => {
                     self.status = trf("Saved {}", &[&p.display()]);
                     let name = p.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
@@ -1434,6 +1466,10 @@ impl App {
         if let Some(s) = a.std() {
             return s.enabled(self);
         }
+        // A drawing opened with the open password: nothing that adds to it or takes it out of the program as a drawing.
+        if self.lock.locked() && matches!(a, Act::ExportSvg | Act::ExportCam | Act::Print | Act::ImportSvg | Act::ImportAi | Act::ImportDxf | Act::ImportLightburn | Act::ImportUgsd | Act::ImportPlugin | Act::GenerateShape | Act::OnlineClipart) {
+            return false;
+        }
         match a {
             Act::ClearRecent => !self.recent.is_empty(),
             Act::Frame => self.connected && !self.job_running(),
@@ -1717,6 +1753,22 @@ impl App {
     }
 
     fn dialogs(&mut self, ctx: &egui::Context) {
+        // A protected file waiting for its password.
+        if let Some(base_ui::protect_ui::Unlocked::Opened { path, json, protection, purpose }) = base_ui::protect_ui::prompt_window(ctx, &mut self.unlock) {
+            self.unlocked = Some((path.clone(), json, protection));
+            match purpose.checked_sub(RECOVER) {
+                Some(slot) => self.recover_one(path, slot as usize),
+                None if self.screen == Screen::Start => self.start_project(|app| app.open_path(path)),
+                None => {
+                    self.open_path(path);
+                }
+            }
+        }
+        // A drawing opened with the open password stays as it was.
+        if self.lock.check(&mut self.doc.scene) {
+            self.status = base_ui::protect_ui::locked_message();
+            self.touch();
+        }
         self.materials_window(ctx);
         self.setup_window(ctx);
         self.sides_save_window(ctx);
@@ -2912,9 +2964,8 @@ mod lightburn_open_tests {
         }
         let mut a = fresh();
         a.import_ai_path(fx("kwadrat.ai"));
-        // The file has an Illustrator layer: the program asks how to place it.
-        let (p, outlines) = a.ed.drawing_choice.take().expect("the question about the Illustrator layers");
-        a.place_drawing(&p, outlines, true);
+        // One Illustrator layer (every file of Illustrator has "Layer 1"): no question, the paths come in by colour.
+        assert!(a.ed.drawing_choice.is_none());
         assert_eq!(a.doc.scene.shapes.len(), 1, "{}", a.status);
         // VectorCraft and its EPS through the same import as the other programs; the photo of a VectorCraft drawing comes as a picture.
         for f in ["kwadrat.vectorcraft", "kwadrat.eps"] {
@@ -3001,6 +3052,49 @@ mod lightburn_open_tests {
         assert_eq!(a.doc.layers[1].mode, lc_core::LayerMode::Line);
         a.do_undo();
         assert_eq!(a.doc.scene.shapes.len(), 1);
+        std::fs::remove_dir_all(dir).ok();
+    }
+
+        /// A protected project: it asks for its password and opens with either; the open password keeps the drawing as it was and
+    /// allows no export or copy, but G-code; saving (and the diagnostics zip) keep it protected with both passwords.
+    #[test]
+    fn a_protected_project_opens_with_its_passwords_and_the_open_one_cannot_edit() {
+        use lc_core::protect::{self, Access, Kdf, Protection};
+        let dir = std::env::temp_dir().join(format!("lc-protected-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let file = dir.join("secret.cre");
+        let mut d = Document::default();
+        d.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::IDENTITY);
+        let fast = Kdf { m_kib: 8 * 1024, t: 1, p: 1 };
+        // Passwords made when the test runs (none written into the code).
+        let (owner, open) = (format!("owner-{}", std::process::id()), format!("open-{}", std::process::id()));
+        let prot = Protection::with_kdf(&owner, Some(&open), fast).unwrap();
+        std::fs::write(&file, prot.seal(&d.to_json())).unwrap();
+        let unlock = |a: &mut App, pw: &str| {
+            assert!(!a.open_path(file.clone()));
+            assert_eq!(a.unlock.len(), 1, "the password is asked for");
+            let (json, p) = protect::open(&std::fs::read_to_string(&file).unwrap(), pw).unwrap();
+            a.unlock.clear();
+            a.unlocked = Some((file.clone(), json, p));
+            assert!(a.open_path(file.clone()));
+        };
+        let mut a = App::build(&egui::Context::default(), None, false);
+        unlock(&mut a, &open);
+        assert_eq!(a.doc.scene.shapes.len(), 1);
+        assert!(a.lock.locked() && a.ed.locked);
+        assert!(!a.act_enabled(Act::ExportSvg) && !a.act_enabled(Act::Print) && !a.act_enabled(Act::ImportSvg));
+        assert!(!a.act_enabled(Act::Copy));
+        a.doc.scene.shapes.clear();
+        assert!(a.lock.check(&mut a.doc.scene));
+        assert_eq!(a.doc.scene.shapes.len(), 1, "the drawing is put back");
+        a.save(false);
+        let text = std::fs::read_to_string(&file).unwrap();
+        assert!(protect::is_sealed(&text));
+        assert_eq!(protect::open(&text, &owner).unwrap().1.access, Access::Owner);
+        assert_eq!(protect::open(&text, &open).unwrap().1.access, Access::Open);
+        let mut b = App::build(&egui::Context::default(), None, false);
+        unlock(&mut b, &owner);
+        assert!(!b.lock.locked() && !b.ed.locked && b.act_enabled(Act::ExportSvg));
         std::fs::remove_dir_all(dir).ok();
     }
 

@@ -66,6 +66,7 @@ impl App {
             flip: self.doc.two.as_ref().map_or(FlipAxis::SideToSide, |t| t.flip()),
             marks: self.doc.two.as_ref().is_none_or(|t| t.marks),
             max: (aw, ah),
+            protect: self.lock.fields(),
             ..Default::default()
         };
         let solid = self.doc.solid();
@@ -76,7 +77,17 @@ impl App {
     pub fn setup_window(&mut self, ctx: &egui::Context) {
         let units = self.doc.device.units;
         match base_ui::project_setup::window(ctx, &mut self.setup, units, kind()) {
-            Some(Answer::Apply) => self.apply_setup(),
+            Some(Answer::Apply) => {
+                // The passwords first (the window checked them); a change makes the project need saving.
+                let change = self.setup.protect.take_change();
+                let real = !matches!(change, base_ui::protect_ui::Change::Keep);
+                match base_ui::protect_ui::apply(change, &mut self.lock.protection) {
+                    Ok(()) if real => self.touch(),
+                    Ok(()) => {}
+                    Err(e) => self.status = e,
+                }
+                self.apply_setup();
+            }
             Some(Answer::Skip) if self.setup.start => self.skip_start_setup(),
             _ => {}
         }
@@ -258,6 +269,7 @@ impl App {
             self.checkpoint();
             let solid = self.doc.two.as_ref().is_some_and(|t| t.is_solid());
             self.doc.show_face(i);
+            self.lock.rearm(&self.doc.scene);
             self.ed.sel.clear();
             self.ed.ghost_sel.clear();
             self.ed.node_sel.clear();
