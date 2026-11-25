@@ -158,9 +158,8 @@ impl App {
             return;
         }
         let mut open = true;
-        crate::window_ui::popup(ctx, "w_session_ui_1", &tr("Program options"), [340.0, 220.0], &mut open, |ui| {
+        crate::window_ui::popup(ctx, "w_session_ui_1", &tr("Program options"), [340.0, 360.0], &mut open, |ui| {
             egui::Grid::new("program_options").num_columns(2).spacing([12.0, 8.0]).show(ui, |ui| {
-                base_ui::authorship_ui::options_rows(ui);
                 base_ui::autosave_ui::options_rows(ui, &mut self.autosave_opts);
                 ui.label(tr("Updates"));
                 ui.checkbox(&mut self.check_updates, tr("Look for a newer version when the program starts"));
@@ -170,6 +169,7 @@ impl App {
                 self.api_options_ui(ui);
                 ui.end_row();
             });
+            base_ui::authorship_ui::options_section(ui);
         });
         self.show_options = open;
     }
