@@ -1,4 +1,4 @@
-🌐 **English** · [Polski](Symulator-GRBL)
+🌐 **English** · [Polski](Symulator-GRBL) · [简体中文](GRBL-Simulator-ZH) · [한국어](GRBL-Simulator-KO)
 
 # GRBL Simulator
 

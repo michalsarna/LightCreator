@@ -1,3 +1,5 @@
+🌐 **English** · [Polski](Urzadzenia-sterujace) · [简体中文](Control-Devices-ZH) · [한국어](Control-Devices-KO)
+
 # Control Devices
 
 A USB pad or the keyboard can drive the machine. **Machine → Control devices ▸** has the two entries: **Control device settings…** opens the window of the devices and their keys, and **Control device of this machine…** chooses the device of the machine that is open.

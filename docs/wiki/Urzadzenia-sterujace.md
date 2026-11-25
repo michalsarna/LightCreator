@@ -1,3 +1,5 @@
+🌐 [English](Control-Devices) · **Polski** · [简体中文](Control-Devices-ZH) · [한국어](Control-Devices-KO)
+
 # Urządzenia sterujące
 
 Maszyną można sterować padem USB albo klawiaturą. **Maszyna → Urządzenia sterujące ▸** ma dwie pozycje: **Ustawienia urządzeń sterujących…** otwiera okno urządzeń i ich klawiszy, a **Urządzenie sterujące tej maszyny…** wybiera urządzenie otwartej maszyny.

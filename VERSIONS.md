@@ -2,8 +2,9 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
-## v0.9.x (not released yet)
+## v0.9.10
 
+* **The wiki in Simplified Chinese and Korean** (machine-translated, marked so on every page), linked from the language bar of every page and from the sidebar.
 * **Authors in the project file** (baseCreator v2.7.12): the creator keeps the name, the e-mail and the other field; a contributor keeps the name and the e-mail, only the name when the e-mail is the creator's. **Project information** shows the creator's e-mail and other field in rows of their own.
 * Dependencies updated (baseCreator v2.7.12 and the newest compatible crates); CI uses the FreeBSD VM action 1.6.0.
 * **Eight new languages** (baseCreator v2.7.11): Japanese, Korean, Traditional Chinese, Turkish, Vietnamese, Indonesian, Serbian (Cyrillic) and Bosnian, 38 in all, for the shared texts and the program's own. Simplified Chinese is now named so in the menu. A Korean font (Noto Sans KR, the Hangul letters) is built in. The list of languages scrolls on a short screen.

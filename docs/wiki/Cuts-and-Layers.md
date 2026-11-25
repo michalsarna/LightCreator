@@ -1,4 +1,4 @@
-🌐 **English** · [Polski](Ciecia-i-warstwy)
+🌐 **English** · [Polski](Ciecia-i-warstwy) · [简体中文](Cuts-and-Layers-ZH) · [한국어](Cuts-and-Layers-KO)
 
 # Cuts and Layers
 

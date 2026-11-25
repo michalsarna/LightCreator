@@ -1,4 +1,4 @@
-🌐 [English](Safety-and-Limitations) · **Polski**
+🌐 [English](Safety-and-Limitations) · **Polski** · [简体中文](Safety-and-Limitations-ZH) · [한국어](Safety-and-Limitations-KO)
 
 # Bezpieczeństwo i ograniczenia
 

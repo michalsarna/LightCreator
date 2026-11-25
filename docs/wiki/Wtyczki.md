@@ -1,3 +1,5 @@
+🌐 [English](Plugins) · **Polski** · [简体中文](Plugins-ZH) · [한국어](Plugins-KO)
+
 # Wtyczki
 
 Wtyczki dodają LightCreatorowi rzeczy bez zmieniania programu: **clipart, presety maszyn, tłumaczenia, importery innych formatów plików, generatory kształtów i postprocesory G-code.** Są wspólne dla LightCreatora, MillCreatora i PenCreatora: wtyczka leży w folderze `plugins` we wspólnym folderze danych (`baseCreator`), a każdy program używa tych części, które do niego pasują.

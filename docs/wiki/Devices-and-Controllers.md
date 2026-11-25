@@ -1,4 +1,4 @@
-🌐 **English** · [Polski](Urzadzenia-i-sterowniki)
+🌐 **English** · [Polski](Urzadzenia-i-sterowniki) · [简体中文](Devices-and-Controllers-ZH) · [한국어](Devices-and-Controllers-KO)
 
 # Devices and Controllers
 
