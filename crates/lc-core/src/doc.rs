@@ -1471,6 +1471,8 @@ impl TwoSides {
 pub struct Others {
     pub sections: std::collections::BTreeMap<String, serde_json::Value>,
     pub extra: std::collections::BTreeMap<String, serde_json::Value>,
+    /// Who made the project and who worked on it, as read; stamped when the project is saved (`base_core::authorship`).
+    pub authorship: crate::authorship::Authorship,
 }
 
 /// What a project keeps of the machine it was made for: its name and work area X/Y/Z (Z is the travel of the head, 0 without a Z
@@ -1725,6 +1727,7 @@ impl Document {
         p.description = self.description.clone();
         p.restore_sections(&self.others.sections);
         p.restore_extra(&self.others.extra);
+        p.authorship = self.others.authorship.clone();
         p.set_section(LASER_SECTION, &LaserSection { format: LASER_SECTION_FORMAT, machine: Machine::of(&self.device), material: self.device.material().clone(), layers: self.layers.clone(), order: self.order.clone(), piece: self.piece });
         // A two-sided job: the drawing of the file is side A, side B goes into its own section.
         p.remove_section(base_core::setup::SECTION);
@@ -1895,7 +1898,8 @@ impl Document {
             }
         }
         let extra = p.extra().clone();
-        let mut doc = Document { scene: p.scene, layers, device, order, description: p.description, job_info: JobInfo::default(), others: Others { sections, extra }, piece, two };
+        let authorship = p.authorship.clone();
+        let mut doc = Document { scene: p.scene, layers, device, order, description: p.description, job_info: JobInfo::default(), others: Others { sections, extra, authorship }, piece, two };
         // A post or a block opens on face A, with its work area and piece.
         doc.apply_face_size();
         Ok(doc)

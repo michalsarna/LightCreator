@@ -42,6 +42,10 @@ impl App {
             Some(p) => p.clone(),
             None => temp_autosave_path(&self.data_base, self.slot),
         };
+        if self.path.is_some() {
+            // Written to its own file: a save of the project (joined with the edit before it).
+            base_ui::authorship_ui::stamp(&mut self.doc.others.authorship, "LightCreator", crate::app::APP_VERSION, true);
+        }
         lc_core::autosave::write_atomic(&target, &self.doc.to_json()).ok()?;
         self.autosaved_revision = self.revision;
         if self.path.is_some() {
@@ -91,6 +95,10 @@ impl App {
         self.close_dialog(ctx);
         self.confirm_dialog(ctx);
         self.options_window(ctx);
+        if self.show_project_info {
+            let info = base_ui::authorship_ui::Info { path: self.path.as_deref(), authorship: &self.doc.others.authorship };
+            base_ui::authorship_ui::window(ctx, &mut self.show_project_info, &info);
+        }
     }
 
     fn toast_ui(&mut self, ctx: &egui::Context) {
@@ -152,6 +160,7 @@ impl App {
         let mut open = true;
         crate::window_ui::popup(ctx, "w_session_ui_1", &tr("Program options"), [340.0, 220.0], &mut open, |ui| {
             egui::Grid::new("program_options").num_columns(2).spacing([12.0, 8.0]).show(ui, |ui| {
+                base_ui::authorship_ui::options_rows(ui);
                 base_ui::autosave_ui::options_rows(ui, &mut self.autosave_opts);
                 ui.label(tr("Updates"));
                 ui.checkbox(&mut self.check_updates, tr("Look for a newer version when the program starts"));

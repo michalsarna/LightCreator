@@ -2,6 +2,12 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v0.9.x (not released yet)
+
+* **Creator and contributors in the project file** (baseCreator): the first save makes you the creator of a project; anyone else who saves it is added once as a contributor; every save is an edit (the last 200; an automatic save joins the edit just before it). Each entry has the name, the time (UTC) and the program with its version. Set your name in **Settings → Program options → Your name**; it is the same in LightCreator, MillCreator, PenCreator and BaseCreator. A file without this stays as it was, and older versions keep the record when they save.
+* **File → Project information…**: the name, folder and size of the file, when it was created and changed, when the project was created, its creator, contributors and edits.
+* baseCreator v2.7.8.
+
 ## v0.9.9
 
 * **FreeBSD** (x86_64): the program builds there and its tests pass (a FreeBSD 15.0 virtual machine in CI); a release has `lightcreator-vX.Y.Z-freebsd-x86_64.tar.gz`. It needs `pkg install libudev-devd libxkbcommon mesa-libs ffmpeg` (see Installation). USB cameras do not work there yet (the camera says so); network (IP) cameras do. Libraries nix 0.31.4 and libc 0.2.191 (the older ones do not build on FreeBSD). baseCreator v2.7.7.

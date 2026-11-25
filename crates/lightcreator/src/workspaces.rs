@@ -240,6 +240,10 @@ impl App {
             if !w.dirty() || w.autosaved_clean {
                 continue;
             }
+            if w.path.is_some() {
+                // Written to its own file: a save of the project (joined with the edit before it).
+                base_ui::authorship_ui::stamp(&mut w.doc.others.authorship, "LightCreator", crate::app::APP_VERSION, true);
+            }
             let ok = match &w.path {
                 Some(p) => lc_core::autosave::write_atomic(p, &w.doc.to_json()).is_ok(),
                 None => lc_core::autosave::save_slot(&base, "lightcreator", w.slot, &w.doc.to_json()).is_ok(),
