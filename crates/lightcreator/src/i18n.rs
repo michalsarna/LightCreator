@@ -10,7 +10,7 @@ pub use base_ui::i18n::{lang, set_lang, Lang};
 
 /// The texts of the other languages, in the order of `Lang::ALL` after the first seven. One line each:
 /// `id|translation`, where the id is the line of the English text in `assets/lang/keys.txt`.
-const EXTRA_FILES: [&str; 23] = [
+const EXTRA_FILES: [&str; i18n::EXTRA_LANGS] = [
     include_str!("../../../assets/lang/bg.txt"),
     include_str!("../../../assets/lang/ca.txt"),
     include_str!("../../../assets/lang/hr.txt"),
@@ -34,6 +34,21 @@ const EXTRA_FILES: [&str; 23] = [
     include_str!("../../../assets/lang/es.txt"),
     include_str!("../../../assets/lang/sv.txt"),
     include_str!("../../../assets/lang/uk.txt"),
+    include_str!("../../../assets/lang/ja.txt"),
+
+    include_str!("../../../assets/lang/ko.txt"),
+
+    include_str!("../../../assets/lang/zh-hant.txt"),
+
+    include_str!("../../../assets/lang/tr.txt"),
+
+    include_str!("../../../assets/lang/vi.txt"),
+
+    include_str!("../../../assets/lang/id.txt"),
+
+    include_str!("../../../assets/lang/sr.txt"),
+
+    include_str!("../../../assets/lang/bs.txt"),
 ];
 const KEYS: &str = include_str!("../../../assets/lang/keys.txt");
 
@@ -1356,11 +1371,11 @@ mod tests {
         assert_eq!(TEXTS.lookup(uk, "Help").unwrap_or("Help"), "Довідка");
         assert_eq!(TEXTS.lookup(uk, "not in table").unwrap_or("not in table"), "not in table");
         assert_eq!(Lang::from_code("sv"), Some(Lang::Sv));
-        assert_eq!(Lang::ALL.len(), 30);
+        assert_eq!(Lang::ALL.len(), 38);
         let mut codes: Vec<_> = Lang::ALL.iter().map(|l| l.code()).collect();
         codes.sort();
         codes.dedup();
-        assert_eq!(codes.len(), 30, "language codes are unique");
+        assert_eq!(codes.len(), 38, "language codes are unique");
     }
 
     // Uses the pure helpers with an explicit language: the current language is process-global and other

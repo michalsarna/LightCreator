@@ -1,0 +1,1160 @@
+0|Datoteka
+1|Uređivanje
+2|Raspored
+3|Prikaz
+4|Laser
+5|Postavke
+6|Pomoć
+7|Novo
+8|Otvori…
+9|Sačuvaj
+10|Sačuvaj kao…
+11|Uvezi SVG…
+12|Izvezi SVG…
+13|Izvezi G-code…
+14|Izađi
+15|Poništi
+16|Ponovi
+17|Kopiraj
+18|Zalijepi
+19|Dupliciraj
+20|Obriši
+21|Odaberi sve
+22|Poravnaj lijevo
+23|Poravnaj po sredini (H)
+24|Poravnaj desno
+25|Poravnaj gore
+26|Poravnaj po sredini (V)
+27|Poravnaj dolje
+28|Centriraj jedno prema drugom
+29|Centriraj na podlozi
+30|Okreni vodoravno
+31|Okreni okomito
+32|Rotiraj 90° udesno
+33|Rotiraj 90° ulijevo
+34|Donesi naprijed
+35|Pošalji nazad
+36|Pretvori u putanju
+37|Mrežasti niz…
+38|Mreža
+39|Privlači na mrežu
+40|Pregled putanje alata
+41|Uklopi podlogu u prozor
+42|Postavke uređaja…
+43|Okvir
+44|Počni posao
+45|O programu
+46|Jezik
+47|Shema boja
+48|Tamna
+49|Svijetlo tamna
+50|Srednje svijetla
+51|Svijetla
+52|Odabir (V)
+53|Pravougaonik (R)
+54|Elipsa (E)
+55|Linija (L)
+56|Izlomljena linija / olovka (P)
+57|Pomjeranje (H)
+58|Zum (Z)
+59|Odabir
+60|Pravougaonik
+61|Elipsa
+62|Red
+63|Popuna
+64|Popuna + linija
+65|Sloj {}
+66|Privlačenje
+67|Pregled
+68|Start
+69|Šalji posao povezanom laseru
+70|Obiđi okvir
+71|Sačuvaj G-code
+72|Slojevi
+73|{} — kliknite da dodijelite odabir / postavite kao aktivan
+74|Spremno
+75|Otvoreno {}
+76|Otvaranje nije uspjelo: {}
+77|Sačuvano {}
+78|Čuvanje nije uspjelo: {}
+79|Uvezeno putanja: {} iz {}
+80|Uvoz nije uspio: {}
+81|Izvezeno {}
+82|Izvoz nije uspio: {}
+83|Sačuvan G-code {}
+84|Prvo se povežite s laserom (panel Laser)
+85|Nema šta da se pali: nema oblika na izlaznim slojevima
+86|Počinje posao: {} redova, ~{}
+87|Veza prekinuta
+88|Povezano s {} @ {}
+89|Nije moguće otvoriti {}: {}
+90|Prekinuto (meki reset)
+91|Veza je izgubljena
+92|Procijenjeno vrijeme
+93|dužina rezanja
+94|Postavke uređaja
+95|Naziv
+96|Radni prostor X
+97|Radni prostor Y
+98|Nula mašine (0,0)
+99|Naprijed lijevo (GRBL zadano)
+100|Nazad lijevo
+101|Najveća S vrijednost ($30)
+102|Dinamička snaga (M4)
+103|Brzina praznog hoda
+104|Vrati se na ishodište
+105|Brzina prijenosa
+106|Mrežasti niz
+107|Kolone
+108|Redovi
+109|Razmak X
+110|Razmak Y
+111|Napravi niz
+112|O programu LightCreator
+113|Verzija {}
+114|Softver otvorenog koda za dizajn i upravljanje laserskim graverima i rezačima.
+115|Porijeklo: napisano u Rustu s egui/eframe.
+116|Interfejs inspirisan programom VectorCraft.
+117|Autor: Michał Sarna
+118|MIT licenca.
+119|Svojstva
+120|Rezovi / slojevi
+121|Ništa nije odabrano
+122|Zaključaj omjer stranica
+123|Rotiraj
+124|Primijeni
+125|Okreni H
+126|Okreni V
+127|Sredina
+128|Lijevo
+129|Sred-H
+130|Desno
+131|Gore
+132|Sred-V
+133|Dolje
+134|Poravnaj po sredini
+135|Poravnaj po vertikalnoj sredini
+136|Sloj
+137|Prikaži svih 30 slojeva
+138|Izlaz (pali ovaj sloj)
+139|Vidljivo
+140|Postavke reza — {}
+141|Način
+142|Brzina
+143|Snaga (%)
+144|Prolazi
+145|Interval
+146|Ugao skeniranja
+147|Presken
+148|Dvosmjerno
+149|Nema porta
+150|Osvježi
+151|Ponovo pretraži serijske portove
+152|Prekini vezu
+153|Poveži
+154|Stanje
+155|Korak
+156|Pomak
+157|Gore
+158|Dolje
+159|Prekini posao koji radi
+160|Zaustavi
+161|Otkaži ručno pomjeranje
+162|Početni položaj
+163|Otključaj
+164|Pauza
+165|Nastavi
+166|STOP
+167|Snaga uokviravanja
+168|0 % drži laser isključenim tokom uokviravanja; 1–2 % prikazuje blijedu tačku na diodnim laserima
+169|pošalji G-code / $ komandu
+170|Pošalji
+171|Odaberi uređaj
+172|Odaberite uređaj s kojim ćete raditi.
+173|Napravite barem jedan profil uređaja da nastavite.
+174|Nastavi
+175|Dodaj uređaj…
+176|Uredi…
+177|Potvrdi brisanje
+178|Otkaži
+179|Konfiguracija uređaja
+180|Novi uređaj
+181|npr. Moj diodni laser
+182|Naziv profila je obavezan.
+183|Promijeni uređaj…
+184|Uređaj: {}
+185|Jedinice brzine
+186|U sekundi (mm/s, in/s)
+187|U minuti (mm/min, in/min)
+188|Otvori nedavno
+189|(prazno)
+190|Očisti listu
+191|više ne postoji
+192|Zatvori
+193|Umanji
+194|Uvećaj
+195|Vrati
+196|Prikaži ili sakrij mrežu
+197|Prikaži ili sakrij pomoćnu mrežu
+198|Zračna pomoć
+199|Zračna pumpa uključena
+200|Uključi zračnu pumpu dok se ovaj sloj pali (M8 / M9)
+201|Položaj i veličina
+202|Rotacija
+203|Preslikaj i centriraj
+204|Poravnanje
+205|Skupi
+206|Raširi
+207|Vrijeme
+208|Datoteka sačuvana: {}
+209|Automatski sačuvano {}
+210|Sačuvati rad prije zatvaranja?
+211|Dizajn nije sačuvan u datoteku.
+212|Odbaci
+213|Opcije programa…
+214|Opcije programa
+215|Automatsko čuvanje
+216|Automatski čuvaj rad
+217|Automatski čuvaj svakih
+218|Rad bez naziva datoteke ide u privremeni folder; datoteka s nazivom čuva se na mjestu
+219|Spirala
+220|Spirala (I)
+221|Broj zavoja
+222|Prevucite na radnom prostoru da ga nacrtate.
+223|Preuzmi rezervnu kopiju…
+224|Provjeri ažuriranja…
+225|Rezervna kopija sačuvana: {}
+226|Pravljenje rezervne kopije nije uspjelo: {}
+227|Ažuriranja
+228|Dostupna je novija verzija: {}
+229|Imate {}.
+230|Otvori stranicu za preuzimanje
+231|Imate najnoviju verziju.
+232|Najnovije izdanje: {}
+233|Nije moguće provjeriti ažuriranja.
+234|Traži noviju verziju pri pokretanju programa
+235|Vrati iz rezervne kopije…
+236|Vrati iz rezervne kopije
+237|Vaše trenutne postavke i klipart bit će zamijenjeni rezervnom kopijom. Nastaviti?
+238|Rezervna kopija vraćena: {}
+239|Vraćanje nije uspjelo: {}
+240|Nisu pronađene datoteke profila. Imate li rezervnu kopiju?
+241|Jedinice
+242|Milimetri (mm)
+243|Inči (in)
+244|Uređaj
+245|Konzola
+246|Upiti o stanju
+247|Automatsko pomjeranje
+248|Očisti
+249|Kontroler
+250|Vrsta lasera
+251|Radni prostor
+252|Da
+253|Ne
+254|Veza
+255|Port
+256|Korak ručnog pomjeranja
+257|Pomak ručnog pomjeranja
+258|Ovaj kontroler nema vezu uživo: poslovi se izvoze kao datoteke.
+259|Uređivanje čvorova (N)
+260|Tekst (T)
+261|Ugao
+262|Glatko
+263|U pravu
+264|U krivulju
+265|Dodaj čvor
+266|Obriši čvor
+267|Otvori / zatvori
+268|Pretvori odabrane čvorove u uglove
+269|Učini odabrane čvorove glatkim
+270|Pretvori segment nakon svakog odabranog čvora u pravu
+271|Pretvori segment nakon svakog odabranog čvora u krivulju
+272|Umetni čvor (ili dvaput kliknite segment)
+273|Zatvori otvorenu putanju ili otvori zatvorenu u odabranom čvoru
+274|Pretvori u krivulje
+275|Pretvori tekst u Bézierove oblike koji se mogu uređivati
+276|Unija
+277|Presjek
+278|Oduzmi
+279|Isključivo ili
+280|Pomak oblika…
+281|Pomak oblika
+282|Udaljenost
+283|Pozitivno povećava obris, negativno ga smanjuje.
+284|Zadrži original
+285|Napravi pomak
+286|Odaberite barem dva oblika (ne slike).
+287|Rezultat je prazan.
+288|Uvezi sliku…
+289|Uvezena slika {}
+290|Tekst
+291|Font
+292|Pretraga
+293|Veličina
+294|Stil
+295|Podebljano
+296|Kurziv
+297|Razmak slova
+298|Prored
+299|Poravnanje
+300|Slika
+301|Negativ slike
+302|Graviraj svijetle dijelove umjesto tamnih
+303|Graviranje koristi interval, brzinu, snagu i diterovanje sloja.
+304|Postavke slike
+305|Slike koriste interval, brzinu, snagu i presken svog sloja.
+306|Diterovanje
+307|Najmanja snaga (%)
+308|Prag
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Uređeno
+314|Nijanse sive
+315|Popuna pomakom
+316|Izvezi PLT / DXF…
+317|Izvezeno {}. Preskočeno slika: {}: ovaj format nema raster.
+318|Izvezite PLT ili DXF i otvorite ga u vlastitom softveru kontrolera (na primjer RDWorks za Ruida), koji postavlja brzinu i snagu po boji sloja.
+319|Biblioteka materijala…
+320|Biblioteka materijala
+321|Sve
+322|Materijal
+323|Operacija
+324|Snaga
+325|Rezanje
+326|Graviranje
+327|Zarezivanje
+328|Početne vrijednosti za uobičajene diodne lasere od 10 W i CO2 lasere od 40 W. Uvijek isprobajte na otpadu.
+329|Primijeni na sloj {}
+330|Primijenjeno {} ({}) na sloj {}
+331|Sačuvaj aktivni sloj kao predložak
+332|Naziv materijala
+333|Sačuvaj predložak
+334|Sloj kamere…
+335|Sloj kamere
+336|Prikaži fotografiju ili kameru uživo ispod dizajna radi postavljanja posla na materijal.
+337|Učitaj sliku…
+338|Ukloni
+339|Kamera uživo
+340|Ova verzija nema podršku za kameru. Izgradite s: cargo run --release --features camera
+341|Nema kamere
+342|Pronađi kamere
+343|Pokreni kameru
+344|Zamrzni kadar
+345|Kamera
+346|Sloj: {}
+347|Prikaži sloj
+348|Neprozirnost
+349|Poravnanje: prevucite četiri ugla na radnom prostoru
+350|Prevucite svaki ugao na odgovarajući ugao materijala ili radnog prostora; perspektiva se ispravlja.
+351|Resetuj na radni prostor
+352|Rotiraj 90°
+353|Pali ranije
+354|Pali kasnije
+355|Slojevi se pale odozgo nadolje.
+356|Opcije mreže…
+357|Opcije mreže
+358|Glavna mreža
+359|Pomoćna mreža
+360|Prikaži
+361|Razmak između linija
+362|Boja
+363|Pomoćna mreža mora biti gušća od glavne.
+364|Resetuj mrežu
+365|Putanje alata
+366|Prikaži putanje alata na radnom prostoru
+367|Pregled…
+368|Prozor pregleda…
+369|Otvori prozor pregleda
+370|Boja po
+371|Prikaži prazne hodove
+372|Pokreti mašine s isključenim laserom
+373|Pusti
+374|Uklopi
+375|Operacije
+376|Previše pokreta: linije praznog hoda su sakrivene.
+377|pokreta: {}
+378|Uvezi
+379|Izvoz
+380|Uvezi Adobe Illustrator / PDF / EPS / VectorCraft…
+381|Grupiši
+382|Razgrupiši
+383|Odaberite barem dva objekta za grupisanje.
+384|Grupisano. Objekti zadržavaju svoje slojeve.
+385|Operacije nad oblicima
+386|Podesi sliku…
+387|Trasiraj sliku…
+388|Uvezi sliku
+389|Podesi sliku
+390|Rotiranje i okretanje
+391|Ugao
+392|Ton
+393|Osvjetljenje
+394|Kontrast
+395|Gama
+396|Automatski nivoi
+397|Širina
+398|{} × {} px
+399|Resetuj
+400|Trasiraj sliku
+401|Zanemari male površine
+402|Pojednostavi
+403|Izgladi krivulje
+404|Trasiraj svijetle površine
+405|Obriši sliku nakon toga
+406|{} kontura
+407|Trasiraj
+408|Trasirano kontura: {}
+409|Pročitaj s uređaja
+410|Čitanje…
+411|Poveži se i pročitaj radni prostor, najveću S vrijednost i brzinu iz kontrolera
+412|Čitanje postavki s uređaja…
+413|Nije moguće povezati se s uređajem.
+414|Uređaj nije prijavio nijednu postavku.
+415|Pročitano vrijednosti s uređaja: {}
+416|Trougao (Y)
+417|Zvijezda (S)
+418|Mnogougao (G)
+419|Trougao
+420|Zvijezda
+421|Mnogougao
+422|Broj stranica
+423|Prevucite na radnom prostoru da ga nacrtate. Najviše 360 stranica.
+424|U redu
+425|Tip veze
+426|Serijski port
+427|Mreža (TCP, npr. ser2net)
+428|Host
+429|TCP port
+430|Povezano s {}
+431|URL kamere
+432|Slika mašine uživo: MJPEG tok ili adresa JPEG snimka (http ili https).
+433|Pogled kamere
+434|Prikaži sliku kamere uživo ove mašine
+435|Čeka se slika…
+436|Zadani zum
+437|Nazad na cijelu sliku
+438|Prikaži kao sloj na radnom prostoru
+439|Greška toka: {}
+440|Uklopi 15 s
+441|Stvarno vrijeme
+442|Prvo postavite URL kamere u postavkama uređaja.
+443|Prikaži u
+444|Plutajući prozor
+445|Zaseban prozor
+446|Bočna kartica
+447|Sloj
+448|Prikaži ili sakrij sloj kamere na radnom prostoru
+449|Prikaži sloj kamere
+450|Još nema sloja kamere. Učitajte sliku ili pokrenite pogled kamere.
+451|Dijeli preko mreže (ser2net)…
+452|Dijeli preko mreže (ser2net)
+453|ser2net pronađen: {}
+454|ser2net nije pronađen. Prvo ga instalirajte, na primjer: sudo apt install ser2net
+455|Ovo dijeli serijski port lasera na ovom računaru preko mreže, tako da se LightCreator na drugom mjestu može povezati tipom veze „Mreža (TCP)”.
+456|Verzija ser2net
+457|Slušaj samo na ovom računaru (koristite sa SSH tunelom)
+458|Novi klijent zamjenjuje povezanog
+459|Datoteka: {}
+460|Zatim se s drugog računara povežite na {}:{}
+461|Upozorenje: svako na mreži ko dođe do ovog porta može upravljati laserom. Koristite pouzdanu mrežu, zaštitni zid ili opciju samo lokalno sa SSH tunelom.
+462|Kopirano.
+463|Instaliraj i ponovo pokreni ser2net…
+464|Ovo zamjenjuje {} (rezervna kopija se čuva) i ponovo pokreće ser2net. Traže se administratorska prava.
+465|Potvrdi
+466|Čeka se odobrenje administratora…
+467|Instalirano {} i ponovo pokrenut ser2net.
+468|Konfiguracija nije mogla biti instalirana: {}
+469|Ručno: sudo cp <sačuvana datoteka> {} && sudo systemctl restart ser2net
+470|Rotacija kamere
+471|Automatski uklopi radni prostor u prozor
+472|Zaključaj
+473|Zaključano: otključajte da biste uređivali. Kopije nisu zaključane.
+474|Zaključano objekata: {}.
+475|Otključano objekata: {}.
+476|Dvaput kliknite da uredite opcije sloja
+477|Opcije sloja — {}
+478|{} — kliknite da dodijelite odabir / postavite kao aktivan; dvaput kliknite za opcije
+479|Opcije prikaza…
+480|Opcije prikaza
+481|Boja pozadine
+482|Automatski
+483|Debljina linije
+484|Prolaza: {}
+485|Kratki vodič
+486|Stranica projekta na GitHubu
+487|Ovaj vodič je dostupan na engleskom i poljskom; drugi jezici prikazuju engleski tekst.
+488|Zaobli uglove…
+489|Zaobli uglove
+490|Poluprečnik
+491|Zaobli
+492|Poluprečnik zaobljenja
+493|Zaobli odabrane uglove ovim poluprečnikom
+494|Odabrane su dvije prave linije: spajaju se zaobljenim uglom.
+495|Svaki pravi ugao odabranih oblika se zaobljava.
+496|Ove linije se ne mogu spojiti (paralelne su ili poluprečnik ne staje).
+497|Dvije linije su spojene zaobljenim uglom.
+498|Prvo odaberite oblike za zaobljavanje.
+499|Nema pravih uglova za zaobljavanje.
+500|Zaobljeno uglova: {}.
+501|Klipart
+502|Životinje
+503|Priroda
+504|Proslave
+505|Simboli
+506|Oblici
+507|Alati
+508|Hrana
+509|Objekti
+510|Muzika i zabava
+511|Moj klipart
+512|Sve kategorije
+513|Uključeno
+514|Moje
+515|Slike koje dolaze uz program
+516|Slike koje ste preuzeli ili dodali
+517|Veličina pri postavljanju
+518|Na mreži…
+519|Dodaj datoteku…
+520|Potražite još slika na internetu i sačuvajte ih ovdje
+521|Dodajte SVG datoteke s računara u svoj klipart
+522|Ovdje nema slika. Koristite Na mreži… da ih pronađete.
+523|dolazi uz program
+524|vaše
+525|Kliknite da postavite na radni prostor
+526|Postavljeno {}
+527|Preimenuj
+528|Preimenuj…
+529|Promijeni kategoriju
+530|Promijeni kategoriju…
+531|Detalji
+532|Detalji…
+533|Obriši…
+534|Ukloniti ovu sliku iz vašeg kliparta? Datoteka na disku će biti obrisana.
+535|Sačuvaj kopiju u moj klipart
+536|ili nova kategorija
+537|Dodano {} slika u {}
+538|Izvor
+539|Kategorija
+540|Licenca
+541|Autor
+542|Kolekcija
+543|Klipart na mreži…
+544|Klipart na mreži
+545|Pretražite otvorene kolekcije ikona (Iconify). Slike se čuvaju na disku, u kategoriji koju odaberete.
+546|npr. mačka, cvijet, zupčanik
+547|Pretraživanje…
+548|Ništa nije pronađeno.
+549|Pronađeno slika: {}
+550|Pretraga nije uspjela: {}
+551|Kliknite na sliku da vidite njenu licencu i sačuvate je.
+552|nije potrebno navođenje
+553|navedite autora
+554|Sačuvaj u moj klipart
+555|{} sačuvano u {}
+556|Preuzmi
+557|Preuzimanje…
+558|Preuzimanje nije uspjelo: {}
+559|Ili preuzmite sliku s adrese
+560|Čuvajte samo slike koje smijete koristiti. Provjerite licencu izvora.
+561|Uvećaj (Z)
+562|Umanji (X)
+563|Uklopi radni prostor (Ctrl+0)
+564|Uklopi sve objekte (Ctrl+9)
+565|Uvećaj
+566|Umanji
+567|Uklopi radni prostor
+568|Uklopi sve objekte
+569|Uredi čvorove
+570|Pretvorite tekst u krivulje ili trasirajte sliku da biste uređivali čvorove.
+571|Prvo odaberite oblik, a zatim uređujte njegove čvorove.
+572|Srce (K)
+573|Dodano materijala iz {}: {}
+574|Razlike biblioteke materijala
+575|{} ima postavke materijala koje se razlikuju od ovog uređaja. Odaberite vrijednosti koje zadržavate.
+576|Dodano novih materijala: {}; {} je već bilo isto.
+577|Zadrži sve moje
+578|Uzmi sve iz datoteke
+579|Sloj {}: cijeli sloj
+580|nema
+581|Ostavi moju biblioteku kakva jeste
+582|Biblioteka ovog uređaja je ažurirana.
+583|Dodaj iz biblioteke…
+584|Kopiraj materijale iz ugrađene biblioteke u ovaj uređaj
+585|Biblioteka uređaja {}
+586|Ova biblioteka je prazna. Dodajte materijale iz ugrađene biblioteke ili sačuvajte svoje slojeve kao materijal.
+587|Bilješka
+588|Oznaka
+589|Ukloni sloj
+590|Dodaj sloj
+591|Koristi postavke ovog sloja u dizajnu
+592|Primijeni na slojeve
+593|Stavlja postavke svih svojih slojeva u dizajn
+594|Primijenjeno {} na slojeva: {}
+595|Sačuvaj slojeve dizajna kao materijal
+596|Čuva postavke slojeva korištenih u dizajnu
+597|Sačuvano {} u biblioteku ovog uređaja
+598|Materijali dodani ovdje dostupni su za svaki uređaj. Vlastita biblioteka uređaja uređuje se na kartici Materijali.
+599|Dodali ste vi
+600|Ugrađeno
+601|Dodaj ovom uređaju
+602|Sačuvaj slojeve dizajna kao materijal za svaki uređaj
+603|Sačuvaj u biblioteku
+604|{} je već u biblioteci ovog uređaja
+605|Dodano {} u biblioteku ovog uređaja
+606|Materijal s ovim nazivom već postoji u biblioteci.
+607|Sačuvano {} u biblioteku materijala
+608|Postavka
+609|Ovaj uređaj
+610|Materijali
+611|Drvo
+612|Metal
+613|Plastika
+614|Papir i koža
+615|Kamen i staklo
+616|Drugo
+617|Izvezi biblioteku…
+618|Uvezi biblioteku…
+619|Označite šta ide u datoteku.
+620|Označite šta se uzima iz datoteke.
+621|Opći materijali
+622|Uređaji
+623|Biblioteka sačuvana: materijala {} i uređaja {}
+624|Uvezeno materijala {} i uređaja {}
+625|Ovo nije datoteka biblioteke programa LightCreator.
+626|{} ima postavke materijala koje se razlikuju od {}. Odaberite vrijednosti koje zadržavate.
+627|Šperploča
+628|MDF
+629|Karton
+630|Papir
+631|Koža
+632|Filc
+633|Pluto
+634|Akril
+635|Akril, crni ili tamni
+636|Škriljac / kamen
+637|Eloksirani aluminij (s premazom)
+638|Guma
+639|Tkanina
+640|Staklo
+641|Drvo (tvrdo)
+642|Oznake
+643|Debljina
+644|Oznake, odvojene zarezima
+645|Uredi materijal
+646|Vrati ugrađene vrijednosti
+647|Ugrađene vrijednosti su vraćene.
+648|Ovaj materijal nema postavke za vrstu lasera ovog uređaja
+649|Dvaput kliknite na materijal da uredite njegove postavke. Izmjene se čuvaju na ovom računaru.
+650|Samo crno ili bijelo, podjela na pola osvjetljenja. Oštro: dobro za crteže i tekst.
+651|Raspoređuje grešku zaokruživanja na susjedne tačke. Dobar izbor za fotografije.
+652|Raspoređuje grešku na šire područje: glađi tonovi, malo sporije.
+653|Kao Jarvis, s oštrijim detaljima.
+654|Čuva svijetle dijelove čistim i kontrast visokim; gubi dio najtamnijih i najsvjetlijih detalja.
+655|Stalni uzorak tačaka 8×8: pravilan i brz, bez šuma.
+656|Bez tačaka: svaki piksel se pali snagom između najmanje i snage sloja.
+657|Obriši sve materijale
+658|Obrisati sve materijale ovog uređaja? Umjesto njih prikazuju se materijali glavne biblioteke; kada neki promijenite, kopija se čuva za ovaj uređaj.
+659|Biblioteka ovog uređaja sada prikazuje glavnu biblioteku.
+660|Oznake slojeva
+661|Oznake slojeva…
+662|Oznake ponuđene za slojeve materijala. Rezanje, Graviranje i Zarezivanje su uvijek tu.
+663|Nova oznaka
+664|Dodaj ili ukloni oznake ponuđene za slojeve materijala
+665|Dodaj
+666|Općenito
+667|Hardver
+668|G-code
+669|Naprijed desno
+670|Nazad desno
+671|Obrni ose
+672|Orijentacija panela
+673|Izvorno
+674|Okrenuto ulijevo
+675|Okrenuto udesno
+676|Margine
+677|Vlastite granice
+678|Softverske granice
+679|Trake duž ivica radnog prostora koje mašina ne može koristiti (stege, ram); tamo se ništa ne smije postaviti ni pomjeriti
+680|Glava je na ivici dozvoljenog područja.
+681|Provjeri prije posla
+682|Ipak nastavi
+683|Prvo ispravite greške: s njima se ništa ne šalje, ne uokviruje niti izvozi.
+684|Sloj {} pali sa snagom 0 %.
+685|Sloj {} ima objekte ali nema putanju alata (na primjer otvorene linije na sloju popune).
+686|Odaberi objekte
+687|Okvir je van softverskih granica.
+688|Okvir je van upotrebljivog područja (iza radnog prostora ili u margini).
+689|Putanja alata sloja {} izlazi iz dozvoljenog područja (presken ili prazni hodovi).
+690|Objekata van softverskih granica: {}.
+691|Objekata van upotrebljivog područja (iza radnog prostora ili u margini): {}.
+692|Uključi laserski način ($32=1)
+693|Laserski način ($32) je isključen.
+694|Kontroler prijavljuje problem
+695|Najveća S vrijednost kontrolera ($30) je {}, profil koristi {}.
+696|Ovo upisuje $32=1 u postavke kontrolera. Nastaviti?
+697|Koristi vrijednost iz kontrolera
+698|S različitim vrijednostima snaga u G-code neće odgovarati procentima koje ste postavili.
+699|S isključenim laserskim načinom GRBL se ponaša kao kontroler vretena: laser može opaliti tokom brzih pokreta i snaga ne prati brzinu.
+700|Najveća brzina rezanja
+701|Ubrzanje
+702|0 = bez ograničenja. Slojevi brži od ovoga dobijaju upozorenje prije posla; procjena vremena koristi najviše ovu brzinu.
+703|0 = nepoznato. S vrijednošću procjena vremena uključuje rampe pokretanja i zaustavljanja, a panel sloja predlaže presken.
+704|Prijedlog: {} (put kočenja pri ovoj brzini i ubrzanju mašine)
+705|Sloj {} je brži od najveće brzine rezanja mašine.
+706|Automatski (iz kontrolera)
+707|G-code dijalekt
+708|Smoothieware: S se piše kao dio pune snage (postavite najveću S vrijednost na 1). Slanje radi kao kod GRBL-a; ništa od ovoga nije isprobano na pravom hardveru.
+709|Koristi se kada je dijalekt automatski; odabrani GRBL dijalekt sam odlučuje između M3 i M4.
+710|Napredno
+711|G-code polje na stranici Napredno ima kontrolni znak ili je predugo.
+712|Komande zračne pomoći
+713|Kraj posla
+714|Isključeno
+715|Uključeno
+716|Zamjenjuje završni M2. Prije njega se laser uvijek isključuje i glava šalje u početni položaj (ako je postavljeno). Prazno = ugrađeno.
+717|Zamjenjuje redove jedinica, apsolutnog načina, ravni i laserskog načina. Prazno = ugrađeno.
+718|Vrati zadano
+719|Početak posla
+720|Pogrešan G-code može opaliti laser, udariti glavu u krajnje graničnike ili upropastiti materijal. Testirajte s isključenim laserom ili na najmanjoj snazi.
+721|Način snage
+722|Kao uređaj
+723|Konstantna (M3)
+724|Dinamička (M4)
+725|M4 (dinamička) smanjuje snagu u uglovima i pri ubrzavanju; M3 (konstantna) je zadržava. G-code prelazi između njih kada se slojevi razlikuju.
+726|Tolerancija luka
+727|Lukovi (G2 / G3)
+728|Lukovi: GRBL obično obrađuje G2 / G3, Marlin samo ako je izgrađen s ARC_SUPPORT, a Smoothieware ima svoje ponašanje. Neki kontroleri zanemaruju lukove ili ih pogrešno izvode: testirajte s isključenim laserom. Lukovi se koriste za obrise i prstenove, ne za linije skeniranja ili slike.
+729|Tolerancija krivulje
+730|Koliko izravnata krivulja (Bézierova, tekst) smije odstupiti od prave krivulje.
+731|Piši krivulje kao lukove gdje odgovaraju
+732|Brojanje puni bafer kontrolera i brzo je. Jednostavno šalje jedan red i čeka njegov ok: sporo, ali za firmver koji pogrešno odgovara.
+733|Nastavi čekati
+734|Nema odgovora kontrolera {} s dok posao radi (stanje: {}).
+735|Ništa nije nastavljeno ni poslano. Mašina je možda samo spora, ili je red izgubljen; pogledajte konzolu, pa odaberite.
+736|Zaustavi posao
+737|Slanje
+738|Kontroler ne odgovara
+739|Broji bafer
+740|Jednostavno (čekaj svaki ok)
+741|Naziv porta ili USB ID proizvođača i proizvoda (VID:PID, heksadecimalno): koristi se port koji ima te ID-ove.
+742|Veži za ovaj port
+743|Vezani USB uređaj
+744|Automatski se ponovo poveži
+745|Ponovno povezivanje…
+746|Port ili USB ID
+747|Ponovo poveži
+748|Zapamti USB ID-ove odabranog porta: port se ponovo nalazi po njima kada mu se promijeni naziv.
+749|Odveži
+750|Kada veza sama pukne, pokušavaj ponovo svakih nekoliko sekundi dok ne pritisnete Prekini vezu.
+751|ništa
+752|Nakon povezivanja
+753|Očisti alarm
+754|Čišćenje alarma preskače početni položaj: koristite samo kada se zna da glava stoji na sigurnom mjestu.
+755|Dovedi mašinu u početni položaj
+756|Početni položaj {}
+757|Dovodi u početni položaj samo osu {} ($H{})
+758|Svih {} postavki iz datoteke sada je u kontroleru.
+759|Prvo napravite rezervnu kopiju postavki. Da nastavite, ukucajte {}:
+760|Rezervna kopija u datoteku…
+761|Nije moguće koristiti datoteku: {}
+762|Prvo se povežite s mašinom (kartica Uređaj).
+763|Povezano s: {}
+764|Fabričke postavke ($RST=$)…
+765|Marlin čuva postavke u svojim komandama (M92, M203, M204, ...): ova stranica prikazuje samo ono što prijavi `M503`.
+766|Još ništa nije pročitano.
+767|Pročitaj postavke ($$)
+768|Pročitaj postavke (M503)
+769|Zaista upisati $RST=$ u kontroler?
+770|Vrati iz datoteke…
+771|Vrati fabričke postavke
+772|Vrati postavke iz datoteke
+773|Postavke sačuvane u {}
+774|Kontroler ih već ima sve.
+775|Ove postavke su u kontroleru, ne u profilu. Mijenjajte jednu po jednu i zapišite prethodnu vrijednost: pogrešna vrijednost može učiniti da mašina pređe pogrešnu udaljenost ili opali laser.
+776|Ove postavke iz datoteke razlikuju se od kontrolera. Ništa se ne upisuje dok ne pritisnete Upiši sve.
+777|Ovo upisuje $RST=$: svaka postavka kontrolera vraća se na zadane vrijednosti firmvera. Brojevi koraka, hod, brzine, laserski način i početni položaj će se promijeniti.
+778|Upiši
+779|Upisati ${} = {} u kontroler? Sada je {}. Mijenjajte jednu postavku po jednu i zapišite staru vrijednost.
+780|Upiši postavku
+781|Upiši sve
+782|Upisati {} postavki u kontroler? Mašina će se ponašati kako datoteka kaže.
+783|Nakon upisa razlikuje se {} od {} postavki:
+784|Vrijednost
+785|Jedinica
+786|Uobičajeno
+787|nije broj
+788|van opsega
+789|Firmver ($$)
+790|0 = uobičajena vrijednost ({} W)
+791|0 = uobičajena vrijednost ({} nm)
+792|Slaba stalna zraka za podešavanje visine (način fokusa). 0 = bez načina fokusa.
+793|Dodaj lasersku glavu
+794|Tačka zrake
+795|Snaga fokusa
+796|Brzina uokviravanja
+797|Glava {}
+798|Optička snaga
+799|PWM frekvencija
+800|Najveća PWM frekvencija
+801|Pomak pokazivača
+802|Širina impulsa
+803|Opseg širine impulsa
+804|Ukloni ovu lasersku glavu
+805|Veličina zrake na materijalu (0 = nepoznato). Interval popune manji od nje čini da se susjedne linije preklapaju.
+806|PWM vrijednosti čuvaju se uz profil i nude kao varijable za makroe; ne šalju se kontroleru.
+807|Broj po kojem kontroler zna ovu glavu; upisuje se kao T<n> kada sloj koristi drugu glavu. Mora odgovarati mapiranju u kontroleru.
+808|Broj alata (T)
+809|Dvije laserske glave imaju isti broj alata.
+810|Talasna dužina
+811|Gdje je crvena tačka pokazivača u odnosu na zraku (x desno, y dolje). Koristi je poravnanje po pokazivaču na kartici Upravljanje.
+812|npr. Plava dioda
+813|Laserska glava
+814|Interval je manji od tačke zrake ({}): susjedne linije se preklapaju.
+815|ZRAKA FOKUSA UKLJUČENA: pritisnite da isključite
+816|Fokus
+817|Uključi slabu stalnu zraku za podešavanje visine fokusa
+818|Zraka fokusa uključena
+819|Zraka fokusa isključena
+820|Poravnaj po pokazivaču
+821|Probni hod s pokazivačem
+822|Probni hod s pokazivačem: {} redova, laser isključen
+823|Nema šta da se pokrene: nema oblika na izlaznim slojevima
+824|Pokreće putanju posla pomjerenu za pomak pokazivača s isključenim laserom, da se vidi kuda bi išla.
+825|Samo u ovoj sesiji: okvir i probni hod vraćaju se za pomak crvene tačke pokazivača, pa tačka pada tamo gdje bi pala zraka. Poslovi i ručno pomjeranje se nikada ne pomjeraju.
+826|Kuka {}: {}
+827|Kuke
+828|Vlastiti G-code upisan u posao: kada sloj počne, prije i poslije svakog objekta, kada se sloj završi. S kukama objekata sloj se pali objekat po objekat (i jednom po prolazu).
+829|Varijable: {}
+830|Početak sloja
+831|Kraj sloja
+832|Početak objekta
+833|Kraj objekta
+834|Makro je vaš vlastiti G-code: može opaliti laser ili pomjeriti glavu. Pokrećite ga samo kada znate šta radi. Ovo pitanje se postavlja jednom po sesiji.
+835|Dodaj makro
+836|Obriši ovaj makro
+837|Naziv makroa
+838|Makro {}
+839|Makro {}: {}
+840|Makro {}: redova: {}
+841|Makroi
+842|Imenovane skripte koje ručno pokrećete s kartice Upravljanje. Jedna komanda po redu; komentari nakon ; ili u zagradama; @include(name) umeće drugi makro. Mogu se koristiti varijable mašine.
+843|Pokreni makro {}
+844|Pokreće ovaj makro na mašini
+845|Dodaj zonu
+846|Krug
+847|Obriši ovu zonu
+848|Dijelovi radnog prostora u koje mašina nikada ne smije ući (stega, pribor). Pokret koji dodirne uključenu zonu, i s isključenim laserom, zaustavlja Počni, Okvir i izvoz. Program ne zaobilazi zone.
+849|Okvir dodiruje zabranjenu zonu „{}”.
+850|Putanja alata sloja {} dodiruje zabranjenu zonu „{}”.
+851|Naziv zone
+852|Zona {}
+853|Zabranjene zone
+854|Prikaži zabranjene zone
+855|Koliko se Z pomjera sa svakim sljedećim prolazom (negativno ide nadolje na mašini gdje je gore +Z). 0 = Z ostaje.
+856|Mašinski Z na koji glava ide prije prvog prolaza. 0 zajedno s 0 po prolazu = Z se ne pomjera.
+857|Visine Z sloja {} su van hoda ose Z.
+858|Mašina ima osu Z
+859|Hod
+860|Gore je negativni smjer Z
+861|Z
+862|Z osa
+863|Visina Z
+864|Z po prolazu
+865|Rotacioni dodatak je povezan
+866|A se okreće {} stepeni za svaki milimetar na površini.
+867|Svi slojevi koji se pale moraju biti rotacioni, ili nijedan. Dizajn ne smije biti viši od obima radnog predmeta.
+868|Prvo traži potvrdu. Mijenja se samo osa Y kontrolera.
+869|Pali ovaj sloj na rotacionom dodatku
+870|Stezna glava
+871|Obim
+872|GRBL 1.1 ima tri ose: osa A nije dostupna, koristi se Y.
+873|Vrsta
+874|Slojevi označeni kao rotacioni pale se na dodatku. Model je jednostavan: stezna glava se okreće prema prečniku radnog predmeta, valjci pomjeraju površinu kao svoju; prava mašina zahtijeva ispitivanje.
+875|Mikrokoraci motora za jedan pun okret onoga što pokreće (stezne glave ili jednog valjka).
+876|Mikrokoraka po okretu
+877|Zamjenjuje Y (motor Y okreće radni predmet)
+878|Prečnik valjka
+879|Valjci
+880|Rotacija
+881|Rotacioni i ravni slojevi ne mogu biti u jednom poslu: označite sve slojeve koji se pale kao rotacione, ili nijedan.
+882|Rotacija u G-code
+883|Kontroleru treba {} koraka po mm na osi Y ($101).
+884|Dizajn na sloju {} viši je od obima radnog predmeta.
+885|Put oko radnog predmeta: dizajn ne smije biti viši.
+886|Prava osa A (stepeni)
+887|Prečnik radnog predmeta
+888|Upiši $101 u kontroler…
+889|Kao kutija ili valjak koji stoji na stolu: pokreti iznad ili ispod opsega su slobodni.
+890|Samo na ovim visinama (Z)
+891|Prazan profil
+892|Kopija ovog profila
+893|Dodaj uređaj
+894|Kopirano u {}
+895|Izvezi…
+896|Uvezen profil {}
+897|Uvezi…
+898|Učitaj profil iz datoteke
+899|Sačuvaj ovaj profil u datoteku
+900|Profil sačuvan u {}
+901|Početne tačke: opće mašine s uobičajenim brojevima. Provjerite ih prema dokumentaciji svoje mašine.
+902|GRBL diodni laser 400 × 400
+903|GRBL CO2 laser 300 × 200
+904|K40 prepravka (GRBL) 300 × 200
+905|Marlin diodni laser 400 × 400
+906|GRBL 1.1 diodni laser na podlozi 400 × 400 mm, nula naprijed lijevo, dinamička snaga.
+907|GRBL 1.1 CO2 laser na podlozi 300 × 200 mm, nula naprijed lijevo.
+908|K40 CO2 laser s GRBL kontrolerskom pločom: 300 × 200 mm, nula u zadnjem lijevom (gornjem lijevom) uglu.
+909|Diodni laser s Marlin firmverom (laserska funkcija, S 0–255) na podlozi 400 × 400 mm.
+910|Zadnja
+911|Veza (opcionalno)
+912|Fino
+913|Ako je mašina sada povezana, njen radni prostor i brzina mogu se pročitati iz kontrolera.
+914|Laserski način ($32) i najveća S vrijednost ($30) kontrolera nisu pročitani: provjeravaju se pri povezivanju.
+915|Naziv i jedinice
+916|Dalje
+917|Nisu postavljene margine ni softverske granice: cijeli opseg ose je radni prostor. Postavite ih na stranici Hardver ako stega ili ram smetaju.
+918|Port ili host još nisu postavljeni: odaberite ih u postavkama uređaja prije povezivanja.
+919|Ništa ovdje nije isprobano na vašoj mašini: prvi test uradite s isključenim laserom ili na najmanjoj snazi.
+920|Odaberite najbližu početnu tačku. Sve možete kasnije promijeniti.
+921|Podesi ručno…
+922|Podesite svoju mašinu ({}/{})
+923|Preskoči
+924|Preskoči ove korake i otvori postavke uređaja
+925|Sažetak
+926|Uređaj je dodan. Pritisnite Novo da počnete.
+927|Postavke su pročitane iz kontrolera.
+928|Kakvu mašinu imate?
+929|Vrijedno provjere
+930|nije postavljeno
+931|Dodaj brojač
+932|Računa se prema vremenu kada poslovi stvarno rade (od početka do kraja ili Zaustavi), a ne prema procjenama. Ukupno se ne može resetovati.
+933|Naziv brojača (cijev, sočivo, kaiš)
+934|Brojač {}
+935|Obriši ovaj brojač
+936|Rok za održavanje: {}
+937|Podsjeti nakon
+938|Resetuj brojač
+939|Ponovo pokrenuti brojač „{}” od nule?
+940|Ukupno vrijeme rada: {}
+941|Održavanje
+942|Iz šablona
+943|Bilješke su duže od {} znakova i ne mogu se sačuvati.
+944|Vaše bilješke (Markdown)
+945|npr. Postavke koje su uspjele: zračna pomoć 20 %, fokus 12 mm
+946|Bilješke
+947|Aktivna
+948|Dodaj kameru
+949|Adresa
+950|Automatski
+951|Naziv kamere
+952|Broj kamere
+953|Kamera ovog računara
+954|Kamera {}
+955|Kamere koje prate mašinu. Aktivna daje sliku uživo. Kamera se može uključiti samo kada joj je adresa ispravna.
+956|Koeficijenti izobličenja sočiva (radijalni k1–k3, tangencijalni p1, p2) za koordinate mjerene od središta u jedinicama duže strane slike. Sve 0 = bez korekcije. Unosi se ručno: nema automatske kalibracije.
+957|Obriši ovu kameru
+958|Za kameru ovog računara: traži nekomprimovani YUYV format gdje sistem to dozvoljava.
+959|Format
+960|Korekcija sočiva
+961|Slika mašine uživo: MJPEG tok ili adresa JPEG snimka (http ili https). RTSP nije podržan.
+962|Smanjenje šuma
+963|Nije http ili https adresa.
+964|Slika
+965|Preferiraj YUYV
+966|Uključi ili isključi ovu kameru
+967|Adresa nije ispravna: potrebna je http ili https adresa
+968|Balans bijele
+969|Dodaj tačku
+970|Poravnaj po tačkama
+971|Obriši ovu tačku
+972|Uklapa sliku u tačke (najmanji kvadrati) i pomjera uglove u skladu s tim.
+973|Nema dovoljno tačaka ili leže na jednoj pravoj.
+974|Parovi tačke na slici (pikseli) i mjesta koje ima u radnom prostoru (mm). Najmanje 3, preporučeno 4; određuju poravnanje, uključujući perspektivu.
+975|Tačke iz trenutnih uglova
+976|Referentne tačke
+977|Zamjenjuje tačke s četiri ugla slike i mjestima gdje sada leže.
+978|Privlači na objekte
+979|Stranica nije mogla biti napravljena: {}
+980|Preglednik nije mogao biti otvoren: {}
+981|Zadani štampač
+982|Margina
+983|Samo objekti na vidljivim slojevima
+984|Samo objekti, onoliko veliki koliko stranica dozvoljava
+985|Otvori PDF
+986|Otvoreno u PDF pregledniku.
+987|Otvara stranicu u PDF pregledniku, koji je može odštampati s više opcija
+988|Štampaj
+989|Štampaj…
+990|Štampač
+991|Štampa dizajn na štampaču za papir, radi provjere položaja ili kao šablon.
+992|Sačuvaj kao PDF…
+993|Poslano štampaču. {}
+994|Štampač to nije prihvatio: {}
+995|Cijeli radni prostor, u razmjeri
+996|Nema šta da se štampa.
+997|Objekata van radnog prostora: {}; na papiru se odsijecaju na ivici.
+998|Objekata van radnog prostora: {}; ipak se štampaju.
+999|Test kamere: {}
+1000|Otvara sliku ove kamere kako je ovdje podešena, bez čuvanja
+1001|Test
+1002|Naizmjenično siječe i preskače duž obrisa.
+1003|Dužina reza
+1004|Ravnomjeran razmak
+1005|Pomak za širinu reza
+1006|Ostavlja kratke dijelove obrisa nesječene (ili slabo sječene) da dio ostane na mjestu. Postavljaju se automatski.
+1007|Ograniči najviše mostića
+1008|Najmanje mostića
+1009|Pomjera obris prema van (prema unutra, kada je negativno) da nadoknadi širinu reza. 0 = isključeno.
+1010|Procenat snage sloja preko mostića; 0 = laser je isključen.
+1011|Perforacija
+1012|Način perforacije
+1013|Položaj
+1014|Preskoči unutrašnje oblike
+1015|Dužina preskoka
+1016|Razmak
+1017|Snaga rezanja mostića
+1018|Veličina mostića
+1019|Mostići
+1020|Mostića po obliku
+1021|Vektorski oblici na sloju u načinu Slika se ne pale.
+1022|Vrijeme rada
+1023|Opis
+1024|Opišite projekat: šta je, postavke koje su uspjele, bilješke za sljedeći put.
+1025|Web stranica sa stanjem mašine, projekta i kamere, i API za druge programe. Nema lozinku.
+1026|Svako na mreži može vidjeti mašinu i zaustaviti je ili pomjeriti. Nema lozinke ni šifriranja: koristite samo na mreži kojoj vjerujete.
+1027|Sluša na {}
+1028|Dostupno s drugih računara na mreži
+1029|Uključi web server i API
+1030|Server nije mogao biti pokrenut: {}
+1031|Web server i API
+1032|Dodaj uređaj
+1033|Još postavki…
+1034|Otvori cijeli prozor uređaja s ovdje unesenim
+1035|Početna tačka
+1036|Zadani materijal
+1037|Obriši ovaj materijal
+1038|Materijal: {}
+1039|Naziv novog materijala
+1040|Novi materijal: kopija ovog
+1041|Novi naziv
+1042|Preimenuj ovaj materijal
+1043|projekat
+1044|Akril 3 mm
+1045|Koža 2 mm
+1046|Novi, prazan materijal
+1047|Šperploča 3 mm
+1048|Dodajte materijal, npr. Brezova šperploča 3 mm (opcionalno)
+1049|Kamere koje prate mašinu. Označena daje sliku uživo; označavanje druge isključuje prvu.
+1050|Uključi ovu kameru: daje sliku uživo
+1051|Web server: uključen, port {}
+1052|Web server: isključen
+1053|Web server: greška
+1054|Tamnoplava
+1055|Svijetloplava
+1056|Tamnozelena
+1057|Svijetlozelena
+1058|Tamnoljubičasta
+1059|Svijetloljubičasta
+1060|Tamnosmeđa
+1061|Svijetlosmeđa
+1062|Tamnonarandžasta
+1063|Svijetlonarandžasta
+1064|Boja radnog okruženja
+1065|Prostor oko radnog prostora
+1066|Web stranica sa stanjem mašine, projekta i kamere, i API za druge programe. Svaki zahtjev traži pristupnu frazu; nema šifriranja.
+1067|Svako na mreži ko zna pristupnu frazu može vidjeti mašinu i zaustaviti je ili pomjeriti. Fraza se šalje bez šifriranja: koristite samo na mreži kojoj vjerujete.
+1068|Pristupna fraza
+1069|Od sada koristi ovu pristupnu frazu
+1070|Pristupna fraza ne smije biti prazna niti sadržavati kontrolne znakove.
+1071|Položaj lasera uživo
+1072|Prikazuje položaj laserske glave kao tačku na radnom prostoru. Uključeno dok mašina miruje, prvo dovodi u početni položaj; tokom posla ili uokviravanja samo prikazuje položaj, osvježen svake sekunde. Potreban je povezan uređaj.
+1073|Počni od
+1074|Početni položaj (nula mašine)
+1075|Trenutni položaj lasera
+1076|Početni položaj: dizajn se pali tamo gdje leži na radnom prostoru, računato od nule mašine. Trenutni položaj: gornji lijevi ugao dizajna stavlja se tamo gdje laserska glava sada stoji (poslovi, okviri i probni hod), i posao se tu završava. Izvezene datoteke uvijek računaju od nule mašine.
+1077|Čitanje u redu
+1078|Greška pri čitanju
+1079|Ovaj projekat je napravljen za drugo podešavanje mašine ({}). Provjerite uređaj prije početka.
+1080|Neki dijelovi LightBurn projekta nisu mogli biti korišteni: {}
+1081|Nemam uređaj
+1082|Radite na projektu bez mašine: jednostavan uređaj po imenu Dummy, sa zadanim radnim prostorom i brzinama
+1083|Uvezi LightBurn projekat…
+1084|Još nema uređaja. Dodajte jedan ili radite bez mašine.
+1085|Otvorite projekat ili započnite prazan.
+1086|Uvezi UGS dizajn…
+1087|Neki dijelovi UGS dizajna nisu mogli biti korišteni: {}
+1088|Prikaži svih {} slojeva
+1089|Boja materijala se samo prikazuje; ništa ne mijenja.
+1090|Izvezi sve…
+1091|Zamijeni materijale s istim nazivom
+1092|Uvezeno materijala: {}; zamijenjeno: {}.
+1093|Izvezeno materijala: {}: {}
+1094|Ukloni ovaj sloj iz materijala
+1095|Ovaj materijal još nema slojeva. Dodajte jedan ispod.
+1096|Materijali…
+1097|Illustrator slojevi
+1098|Datoteka ima {} Illustrator slojeva. Rasporedi putanje na slojeve programa:
+1099|Prvi Illustrator sloj ide na sloj 1, drugi na sloj 2 i tako dalje; ostali idu na posljednji sloj.
+1100|Pogledaj G-code datoteku…
+1101|Resetuj pogled
+1102|Preglednik G-code
+1103|Boja po visini
+1104|Prevlačenje: rotacija · desno prevlačenje ili Shift+prevlačenje: pomjeranje · točkić: zum
+1105|Prevlačenje: pomjeranje · točkić: zum
+1106|Obris
+1107|Obiđi obris koji obuhvata sve oblike, kao gumica.
+1108|Okvir po obrisu
+1109|Jedan po jedan element
+1110|Svaki element (grupa ili oblik koji nije ni u jednoj) pali se u potpunosti, svi njegovi slojevi i svi prolazi, prije sljedećeg; najbliži element ide prvi. Isključeno: sloj po sloj, prolaz po prolaz.
+1111|Samo odabir
+1112|Pale se samo oblici odabrani na radnom prostoru kada se G-code sačuva ili posao pokrene.
+1113|Nema šta da se pali: ništa nije odabrano
+1114|Izvezi dijagnostiku (zip)…
+1115|Dijagnostika sačuvana: {}
+1116|Dijagnostika nije mogla biti sačuvana: {}
+1117|Uvezi DXF…
+1118|Umetni
+1119|Pogled ima najviše tri okna
+1120|Prikaži pregled ovdje
+1121|Nijedna G-code datoteka nije otvorena: Datoteka, Pogledaj G-code datoteku…
+1122|Pregled G-code
+1123|Prikaži G-code bez čuvanja
+1124|pregled
+1125|G-code se prikazuje, ništa se ne čuva
+1126|Vlastiti G-code uređaja: {}
+1127|Nije adresa kamere (http, https, rtsp, udp, rtp ili rtmp).
+1128|Slika mašine uživo: MJPEG tok, adresa JPEG snimka (http ili https) ili tok koji čita ffmpeg (rtsp, udp, rtp, rtmp).
+1129|Sloj iz…
+1130|Zum
+1131|GRBL (1.1f ili noviji)
+1132|GRBL-M3 (1.1e ili stariji)
+1133|LinuxCNC (datoteka)
+1134|Vlastiti G-code
+1135|Laser uključen (snaga)
+1136|Laser isključen
+1137|{power} je snaga u jedinicama najveće S vrijednosti, {percent} snaga u procentima. Komanda za uključivanje lasera ide prije paljenja, komanda za isključivanje prije svakog pokreta.
+1138|Vlastiti G-code: prvo provjerite komande za uključivanje i isključivanje lasera na najmanjoj snazi.
+1139|Snapmaker: snaga se piše kao M3 P (procenat) S (0–255) prije paljenja i M5 prije pokreta. Nije isprobano na pravoj mašini.
+1140|LinuxCNC: Počni čuva G-code datoteku za LinuxCNC. Snaga ide na analogni izlaz 0 (M67 E0 Q, od 0 do najveće S vrijednosti), koji mora pokretati laser u vašem HAL-u. Nije isprobano na pravoj mašini.
+1141|GRBL bez laserskog načina: laser se isključuje (S0) prije svakog pokreta. Prvi posao probajte na najmanjoj snazi.
+1142|Gerbil ploče se razlikuju po najvećoj S vrijednosti ($30 je na nekima 1000, na drugima 2048): pročitajte je s uređaja.
+1143|Visine su visine ose Z mašine (kao na kartici Upravljanje).
+1144|Valjak (3D)
+1145|Radni predmet na rotacionom dodatku s onim što se na njemu pali. Prevucite da ga okrenete, točkić zumira.
+1146|Ravno
+1147|Površina radnog predmeta odmotana, kao na radnom prostoru
+1148|Prevlačenje: okretanje · točkić: zum
+1149|Mjere u pregledu
+1150|Valjak u pregledu (rotacija)
+1151|Strane koje bi nestale imaju oblike: projekat ostaje kakav je bio. Prvo ih obrišite.
+1152|greda
+1153|blok
+1154|Projekat podešen: {} od {} x {} x {} mm, nula u {}
+1155|Četiri ugaone oznake odmah izvan materijala, spaljene kao zaseban posao na ploči ispod prije nego što se materijal postavi: stavite materijal u njih za stranu A i, okrenut, za stranu B.
+1156|Spaljeni predmet u 3D, velik kao materijal iz postavki projekta, s onim što se pali na svakoj strani. Prevucite da ga okrenete, točkić zumira.
+1157|Posao na radnom prostoru, onako kako ga mašina pali
+1158|Boje paljenja
+1159|Linije tamnije za veću snagu, kao spaljene na drvetu; isključeno: u bojama operacija ili slojeva

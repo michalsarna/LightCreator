@@ -62,8 +62,8 @@ A short summary is below; the full list lives in [FEATURES.md](FEATURES.md).
 * **Preview:** separate preview window with every burn operation in its own colour, optional travel moves and a
   simulation slider; layers can be reordered to change the burn order.
 * **Interface:** flat, square window frame with its own title bar, icon control bar and arrange bar, recent files,
-  native menu bar on macOS, in-window menu on Windows and Linux, 30 languages
-  (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी and 23 other European ones) and 18 colour schemes.
+  native menu bar on macOS, in-window menu on Windows and Linux, 38 languages
+  (English, Polski, Deutsch, Italiano, Suomi, 简体中文, हिन्दी, 23 other European ones and 日本語, 한국어, 繁體中文, Türkçe, Tiếng Việt, Bahasa Indonesia, Српски, Bosanski) and 18 colour schemes.
 
 ### What has and has not been verified
 

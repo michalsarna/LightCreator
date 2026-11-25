@@ -1,0 +1,1160 @@
+0|File
+1|Edit
+2|Atur
+3|Tampilan
+4|Laser
+5|Pengaturan
+6|Bantuan
+7|Baru
+8|Buka…
+9|Simpan
+10|Simpan sebagai…
+11|Impor SVG…
+12|Ekspor SVG…
+13|Ekspor G-code…
+14|Keluar
+15|Urungkan
+16|Ulangi
+17|Salin
+18|Tempel
+19|Duplikat
+20|Hapus
+21|Pilih semua
+22|Rata kiri
+23|Rata tengah (H)
+24|Rata kanan
+25|Rata atas
+26|Rata tengah (V)
+27|Rata bawah
+28|Tengahkan satu sama lain
+29|Tengahkan di meja
+30|Balik horizontal
+31|Balik vertikal
+32|Putar 90° searah jarum jam
+33|Putar 90° berlawanan arah jarum jam
+34|Bawa ke depan
+35|Kirim ke belakang
+36|Ubah menjadi jalur
+37|Larik kisi…
+38|Kisi
+39|Tempel ke kisi
+40|Pratinjau jalur alat
+41|Paskan meja ke jendela
+42|Pengaturan perangkat…
+43|Bingkai
+44|Mulai pekerjaan
+45|Tentang
+46|Bahasa
+47|Skema warna
+48|Gelap
+49|Terang Gelap
+50|Sedang Terang
+51|Terang
+52|Pilih (V)
+53|Persegi panjang (R)
+54|Elips (E)
+55|Garis (L)
+56|Polyline / pena (P)
+57|Geser (H)
+58|Zoom (Z)
+59|Pilih
+60|Persegi panjang
+61|Elips
+62|Baris
+63|Isi
+64|Isi + Garis
+65|Lapisan {}
+66|Tempel
+67|Pratinjau
+68|Start
+69|Alirkan pekerjaan ke laser yang terhubung
+70|Telusuri kotak pembatas
+71|Simpan G-code
+72|Lapisan
+73|{} — klik untuk menetapkan pilihan / menjadikan aktif
+74|Siap
+75|{} dibuka
+76|Gagal membuka: {}
+77|{} disimpan
+78|Gagal menyimpan: {}
+79|{} jalur diimpor dari {}
+80|Impor gagal: {}
+81|{} diekspor
+82|Ekspor gagal: {}
+83|G-code {} disimpan
+84|Hubungkan ke laser terlebih dahulu (panel Laser)
+85|Tidak ada yang dibakar: tidak ada bentuk di lapisan output
+86|Memulai pekerjaan: {} baris, ~{}
+87|Tidak terhubung
+88|Terhubung ke {} @ {}
+89|Tidak dapat membuka {}: {}
+90|Dibatalkan (soft reset)
+91|Koneksi terputus
+92|Perkiraan waktu
+93|panjang potong
+94|Pengaturan perangkat
+95|Nama
+96|Area kerja X
+97|Area kerja Y
+98|Nol mesin (0,0)
+99|Kiri depan (bawaan GRBL)
+100|Kiri belakang
+101|Nilai S maks ($30)
+102|Daya dinamis (M4)
+103|Kecepatan jalan
+104|Kembali ke titik asal
+105|Baud rate
+106|Larik kisi
+107|Kolom
+108|Baris
+109|Celah X
+110|Celah Y
+111|Buat larik
+112|Tentang LightCreator
+113|Versi {}
+114|Perangkat lunak desain & kontrol sumber terbuka untuk mesin ukir dan potong laser.
+115|Asal: ditulis dalam Rust dengan egui/eframe.
+116|Antarmuka terinspirasi oleh VectorCraft.
+117|Pembuat: Michał Sarna
+118|Berlisensi MIT.
+119|Properti
+120|Potongan / Lapisan
+121|Tidak ada yang dipilih
+122|Kunci rasio aspek
+123|Putar
+124|Terapkan
+125|Balik H
+126|Balik V
+127|Tengah
+128|Kiri
+129|Tengah-H
+130|Kanan
+131|Atas
+132|Tengah-V
+133|Bawah
+134|Rata tengah
+135|Rata tengah vertikal
+136|Lapisan
+137|Tampilkan semua 30 lapisan
+138|Output (bakar lapisan ini)
+139|Terlihat
+140|Pengaturan potong — {}
+141|Mode
+142|Kecepatan
+143|Daya (%)
+144|Lintasan
+145|Interval
+146|Sudut pindai
+147|Overscan
+148|Dua arah
+149|Tidak ada port
+150|Segarkan
+151|Pindai ulang port serial
+152|Putuskan
+153|Hubungkan
+154|Status
+155|Langkah
+156|Laju
+157|Atas
+158|Bawah
+159|Batalkan pekerjaan yang berjalan
+160|Stop
+161|Batalkan jog
+162|Home
+163|Buka kunci
+164|Jeda
+165|Lanjutkan
+166|STOP
+167|Daya bingkai
+168|0 % membuat laser mati saat membingkai; 1–2 % menampilkan titik redup pada laser dioda
+169|kirim G-code / perintah $
+170|Kirim
+171|Pilih perangkat
+172|Pilih perangkat yang akan Anda pakai.
+173|Buat setidaknya satu profil perangkat untuk melanjutkan.
+174|Lanjutkan
+175|Tambah perangkat…
+176|Edit…
+177|Konfirmasi hapus
+178|Batal
+179|Konfigurasi perangkat
+180|Perangkat baru
+181|mis. Laser dioda saya
+182|Nama profil wajib diisi.
+183|Ganti perangkat…
+184|Perangkat: {}
+185|Satuan kecepatan
+186|Per detik (mm/s, in/s)
+187|Per menit (mm/min, in/min)
+188|Buka terbaru
+189|(kosong)
+190|Kosongkan daftar
+191|sudah tidak ada
+192|Tutup
+193|Minimalkan
+194|Maksimalkan
+195|Pulihkan
+196|Tampilkan atau sembunyikan kisi
+197|Tampilkan atau sembunyikan kisi sekunder
+198|Air assist
+199|Pompa udara nyala
+200|Nyalakan pompa udara saat lapisan ini dibakar (M8 / M9)
+201|Posisi dan ukuran
+202|Rotasi
+203|Cerminkan dan tengahkan
+204|Perataan
+205|Lipat
+206|Buka lipatan
+207|Waktu
+208|File disimpan: {}
+209|{} disimpan otomatis
+210|Simpan pekerjaan Anda sebelum menutup?
+211|Desain belum disimpan ke file.
+212|Buang
+213|Opsi program…
+214|Opsi program
+215|Simpan otomatis
+216|Simpan pekerjaan secara otomatis
+217|Simpan otomatis setiap
+218|Pekerjaan tanpa nama file masuk ke folder sementara; file bernama disimpan di tempatnya
+219|Spiral
+220|Spiral (I)
+221|Jumlah putaran
+222|Seret di area kerja untuk menggambarnya.
+223|Unduh cadangan…
+224|Periksa pembaruan…
+225|Cadangan disimpan: {}
+226|Pencadangan gagal: {}
+227|Pembaruan
+228|Versi yang lebih baru tersedia: {}
+229|Versi Anda: {}.
+230|Buka halaman unduhan
+231|Anda memakai versi terbaru.
+232|Rilis terbaru: {}
+233|Tidak dapat memeriksa pembaruan.
+234|Cari versi yang lebih baru saat program dimulai
+235|Pulihkan dari cadangan…
+236|Pulihkan dari cadangan
+237|Pengaturan dan clipart Anda saat ini akan diganti oleh cadangan. Lanjutkan?
+238|Cadangan dipulihkan: {}
+239|Pemulihan gagal: {}
+240|Tidak ada file profil ditemukan. Punya cadangan?
+241|Satuan
+242|Milimeter (mm)
+243|Inci (in)
+244|Perangkat
+245|Konsol
+246|Kueri status
+247|Gulir otomatis
+248|Bersihkan
+249|Kontroler
+250|Jenis laser
+251|Area kerja
+252|Ya
+253|Tidak
+254|Koneksi
+255|Port
+256|Langkah jog
+257|Laju jog
+258|Kontroler ini tidak punya koneksi langsung: pekerjaan diekspor sebagai file.
+259|Edit node (N)
+260|Teks (T)
+261|Sudut tajam
+262|Halus
+263|Ke garis
+264|Ke kurva
+265|Tambah node
+266|Hapus node
+267|Buka / tutup
+268|Jadikan node terpilih sudut
+269|Jadikan node terpilih halus
+270|Jadikan segmen setelah tiap node terpilih lurus
+271|Jadikan segmen setelah tiap node terpilih sebagai kurva
+272|Sisipkan node (atau klik ganda segmen)
+273|Tutup jalur terbuka, atau buka jalur tertutup di node yang dipilih
+274|Ubah menjadi kurva
+275|Ubah teks menjadi bentuk Bézier yang dapat diedit
+276|Gabungan
+277|Irisan
+278|Kurangi
+279|Eksklusif atau
+280|Offset bentuk…
+281|Offset bentuk
+282|Jarak
+283|Positif membesarkan garis tepi, negatif mengecilkannya.
+284|Pertahankan aslinya
+285|Buat offset
+286|Pilih setidaknya dua bentuk (bukan gambar).
+287|Hasilnya kosong.
+288|Impor gambar…
+289|Gambar {} diimpor
+290|Teks
+291|Font
+292|Cari
+293|Ukuran
+294|Gaya
+295|Tebal
+296|Miring
+297|Spasi huruf
+298|Spasi baris
+299|Rata
+300|Gambar
+301|Gambar negatif
+302|Ukir bagian terang, bukan bagian gelap
+303|Ukiran memakai interval, kecepatan, daya, dan dithering lapisan.
+304|Pengaturan gambar
+305|Gambar memakai interval, kecepatan, daya, dan overscan lapisannya.
+306|Dithering
+307|Daya min (%)
+308|Ambang
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Teratur
+314|Skala abu-abu
+315|Isi offset
+316|Ekspor PLT / DXF…
+317|{} diekspor. {} gambar dilewati: format ini tidak punya raster.
+318|Ekspor PLT atau DXF dan buka di perangkat lunak kontroler sendiri (misalnya RDWorks untuk Ruida), yang mengatur kecepatan dan daya per warna lapisan.
+319|Pustaka material…
+320|Pustaka material
+321|Semua
+322|Material
+323|Operasi
+324|Daya
+325|Potong
+326|Ukir
+327|Gores
+328|Nilai awal untuk laser dioda 10 W dan CO2 40 W yang umum. Selalu uji pada sisa bahan.
+329|Terapkan ke lapisan {}
+330|{} ({}) diterapkan ke lapisan {}
+331|Simpan lapisan aktif sebagai preset
+332|Nama material
+333|Simpan preset
+334|Overlay kamera…
+335|Overlay kamera
+336|Tampilkan foto atau kamera langsung di bawah desain untuk memosisikan pekerjaan pada material.
+337|Muat gambar…
+338|Hapus
+339|Kamera langsung
+340|Build ini tidak mendukung kamera. Build dengan: cargo run --release --features camera
+341|Tidak ada kamera
+342|Cari kamera
+343|Mulai kamera
+344|Bekukan bingkai
+345|Kamera
+346|Overlay: {}
+347|Tampilkan overlay
+348|Opasitas
+349|Ratakan: seret keempat sudut di area kerja
+350|Seret setiap sudut ke sudut yang sesuai pada material atau area kerja; perspektif dikoreksi.
+351|Atur ulang ke area kerja
+352|Putar 90°
+353|Bakar lebih awal
+354|Bakar lebih akhir
+355|Lapisan dibakar dari atas ke bawah.
+356|Opsi kisi…
+357|Opsi kisi
+358|Kisi utama
+359|Kisi sekunder
+360|Tampilkan
+361|Jarak antar garis
+362|Warna
+363|Kisi sekunder harus lebih rapat daripada kisi utama.
+364|Atur ulang kisi
+365|Jalur alat
+366|Tampilkan jalur alat di area kerja
+367|Pratinjau…
+368|Jendela pratinjau…
+369|Buka jendela pratinjau
+370|Warnai menurut
+371|Tampilkan gerakan jalan
+372|Gerakan mesin dengan laser mati
+373|Putar
+374|Paskan
+375|Operasi
+376|Terlalu banyak gerakan: garis jalan disembunyikan.
+377|{} gerakan
+378|Impor
+379|Ekspor
+380|Impor Adobe Illustrator / PDF / EPS / VectorCraft…
+381|Kelompokkan
+382|Pisahkan grup
+383|Pilih setidaknya dua objek untuk dikelompokkan.
+384|Dikelompokkan. Objek tetap pada lapisannya.
+385|Operasi bentuk
+386|Sesuaikan gambar…
+387|Lacak gambar…
+388|Impor gambar
+389|Sesuaikan gambar
+390|Putar dan balik
+391|Sudut
+392|Nada
+393|Kecerahan
+394|Kontras
+395|Gamma
+396|Level otomatis
+397|Lebar
+398|{} × {} px
+399|Atur ulang
+400|Lacak gambar
+401|Abaikan area kecil
+402|Sederhanakan
+403|Haluskan kurva
+404|Lacak area terang
+405|Hapus gambar sesudahnya
+406|{} garis tepi
+407|Lacak
+408|{} garis tepi dilacak
+409|Baca dari perangkat
+410|Membaca…
+411|Hubungkan dan baca area kerja, nilai S maks, dan kecepatan dari kontroler
+412|Membaca pengaturan dari perangkat…
+413|Tidak dapat terhubung ke perangkat.
+414|Perangkat tidak melaporkan pengaturan apa pun.
+415|{} nilai dibaca dari perangkat
+416|Segitiga (Y)
+417|Bintang (S)
+418|Poligon (G)
+419|Segitiga
+420|Bintang
+421|Poligon
+422|Jumlah sisi
+423|Seret di area kerja untuk menggambarnya. Paling banyak 360 sisi.
+424|OK
+425|Jenis koneksi
+426|Port serial
+427|Jaringan (TCP, mis. ser2net)
+428|Host
+429|Port TCP
+430|Terhubung ke {}
+431|URL kamera
+432|Gambar langsung mesin: stream MJPEG atau alamat snapshot JPEG (http atau https).
+433|Tampilan kamera
+434|Tampilkan gambar kamera langsung mesin ini
+435|Menunggu gambar…
+436|Zoom bawaan
+437|Kembali ke seluruh gambar
+438|Tampilkan sebagai overlay di area kerja
+439|Galat stream: {}
+440|Paskan 15 dtk
+441|Waktu nyata
+442|Atur URL kamera di pengaturan perangkat terlebih dahulu.
+443|Tampilkan di
+444|Jendela mengambang
+445|Jendela terpisah
+446|Tab samping
+447|Overlay
+448|Tampilkan atau sembunyikan overlay kamera di area kerja
+449|Tampilkan overlay kamera
+450|Belum ada overlay kamera. Muat gambar atau mulai tampilan kamera.
+451|Bagikan lewat jaringan (ser2net)…
+452|Bagikan lewat jaringan (ser2net)
+453|ser2net ditemukan: {}
+454|ser2net tidak ditemukan. Pasang dulu, misalnya: sudo apt install ser2net
+455|Ini membagikan port serial laser di komputer ini lewat jaringan, sehingga LightCreator di tempat lain dapat terhubung dengan jenis koneksi "Jaringan (TCP)".
+456|Versi ser2net
+457|Hanya dengarkan di komputer ini (gunakan dengan tunnel SSH)
+458|Klien baru menggantikan yang terhubung
+459|File: {}
+460|Lalu hubungkan dari komputer lain ke {}:{}
+461|Peringatan: siapa pun di jaringan yang mencapai port ini dapat mengendalikan laser. Gunakan jaringan tepercaya, firewall, atau opsi lokal saja dengan tunnel SSH.
+462|Disalin.
+463|Pasang dan mulai ulang ser2net…
+464|Ini menggantikan {} (cadangan disimpan) dan memulai ulang ser2net. Hak administrator akan diminta.
+465|Konfirmasi
+466|Menunggu persetujuan administrator…
+467|{} dipasang dan ser2net dimulai ulang.
+468|Tidak dapat memasang konfigurasi: {}
+469|Manual: sudo cp <file tersimpan> {} && sudo systemctl restart ser2net
+470|Rotasi kamera
+471|Sesuaikan area kerja ke jendela secara otomatis
+472|Kunci
+473|Terkunci: buka kunci untuk mengedit. Salinan tidak terkunci.
+474|{} objek dikunci.
+475|{} objek dibuka kuncinya.
+476|Klik ganda untuk mengedit opsi lapisan
+477|Opsi lapisan — {}
+478|{} — klik untuk menetapkan pilihan / menjadikan aktif; klik ganda untuk opsi
+479|Opsi tampilan…
+480|Opsi tampilan
+481|Warna latar
+482|Otomatis
+483|Ketebalan garis
+484|{} lintasan
+485|Panduan singkat
+486|Halaman proyek di GitHub
+487|Panduan ini tersedia dalam bahasa Inggris dan Polandia; bahasa lain menampilkan teks bahasa Inggris.
+488|Bulatkan sudut…
+489|Bulatkan sudut
+490|Jari-jari
+491|Bulatkan
+492|Jari-jari pembulatan
+493|Bulatkan sudut terpilih dengan jari-jari ini
+494|Dua garis lurus dipilih: keduanya disambung dengan sudut membulat.
+495|Setiap sudut lurus dari bentuk terpilih dibulatkan.
+496|Garis-garis ini tidak dapat disambung (sejajar, atau jari-jarinya tidak muat).
+497|Kedua garis disambung dengan sudut membulat.
+498|Pilih bentuk yang akan dibulatkan terlebih dahulu.
+499|Tidak ada sudut lurus untuk dibulatkan.
+500|{} sudut dibulatkan.
+501|Clipart
+502|Hewan
+503|Alam
+504|Perayaan
+505|Simbol
+506|Bentuk
+507|Alat
+508|Makanan
+509|Objek
+510|Musik dan hiburan
+511|Clipart saya
+512|Semua kategori
+513|Bawaan
+514|Milik saya
+515|Gambar bawaan program
+516|Gambar yang Anda unduh atau tambahkan
+517|Ukuran saat ditempatkan
+518|Online…
+519|Tambah file…
+520|Cari lebih banyak gambar di internet dan simpan di sini
+521|Tambahkan file SVG dari komputer Anda ke clipart Anda
+522|Tidak ada gambar di sini. Gunakan Online… untuk mencarinya.
+523|bawaan program
+524|milik Anda
+525|Klik untuk menaruh di area kerja
+526|{} ditempatkan
+527|Ganti nama
+528|Ganti nama…
+529|Ubah kategori
+530|Ubah kategori…
+531|Detail
+532|Detail…
+533|Hapus…
+534|Hapus gambar ini dari clipart Anda? File di disk Anda akan dihapus.
+535|Simpan salinan di clipart saya
+536|atau kategori baru
+537|Menambahkan {} gambar ke {}
+538|Sumber
+539|Kategori
+540|Lisensi
+541|Pembuat
+542|Koleksi
+543|Clipart online…
+544|Clipart online
+545|Cari di koleksi ikon terbuka (Iconify). Gambar disimpan di disk Anda, dalam kategori pilihan Anda.
+546|mis. kucing, bunga, roda gigi
+547|Mencari…
+548|Tidak ditemukan apa pun.
+549|{} gambar ditemukan
+550|Pencarian gagal: {}
+551|Klik gambar untuk melihat lisensinya dan menyimpannya.
+552|tanpa perlu atribusi
+553|cantumkan pembuat
+554|Simpan ke clipart saya
+555|{} disimpan di {}
+556|Unduh
+557|Mengunduh…
+558|Gagal mengunduh: {}
+559|Atau unduh gambar dari sebuah alamat
+560|Simpan hanya gambar yang boleh Anda gunakan. Periksa lisensi sumbernya.
+561|Perbesar (Z)
+562|Perkecil (X)
+563|Paskan area kerja (Ctrl+0)
+564|Paskan semua objek (Ctrl+9)
+565|Perbesar
+566|Perkecil
+567|Paskan area kerja
+568|Paskan semua objek
+569|Edit node
+570|Ubah teks menjadi kurva, atau lacak gambar, untuk mengedit node-nya.
+571|Pilih bentuk terlebih dahulu, lalu edit node-nya.
+572|Hati (K)
+573|{} material ditambahkan dari {}
+574|Perbedaan pustaka material
+575|{} punya pengaturan material yang berbeda dari perangkat ini. Pilih nilai yang dipertahankan.
+576|{} material baru ditambahkan; {} sudah sama.
+577|Pertahankan semua milik saya
+578|Ambil semua dari file
+579|Lapisan {}: seluruh lapisan
+580|tidak ada
+581|Biarkan pustaka saya apa adanya
+582|Pustaka perangkat ini diperbarui.
+583|Tambah dari pustaka…
+584|Salin material dari pustaka bawaan ke perangkat ini
+585|Pustaka perangkat {}
+586|Pustaka ini kosong. Tambahkan material dari pustaka bawaan atau simpan lapisan Anda sebagai material.
+587|Catatan
+588|Label
+589|Hapus lapisan
+590|Tambah lapisan
+591|Memakai pengaturan lapisan ini dalam desain
+592|Terapkan ke lapisan
+593|Memasukkan pengaturan semua lapisannya ke desain
+594|{} diterapkan ke {} lapisan
+595|Simpan lapisan desain sebagai material
+596|Menyimpan pengaturan lapisan yang dipakai dalam desain
+597|{} disimpan di pustaka perangkat ini
+598|Material yang ditambahkan di sini tersedia untuk setiap perangkat. Pustaka milik perangkat diedit di tab Material.
+599|Ditambahkan oleh Anda
+600|Bawaan
+601|Tambahkan ke perangkat ini
+602|Simpan lapisan desain sebagai material untuk setiap perangkat
+603|Simpan ke pustaka
+604|{} sudah ada di pustaka perangkat ini
+605|{} ditambahkan ke pustaka perangkat ini
+606|Material dengan nama ini sudah ada di pustaka.
+607|{} disimpan di pustaka material
+608|Pengaturan
+609|Perangkat ini
+610|Material
+611|Kayu
+612|Logam
+613|Plastik
+614|Kertas dan kulit
+615|Batu dan kaca
+616|Lainnya
+617|Ekspor pustaka…
+618|Impor pustaka…
+619|Centang yang masuk ke file.
+620|Centang yang diambil dari file.
+621|Material global
+622|Perangkat
+623|Pustaka disimpan: {} material dan {} perangkat
+624|{} material dan {} perangkat diimpor
+625|Ini bukan file pustaka LightCreator.
+626|{} punya pengaturan material yang berbeda dari {}. Pilih nilai yang dipertahankan.
+627|Kayu lapis
+628|MDF
+629|Karton
+630|Kertas
+631|Kulit
+632|Kain flanel
+633|Gabus
+634|Akrilik
+635|Akrilik, hitam atau gelap
+636|Batu tulis / batu
+637|Aluminium anodisasi (berlapis)
+638|Karet
+639|Kain
+640|Kaca
+641|Kayu (kayu keras)
+642|Tag
+643|Tebal
+644|Tag, dipisahkan koma
+645|Edit material
+646|Pulihkan nilai bawaan
+647|Nilai bawaan dipulihkan.
+648|Material ini tidak punya pengaturan untuk jenis laser perangkat ini
+649|Klik ganda material untuk mengedit pengaturannya. Perubahan disimpan di komputer ini.
+650|Hanya hitam atau putih, dipisah pada setengah kecerahan. Tajam: bagus untuk gambar garis dan teks.
+651|Menyebarkan galat pembulatan ke titik di sekitarnya. Pilihan serbaguna yang baik untuk foto.
+652|Menyebarkan galat ke area lebih luas: nada lebih halus, sedikit lebih lambat.
+653|Seperti Jarvis, dengan detail lebih tajam.
+654|Menjaga bagian terang tetap bersih dan kontras tinggi; kehilangan sebagian detail tergelap dan paling terang.
+655|Pola titik 8×8 tetap: teratur dan cepat, tanpa derau.
+656|Tanpa titik: setiap piksel dibakar dengan daya antara minimum dan daya lapisan.
+657|Hapus semua material
+658|Hapus semua material perangkat ini? Sebagai gantinya material pustaka utama ditampilkan; bila Anda mengubah satu, salinannya disimpan untuk perangkat ini.
+659|Pustaka perangkat ini kini menampilkan pustaka utama.
+660|Label lapisan
+661|Label lapisan…
+662|Label yang ditawarkan untuk lapisan material. Potong, Ukir, dan Gores selalu ada.
+663|Label baru
+664|Tambah atau hapus label yang ditawarkan untuk lapisan material
+665|Tambah
+666|Umum
+667|Perangkat keras
+668|G-code
+669|Kanan depan
+670|Kanan belakang
+671|Balik sumbu
+672|Orientasi panel
+673|Asli
+674|Diputar ke kiri
+675|Diputar ke kanan
+676|Margin
+677|Batas sendiri
+678|Batas perangkat lunak
+679|Strip di sepanjang tepi area kerja yang tidak dapat dipakai mesin (klem, rangka); tidak ada yang boleh ditaruh atau dipindahkan ke sana
+680|Kepala berada di tepi area yang diizinkan.
+681|Periksa sebelum pekerjaan
+682|Tetap lanjutkan
+683|Perbaiki galat terlebih dahulu: dengan galat tidak ada yang dikirim, dibingkai, atau diekspor.
+684|Lapisan {} membakar pada daya 0 %.
+685|Lapisan {} punya objek tetapi tidak punya jalur alat (misalnya garis terbuka pada lapisan isi).
+686|Pilih objek
+687|Bingkai berada di luar batas perangkat lunak.
+688|Bingkai berada di luar area yang dapat dipakai (melewati area kerja atau di margin).
+689|Jalur alat lapisan {} keluar dari area yang diizinkan (overscan atau gerakan jalan).
+690|{} objek berada di luar batas perangkat lunak.
+691|{} objek berada di luar area yang dapat dipakai (melewati area kerja atau di margin).
+692|Aktifkan mode laser ($32=1)
+693|Mode laser ($32) mati.
+694|Kontroler melaporkan masalah
+695|Nilai S maksimum kontroler ($30) adalah {}, profil memakai {}.
+696|Ini menulis $32=1 ke pengaturan kontroler. Lanjutkan?
+697|Gunakan nilai dari kontroler
+698|Dengan nilai berbeda, daya dalam G-code tidak akan sesuai persentase yang Anda atur.
+699|Dengan mode laser mati GRBL bertindak seperti kontroler spindel: laser bisa menyala saat gerakan cepat dan daya tidak mengikuti kecepatan.
+700|Kecepatan potong maks
+701|Akselerasi
+702|0 = tanpa batas. Lapisan yang lebih cepat dari ini mendapat peringatan sebelum pekerjaan; perkiraan waktu memakai paling tinggi kecepatan ini.
+703|0 = tidak diketahui. Dengan nilai, perkiraan waktu memasukkan ramp mulai dan berhenti dan panel lapisan menyarankan overscan.
+704|Disarankan: {} (jarak pengereman pada kecepatan ini dan akselerasi mesin)
+705|Lapisan {} lebih cepat dari kecepatan potong maksimum mesin.
+706|Otomatis (dari kontroler)
+707|Dialek G-code
+708|Smoothieware: S ditulis sebagai pecahan daya penuh (atur nilai S maks ke 1). Streaming bekerja seperti GRBL; belum ada yang dicoba di perangkat keras nyata.
+709|Dipakai bila dialek otomatis; dialek GRBL yang dipilih memutuskan sendiri antara M3 dan M4.
+710|Lanjutan
+711|Kolom G-code di halaman Lanjutan berisi karakter kontrol atau terlalu panjang.
+712|Perintah air assist
+713|Akhir pekerjaan
+714|Mati
+715|Nyala
+716|Menggantikan M2 penutup. Sebelumnya laser selalu dimatikan dan kepala dikirim ke home (bila diatur). Kosong = bawaan.
+717|Menggantikan baris satuan, mode absolut, bidang, dan mode laser. Kosong = bawaan.
+718|Pulihkan bawaan
+719|Awal pekerjaan
+720|G-code yang salah dapat menyalakan laser, menabrakkan kepala ke end stop, atau merusak material. Uji dengan laser mati atau pada daya terendah.
+721|Mode daya
+722|Seperti perangkat
+723|Konstan (M3)
+724|Dinamis (M4)
+725|M4 (dinamis) menurunkan daya di sudut dan saat berakselerasi; M3 (konstan) mempertahankannya. G-code beralih di antara keduanya bila lapisan berbeda.
+726|Toleransi busur
+727|Busur (G2 / G3)
+728|Busur: GRBL biasanya menangani G2 / G3, Marlin hanya bila dibuat dengan ARC_SUPPORT, dan Smoothieware punya perilaku sendiri. Beberapa kontroler mengabaikan busur atau menjalankannya salah: uji dengan laser mati. Busur dipakai untuk garis tepi dan cincin, bukan untuk garis pindai atau gambar.
+729|Toleransi kurva
+730|Seberapa jauh kurva yang diratakan (Bézier, teks) boleh menyimpang dari kurva sebenarnya.
+731|Tulis kurva sebagai busur bila cocok
+732|Mode hitung mengisi buffer kontroler dan cepat. Mode sederhana mengirim satu baris dan menunggu ok: lambat, tetapi untuk firmware yang menjawab salah.
+733|Terus menunggu
+734|Tidak ada jawaban dari kontroler selama {} dtk saat pekerjaan berjalan (status: {}).
+735|Tidak ada yang dilanjutkan atau dikirim. Mesin mungkin hanya lambat, atau barisnya hilang; lihat konsol, lalu pilih.
+736|Hentikan pekerjaan
+737|Mengalirkan
+738|Kontroler tidak menjawab
+739|Hitung buffer
+740|Sederhana (tunggu setiap ok)
+741|Nama port, atau ID vendor dan produk USB (VID:PID, heksadesimal): port yang memiliki ID ini yang dipakai.
+742|Ikat ke port ini
+743|Perangkat USB terikat
+744|Hubungkan ulang otomatis
+745|Menghubungkan lagi…
+746|Port atau ID USB
+747|Hubungkan ulang
+748|Ingat ID USB port yang dipilih: port ditemukan lagi dengan ID itu bila namanya berubah.
+749|Lepas ikatan
+750|Bila koneksi putus sendiri, coba lagi setiap beberapa detik sampai Anda menekan Putuskan.
+751|tidak ada
+752|Setelah terhubung
+753|Hapus alarm
+754|Menghapus alarm melewati homing: gunakan hanya bila kepala diketahui berada di tempat aman.
+755|Homing mesin
+756|Homing {}
+757|Homing sumbu {} saja ($H{})
+758|Semua {} pengaturan dari file kini ada di kontroler.
+759|Cadangkan pengaturan terlebih dahulu. Untuk melanjutkan, ketik {}:
+760|Cadangkan ke file…
+761|Tidak dapat memakai file: {}
+762|Hubungkan ke mesin terlebih dahulu (tab Perangkat).
+763|Terhubung ke: {}
+764|Pengaturan pabrik ($RST=$)…
+765|Marlin menyimpan pengaturannya dalam perintahnya sendiri (M92, M203, M204, ...): halaman ini hanya menampilkan yang dilaporkan `M503`.
+766|Belum ada yang dibaca.
+767|Baca pengaturan ($$)
+768|Baca pengaturan (M503)
+769|Benar-benar menulis $RST=$ ke kontroler?
+770|Pulihkan dari file…
+771|Pulihkan pengaturan pabrik
+772|Pulihkan pengaturan dari file
+773|Pengaturan disimpan ke {}
+774|Kontroler sudah memiliki semuanya.
+775|Pengaturan ini ada di kontroler, bukan di profil. Ubah satu per satu dan catat nilai sebelumnya: nilai yang salah dapat membuat mesin bergerak sejauh jarak yang salah atau menyalakan laser.
+776|Pengaturan file ini berbeda dari kontroler. Tidak ada yang ditulis sampai Anda menekan Tulis semua.
+777|Ini menulis $RST=$: setiap pengaturan kontroler kembali ke bawaan firmware. Jumlah langkah, jangkauan, kecepatan, mode laser, dan homing akan berubah.
+778|Tulis
+779|Tulis ${} = {} ke kontroler? Saat ini {}. Ubah satu pengaturan setiap kali dan catat nilai lamanya.
+780|Tulis pengaturan
+781|Tulis semua
+782|Tulis {} pengaturan ke kontroler? Mesin akan berperilaku seperti isi file.
+783|{} dari {} pengaturan berbeda setelah ditulis:
+784|Nilai
+785|Satuan
+786|Umum
+787|bukan angka
+788|di luar jangkauan
+789|Firmware ($$)
+790|0 = nilai umum ({} W)
+791|0 = nilai biasa ({} nm)
+792|Sinar lemah tetap untuk mengatur ketinggian (mode fokus). 0 = tanpa mode fokus.
+793|Tambah kepala laser
+794|Titik sinar
+795|Daya fokus
+796|Kecepatan bingkai
+797|Kepala {}
+798|Daya optik
+799|Frekuensi PWM
+800|Frekuensi PWM maksimum
+801|Offset penunjuk
+802|Lebar pulsa
+803|Rentang lebar pulsa
+804|Hapus kepala laser ini
+805|Ukuran sinar pada material (0 = tidak diketahui). Interval isi di bawahnya membuat garis bersebelahan tumpang tindih.
+806|Nilai PWM disimpan bersama profil dan ditawarkan sebagai variabel untuk makro; tidak dikirim ke kontroler.
+807|Nomor yang dikenali kontroler untuk kepala ini; ditulis sebagai T<n> bila lapisan memakai kepala lain. Harus sesuai pemetaan di kontroler.
+808|Nomor alat (T)
+809|Dua kepala laser punya nomor alat yang sama.
+810|Panjang gelombang
+811|Letak titik penunjuk merah terhadap sinar (x ke kanan, y ke bawah). Dipakai oleh perataan penunjuk di tab Kontrol.
+812|mis. Dioda biru
+813|Kepala laser
+814|Interval lebih kecil dari titik sinar ({}): garis bersebelahan tumpang tindih.
+815|SINAR FOKUS NYALA: tekan untuk mematikan
+816|Fokus
+817|Nyalakan sinar lemah tetap untuk mengatur ketinggian fokus
+818|Sinar fokus nyala
+819|Sinar fokus mati
+820|Ratakan ke penunjuk
+821|Uji kering dengan penunjuk
+822|Uji kering dengan penunjuk: {} baris, laser mati
+823|Tidak ada yang dijalankan: tidak ada bentuk di lapisan output
+824|Menjalankan jalur pekerjaan yang digeser sebesar offset penunjuk dengan laser mati, untuk melihat ke mana perginya.
+825|Hanya sesi ini: bingkai dan uji kering mundur sebesar offset titik penunjuk merah, sehingga titik jatuh di tempat sinar akan mengenai. Pekerjaan dan jogging tidak pernah digeser.
+826|Hook {}: {}
+827|Hook
+828|G-code sendiri yang ditulis ke pekerjaan: saat lapisan mulai, sebelum dan sesudah setiap objek, saat lapisan berakhir. Dengan hook objek, lapisan dibakar objek demi objek (dan sekali per lintasan).
+829|Variabel: {}
+830|Awal lapisan
+831|Akhir lapisan
+832|Awal objek
+833|Akhir objek
+834|Makro adalah G-code Anda sendiri: dapat menyalakan laser atau menggerakkan kepala. Jalankan hanya bila Anda tahu apa yang dilakukannya. Pertanyaan ini diajukan sekali per sesi.
+835|Tambah makro
+836|Hapus makro ini
+837|Nama makro
+838|Makro {}
+839|Makro {}: {}
+840|Makro {}: {} baris
+841|Makro
+842|Skrip bernama yang Anda jalankan manual dari tab Kontrol. Satu perintah per baris; komentar setelah ; atau dalam kurung; @include(name) menyisipkan makro lain. Variabel mesin dapat dipakai.
+843|Jalankan makro {}
+844|Menjalankan makro ini di mesin
+845|Tambah zona
+846|Lingkaran
+847|Hapus zona ini
+848|Bagian area kerja yang tidak boleh dimasuki mesin (klem, jig). Gerakan yang menyentuh zona aktif, juga dengan laser mati, menghentikan Mulai, Bingkai, dan ekspor. Program tidak memutari zona.
+849|Bingkai menyentuh zona terlarang "{}".
+850|Jalur alat lapisan {} menyentuh zona terlarang "{}".
+851|Nama zona
+852|Zona {}
+853|Zona terlarang
+854|Tampilkan zona terlarang
+855|Seberapa jauh Z bergerak setiap lintasan berikutnya (negatif turun pada mesin yang atasnya +Z). 0 = Z tetap.
+856|Z mesin yang dituju kepala sebelum lintasan pertama. 0 bersama 0 per lintasan = Z tidak digerakkan.
+857|Ketinggian Z lapisan {} di luar jangkauan sumbu Z.
+858|Mesin punya sumbu Z
+859|Jangkauan
+860|Atas adalah arah Z negatif
+861|Z
+862|Sumbu Z
+863|Ketinggian Z
+864|Z per lintasan
+865|Alat putar terhubung
+866|A berputar {} derajat untuk setiap milimeter di permukaan.
+867|Semua lapisan yang dibakar harus putar, atau tidak ada. Desain tidak boleh lebih tinggi dari keliling benda kerja.
+868|Meminta konfirmasi terlebih dahulu. Hanya sumbu Y kontroler yang berubah.
+869|Bakar lapisan ini di alat putar
+870|Chuck
+871|Keliling
+872|GRBL 1.1 punya tiga sumbu: sumbu A tidak tersedia, Y yang dipakai.
+873|Jenis
+874|Lapisan yang ditandai putar dibakar di alat putar. Modelnya sederhana: chuck berputar menurut diameter benda kerja, roller menggerakkan permukaan seperti dirinya; mesin nyata perlu diuji.
+875|Mikrostep motor untuk satu putaran penuh dari yang digerakkannya (chuck, atau satu roller).
+876|Mikrostep per putaran
+877|Menggantikan Y (motor Y memutar benda kerja)
+878|Diameter roller
+879|Roller
+880|Putar
+881|Lapisan putar dan lapisan datar tidak bisa dalam satu pekerjaan: tandai semua lapisan yang dibakar sebagai putar, atau tidak ada.
+882|Rotasi dalam G-code
+883|Kontroler memerlukan {} langkah per mm pada sumbu Y ($101).
+884|Desain di lapisan {} lebih tinggi dari keliling benda kerja.
+885|Keliling benda kerja: desain tidak boleh lebih tinggi.
+886|Sumbu A sejati (derajat)
+887|Diameter benda kerja
+888|Tulis $101 ke kontroler…
+889|Seperti kotak atau silinder berdiri di meja: gerakan di atas atau di bawah rentang bebas.
+890|Hanya pada ketinggian ini (Z)
+891|Profil kosong
+892|Salinan profil ini
+893|Tambah perangkat
+894|Disalin ke {}
+895|Ekspor…
+896|Profil {} diimpor
+897|Impor…
+898|Baca profil dari file
+899|Simpan profil ini ke file
+900|Profil disimpan ke {}
+901|Titik awal: mesin umum dengan angka tipikal. Periksa dengan dokumentasi mesin Anda.
+902|Laser dioda GRBL 400 × 400
+903|Laser CO2 GRBL 300 × 200
+904|Konversi K40 (GRBL) 300 × 200
+905|Laser dioda Marlin 400 × 400
+906|Laser dioda GRBL 1.1 dengan meja 400 × 400 mm, nol kiri depan, daya dinamis.
+907|Laser CO2 GRBL 1.1 dengan meja 300 × 200 mm, nol kiri depan.
+908|Laser CO2 K40 dengan papan kontroler GRBL: 300 × 200 mm, nol di sudut kiri belakang (kiri atas).
+909|Laser dioda firmware Marlin (fitur laser, S 0–255) dengan meja 400 × 400 mm.
+910|Belakang
+911|Koneksi (opsional)
+912|Halus
+913|Jika mesin sedang terhubung, area kerja dan kecepatannya dapat dibaca dari kontroler.
+914|Mode laser ($32) dan nilai S maksimum ($30) kontroler belum dibaca: diperiksa saat Anda terhubung.
+915|Nama dan satuan
+916|Berikutnya
+917|Tidak ada margin atau batas perangkat lunak yang diatur: seluruh rentang sumbu adalah area kerja. Atur di halaman Perangkat keras bila klem atau rangka menghalangi.
+918|Port atau host belum diatur: pilih di pengaturan perangkat sebelum menghubungkan.
+919|Belum ada yang dicoba di mesin Anda: jalankan uji pertama dengan laser mati atau pada daya terendah.
+920|Pilih titik awal terdekat. Anda dapat mengubah semuanya nanti.
+921|Atur manual…
+922|Atur mesin Anda ({}/{})
+923|Lewati
+924|Lewati langkah ini dan buka pengaturan perangkat
+925|Ringkasan
+926|Perangkat ditambahkan. Tekan Baru untuk mulai.
+927|Pengaturan dibaca dari kontroler.
+928|Mesin apa yang Anda punya?
+929|Perlu diperiksa
+930|belum diatur
+931|Tambah penghitung
+932|Dihitung dari waktu pekerjaan benar-benar berjalan (dari mulai sampai akhir atau Stop), bukan dari perkiraan. Total tidak dapat direset.
+933|Nama penghitung (tabung, lensa, sabuk)
+934|Penghitung {}
+935|Hapus penghitung ini
+936|Jatuh tempo perawatan: {}
+937|Ingatkan setelah
+938|Reset penghitung
+939|Mulai ulang penghitung "{}" dari nol?
+940|Total waktu kerja: {}
+941|Perawatan
+942|Dari templat
+943|Catatan lebih panjang dari {} karakter dan tidak dapat disimpan.
+944|Catatan Anda (Markdown)
+945|mis. Pengaturan yang berhasil: air assist 20 %, fokus 12 mm
+946|Catatan
+947|Aktif
+948|Tambah kamera
+949|Alamat
+950|Otomatis
+951|Nama kamera
+952|Nomor kamera
+953|Kamera komputer ini
+954|Kamera {}
+955|Kamera yang mengawasi mesin. Yang aktif memberi gambar langsung. Kamera hanya dapat dinyalakan bila alamatnya valid.
+956|Koefisien distorsi lensa (radial k1–k3, tangensial p1, p2) untuk koordinat yang diukur dari pusat dalam satuan sisi panjang gambar. Semua 0 = tanpa koreksi. Diisi manual: tidak ada kalibrasi otomatis.
+957|Hapus kamera ini
+958|Untuk kamera komputer ini: minta format YUYV tanpa kompresi bila sistem mengizinkan.
+959|Format
+960|Koreksi lensa
+961|Gambar langsung mesin: stream MJPEG atau alamat snapshot JPEG (http atau https). RTSP tidak didukung.
+962|Pengurangan derau
+963|Bukan alamat http atau https.
+964|Gambar
+965|Utamakan YUYV
+966|Nyalakan atau matikan kamera ini
+967|Alamat tidak valid: diperlukan alamat http atau https
+968|Keseimbangan putih
+969|Tambah titik
+970|Ratakan dengan titik
+971|Hapus titik ini
+972|Mencocokkan gambar ke titik-titik (kuadrat terkecil) dan menggeser sudut sesuai.
+973|Titik tidak cukup, atau semuanya segaris.
+974|Pasangan titik di gambar (piksel) dan tempatnya di area kerja (mm). Minimal 3, disarankan 4; menentukan perataan, termasuk perspektif.
+975|Titik dari sudut saat ini
+976|Titik acuan
+977|Mengganti titik dengan keempat sudut gambar dan letaknya sekarang.
+978|Tempel ke objek
+979|Tidak dapat membuat halaman: {}
+980|Tidak dapat membuka penampil: {}
+981|Printer bawaan
+982|Margin
+983|Hanya objek pada lapisan yang terlihat
+984|Hanya objek, sebesar yang dimungkinkan halaman
+985|Buka PDF
+986|Dibuka di penampil PDF.
+987|Membuka halaman di penampil PDF, yang dapat mencetaknya dengan lebih banyak opsi
+988|Cetak
+989|Cetak…
+990|Printer
+991|Mencetak desain di printer kertas, untuk memeriksa penempatan atau sebagai templat.
+992|Simpan sebagai PDF…
+993|Dikirim ke printer. {}
+994|Printer tidak menerimanya: {}
+995|Seluruh area kerja, sesuai skala
+996|Tidak ada yang dicetak.
+997|{} objek melewati area kerja; di kertas terpotong di tepinya.
+998|{} objek melewati area kerja; tetap dicetak.
+999|Uji kamera: {}
+1000|Membuka gambar kamera ini sesuai pengaturan di sini, tanpa menyimpan
+1001|Uji
+1002|Bergantian memotong dan melompati sepanjang garis tepi.
+1003|Panjang potong
+1004|Jarak merata
+1005|Offset kerf
+1006|Menyisakan bagian pendek garis tepi tanpa dipotong (atau dipotong lemah) agar benda tetap di tempat. Ditempatkan otomatis.
+1007|Batasi tab maks
+1008|Tab min
+1009|Menggeser garis tepi ke luar (ke dalam bila negatif) untuk mengimbangi lebar potongan. 0 = mati.
+1010|Persentase daya lapisan di atas tab; 0 = laser mati.
+1011|Perforasi
+1012|Mode perforasi
+1013|Penempatan
+1014|Lewati bentuk dalam
+1015|Panjang lompatan
+1016|Jarak
+1017|Daya potong tab
+1018|Ukuran tab
+1019|Tab / jembatan
+1020|Tab per bentuk
+1021|Bentuk vektor pada lapisan mode Gambar tidak dibakar.
+1022|Waktu kerja
+1023|Deskripsi
+1024|Jelaskan proyek: apa itu, pengaturan yang berhasil, catatan untuk lain kali.
+1025|Halaman web dengan status mesin, proyek, dan kamera, serta API untuk program lain. Tidak memiliki kata sandi.
+1026|Siapa pun di jaringan dapat melihat mesin dan menghentikan atau menggerakkannya. Tidak ada kata sandi atau enkripsi: gunakan hanya di jaringan tepercaya.
+1027|Mendengarkan di {}
+1028|Dapat dijangkau dari komputer lain di jaringan
+1029|Nyalakan server web dan API
+1030|Server tidak dapat dimulai: {}
+1031|Server web dan API
+1032|Tambah perangkat
+1033|Pengaturan lainnya…
+1034|Buka seluruh jendela perangkat dengan isian di sini
+1035|Titik awal
+1036|Material bawaan
+1037|Hapus material ini
+1038|Material: {}
+1039|Nama material baru
+1040|Material baru: salinan yang ini
+1041|Nama baru
+1042|Ganti nama material ini
+1043|proyek
+1044|Akrilik 3 mm
+1045|Kulit 2 mm
+1046|Material baru, kosong
+1047|Kayu lapis 3 mm
+1048|Tambah material, mis. Kayu lapis birch 3 mm (opsional)
+1049|Kamera yang mengawasi mesin. Yang dicentang memberi gambar langsung; mencentang yang lain mematikan yang pertama.
+1050|Nyalakan kamera ini: memberi gambar langsung
+1051|Server web: nyala, port {}
+1052|Server web: mati
+1053|Server web: galat
+1054|Biru Gelap
+1055|Biru Terang
+1056|Hijau Gelap
+1057|Hijau Terang
+1058|Ungu Gelap
+1059|Ungu Terang
+1060|Cokelat Gelap
+1061|Cokelat Terang
+1062|Oranye Gelap
+1063|Oranye Terang
+1064|Warna ruang kerja
+1065|Ruang di sekitar area kerja
+1066|Halaman web dengan status mesin, proyek, dan kamera, serta API untuk program lain. Setiap permintaan memerlukan frasa akses; tidak ada enkripsi.
+1067|Siapa pun di jaringan yang tahu frasa akses dapat melihat mesin dan menghentikan atau menggerakkannya. Frasa dikirim tanpa enkripsi: gunakan hanya di jaringan tepercaya.
+1068|Frasa akses
+1069|Gunakan frasa akses ini mulai sekarang
+1070|Frasa akses tidak boleh kosong atau berisi karakter kontrol.
+1071|Posisi laser langsung
+1072|Menampilkan posisi kepala laser sebagai titik di area kerja. Dinyalakan saat mesin diam, ia melakukan homing dulu; selama pekerjaan atau bingkai hanya menampilkan posisi, diperbarui setiap detik. Memerlukan perangkat yang terhubung.
+1073|Mulai dari
+1074|Home (nol mesin)
+1075|Posisi laser saat ini
+1076|Home: desain dibakar di tempatnya pada area kerja, dihitung dari nol mesin. Posisi saat ini: sudut kiri atas desain diletakkan di tempat kepala laser berada sekarang (pekerjaan, bingkai, dan uji kering), dan pekerjaan berakhir di sana. File ekspor selalu dihitung dari nol mesin.
+1077|Baca OK
+1078|Galat membaca
+1079|Proyek ini dibuat untuk pengaturan mesin lain ({}). Periksa perangkat sebelum memulai.
+1080|Beberapa bagian proyek LightBurn tidak dapat dipakai: {}
+1081|Saya tidak punya perangkat
+1082|Kerjakan proyek tanpa mesin: perangkat sederhana bernama Dummy, dengan area kerja dan kecepatan bawaan
+1083|Impor proyek LightBurn…
+1084|Belum ada perangkat. Tambahkan satu, atau bekerja tanpa mesin.
+1085|Buka proyek atau mulai proyek kosong.
+1086|Impor desain UGS…
+1087|Beberapa bagian desain UGS tidak dapat dipakai: {}
+1088|Tampilkan semua {} lapisan
+1089|Warna material hanya ditampilkan; tidak mengubah apa pun.
+1090|Ekspor semua…
+1091|Ganti material dengan nama yang sama
+1092|{} material diimpor; {} diganti.
+1093|{} material diekspor: {}
+1094|Hapus lapisan ini dari material
+1095|Material ini belum punya lapisan. Tambahkan di bawah.
+1096|Material…
+1097|Lapisan Illustrator
+1098|File memiliki {} lapisan Illustrator. Taruh jalur ke lapisan program menurut:
+1099|Lapisan Illustrator pertama ke lapisan 1, kedua ke lapisan 2, dan seterusnya; sisanya ke lapisan terakhir.
+1100|Lihat file G-code…
+1101|Atur ulang tampilan
+1102|Penampil G-code
+1103|Warnai menurut ketinggian
+1104|Seret: putar · seret kanan atau Shift+seret: geser · roda: zoom
+1105|Seret: geser · roda: zoom
+1106|Garis tepi
+1107|Telusuri garis tepi yang membungkus semua bentuk, seperti karet gelang.
+1108|Bingkai garis tepi
+1109|Satu elemen setiap kali
+1110|Setiap elemen (grup, atau bentuk yang tidak masuk grup mana pun) dibakar lengkap, semua lapisan dan semua lintasannya, sebelum elemen berikutnya; elemen terdekat lebih dulu. Mati: lapisan demi lapisan, lintasan demi lintasan.
+1111|Hanya pilihan
+1112|Hanya bentuk yang dipilih di area kerja saat G-code disimpan atau pekerjaan dimulai yang dibakar.
+1113|Tidak ada yang dibakar: tidak ada yang dipilih
+1114|Ekspor diagnostik (zip)…
+1115|Diagnostik disimpan: {}
+1116|Tidak dapat menyimpan diagnostik: {}
+1117|Impor DXF…
+1118|Sisipkan
+1119|Tampilan punya paling banyak tiga panel
+1120|Tampilkan pratinjau di sini
+1121|Tidak ada file G-code yang terbuka: File, Lihat file G-code…
+1122|Pratinjau G-code
+1123|Tampilkan G-code tanpa menyimpannya
+1124|pratinjau
+1125|G-code ditampilkan, tidak ada yang disimpan
+1126|G-code milik perangkat: {}
+1127|Bukan alamat kamera (http, https, rtsp, udp, rtp, atau rtmp).
+1128|Gambar langsung mesin: stream MJPEG, alamat snapshot JPEG (http atau https), atau stream yang dibaca ffmpeg (rtsp, udp, rtp, rtmp).
+1129|Overlay dari…
+1130|Zoom
+1131|GRBL (1.1f atau lebih baru)
+1132|GRBL-M3 (1.1e atau lebih lama)
+1133|LinuxCNC (file)
+1134|G-code sendiri
+1135|Laser nyala (daya)
+1136|Laser mati
+1137|{power} adalah daya dalam satuan S maks, {percent} daya dalam persen. Perintah laser nyala datang sebelum pembakaran, perintah laser mati sebelum setiap gerakan.
+1138|G-code sendiri: periksa dulu perintah laser nyala dan mati dengan laser pada daya terendah.
+1139|Snapmaker: daya ditulis sebagai M3 P (persen) S (0–255) sebelum pembakaran dan M5 sebelum gerakan. Belum dicoba di mesin nyata.
+1140|LinuxCNC: Mulai menyimpan file G-code untuk LinuxCNC. Daya dikirim ke output analog 0 (M67 E0 Q, dari 0 sampai S maks), yang harus menggerakkan laser di HAL Anda. Belum dicoba di mesin nyata.
+1141|GRBL tanpa mode laser: laser dimatikan (S0) sebelum setiap gerakan. Coba pekerjaan pertama pada daya terendah.
+1142|Papan Gerbil berbeda nilai S maksimumnya ($30 adalah 1000 pada sebagian, 2048 pada yang lain): baca dari perangkat.
+1143|Ketinggiannya adalah sumbu Z mesin (seperti di tab Kontrol).
+1144|Silinder (3D)
+1145|Benda kerja di alat putar dengan apa yang dibakar padanya. Seret untuk memutar, roda untuk zoom.
+1146|Datar
+1147|Permukaan benda kerja dibentangkan, seperti di area kerja
+1148|Seret: putar · roda: zoom
+1149|Dimensi di pratinjau
+1150|Silinder di pratinjau (putar)
+1151|Sisi yang akan hilang punya bentuk: proyek tetap seperti semula. Hapus dulu.
+1152|balok
+1153|blok
+1154|Proyek diatur: {} {} x {} x {} mm, nol di {}
+1155|Empat tanda sudut tepat di luar material, dibakar sebagai pekerjaan tersendiri pada lembar di bawahnya sebelum material diletakkan: letakkan material di dalamnya untuk sisi A dan, dalam keadaan terbalik, untuk sisi B.
+1156|Benda hasil bakar dalam 3D, sebesar material di pengaturan proyek, dengan apa yang dibakar di setiap sisinya. Seret untuk memutar, roda untuk zoom.
+1157|Pekerjaan di area kerja, seperti dibakar mesin
+1158|Warna bakar
+1159|Garis lebih gelap untuk daya lebih besar, seperti dibakar pada kayu; mati: dalam warna operasi atau lapisan

@@ -221,7 +221,7 @@
 * **Start from line…** (Laser menu): starts a job in the middle: the laser is first brought into the state the program has at that line (units, coordinate system, power and speed, feed, position) and the rest follows; it refuses when that cannot be worked out (after `G53` or `G92`).
 * **Calibration…** (Laser menu): *steps per millimetre* (ask for a move, measure it, get the new `$100` / `$101` / `$102`, write it after a question) and *squareness of the axes* (two diagonals of a rectangle give the angle and the shift).
 * **Copies of the settings of the controller** are kept with every profile: one at the first connection and again whenever the settings read at connecting differ from the newest copy (a message and the console say what changed); **Make a copy now**, **Restore…** and **Delete** are on the Firmware page of the device window; they are part of the backup of the program.
-* **Alarms and errors of GRBL are explained** in the console (a line under the message) and in the status bar, in the 30 languages of the program.
+* **Alarms and errors of GRBL are explained** in the console (a line under the message) and in the status bar, in the 38 languages of the program.
 * **Alarm window:** an alarm of the controller, or an error in the middle of a job, opens a big window that says what happened, with a red **STOP** and an orange **UNLOCK** button; it goes away by itself when the alarm is cleared.
 
 **Clipart gallery**
