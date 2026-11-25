@@ -1,3 +1,5 @@
+🌐 **English** · [Polski](Wtyczki) · [简体中文](Plugins-ZH) · [한국어](Plugins-KO)
+
 # Plugins
 
 Plugins add things to LightCreator without changing the program: **clipart, machine presets, translations, importers of other file formats, generators of shapes and G-code postprocessors.** They are shared by LightCreator, MillCreator and PenCreator: a plugin lives in the folder `plugins` inside the shared data folder (`baseCreator`) and each program uses the parts that fit it.

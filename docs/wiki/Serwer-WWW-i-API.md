@@ -1,4 +1,4 @@
-🌐 [English](Web-Server-and-API) · **Polski**
+🌐 [English](Web-Server-and-API) · **Polski** · [简体中文](Web-Server-and-API-ZH) · [한국어](Web-Server-and-API-KO)
 
 # Serwer WWW i API
 

@@ -1,4 +1,4 @@
-🌐 [English](Home) · **Polski**
+🌐 [English](Home) · **Polski** · [简体中文](Home-ZH) · [한국어](Home-KO)
 
 <p align="center"><img src="https://raw.githubusercontent.com/michalsarna/LightCreator/main/assets/icons/icon-256.png" alt="LightCreator" width="128"></p>
 
@@ -50,4 +50,4 @@ Lista i opis, jak dopisać maszynę: [TESTS_ON_DEVICES.md](https://github.com/mi
 
 > ⚠️ **Bezpieczeństwo:** lasery są niebezpieczne. Testuj G-code przy niskiej mocy, noś okulary ochronne, nie zostawiaj pracującej maszyny bez nadzoru. Zobacz [Bezpieczeństwo i ograniczenia](Bezpieczenstwo-i-ograniczenia).
 
-Najnowsza wersja: **v0.9.9** · [Wydania](https://github.com/michalsarna/LightCreator/releases) · [Zgłoszenia](https://github.com/michalsarna/LightCreator/issues) · Licencja: [MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) lub [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE), do wyboru
+Najnowsza wersja: **v0.9.10** · [Wydania](https://github.com/michalsarna/LightCreator/releases) · [Zgłoszenia](https://github.com/michalsarna/LightCreator/issues) · Licencja: [MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) lub [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE), do wyboru

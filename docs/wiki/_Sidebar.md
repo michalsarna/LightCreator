@@ -1,4 +1,4 @@
-**🌐 [English](Home) · [Polski](Home-PL)**
+**🌐 [English](Home) · [Polski](Home-PL) · [简体中文](Home-ZH) · [한국어](Home-KO)**
 
 ### English
 * [🏠 Home](Home)
@@ -43,3 +43,47 @@
 * [Symulator GRBL](Symulator-GRBL)
 * [Bezpieczeństwo i ograniczenia](Bezpieczenstwo-i-ograniczenia)
 * [Wsparcie](Wsparcie)
+
+### 简体中文
+* [🏠 首页](Home-ZH)
+* [安装](Installation-ZH)
+* [快速入门](Quick-Start-ZH)
+* [菜单](Menus-ZH)
+* [设计工具](Design-Tools-ZH)
+* [风格描摹](Style-Trace-ZH)
+* [窗格与标签页](Panes-and-Tabs-ZH)
+* [切割与图层](Cuts-and-Layers-ZH)
+* [设备与控制器](Devices-and-Controllers-ZH)
+* [控制设备](Control-Devices-ZH)
+* [剪贴画库](Clipart-Gallery-ZH)
+* [键盘快捷键](Keyboard-Shortcuts-ZH)
+* [插件](Plugins-ZH)
+* [设置与文件](Settings-and-Files-ZH)
+* [Web 服务器与 API](Web-Server-and-API-ZH)
+* [架构](Architecture-ZH)
+* [GRBL 代码](GRBL-Codes-ZH)
+* [GRBL 模拟器](GRBL-Simulator-ZH)
+* [安全与限制](Safety-and-Limitations-ZH)
+* [支持本项目](Support-ZH)
+
+### 한국어
+* [🏠 홈](Home-KO)
+* [설치](Installation-KO)
+* [빠른 시작](Quick-Start-KO)
+* [메뉴](Menus-KO)
+* [디자인 도구](Design-Tools-KO)
+* [스타일 트레이스](Style-Trace-KO)
+* [창 영역과 탭](Panes-and-Tabs-KO)
+* [절단과 레이어](Cuts-and-Layers-KO)
+* [장치와 컨트롤러](Devices-and-Controllers-KO)
+* [제어 장치](Control-Devices-KO)
+* [클립아트 갤러리](Clipart-Gallery-KO)
+* [키보드 단축키](Keyboard-Shortcuts-KO)
+* [플러그인](Plugins-KO)
+* [설정과 파일](Settings-and-Files-KO)
+* [웹 서버와 API](Web-Server-and-API-KO)
+* [아키텍처](Architecture-KO)
+* [GRBL 코드](GRBL-Codes-KO)
+* [GRBL 시뮬레이터](GRBL-Simulator-KO)
+* [안전과 제한 사항](Safety-and-Limitations-KO)
+* [프로젝트 지원하기](Support-KO)

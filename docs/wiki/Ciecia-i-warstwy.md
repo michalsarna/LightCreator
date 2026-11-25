@@ -1,4 +1,4 @@
-🌐 [English](Cuts-and-Layers) · **Polski**
+🌐 [English](Cuts-and-Layers) · **Polski** · [简体中文](Cuts-and-Layers-ZH) · [한국어](Cuts-and-Layers-KO)
 
 # Cięcia i warstwy
 

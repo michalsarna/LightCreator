@@ -1,4 +1,4 @@
-🌐 [English](GRBL-Codes) · **Polski**
+🌐 [English](GRBL-Codes) · **Polski** · [简体中文](GRBL-Codes-ZH) · [한국어](GRBL-Codes-KO)
 
 # Kody GRBL
 

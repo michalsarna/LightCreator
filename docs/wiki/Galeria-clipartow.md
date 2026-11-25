@@ -1,4 +1,4 @@
-🌐 [English](Clipart-Gallery) · **Polski**
+🌐 [English](Clipart-Gallery) · **Polski** · [简体中文](Clipart-Gallery-ZH) · [한국어](Clipart-Gallery-KO)
 
 # Galeria clipartów
 
