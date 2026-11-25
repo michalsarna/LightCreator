@@ -46,7 +46,7 @@ The list with how to add a machine: [TESTS_ON_DEVICES.md](https://github.com/mic
 * **Devices:** per-machine profiles; GRBL and Marlin over serial or TCP (ser2net); Ruida and Trocen via PLT / DXF export.
 * **Helpers:** camera view with photos, video and time-lapse (MJPEG, RTSP, UDP, RTP, RTMP), camera overlay with four-corner alignment saved in the project, the G-code as editable text, 310-picture clipart gallery with online search.
 * **Work area:** tabs of drawings, preview, G-code and camera in up to three panes; a tab can open in a window of its own.
-* **Interface:** 30 languages (English, Polski, Deutsch, Italiano, Suomi, 中文, हिन्दी and 23 other European ones) and 18 colour schemes.
+* **Interface:** 38 languages (English, Polski, Deutsch, Italiano, Suomi, 简体中文, हिन्दी, 23 other European ones and 日本語, 한국어, 繁體中文, Türkçe, Tiếng Việt, Bahasa Indonesia, Српски, Bosanski) and 18 colour schemes.
 
 > ⚠️ **Safety:** lasers are dangerous. Test G-code at low power, wear eye protection, never leave a running machine unattended. See [Safety and Limitations](Safety-and-Limitations).
 

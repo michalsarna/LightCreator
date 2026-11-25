@@ -1,0 +1,1160 @@
+0|Dosya
+1|Düzen
+2|Düzenle
+3|Görünüm
+4|Lazer
+5|Ayarlar
+6|Yardım
+7|Yeni
+8|Aç…
+9|Kaydet
+10|Farklı kaydet…
+11|SVG içe aktar…
+12|SVG dışa aktar…
+13|G-code dışa aktar…
+14|Çık
+15|Geri al
+16|Yinele
+17|Kopyala
+18|Yapıştır
+19|Çoğalt
+20|Sil
+21|Tümünü seç
+22|Sola hizala
+23|Ortaya hizala (Y)
+24|Sağa hizala
+25|Üste hizala
+26|Ortaya hizala (D)
+27|Alta hizala
+28|Birbirine göre ortala
+29|Tablada ortala
+30|Yatay çevir
+31|Dikey çevir
+32|90° saat yönünde döndür
+33|90° saat yönünün tersine döndür
+34|En öne getir
+35|En arkaya gönder
+36|Yola dönüştür
+37|Izgara dizisi…
+38|Izgara
+39|Izgaraya yapıştır
+40|Takım yolu önizlemesi
+41|Tablayı pencereye sığdır
+42|Cihaz ayarları…
+43|Çerçeve
+44|İşi başlat
+45|Hakkında
+46|Dil
+47|Renk düzeni
+48|Koyu
+49|Açık Koyu
+50|Orta Açık
+51|Açık
+52|Seç (V)
+53|Dikdörtgen (R)
+54|Elips (E)
+55|Çizgi (L)
+56|Çoklu çizgi / kalem (P)
+57|Kaydır (H)
+58|Yakınlaştır (Z)
+59|Seç
+60|Dikdörtgen
+61|Elips
+62|Satır
+63|Doldur
+64|Dolgu + Çizgi
+65|Katman {}
+66|Yapıştır
+67|Önizleme
+68|Start
+69|İşi bağlı lazere akıt
+70|Sınırlayıcı kutuyu izle
+71|G-code kaydet
+72|Katmanlar
+73|{} — seçimi atamak / etkin yapmak için tıklayın
+74|Hazır
+75|{} açıldı
+76|Açılamadı: {}
+77|{} kaydedildi
+78|Kaydetme başarısız: {}
+79|{} yol {} dosyasından içe aktarıldı
+80|İçe aktarma başarısız: {}
+81|{} dışa aktarıldı
+82|Dışa aktarma başarısız: {}
+83|G-code {} kaydedildi
+84|Önce bir lazere bağlanın (Lazer paneli)
+85|Yakılacak bir şey yok: çıktı katmanlarında şekil yok
+86|İş başlıyor: {} satır, ~{}
+87|Bağlantı kesildi
+88|{} @ {} ile bağlantı kuruldu
+89|{} açılamıyor: {}
+90|Durduruldu (yazılım sıfırlama)
+91|Bağlantı koptu
+92|Tahmini süre
+93|kesim uzunluğu
+94|Cihaz ayarları
+95|Ad
+96|Çalışma alanı X
+97|Çalışma alanı Y
+98|Makine sıfırı (0,0)
+99|Sol ön (GRBL varsayılanı)
+100|Sol arka
+101|En yüksek S değeri ($30)
+102|Dinamik güç (M4)
+103|Boşta hız
+104|Başlangıca dön
+105|Baud hızı
+106|Izgara dizisi
+107|Sütunlar
+108|Satırlar
+109|Aralık X
+110|Aralık Y
+111|Dizi oluştur
+112|LightCreator hakkında
+113|Sürüm {}
+114|Lazer gravür ve kesim makineleri için açık kaynaklı tasarım ve kontrol yazılımı.
+115|Köken: Rust ile egui/eframe kullanılarak yazıldı.
+116|Arayüz VectorCraft'tan esinlenmiştir.
+117|Yazar: Michał Sarna
+118|MIT lisanslı.
+119|Özellikler
+120|Kesimler / Katmanlar
+121|Hiçbir şey seçilmedi
+122|En-boy oranını kilitle
+123|Döndür
+124|Uygula
+125|Yatay çevir
+126|Dikey çevir
+127|Orta
+128|Sol
+129|Yatay orta
+130|Sağ
+131|Üst
+132|Dikey orta
+133|Alt
+134|Ortaya hizala
+135|Dikey ortala
+136|Katman
+137|30 katmanın tümünü göster
+138|Çıktı (bu katmanı yak)
+139|Görünür
+140|Kesim ayarları — {}
+141|Mod
+142|Hız
+143|Güç (%)
+144|Pasolar
+145|Aralık
+146|Tarama açısı
+147|Taşma taraması
+148|Çift yönlü
+149|Port yok
+150|Yenile
+151|Seri portları yeniden tara
+152|Bağlantıyı kes
+153|Bağlan
+154|Durum
+155|Adım
+156|İlerleme
+157|Yukarı
+158|Aşağı
+159|Çalışan işi iptal et
+160|Durdur
+161|Jog'u iptal et
+162|Referans
+163|Kilidi aç
+164|Duraklat
+165|Sürdür
+166|DUR
+167|Çerçeve gücü
+168|%0 çerçevelerken lazeri kapalı tutar; diyot lazerlerde %1–2 soluk bir nokta gösterir
+169|G-code / $ komutu gönder
+170|Gönder
+171|Cihaz seç
+172|Çalışacağınız cihazı seçin.
+173|Devam etmek için en az bir cihaz profili oluşturun.
+174|Devam
+175|Cihaz ekle…
+176|Düzenle…
+177|Silmeyi onayla
+178|İptal
+179|Cihaz yapılandırması
+180|Yeni cihaz
+181|ör. Diyot lazerim
+182|Bir profil adı gerekli.
+183|Cihaz değiştir…
+184|Cihaz: {}
+185|Hız birimleri
+186|Saniye başına (mm/s, in/s)
+187|Dakika başına (mm/min, in/min)
+188|Son kullanılanları aç
+189|(boş)
+190|Listeyi temizle
+191|artık yok
+192|Kapat
+193|Küçült
+194|Büyüt
+195|Geri yükle
+196|Izgarayı göster veya gizle
+197|İkincil ızgarayı göster veya gizle
+198|Hava desteği
+199|Hava pompası açık
+200|Bu katman yanarken hava pompasını aç (M8 / M9)
+201|Konum ve boyut
+202|Dönüş
+203|Yansıt ve ortala
+204|Hizalama
+205|Katla
+206|Aç
+207|Süre
+208|Dosya kaydedildi: {}
+209|{} otomatik kaydedildi
+210|Kapatmadan önce çalışmanız kaydedilsin mi?
+211|Tasarım bir dosyaya kaydedilmedi.
+212|Kaydetme
+213|Program seçenekleri…
+214|Program seçenekleri
+215|Otomatik kaydetme
+216|Çalışmayı otomatik kaydet
+217|Otomatik kaydetme aralığı
+218|Dosya adı olmayan çalışma geçici bir klasöre gider; adı olan dosya yerinde kaydedilir
+219|Spiral
+220|Spiral (I)
+221|Tur sayısı
+222|Çizmek için çalışma alanında sürükleyin.
+223|Yedeği indir…
+224|Güncellemeleri denetle…
+225|Yedek kaydedildi: {}
+226|Yedekleme başarısız: {}
+227|Güncellemeler
+228|Daha yeni bir sürüm var: {}
+229|Sizdeki sürüm: {}.
+230|İndirme sayfasını aç
+231|En yeni sürümü kullanıyorsunuz.
+232|En yeni sürüm: {}
+233|Güncellemeler denetlenemedi.
+234|Program başlarken daha yeni sürüm ara
+235|Yedekten geri yükle…
+236|Yedekten geri yükle
+237|Mevcut ayarlarınız ve küçük resimleriniz yedekle değiştirilecek. Devam edilsin mi?
+238|Yedek geri yüklendi: {}
+239|Geri yükleme başarısız: {}
+240|Profil dosyası bulunamadı. Bir yedeğiniz var mı?
+241|Birimler
+242|Milimetre (mm)
+243|İnç (in)
+244|Cihaz
+245|Konsol
+246|Durum sorguları
+247|Otomatik kaydırma
+248|Temizle
+249|Denetleyici
+250|Lazer türü
+251|Çalışma alanı
+252|Evet
+253|Hayır
+254|Bağlantı
+255|Port
+256|Jog adımı
+257|Jog ilerlemesi
+258|Bu denetleyicinin canlı bağlantısı yok: işler dosya olarak dışa aktarılır.
+259|Düğüm düzenleme (N)
+260|Metin (T)
+261|Köşe
+262|Yumuşak
+263|Çizgiye
+264|Eğriye
+265|Düğüm ekle
+266|Düğümü sil
+267|Aç / kapat
+268|Seçili düğümleri köşe yap
+269|Seçili düğümleri yumuşak yap
+270|Seçili her düğümden sonraki parçayı düz yap
+271|Seçili her düğümden sonraki parçayı eğri yap
+272|Düğüm ekle (veya bir parçaya çift tıklayın)
+273|Açık bir yolu kapat ya da kapalı bir yolu seçili düğümde aç
+274|Eğrilere dönüştür
+275|Metni düzenlenebilir Bézier şekillerine dönüştür
+276|Birleşim
+277|Kesişim
+278|Çıkar
+279|Dışlayıcı veya
+280|Şekli ötele…
+281|Şekli ötele
+282|Mesafe
+283|Pozitif değer konturu büyütür, negatif küçültür.
+284|Orijinali koru
+285|Öteleme oluştur
+286|En az iki şekil seçin (resim değil).
+287|Sonuç boş.
+288|Resim içe aktar…
+289|{} resmi içe aktarıldı
+290|Metin
+291|Yazı tipi
+292|Ara
+293|Boyut
+294|Stil
+295|Kalın
+296|İtalik
+297|Harf aralığı
+298|Satır aralığı
+299|Hizala
+300|Resim
+301|Negatif resim
+302|Koyu kısımlar yerine açık kısımları kazı
+303|Gravür katmanın aralığını, hızını, gücünü ve titreşimini kullanır.
+304|Resim ayarları
+305|Resimler katmanlarının aralığını, hızını, gücünü ve taşma taramasını kullanır.
+306|Titreşim
+307|En düşük güç (%)
+308|Eşik
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Düzenli
+314|Gri tonlama
+315|Ofset dolgu
+316|PLT / DXF dışa aktar…
+317|{} dışa aktarıldı. {} resim atlandı: bu biçimde raster yok.
+318|PLT veya DXF dışa aktarın ve denetleyicinin kendi yazılımında açın (örneğin Ruida için RDWorks); o, katman rengine göre hız ve gücü ayarlar.
+319|Malzeme kitaplığı…
+320|Malzeme kitaplığı
+321|Tümü
+322|Malzeme
+323|İşlem
+324|Güç
+325|Kes
+326|Kazı
+327|Çiz
+328|Tipik 10 W diyot ve 40 W CO2 lazerler için başlangıç değerleri. Her zaman artık parçada deneyin.
+329|{} katmanına uygula
+330|{} ({}), {} katmanına uygulandı
+331|Etkin katmanı ön ayar olarak kaydet
+332|Malzeme adı
+333|Ön ayarı kaydet
+334|Kamera katmanı…
+335|Kamera katmanı
+336|İşi malzeme üzerinde konumlandırmak için tasarımın altında bir fotoğraf veya canlı kamera gösterir.
+337|Resim yükle…
+338|Kaldır
+339|Canlı kamera
+340|Bu derlemede kamera desteği yok. Şununla derleyin: cargo run --release --features camera
+341|Kamera yok
+342|Kameraları bul
+343|Kamerayı başlat
+344|Kareyi dondur
+345|Kamera
+346|Katman: {}
+347|Katmanı göster
+348|Opaklık
+349|Hizala: dört köşeyi çalışma alanında sürükleyin
+350|Her köşeyi malzemenin veya çalışma alanının eşleşen köşesine sürükleyin; perspektif düzeltilir.
+351|Çalışma alanına sıfırla
+352|90° döndür
+353|Daha önce yak
+354|Daha sonra yak
+355|Katmanlar yukarıdan aşağıya yakılır.
+356|Izgara seçenekleri…
+357|Izgara seçenekleri
+358|Ana ızgara
+359|İkincil ızgara
+360|Göster
+361|Çizgiler arası mesafe
+362|Renk
+363|İkincil ızgara ana ızgaradan daha sık olmalıdır.
+364|Izgarayı sıfırla
+365|Takım yolları
+366|Takım yollarını çalışma alanında göster
+367|Önizleme…
+368|Önizleme penceresi…
+369|Önizleme penceresini aç
+370|Renklendirme
+371|Boşta hareketleri göster
+372|Lazer kapalıyken makinenin hareketleri
+373|Oynat
+374|Sığdır
+375|İşlemler
+376|Çok fazla hareket: boşta hareket çizgileri gizlendi.
+377|{} hareket
+378|İçe aktar
+379|Dışa aktar
+380|Adobe Illustrator / PDF / EPS / VectorCraft içe aktar…
+381|Grupla
+382|Grubu çöz
+383|Gruplamak için en az iki nesne seçin.
+384|Gruplandı. Nesneler katmanlarını korur.
+385|Şekil işlemleri
+386|Resmi ayarla…
+387|Resmi izle…
+388|Resim içe aktar
+389|Resmi ayarla
+390|Döndür ve çevir
+391|Açı
+392|Ton
+393|Parlaklık
+394|Kontrast
+395|Gama
+396|Otomatik düzeyler
+397|Genişlik
+398|{} × {} px
+399|Sıfırla
+400|Resmi izle
+401|Küçük alanları yok say
+402|Basitleştir
+403|Eğrileri yumuşat
+404|Açık alanları izle
+405|Sonra resmi sil
+406|{} kontur
+407|İzle
+408|{} kontur izlendi
+409|Cihazdan oku
+410|Okunuyor…
+411|Bağlan ve çalışma alanını, en yüksek S değerini ve hızı denetleyiciden oku
+412|Ayarlar cihazdan okunuyor…
+413|Cihaza bağlanılamadı.
+414|Cihaz hiçbir ayar bildirmedi.
+415|Cihazdan {} değer okundu
+416|Üçgen (Y)
+417|Yıldız (S)
+418|Çokgen (G)
+419|Üçgen
+420|Yıldız
+421|Çokgen
+422|Kenar sayısı
+423|Çizmek için çalışma alanında sürükleyin. En fazla 360 kenar.
+424|Tamam
+425|Bağlantı türü
+426|Seri port
+427|Ağ (TCP, ör. ser2net)
+428|Ana bilgisayar
+429|TCP portu
+430|{} ile bağlantı kuruldu
+431|Kamera URL'si
+432|Makinenin canlı resmi: bir MJPEG akışı veya bir JPEG anlık görüntü adresi (http veya https).
+433|Kamera görünümü
+434|Bu makinenin canlı kamera resmini göster
+435|Resim bekleniyor…
+436|Varsayılan yakınlaştırma
+437|Tüm resme dön
+438|Çalışma alanında katman olarak göster
+439|Akış hatası: {}
+440|15 sn'ye sığdır
+441|Gerçek zaman
+442|Önce cihaz ayarlarında bir kamera URL'si ayarlayın.
+443|Şurada göster
+444|Kayan pencere
+445|Ayrı pencere
+446|Yan sekme
+447|Katman
+448|Çalışma alanındaki kamera katmanını göster veya gizle
+449|Kamera katmanını göster
+450|Henüz kamera katmanı yok. Bir resim yükleyin veya kamera görünümünü başlatın.
+451|Ağ üzerinden paylaş (ser2net)…
+452|Ağ üzerinden paylaş (ser2net)
+453|ser2net bulundu: {}
+454|ser2net bulunamadı. Önce yükleyin, örneğin: sudo apt install ser2net
+455|Bu, bu bilgisayardaki lazerin seri portunu ağ üzerinden paylaşır; böylece başka yerdeki LightCreator "Ağ (TCP)" bağlantı türüyle bağlanabilir.
+456|ser2net sürümü
+457|Yalnızca bu bilgisayarda dinle (SSH tüneliyle kullanın)
+458|Yeni bir istemci bağlı olanın yerini alır
+459|Dosya: {}
+460|Sonra diğer bilgisayardan {}:{} adresine bağlanın
+461|Uyarı: ağda bu porta ulaşan herkes lazeri kullanabilir. Güvenilir bir ağ, bir güvenlik duvarı veya SSH tüneliyle yalnızca yerel seçeneği kullanın.
+462|Kopyalandı.
+463|ser2net'i yükle ve yeniden başlat…
+464|Bu, {} dosyasını değiştirir (bir yedek tutulur) ve ser2net'i yeniden başlatır. Yönetici hakları istenir.
+465|Onayla
+466|Yönetici onayı bekleniyor…
+467|{} yüklendi ve ser2net yeniden başlatıldı.
+468|Yapılandırma yüklenemedi: {}
+469|Elle: sudo cp <kaydedilen dosya> {} && sudo systemctl restart ser2net
+470|Kamera döndürme
+471|Çalışma alanını pencereye otomatik sığdır
+472|Kilitle
+473|Kilitli: düzenlemek için kilidi açın. Kopyalar kilitli değildir.
+474|{} nesne kilitlendi.
+475|{} nesnenin kilidi açıldı.
+476|Katman seçeneklerini düzenlemek için çift tıklayın
+477|Katman seçenekleri — {}
+478|{} — seçimi atamak / etkin yapmak için tıklayın; seçenekler için çift tıklayın
+479|Görünüm seçenekleri…
+480|Görünüm seçenekleri
+481|Arka plan rengi
+482|Otomatik
+483|Çizgi kalınlığı
+484|{} paso
+485|Hızlı kılavuz
+486|GitHub'daki proje sayfası
+487|Bu kılavuz İngilizce ve Lehçe olarak mevcuttur; diğer diller İngilizce metni gösterir.
+488|Köşeleri yuvarlat…
+489|Köşeleri yuvarlat
+490|Yarıçap
+491|Yuvarlat
+492|Yuvarlatma yarıçapı
+493|Seçili köşeleri bu yarıçapla yuvarlat
+494|İki düz çizgi seçili: yuvarlak bir köşeyle birleştirilirler.
+495|Seçili şekillerin her düz köşesi yuvarlatılır.
+496|Bu çizgiler birleştirilemez (paraleller veya yarıçap sığmıyor).
+497|İki çizgi yuvarlak bir köşeyle birleştirildi.
+498|Önce yuvarlatılacak şekilleri seçin.
+499|Yuvarlatılacak düz köşe yok.
+500|{} köşe yuvarlatıldı.
+501|Küçük resimler
+502|Hayvanlar
+503|Doğa
+504|Kutlamalar
+505|Semboller
+506|Şekiller
+507|Araçlar
+508|Yiyecek
+509|Nesneler
+510|Müzik ve eğlence
+511|Küçük resimlerim
+512|Tüm kategoriler
+513|Dahil
+514|Benimkiler
+515|Programla gelen resimler
+516|İndirdiğiniz veya eklediğiniz resimler
+517|Yerleştirildiğindeki boyut
+518|Çevrimiçi…
+519|Dosya ekle…
+520|İnternette daha fazla resim arayın ve buraya kaydedin
+521|Bilgisayarınızdaki SVG dosyalarını küçük resimlerinize ekleyin
+522|Burada resim yok. Bulmak için Çevrimiçi… kullanın.
+523|programla gelir
+524|sizin
+525|Çalışma alanına yerleştirmek için tıklayın
+526|{} yerleştirildi
+527|Yeniden adlandır
+528|Yeniden adlandır…
+529|Kategoriyi değiştir
+530|Kategoriyi değiştir…
+531|Ayrıntılar
+532|Ayrıntılar…
+533|Sil…
+534|Bu resim küçük resimlerinizden kaldırılsın mı? Diskteki dosya silinir.
+535|Küçük resimlerime bir kopya kaydet
+536|veya yeni bir kategori
+537|{} resim {} içine eklendi
+538|Kaynak
+539|Kategori
+540|Lisans
+541|Yazar
+542|Koleksiyon
+543|Çevrimiçi küçük resimler…
+544|Çevrimiçi küçük resimler
+545|Açık simge koleksiyonlarında (Iconify) arayın. Resimler diskinize, seçtiğiniz bir kategoriye kaydedilir.
+546|ör. kedi, çiçek, dişli
+547|Aranıyor…
+548|Hiçbir şey bulunamadı.
+549|{} resim bulundu
+550|Arama başarısız: {}
+551|Lisansını görmek ve kaydetmek için bir resme tıklayın.
+552|kaynak belirtmek gerekmez
+553|yazarı belirtin
+554|Küçük resimlerime kaydet
+555|{}, {} içine kaydedildi
+556|İndir
+557|İndiriliyor…
+558|İndirme başarısız: {}
+559|Ya da bir adresten resim indirin
+560|Yalnızca kullanma hakkınız olan resimleri kaydedin. Kaynağın lisansını kontrol edin.
+561|Yakınlaştır (Z)
+562|Uzaklaştır (X)
+563|Çalışma alanını sığdır (Ctrl+0)
+564|Tüm nesneleri sığdır (Ctrl+9)
+565|Yakınlaştır
+566|Uzaklaştır
+567|Çalışma alanını sığdır
+568|Tüm nesneleri sığdır
+569|Düğümleri düzenle
+570|Düğümlerini düzenlemek için metni eğrilere dönüştürün veya resmi izleyin.
+571|Önce bir şekil seçin, sonra düğümlerini düzenleyin.
+572|Kalp (K)
+573|{} dosyasından {} malzeme eklendi
+574|Malzeme kitaplığı farkları
+575|{}, bu cihazdan farklı malzeme ayarlarına sahip. Korunacak değerleri seçin.
+576|{} yeni malzeme eklendi; {} tanesi zaten aynıydı.
+577|Hepsinde benimkini koru
+578|Hepsini dosyadan al
+579|Katman {}: tüm katman
+580|yok
+581|Kitaplığımı olduğu gibi bırak
+582|Bu cihazın kitaplığı güncellendi.
+583|Kitaplıktan ekle…
+584|Yerleşik kitaplıktan bu cihaza malzeme kopyala
+585|{} cihazının kitaplığı
+586|Bu kitaplık boş. Yerleşik kitaplıktan malzeme ekleyin veya katmanlarınızı malzeme olarak kaydedin.
+587|Not
+588|Etiket
+589|Katmanı kaldır
+590|Katman ekle
+591|Bu katmanın ayarlarını tasarımda kullanır
+592|Katmanlara uygula
+593|Tüm katmanlarının ayarlarını tasarıma koyar
+594|{}, {} katmana uygulandı
+595|Tasarımın katmanlarını malzeme olarak kaydet
+596|Tasarımda kullanılan katmanların ayarlarını kaydeder
+597|{} bu cihazın kitaplığına kaydedildi
+598|Burada eklenen malzemeler her cihaz için kullanılabilir. Bir cihazın kendi kitaplığı Malzemeler sekmesinde düzenlenir.
+599|Sizin eklediğiniz
+600|Yerleşik
+601|Bu cihaza ekle
+602|Tasarımın katmanlarını her cihaz için malzeme olarak kaydet
+603|Kitaplığa kaydet
+604|{} zaten bu cihazın kitaplığında
+605|{} bu cihazın kitaplığına eklendi
+606|Kitaplıkta bu adla bir malzeme zaten var.
+607|{} malzeme kitaplığına kaydedildi
+608|Ayar
+609|Bu cihaz
+610|Malzemeler
+611|Ahşap
+612|Metal
+613|Plastik
+614|Kâğıt ve deri
+615|Taş ve cam
+616|Diğer
+617|Kitaplığı dışa aktar…
+618|Kitaplığı içe aktar…
+619|Dosyaya girecekleri işaretleyin.
+620|Dosyadan alınacakları işaretleyin.
+621|Genel malzemeler
+622|Cihazlar
+623|Kitaplık kaydedildi: {} malzeme ve {} cihaz
+624|{} malzeme ve {} cihaz içe aktarıldı
+625|Bu bir LightCreator kitaplık dosyası değil.
+626|{}, {} ile farklı malzeme ayarlarına sahip. Korunacak değerleri seçin.
+627|Kontrplak
+628|MDF
+629|Karton
+630|Kâğıt
+631|Deri
+632|Keçe
+633|Mantar
+634|Akrilik
+635|Akrilik, siyah veya koyu
+636|Arduvaz / taş
+637|Eloksallı alüminyum (kaplamalı)
+638|Kauçuk
+639|Kumaş
+640|Cam
+641|Ahşap (sert ağaç)
+642|Etiketler
+643|Kalınlık
+644|Etiketler, virgülle ayrılmış
+645|Malzemeyi düzenle
+646|Yerleşik değerleri geri yükle
+647|Yerleşik değerler geri yüklendi.
+648|Bu malzemenin bu cihazın lazer türü için ayarı yok
+649|Ayarlarını düzenlemek için bir malzemeye çift tıklayın. Değişiklikler bu bilgisayarda saklanır.
+650|Yalnızca siyah veya beyaz, yarı parlaklıkta ayrılır. Keskin: çizimler ve metin için iyi.
+651|Yuvarlama hatasını komşu noktalara yayar. Fotoğraflar için iyi bir genel seçim.
+652|Hatayı daha geniş bir alana yayar: daha yumuşak tonlar, biraz daha yavaş.
+653|Jarvis gibi, daha keskin ayrıntılarla.
+654|Parlak alanları temiz ve kontrastı yüksek tutar; en koyu ve en açık ayrıntıların bir kısmını kaybeder.
+655|Sabit 8×8 nokta deseni: düzenli ve hızlı, gürültüsüz.
+656|Nokta yok: her piksel en düşük güç ile katmanın gücü arasında bir güçle yakılır.
+657|Tüm malzemeleri sil
+658|Bu cihazın tüm malzemeleri silinsin mi? Bunun yerine ana kitaplığın malzemeleri gösterilir; birini değiştirdiğinizde bu cihaz için bir kopya tutulur.
+659|Bu cihazın kitaplığı artık ana kitaplığı gösteriyor.
+660|Katman etiketleri
+661|Katman etiketleri…
+662|Bir malzemenin katmanları için sunulan etiketler. Kes, Kazı ve Çiz her zaman vardır.
+663|Yeni etiket
+664|Bir malzemenin katmanları için sunulan etiketleri ekle veya kaldır
+665|Ekle
+666|Genel
+667|Donanım
+668|G-code
+669|Sağ ön
+670|Sağ arka
+671|Eksenleri ters çevir
+672|Panel yönü
+673|Doğal
+674|Sola döndürülmüş
+675|Sağa döndürülmüş
+676|Kenar boşlukları
+677|Kendi sınırları
+678|Yazılım sınırları
+679|Çalışma alanının kenarlarında makinenin kullanamadığı şeritler (kıskaçlar, çerçeve); oraya hiçbir şey konamaz veya taşınamaz
+680|Kafa izin verilen alanın kenarında.
+681|İşten önce kontrol et
+682|Yine de devam et
+683|Önce hataları düzeltin: hatalar varken hiçbir şey gönderilmez, çerçevelenmez veya dışa aktarılmaz.
+684|{} katmanı %0 güçle yakıyor.
+685|{} katmanında nesneler var ama takım yolu yok (örneğin dolgu katmanında açık çizgiler).
+686|Nesneleri seç
+687|Çerçeve yazılım sınırlarının dışında.
+688|Çerçeve kullanılabilir alanın dışında (çalışma alanının ötesinde veya bir kenar boşluğunda).
+689|{} katmanının takım yolu izin verilen alandan çıkıyor (taşma taraması veya boşta hareketler).
+690|{} nesne yazılım sınırlarının dışında.
+691|{} nesne kullanılabilir alanın dışında (çalışma alanının ötesinde veya bir kenar boşluğunda).
+692|Lazer modunu etkinleştir ($32=1)
+693|Lazer modu ($32) kapalı.
+694|Denetleyici bir sorun bildiriyor
+695|Denetleyicinin en yüksek S değeri ($30) {}, profil {} kullanıyor.
+696|Bu, denetleyicinin ayarlarına $32=1 yazar. Devam edilsin mi?
+697|Denetleyicideki değeri kullan
+698|Değerler farklıysa G-code'daki güç ayarladığınız yüzdelerle eşleşmez.
+699|Lazer modu kapalıyken GRBL bir iş mili denetleyicisi gibi davranır: lazer hızlı hareketlerde ateşleyebilir ve güç hızı izlemez.
+700|En yüksek kesim hızı
+701|İvme
+702|0 = sınır yok. Bundan hızlı katmanlar işten önce uyarı alır; süre tahmini en fazla bu hızı kullanır.
+703|0 = bilinmiyor. Bir değerle süre tahmini başlama ve durma rampalarını içerir ve katman paneli bir taşma taraması önerir.
+704|Önerilen: {} (bu hızda ve makinenin ivmesinde fren mesafesi)
+705|{} katmanı makinenin en yüksek kesim hızından hızlı.
+706|Otomatik (denetleyiciden)
+707|G-code lehçesi
+708|Smoothieware: S tam gücün bir oranı olarak yazılır (en yüksek S değerini 1 yapın). Akıtma GRBL'deki gibi çalışır; bunların hiçbiri gerçek donanımda denenmedi.
+709|Lehçe otomatik olduğunda kullanılır; seçilen bir GRBL lehçesi M3 ile M4 arasında kendisi karar verir.
+710|Gelişmiş
+711|Gelişmiş sayfasındaki bir G-code alanında denetim karakteri var veya çok uzun.
+712|Hava desteği komutları
+713|İşin sonu
+714|Kapalı
+715|Açık
+716|Kapanıştaki M2'nin yerini alır. Ondan önce lazer her zaman kapatılır ve (ayarlıysa) kafa başlangıca gönderilir. Boş = yerleşik.
+717|Birimler, mutlak mod, düzlem ve lazer modu satırlarının yerini alır. Boş = yerleşik.
+718|Varsayılanları geri yükle
+719|İşin başı
+720|Yanlış G-code lazeri ateşleyebilir, kafayı uç durdurucularına sürebilir veya malzemeyi bozabilir. Lazer kapalıyken veya en düşük güçte deneyin.
+721|Güç modu
+722|Cihaz gibi
+723|Sabit (M3)
+724|Dinamik (M4)
+725|M4 (dinamik) köşelerde ve hızlanırken gücü düşürür; M3 (sabit) korur. Katmanlar farklıysa G-code aralarında geçiş yapar.
+726|Yay toleransı
+727|Yaylar (G2 / G3)
+728|Yaylar: GRBL genellikle G2 / G3'ü işler, Marlin yalnızca ARC_SUPPORT ile derlenmişse, Smoothieware'in kendi davranışı vardır. Bazı denetleyiciler yayları yok sayar veya yanlış çalıştırır: lazer kapalıyken deneyin. Yaylar konturlar ve halkalar için kullanılır, tarama çizgileri veya resimler için değil.
+729|Eğri toleransı
+730|Düzleştirilmiş bir eğrinin (Bézier, metin) gerçek eğriden ne kadar sapabileceği.
+731|Eğrileri uydukları yerde yay olarak yaz
+732|Sayma, denetleyicinin arabelleğini doldurur ve hızlıdır. Basit, bir satır gönderip ok yanıtını bekler: yavaştır ama yanlış yanıt veren donanım yazılımları içindir.
+733|Beklemeye devam et
+734|Bir iş çalışırken denetleyici {} sn yanıt vermiyor (durum: {}).
+735|Hiçbir şey sürdürülmedi veya gönderilmedi. Makine yalnızca yavaş olabilir ya da satır kaybolmuş olabilir; konsola bakın, sonra seçin.
+736|İşi durdur
+737|Akıtılıyor
+738|Denetleyici yanıt vermiyor
+739|Arabelleği say
+740|Basit (her ok için bekle)
+741|Bir port adı veya USB satıcı ve ürün kimliği (VID:PID, onaltılık): bu kimliklere sahip port kullanılır.
+742|Bu porta bağla
+743|Bağlı USB cihazı
+744|Otomatik olarak yeniden bağlan
+745|Yeniden bağlanılıyor…
+746|Port veya USB kimliği
+747|Yeniden bağlan
+748|Seçilen portun USB kimliklerini hatırla: adı değiştiğinde port bu kimliklerle yeniden bulunur.
+749|Bağı kaldır
+750|Bağlantı kendiliğinden koptuğunda, Bağlantıyı kes'e basana kadar birkaç saniyede bir yeniden dene.
+751|yok
+752|Bağlandıktan sonra
+753|Alarmı temizle
+754|Alarmı temizlemek referanslamayı atlar: yalnızca kafanın güvenli bir yerde durduğu biliniyorsa kullanın.
+755|Makineyi referansla
+756|{} referansla
+757|Yalnızca {} eksenini referanslar ($H{})
+758|Dosyanın {} ayarının tamamı artık denetleyicide.
+759|Önce ayarları yedekleyin. Devam etmek için {} yazın:
+760|Dosyaya yedekle…
+761|Dosya kullanılamıyor: {}
+762|Önce makineye bağlanın (Cihaz sekmesi).
+763|Bağlı: {}
+764|Fabrika ayarları ($RST=$)…
+765|Marlin ayarlarını kendi komutlarında tutar (M92, M203, M204, ...): bu sayfa yalnızca `M503`'ün bildirdiklerini gösterir.
+766|Henüz hiçbir şey okunmadı.
+767|Ayarları oku ($$)
+768|Ayarları oku (M503)
+769|Denetleyiciye gerçekten $RST=$ yazılsın mı?
+770|Dosyadan geri yükle…
+771|Fabrika ayarlarını geri yükle
+772|Ayarları bir dosyadan geri yükle
+773|Ayarlar {} dosyasına kaydedildi
+774|Denetleyicide hepsi zaten var.
+775|Bu ayarlar profilde değil denetleyicide bulunur. Her seferinde birini değiştirin ve önceki değeri not edin: yanlış bir değer makinenin yanlış mesafe gitmesine veya lazerin ateşlemesine yol açabilir.
+776|Dosyanın bu ayarları denetleyiciden farklı. Tümünü yaz'a basana kadar hiçbir şey yazılmaz.
+777|Bu, $RST=$ yazar: denetleyicinin her ayarı donanım yazılımının varsayılanlarına döner. Adım sayıları, hareket alanı, hızlar, lazer modu ve referanslama değişir.
+778|Yaz
+779|${} = {} denetleyiciye yazılsın mı? Şu an {}. Her seferinde bir ayarı değiştirin ve eski değeri not edin.
+780|Bir ayar yaz
+781|Tümünü yaz
+782|{} ayar denetleyiciye yazılsın mı? Makine dosyanın dediği gibi davranacak.
+783|Yazdıktan sonra {} / {} ayar farklı:
+784|Değer
+785|Birim
+786|Tipik
+787|sayı değil
+788|aralık dışında
+789|Donanım yazılımı ($$)
+790|0 = tipik bir değer ({} W)
+791|0 = olağan değer ({} nm)
+792|Yüksekliği ayarlamak için zayıf sürekli bir ışın (odak modu). 0 = odak modu yok.
+793|Lazer kafası ekle
+794|Işın noktası
+795|Odak gücü
+796|Çerçeve hızı
+797|Kafa {}
+798|Optik güç
+799|PWM frekansı
+800|PWM en yüksek frekansı
+801|İşaretçi ofseti
+802|Darbe genişliği
+803|Darbe genişliği aralığı
+804|Bu lazer kafasını kaldır
+805|Işının malzeme üzerindeki boyutu (0 = bilinmiyor). Bundan küçük bir dolgu aralığı komşu çizgilerin örtüşmesine yol açar.
+806|PWM değerleri profille saklanır ve makrolar için değişken olarak sunulur; denetleyiciye gönderilmez.
+807|Denetleyicinin bu kafayı tanıdığı numara; bir katman başka kafa kullandığında T<n> olarak yazılır. Denetleyicideki eşlemeyle uyuşmalıdır.
+808|Takım numarası (T)
+809|İki lazer kafasının takım numarası aynı.
+810|Dalga boyu
+811|Kırmızı işaretçi noktasının ışına göre yeri (x sağa, y aşağı). Kontrol sekmesindeki işaretçi hizalamasında kullanılır.
+812|ör. Mavi diyot
+813|Lazer kafası
+814|Aralık ışın noktasından ({}) küçük: komşu çizgiler örtüşür.
+815|ODAK IŞINI AÇIK: kapatmak için basın
+816|Odak
+817|Odak yüksekliğini ayarlamak için zayıf sürekli bir ışın aç
+818|Odak ışını açık
+819|Odak ışını kapalı
+820|İşaretçiye hizala
+821|İşaretçiyle kuru çalıştır
+822|İşaretçiyle kuru çalıştırma: {} satır, lazer kapalı
+823|Çalıştırılacak bir şey yok: çıktı katmanlarında şekil yok
+824|İşin yolunu işaretçi ofseti kadar kaydırıp lazer kapalı çalıştırır, nereye gideceğini görmek için.
+825|Yalnızca bu oturum: çerçeve ve kuru çalıştırma kırmızı işaretçi noktasının ofseti kadar geri kayar, böylece nokta ışının düşeceği yere gelir. İşler ve jog asla kaydırılmaz.
+826|Kanca {}: {}
+827|Kancalar
+828|İşe yazılan kendi G-code: bir katman başlarken, her nesneden önce ve sonra, bir katman biterken. Nesne kancalarıyla bir katman nesne nesne (ve her paso için bir kez) yakılır.
+829|Değişkenler: {}
+830|Katman başı
+831|Katman sonu
+832|Nesne başı
+833|Nesne sonu
+834|Makro sizin kendi G-code'unuzdur: lazeri ateşleyebilir veya kafayı hareket ettirebilir. Yalnızca ne yaptığını bildiğinizde çalıştırın. Bu soru oturum başına bir kez sorulur.
+835|Makro ekle
+836|Bu makroyu sil
+837|Makro adı
+838|Makro {}
+839|Makro {}: {}
+840|Makro {}: {} satır
+841|Makrolar
+842|Kontrol sekmesinden elle çalıştırdığınız adlandırılmış betikler. Satır başına bir komut; ; sonrası veya parantez içi yorum; @include(name) başka bir makro ekler. Makinenin değişkenleri kullanılabilir.
+843|{} makrosunu çalıştır
+844|Bu makroyu makinede çalıştırır
+845|Bölge ekle
+846|Daire
+847|Bu bölgeyi sil
+848|Makinenin asla girmemesi gereken çalışma alanı kısımları (kıskaç, fikstür). Etkin bir bölgeye dokunan bir hareket, lazer kapalı olsa bile, Başlat'ı, Çerçeve'yi ve dışa aktarmayı durdurur. Program bölgelerin etrafından dolaşmaz.
+849|Çerçeve "{}" yasak bölgesine dokunuyor.
+850|{} katmanının takım yolu "{}" yasak bölgesine dokunuyor.
+851|Bölge adı
+852|Bölge {}
+853|Yasak bölgeler
+854|Yasak bölgeleri göster
+855|Sonraki her pasoda Z'nin ne kadar hareket ettiği (yukarının +Z olduğu makinede negatif aşağı iner). 0 = Z kalır.
+856|Kafanın ilk pasodan önce gittiği makine Z'si. Paso başına 0 ile birlikte 0 = Z hareket ettirilmez.
+857|{} katmanının Z yükseklikleri Z ekseninin hareket alanının dışında.
+858|Makinenin bir Z ekseni var
+859|Hareket alanı
+860|Yukarı, negatif Z yönüdür
+861|Z
+862|Z ekseni
+863|Z yüksekliği
+864|Paso başına Z
+865|Bir döner aparat bağlı
+866|A, yüzeydeki her milimetre için {} derece döner.
+867|Tüm yakılan katmanlar döner olmalı ya da hiçbiri. Tasarım iş parçasının çevresinden yüksek olamaz.
+868|Önce onay ister. Yalnızca denetleyicinin Y ekseni değişir.
+869|Bu katmanı döner aparatta yak
+870|Ayna
+871|Çevre
+872|GRBL 1.1'in üç ekseni var: A ekseni yok, Y kullanılır.
+873|Tür
+874|Döner olarak işaretlenen katmanlar aparat üzerinde yakılır. Model basittir: ayna iş parçası çapına göre döner, silindirler yüzeyi kendileri gibi hareket ettirir; gerçek bir makine test gerektirir.
+875|Motorun sürdüğü şeyin (ayna veya bir silindir) bir tam turu için mikro adımları.
+876|Tur başına mikro adım
+877|Y'nin yerini alır (Y motoru işi döndürür)
+878|Silindir çapı
+879|Silindirler
+880|Döner
+881|Döner katmanlar ve düz katmanlar tek bir işte olamaz: yakılan tüm katmanları döner olarak işaretleyin ya da hiçbirini.
+882|G-code'da döndürme
+883|Denetleyicinin Y ekseninde mm başına {} adıma ihtiyacı var ($101).
+884|{} katmanındaki tasarım iş parçasının çevresinden yüksek.
+885|İş parçasının çevresi: tasarım bundan yüksek olamaz.
+886|Gerçek A ekseni (derece)
+887|İş parçası çapı
+888|Denetleyiciye $101 yaz…
+889|Masada duran bir kutu veya silindir gibi: aralığın üstündeki veya altındaki hareketler serbesttir.
+890|Yalnızca bu yüksekliklerde (Z)
+891|Boş bir profil
+892|Bu profilin bir kopyası
+893|Bir cihaz ekle
+894|{} konumuna kopyalandı
+895|Dışa aktar…
+896|{} profili içe aktarıldı
+897|İçe aktar…
+898|Bir dosyadan profil oku
+899|Bu profili bir dosyaya kaydet
+900|Profil {} konumuna kaydedildi
+901|Başlangıç noktaları: tipik değerlere sahip genel makineler. Makinenizin belgeleriyle karşılaştırın.
+902|GRBL diyot lazer 400 × 400
+903|GRBL CO2 lazer 300 × 200
+904|K40 dönüşümü (GRBL) 300 × 200
+905|Marlin diyot lazer 400 × 400
+906|400 × 400 mm tablada GRBL 1.1 diyot lazer, sol ön sıfır, dinamik güç.
+907|300 × 200 mm tablada GRBL 1.1 CO2 lazer, sol ön sıfır.
+908|GRBL denetleyici kartlı K40 CO2 lazer: 300 × 200 mm, sıfır sol arka (sol üst) köşede.
+909|400 × 400 mm tablada Marlin donanım yazılımlı diyot lazer (lazer özelliği, S 0–255).
+910|Arka
+911|Bağlantı (isteğe bağlı)
+912|İnce
+913|Makine şu an bağlıysa çalışma alanı ve hızı denetleyiciden okunabilir.
+914|Denetleyicinin lazer modu ($32) ve en yüksek S değeri ($30) okunmadı: bağlandığınızda denetlenir.
+915|Ad ve birimler
+916|İleri
+917|Kenar boşluğu veya yazılım sınırı ayarlanmadı: tüm eksen aralığı çalışma alanıdır. Bir kıskaç veya çerçeve engel oluyorsa Donanım sayfasında ayarlayın.
+918|Henüz port veya ana bilgisayar ayarlanmadı: bağlanmadan önce cihaz ayarlarından seçin.
+919|Buradakilerin hiçbiri makinenizde denenmedi: ilk testi lazer kapalıyken veya en düşük güçte yapın.
+920|En yakın başlangıç noktasını seçin. Her şeyi sonra değiştirebilirsiniz.
+921|Elle kur…
+922|Makinenizi kurun ({}/{})
+923|Atla
+924|Bu adımları atla ve cihaz ayarlarını aç
+925|Özet
+926|Cihaz eklendi. Başlamak için Yeni'ye basın.
+927|Ayarlar denetleyiciden okundu.
+928|Hangi makineniz var?
+929|Kontrol etmeye değer
+930|ayarlanmadı
+931|Sayaç ekle
+932|Tahminlerden değil, işlerin gerçekten çalıştığı süreden (başlangıçtan bitişe veya Durdur'a kadar) sayılır. Toplam sıfırlanamaz.
+933|Sayaç adı (tüp, mercek, kayış)
+934|Sayaç {}
+935|Bu sayacı sil
+936|Bakım zamanı: {}
+937|Şundan sonra hatırlat
+938|Sayacı sıfırla
+939|"{}" sayacı sıfırdan yeniden başlatılsın mı?
+940|Toplam çalışma süresi: {}
+941|Bakım
+942|Şablondan
+943|Notlar {} karakterden uzun ve kaydedilemiyor.
+944|Notlarınız (Markdown)
+945|ör. İşe yarayan ayarlar: hava desteği %20, odak 12 mm
+946|Notlar
+947|Etkin
+948|Kamera ekle
+949|Adres
+950|Otomatik
+951|Kamera adı
+952|Kamera numarası
+953|Bu bilgisayarın kamerası
+954|Kamera {}
+955|Makineyi izleyen kameralar. Etkin olan canlı resmi verir. Bir kamera yalnızca adresi geçerliyse açılabilir.
+956|Mercek bozulmasının katsayıları (radyal k1–k3, teğetsel p1, p2); koordinatlar merkezden, resmin uzun kenarı biriminde ölçülür. Hepsi 0 = düzeltme yok. Elle girilir: otomatik kalibrasyon yoktur.
+957|Bu kamerayı sil
+958|Bu bilgisayarın kamerası için: sistemin izin verdiği yerde sıkıştırılmamış YUYV biçimini iste.
+959|Biçim
+960|Mercek düzeltmesi
+961|Makinenin canlı resmi: bir MJPEG akışı veya bir JPEG anlık görüntü adresi (http veya https). RTSP desteklenmez.
+962|Gürültü azaltma
+963|http veya https adresi değil.
+964|Resim
+965|YUYV tercih et
+966|Bu kamerayı aç veya kapat
+967|Adres geçersiz: bir http veya https adresi gerekli
+968|Beyaz dengesi
+969|Nokta ekle
+970|Noktalara göre hizala
+971|Bu noktayı sil
+972|Resmi noktalara uydurur (en küçük kareler) ve köşeleri buna göre taşır.
+973|Yeterli nokta yok veya noktalar tek bir doğru üzerinde.
+974|Resimdeki bir nokta (piksel) ile çalışma alanındaki yerinin (mm) çiftleri. En az 3, önerilen 4; perspektif dahil hizalamayı belirlerler.
+975|Mevcut köşelerden noktalar
+976|Referans noktaları
+977|Noktaları resmin dört köşesi ve şu anki yerleriyle değiştirir.
+978|Nesnelere yapıştır
+979|Sayfa oluşturulamadı: {}
+980|Görüntüleyici açılamadı: {}
+981|Varsayılan yazıcı
+982|Kenar boşluğu
+983|Yalnızca görünür katmanlardaki nesneler
+984|Yalnızca nesneler, sayfanın izin verdiği kadar büyük
+985|PDF'i aç
+986|PDF görüntüleyicide açıldı.
+987|Sayfayı, daha fazla seçenekle yazdırabilen PDF görüntüleyicide açar
+988|Yazdır
+989|Yazdır…
+990|Yazıcı
+991|Yerleşimi kontrol etmek veya şablon olarak, tasarımı bir kâğıt yazıcısında yazdırır.
+992|PDF olarak kaydet…
+993|Yazıcıya gönderildi. {}
+994|Yazıcı kabul etmedi: {}
+995|Tüm çalışma alanı, ölçekli
+996|Yazdırılacak bir şey yok.
+997|{} nesne çalışma alanının dışına taşıyor; kâğıtta kenardan kesilirler.
+998|{} nesne çalışma alanının dışına taşıyor; yine de yazdırılırlar.
+999|Kamera testi: {}
+1000|Bu kameranın resmini burada ayarlandığı gibi, kaydetmeden açar
+1001|Test
+1002|Kontur boyunca kesme ve atlamayı değiştirir.
+1003|Kesim uzunluğu
+1004|Eşit aralık
+1005|Kesim payı ofseti
+1006|Parça yerinde kalsın diye konturun kısa parçalarını kesilmemiş (veya zayıf kesilmiş) bırakır. Otomatik yerleştirilir.
+1007|En çok köprüyü sınırla
+1008|En az köprü
+1009|Kesim genişliğini telafi etmek için konturu dışarı (negatifse içeri) kaydırır. 0 = kapalı.
+1010|Bir köprü üzerinde katman gücünün yüzdesi; 0 = lazer kapalı.
+1011|Delikli kesim
+1012|Delikli kesim modu
+1013|Yerleşim
+1014|İç şekilleri atla
+1015|Atlama uzunluğu
+1016|Aralık
+1017|Köprü kesim gücü
+1018|Köprü boyutu
+1019|Köprüler
+1020|Şekil başına köprü
+1021|Resim modundaki bir katmanda vektör şekiller yakılmaz.
+1022|Çalışma süresi
+1023|Açıklama
+1024|Projeyi tanımlayın: ne olduğu, işe yarayan ayarlar, bir dahaki sefer için notlar.
+1025|Makinenin, projenin ve kameranın durumunu gösteren bir web sayfası ve diğer programlar için bir API. Parolası yoktur.
+1026|Ağdaki herkes makineyi görebilir, durdurabilir veya hareket ettirebilir. Parola veya şifreleme yok: yalnızca güvendiğiniz bir ağda kullanın.
+1027|{} üzerinde dinleniyor
+1028|Ağdaki diğer bilgisayarlardan erişilebilir
+1029|Web sunucusunu ve API'yi aç
+1030|Sunucu başlatılamadı: {}
+1031|Web sunucusu ve API
+1032|Cihaz ekle
+1033|Daha fazla ayar…
+1034|Buraya girilenlerle tüm cihaz penceresini aç
+1035|Başlangıç noktası
+1036|Varsayılan malzeme
+1037|Bu malzemeyi sil
+1038|Malzeme: {}
+1039|Yeni malzemenin adı
+1040|Yeni malzeme: bunun bir kopyası
+1041|Yeni ad
+1042|Bu malzemeyi yeniden adlandır
+1043|proje
+1044|Akrilik 3 mm
+1045|Deri 2 mm
+1046|Yeni, boş malzeme
+1047|Kontrplak 3 mm
+1048|Bir malzeme ekleyin, ör. Huş kontrplak 3 mm (isteğe bağlı)
+1049|Makineyi izleyen kameralar. İşaretli olan canlı resmi verir; başka birini işaretlemek ilkini kapatır.
+1050|Bu kamerayı aç: canlı resmi verir
+1051|Web sunucusu: açık, port {}
+1052|Web sunucusu: kapalı
+1053|Web sunucusu: hata
+1054|Koyu Mavi
+1055|Açık Mavi
+1056|Koyu Yeşil
+1057|Açık Yeşil
+1058|Koyu Mor
+1059|Açık Mor
+1060|Koyu Kahverengi
+1061|Açık Kahverengi
+1062|Koyu Turuncu
+1063|Açık Turuncu
+1064|Çalışma alanı rengi
+1065|Çalışma alanının çevresindeki boşluk
+1066|Makinenin, projenin ve kameranın durumunu gösteren bir web sayfası ve diğer programlar için bir API. Her istek erişim ifadesini gerektirir; şifreleme yoktur.
+1067|Ağda erişim ifadesini bilen herkes makineyi görebilir, durdurabilir veya hareket ettirebilir. İfade şifrelenmeden gönderilir: yalnızca güvendiğiniz bir ağda kullanın.
+1068|Erişim ifadesi
+1069|Bundan sonra bu erişim ifadesini kullan
+1070|Erişim ifadesi boş olamaz veya denetim karakteri içeremez.
+1071|Canlı lazer konumu
+1072|Lazer kafasının konumunu çalışma alanında bir nokta olarak gösterir. Makine dururken açılırsa önce referanslar; bir iş veya çerçeve sırasında yalnızca konumu gösterir, her saniye yenilenir. Bağlı bir cihaz gerektirir.
+1073|Başlangıç
+1074|Başlangıç (makine sıfırı)
+1075|Lazerin mevcut konumu
+1076|Başlangıç: tasarım, çalışma alanında durduğu yerde, makinenin sıfırından sayılarak yakılır. Mevcut konum: tasarımın sol üst köşesi lazer kafasının şu an durduğu yere konur (işler, çerçeveler ve kuru çalıştırma) ve iş orada biter. Dışa aktarılan dosyalar her zaman makinenin sıfırından sayılır.
+1077|Okuma tamam
+1078|Okuma hatası
+1079|Bu proje farklı bir makine kurulumu ({}) için yapıldı. Başlamadan önce cihazı kontrol edin.
+1080|LightBurn projesinin bazı kısımları kullanılamadı: {}
+1081|Cihazım yok
+1082|Makinesiz bir projede çalışın: varsayılan çalışma alanı ve hızlarla Dummy adlı basit bir cihaz
+1083|LightBurn projesi içe aktar…
+1084|Henüz cihaz yok. Bir tane ekleyin ya da makinesiz çalışın.
+1085|Bir proje açın veya boş bir proje başlatın.
+1086|UGS tasarımı içe aktar…
+1087|UGS tasarımının bazı kısımları kullanılamadı: {}
+1088|{} katmanın tümünü göster
+1089|Malzemenin rengi yalnızca gösterilir; hiçbir şeyi değiştirmez.
+1090|Tümünü dışa aktar…
+1091|Aynı adlı malzemeleri değiştir
+1092|{} malzeme içe aktarıldı; {} tanesi değiştirildi.
+1093|{} malzeme dışa aktarıldı: {}
+1094|Bu katmanı malzemeden kaldır
+1095|Bu malzemenin henüz katmanı yok. Aşağıdan bir tane ekleyin.
+1096|Malzemeler…
+1097|Illustrator katmanları
+1098|Dosyada {} Illustrator katmanı var. Yolları programın katmanlarına şöyle yerleştir:
+1099|İlk Illustrator katmanı katman 1'e, ikincisi katman 2'ye gider ve böyle devam eder; geri kalanlar son katmana gider.
+1100|G-code dosyasını görüntüle…
+1101|Görünümü sıfırla
+1102|G-code görüntüleyici
+1103|Yüksekliğe göre renklendir
+1104|Sürükle: döndür · sağ sürükle veya Shift+sürükle: taşı · tekerlek: yakınlaştır
+1105|Sürükle: taşı · tekerlek: yakınlaştır
+1106|Kontur
+1107|Tüm şekilleri bir lastik bant gibi saran konturu izle.
+1108|Kontur çerçevesi
+1109|Her seferinde bir öğe
+1110|Her öğe (bir grup veya hiçbirinde olmayan bir şekil), tüm katmanları ve pasolarıyla tamamen yakılır, sonra bir sonrakine geçilir; en yakın öğe önce gelir. Kapalı: katman katman, paso paso.
+1111|Yalnızca seçim
+1112|Yalnızca G-code kaydedildiğinde veya iş başlatıldığında çalışma alanında seçili olan şekiller yakılır.
+1113|Yakılacak bir şey yok: hiçbir şey seçili değil
+1114|Tanılamayı dışa aktar (zip)…
+1115|Tanılama kaydedildi: {}
+1116|Tanılama kaydedilemedi: {}
+1117|DXF içe aktar…
+1118|Ekle
+1119|Görünümde en fazla üç bölme olur
+1120|Önizlemeyi burada göster
+1121|Açık G-code dosyası yok: Dosya, G-code dosyasını görüntüle…
+1122|G-code önizleme
+1123|G-code'u kaydetmeden göster
+1124|önizleme
+1125|G-code gösterilir, hiçbir şey kaydedilmez
+1126|Cihazın kendi G-code'u: {}
+1127|Bir kamera adresi değil (http, https, rtsp, udp, rtp veya rtmp).
+1128|Makinenin canlı resmi: bir MJPEG akışı, bir JPEG anlık görüntü adresi (http veya https) ya da ffmpeg'in okuduğu bir akış (rtsp, udp, rtp, rtmp).
+1129|Katman kaynağı…
+1130|Yakınlaştır
+1131|GRBL (1.1f veya daha yeni)
+1132|GRBL-M3 (1.1e veya daha eski)
+1133|LinuxCNC (dosya)
+1134|Kendi G-code
+1135|Lazer açık (güç)
+1136|Lazer kapalı
+1137|{power} S en yüksek değeri birimindeki güç, {percent} yüzde olarak güçtür. Lazer açma komutu bir yakmadan önce, lazer kapatma komutu her hareketten önce gelir.
+1138|Kendi G-code: lazer açma ve kapatma komutlarını önce lazer en düşük güçteyken kontrol edin.
+1139|Snapmaker: güç bir yakmadan önce M3 P (yüzde) S (0–255), bir hareketten önce M5 olarak yazılır. Gerçek bir makinede denenmedi.
+1140|LinuxCNC: Başlat, LinuxCNC için G-code dosyasını kaydeder. Güç analog çıkış 0'a gider (M67 E0 Q, 0'dan S en yüksek değerine), bu da HAL'inizde lazeri sürmelidir. Gerçek bir makinede denenmedi.
+1141|Lazer modu olmayan GRBL: lazer her hareketten önce kapatılır (S0). İlk işi en düşük güçte deneyin.
+1142|Gerbil kartları en yüksek S değerinde farklılık gösterir ($30 bazılarında 1000, bazılarında 2048): cihazdan okuyun.
+1143|Yükseklikler makinenin Z eksenininkilerdir (Kontrol sekmesindeki gibi).
+1144|Silindir (3B)
+1145|Döner aparat üzerindeki iş parçası ve üzerine yakılanlar. Döndürmek için sürükleyin, tekerlek yakınlaştırır.
+1146|Düz
+1147|İş parçasının yüzeyi, çalışma alanındaki gibi açılmış
+1148|Sürükle: döndür · tekerlek: yakınlaştır
+1149|Önizlemede ölçüler
+1150|Önizlemede silindir (döner)
+1151|Kalkacak yüzlerde şekiller var: proje olduğu gibi kalır. Önce onları silin.
+1152|bir kalas
+1153|bir blok
+1154|Proje kuruldu: {}, {} x {} x {} mm, sıfır {}
+1155|Malzemenin hemen dışında dört köşe işareti, malzeme konmadan önce altındaki levhaya ayrı bir iş olarak yakılır: A tarafı için malzemeyi bunların içine, B tarafı için çevrilmiş olarak koyun.
+1156|Yakılan nesne 3B olarak, proje kurulumundaki malzeme kadar büyük, her yüzüne yakılanlarla. Döndürmek için sürükleyin, tekerlek yakınlaştırır.
+1157|Çalışma alanındaki iş, makinenin yaktığı gibi
+1158|Yanık renkleri
+1159|Ahşaba yakılmış gibi, daha fazla güç için daha koyu çizgiler; kapalı: işlemlerin veya katmanların renklerinde

@@ -1,0 +1,1160 @@
+0|Tệp
+1|Chỉnh sửa
+2|Sắp xếp
+3|Xem
+4|Laser
+5|Cài đặt
+6|Trợ giúp
+7|Mới
+8|Mở…
+9|Lưu
+10|Lưu thành…
+11|Nhập SVG…
+12|Xuất SVG…
+13|Xuất G-code…
+14|Thoát
+15|Hoàn tác
+16|Làm lại
+17|Sao chép
+18|Dán
+19|Nhân bản
+20|Xóa
+21|Chọn tất cả
+22|Căn trái
+23|Căn giữa (ngang)
+24|Căn phải
+25|Căn trên
+26|Căn giữa (dọc)
+27|Căn dưới
+28|Căn giữa với nhau
+29|Đặt giữa bàn máy
+30|Lật theo chiều ngang
+31|Lật theo chiều dọc
+32|Xoay 90° theo chiều kim đồng hồ
+33|Xoay 90° ngược chiều kim đồng hồ
+34|Đưa lên trên cùng
+35|Đưa xuống dưới cùng
+36|Chuyển thành đường
+37|Mảng lưới…
+38|Lưới
+39|Bắt dính lưới
+40|Xem trước đường chạy
+41|Vừa bàn máy với cửa sổ
+42|Cài đặt thiết bị…
+43|Khung
+44|Bắt đầu công việc
+45|Giới thiệu
+46|Ngôn ngữ
+47|Bảng màu
+48|Tối
+49|Sáng Tối
+50|Vừa Sáng
+51|Sáng
+52|Chọn (V)
+53|Hình chữ nhật (R)
+54|Elip (E)
+55|Đường thẳng (L)
+56|Đường gấp khúc / bút (P)
+57|Kéo (H)
+58|Thu phóng (Z)
+59|Chọn
+60|Hình chữ nhật
+61|Elip
+62|Dòng
+63|Tô
+64|Tô + Đường
+65|Lớp {}
+66|Bắt dính
+67|Xem trước
+68|Start
+69|Truyền công việc đến laser đã kết nối
+70|Chạy theo khung bao
+71|Lưu G-code
+72|Lớp
+73|{} — nhấp để gán vùng chọn / đặt làm hiện hành
+74|Sẵn sàng
+75|Đã mở {}
+76|Mở thất bại: {}
+77|Đã lưu {}
+78|Lưu thất bại: {}
+79|Đã nhập {} đường từ {}
+80|Nhập thất bại: {}
+81|Đã xuất {}
+82|Xuất thất bại: {}
+83|Đã lưu G-code {}
+84|Hãy kết nối với laser trước (bảng Laser)
+85|Không có gì để đốt: không có hình trên các lớp xuất
+86|Bắt đầu công việc: {} dòng, ~{}
+87|Đã ngắt kết nối
+88|Đã kết nối với {} @ {}
+89|Không thể mở {}: {}
+90|Đã hủy (reset mềm)
+91|Mất kết nối
+92|Thời gian ước tính
+93|chiều dài cắt
+94|Cài đặt thiết bị
+95|Tên
+96|Vùng làm việc X
+97|Vùng làm việc Y
+98|Điểm không của máy (0,0)
+99|Trước trái (mặc định GRBL)
+100|Sau trái
+101|Giá trị S tối đa ($30)
+102|Công suất động (M4)
+103|Tốc độ chạy không
+104|Trở về gốc
+105|Tốc độ baud
+106|Mảng lưới
+107|Cột
+108|Hàng
+109|Khoảng cách X
+110|Khoảng cách Y
+111|Tạo mảng
+112|Giới thiệu LightCreator
+113|Phiên bản {}
+114|Phần mềm thiết kế & điều khiển mã nguồn mở cho máy khắc và cắt laser.
+115|Nguồn gốc: viết bằng Rust với egui/eframe.
+116|Giao diện lấy cảm hứng từ VectorCraft.
+117|Tác giả: Michał Sarna
+118|Giấy phép MIT.
+119|Thuộc tính
+120|Đường cắt / Lớp
+121|Chưa chọn gì
+122|Khóa tỉ lệ khung
+123|Xoay
+124|Áp dụng
+125|Lật ngang
+126|Lật dọc
+127|Giữa
+128|Trái
+129|Giữa ngang
+130|Phải
+131|Trên
+132|Giữa dọc
+133|Dưới
+134|Căn giữa
+135|Căn giữa dọc
+136|Lớp
+137|Hiện tất cả 30 lớp
+138|Xuất (đốt lớp này)
+139|Hiện
+140|Cài đặt cắt — {}
+141|Chế độ
+142|Tốc độ
+143|Công suất (%)
+144|Số lượt
+145|Khoảng cách
+146|Góc quét
+147|Quét vượt
+148|Hai chiều
+149|Không có cổng
+150|Làm mới
+151|Quét lại cổng nối tiếp
+152|Ngắt kết nối
+153|Kết nối
+154|Trạng thái
+155|Bước
+156|Tiến dao
+157|Lên
+158|Xuống
+159|Hủy công việc đang chạy
+160|Dừng
+161|Hủy jog
+162|Về gốc
+163|Mở khóa
+164|Tạm dừng
+165|Tiếp tục
+166|DỪNG
+167|Công suất chạy khung
+168|0 % giữ laser tắt khi chạy khung; 1–2 % hiện một chấm mờ trên laser diode
+169|gửi G-code / lệnh $
+170|Gửi
+171|Chọn thiết bị
+172|Chọn thiết bị bạn sẽ làm việc cùng.
+173|Hãy tạo ít nhất một hồ sơ thiết bị để tiếp tục.
+174|Tiếp tục
+175|Thêm thiết bị…
+176|Sửa…
+177|Xác nhận xóa
+178|Hủy
+179|Cấu hình thiết bị
+180|Thiết bị mới
+181|vd. Laser diode của tôi
+182|Cần tên hồ sơ.
+183|Chuyển thiết bị…
+184|Thiết bị: {}
+185|Đơn vị tốc độ
+186|Mỗi giây (mm/s, in/s)
+187|Mỗi phút (mm/min, in/min)
+188|Mở gần đây
+189|(trống)
+190|Xóa danh sách
+191|không còn tồn tại
+192|Đóng
+193|Thu nhỏ
+194|Phóng to
+195|Khôi phục
+196|Hiện hoặc ẩn lưới
+197|Hiện hoặc ẩn lưới phụ
+198|Thổi khí
+199|Bật bơm khí
+200|Bật bơm khí khi đốt lớp này (M8 / M9)
+201|Vị trí và kích thước
+202|Góc xoay
+203|Lật và đặt giữa
+204|Căn chỉnh
+205|Thu gọn
+206|Mở rộng
+207|Thời gian
+208|Đã lưu tệp: {}
+209|Đã tự động lưu {}
+210|Lưu công việc trước khi đóng?
+211|Thiết kế chưa được lưu vào tệp.
+212|Bỏ đi
+213|Tùy chọn chương trình…
+214|Tùy chọn chương trình
+215|Tự động lưu
+216|Tự động lưu công việc
+217|Tự động lưu mỗi
+218|Công việc chưa có tên tệp vào một thư mục tạm; tệp có tên được lưu tại chỗ
+219|Xoắn ốc
+220|Xoắn ốc (I)
+221|Số vòng
+222|Kéo trên vùng làm việc để vẽ.
+223|Tải bản sao lưu…
+224|Kiểm tra cập nhật…
+225|Đã lưu bản sao lưu: {}
+226|Sao lưu thất bại: {}
+227|Cập nhật
+228|Đã có phiên bản mới hơn: {}
+229|Bạn đang có {}.
+230|Mở trang tải xuống
+231|Bạn đang dùng phiên bản mới nhất.
+232|Bản phát hành mới nhất: {}
+233|Không thể kiểm tra cập nhật.
+234|Tìm phiên bản mới hơn khi chương trình khởi động
+235|Khôi phục từ bản sao lưu…
+236|Khôi phục từ bản sao lưu
+237|Cài đặt và clipart hiện tại sẽ được thay bằng bản sao lưu. Tiếp tục?
+238|Đã khôi phục bản sao lưu: {}
+239|Khôi phục thất bại: {}
+240|Không tìm thấy tệp hồ sơ nào. Bạn có bản sao lưu không?
+241|Đơn vị
+242|Milimét (mm)
+243|Inch (in)
+244|Thiết bị
+245|Bảng điều khiển
+246|Truy vấn trạng thái
+247|Tự động cuộn
+248|Xóa
+249|Bộ điều khiển
+250|Loại laser
+251|Vùng làm việc
+252|Có
+253|Không
+254|Kết nối
+255|Cổng
+256|Bước jog
+257|Tốc độ jog
+258|Bộ điều khiển này không có kết nối trực tiếp: công việc được xuất thành tệp.
+259|Sửa nút (N)
+260|Văn bản (T)
+261|Góc nhọn
+262|Mượt
+263|Thành đường thẳng
+264|Thành đường cong
+265|Thêm nút
+266|Xóa nút
+267|Mở / đóng
+268|Biến các nút đã chọn thành góc
+269|Làm mượt các nút đã chọn
+270|Biến đoạn sau mỗi nút đã chọn thành đường thẳng
+271|Biến đoạn sau mỗi nút đã chọn thành đường cong
+272|Chèn nút (hoặc nhấp đúp vào một đoạn)
+273|Đóng một đường mở, hoặc mở một đường đóng tại nút đã chọn
+274|Chuyển thành đường cong
+275|Chuyển văn bản thành các hình Bézier có thể sửa
+276|Hợp
+277|Giao
+278|Trừ
+279|Loại trừ
+280|Bù hình…
+281|Bù hình
+282|Khoảng cách
+283|Giá trị dương làm lớn đường viền, âm làm nhỏ lại.
+284|Giữ bản gốc
+285|Tạo đường bù
+286|Chọn ít nhất hai hình (không phải ảnh).
+287|Kết quả trống.
+288|Nhập ảnh…
+289|Đã nhập ảnh {}
+290|Văn bản
+291|Phông chữ
+292|Tìm kiếm
+293|Kích thước
+294|Kiểu
+295|Đậm
+296|Nghiêng
+297|Giãn chữ
+298|Giãn dòng
+299|Căn
+300|Ảnh
+301|Ảnh âm bản
+302|Khắc phần sáng thay vì phần tối
+303|Khắc dùng khoảng cách, tốc độ, công suất và dithering của lớp.
+304|Cài đặt ảnh
+305|Ảnh dùng khoảng cách, tốc độ, công suất và quét vượt của lớp chứa nó.
+306|Dithering
+307|Công suất tối thiểu (%)
+308|Ngưỡng
+309|Floyd-Steinberg
+310|Jarvis
+311|Stucki
+312|Atkinson
+313|Có thứ tự
+314|Thang xám
+315|Tô bù
+316|Xuất PLT / DXF…
+317|Đã xuất {}. Bỏ qua {} ảnh: định dạng này không có raster.
+318|Xuất PLT hoặc DXF và mở bằng phần mềm riêng của bộ điều khiển (ví dụ RDWorks cho Ruida), nơi đặt tốc độ và công suất theo màu lớp.
+319|Thư viện vật liệu…
+320|Thư viện vật liệu
+321|Tất cả
+322|Vật liệu
+323|Thao tác
+324|Công suất
+325|Cắt
+326|Khắc
+327|Vạch
+328|Giá trị ban đầu cho laser diode 10 W và CO2 40 W thông dụng. Luôn thử trên vật liệu thừa.
+329|Áp dụng cho lớp {}
+330|Đã áp dụng {} ({}) cho lớp {}
+331|Lưu lớp hiện hành làm thiết lập sẵn
+332|Tên vật liệu
+333|Lưu thiết lập sẵn
+334|Lớp phủ camera…
+335|Lớp phủ camera
+336|Hiện ảnh chụp hoặc camera trực tiếp dưới thiết kế để định vị công việc trên vật liệu.
+337|Tải ảnh…
+338|Gỡ
+339|Camera trực tiếp
+340|Bản dựng này không hỗ trợ camera. Dựng bằng: cargo run --release --features camera
+341|Không có camera
+342|Tìm camera
+343|Bật camera
+344|Dừng khung hình
+345|Camera
+346|Lớp phủ: {}
+347|Hiện lớp phủ
+348|Độ mờ đục
+349|Căn: kéo bốn góc trên vùng làm việc
+350|Kéo mỗi góc đến góc tương ứng của vật liệu hoặc vùng làm việc; phối cảnh được hiệu chỉnh.
+351|Đặt lại theo vùng làm việc
+352|Xoay 90°
+353|Đốt sớm hơn
+354|Đốt muộn hơn
+355|Các lớp được đốt từ trên xuống dưới.
+356|Tùy chọn lưới…
+357|Tùy chọn lưới
+358|Lưới chính
+359|Lưới phụ
+360|Hiện
+361|Khoảng cách giữa các đường
+362|Màu
+363|Lưới phụ phải mịn hơn lưới chính.
+364|Đặt lại lưới
+365|Đường chạy
+366|Hiện đường chạy trên vùng làm việc
+367|Xem trước…
+368|Cửa sổ xem trước…
+369|Mở cửa sổ xem trước
+370|Tô màu theo
+371|Hiện các đường chạy không
+372|Di chuyển của máy khi laser tắt
+373|Phát
+374|Vừa
+375|Thao tác
+376|Quá nhiều lần di chuyển: đã ẩn các đường chạy không.
+377|{} lần di chuyển
+378|Nhập
+379|Xuất
+380|Nhập Adobe Illustrator / PDF / EPS / VectorCraft…
+381|Nhóm
+382|Bỏ nhóm
+383|Chọn ít nhất hai đối tượng để nhóm.
+384|Đã nhóm. Các đối tượng giữ nguyên lớp.
+385|Phép toán hình
+386|Điều chỉnh ảnh…
+387|Dò ảnh…
+388|Nhập ảnh
+389|Điều chỉnh ảnh
+390|Xoay và lật
+391|Góc
+392|Tông màu
+393|Độ sáng
+394|Độ tương phản
+395|Gamma
+396|Tự động cân mức
+397|Chiều rộng
+398|{} × {} px
+399|Đặt lại
+400|Dò ảnh
+401|Bỏ qua vùng nhỏ
+402|Đơn giản hóa
+403|Làm mượt đường cong
+404|Dò các vùng sáng
+405|Xóa ảnh sau đó
+406|{} đường viền
+407|Dò
+408|Đã dò {} đường viền
+409|Đọc từ thiết bị
+410|Đang đọc…
+411|Kết nối và đọc vùng làm việc, giá trị S tối đa và tốc độ từ bộ điều khiển
+412|Đang đọc cài đặt từ thiết bị…
+413|Không thể kết nối với thiết bị.
+414|Thiết bị không báo cài đặt nào.
+415|Đã đọc {} giá trị từ thiết bị
+416|Tam giác (Y)
+417|Ngôi sao (S)
+418|Đa giác (G)
+419|Tam giác
+420|Ngôi sao
+421|Đa giác
+422|Số cạnh
+423|Kéo trên vùng làm việc để vẽ. Tối đa 360 cạnh.
+424|OK
+425|Kiểu kết nối
+426|Cổng nối tiếp
+427|Mạng (TCP, vd. ser2net)
+428|Máy chủ
+429|Cổng TCP
+430|Đã kết nối với {}
+431|URL camera
+432|Hình trực tiếp của máy: luồng MJPEG hoặc địa chỉ ảnh chụp JPEG (http hoặc https).
+433|Chế độ xem camera
+434|Hiện hình camera trực tiếp của máy này
+435|Đang chờ hình…
+436|Thu phóng mặc định
+437|Trở về toàn bộ ảnh
+438|Hiện thành lớp phủ trên vùng làm việc
+439|Lỗi luồng: {}
+440|Vừa trong 15 giây
+441|Thời gian thực
+442|Hãy đặt URL camera trong cài đặt thiết bị trước.
+443|Hiện trong
+444|Cửa sổ nổi
+445|Cửa sổ riêng
+446|Thẻ bên
+447|Lớp phủ
+448|Hiện hoặc ẩn lớp phủ camera trên vùng làm việc
+449|Hiện lớp phủ camera
+450|Chưa có lớp phủ camera. Hãy tải ảnh hoặc bật chế độ xem camera.
+451|Chia sẻ qua mạng (ser2net)…
+452|Chia sẻ qua mạng (ser2net)
+453|Đã tìm thấy ser2net: {}
+454|Không tìm thấy ser2net. Hãy cài trước, ví dụ: sudo apt install ser2net
+455|Chia sẻ cổng nối tiếp của laser trên máy tính này qua mạng, để LightCreator ở nơi khác có thể kết nối với kiểu kết nối "Mạng (TCP)".
+456|Phiên bản ser2net
+457|Chỉ lắng nghe trên máy tính này (dùng với đường hầm SSH)
+458|Một máy khách mới thay thế máy đang kết nối
+459|Tệp: {}
+460|Sau đó kết nối từ máy tính kia đến {}:{}
+461|Cảnh báo: bất kỳ ai trên mạng truy cập được cổng này đều có thể điều khiển laser. Hãy dùng mạng tin cậy, tường lửa, hoặc tùy chọn chỉ cục bộ với đường hầm SSH.
+462|Đã sao chép.
+463|Cài và khởi động lại ser2net…
+464|Thao tác này thay thế {} (có giữ bản sao lưu) và khởi động lại ser2net. Sẽ yêu cầu quyền quản trị.
+465|Xác nhận
+466|Đang chờ quản trị viên chấp thuận…
+467|Đã cài {} và khởi động lại ser2net.
+468|Không cài được cấu hình: {}
+469|Thủ công: sudo cp <tệp đã lưu> {} && sudo systemctl restart ser2net
+470|Xoay camera
+471|Tự động vừa vùng làm việc với cửa sổ
+472|Khóa
+473|Đã khóa: mở khóa để sửa. Bản sao không bị khóa.
+474|Đã khóa {} đối tượng.
+475|Đã mở khóa {} đối tượng.
+476|Nhấp đúp để sửa tùy chọn lớp
+477|Tùy chọn lớp — {}
+478|{} — nhấp để gán vùng chọn / đặt làm hiện hành; nhấp đúp để mở tùy chọn
+479|Tùy chọn hiển thị…
+480|Tùy chọn hiển thị
+481|Màu nền
+482|Tự động
+483|Độ dày đường
+484|{} lượt
+485|Hướng dẫn nhanh
+486|Trang dự án trên GitHub
+487|Hướng dẫn này có bằng tiếng Anh và tiếng Ba Lan; các ngôn ngữ khác hiển thị văn bản tiếng Anh.
+488|Bo tròn góc…
+489|Bo tròn góc
+490|Bán kính
+491|Bo tròn
+492|Bán kính bo tròn
+493|Bo tròn các góc đã chọn với bán kính này
+494|Đã chọn hai đường thẳng: chúng được nối bằng một góc bo tròn.
+495|Mọi góc thẳng của các hình đã chọn đều được bo tròn.
+496|Không thể nối các đường này (song song, hoặc bán kính không vừa).
+497|Đã nối hai đường bằng một góc bo tròn.
+498|Hãy chọn hình cần bo tròn trước.
+499|Không có góc vuông nào để bo tròn.
+500|Đã bo tròn {} góc.
+501|Clipart
+502|Động vật
+503|Thiên nhiên
+504|Lễ hội
+505|Ký hiệu
+506|Hình
+507|Công cụ
+508|Đồ ăn
+509|Đối tượng
+510|Âm nhạc và giải trí
+511|Clipart của tôi
+512|Tất cả danh mục
+513|Có sẵn
+514|Của tôi
+515|Hình đi kèm chương trình
+516|Hình bạn đã tải xuống hoặc thêm vào
+517|Kích thước khi đặt
+518|Trực tuyến…
+519|Thêm tệp…
+520|Tìm thêm hình trên internet và lưu vào đây
+521|Thêm tệp SVG từ máy tính vào clipart của bạn
+522|Không có hình nào ở đây. Dùng Trực tuyến… để tìm.
+523|đi kèm chương trình
+524|của bạn
+525|Nhấp để đặt vào vùng làm việc
+526|Đã đặt {}
+527|Đổi tên
+528|Đổi tên…
+529|Đổi danh mục
+530|Đổi danh mục…
+531|Chi tiết
+532|Chi tiết…
+533|Xóa…
+534|Gỡ hình này khỏi clipart của bạn? Tệp trên đĩa sẽ bị xóa.
+535|Lưu một bản sao vào clipart của tôi
+536|hoặc một danh mục mới
+537|Đã thêm {} hình vào {}
+538|Nguồn
+539|Danh mục
+540|Giấy phép
+541|Tác giả
+542|Bộ sưu tập
+543|Clipart trực tuyến…
+544|Clipart trực tuyến
+545|Tìm trong các bộ biểu tượng mở (Iconify). Hình được lưu trên đĩa, trong danh mục bạn chọn.
+546|vd. mèo, hoa, bánh răng
+547|Đang tìm…
+548|Không tìm thấy gì.
+549|Tìm thấy {} hình
+550|Tìm kiếm thất bại: {}
+551|Nhấp vào một hình để xem giấy phép và lưu nó.
+552|không cần ghi công
+553|ghi công tác giả
+554|Lưu vào clipart của tôi
+555|Đã lưu {} vào {}
+556|Tải xuống
+557|Đang tải xuống…
+558|Tải xuống thất bại: {}
+559|Hoặc tải hình từ một địa chỉ
+560|Chỉ lưu những hình bạn được phép dùng. Hãy kiểm tra giấy phép của nguồn.
+561|Phóng to (Z)
+562|Thu nhỏ (X)
+563|Vừa vùng làm việc (Ctrl+0)
+564|Vừa tất cả đối tượng (Ctrl+9)
+565|Phóng to
+566|Thu nhỏ
+567|Vừa vùng làm việc
+568|Vừa tất cả đối tượng
+569|Sửa nút
+570|Chuyển văn bản thành đường cong, hoặc dò ảnh, để sửa các nút.
+571|Hãy chọn một hình trước, rồi sửa các nút của nó.
+572|Trái tim (K)
+573|Đã thêm {} vật liệu từ {}
+574|Khác biệt thư viện vật liệu
+575|{} có cài đặt vật liệu khác với thiết bị này. Chọn giá trị cần giữ.
+576|Đã thêm {} vật liệu mới; {} đã giống sẵn.
+577|Giữ tất cả của tôi
+578|Lấy tất cả từ tệp
+579|Lớp {}: cả lớp
+580|không có
+581|Giữ nguyên thư viện của tôi
+582|Đã cập nhật thư viện của thiết bị này.
+583|Thêm từ thư viện…
+584|Sao chép vật liệu từ thư viện có sẵn vào thiết bị này
+585|Thư viện của thiết bị {}
+586|Thư viện này trống. Hãy thêm vật liệu từ thư viện có sẵn hoặc lưu các lớp của bạn thành vật liệu.
+587|Ghi chú
+588|Nhãn
+589|Bỏ lớp
+590|Thêm lớp
+591|Dùng cài đặt của lớp này trong thiết kế
+592|Áp dụng cho các lớp
+593|Đưa cài đặt của tất cả các lớp vào thiết kế
+594|Đã áp dụng {} cho {} lớp
+595|Lưu các lớp của thiết kế thành vật liệu
+596|Lưu cài đặt của các lớp dùng trong thiết kế
+597|Đã lưu {} vào thư viện của thiết bị này
+598|Vật liệu thêm ở đây dùng được cho mọi thiết bị. Thư viện riêng của thiết bị được sửa ở thẻ Vật liệu.
+599|Do bạn thêm
+600|Có sẵn
+601|Thêm vào thiết bị này
+602|Lưu các lớp của thiết kế thành vật liệu cho mọi thiết bị
+603|Lưu vào thư viện
+604|{} đã có trong thư viện của thiết bị này
+605|Đã thêm {} vào thư viện của thiết bị này
+606|Đã có vật liệu tên này trong thư viện.
+607|Đã lưu {} vào thư viện vật liệu
+608|Cài đặt
+609|Thiết bị này
+610|Vật liệu
+611|Gỗ
+612|Kim loại
+613|Nhựa
+614|Giấy và da
+615|Đá và kính
+616|Khác
+617|Xuất thư viện…
+618|Nhập thư viện…
+619|Đánh dấu những gì đưa vào tệp.
+620|Đánh dấu những gì lấy từ tệp.
+621|Vật liệu chung
+622|Thiết bị
+623|Đã lưu thư viện: {} vật liệu và {} thiết bị
+624|Đã nhập {} vật liệu và {} thiết bị
+625|Đây không phải tệp thư viện của LightCreator.
+626|{} có cài đặt vật liệu khác với {}. Chọn giá trị cần giữ.
+627|Gỗ dán
+628|MDF
+629|Bìa các-tông
+630|Giấy
+631|Da
+632|Nỉ
+633|Bần
+634|Mica
+635|Mica, đen hoặc tối màu
+636|Đá phiến / đá
+637|Nhôm anod hóa (có lớp phủ)
+638|Cao su
+639|Vải
+640|Kính
+641|Gỗ (gỗ cứng)
+642|Thẻ
+643|Độ dày
+644|Thẻ, phân cách bằng dấu phẩy
+645|Sửa vật liệu
+646|Khôi phục giá trị có sẵn
+647|Đã khôi phục giá trị có sẵn.
+648|Vật liệu này không có cài đặt cho loại laser của thiết bị này
+649|Nhấp đúp vào vật liệu để sửa cài đặt. Thay đổi được giữ trên máy tính này.
+650|Chỉ đen hoặc trắng, chia ở mức sáng một nửa. Sắc nét: tốt cho nét vẽ và chữ.
+651|Phân tán sai số làm tròn sang các điểm lân cận. Lựa chọn tốt cho ảnh chụp.
+652|Phân tán sai số trên vùng rộng hơn: tông mượt hơn, hơi chậm hơn.
+653|Giống Jarvis, với chi tiết sắc nét hơn.
+654|Giữ vùng sáng sạch và độ tương phản cao; mất một phần chi tiết tối nhất và sáng nhất.
+655|Một mẫu điểm 8×8 cố định: đều và nhanh, không nhiễu.
+656|Không dùng chấm: mỗi điểm ảnh được đốt với công suất giữa mức tối thiểu và công suất của lớp.
+657|Xóa tất cả vật liệu
+658|Xóa tất cả vật liệu của thiết bị này? Thay vào đó sẽ hiện vật liệu của thư viện chính; khi bạn đổi một cái, một bản sao được giữ cho thiết bị này.
+659|Thư viện của thiết bị này giờ hiển thị thư viện chính.
+660|Nhãn lớp
+661|Nhãn lớp…
+662|Các nhãn đưa ra cho các lớp của vật liệu. Cắt, Khắc và Vạch luôn có.
+663|Nhãn mới
+664|Thêm hoặc bỏ các nhãn đưa ra cho các lớp của vật liệu
+665|Thêm
+666|Chung
+667|Phần cứng
+668|G-code
+669|Trước phải
+670|Sau phải
+671|Đảo trục
+672|Hướng bảng
+673|Gốc
+674|Xoay trái
+675|Xoay phải
+676|Lề
+677|Giới hạn riêng
+678|Giới hạn phần mềm
+679|Các dải dọc mép vùng làm việc mà máy không dùng được (kẹp, khung); không được đặt hay di chuyển gì vào đó
+680|Đầu đang ở mép vùng cho phép.
+681|Kiểm tra trước khi chạy
+682|Vẫn tiếp tục
+683|Hãy sửa lỗi trước: còn lỗi thì không gửi, chạy khung hay xuất gì cả.
+684|Lớp {} đốt ở công suất 0 %.
+685|Lớp {} có đối tượng nhưng không có đường chạy (ví dụ đường hở trên lớp tô).
+686|Chọn đối tượng
+687|Khung nằm ngoài giới hạn phần mềm.
+688|Khung nằm ngoài vùng dùng được (vượt vùng làm việc hoặc trong lề).
+689|Đường chạy của lớp {} ra khỏi vùng cho phép (quét vượt hoặc chạy không).
+690|{} đối tượng nằm ngoài giới hạn phần mềm.
+691|{} đối tượng nằm ngoài vùng dùng được (vượt vùng làm việc hoặc trong lề).
+692|Bật chế độ laser ($32=1)
+693|Chế độ laser ($32) đang tắt.
+694|Bộ điều khiển báo có vấn đề
+695|Giá trị S tối đa của bộ điều khiển ($30) là {}, hồ sơ dùng {}.
+696|Thao tác này ghi $32=1 vào cài đặt của bộ điều khiển. Tiếp tục?
+697|Dùng giá trị từ bộ điều khiển
+698|Nếu giá trị khác nhau, công suất trong G-code sẽ không khớp với phần trăm bạn đặt.
+699|Khi tắt chế độ laser, GRBL hoạt động như bộ điều khiển trục chính: laser có thể bắn khi chạy nhanh và công suất không theo tốc độ.
+700|Tốc độ cắt tối đa
+701|Gia tốc
+702|0 = không giới hạn. Lớp nhanh hơn mức này sẽ bị cảnh báo trước khi chạy; ước tính thời gian dùng tối đa tốc độ này.
+703|0 = không biết. Khi có giá trị, ước tính thời gian tính cả đoạn tăng giảm tốc và bảng lớp đề xuất quét vượt.
+704|Đề xuất: {} (quãng phanh ở tốc độ này và gia tốc của máy)
+705|Lớp {} nhanh hơn tốc độ cắt tối đa của máy.
+706|Tự động (từ bộ điều khiển)
+707|Phương ngữ G-code
+708|Smoothieware: S được ghi dưới dạng tỉ lệ của công suất tối đa (đặt giá trị S tối đa là 1). Truyền hoạt động như GRBL; chưa có gì trong số này được thử trên phần cứng thật.
+709|Dùng khi phương ngữ là tự động; phương ngữ GRBL được chọn sẽ tự quyết giữa M3 và M4.
+710|Nâng cao
+711|Một trường G-code ở trang Nâng cao có ký tự điều khiển hoặc quá dài.
+712|Lệnh thổi khí
+713|Kết thúc công việc
+714|Tắt
+715|Bật
+716|Thay M2 kết thúc. Trước đó laser luôn được tắt và đầu được đưa về gốc (nếu có đặt). Trống = mặc định.
+717|Thay các dòng đơn vị, chế độ tuyệt đối, mặt phẳng và chế độ laser. Trống = mặc định.
+718|Khôi phục mặc định
+719|Bắt đầu công việc
+720|G-code sai có thể làm laser bắn, đưa đầu va vào công tắc cuối hoặc làm hỏng vật liệu. Hãy thử khi tắt laser hoặc ở công suất thấp nhất.
+721|Chế độ công suất
+722|Như thiết bị
+723|Không đổi (M3)
+724|Động (M4)
+725|M4 (động) giảm công suất ở góc và khi tăng tốc; M3 (không đổi) giữ nguyên. G-code chuyển giữa chúng khi các lớp khác nhau.
+726|Dung sai cung
+727|Cung (G2 / G3)
+728|Cung: GRBL thường xử lý G2 / G3, Marlin chỉ khi dựng với ARC_SUPPORT, còn Smoothieware có cách riêng. Một số bộ điều khiển bỏ qua cung hoặc chạy sai: hãy thử khi tắt laser. Cung được dùng cho đường viền và vòng, không cho đường quét hay ảnh.
+729|Dung sai đường cong
+730|Đường cong được làm phẳng (Bézier, văn bản) được lệch khỏi đường cong thật bao xa.
+731|Ghi đường cong thành cung ở chỗ vừa
+732|Kiểu đếm lấp đầy bộ đệm của bộ điều khiển và nhanh. Kiểu đơn giản gửi một dòng và chờ ok: chậm, nhưng dành cho firmware trả lời sai.
+733|Tiếp tục chờ
+734|Bộ điều khiển không trả lời trong {} giây khi đang chạy công việc (trạng thái: {}).
+735|Không có gì được tiếp tục hay gửi đi. Máy có thể chỉ chậm, hoặc dòng đã bị mất; hãy xem bảng điều khiển rồi chọn.
+736|Dừng công việc
+737|Đang truyền
+738|Bộ điều khiển không trả lời
+739|Đếm bộ đệm
+740|Đơn giản (chờ từng ok)
+741|Tên cổng, hoặc mã nhà sản xuất và mã sản phẩm USB (VID:PID, hệ thập lục phân): cổng có các mã này sẽ được dùng.
+742|Gắn với cổng này
+743|Thiết bị USB đã gắn
+744|Tự động kết nối lại
+745|Đang kết nối lại…
+746|Cổng hoặc mã USB
+747|Kết nối lại
+748|Ghi nhớ mã USB của cổng đã chọn: khi tên cổng đổi, cổng sẽ được tìm lại bằng các mã này.
+749|Bỏ gắn
+750|Khi kết nối tự rớt, thử lại mỗi vài giây cho đến khi bạn nhấn Ngắt kết nối.
+751|không có
+752|Sau khi kết nối
+753|Xóa báo động
+754|Xóa báo động sẽ bỏ qua về gốc: chỉ dùng khi biết chắc đầu đang ở chỗ an toàn.
+755|Về gốc máy
+756|Về gốc {}
+757|Chỉ về gốc trục {} ($H{})
+758|Toàn bộ {} cài đặt của tệp giờ đã nằm trong bộ điều khiển.
+759|Hãy sao lưu cài đặt trước. Để tiếp tục, gõ {}:
+760|Sao lưu ra tệp…
+761|Không thể dùng tệp: {}
+762|Hãy kết nối với máy trước (thẻ Thiết bị).
+763|Đã kết nối: {}
+764|Cài đặt gốc ($RST=$)…
+765|Marlin giữ cài đặt trong các lệnh riêng (M92, M203, M204, ...): trang này chỉ hiển thị những gì `M503` báo.
+766|Chưa đọc gì.
+767|Đọc cài đặt ($$)
+768|Đọc cài đặt (M503)
+769|Thật sự ghi $RST=$ vào bộ điều khiển?
+770|Khôi phục từ tệp…
+771|Khôi phục cài đặt gốc
+772|Khôi phục cài đặt từ tệp
+773|Đã lưu cài đặt vào {}
+774|Bộ điều khiển đã có tất cả.
+775|Các cài đặt này nằm trong bộ điều khiển, không phải trong hồ sơ. Mỗi lần đổi một cái và ghi lại giá trị cũ: giá trị sai có thể làm máy đi sai khoảng cách hoặc làm laser bắn.
+776|Các cài đặt này của tệp khác với bộ điều khiển. Không có gì được ghi cho đến khi bạn nhấn Ghi tất cả.
+777|Thao tác này ghi $RST=$: mọi cài đặt của bộ điều khiển trở về mặc định của firmware. Số bước, hành trình, tốc độ, chế độ laser và về gốc đều sẽ thay đổi.
+778|Ghi
+779|Ghi ${} = {} vào bộ điều khiển? Hiện tại là {}. Mỗi lần chỉ đổi một cài đặt và ghi lại giá trị cũ.
+780|Ghi một cài đặt
+781|Ghi tất cả
+782|Ghi {} cài đặt vào bộ điều khiển? Máy sẽ hoạt động như tệp quy định.
+783|{} / {} cài đặt khác nhau sau khi ghi:
+784|Giá trị
+785|Đơn vị
+786|Thông thường
+787|không phải số
+788|ngoài phạm vi
+789|Firmware ($$)
+790|0 = giá trị thông thường ({} W)
+791|0 = giá trị thường dùng ({} nm)
+792|Tia yếu liên tục để chỉnh độ cao (chế độ lấy nét). 0 = không có chế độ lấy nét.
+793|Thêm đầu laser
+794|Điểm tia
+795|Công suất lấy nét
+796|Tốc độ chạy khung
+797|Đầu {}
+798|Công suất quang
+799|Tần số PWM
+800|Tần số PWM tối đa
+801|Độ lệch con trỏ
+802|Độ rộng xung
+803|Dải độ rộng xung
+804|Bỏ đầu laser này
+805|Kích thước tia trên vật liệu (0 = không biết). Khoảng tô nhỏ hơn mức này làm các đường kề nhau chồng lên.
+806|Các giá trị PWM được giữ cùng hồ sơ và có sẵn làm biến cho macro; chúng không được gửi đến bộ điều khiển.
+807|Số mà bộ điều khiển dùng để nhận ra đầu này; được ghi thành T<n> khi một lớp dùng đầu khác. Phải khớp với bảng ánh xạ trong bộ điều khiển.
+808|Số dao (T)
+809|Hai đầu laser có cùng số dao.
+810|Bước sóng
+811|Chấm con trỏ đỏ nằm ở đâu so với tia (x sang phải, y xuống). Dùng cho căn theo con trỏ ở thẻ Điều khiển.
+812|vd. Diode xanh
+813|Đầu laser
+814|Khoảng cách nhỏ hơn điểm tia ({}): các đường kề nhau chồng lên.
+815|TIA LẤY NÉT BẬT: nhấn để tắt
+816|Lấy nét
+817|Bật tia yếu liên tục để chỉnh độ cao lấy nét
+818|Bật tia lấy nét
+819|Tắt tia lấy nét
+820|Căn theo con trỏ
+821|Chạy thử bằng con trỏ
+822|Chạy thử bằng con trỏ: {} dòng, laser tắt
+823|Không có gì để chạy: không có hình trên các lớp xuất
+824|Chạy đường đi của công việc dời theo độ lệch con trỏ với laser tắt, để xem nó sẽ đi đâu.
+825|Chỉ trong phiên này: khung và chạy thử lùi lại theo độ lệch của chấm con trỏ đỏ, để chấm rơi đúng chỗ tia sẽ chiếu. Công việc và jog không bao giờ bị dời.
+826|Hook {}: {}
+827|Hook
+828|G-code riêng ghi vào công việc: khi một lớp bắt đầu, trước và sau mỗi đối tượng, khi một lớp kết thúc. Với hook đối tượng, lớp được đốt từng đối tượng một (và mỗi lượt một lần).
+829|Biến: {}
+830|Bắt đầu lớp
+831|Kết thúc lớp
+832|Bắt đầu đối tượng
+833|Kết thúc đối tượng
+834|Macro là G-code riêng của bạn: nó có thể làm laser bắn hoặc di chuyển đầu. Chỉ chạy khi bạn biết nó làm gì. Câu hỏi này chỉ hỏi một lần mỗi phiên.
+835|Thêm macro
+836|Xóa macro này
+837|Tên macro
+838|Macro {}
+839|Macro {}: {}
+840|Macro {}: {} dòng
+841|Macro
+842|Các script có tên bạn chạy bằng tay từ thẻ Điều khiển. Mỗi dòng một lệnh; chú thích sau ; hoặc trong ngoặc; @include(name) chèn macro khác. Có thể dùng biến của máy.
+843|Chạy macro {}
+844|Chạy macro này trên máy
+845|Thêm vùng
+846|Hình tròn
+847|Xóa vùng này
+848|Những phần của vùng làm việc máy không bao giờ được vào (kẹp, đồ gá). Lần di chuyển chạm vùng đang bật, kể cả khi tắt laser, sẽ chặn Bắt đầu, Chạy khung và xuất. Chương trình không đi vòng quanh vùng.
+849|Khung chạm vào vùng cấm "{}".
+850|Đường chạy của lớp {} chạm vào vùng cấm "{}".
+851|Tên vùng
+852|Vùng {}
+853|Vùng cấm
+854|Hiện vùng cấm
+855|Z di chuyển bao nhiêu với mỗi lượt tiếp theo (âm là đi xuống trên máy có +Z hướng lên). 0 = Z giữ nguyên.
+856|Z máy mà đầu đi đến trước lượt đầu tiên. 0 cùng với 0 mỗi lượt = Z không di chuyển.
+857|Độ cao Z của lớp {} nằm ngoài hành trình trục Z.
+858|Máy có trục Z
+859|Hành trình
+860|Hướng lên là chiều Z âm
+861|Z
+862|Trục Z
+863|Độ cao Z
+864|Z mỗi lượt
+865|Đã nối bộ quay
+866|A xoay {} độ cho mỗi milimét trên bề mặt.
+867|Tất cả các lớp đốt phải đều là quay, hoặc không lớp nào. Thiết kế không được cao hơn chu vi phôi.
+868|Hỏi xác nhận trước. Chỉ trục Y của bộ điều khiển thay đổi.
+869|Đốt lớp này trên bộ quay
+870|Mâm cặp
+871|Chu vi
+872|GRBL 1.1 có ba trục: không có trục A, dùng Y.
+873|Loại
+874|Các lớp đánh dấu là quay được đốt trên bộ quay. Mô hình đơn giản: mâm cặp quay theo đường kính phôi, con lăn di chuyển bề mặt như chính nó; máy thật cần chạy thử.
+875|Số vi bước của động cơ cho một vòng đầy đủ của thứ nó dẫn động (mâm cặp, hoặc một con lăn).
+876|Vi bước mỗi vòng
+877|Thay thế Y (động cơ Y xoay phôi)
+878|Đường kính con lăn
+879|Con lăn
+880|Quay
+881|Lớp quay và lớp phẳng không thể nằm trong một công việc: hãy đánh dấu tất cả các lớp đốt là quay, hoặc không lớp nào.
+882|Xoay trong G-code
+883|Bộ điều khiển cần {} bước mỗi mm trên trục Y ($101).
+884|Thiết kế trên lớp {} cao hơn chu vi phôi.
+885|Vòng quanh phôi: thiết kế không được cao hơn.
+886|Trục A thật (độ)
+887|Đường kính phôi
+888|Ghi $101 vào bộ điều khiển…
+889|Như một hộp hoặc trụ đặt trên bàn: di chuyển phía trên hoặc dưới phạm vi là tự do.
+890|Chỉ ở các độ cao này (Z)
+891|Hồ sơ trống
+892|Bản sao của hồ sơ này
+893|Thêm một thiết bị
+894|Đã sao chép vào {}
+895|Xuất…
+896|Đã nhập hồ sơ {}
+897|Nhập…
+898|Đọc hồ sơ từ tệp
+899|Lưu hồ sơ này ra tệp
+900|Đã lưu hồ sơ vào {}
+901|Điểm khởi đầu: các máy phổ thông với thông số điển hình. Hãy đối chiếu với tài liệu máy của bạn.
+902|Laser diode GRBL 400 × 400
+903|Laser CO2 GRBL 300 × 200
+904|K40 chuyển đổi (GRBL) 300 × 200
+905|Laser diode Marlin 400 × 400
+906|Laser diode GRBL 1.1 trên bàn 400 × 400 mm, điểm không trước trái, công suất động.
+907|Laser CO2 GRBL 1.1 trên bàn 300 × 200 mm, điểm không trước trái.
+908|Laser CO2 K40 với bo điều khiển GRBL: 300 × 200 mm, điểm không ở góc sau trái (trên trái).
+909|Laser diode chạy firmware Marlin (tính năng laser, S 0–255) trên bàn 400 × 400 mm.
+910|Sau
+911|Kết nối (tùy chọn)
+912|Hoàn thiện
+913|Nếu máy đang được kết nối, có thể đọc vùng làm việc và tốc độ từ bộ điều khiển.
+914|Chưa đọc chế độ laser ($32) và giá trị S tối đa ($30) của bộ điều khiển: chúng được kiểm tra khi bạn kết nối.
+915|Tên và đơn vị
+916|Tiếp
+917|Chưa đặt lề hay giới hạn phần mềm: toàn bộ phạm vi trục là vùng làm việc. Hãy đặt ở trang Phần cứng nếu kẹp hoặc khung cản đường.
+918|Chưa đặt cổng hoặc máy chủ: hãy chọn trong cài đặt thiết bị trước khi kết nối.
+919|Chưa có gì ở đây được thử trên máy của bạn: hãy chạy thử lần đầu khi tắt laser hoặc ở công suất thấp nhất.
+920|Chọn điểm khởi đầu gần nhất. Bạn có thể đổi mọi thứ sau.
+921|Thiết lập thủ công…
+922|Thiết lập máy của bạn ({}/{})
+923|Bỏ qua
+924|Bỏ qua các bước này và mở cài đặt thiết bị
+925|Tóm tắt
+926|Đã thêm thiết bị. Nhấn Mới để bắt đầu.
+927|Đã đọc cài đặt từ bộ điều khiển.
+928|Bạn có máy nào?
+929|Nên kiểm tra
+930|chưa đặt
+931|Thêm bộ đếm
+932|Tính theo thời gian công việc thực sự chạy (từ bắt đầu đến kết thúc hoặc Dừng), không theo ước tính. Không thể đặt lại tổng.
+933|Tên bộ đếm (ống, thấu kính, dây đai)
+934|Bộ đếm {}
+935|Xóa bộ đếm này
+936|Đến hạn bảo trì: {}
+937|Nhắc sau
+938|Đặt lại bộ đếm
+939|Bắt đầu lại bộ đếm "{}" từ không?
+940|Tổng thời gian làm việc: {}
+941|Bảo trì
+942|Từ mẫu
+943|Ghi chú dài hơn {} ký tự và không thể lưu.
+944|Ghi chú của bạn (Markdown)
+945|vd. Cài đặt hiệu quả: thổi khí 20 %, tiêu cự 12 mm
+946|Ghi chú
+947|Hiện hành
+948|Thêm camera
+949|Địa chỉ
+950|Tự động
+951|Tên camera
+952|Số camera
+953|Camera của máy tính này
+954|Camera {}
+955|Các camera quan sát máy. Camera hiện hành cho hình trực tiếp. Chỉ bật được camera khi địa chỉ hợp lệ.
+956|Hệ số méo ống kính (xuyên tâm k1–k3, tiếp tuyến p1, p2) cho tọa độ đo từ tâm theo đơn vị cạnh dài của ảnh. Tất cả 0 = không hiệu chỉnh. Nhập tay: không có hiệu chuẩn tự động.
+957|Xóa camera này
+958|Với camera của máy tính này: yêu cầu định dạng YUYV không nén khi hệ thống cho phép.
+959|Định dạng
+960|Hiệu chỉnh ống kính
+961|Hình trực tiếp của máy: luồng MJPEG hoặc địa chỉ ảnh chụp JPEG (http hoặc https). Không hỗ trợ RTSP.
+962|Giảm nhiễu
+963|Không phải địa chỉ http hoặc https.
+964|Hình ảnh
+965|Ưu tiên YUYV
+966|Bật hoặc tắt camera này
+967|Địa chỉ không hợp lệ: cần địa chỉ http hoặc https
+968|Cân bằng trắng
+969|Thêm điểm
+970|Căn theo các điểm
+971|Xóa điểm này
+972|Khớp ảnh với các điểm (bình phương tối thiểu) và di chuyển các góc theo đó.
+973|Không đủ điểm, hoặc chúng nằm trên một đường thẳng.
+974|Các cặp gồm một điểm trong ảnh (pixel) và vị trí của nó trong vùng làm việc (mm). Ít nhất 3, khuyên dùng 4; chúng cố định việc căn chỉnh, kể cả phối cảnh.
+975|Điểm từ các góc hiện tại
+976|Điểm tham chiếu
+977|Thay các điểm bằng bốn góc của ảnh và vị trí hiện tại của chúng.
+978|Bắt dính đối tượng
+979|Không tạo được trang: {}
+980|Không mở được trình xem: {}
+981|Máy in mặc định
+982|Lề
+983|Chỉ đối tượng trên các lớp đang hiện
+984|Chỉ các đối tượng, lớn nhất mà trang cho phép
+985|Mở PDF
+986|Đã mở trong trình xem PDF.
+987|Mở trang trong trình xem PDF, nơi có thể in với nhiều tùy chọn hơn
+988|In
+989|In…
+990|Máy in
+991|In thiết kế ra máy in giấy, để kiểm tra vị trí hoặc làm mẫu.
+992|Lưu thành PDF…
+993|Đã gửi đến máy in. {}
+994|Máy in không nhận: {}
+995|Toàn bộ vùng làm việc, đúng tỉ lệ
+996|Không có gì để in.
+997|{} đối tượng vượt ra ngoài vùng làm việc; trên giấy chúng bị cắt ở mép.
+998|{} đối tượng vượt ra ngoài vùng làm việc; chúng vẫn được in.
+999|Thử camera: {}
+1000|Mở hình của camera này theo cài đặt ở đây, không lưu
+1001|Thử
+1002|Xen kẽ cắt và bỏ qua dọc theo đường viền.
+1003|Độ dài cắt
+1004|Khoảng cách đều
+1005|Bù độ rộng cắt
+1006|Để lại những đoạn ngắn của đường viền không cắt (hoặc cắt yếu) để chi tiết giữ nguyên chỗ. Được đặt tự động.
+1007|Giới hạn số cầu giữ tối đa
+1008|Số cầu giữ tối thiểu
+1009|Dời đường viền ra ngoài (vào trong khi âm) để bù độ rộng đường cắt. 0 = tắt.
+1010|Phần trăm công suất của lớp trên cầu giữ; 0 = tắt laser.
+1011|Cắt đục lỗ
+1012|Chế độ đục lỗ
+1013|Vị trí đặt
+1014|Bỏ qua hình bên trong
+1015|Độ dài bỏ qua
+1016|Khoảng cách
+1017|Công suất cắt cầu giữ
+1018|Kích thước cầu giữ
+1019|Cầu giữ
+1020|Số cầu giữ mỗi hình
+1021|Hình vector trên lớp ở chế độ Ảnh không được đốt.
+1022|Thời gian làm việc
+1023|Mô tả
+1024|Mô tả dự án: nó là gì, các thiết lập hiệu quả, ghi chú cho lần sau.
+1025|Một trang web hiển thị trạng thái máy, dự án và camera, cùng API cho các chương trình khác. Không có mật khẩu.
+1026|Bất kỳ ai trong mạng đều có thể xem máy và dừng hoặc di chuyển nó. Không có mật khẩu hay mã hóa: chỉ dùng trên mạng bạn tin cậy.
+1027|Đang lắng nghe trên {}
+1028|Truy cập được từ các máy tính khác trong mạng
+1029|Bật máy chủ web và API
+1030|Không khởi động được máy chủ: {}
+1031|Máy chủ web và API
+1032|Thêm thiết bị
+1033|Thêm cài đặt…
+1034|Mở toàn bộ cửa sổ thiết bị với những gì đã nhập ở đây
+1035|Điểm khởi đầu
+1036|Vật liệu mặc định
+1037|Xóa vật liệu này
+1038|Vật liệu: {}
+1039|Tên vật liệu mới
+1040|Vật liệu mới: bản sao của cái này
+1041|Tên mới
+1042|Đổi tên vật liệu này
+1043|dự án
+1044|Mica 3 mm
+1045|Da 2 mm
+1046|Vật liệu mới, trống
+1047|Gỗ dán 3 mm
+1048|Thêm vật liệu, vd. Gỗ dán bạch dương 3 mm (tùy chọn)
+1049|Các camera quan sát máy. Camera được đánh dấu cho hình trực tiếp; đánh dấu camera khác sẽ tắt camera đầu.
+1050|Bật camera này: nó cho hình trực tiếp
+1051|Máy chủ web: bật, cổng {}
+1052|Máy chủ web: tắt
+1053|Máy chủ web: lỗi
+1054|Xanh dương đậm
+1055|Xanh dương nhạt
+1056|Xanh lá đậm
+1057|Xanh lá nhạt
+1058|Tím đậm
+1059|Tím nhạt
+1060|Nâu đậm
+1061|Nâu nhạt
+1062|Cam đậm
+1063|Cam nhạt
+1064|Màu không gian làm việc
+1065|Khoảng trống quanh vùng làm việc
+1066|Một trang web hiển thị trạng thái máy, dự án và camera, cùng API cho các chương trình khác. Mọi yêu cầu cần cụm từ truy cập; không có mã hóa.
+1067|Bất kỳ ai trong mạng biết cụm từ truy cập đều có thể xem máy và dừng hoặc di chuyển nó. Cụm từ được gửi không mã hóa: chỉ dùng trên mạng bạn tin cậy.
+1068|Cụm từ truy cập
+1069|Dùng cụm từ truy cập này từ giờ
+1070|Cụm từ truy cập không được trống hoặc có ký tự điều khiển.
+1071|Vị trí laser trực tiếp
+1072|Hiện vị trí đầu laser thành một chấm trên vùng làm việc. Bật khi máy đứng yên thì về gốc trước; trong khi chạy hoặc chạy khung chỉ hiện vị trí, cập nhật mỗi giây. Cần thiết bị đã kết nối.
+1073|Bắt đầu từ
+1074|Gốc (điểm không của máy)
+1075|Vị trí hiện tại của laser
+1076|Gốc: thiết kế được đốt ở chỗ nó nằm trên vùng làm việc, tính từ điểm không của máy. Vị trí hiện tại: góc trên trái của thiết kế được đặt nơi đầu laser đang đứng (công việc, khung và chạy thử), và công việc kết thúc ở đó. Tệp xuất luôn tính từ điểm không của máy.
+1077|Đọc OK
+1078|Lỗi đọc
+1079|Dự án này được làm cho cấu hình máy khác ({}). Hãy kiểm tra thiết bị trước khi bắt đầu.
+1080|Không dùng được một số phần của dự án LightBurn: {}
+1081|Tôi không có thiết bị
+1082|Làm dự án không có máy: một thiết bị đơn giản tên Dummy, với vùng làm việc và tốc độ mặc định
+1083|Nhập dự án LightBurn…
+1084|Chưa có thiết bị. Hãy thêm một cái, hoặc làm việc không có máy.
+1085|Mở một dự án hoặc bắt đầu dự án trống.
+1086|Nhập thiết kế UGS…
+1087|Không dùng được một số phần của thiết kế UGS: {}
+1088|Hiện tất cả {} lớp
+1089|Màu vật liệu chỉ để hiển thị; không thay đổi gì.
+1090|Xuất tất cả…
+1091|Thay các vật liệu cùng tên
+1092|Đã nhập {} vật liệu; thay {}.
+1093|Đã xuất {} vật liệu: {}
+1094|Bỏ lớp này khỏi vật liệu
+1095|Vật liệu này chưa có lớp. Hãy thêm ở dưới.
+1096|Vật liệu…
+1097|Lớp Illustrator
+1098|Tệp có {} lớp Illustrator. Đặt các đường vào lớp của chương trình theo:
+1099|Lớp Illustrator đầu tiên vào lớp 1, lớp thứ hai vào lớp 2, cứ thế tiếp; phần còn lại vào lớp cuối cùng.
+1100|Xem tệp G-code…
+1101|Đặt lại góc nhìn
+1102|Trình xem G-code
+1103|Tô màu theo độ cao
+1104|Kéo: xoay · kéo chuột phải hoặc Shift+kéo: di chuyển · con lăn: thu phóng
+1105|Kéo: di chuyển · con lăn: thu phóng
+1106|Đường viền
+1107|Chạy theo đường viền bao tất cả các hình, như dây thun.
+1108|Khung theo đường viền
+1109|Từng phần tử một
+1110|Mỗi phần tử (một nhóm, hoặc hình không thuộc nhóm nào) được đốt trọn vẹn, mọi lớp và mọi lượt, rồi mới sang cái tiếp; phần tử gần nhất đi trước. Tắt: từng lớp, từng lượt.
+1111|Chỉ vùng chọn
+1112|Chỉ đốt các hình đang được chọn trên vùng làm việc khi lưu G-code hoặc bắt đầu công việc.
+1113|Không có gì để đốt: chưa chọn gì
+1114|Xuất chẩn đoán (zip)…
+1115|Đã lưu chẩn đoán: {}
+1116|Không thể lưu chẩn đoán: {}
+1117|Nhập DXF…
+1118|Chèn
+1119|Khung nhìn có tối đa ba ngăn
+1120|Hiện xem trước ở đây
+1121|Chưa mở tệp G-code nào: Tệp, Xem tệp G-code…
+1122|Xem trước G-code
+1123|Hiện G-code mà không lưu
+1124|xem trước
+1125|G-code được hiển thị, không lưu gì
+1126|G-code riêng của thiết bị: {}
+1127|Không phải địa chỉ camera (http, https, rtsp, udp, rtp hoặc rtmp).
+1128|Hình trực tiếp của máy: luồng MJPEG, địa chỉ ảnh chụp JPEG (http hoặc https), hoặc luồng mà ffmpeg đọc được (rtsp, udp, rtp, rtmp).
+1129|Lớp phủ từ…
+1130|Thu phóng
+1131|GRBL (1.1f trở lên)
+1132|GRBL-M3 (1.1e trở xuống)
+1133|LinuxCNC (tệp)
+1134|G-code riêng
+1135|Bật laser (công suất)
+1136|Tắt laser
+1137|{power} là công suất theo đơn vị S tối đa, {percent} là công suất theo phần trăm. Lệnh bật laser đi trước mỗi lần đốt, lệnh tắt laser đi trước mỗi lần di chuyển.
+1138|G-code riêng: hãy kiểm tra lệnh bật và tắt laser ở công suất thấp nhất trước.
+1139|Snapmaker: công suất được ghi là M3 P (phần trăm) S (0–255) trước khi đốt và M5 trước khi di chuyển. Chưa thử trên máy thật.
+1140|LinuxCNC: Bắt đầu sẽ lưu tệp G-code cho LinuxCNC. Công suất đi ra đầu ra analog 0 (M67 E0 Q, từ 0 đến S tối đa), đầu ra này phải điều khiển laser trong HAL của bạn. Chưa thử trên máy thật.
+1141|GRBL không có chế độ laser: laser được tắt (S0) trước mỗi lần di chuyển. Hãy chạy công việc đầu ở công suất thấp nhất.
+1142|Các bo Gerbil khác nhau về giá trị S tối đa ($30 là 1000 ở một số, 2048 ở số khác): hãy đọc từ thiết bị.
+1143|Các độ cao là của trục Z của máy (như trên thẻ Điều khiển).
+1144|Trụ (3D)
+1145|Phôi trên bộ quay cùng những gì được đốt lên nó. Kéo để xoay, con lăn để thu phóng.
+1146|Phẳng
+1147|Bề mặt phôi trải phẳng, như trên vùng làm việc
+1148|Kéo: xoay · con lăn: thu phóng
+1149|Kích thước trong xem trước
+1150|Trụ trong xem trước (quay)
+1151|Các mặt sẽ bị bỏ có hình: dự án giữ nguyên. Hãy xóa chúng trước.
+1152|một thanh
+1153|một khối
+1154|Đã thiết lập dự án: {} {} x {} x {} mm, điểm không tại {}
+1155|Bốn dấu góc ngay ngoài vật liệu, đốt thành một công việc riêng lên tấm bên dưới trước khi đặt vật liệu: đặt vật liệu vào đó cho mặt A, và lật lại cho mặt B.
+1156|Vật được đốt ở dạng 3D, lớn bằng vật liệu trong thiết lập dự án, với những gì được đốt trên mỗi mặt. Kéo để xoay, con lăn để thu phóng.
+1157|Công việc trên vùng làm việc, như máy đốt nó
+1158|Màu cháy
+1159|Đường càng đậm khi công suất càng lớn, như khi đốt trên gỗ; tắt: theo màu của thao tác hoặc lớp

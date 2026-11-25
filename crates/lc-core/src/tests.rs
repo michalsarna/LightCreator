@@ -713,7 +713,7 @@ fn spiral_starts_in_the_middle_and_fills_the_box() {
 }
 
 /// Every character of the European translations must exist in the interface font, or the program would show
-/// empty boxes in that language.
+/// empty boxes in that language. Japanese, Korean and Traditional Chinese are drawn by the CJK fonts of base-ui.
 #[test]
 fn the_interface_font_covers_every_european_translation() {
     let font = include_bytes!("../../../assets/fonts/NotoSans-Regular.ttf");
@@ -724,6 +724,9 @@ fn the_interface_font_covers_every_european_translation() {
         let path = entry.path();
         if path.extension().is_some_and(|e| e == "txt") {
             let name = path.file_stem().unwrap().to_string_lossy().into_owned();
+            if ["ja", "ko", "zh-hant"].contains(&name.as_str()) {
+                continue;
+            }
             let text = std::fs::read_to_string(&path).unwrap();
             for line in text.lines() {
                 let body = line.split_once(|c| c == '|' || c == '\t').map(|(_, t)| t).unwrap_or(line);
