@@ -3069,7 +3069,7 @@ mod authorship_tests {
         let dir = std::env::temp_dir().join(format!("lightcreator-authorship-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
         let mut d = Document::default();
-        d.others.authorship.stamp(Signer { name: "Anna", program: "MillCreator", version: "v0.9.9" }, 1_795_000_000, false);
+        d.others.authorship.stamp(Signer { name: "Anna", email: "", other: "", program: "MillCreator", version: "v0.9.9" }, 1_795_000_000, false);
         let file = dir.join("box.cre");
         std::fs::write(&file, d.to_json()).unwrap();
         base_ui::authorship_ui::init(&dir);
@@ -3084,7 +3084,7 @@ mod authorship_tests {
         assert_eq!(back.creator.unwrap().name, "Anna");
         assert_eq!(back.contributors.len(), 1);
         assert_eq!((back.contributors[0].name.as_str(), back.contributors[0].program.as_str(), back.contributors[0].version.as_str()), ("Jan", "LightCreator", APP_VERSION));
-        assert_eq!(back.edits.len(), 3, "the edit of Anna and the two saves");
+        assert_eq!(back.edits.len(), 2, "the edit of Anna and one for the two saves within a minute");
         std::fs::remove_dir_all(dir).ok();
     }
 }
