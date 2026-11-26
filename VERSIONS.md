@@ -2,14 +2,15 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
-## v1.0.0 (not released yet)
+## v1.0.0
 
 * **Password protection of project files** (baseCreator v2.9.0): in **Project setup**, part **Protection**, an owner password (allows everything) and an optional open password. With the open password the project opens, the preview, G-code and the job work and the material and layer settings can be changed, but the drawing cannot be edited, copied, exported or printed. The file is encrypted (XChaCha20-Poly1305, the key from each password by Argon2id); a protected file asks for its password when it is opened or recovered. The recovery files, the parked tabs and the diagnostics zip keep the project protected.
 * **Adobe Illustrator import** (baseCreator v2.8.0): the pictures in the file come in as images, a hidden layer is left out, and one Illustrator layer no longer asks how to place it.
 * **Protection, after the first tests** (baseCreator v2.9.1): a project opened with the open password can be unlocked with the owner password without opening it again (Project setup, part **Protection**: **Owner password**, **Unlock**; or **Unlock with the owner password…** in the menu of its tab). The menu of a drawing's tab also has **Project information…** and **Project setup…**. A line separates the owner password from the open one, and the open password cannot be typed without an owner password. The password question has a bigger green OK and red Cancel.
 * After the last drawing is closed, **Back to the start screen** is on the left (green) and **Close the program** on the right (red).
 * A **padlock** before the name of a protected project in its tab (baseCreator v2.9.2).
-* baseCreator v2.9.2.
+* The wiki (Settings and Files, in English, Polish, Simplified Chinese and Korean) describes the password protection.
+* baseCreator v2.9.3.
 
 ## v0.9.10
 
