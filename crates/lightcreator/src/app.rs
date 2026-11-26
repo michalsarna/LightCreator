@@ -3102,7 +3102,7 @@ mod lightburn_open_tests {
         assert_eq!(protect::open(&text, &open).unwrap().1.access, Access::Open);
         // The menu of the tab: the project information, and the owner password that unlocks everything (the same file, no reopening).
         let slot = a.slot;
-        assert!(base_ui::work_panes::PaneHost::tab_locked(&a, base_ui::work_panes::Content::Doc(slot)));
+        assert!(base_ui::work_panes::PaneHost::tab_protected(&a, base_ui::work_panes::Content::Doc(slot))); assert!(base_ui::work_panes::PaneHost::tab_locked(&a, base_ui::work_panes::Content::Doc(slot)));
         a.pane_event(base_ui::work_panes::PaneEvent::Menu(slot, base_ui::work_panes::TabCommand::Info));
         assert!(a.show_project_info);
         let mut f = a.lock.fields();

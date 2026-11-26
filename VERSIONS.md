@@ -8,7 +8,8 @@ Each release gets the next version number and a branch with the same name. Newes
 * **Adobe Illustrator import** (baseCreator v2.8.0): the pictures in the file come in as images, a hidden layer is left out, and one Illustrator layer no longer asks how to place it.
 * **Protection, after the first tests** (baseCreator v2.9.1): a project opened with the open password can be unlocked with the owner password without opening it again (Project setup, part **Protection**: **Owner password**, **Unlock**; or **Unlock with the owner password…** in the menu of its tab). The menu of a drawing's tab also has **Project information…** and **Project setup…**. A line separates the owner password from the open one, and the open password cannot be typed without an owner password. The password question has a bigger green OK and red Cancel.
 * After the last drawing is closed, **Back to the start screen** is on the left (green) and **Close the program** on the right (red).
-* baseCreator v2.9.1.
+* A **padlock** before the name of a protected project in its tab (baseCreator v2.9.2).
+* baseCreator v2.9.2.
 
 ## v0.9.10
 
