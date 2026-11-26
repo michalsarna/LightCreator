@@ -52,4 +52,4 @@
 
 > ⚠️ **安全：**激光是危险的。请以低功率测试 G-code，佩戴护目镜，切勿让运行中的机器无人看管。参见 [安全与限制](Safety-and-Limitations-ZH)。
 
-最新版本：**v0.9.10** · [Releases](https://github.com/michalsarna/LightCreator/releases) · [Issues](https://github.com/michalsarna/LightCreator/issues) · 许可证：[MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) 或 [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE)，任选其一
+最新版本：**v1.0.0** · [Releases](https://github.com/michalsarna/LightCreator/releases) · [Issues](https://github.com/michalsarna/LightCreator/issues) · 许可证：[MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) 或 [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE)，任选其一

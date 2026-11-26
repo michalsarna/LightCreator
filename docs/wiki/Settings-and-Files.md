@@ -29,3 +29,16 @@ The status bar at the bottom shows the state of the device (with a dot: green wh
 **File → Print…** (Ctrl+P) prints the design on a paper printer. The page is a one-page PDF made by LightCreator: the whole work area to scale (dashed border) or only the objects as large as the page allows; objects on visible layers only, or all; A4 or Letter; a margin of 0–40 mm. The page turns to landscape when the printed part is wider than tall, and a line at the bottom gives the scale. Layers are drawn in their colours, filled shapes lightly tinted, images in grey. A warning appears when objects reach outside the work area (with the work-area option they are cut off at its edge).
 
 **Print** sends the page to the system printer: `lp` on macOS and Linux (with a choice of the printers the system lists) and the *Print* verb of the default PDF viewer on Windows (the default printer). **Save as PDF…** and **Open the PDF** (print from the viewer with more options) are the alternatives. Print preview is the PDF itself. Nothing here has been tried on real printers yet.
+
+## Password protection
+
+A project can be protected with passwords: in **Project setup…** of LightCreator, MillCreator and PenCreator, and in **File → Page setup…** of BaseCreator, part **Protection**.
+
+* **Owner password**: everything (editing, copying, exporting, changing or removing the protection).
+* **Open password** (optional): the project can be opened, looked at, turned into G-code and run on the machine, and the material and the layer settings (speed, power, passes, depth, bit, pen) can be changed, but the drawing cannot be edited, copied, exported as a drawing (SVG, DXF, Illustrator, LightBurn …) or printed. The built-in web page shows no drawing then.
+* With only an owner password, nobody else can open the file. Without a password the file cannot be read at all, and a **forgotten password cannot be recovered**.
+* A project opened with the open password can be unlocked with the owner password, without opening it again: in the **Protection** part of the setup (**Owner password**, **Unlock**) or with **Unlock with the owner password…** in the menu of its tab (right click). That menu also has **Project information…** and the setup of the project.
+
+The file stays a JSON text with the key `protected_cre`; the project in it is encrypted with **XChaCha20-Poly1305** under a random 256-bit key, which is stored once for every password, wrapped with a key made from the password by **Argon2id** (64 MiB, 3 passes, a salt of its own). Every save uses a new nonce; a changed file does not open. Passwords need at least 8 characters, and the open password must differ from the owner's.
+
+What the open password forbids is enforced by the programs, as with the owner password of a PDF: whoever has it can, in principle, decrypt the project with other tools. Keep the owner password for yourself.

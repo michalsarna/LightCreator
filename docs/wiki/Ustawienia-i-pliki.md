@@ -29,3 +29,16 @@ Pasek statusu na dole pokazuje stan urządzenia (z kropką: zielona po połącze
 **Plik → Drukuj…** (Ctrl+P) drukuje projekt na papierowej drukarce. Strona to jednostronicowy PDF tworzony przez LightCreator: całe pole robocze w skali (przerywana ramka) albo tylko obiekty, jak największe na stronie; tylko obiekty na widocznych warstwach albo wszystkie; A4 lub Letter; margines 0–40 mm. Strona obraca się do poziomej, gdy drukowana część jest szersza niż wyższa, a linia na dole podaje skalę. Warstwy są rysowane swoimi kolorami, wypełnione kształty lekko podbarwione, obrazy w szarości. Gdy obiekty wychodzą poza pole robocze, pojawia się ostrzeżenie (przy opcji całego pola robocze są obcięte na jego krawędzi).
 
 **Drukuj** wysyła stronę do drukarki systemowej: `lp` w macOS i Linuksie (z wyborem drukarek wylistowanych przez system) oraz czasownik **Drukuj** (Print) domyślnej przeglądarki PDF w Windows (drukarka domyślna). Alternatywą są **Zapisz jako PDF…** i **Otwórz PDF** (drukowanie z przeglądarki z większą liczbą opcji). Podglądem wydruku jest sam PDF. Nic z tego nie było jeszcze próbowane na prawdziwych drukarkach.
+
+## Ochrona hasłem
+
+Projekt można chronić hasłami: w **Ustawieniach projektu…** LightCreatora, MillCreatora i PenCreatora oraz w **Plik → Ustawienia strony…** BaseCreatora, w części **Ochrona**.
+
+* **Hasło właściciela**: wszystko (edycja, kopiowanie, eksport, zmiana lub usunięcie ochrony).
+* **Hasło otwarcia** (opcjonalne): projekt można otworzyć, oglądać, zamienić w G-code i uruchomić na maszynie, można też zmienić materiał i ustawienia warstw (prędkość, moc, przejścia, głębokość, frez, pisak), ale rysunku nie da się edytować, kopiować, eksportować jako rysunku (SVG, DXF, Illustrator, LightBurn …) ani drukować. Wbudowana strona WWW nie pokazuje wtedy rysunku.
+* Gdy jest tylko hasło właściciela, nikt inny nie otworzy pliku. Bez hasła pliku nie da się w ogóle odczytać, a **zapomnianego hasła nie da się odzyskać**.
+* Projekt otwarty hasłem otwarcia można odblokować hasłem właściciela bez ponownego otwierania: w części **Ochrona** ustawień (**Hasło właściciela**, **Odblokuj**) albo poleceniem **Odblokuj hasłem właściciela…** z menu jego karty (prawy przycisk). To menu ma też **Informacje o projekcie…** i ustawienia projektu.
+
+Plik pozostaje tekstem JSON z kluczem `protected_cre`; projekt w nim jest zaszyfrowany **XChaCha20-Poly1305** losowym kluczem 256-bitowym, zapisanym raz dla każdego hasła i zaszyfrowanym kluczem zrobionym z hasła przez **Argon2id** (64 MiB, 3 przebiegi, własna sól). Każdy zapis ma nowy nonce; zmieniony plik się nie otworzy. Hasła muszą mieć co najmniej 8 znaków, a hasło otwarcia musi być inne niż hasło właściciela.
+
+To, czego zabrania hasło otwarcia, egzekwują programy, tak jak hasło właściciela w PDF: kto je zna, może w zasadzie odszyfrować projekt innymi narzędziami. Hasło właściciela zachowaj dla siebie.

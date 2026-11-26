@@ -3,7 +3,7 @@ resolver = "2"
 members = ["crates/lc-core", "crates/lightcreator"]
 
 [workspace.package]
-version = "0.9.10"
+version = "1.0.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 
