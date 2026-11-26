@@ -62,6 +62,15 @@ impl App {
             PaneEvent::NewTab(_) => {
                 self.new_tab();
             }
+            PaneEvent::Menu(slot, cmd) => {
+                // The menu of a drawing's tab: that drawing first.
+                self.activate_slot(slot);
+                match cmd {
+                    base_ui::work_panes::TabCommand::Info => self.show_project_info = true,
+                    base_ui::work_panes::TabCommand::Setup => self.open_setup(),
+                    base_ui::work_panes::TabCommand::Unlock => self.lock.ask_owner(),
+                }
+            }
             PaneEvent::Nothing => {}
         }
     }
@@ -193,6 +202,13 @@ impl App {
 }
 
 impl PaneHost for App {
+    fn tab_locked(&self, c: Content) -> bool {
+        match c {
+            Content::Doc(slot) if slot == self.slot => self.lock.locked(),
+            Content::Doc(slot) => self.tabs_state.parked.iter().flatten().find(|w| w.slot == slot).is_some_and(|w| w.lock.locked()),
+            _ => false,
+        }
+    }
     fn window_logo(&self) -> Option<egui::TextureHandle> {
         self.logo.clone()
     }
