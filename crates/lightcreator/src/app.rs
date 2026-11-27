@@ -870,6 +870,8 @@ impl App {
                     g.replace(text);
                 }
                 g.name = name;
+                // The G-code made again opens at its first line.
+                g.to_start();
                 self.panes.select(base_ui::work_panes::Content::GcodeText(slot));
             }
             None => self.gcode_texts.push(base_ui::gcode_text_ui::GcodeText::new(slot, &name, text)),
