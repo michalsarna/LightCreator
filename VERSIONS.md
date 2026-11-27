@@ -2,7 +2,7 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
-## v1.1.1 (not released yet)
+## v1.1.1
 
 * **The comment of a layer in the G-code starts with `; Layer:`**, as in MillCreator and PenCreator, and keeps all it said: `; Layer: Cut (Line) speed 20 mm/s power 80%`. The start of every layer now goes to the machine with the job, so the time-lapse takes its photo after each layer (it found no layers in a LightCreator job before); a stop (M0, such as turning the material over between the sides) tells the person what to do.
 * The G-code tab: a little room over its buttons and on their left; the stage that was clicked is the one lit in the list; a click on a stage brings its line exactly to the top, also far down a long program (many thousand lines down, the text stopped a few hundred lines above it); the preview of the G-code always opens at the start of the text.

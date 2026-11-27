@@ -6,8 +6,8 @@ Only the newest released version receives security fixes.
 
 | Version | Supported |
 |---------|-----------|
-| v1.1.0 (latest) | yes |
-| v1.0.0 | no, please update |
+| v1.1.1 (latest) | yes |
+| v1.1.0 | no, please update |
 | v0.8.6 | no, please update |
 | v0.8.5 | no, please update |
 | v0.8.4 | no, please update |
