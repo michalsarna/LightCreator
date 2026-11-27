@@ -1121,12 +1121,13 @@ impl App {
         }
     }
 
-    /// What the job is made of: the whole drawing, or with "Selection only" the shapes that are selected now.
+    /// What the job is made of: the drawing, or with "Selection only" the shapes that are selected now; in both only what lies at least
+    /// partly on the work area. What lies beside it is never burned, nor shown in a preview (`Document::on_work_area`).
     pub fn job_source(&self) -> std::borrow::Cow<'_, lc_core::Document> {
         if self.selection_only {
-            std::borrow::Cow::Owned(self.doc.only_shapes(&self.ed.sel))
+            std::borrow::Cow::Owned(self.doc.only_shapes(&self.ed.sel).on_work_area())
         } else {
-            std::borrow::Cow::Borrowed(&self.doc)
+            std::borrow::Cow::Owned(self.doc.on_work_area())
         }
     }
 
@@ -2143,7 +2144,7 @@ impl App {
         // The toolpaths over the work area are made again when the job changed, but not while a shape is being dragged (a big job
         // would be made at every frame of the drag): the old ones stay until the drag ends.
         if self.preview_on && self.preview.as_ref().map(|p| p.0) != Some(self.job_stamp()) && (self.ed.drag.is_none() || self.preview.is_none()) {
-            self.preview = Some((self.job_stamp(), gcode::generate_with(&self.job_source().on_work_area(), None, &self.job_options())));
+            self.preview = Some((self.job_stamp(), gcode::generate_with(&self.job_source(), None, &self.job_options())));
         }
         #[cfg(target_os = "macos")]
         self.native_menu_frame(&ctx);
@@ -2806,7 +2807,7 @@ mod live_position_tests {
         a.doc.add(0, lc_core::Kind::Rect { w: 10.0, h: 10.0 }, lc_core::Xf::translate(50.0, 60.0));
         let head = a.doc.device.from_machine(10.0, 20.0);
         let (doc, back) = a.job_doc();
-        assert!(back.is_none() && matches!(doc, std::borrow::Cow::Borrowed(_)), "from home nothing moves");
+        assert!(back.is_none() && doc.scene.shapes == a.doc.scene.shapes, "from home nothing moves");
         drop(doc);
         a.doc.device.start_from = lc_core::StartFrom::CurrentPosition;
         let (doc, back) = a.job_doc();
