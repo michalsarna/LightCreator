@@ -41,6 +41,7 @@ Drag left → right: only objects wholly inside. Right → left: everything touc
   * **Save G-code** in the tab writes the text as it is to a file.
   * **Make again** makes it from the project again. With edits the first click turns the button into **Lose the edits?** and the second one throws them away.
   * **Analyse** shows the toolpaths of the text in the analysis of G-code (another tab).
+  * **Line numbers and stages:** the numbers of the lines stand on the left (only shown, never in the file), and every shape has its name (**Shape 1**, **Shape 2**…) beside its first line. The list of **Stages** on the right has a small box for the start, side A and B, every layer, element and shape, every stop (M0) and the end of the job: a click brings its line to the top of the text. The stage of the first line in view is lit.
   * While it has no edits the text follows the project: it is made again by itself a moment after you save the project, change its notes (the **Description** tab), change the device (its G-code settings, for example) or switch postprocessors. Changes of the drawing alone do not make it again (press **Make again**). Edits are never thrown away on their own.
   * A tab with edits is marked with a dot, and closing it asks whether to save them. The G-code text of a project is closed with the project.
   * **Preview G-code** does not run the check before the job (the **Save G-code** button of the bar does), and a job started with **START** is sent as the program makes it, without the edits or the postprocessors.

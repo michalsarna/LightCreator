@@ -41,6 +41,7 @@ Ramka z lewej do prawej: tylko obiekty w całości w środku. Z prawej do lewej:
   * **Zapisz G-code** w karcie zapisuje tekst taki, jaki jest, do pliku.
   * **Wygeneruj ponownie** (Make again) tworzy go od nowa z projektu. Gdy są zmiany, pierwsze kliknięcie zamienia przycisk w **Stracić zmiany?**, a drugie je odrzuca.
   * **Analizuj** (Analyse) pokazuje ścieżki tekstu w analizie G-code (w innej karcie).
+  * **Numery wierszy i etapy:** po lewej stoją numery wierszy (tylko na ekranie, nigdy w pliku), a każdy kształt ma swoją nazwę (**Kształt 1**, **Kształt 2**…) obok swojego pierwszego wiersza. Lista **Etapy** po prawej ma małe okienko dla początku, strony A i B, każdej warstwy, elementu i kształtu, każdego zatrzymania (M0) i końca zadania: kliknięcie przenosi jego wiersz na górę tekstu. Etap pierwszego widocznego wiersza jest podświetlony.
   * Dopóki nie ma zmian, tekst podąża za projektem: tworzy się sam od nowa chwilę po tym, jak zapiszesz projekt, zmienisz jego notatki (zakładka **Opis**), zmienisz urządzenie (na przykład jego ustawienia G-code) albo przełączysz postprocesory. Same zmiany rysunku go nie odświeżają (naciśnij **Wygeneruj ponownie**). Zmiany nigdy nie są odrzucane same.
   * Karta ze zmianami ma kropkę, a jej zamknięcie pyta, czy je zapisać. Tekst G-code projektu zamyka się razem z projektem.
   * **Podgląd G-code** nie wykonuje kontroli przed zadaniem (przycisk **Zapisz G-code** na pasku ją wykonuje), a zadanie uruchomione przyciskiem **START** jest wysyłane tak, jak tworzy je program, bez zmian z karty i bez postprocesorów.
