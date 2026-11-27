@@ -2143,7 +2143,7 @@ impl App {
         // The toolpaths over the work area are made again when the job changed, but not while a shape is being dragged (a big job
         // would be made at every frame of the drag): the old ones stay until the drag ends.
         if self.preview_on && self.preview.as_ref().map(|p| p.0) != Some(self.job_stamp()) && (self.ed.drag.is_none() || self.preview.is_none()) {
-            self.preview = Some((self.job_stamp(), gcode::generate_with(&self.job_source(), None, &self.job_options())));
+            self.preview = Some((self.job_stamp(), gcode::generate_with(&self.job_source().on_work_area(), None, &self.job_options())));
         }
         #[cfg(target_os = "macos")]
         self.native_menu_frame(&ctx);

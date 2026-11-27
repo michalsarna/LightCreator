@@ -120,6 +120,28 @@ fn layer_ink(p: [u8; 3]) -> Color32 {
     Color32::from_rgb(k(p[0]), k(p[1]), k(p[2]))
 }
 
+/// The part of the move from `a` to `b` that lies on the rectangle from (0, 0) to (`w`, `h`) (Liang and Barsky): the preview draws
+/// nothing beside the work area or beside a face. `None` when no part of it does.
+fn clip_to(a: lc_core::Pt, b: lc_core::Pt, w: f64, h: f64) -> Option<(lc_core::Pt, lc_core::Pt)> {
+    let (dx, dy) = (b.x - a.x, b.y - a.y);
+    let (mut t0, mut t1) = (0.0f64, 1.0f64);
+    for (p, q) in [(-dx, a.x), (dx, w - a.x), (-dy, a.y), (dy, h - a.y)] {
+        if p.abs() < 1e-12 {
+            if q < -1e-9 {
+                return None;
+            }
+        } else {
+            let t = q / p;
+            if p < 0.0 {
+                t0 = t0.max(t);
+            } else {
+                t1 = t1.min(t);
+            }
+        }
+    }
+    (t0 <= t1).then(|| (lc_core::Pt::new(a.x + dx * t0, a.y + dy * t0), lc_core::Pt::new(a.x + dx * t1, a.y + dy * t1)))
+}
+
 fn op_label(job: &gcode::Job, i: usize, layers: &[lc_core::Layer]) -> String {
     let o = job.ops[i];
     let mut s = format!("{} · {}", layers[o.layer].name, tr(o.kind.label()));
@@ -133,7 +155,7 @@ impl App {
     /// Rebuild the job when the design changed and advance the playback. None while there is no job.
     pub(crate) fn preview_prepare(&mut self, ctx: &egui::Context) -> Option<gcode::Job> {
         if self.pv.job.as_ref().map(|j| j.0) != Some(self.job_stamp()) {
-            let job = gcode::generate_with(&self.job_source(), None, &self.job_options());
+            let job = gcode::generate_with(&self.job_source().on_work_area(), None, &self.job_options());
             let mut t = 0.0;
             self.pv.cum = job.moves.iter().map(|m| { t += m.dur; t }).collect();
             self.pv.job = Some((self.job_stamp(), job));
@@ -386,8 +408,10 @@ impl App {
             // Everything before the current time is drawn whole; the current move only up to the head.
             let t_now = self.pv.progress as f64 * total;
             let cur = self.pv.cum.partition_point(|c| *c <= t_now).min(job.moves.len());
-            // Moves that follow each other are one line, what is too small or out of sight is left out (`base_ui::lines`).
-            let mut shapes = base_ui::lines::Lines::new(painter.clip_rect());
+            // Moves that follow each other are one line, what is too small or out of sight is left out (`base_ui::lines`). Nothing is
+            // drawn beside the work area: the part of a shape that reaches past its edge is cut off there.
+            let on_bed = painter.with_clip_rect(painter.clip_rect().intersect(bed.expand(1.0)));
+            let mut shapes = base_ui::lines::Lines::new(on_bed.clip_rect());
             let skip_travel = job.moves.len() > 200_000;
             let style_of = |m: &gcode::Move| -> Option<Stroke> {
                 if self.pv.hidden.contains(&m.op) {
@@ -424,12 +448,13 @@ impl App {
             } else if let Some(m) = job.moves.last() {
                 head = w2s(m.b);
             }
-            shapes.paint(&painter);
+            shapes.paint(&on_bed);
             painter.circle_filled(head, 4.5, Color32::from_rgb(0xe0, 0x20, 0x20));
             painter.circle_stroke(head, 4.5, Stroke::new(1.0, Color32::WHITE));
             if self.pv.show_dims {
                 // The objects that are burnt, from the zero of the machine.
-                let burnt = self.doc.scene.shapes.iter().filter(|s| self.doc.layers.get(s.layer).is_some_and(|l| l.output && l.visible));
+                let on = self.doc.scene.on_area(bw, bh);
+                let burnt = on.shapes.iter().filter(|s| self.doc.layers.get(s.layer).is_some_and(|l| l.output && l.visible));
                 let f = base_ui::dims::Features::of(burnt, &|p| p);
                 let shown = base_ui::editor::EditorHost::units(self);
                 let st = base_ui::dims::DimStyle::on(bed_fill).in_units(shown, self.doc.device.units);
@@ -508,7 +533,7 @@ impl App {
         let stamp = self.job_stamp();
         if self.doc.two.is_some() && self.pv.face_jobs.as_ref().is_none_or(|(k, _)| *k != stamp) {
             let opts = gcode::JobOptions { one_by_one: self.one_by_one, side_note: None, then: vec![] };
-            let jobs = (0..solid.count()).map(|i| gcode::generate_with(&self.doc.with_face(i), None, &opts)).collect();
+            let jobs = (0..solid.count()).map(|i| gcode::generate_with(&self.doc.with_face(i).on_work_area(), None, &opts)).collect();
             self.pv.face_jobs = Some((stamp, jobs));
         }
         // The object lies as the laser sees the shown face: that face up, so the switch of the faces turns it.
@@ -525,6 +550,8 @@ impl App {
         let travel = self.pv.show_travel && job.moves.len() <= 200_000;
         let o = self.doc.piece_origin();
         let local = |p: lc_core::Pt| lc_core::Pt::new(p.x - o.x, p.y - o.y);
+        // Nothing is drawn beside a face: the part of a line that reaches past it is cut off at its edge.
+        let face = solid.face(shown);
         let line_w = line_w.max(1.3);
         let stroke = |m: &gcode::Move, n_ops: usize| -> Option<Stroke> {
             if self.pv.burn_look && m.laser && !self.pv.hidden.contains(&m.op) {
@@ -538,7 +565,10 @@ impl App {
             for (j, fj) in jobs.iter().enumerate().filter(|(j, _)| *j != shown && self.doc.two.is_some()) {
                 for m in fj.moves.iter().filter(|m| m.laser) {
                     if let Some(st) = stroke(m, fj.ops.len()) {
-                        bv::face_line(&mut shapes, &pj, &frame, &solid, j, local(m.a), local(m.b), st);
+                        let f = solid.face(j);
+                        if let Some((a, b)) = clip_to(local(m.a), local(m.b), f.w, f.h) {
+                            bv::face_line(&mut shapes, &pj, &frame, &solid, j, a, b, st);
+                        }
                     }
                 }
             }
@@ -547,7 +577,9 @@ impl App {
         let cur = self.pv.cum.partition_point(|c| *c <= t_now).min(job.moves.len());
         for m in job.moves.iter().take(cur) {
             if let Some(st) = stroke(m, n_ops) {
-                bv::face_line(&mut shapes, &pj, &frame, &solid, shown, local(m.a), local(m.b), st);
+                if let Some((a, b)) = clip_to(local(m.a), local(m.b), face.w, face.h) {
+                    bv::face_line(&mut shapes, &pj, &frame, &solid, shown, a, b, st);
+                }
             }
         }
         let mut head = None;
@@ -556,7 +588,9 @@ impl App {
             let f = if m.dur > 1e-12 { ((t_now - before) / m.dur).clamp(0.0, 1.0) } else { 1.0 };
             let p = lc_core::Pt::new(m.a.x + (m.b.x - m.a.x) * f, m.a.y + (m.b.y - m.a.y) * f);
             if let Some(st) = stroke(m, n_ops) {
-                bv::face_line(&mut shapes, &pj, &frame, &solid, shown, local(m.a), local(p), st);
+                if let Some((a, b)) = clip_to(local(m.a), local(p), face.w, face.h) {
+                    bv::face_line(&mut shapes, &pj, &frame, &solid, shown, a, b, st);
+                }
             }
             head = Some(p);
         }
@@ -584,7 +618,7 @@ impl App {
         let r = (self.doc.device.rotary.diameter / 2.0).max(0.5);
         let burns = job.moves.iter().filter(|m| m.laser).flat_map(|m| [m.a, m.b]);
         let (x0, x1, y0, y1) = burns.fold((f64::INFINITY, f64::NEG_INFINITY, f64::INFINITY, f64::NEG_INFINITY), |b, p| (b.0.min(p.x), b.1.max(p.x), b.2.min(p.y), b.3.max(p.y)));
-        let (bw, _) = self.doc.device.work_size();
+        let (bw, bh) = self.doc.device.work_size();
         let (x0, x1, y_mid) = if x0.is_finite() { (x0 - 15.0, x1 + 15.0, (y0 + y1) / 2.0) } else { (0.0, bw, 0.0) };
         let (x0, x1) = if x1 - x0 < 2.0 * r { ((x0 + x1) / 2.0 - r, (x0 + x1) / 2.0 + r) } else { (x0, x1) };
         // Dragging turns the cylinder (up and down) and swings it (left and right); the wheel zooms.
@@ -612,8 +646,8 @@ impl App {
         // A little thicker than on the flat picture: the lines lie on a shaded surface.
         let line_w = line_w.max(1.6);
         for m in job.moves.iter().take(cur) {
-            if let Some(st) = self.move_stroke(m, n_ops, line_w, travel) {
-                cv::wound_line(&mut shapes, &pj, m.a, m.b, st, detail);
+            if let (Some(st), Some((a, b))) = (self.move_stroke(m, n_ops, line_w, travel), clip_to(m.a, m.b, bw, bh)) {
+                cv::wound_line(&mut shapes, &pj, a, b, st, detail);
             }
         }
         let mut head = None;
@@ -621,8 +655,8 @@ impl App {
             let before = if cur == 0 { 0.0 } else { self.pv.cum[cur - 1] };
             let f = if m.dur > 1e-12 { ((t_now - before) / m.dur).clamp(0.0, 1.0) } else { 1.0 };
             let p = lc_core::Pt::new(m.a.x + (m.b.x - m.a.x) * f, m.a.y + (m.b.y - m.a.y) * f);
-            if let Some(st) = self.move_stroke(m, n_ops, line_w, travel) {
-                cv::wound_line(&mut shapes, &pj, m.a, p, st, detail);
+            if let (Some(st), Some((a, b))) = (self.move_stroke(m, n_ops, line_w, travel), clip_to(m.a, p, bw, bh)) {
+                cv::wound_line(&mut shapes, &pj, a, b, st, detail);
             }
             head = Some(p);
         } else if let Some(m) = job.moves.last() {
@@ -656,6 +690,28 @@ mod tests {
         let mut a = App::build(&ctx, None, false);
         a.screen = Screen::Editor;
         (a, ctx)
+    }
+
+    #[test]
+    fn the_preview_never_holds_what_lies_beside_the_work_area() {
+        let (mut a, ctx) = editor();
+        let (bw, bh) = a.doc.device.work_size();
+        a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(10.0, 10.0));
+        a.touch();
+        let on = a.preview_prepare(&ctx).expect("a job");
+        // Beside the work area, right and below: in the G-code, but not in the preview.
+        a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(bw + 50.0, 10.0));
+        a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(10.0, bh + 50.0));
+        a.touch();
+        let job = a.preview_prepare(&ctx).expect("a job");
+        assert_eq!(job.moves.len(), on.moves.len());
+        assert!(job.moves.iter().all(|m| m.b.x <= bw + 1e-6 && m.b.y <= bh + 1e-6));
+        assert!(lc_core::gcode::generate_with(&a.job_source(), None, &a.job_options()).moves.len() > on.moves.len());
+        // Across the edge: in the preview, cut off there.
+        let (p, q) = (lc_core::Pt::new(bw - 10.0, 5.0), lc_core::Pt::new(bw + 10.0, 5.0));
+        let (c, d) = super::clip_to(p, q, bw, bh).unwrap();
+        assert!((c.x - (bw - 10.0)).abs() < 1e-9 && (d.x - bw).abs() < 1e-9);
+        assert!(super::clip_to(lc_core::Pt::new(bw + 1.0, 5.0), lc_core::Pt::new(bw + 9.0, 5.0), bw, bh).is_none());
     }
 
     #[test]

@@ -1616,6 +1616,15 @@ impl Default for Document {
 }
 
 impl Document {
+    /// The document with only the shapes that lie at least partly on the work area: what a preview of the job is made of. What lies
+    /// beside the work area is never in a preview (`Scene::on_area`).
+    pub fn on_work_area(&self) -> Document {
+        let (w, h) = self.device.work_size();
+        let mut d = self.clone();
+        d.scene = self.scene.on_area(w, h);
+        d
+    }
+
     /// The document with only the shapes with these ids (the layers and the device stay): what a job of the selection burns.
     pub fn only_shapes(&self, ids: &[u64]) -> Document {
         let mut d = self.clone();

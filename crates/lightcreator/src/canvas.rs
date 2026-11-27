@@ -109,8 +109,12 @@ impl App {
             if let Some((_, job)) = &self.preview {
                 let skip_travel = job.moves.len() > 150_000;
                 let bed_c = self.bed_fill();
-                // Moves that follow each other are one line, what is too small or out of sight is left out (`base_ui::lines`).
-                let mut shapes = base_ui::lines::Lines::new(painter.clip_rect());
+                // Moves that follow each other are one line, what is too small or out of sight is left out (`base_ui::lines`). Only on
+                // the work area: the part of a shape that reaches past its edge is cut off there.
+                let (bw, bh) = self.doc.device.work_size();
+                let bed = egui::Rect::from_two_pos(self.w2s(o, lc_core::Pt::new(0.0, 0.0)), self.w2s(o, lc_core::Pt::new(bw, bh)));
+                let on_bed = painter.with_clip_rect(painter.clip_rect().intersect(bed.expand(1.0)));
+                let mut shapes = base_ui::lines::Lines::new(on_bed.clip_rect());
                 for m in &job.moves {
                     if !m.laser && skip_travel {
                         continue;
@@ -122,7 +126,7 @@ impl App {
                     };
                     shapes.add(self.w2s(o, m.a), self.w2s(o, m.b), st, false);
                 }
-                shapes.paint(painter);
+                shapes.paint(&on_bed);
                 let r = painter.text(rect.left_bottom() + egui::vec2(30.0, -12.0), egui::Align2::LEFT_BOTTOM, format!("{} {}   {} {}", crate::i18n::tr("Estimated time"), crate::app::fmt_time(job.est_seconds), crate::i18n::tr("cut length"), crate::units_ui::fmt_len(self.doc.device.units, job.cut_length, 0)), egui::FontId::proportional(13.0), theme::text());
                 let _ = r;
             }
