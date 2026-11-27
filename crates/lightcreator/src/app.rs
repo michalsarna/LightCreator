@@ -2778,9 +2778,13 @@ mod live_position_tests {
             }
             ids.push((r, c));
         }
-        let layer_lines = |a: &mut App| -> usize { gcode::generate_with(&a.job_doc().0, None, &a.job_options()).gcode.lines().filter(|l| l.starts_with("; layer")).count() };
+        let layer_lines = |a: &mut App| -> usize { gcode::generate_with(&a.job_doc().0, None, &a.job_options()).gcode.lines().filter(|l| l.starts_with("; Layer:")).count() };
         // As before: a layer after a layer, two of them; one by one: both layers of each of the two groups.
         assert_eq!(layer_lines(&mut a), 2);
+        // The lines sent to the machine keep the start of the second layer: the time-lapse takes its photo there.
+        let text = gcode::generate_with(&a.job_doc().0, None, &a.job_options()).gcode;
+        let sent = laser::clean_gcode(&text);
+        assert_eq!(base_ui::link::layer_marks(&sent).len(), 1, "{sent:?}");
         a.one_by_one = true;
         assert_eq!(layer_lines(&mut a), 4);
         // Selection only: the second group (the one at x = 10), burnt completely; nothing selected burns nothing.

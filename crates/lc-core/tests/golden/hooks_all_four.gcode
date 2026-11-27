@@ -4,7 +4,7 @@ G90 ; absolute
 G17
 M4 S0
 ; job: 2 layer(s) to burn, 3 object(s)
-; layer C00 (Line) speed 20 mm/s power 60%
+; Layer: C00 (Line) speed 20 mm/s power 60%
 ; settings: number 1 of 2 to burn, 2 object(s), 1 pass(es), air assist off
 ; hook layer_start
 M117 C00 1/2
@@ -164,7 +164,7 @@ G1 X80.007 Y153.706
 ; hook layer_end
 M117 done C00
 ; end of layer C00
-; layer C01 (Line) speed 16.667 mm/s power 100%
+; Layer: C01 (Line) speed 16.667 mm/s power 100%
 ; settings: number 2 of 2 to burn, 1 object(s), 1 pass(es), air assist off
 ; hook layer_start
 M117 C01 2/2

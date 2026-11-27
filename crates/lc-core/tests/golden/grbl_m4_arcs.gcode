@@ -4,7 +4,7 @@ G90 ; absolute
 G17
 M4 S0
 ; job: 1 layer(s) to burn, 2 object(s)
-; layer C00 (Line) speed 20 mm/s power 60%
+; Layer: C00 (Line) speed 20 mm/s power 60%
 ; settings: number 1 of 1 to burn, 2 object(s), 1 pass(es), air assist off
 ; object 1 of 2 start: ellipse
 ; path 1 of 2 start: closed, 125.7 mm

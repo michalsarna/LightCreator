@@ -5,7 +5,7 @@ G90
 ; own start
 M3 S0
 ; job: 3 layer(s) to burn, 3 object(s)
-; layer C00 (Fill + Line) speed 20 mm/s power 60%
+; Layer: C00 (Fill + Line) speed 20 mm/s power 60%
 ; settings: number 1 of 3 to burn, 1 object(s), 2 pass(es), air assist on
 M7 ; air assist on
 ; pass 1/2
@@ -113,7 +113,7 @@ G1 X30.000 Y150.000
 ; path 1 end
 ; object 1 end
 ; end of layer C00
-; layer C01 (Line) speed 5 mm/s power 100%
+; Layer: C01 (Line) speed 5 mm/s power 100%
 ; settings: number 2 of 3 to burn, 1 object(s), 1 pass(es), air assist off
 M9
 M8 ; air assist off
@@ -251,7 +251,7 @@ G1 X100.087 Y135.734
 ; path 1 end
 ; object 2 end
 ; end of layer C01
-; layer C02 (Offset fill) speed 16.667 mm/s power 35%
+; Layer: C02 (Offset fill) speed 16.667 mm/s power 35%
 ; settings: number 3 of 3 to burn, 1 object(s), 1 pass(es), air assist off
 ; offset fill start: 5 rings, 1.5 mm apart
 ; ring 1 of 5 start: 12.0 mm

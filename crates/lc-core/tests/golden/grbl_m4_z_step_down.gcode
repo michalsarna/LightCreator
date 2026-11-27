@@ -4,7 +4,7 @@ G90 ; absolute
 G17
 M4 S0
 ; job: 1 layer(s) to burn, 1 object(s)
-; layer C00 (Line) speed 20 mm/s power 60%
+; Layer: C00 (Line) speed 20 mm/s power 60%
 ; settings: number 1 of 1 to burn, 1 object(s), 3 pass(es), air assist off, Z step -2.5 mm
 ; pass 1/3
 G0 Z12.000 ; Z for pass 1

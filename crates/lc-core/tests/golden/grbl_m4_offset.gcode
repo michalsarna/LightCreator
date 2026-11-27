@@ -4,7 +4,7 @@ G90 ; absolute
 G17
 M4 S0
 ; job: 1 layer(s) to burn, 1 object(s)
-; layer C00 (Offset fill) speed 20 mm/s power 60%
+; Layer: C00 (Offset fill) speed 20 mm/s power 60%
 ; settings: number 1 of 1 to burn, 1 object(s), 1 pass(es), air assist off
 ; offset fill start: 5 rings, 1 mm apart
 ; ring 1 of 5 start: 28.0 mm

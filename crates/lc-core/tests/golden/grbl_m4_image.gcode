@@ -4,7 +4,7 @@ G90 ; absolute
 G17
 M4 S0
 ; job: 1 layer(s) to burn, 1 object(s)
-; layer C00 (Line) speed 16.667 mm/s power 100%
+; Layer: C00 (Line) speed 16.667 mm/s power 100%
 ; settings: number 1 of 1 to burn, 1 object(s), 1 pass(es), air assist off
 ; picture 1 of 1 start: 16 rows
 G0 X49.000 Y149.750

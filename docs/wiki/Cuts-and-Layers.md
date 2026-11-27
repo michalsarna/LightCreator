@@ -62,7 +62,7 @@ Not implemented from other programs' cut settings: sub-layers (several settings 
 The G-code says in comments (`; …`) where everything starts and ends, so the file can be read and a stopped job found in it:
 
 * `; job: …` with the number of layers and objects (and of elements, with **One element at a time**);
-* for every layer `; layer name (mode) speed … power …` and `; settings: …` (its number in the job, objects, passes, air assist, the Z step), and at its end `; end of layer name`;
+* for every layer `; Layer: name (mode) speed … power …` and `; settings: …` (its number in the job, objects, passes, air assist, the Z step), and at its end `; end of layer name`;
 * `; pass 2/3` for every pass;
 * `; object 2 of 5 start: rectangle` / `; object 2 end` around the lines of an object (when the nearest way takes the laser to another object and back, the object starts again with `(again)`), `; element 1 of 4 start` / `; element 1 end` with **One element at a time**;
 * `; path 3 of 12 start: closed, 60.0 mm` / `; path 3 end` for every line, `; fill start: 40 lines, 0.1 mm apart, at 0°, overscan 2 mm` / `; fill end`, `; offset fill start` with its rings, `; picture 1 of 2 start: 300 rows` / `; picture 1 end`;

@@ -62,7 +62,7 @@ Niezaimplementowane z ustawień cięcia innych programów: podwarstwy (kilka ust
 G-code mówi w komentarzach (`; …`), gdzie co się zaczyna i kończy, żeby plik dało się czytać i znaleźć w nim przerwane zadanie:
 
 * `; job: …` z liczbą warstw i obiektów (i elementów, przy **Element po elemencie**);
-* dla każdej warstwy `; layer nazwa (tryb) speed … power …` i `; settings: …` (jej numer w zadaniu, obiekty, przejścia, asysta powietrza, krok Z), a na jej końcu `; end of layer nazwa`;
+* dla każdej warstwy `; Layer: nazwa (tryb) speed … power …` i `; settings: …` (jej numer w zadaniu, obiekty, przejścia, asysta powietrza, krok Z), a na jej końcu `; end of layer nazwa`;
 * `; pass 2/3` dla każdego przejścia;
 * `; object 2 of 5 start: rectangle` / `; object 2 end` wokół linii obiektu (gdy najkrótsza droga prowadzi laser do innego obiektu i z powrotem, obiekt zaczyna się znowu z `(again)`), `; element 1 of 4 start` / `; element 1 end` przy **Element po elemencie**;
 * `; path 3 of 12 start: closed, 60.0 mm` / `; path 3 end` dla każdej linii, `; fill start: 40 lines, 0.1 mm apart, at 0°, overscan 2 mm` / `; fill end`, `; offset fill start` z jego pierścieniami, `; picture 1 of 2 start: 300 rows` / `; picture 1 end`;

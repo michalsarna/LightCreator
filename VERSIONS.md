@@ -2,6 +2,12 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v1.1.1 (not released yet)
+
+* **The comment of a layer in the G-code starts with `; Layer:`**, as in MillCreator and PenCreator, and keeps all it said: `; Layer: Cut (Line) speed 20 mm/s power 80%`. The start of every layer now goes to the machine with the job, so the time-lapse takes its photo after each layer (it found no layers in a LightCreator job before); a stop (M0, such as turning the material over between the sides) tells the person what to do.
+* The G-code tab: a little room over its buttons; the stage that was clicked is the one lit in the list.
+* baseCreator v2.9.8.
+
 ## v1.1.0
 
 * **The G-code tab** (baseCreator v2.9.7): the numbers of the lines on the left (only shown, never in the file), the name of every shape beside its first line (**Shape 1**, **Shape 2**…) and on the right a list of the **Stages** of the G-code: the start, the sides, the layers, the shapes, the stops and the end. A click on one brings its line to the top of the text.

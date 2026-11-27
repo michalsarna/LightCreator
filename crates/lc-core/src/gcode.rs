@@ -839,7 +839,7 @@ pub fn generate_with(doc: &Document, back: Option<Pt>, opts: &JobOptions) -> Job
         w.head = layer.head.min(dev.heads.len() - 1);
         w.rot = (dev.rotary.enabled && layer.rotary && dev.rotary_mode() == RotaryMode::TrueA).then(|| dev.rotary.degrees_per_mm());
         let round = |v: f64| (v * 1000.0).round() / 1000.0;
-        let _ = writeln!(w.out, "; layer {} ({}) speed {} mm/s power {}%", layer.name, layer.mode.label(), round(layer.speed), round(layer.power));
+        let _ = writeln!(w.out, "; Layer: {} ({}) speed {} mm/s power {}%", layer.name, layer.mode.label(), round(layer.speed), round(layer.power));
         let _ = writeln!(
             w.out,
             "; settings: number {} of {} to burn, {} object(s), {} pass(es), air assist {}{}",

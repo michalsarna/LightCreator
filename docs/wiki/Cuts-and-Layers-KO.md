@@ -64,7 +64,7 @@
 G-code는 모든 것이 어디서 시작하고 끝나는지 주석(`; …`)으로 알려 주므로, 파일을 읽고 그 안에서 멈춘 작업을 찾을 수 있습니다.
 
 * 레이어와 객체의 수(그리고 **한 번에 한 요소씩**(One element at a time)일 때는 요소의 수)가 담긴 `; job: …`;
-* 레이어마다 `; layer name (mode) speed … power …`와 `; settings: …` (작업에서의 번호, 객체, 패스 수, 에어 어시스트, Z 단계), 그리고 레이어 끝에 `; end of layer name`;
+* 레이어마다 `; Layer: name (mode) speed … power …`와 `; settings: …` (작업에서의 번호, 객체, 패스 수, 에어 어시스트, Z 단계), 그리고 레이어 끝에 `; end of layer name`;
 * 패스마다 `; pass 2/3`;
 * 객체의 줄을 감싸는 `; object 2 of 5 start: rectangle` / `; object 2 end` (가장 가까운 경로가 레이저를 다른 객체로 갔다가 되돌아오게 하면 객체가 `(again)`과 함께 다시 시작됨), **한 번에 한 요소씩**일 때 `; element 1 of 4 start` / `; element 1 end`;
 * 선마다 `; path 3 of 12 start: closed, 60.0 mm` / `; path 3 end`, `; fill start: 40 lines, 0.1 mm apart, at 0°, overscan 2 mm` / `; fill end`, 고리와 함께 `; offset fill start`, `; picture 1 of 2 start: 300 rows` / `; picture 1 end`;
