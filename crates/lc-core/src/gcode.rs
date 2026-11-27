@@ -309,30 +309,44 @@ pub fn order_paths(paths: Vec<Polyline>, start: Pt) -> Vec<Polyline> {
 }
 
 /// `order_paths` for paths that carry a tag (such as the object they belong to): each keeps its tag.
+///
+/// The areas and the boxes of the paths are worked out once, and a path whose box lies farther from the head than the nearest start
+/// found so far is not looked into: with the thousands of rings of an offset fill, going over every point of every path at every
+/// step (and the area of every path again for every other) took minutes. The order is the same as without that.
 pub fn order_tagged<T: Clone>(paths: Vec<(Polyline, T)>, start: Pt) -> Vec<(Polyline, T)> {
     let (paths, tags): (Vec<Polyline>, Vec<T>) = paths.into_iter().filter(|(p, _)| p.pts.len() >= 2).unzip();
     let n = paths.len();
+    let areas: Vec<f64> = paths.iter().map(|p| if p.closed { p.area().abs() } else { 0.0 }).collect();
+    let boxes: Vec<Rect> = paths.iter().map(|p| p.bounds().unwrap_or(Rect { min: p.pts[0], max: p.pts[0] })).collect();
+    let inside = |b: &Rect, q: Pt| q.x >= b.min.x && q.x <= b.max.x && q.y >= b.min.y && q.y <= b.max.y;
     let depth: Vec<usize> = (0..n)
         .map(|i| {
             if !paths[i].closed {
                 return 0;
             }
-            let a = paths[i].area().abs();
-            (0..n)
-                .filter(|&j| j != i && paths[j].closed && paths[j].area().abs() > a && paths[j].contains(paths[i].pts[0]))
-                .count()
+            let (a, q) = (areas[i], paths[i].pts[0]);
+            (0..n).filter(|&j| j != i && paths[j].closed && areas[j] > a && inside(&boxes[j], q) && paths[j].contains(q)).count()
         })
         .collect();
+    // How far `q` is from the box `b` at least.
+    let near = |b: &Rect, q: Pt| {
+        let dx = (b.min.x - q.x).max(q.x - b.max.x).max(0.0);
+        let dy = (b.min.y - q.y).max(q.y - b.max.y).max(0.0);
+        (dx * dx + dy * dy).sqrt()
+    };
     let max_depth = depth.iter().copied().max().unwrap_or(0);
     let mut result = Vec::with_capacity(n);
     let mut cur = start;
     for d in (0..=max_depth).rev() {
-        let mut group: Vec<(Polyline, &T)> =
-            paths.iter().enumerate().filter(|(i, _)| depth[*i] == d).map(|(i, p)| (p.clone(), &tags[i])).collect();
+        let mut group: Vec<(Polyline, &T, Rect)> =
+            paths.iter().enumerate().filter(|(i, _)| depth[*i] == d).map(|(i, p)| (p.clone(), &tags[i], boxes[i])).collect();
         while !group.is_empty() {
             let mut best = (0usize, f64::INFINITY, false, 0usize);
-            for (i, (p, _)) in group.iter().enumerate() {
+            for (i, (p, _, b)) in group.iter().enumerate() {
                 if p.closed {
+                    if near(b, cur) >= best.1 {
+                        continue;
+                    }
                     for (k, q) in p.pts.iter().enumerate() {
                         let dd = q.dist(cur);
                         if dd < best.1 {
@@ -349,7 +363,7 @@ pub fn order_tagged<T: Clone>(paths: Vec<(Polyline, T)>, start: Pt) -> Vec<(Poly
                     }
                 }
             }
-            let (mut p, tag) = group.swap_remove(best.0);
+            let (mut p, tag, _) = group.swap_remove(best.0);
             if p.closed {
                 p.pts.rotate_left(best.3);
             } else if best.2 {
