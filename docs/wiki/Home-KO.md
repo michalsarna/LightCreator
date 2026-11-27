@@ -52,4 +52,4 @@ Rust로 작성된 CNC 레이저 조각기 및 절단기용 오픈 소스 프로�
 
 > ⚠️ **안전:** 레이저는 위험합니다. G-code는 낮은 출력으로 테스트하고, 보안경을 착용하며, 동작 중인 기계를 절대 방치하지 마십시오. [안전과 제한 사항](Safety-and-Limitations-KO)을 참고하십시오.
 
-최신 릴리스: **v1.0.0** · [릴리스](https://github.com/michalsarna/LightCreator/releases) · [이슈](https://github.com/michalsarna/LightCreator/issues) · 라이선스: [MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) 또는 [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE) 중 선택
+최신 릴리스: **v1.1.0** · [릴리스](https://github.com/michalsarna/LightCreator/releases) · [이슈](https://github.com/michalsarna/LightCreator/issues) · 라이선스: [MIT](https://github.com/michalsarna/LightCreator/blob/main/LICENSE) 또는 [Apache-2.0](https://github.com/michalsarna/LightCreator/blob/main/LICENSE-APACHE) 중 선택
