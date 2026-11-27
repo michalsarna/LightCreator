@@ -16,6 +16,8 @@ mod focus_ui;
 mod gcode_view_ui;
 #[cfg(test)]
 mod grbl_sim_tests;
+#[cfg(test)]
+mod perf_tests;
 mod i18n;
 mod guide;
 mod help_ui;
