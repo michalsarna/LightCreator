@@ -344,7 +344,7 @@ fn the_rotary_in_a_fourth_axis_writes_degrees_and_in_the_y_mode_changes_nothing(
         assert!((mm - 150.0).abs() < 0.01 || (mm - 160.0).abs() < 0.01, "A{a} is {mm} mm on the surface");
     }
     // Every move of the layer has an A and no Y (the way home at the end is written after the layer, in Y).
-    let body: Vec<&str> = text.lines().skip_while(|l| !l.starts_with("; layer")).take_while(|l| !l.starts_with("M5")).filter(|l| l.starts_with("G0 X") || l.starts_with("G1 X")).collect();
+    let body: Vec<&str> = text.lines().skip_while(|l| !l.starts_with("; Layer:")).take_while(|l| !l.starts_with("M5")).filter(|l| l.starts_with("G0 X") || l.starts_with("G1 X")).collect();
     assert!(body.len() >= 5 && body.iter().all(|l| l.contains(" A") && !l.contains(" Y")), "{body:?}");
     // The Y mode: the same G-code as a flat job (the controller's steps per mm do the work).
     let y_mode = gcode_for(rotary_doc(), rotary_device("Marlin", RotaryMode::ReplaceY));

@@ -64,7 +64,7 @@
 G-code 会在注释（`; …`）中说明每部分从哪里开始、在哪里结束，以便阅读文件并在其中找到作业停止的位置：
 
 * `; job: …`，包含图层和对象的数量（使用 **一次一个元素**（**One element at a time**）时还包括元素数量）；
-* 每个图层的 `; layer name (mode) speed … power …` 和 `; settings: …`（其在作业中的编号、对象、遍数、辅助吹气、Z 步进），以及在图层结束处的 `; end of layer name`；
+* 每个图层的 `; Layer: name (mode) speed … power …` 和 `; settings: …`（其在作业中的编号、对象、遍数、辅助吹气、Z 步进），以及在图层结束处的 `; end of layer name`；
 * 每一遍的 `; pass 2/3`；
 * 包围对象各行的 `; object 2 of 5 start: rectangle` / `; object 2 end`（当最近路径使激光移到另一个对象再返回时，该对象会以 `(again)` 重新开始），使用 **一次一个元素** 时为 `; element 1 of 4 start` / `; element 1 end`；
 * 每条线的 `; path 3 of 12 start: closed, 60.0 mm` / `; path 3 end`，`; fill start: 40 lines, 0.1 mm apart, at 0°, overscan 2 mm` / `; fill end`，带有其环的 `; offset fill start`，`; picture 1 of 2 start: 300 rows` / `; picture 1 end`；

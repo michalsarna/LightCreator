@@ -2503,8 +2503,8 @@ fn one_by_one_burns_all_layers_and_passes_of_an_element_before_the_next_and_the_
             s.group = Some(g);
         }
     }
-    let layers = |g: &str| -> Vec<String> { g.lines().filter(|l| l.starts_with("; layer") || l.starts_with("; pass")).map(|l| l.split(" (").next().unwrap().to_string()).collect() };
-    let (l0, l1) = (format!("; layer {}", d.layers[0].name), format!("; layer {}", d.layers[1].name));
+    let layers = |g: &str| -> Vec<String> { g.lines().filter(|l| l.starts_with("; Layer:") || l.starts_with("; pass")).map(|l| l.split(" (").next().unwrap().to_string()).collect() };
+    let (l0, l1) = (format!("; Layer: {}", d.layers[0].name), format!("; Layer: {}", d.layers[1].name));
     // As before: layer 0 with its two passes, then layer 1.
     let by_layer = gcode::generate(&d);
     assert_eq!(layers(&by_layer.gcode), vec![l0.clone(), "; pass 1/2".into(), "; pass 2/2".into(), l1.clone()]);
