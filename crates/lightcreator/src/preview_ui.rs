@@ -155,7 +155,7 @@ impl App {
     /// Rebuild the job when the design changed and advance the playback. None while there is no job.
     pub(crate) fn preview_prepare(&mut self, ctx: &egui::Context) -> Option<gcode::Job> {
         if self.pv.job.as_ref().map(|j| j.0) != Some(self.job_stamp()) {
-            let job = gcode::generate_with(&self.job_source().on_work_area(), None, &self.job_options());
+            let job = gcode::generate_with(&self.job_source(), None, &self.job_options());
             let mut t = 0.0;
             self.pv.cum = job.moves.iter().map(|m| { t += m.dur; t }).collect();
             self.pv.job = Some((self.job_stamp(), job));
@@ -699,14 +699,15 @@ mod tests {
         a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(10.0, 10.0));
         a.touch();
         let on = a.preview_prepare(&ctx).expect("a job");
-        // Beside the work area, right and below: in the G-code, but not in the preview.
+        // Beside the work area, right and below: neither in the preview nor in the G-code.
         a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(bw + 50.0, 10.0));
         a.doc.add(0, lc_core::Kind::Rect { w: 20.0, h: 10.0 }, lc_core::Xf::translate(10.0, bh + 50.0));
         a.touch();
         let job = a.preview_prepare(&ctx).expect("a job");
         assert_eq!(job.moves.len(), on.moves.len());
         assert!(job.moves.iter().all(|m| m.b.x <= bw + 1e-6 && m.b.y <= bh + 1e-6));
-        assert!(lc_core::gcode::generate_with(&a.job_source(), None, &a.job_options()).moves.len() > on.moves.len());
+        assert_eq!(lc_core::gcode::generate_with(&a.job_source(), None, &a.job_options()).moves.len(), on.moves.len(), "the G-code is that of the shape on the work area alone");
+        assert!(!a.gcode_text_now().unwrap().contains(&format!("X{:.0}", bw + 50.0)));
         // Across the edge: in the preview, cut off there.
         let (p, q) = (lc_core::Pt::new(bw - 10.0, 5.0), lc_core::Pt::new(bw + 10.0, 5.0));
         let (c, d) = super::clip_to(p, q, bw, bh).unwrap();

@@ -346,7 +346,8 @@ impl App {
         let n = solid.count();
         let one_by_one = self.one_by_one;
         self.stamp_job();
-        let docs: Vec<lc_core::Document> = (0..n).map(|i| self.doc.with_face(i)).collect();
+        // Of every face only what lies on its work area: in a file of its own and in one file for all.
+        let docs: Vec<lc_core::Document> = (0..n).map(|i| self.doc.with_face(i).on_work_area()).collect();
         let opts = |i: usize| lc_core::gcode::JobOptions { one_by_one, side_note: Some(face_note(&solid, i)), then: vec![] };
         let texts = match how {
             SaveSides::Separate => docs.iter().enumerate().map(|(i, d)| lc_core::gcode::generate_with(d, None, &opts(i)).gcode).collect(),

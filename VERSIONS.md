@@ -4,7 +4,9 @@ Each release gets the next version number and a branch with the same name. Newes
 
 ## v1.0.1 (not released yet)
 
-* **The preview shows only what lies on the work area** (the flat picture, the object in 3D, the cylinder and the toolpaths over the work area): a drawing kept beside the work area is never in it, and the part of a shape that reaches past the edge is cut off there (on a face of a post or a block, at the edge of the face). A project with 1400 big shapes beside the work area took two minutes to show the preview and now takes a moment. The G-code is not changed. baseCreator v2.9.4.
+* **Offset fills much faster** (baseCreator v2.9.6 and the order of the paths): each shape is filled by itself, on all the cores, and the order of thousands of rings is found without going over every point of every ring at every step. On the performance test project the G-code of six faces took 17 minutes and now takes half a second, the preview 53 s and now 4 s.
+* **Only what lies on the work area is burned**: a shape wholly beside the work area is not in the G-code (saved, sent to the machine, the dry run, the diagnostics). A job on more sides takes of every face only what lies on its work area, in a file of its own and in one file for all. A shape that reaches past the edge is still in it, and the check before the start says so.
+* **The preview shows only what lies on the work area** (the flat picture, the object in 3D, the cylinder and the toolpaths over the work area): a drawing kept beside the work area is never in it, and the part of a shape that reaches past the edge is cut off there (on a face of a post or a block, at the edge of the face). A project with 1400 big shapes beside the work area took two minutes to show the preview and now takes a moment. baseCreator v2.9.4.
 
 ## v1.0.0
 
