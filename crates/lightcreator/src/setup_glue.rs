@@ -435,6 +435,7 @@ impl App {
                     }
                     g.name = name;
                     g.sides = Some(how);
+                    g.to_start();
                 }
                 None => {
                     let mut g = base_ui::gcode_text_ui::GcodeText::new(key, &name, text);
