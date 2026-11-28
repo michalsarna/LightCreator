@@ -334,6 +334,7 @@ impl App {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         // The name recorded in the projects that are saved (Program options), shared by all the programs.
         base_ui::authorship_ui::init(&crate::data_paths().base);
+        base_ui::gcode_text_ui::init(&crate::data_paths().base);
         let mut app = Self::build(&cc.egui_ctx, cc.storage, true);
         app.after_plugins_changed();
         if app.check_updates {

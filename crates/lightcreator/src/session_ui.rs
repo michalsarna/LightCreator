@@ -198,6 +198,8 @@ impl App {
                 ui.end_row();
             });
             base_ui::authorship_ui::options_section(ui);
+            // The typeface and size of the G-code tab, the same in every program.
+            base_ui::gcode_text_ui::options_section(ui);
         });
         self.show_options = open;
     }
