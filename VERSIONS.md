@@ -2,6 +2,14 @@
 
 Each release gets the next version number and a branch with the same name. Newest first.
 
+## v1.1.2 (not released yet)
+
+* **The G-code tab in the colours of the colour scheme**: its background is a shade of the scheme and the words of the G-code take the hue of its accent and hues spread from it, always easy to read.
+* **Settings → Program options → G-code editor**: the typeface (Noto Sans Mono, JetBrains Mono, IBM Plex Mono or Fira Mono) and the size of the text of the G-code tab, with a sample; the same in every program.
+* **Folding**: an arrow by the number of every line that starts a block (a side, an element, a layer, a pass, a shape, a pass of a shape) folds the block to that line, with how many lines it hides; a click there opens it again.
+* **The right button on a stage** of the list: **Fold** / **Unfold**, and **Preview**: a window with only that shape on the material of the whole job, as if nothing else were made, with its length of cut and time.
+* baseCreator v3.0.0.
+
 ## v1.1.1
 
 * **The comment of a layer in the G-code starts with `; Layer:`**, as in MillCreator and PenCreator, and keeps all it said: `; Layer: Cut (Line) speed 20 mm/s power 80%`. The start of every layer now goes to the machine with the job, so the time-lapse takes its photo after each layer (it found no layers in a LightCreator job before); a stop (M0, such as turning the material over between the sides) tells the person what to do.
